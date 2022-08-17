@@ -1,0 +1,16 @@
+tinder.com
+tinder.net
+tinder.org
+www.tinder.com
+gotinder.com
+www.gotinder.com
+https://tinder.com/
+tindersparks.com
+www.tindersparks.com
+https://www.tindersparks.com
+http://www.tindersparks.com
+api.gotinder.com
+etl.tindersparks.com
+images-ssl.gotinder.com
+keepalive.gotinder.com
+data.gotinder.com

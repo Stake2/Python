@@ -1,0 +1,12 @@
+pip>21.2
+wheel
+selenium
+numpy
+pywin32
+psutil
+pyperclip
+pyautogui
+beautifultable
+winshell
+nptime
+setuptools

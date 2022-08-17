@@ -1,0 +1,16 @@
+1: Dict not List
+2: Forgot to remove "text_written_text = " line 87 at "Write_On_Diary_Slim"
+3: Dupliacte "functions" list on line 18 at "Diary"
+4: Forgot to import "from Script_Helper import *" on all scripts
+5: Dupliacte "functions" list on line 14 at "Manage_Diary_Slim"
+6: Forgot to remove unsued junk code in "Make_New_Diary_Slim" from line 23 to line 28
+7: Used undefined variable "today_name" instead of "today" in line 16 at "Make_New_Diary_Slim"
+8: Not stringfying Add_Leading_Zeros value in line 44 at "Make_New_Diary_Slim"
+9: Used undefined variable "today_name" instead of "today" in line 52 at "Make_New_Diary_Slim"
+10: Forgot to define variable "things_to_do_file" in "Diary" class to be used in line 55 at "Make_New_Diary_Slim"
+11: Forgot to remove unsued junk code in "Make_New_Diary_Slim" in line 57
+12: Wrong return from Select_From_Choice_List function, returned tuple not string in line 22 at "Write_On_Diary"
+13: Runned function Make_Header that needed to be run only on conditional at method Define_Files in line 19 of "Make_New_Diary_Slim"
+14: Forgot to add add number to diary_number variable in line 13 at "Create_New_Diary_Chapter"
+15: Used undefined variable "custom_file" as parameter of "Write_On_Diary" function in line 20 at "Create_New_Diary_Chapter"
+16: Used undefined variable "current_diario_slim_file" instead of "current_diary_slim_file" in line 87 at "Write_On_Diary_Slim"

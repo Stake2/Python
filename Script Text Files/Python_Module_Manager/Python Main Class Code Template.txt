@@ -1,0 +1,46 @@
+# [].py
+
+from Script_Helper import *
+
+class [](object):
+	def __init__(self, parameter_switches = None):
+		# Verbose variable
+		self.verbose = False
+
+		self.testing_script = True
+
+		self.parameter_switches = parameter_switches
+
+		self.Define_Basic_Variables()
+
+	def Define_Basic_Variables(self):
+		self.option = True
+
+		# Global Switches dictionary
+		self.global_switches = {
+			"write_to_file": self.option,
+			"create_files": self.option,
+			"create_folders": self.option,
+			"move_files": self.option,
+			"verbose": self.verbose,
+			"testing_script": self.testing_script,
+		}
+
+		if self.parameter_switches != None:
+			self.global_switches = self.parameter_switches
+			self.testing_script = self.global_switches["testing_script"]
+
+		#if self.global_switches["testing_script"] == True:
+		#	print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+
+		if self.global_switches["verbose"] == True:
+			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+
+		if self.global_switches["testing_script"] == True:
+			self.global_switches["write_to_file"] = False
+			self.global_switches["create_files"] = False
+			self.global_switches["move_files"] = False
+
+		self.dot_text = ".txt"
+		self.dash_separator = " - "
+		self.comma_separator = ", "

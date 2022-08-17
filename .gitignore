@@ -1,3 +1,23 @@
+Rubbish
+Rubbish/
+desktop.ini
+Archive
+Archive/
+AutoHotKey
+AutoHotKey/
+File Syncs
+File Syncs/
+Modules/Website_Bot
+Modules/Website_Bot/
+Modules/Friends_Manager
+Modules/Friends_Manager/
+Script Text Files\Code
+Script Text Files/Code
+Script Text Files\PicoWorkers
+Script Text Files/PicoWorkers
+*.rar
+*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

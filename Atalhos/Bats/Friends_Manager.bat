@@ -1,0 +1,1 @@
+python SS.py -friends_manager

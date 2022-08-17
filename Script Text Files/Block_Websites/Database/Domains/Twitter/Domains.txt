@@ -1,0 +1,7 @@
+twitter.com
+www.twitter.com
+twimg.com
+www.twimg.com
+api.twitter.com
+upload.twitter.com
+twitter.ddns.net

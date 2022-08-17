@@ -1,0 +1,24 @@
+# {}.py
+
+# Script Helper importer
+from Script_Helper import *
+
+{}
+
+local_script_name = "{}.py"
+
+def Function_Choose():
+	functions = [
+{}
+	]
+
+	descriptions = [
+{}
+	]
+
+	choice_text = Language_Item_Definer("{}", "{}")
+
+	Choose_Function(functions, descriptions, local_script_name, choice_text)
+
+if __name__ == "__main__":
+	Function_Choose()
