@@ -121,13 +121,11 @@ class Create_New_Module(Python_Module_Manager):
 			Write_To_File(class_file, self.python_sub_class_code, self.global_switches)
 
 	def Add_To_Script_Selector(self):
-		self.script_selector_python = self.script_selector_python.replace('\tadd_import = ""', "\timport {}".format(self.module_name) + "\n" + '\tadd_import = ""')
+		self.script_selector_python = self.script_selector_python.replace('\t' + 'add_import = ""', "\t" + "import {}".format(self.module_name) + "\n" + '\tadd_import = ""')
 
-		self.script_selector_python = self.script_selector_python.replace('add_argument = ""', 'script_selector_parser.add_argument("-{}", action="store_true", help="Runs the {}.py script.")'.format(self.module_name.lower(), self.module_name) + "\n\n" + 'add_argument = ""')
+		self.script_selector_python = self.script_selector_python.replace('add_argument = ""', 'script_selector_parser.add_argument("-{}", "--{}", action="store_true", help="Runs the {}.py script.")'.format(self.module_name.lower(), self.module_name.lower(), self.module_name) + "\n\n" + 'add_argument = ""')
 
 		self.script_selector_python += "\n\n" + '''if script_selector_arguments.{}:
-	has_arguments = True
-
 	import {}
 
 	{}.Function_Choose()'''.format(self.module_name.lower(), self.module_name, self.module_name)

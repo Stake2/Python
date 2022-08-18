@@ -22,12 +22,12 @@ class Python_Module_Manager(object):
 
 		# Global Switches dictionary
 		self.global_switches = {
-		"write_to_file": self.option,
-		"create_files": self.option,
-		"create_folders": self.option,
-		"move_files": self.option,
-		"verbose": self.verbose,
-		"testing_script": self.testing_script,
+			"write_to_file": self.option,
+			"create_files": self.option,
+			"create_folders": self.option,
+			"move_files": self.option,
+			"verbose": self.verbose,
+			"testing_script": self.testing_script,
 		}
 
 		if self.parameter_switches != None:

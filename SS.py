@@ -27,52 +27,52 @@ if test_scripts == True:
 	add_import = ""
 
 script_selector_parser = argparse.ArgumentParser()
-script_selector_parser.add_argument("-lang", "-language", action="store", help="""Selects the language of the script, options: 
-ptbr (Brazilian Portuguese)
-enus (English).""")
+script_selector_parser.add_argument("-language", "-lang", "-idioma", action="store", help="""Selects the language of the scripts, options: 
+pt, ptbr (Brazilian Portuguese)
+en, enus (English).""")
 
-script_selector_parser.add_argument("-block_websites", action="store_true", help="Runs the Block_Websites.py script.")
+script_selector_parser.add_argument("-block_websites", "--block_websites", action="store_true", help="Runs the Block_Websites.py script.")
 
-script_selector_parser.add_argument("-christmas", "-natal", action="store_true", help="Runs the Christmas.py script.")
+script_selector_parser.add_argument("-christmas", "--christmas", "-natal", action="store_true", help="Runs the Christmas.py script.")
 
-script_selector_parser.add_argument("-code", action="store_true", help="Runs the Code.py script.")
-script_selector_parser.add_argument("-update_websites", action="store_true", help="Runs the Update_Websites class of the Code.py script.")
+script_selector_parser.add_argument("-code", "--code", action="store_true", help="Runs the Code.py script.")
+script_selector_parser.add_argument("-update_websites", "--update_websites", "--update-websites", action="store_true", help="Runs the Update_Websites class of the Code.py script.")
 
-script_selector_parser.add_argument("-diary", "-diario", "-diário", action="store_true", help="Runs the Diary.py script.")
+script_selector_parser.add_argument("-diary", "--diary", "-diario", "--diario", "-diário", "--diário", action="store_true", help="Runs the Diary.py script.")
 
-script_selector_parser.add_argument("-diary_slim", "-diario_slim", "-diário_slim", "-slim", action="store_true", help="Runs the Diary_Slim.py script.")
+script_selector_parser.add_argument("-diary_slim", "--diary_slim", "--diary-slim", "-diario_slim", "-diário_slim", "-slim", action="store_true", help="Runs the Diary_Slim.py script.")
 
-script_selector_parser.add_argument("-food_time", "-foodtime", "-fdt", action="store_true", help="Runs the Food_Time.py script.")
+script_selector_parser.add_argument("-food_time", "--food_time", "--food-time", "-foodtime", "--foodtime", "-fdt", action="store_true", help="Runs the Food_Time.py script.")
 script_selector_parser.add_argument("-sfdt", "-set_food_time", "-set", "-set", "-setar", action="store_true", help="Sets the current food time, the time the food was eaten, using the module Food_Time.py.")
 script_selector_parser.add_argument("-cfdt", "-check_food_time", "-check", action="store_true", help="Checks the current food time, the time the food was eaten, using the module Food_Time.py.")
 
-script_selector_parser.add_argument("-friends_manager", "-friends", "-friend", "-amigos", "-amigo", action="store_true", help="Runs the Friends_Manager.py script.")
+script_selector_parser.add_argument("-friends_manager", "--friends_manager", "--friends-manager", "-friends", "--friends", "-friend", "--friend", "-amigos", "-amigo", action="store_true", help="Runs the Friends_Manager.py script.")
 
-script_selector_parser.add_argument("-gameplayer", "-gp", "-games", "-jogos", "-jogar", action="store_true", help="Runs the GamePlayer.py script.")
+script_selector_parser.add_argument("-gameplayer", "--gameplayer", "-gp", "-games", "-jogos", "-jogar", action="store_true", help="Runs the GamePlayer.py script.")
 
-script_selector_parser.add_argument("-music_database", action="store_true", help="Runs the Music_Database.py script.")
+script_selector_parser.add_argument("-music_database", "--music_database", "--music-database", action="store_true", help="Runs the Music_Database.py script.")
 
-script_selector_parser.add_argument("-picoworkers", action="store_true", help="Runs the PicoWorkers.py script.")
+script_selector_parser.add_argument("-picoworkers", "--picoworkers", action="store_true", help="Runs the PicoWorkers.py script.")
 
-script_selector_parser.add_argument("-project_zomboid_manager", action="store_true", help="Runs the Project_Zomboid_Manager.py script.")
+script_selector_parser.add_argument("-project_zomboid_manager", "-project_zomboid", "-zomboid", "-project-zomboid", action="store_true", help="Runs the Project_Zomboid_Manager.py script.")
 
-script_selector_parser.add_argument("-python_module_manager", action="store_true", help="Runs the PicoWorkers.py script.")
+script_selector_parser.add_argument("-python_module_manager", "-python", "-module-manager", action="store_true", help="Runs the PicoWorkers.py script.")
 
-script_selector_parser.add_argument("-story_manager", "-stories", "-storymanager", "-story", "-histórias", "-história", action="store_true", help="Runs the Story_Manager.py script.")
+script_selector_parser.add_argument("-story_manager", "--story-manager", "-stories", "--stories", "-storymanager", "-story", "-histórias", "-história", action="store_true", help="Runs the Story_Manager.py script.")
 
-script_selector_parser.add_argument("-study", action="store_true", help="Runs the Study.py script.")
+script_selector_parser.add_argument("-study", "--study", action="store_true", help="Runs the Study.py script.")
 
-script_selector_parser.add_argument("-tasks", "-task", "-tarefa", "-tarefas", action="store_true", help="Runs the Tasks.py script.")
+script_selector_parser.add_argument("-tasks", "--tasks", "-task", "--task", "-tarefa", "-tarefas", action="store_true", help="Runs the Tasks.py script.")
 
-script_selector_parser.add_argument("-text_generator", "-textgenerator", "-text", "-texto", action="store_true", help="Runs the Text_Generator.py script.")
+script_selector_parser.add_argument("-text_generator", "-textgenerator", "--text-generator", "-text", "-texto", action="store_true", help="Runs the Text_Generator.py script.")
 
 script_selector_parser.add_argument("-unified_remote_manager", action="store_true", help="Runs the Unified_Remote_Manager.py script.")
 
-script_selector_parser.add_argument("-watch_history", "-watch", "-assistir", "-audiovisual_media_network", "-watch_3", action="store_true", help="Runs the Watch_Class.py function.")
+script_selector_parser.add_argument("-watch_history", "--watch-history", "-watch-history", "-watch", "--watch", "-assistir", "-audiovisual_media_network", "-watch_3", action="store_true", help="Runs the Watch_History.py function.")
 
 #script_selector_parser.add_argument("-media_network_manager", "-media_network", "-mnm", "-rede_de_midia", action="store_true", help="Runs the Media_Network_Manager.py script.")
 
-script_selector_parser.add_argument("-year_summary_manager", "-manage_year", "-gerenciador_de_sumário_de_ano", "-gerenciador_de_sumario_de_ano", "-gerenciar_ano", action="store_true", help="Runs the Year_Data_Manager.py script.")
+script_selector_parser.add_argument("-year_summary_manager", "-year-summary", "-year_summary", "-manage_year", "-gerenciador_de_sumário_de_ano", "-gerenciador_de_sumario_de_ano", "-gerenciar_ano", action="store_true", help="Runs the Year_Data_Manager.py script.")
 
 add_argument = ""
 
