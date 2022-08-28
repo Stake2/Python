@@ -52,10 +52,10 @@ class Christmas():
 		self.main_years_folders = notepad_folder_years
 
 		self.root_year_folder = notepad_folder_years + current_year + "/"
-		Create_Folder(self.root_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.root_year_folder, self.global_switches)
 
 		self.language_year_folder = self.root_year_folder + Language_Item_Definer(full_language_en, full_language_pt) + "/"
-		Create_Folder(self.language_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.language_year_folder, self.global_switches)
 
 		self.language_year_folders = {}
 
@@ -63,7 +63,7 @@ class Christmas():
 		self.language_year_folders[full_language_pt] = self.root_year_folder + full_language_pt + "/"
 
 		for folder in self.language_year_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.christmas_language_folders = {}
 

@@ -230,7 +230,7 @@ class Register_Task(Tasks):
 
 		# [Experienced number]. [Media name] [Media task title].txt
 		self.current_task_file = self.all_experienced_files_current_year_folder + str(self.total_experienced_number) + ". " + self.root_task_file_name + self.dot_text
-		Create_Text_File(self.current_task_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_task_file, self.global_switches)
 
 		text_to_write = self.task_text_file_contents
 		Write_To_File(self.current_task_file, text_to_write, self.global_switches)
@@ -258,7 +258,7 @@ class Register_Task(Tasks):
 								# [Portuguese Task description]
 
 		self.per_media_type_media_task_file = self.per_media_type_folder + self.media_type_task_file_name + self.dot_text
-		Create_Text_File(self.per_media_type_media_task_file, self.global_switches["create_files"])
+		Create_Text_File(self.per_media_type_media_task_file, self.global_switches)
 
 		text_to_write = self.task_text_file_contents
 		Write_To_File(self.per_media_type_media_task_file, text_to_write, self.global_switches)
@@ -310,8 +310,8 @@ class Register_Task(Tasks):
 			self.firsts_of_the_year_folders[full_language] = current_notepad_year_folder + full_language + "/" + self.firsts_of_the_year_language_texts[full_language] + "/"
 			self.firsts_of_the_year_media_type_folders[full_language] = self.firsts_of_the_year_folders[full_language] + self.media_language_texts[full_language] + "/"
 
-			Create_Folder(self.firsts_of_the_year_folders[full_language], self.global_switches["create_folders"])
-			Create_Folder(self.firsts_of_the_year_media_type_folders[full_language], self.global_switches["create_folders"])
+			Create_Folder(self.firsts_of_the_year_folders[full_language], self.global_switches)
+			Create_Folder(self.firsts_of_the_year_media_type_folders[full_language], self.global_switches)
 
 		self.first_done_task_file_name = self.total_experienced_number + ". " + self.root_task_file_name
 
@@ -325,7 +325,7 @@ class Register_Task(Tasks):
 				media_type_folder = self.firsts_of_the_year_media_type_folders[full_language]
 
 				self.first_done_task_file = media_type_folder + self.first_done_task_file_name + self.dot_text
-				Create_Text_File(self.first_done_task_file, self.global_switches["create_files"])
+				Create_Text_File(self.first_done_task_file, self.global_switches)
 
 				self.text_to_write = self.task_text_file_contents
 				Write_To_File(self.first_done_task_file, self.text_to_write, self.global_switches)

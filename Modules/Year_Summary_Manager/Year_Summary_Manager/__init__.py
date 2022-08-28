@@ -279,10 +279,10 @@ class Year_Summary_Manager(object):
 		self.full_language = Language_Item_Definer(full_language_en, full_language_pt)
 
 		self.root_year_folder = self.root_years_folder + self.selected_year + "/"
-		Create_Folder(self.root_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.root_year_folder, self.global_switches)
 
 		self.language_year_folder = self.root_year_folder + self.full_language + "/"
-		Create_Folder(self.language_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.language_year_folder, self.global_switches)
 
 		self.language_year_folders = {}
 
@@ -290,7 +290,7 @@ class Year_Summary_Manager(object):
 		self.language_year_folders[full_language_pt] = self.root_year_folder + full_language_pt + "/"
 
 		for folder in self.language_year_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.firsts_of_the_year_folders = {}
 
@@ -298,7 +298,7 @@ class Year_Summary_Manager(object):
 		self.firsts_of_the_year_folders[full_language_pt] = self.language_year_folders[full_language_pt] + self.firsts_of_the_year_folder_names[full_language_pt] + "/"
 
 		for folder in self.firsts_of_the_year_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.firsts_of_the_year_sub_folders = {}
 		self.firsts_of_the_year_sub_folders[full_language_en] = []
@@ -309,7 +309,7 @@ class Year_Summary_Manager(object):
 				folder = self.firsts_of_the_year_folders[full_language] + folder + "/"
 
 				self.firsts_of_the_year_sub_folders[full_language].append(folder)
-				Create_Folder(folder, self.global_switches["create_folders"])
+				Create_Folder(folder, self.global_switches)
 
 		self.firsts_of_the_year_sub_sub_folders = {}
 		self.firsts_of_the_year_sub_sub_folders[full_language_en] = []
@@ -327,13 +327,13 @@ class Year_Summary_Manager(object):
 					folder = self.firsts_of_the_year_folders[full_language] + original_folder + "/" + folder + "/"
 
 					self.firsts_of_the_year_sub_sub_folders[full_language].append(folder)
-					Create_Folder(folder, self.global_switches["create_folders"])
+					Create_Folder(folder, self.global_switches)
 
 		self.experienced_media_folders = {}
 
 		for language in self.language_year_folders:
 			self.experienced_media_folders[language] = self.language_year_folders[language] + self.year_folder_texts["Experienced Media"][language] + "/"
-			Create_Folder(self.experienced_media_folders[language], self.global_switches["create_folders"])
+			Create_Folder(self.experienced_media_folders[language], self.global_switches)
 
 		self.experienced_media_sub_folders = {}
 
@@ -346,7 +346,7 @@ class Year_Summary_Manager(object):
 				folder_name = folder_names[i]
 
 				folder = self.experienced_media_folders[language] + folder_name + "/"
-				Create_Folder(folder, self.global_switches["create_folders"])
+				Create_Folder(folder, self.global_switches)
 
 				self.experienced_media_sub_folders[language][folder_name] = folder
 
@@ -355,21 +355,21 @@ class Year_Summary_Manager(object):
 		self.experienced_media_database_folder = self.experienced_media_folders[full_language_en] + "Database/"
 		self.experienced_media_database_folders = {}
 
-		Create_Folder(self.experienced_media_database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.experienced_media_database_folder, self.global_switches)
 
 		language = "English"
 		folders = self.experienced_media_sub_folders[language]
 		folder_names = self.experienced_media_sub_folder_names[language]
 		self.experienced_media_database_folders[language] = {}
 		database_folder = self.experienced_media_folders[language] + "Database/"
-		Create_Folder(database_folder, self.global_switches["create_folders"])
+		Create_Folder(database_folder, self.global_switches)
 
 		i = 0
 		while i <= len(folder_names) - 1:
 			folder_name = folder_names[i]
 
 			folder = database_folder + folder_name + "/"
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 			self.experienced_media_database_folders[language][folder_name] = folder
 
@@ -382,38 +382,38 @@ class Year_Summary_Manager(object):
 
 		for full_language in self.christmas_folders:
 			folder = self.christmas_folders[full_language]
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 			self.planning_text_file = folder + Language_Item_Definer("Planning", "Planejamento", full_language) + self.dot_text
-			Create_Text_File(self.planning_text_file, self.global_switches["create_files"])
+			Create_Text_File(self.planning_text_file, self.global_switches)
 
 			self.eat_file = folder + Language_Item_Definer("Eat", "Comer", full_language) + self.dot_text
-			Create_Text_File(self.eat_file, self.global_switches["create_files"])
+			Create_Text_File(self.eat_file, self.global_switches)
 
 			self.watch_folder = folder + Language_Item_Definer("Watch", "Assistir", full_language)
-			Create_Folder(self.watch_folder, self.global_switches["create_folders"])
+			Create_Folder(self.watch_folder, self.global_switches)
 
 			if full_language == full_language_en:
 				self.objects_file = folder + "Objects" + self.dot_text
-				Create_Text_File(self.objects_file, self.global_switches["create_files"])
+				Create_Text_File(self.objects_file, self.global_switches)
 
 		self.christmas_posts_folder = self.root_year_folder + "Christmas Posts - Posts de Natal/"
-		Create_Folder(self.christmas_posts_folder, self.global_switches["create_folders"])
+		Create_Folder(self.christmas_posts_folder, self.global_switches)
 
 		self.christmas_planning_of_posts_file = self.christmas_posts_folder + "Planning of Posts - Planejamento de Posts" + self.dot_text
-		Create_Text_File(self.christmas_planning_of_posts_file, self.global_switches["create_files"])
+		Create_Text_File(self.christmas_planning_of_posts_file, self.global_switches)
 
 		self.christmas_tweets_file = self.christmas_posts_folder + "Tweets" + self.dot_text
-		Create_Text_File(self.christmas_tweets_file, self.global_switches["create_files"])
+		Create_Text_File(self.christmas_tweets_file, self.global_switches)
 
 		self.happy_new_year_folder = self.root_year_folder + "Happy New Year - Feliz Ano Novo/"
-		Create_Folder(self.happy_new_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.happy_new_year_folder, self.global_switches)
 
 		self.new_year_planning_of_posts_file = self.happy_new_year_folder + "Planning of Posts - Planejamento de Posts" + self.dot_text
-		Create_Text_File(self.new_year_planning_of_posts_file, self.global_switches["create_files"])
+		Create_Text_File(self.new_year_planning_of_posts_file, self.global_switches)
 
 		self.new_year_tweets_file = self.happy_new_year_folder + "Tweets" + self.dot_text
-		Create_Text_File(self.new_year_tweets_file, self.global_switches["create_files"])
+		Create_Text_File(self.new_year_tweets_file, self.global_switches)
 
 		self.summary_files = {}
 
@@ -421,7 +421,7 @@ class Year_Summary_Manager(object):
 		self.summary_files[full_language_pt] = self.language_year_folders[full_language_pt] + "Sumário" + self.dot_text
 
 		for file in self.summary_files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		self.this_year_i_files = {}
 
@@ -429,4 +429,4 @@ class Year_Summary_Manager(object):
 		self.this_year_i_files[full_language_pt] = self.language_year_folders[full_language_pt] + "Esse Ano Eu" + self.dot_text
 
 		for file in self.this_year_i_files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)

@@ -82,3 +82,12 @@ class Select_Media_Type_And_Media(Watch_History):
 
 		self.media_details = self.choice_info.media_details
 		self.media_details_file = self.choice_info.media_details_file
+
+		self.is_series_media = True
+
+		if self.english_media_type == self.movie_media_type_english_plural:
+			self.is_series_media = False
+	
+		if self.is_series_media == False:
+			self.movie_details_file = self.choice_info.movie_details_file
+			self.movie_details = self.choice_info.movie_details

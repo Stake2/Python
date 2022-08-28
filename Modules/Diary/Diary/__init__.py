@@ -44,19 +44,19 @@ class Diary():
 
 	def Define_Diary_Variables(self):
 		self.diary_folder = notepad_diary_folder
-		Create_Folder(self.diary_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_folder, self.global_switches)
 
 		self.diary_chapters_folder = self.diary_folder + "Chapters/"
-		Create_Folder(self.diary_chapters_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_chapters_folder, self.global_switches)
 
 		self.diary_file = self.diary_folder + "Diary" + self.dot_text
-		Create_Text_File(self.diary_file, self.global_switches["create_files"])
+		Create_Text_File(self.diary_file, self.global_switches)
 
 		self.diary_number_file = self.diary_folder + "Number" + self.dot_text
-		Create_Text_File(self.diary_number_file, self.global_switches["create_files"])
+		Create_Text_File(self.diary_number_file, self.global_switches)
 
 		self.current_diary_file = self.diary_folder + "Current File" + self.dot_text
-		Create_Text_File(self.current_diary_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_diary_file, self.global_switches)
 
 		self.current_diary_text_file = Create_Array_Of_File(self.current_diary_file)[0]
 

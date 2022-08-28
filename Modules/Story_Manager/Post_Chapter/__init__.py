@@ -147,8 +147,8 @@ class Post_Chapter(Story_Manager):
 		self.website_images_story_chapter_covers_folder = self.website_images_story_covers_folder + self.website_images_chapter_cover_folder + "/"
 
 		self.print_language_texts = {
-		"Story": Language_Item_Definer("Mega Story", "Histórias do Mega"),
-		"Website": Language_Item_Definer("Stake2 Website Images", "Imagens do site Stake2"),
+			"Story": Language_Item_Definer("Mega Story", "Histórias do Mega"),
+			"Website": Language_Item_Definer("Stake2 Website Images", "Imagens do site Stake2"),
 		}
 
 		print_text = Language_Item_Definer("Copying the Chapter Cover to the {} Chapter Covers Folder", "Copiando a Capa de Capítulo para a pasta de Capas de Capítulos de {}")
@@ -481,8 +481,8 @@ class Post_Chapter(Story_Manager):
 		# Brazilian Portuguese Chapter Posting Helper
 		local_language_number = 2
 
-		language_text = Language_Item_Definer("Brazilian Portuguese Chapter Posting Helper", "Ajudante de Postagem de Capítulo do Wattpad Em Português Brasileiro")
-		press_any_key_to_continue_text = Language_Item_Definer("Press any key when finished posting the Brazilian Portuguese chapter", "Pressione qualquer tecla quando você terminar de postar o capítulo em Português Brasileiro")
+		language_text = Language_Item_Definer("Portuguese Chapter Posting Helper", "Ajudante de Postagem de Capítulo do Wattpad Em Português")
+		press_any_key_to_continue_text = Language_Item_Definer("Press any key when finished posting the Portuguese chapter", "Pressione qualquer tecla quando você terminar de postar o capítulo em Português")
 
 		if self.skip == False:
 			Open_Link(self.wattpad_link_ptbr)
@@ -636,7 +636,7 @@ Também em meu site pessoal! 😊
 
 					i += 1
 
-			Create_Text_File(self.story_template_file, self.global_switches["create_files"])
+			Create_Text_File(self.story_template_file, self.global_switches)
 
 			self.text_to_write = self.wattpad_card + "\n\n---\n\nTwitter and Facebook:\n\n" + self.twitter_and_facebook_card
 

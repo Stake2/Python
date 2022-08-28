@@ -52,13 +52,13 @@ class Study(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.study_network_folder = networks_folder + "Study Network/"
-		Create_Folder(self.study_network_folder, self.global_switches["create_folders"])
+		Create_Folder(self.study_network_folder, self.global_switches)
 
 		self.database_folder = self.study_network_folder + "Database/"
-		Create_Folder(self.database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.database_folder, self.global_switches)
 
 		self.database_file_names = [
 		"Courses",
@@ -68,7 +68,7 @@ class Study(object):
 
 		for file_name in self.database_file_names:
 			self.database_files[file_name] = self.database_folder + file_name + self.dot_text
-			Create_Text_File(self.database_files[file_name], self.global_switches["create_files"])
+			Create_Text_File(self.database_files[file_name], self.global_switches)
 
 	def Define_Lists(self):
 		self.course_settings = Make_Setting_Dictionary(self.database_files["Courses"], read_file = True)

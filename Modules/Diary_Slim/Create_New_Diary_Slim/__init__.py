@@ -59,7 +59,7 @@ Hoje é dia de {}.'''
 
 		# Current month folder
 		self.diary_slim_current_month_folder = self.diary_slim_current_year_folder + self.current_month_folder_name + "/"
-		Create_Folder(self.diary_slim_current_month_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_current_month_folder, self.global_switches)
 
 		# Current day file
 		self.diary_slim_current_day_file = self.diary_slim_current_month_folder + self.formatted_file_name_string + self.dot_text
@@ -107,7 +107,7 @@ Hoje é dia de {}.'''
 		self.diary_slim_exists = False
 
 		if is_a_file(self.diary_slim_current_day_file) == False:
-			Create_Text_File(self.diary_slim_current_day_file, self.global_switches["create_files"])
+			Create_Text_File(self.diary_slim_current_day_file, self.global_switches)
 
 			self.Make_Header()
 
@@ -140,7 +140,7 @@ Hoje é dia de {}.'''
 			self.diary_slim_exists = True
 
 		self.current_month_database_folder = self.diary_slim_database_year_folders[current_year] + self.current_month_folder_name + "/"
-		Create_Folder(self.current_month_database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_month_database_folder, self.global_switches)
 
 		# ----- #
 
@@ -167,10 +167,10 @@ Hoje é dia de {}.'''
 		# Current year and month text files
 
 		self.current_year_database_file_names_file = self.diary_slim_database_year_folders[current_year] + "Year File Names" + self.dot_text
-		Create_Text_File(self.current_year_database_file_names_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_year_database_file_names_file, self.global_switches)
 
 		self.current_month_database_file_names_file = self.current_month_database_folder + "Month File Names.txt"
-		Create_Text_File(self.current_month_database_file_names_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_month_database_file_names_file, self.global_switches)
 
 		text_to_append = self.formatted_file_name_string
 

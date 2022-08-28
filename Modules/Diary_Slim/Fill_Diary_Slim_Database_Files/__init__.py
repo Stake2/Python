@@ -71,10 +71,10 @@ class Fill_Diary_Slim_Database_Files(Diary_Slim):
 					c += 1
 
 				self.diary_slim_database_month_folder = self.diary_slim_database_year_folders[year] + month + "/"
-				Create_Folder(self.diary_slim_database_month_folder, self.global_switches["create_folders"])
+				Create_Folder(self.diary_slim_database_month_folder, self.global_switches)
 
 				self.diary_slim_database_month_file_names_file = self.diary_slim_database_month_folder + "File Names" + self.dot_text
-				Create_Text_File(self.diary_slim_database_month_file_names_file, self.global_switches["create_files"])
+				Create_Text_File(self.diary_slim_database_month_file_names_file, self.global_switches)
 
 				i += 1
 

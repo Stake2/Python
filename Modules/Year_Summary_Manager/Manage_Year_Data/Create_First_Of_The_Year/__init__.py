@@ -50,11 +50,11 @@ class Create_First_Of_The_Year(Year_Summary_Manager):
 	def Ask_For_Thing_Info(self):
 		self.describe_thing_text = Language_Item_Definer("Describe the Task in {}", "Descreva a Tarefa em {}")
 
-		translated_language = full_languages_translated_dict["English"][language_number]
+		translated_language = full_languages_translated_dict[full_language_en][language_number]
 		self.choice_text = self.describe_thing_text.format(translated_language)
 		self.english_thing_description = Text_Writer(self.choice_text + ":", finish_text = "default_list", second_space = False, capitalize_lines = True, auto_add_dots = True, accept_enter = True, first_space = False)
 
-		translated_language = full_languages_translated_dict["Português Brasileiro"][language_number]
+		translated_language = full_languages_translated_dict[full_language_pt][language_number]
 		self.choice_text = self.describe_thing_text.format(translated_language)
 		self.portuguese_thing_description = Text_Writer(self.choice_text + ":", finish_text = "default_list", second_space = False, capitalize_lines = True, auto_add_dots = True, accept_enter = True)
 		self.experienced_media_time = time.strftime("%H:%M %d/%m/%Y")
@@ -64,8 +64,8 @@ class Create_First_Of_The_Year(Year_Summary_Manager):
 		self.thing_name = Language_Item_Definer(self.english_thing_name, self.portuguese_thing_name)
 
 		self.thing_descriptions = {
-		"English": self.english_thing_description,
-		"Português Brasileiro": self.portuguese_thing_description,
+			full_language_en: self.english_thing_description,
+			full_language_pt: self.portuguese_thing_description,
 		}
 
 		print(self.thing_descriptions)

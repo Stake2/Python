@@ -618,18 +618,14 @@ def Select_Choice(choice_text_parameter, first_space = True, second_space = True
 
 	return choice
 
-def Text_Writer(show_text, finish_text = "t", return_list = False, capitalize_lines = False, auto_add_dots = False, accept_enter = True, first_space = True, second_space = True, backup_file = None):
-	full_text = ""
+def Text_Writer(show_text, finish_text = "t", return_list = False, capitalize_lines = False, auto_add_dots = False, accept_enter = True, enumerate_lines = False, separator = " - ", stop_on_line = None, first_space = True, second_space = True, backup_file = None):
+	lines_text = ""
+	lines = []
 
-	finish_text_is_list = False
+	finish_text_list = []
 
-	if finish_text != "t":
-		if finish_text == "default_list":
-			finish_text = ["f", "finish", "t", "terminar", "c", "completar", "acabar"]
-			finish_text_is_list = True
-
-	if return_list == True:
-		full_text = []
+	if finish_text != "t" and finish_text == "default_list":
+		finish_text_list = ["f", "finish", "t", "terminar", "c", "completar", "acabar"]
 
 	if first_space == True:
 		print()
@@ -639,84 +635,59 @@ def Text_Writer(show_text, finish_text = "t", return_list = False, capitalize_li
 	if accept_enter == False:
 		enter_equals_empty = False
 
+	select_text = ""
+
+	if enumerate_lines == True:
+		select_text = "1" + separator
+
+	if stop_on_line != None:
+		stop_on_line = stop_on_line + 1
+
+		if ":" in show_text[-1]:
+			show_text = show_text.replace(":", " (" + str(stop_on_line - 1) + "):")
+
+		else:
+			show_text += " (" + str(stop_on_line - 1) + ")"
+
 	print(show_text)
 
-	line = Select_Choice("", first_space = False, second_space = False, custom_text = True, enter_equals_empty = enter_equals_empty, accept_enter = accept_enter)
+	line = ""
 
-	if capitalize_lines == True:
-		line = list(line)
+	line_number = 1
+	while line != finish_text and line not in finish_text_list and line_number != stop_on_line:
+		line = Select_Choice(str(select_text), first_space = False, second_space = False, custom_text = True, enter_equals_empty = enter_equals_empty, accept_enter = accept_enter)
 
-		if line != []:
-			line[0] = line[0].upper()
+		if line != finish_text and line not in finish_text_list and line_number != stop_on_line:
+			if capitalize_lines == True:
+				line = list(line)
 
-		line = "".join(line)
+				if line != []:
+					line[0] = line[0].upper()
 
-	if auto_add_dots == True and list(line) != []:
-		line += "."
+				line = "".join(line)
 
-	if backup_file != None:
-		Append_To_File(backup_file, line, check_file_length = True)
+			if auto_add_dots == True and list(line) != [] and line[-1] not in ["?", "!", ":", ";", "."]:
+				line += "."
 
-	if return_list == True:
-		full_text.append(line)
+			lines_text += line + "\n"
+			lines.append(line)
 
-	if return_list == False:
-		full_text += line + "\n"
+			if backup_file != None:
+				Append_To_File(backup_file, line, check_file_length = True)
 
-	if finish_text_is_list == False:
-		while line != finish_text:
-			line = Select_Choice("", first_space = False, second_space = False, custom_text = True, enter_equals_empty = enter_equals_empty, accept_enter = accept_enter)
+			if select_text != "":
+				select_text = str(int(select_text[0]) + 1) + separator
 
-			if line != finish_text:
-				if capitalize_lines == True:
-					line = list(line)
+			line_number += 1
 
-					if line != []:
-						line[0] = line[0].upper()
-
-					line = "".join(line)
-
-				if auto_add_dots == True and list(line) != [] and line[-1] not in ["?", "!", ":", ";"] and line[-1] != ".":
-					line += "."
-
-				if return_list == True:
-					full_text.append(line)
-
-				if return_list == False:
-					full_text += line + "\n"
-
-					if backup_file != None:
-						Append_To_File(backup_file, line, check_file_length = True)
-
-	if finish_text_is_list == True:
-		while line not in finish_text:
-			line = Select_Choice("", first_space = False, second_space = False, custom_text = True, enter_equals_empty = enter_equals_empty, accept_enter = accept_enter)
-
-			if line not in finish_text:
-				if capitalize_lines == True:
-					line = list(line)
-
-					if line != []:
-						line[0] = line[0].upper()
-
-					line = "".join(line)
-
-				if auto_add_dots == True and list(line) != [] and line[-1] not in ["?", "!", ":", ";"] and line[-1] != ".":
-					line += "."
-
-				if return_list == True:
-					full_text.append(line)
-
-				if return_list == False:
-					full_text += line + "\n"
-
-					if backup_file != None:
-						Append_To_File(backup_file, line, check_file_length = True)
-
-	if type(full_text) == str and "\n" in full_text[-1]:
-		full_text = full_text[:-1]
+	if "\n" in lines_text[-1]:
+		lines_text = lines_text[:-1]
 
 	if second_space == True:
 		print()
 
-	return full_text
+	if return_list == False:
+		return lines_text
+
+	if return_list == True:
+		return lines

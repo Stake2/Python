@@ -154,22 +154,22 @@ class Add_Story_To_Story_Database(Story_Manager):
 
 		for folder_name in self.main_story_folders:
 			folder = self.story_folder + folder_name + "/"
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 			self.story_sub_folders[folder_name] = folder
 
 		self.creation_date_file = self.story_sub_folders["Story Info"] + "Creation Date" + self.dot_text
-		Create_Text_File(self.creation_date_file, self.global_switches["create_files"])
+		Create_Text_File(self.creation_date_file, self.global_switches)
 
 		Write_To_File(self.creation_date_file, self.story_data_dict["Creation Date"], self.global_switches)
 
 		self.author_file = self.story_sub_folders["Story Info"] + "Author" + self.dot_text
-		Create_Text_File(self.author_file, self.global_switches["create_files"])
+		Create_Text_File(self.author_file, self.global_switches)
 
 		Write_To_File(self.author_file, self.story_data_dict["Author(s)"], self.global_switches)
 
 		self.writing_folder = self.story_folder + "Writing - Escrita/"
-		Create_Folder(self.writing_folder, self.global_switches["create_folders"])
+		Create_Folder(self.writing_folder, self.global_switches)
 
 		self.chapter_status_file = self.writing_folder + "Chapter Status" + self.dot_text
-		Create_Text_File(self.chapter_status_file, self.global_switches["create_files"])
+		Create_Text_File(self.chapter_status_file, self.global_switches)

@@ -63,11 +63,11 @@ class Create_New_Experienced_Media(Year_Summary_Manager):
 		if is_a_file(self.experienced_media_number_file) == False:
 			Write_To_File(self.experienced_media_number_file, "0", self.global_switches)
 
-		Create_Text_File(self.experienced_media_number_file, self.global_switches["create_files"])
+		Create_Text_File(self.experienced_media_number_file, self.global_switches)
 
 		for file_name in self.experienced_media_database_file_names_:
 			file = self.database_folder + file_name + self.dot_text
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		if self.global_switches["verbose"] == True:
 			print(Language_Item_Definer("Folder Name", "Nome da Pasta") + ":")
@@ -134,7 +134,7 @@ class Create_New_Experienced_Media(Year_Summary_Manager):
 			self.files[language] = self.experienced_media_sub_folders[language][folder_name] + self.file_name
 
 		for file in self.files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		if self.global_switches["verbose"] == True:
 			print()
@@ -248,7 +248,7 @@ class Create_New_Experienced_Media(Year_Summary_Manager):
 			i += 1
 
 		for file in self.files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		self.texts_to_write = {}
 

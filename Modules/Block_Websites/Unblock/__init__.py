@@ -62,10 +62,10 @@ class Unblock(Block_Websites):
 		self.module_folder_class = self.module_folder + "Unblock/"
 
 		self.reblock_python_window_file = self.module_folder_class + "Re-Block.pyw"
-		Create_Text_File(self.reblock_python_window_file, self.global_switches["create_files"])
+		Create_Text_File(self.reblock_python_window_file, self.global_switches)
 
 		self.websites_to_block_backup_file = self.database_websites_folder + "To Block (Backup)" + self.dot_text
-		Create_Text_File(self.websites_to_block_backup_file, self.global_switches["create_files"])
+		Create_Text_File(self.websites_to_block_backup_file, self.global_switches)
 
 		Write_To_File(self.websites_to_block_backup_file, Stringfy_Array(self.websites_to_block, add_line_break = True))
 

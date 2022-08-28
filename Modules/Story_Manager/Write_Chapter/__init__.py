@@ -324,13 +324,13 @@ class Write_Chapter(Story_Manager):
 			has_two_chapter_files = True
 
 		if has_two_chapter_files == False:
-			Create_Text_File(self.obsidian_chapter_file, self.global_switches["create_files"])
+			Create_Text_File(self.obsidian_chapter_file, self.global_switches)
 
 		if has_two_chapter_files == True:
-			Create_Text_File(self.first_file, self.global_switches["create_files"])
-			Create_Text_File(self.second_file, self.global_switches["create_files"])
+			Create_Text_File(self.first_file, self.global_switches)
+			Create_Text_File(self.second_file, self.global_switches)
 
-			Create_Text_File(self.obsidian_chapter_file, self.global_switches["create_files"])
+			Create_Text_File(self.obsidian_chapter_file, self.global_switches)
 
 			text_to_write = Read_String(self.second_file)
 
@@ -497,7 +497,7 @@ class Write_Chapter(Story_Manager):
 			self.shortcut.save()
 
 			self.obsidian_link = self.story_obsidian_links_folder + self.writing_mode_enus + " Link.bat"
-			Create_Text_File(self.obsidian_link, self.global_switches["create_files"])
+			Create_Text_File(self.obsidian_link, self.global_switches)
 
 			self.text_to_write = "@Echo off\nchcp 65001\n" + '"' + self.path + '"'
 			Write_To_File(self.obsidian_link, self.text_to_write, self.global_switches)
@@ -832,7 +832,7 @@ class Write_Chapter(Story_Manager):
 			self.full_chapter_title = str(self.chapter_number) + self.dash_separator + self.new_chapter_title
 
 			# Ask for the new Portuguese chapter title of the new chapter
-			self.new_portuguese_chapter_title = Select_Choice(Language_Item_Definer("Type the new chapter title in Brazilian Portuguese", "Digite o novo título de capítulo em Português Brasileiro"), first_space = False)
+			self.new_portuguese_chapter_title = Select_Choice(Language_Item_Definer("Type the new chapter title in Portuguese", "Digite o novo título de capítulo em Português"), first_space = False)
 
 			# Makes the full Portuguese chapter title like "30 - [New chapter title]"
 			self.full_portuguese_chapter_title = str(self.chapter_number) + self.dash_separator + self.new_portuguese_chapter_title
@@ -850,7 +850,7 @@ class Write_Chapter(Story_Manager):
 
 			# Creates the English chapter file with filename like "30 - [New chapter title].txt"
 			self.chapter_file = self.story_chapters_enus_folder + self.full_chapter_title + self.dot_text
-			Create_Text_File(self.chapter_file, self.global_switches["create_files"])
+			Create_Text_File(self.chapter_file, self.global_switches)
 
 			# Writes the English chapter file text to the English chapter file
 			text_to_write = self.english_chapter_file_text
@@ -858,7 +858,7 @@ class Write_Chapter(Story_Manager):
 
 			# Creates the Portuguese chapter file with filename like "30 - [New chapter title].txt"
 			self.portuguese_chapter_file = self.story_chapters_ptbr_folder + self.full_portuguese_chapter_title + self.dot_text
-			Create_Text_File(self.portuguese_chapter_file, self.global_switches["create_files"])
+			Create_Text_File(self.portuguese_chapter_file, self.global_switches)
 
 			# Writes the English chapter file text to the Portuguese chapter file for translating later
 			text_to_write = self.english_chapter_file_text
@@ -871,7 +871,7 @@ class Write_Chapter(Story_Manager):
 
 			# Creates the Portuguese Obsidian chapter file with filename like "30 - [New chapter title].md"
 			self.obsidian_portuguese_chapter_file = self.obsidian_story_chapters_ptbr_folder + self.full_portuguese_chapter_title + self.dot_md
-			Create_Text_File(self.obsidian_portuguese_chapter_file, self.global_switches["create_files"])
+			Create_Text_File(self.obsidian_portuguese_chapter_file, self.global_switches)
 
 			# Writes the English chapter file text to the Portuguese Obsidian chapter file for translating later
 			text_to_write = self.english_chapter_file_text
@@ -913,7 +913,7 @@ class Write_Chapter(Story_Manager):
 			self.add_text = " in English", " em Inglês"
 
 		if self.writing_mode == self.translate and self.reverse_translate == False:
-			self.add_text = " to Brazilian Portuguese", " para Português Brasileiro"
+			self.add_text = " to Portuguese", " para Brasileiro"
 
 		if self.writing_mode == self.translate and self.reverse_translate == True:
 			self.add_text = " in English", " em Inglês"

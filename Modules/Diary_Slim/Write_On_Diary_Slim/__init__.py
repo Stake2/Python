@@ -294,7 +294,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		for language in list(self.description_files.keys()):
 			file = self.description_files[language]
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 			Open_Text_File(file)
 
 		Select_Choice(Language_Item_Definer("Press Enter when you finish writing and saving the description in {} and {}", "Pressione Enter quando você terminar de escrever e salvar a descrição em {} e {}").format(full_languages_translated_dict[full_language_en][Language_Item_Definer(1, 2)], full_languages_translated_dict[full_language_pt][Language_Item_Definer(1, 2)]), enter_equals_empty = True)
@@ -302,7 +302,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.descriptions = {}
 
 		self.backup_file = self.diary_slim_folder + "Action Description Backup" + self.dot_text
-		Create_Text_File(self.backup_file, self.global_switches["create_files"])
+		Create_Text_File(self.backup_file, self.global_switches)
 
 		for language in list(self.description_files.keys()):
 			file = self.description_files[language]

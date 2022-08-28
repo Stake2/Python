@@ -46,51 +46,51 @@ class Diary_Slim():
 
 	def Define_Diary_Slim_Variables(self):
 		self.diary_slim_folder = notepad_folder_effort + "Diary Slim/"
-		Create_Folder(self.diary_slim_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_folder, self.global_switches)
 
 		self.diary_slim_data_folder = self.diary_slim_folder + "Slim Data/"
-		Create_Folder(self.diary_slim_data_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_data_folder, self.global_switches)
 
 		self.diary_slim_double_state_texts_folder = self.diary_slim_data_folder + "Double State Texts/"
-		Create_Folder(self.diary_slim_double_state_texts_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_double_state_texts_folder, self.global_switches)
 
 		self.diary_slim_database_folder = self.diary_slim_folder + "Slim Database/"
-		Create_Folder(self.diary_slim_database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_database_folder, self.global_switches)
 
 		self.all_file_names_file = self.diary_slim_database_folder + "All File Names" + self.dot_text
-		Create_Text_File(self.all_file_names_file, self.global_switches["create_files"])
+		Create_Text_File(self.all_file_names_file, self.global_switches)
 
 		self.all_year_folders_file = self.diary_slim_database_folder + "All Year Folders" + self.dot_text
-		Create_Text_File(self.all_year_folders_file, self.global_switches["create_files"])
+		Create_Text_File(self.all_year_folders_file, self.global_switches)
 
 		self.all_month_folders_file = self.diary_slim_database_folder + "All Month Folders" + self.dot_text
-		Create_Text_File(self.all_month_folders_file, self.global_switches["create_files"])
+		Create_Text_File(self.all_month_folders_file, self.global_switches)
 
 		self.diary_slim_year_folders = {}
 		Add_Years_To_Array(self.diary_slim_year_folders, str, "dict", self.diary_slim_folder + "{}" + "/", 2020)
 
 		for folder in self.diary_slim_year_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.diary_slim_database_year_folders = {}
 		Add_Years_To_Array(self.diary_slim_database_year_folders, str, "dict", self.diary_slim_database_folder + "{}" + "/", 2020)
 
 		for folder in self.diary_slim_database_year_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.diary_slim_current_year_folder = self.diary_slim_year_folders[str(current_year)]
-		Create_Folder(self.diary_slim_current_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.diary_slim_current_year_folder, self.global_switches)
 
 		self.current_diary_slim_file = self.diary_slim_folder + "Current File" + self.dot_text
-		Create_Text_File(self.current_diary_slim_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_diary_slim_file, self.global_switches)
 
 		self.current_diary_slim = Create_Array_Of_File(self.current_diary_slim_file)[0]
 
 		self.diary_slim_things_to_do_file = self.diary_slim_data_folder + "Things To Do" + self.dot_text
-		Create_Text_File(self.diary_slim_things_to_do_file, self.global_switches["create_files"])
+		Create_Text_File(self.diary_slim_things_to_do_file, self.global_switches)
 
 		self.diary_slim_things_done_texts_file = self.diary_slim_data_folder + "Things Done Texts" + self.dot_text
-		Create_Text_File(self.diary_slim_things_done_texts_file, self.global_switches["create_files"])
+		Create_Text_File(self.diary_slim_things_done_texts_file, self.global_switches)
 
 		self.state_file_names = ["First", "Second", "Current"]
 		self.state_names = []

@@ -32,27 +32,27 @@ class Play_Game(GamePlayer):
 			Remove_File(self.played_time_backup_file)
 
 			self.texts_to_use = {
-			"Games": self.choosen_game,
-			"Number": int(Create_Array_Of_File(self.game_played_time_files["Number"])[0]) + 1,
-			"Game Types": self.game_type,
-			"Times": time.strftime("%H:%M %d/%m/%Y"),
-			"Time Spent": self.array_to_use[full_language_en] + " - " + self.array_to_use[full_language_pt],
-			"Played Time " + full_language_en: self.playing_texts[full_language_en]["played_the_game_for"].format(self.game_genre, self.choosen_game, self.array_to_use[full_language_en], self.now_time),
-			"Played Time " + full_language_pt: self.playing_texts[full_language_pt]["played_the_game_for"].format(self.game_genre, self.choosen_game, self.array_to_use[full_language_pt], self.now_time),
+				"Games": self.choosen_game,
+				"Number": int(Create_Array_Of_File(self.game_played_time_files["Number"])[0]) + 1,
+				"Game Types": self.game_type,
+				"Times": time.strftime("%H:%M %d/%m/%Y"),
+				"Time Spent": self.array_to_use[full_language_en] + " - " + self.array_to_use[full_language_pt],
+				"Played Time " + full_language_en: self.playing_texts[full_language_en]["played_the_game_for"].format(self.game_genre, self.choosen_game, self.array_to_use[full_language_en], self.now_time),
+				"Played Time " + full_language_pt: self.playing_texts[full_language_pt]["played_the_game_for"].format(self.game_genre, self.choosen_game, self.array_to_use[full_language_pt], self.now_time),
 			}
 
 			self.when_played = self.texts_to_use["Times"]
 			self.time_spent = self.texts_to_use["Time Spent"]
 
 			self.variables_dict = {
-			"game_files_folder": self.game_files_folder,
-			"media_type_files_folder": self.media_type_files_folder,
-			"media_type_folders_folder": self.media_type_folders_folder,
-			"choosen_game": self.choosen_game,
-			"game_type": self.game_type,
-			"game_genre": self.game_genre,
-			"game_name": self.choosen_game,
-			"array_to_use": self.array_to_use,
+				"game_files_folder": self.game_files_folder,
+				"media_type_files_folder": self.media_type_files_folder,
+				"media_type_folders_folder": self.media_type_folders_folder,
+				"choosen_game": self.choosen_game,
+				"game_type": self.game_type,
+				"game_genre": self.game_genre,
+				"game_name": self.choosen_game,
+				"array_to_use": self.array_to_use,
 			}
 
 			Register_Played_Time(self.texts_to_use, self.variables_dict)
@@ -76,10 +76,10 @@ class Play_Game(GamePlayer):
 		self.choosen_game_folder = self.selected_folder[1]
 
 		self.media_type_files_folder = self.per_media_type_files_folder + self.game_type + "/"
-		Create_Folder(self.media_type_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.media_type_files_folder, self.global_switches)
 
 		self.media_type_folders_folder = self.per_media_type_folders_folder + self.game_type + "/"
-		Create_Folder(self.media_type_folders_folder, self.global_switches["create_folders"])
+		Create_Folder(self.media_type_folders_folder, self.global_switches)
 
 		if self.selected_folder[0] == self.add_more_folders_text:
 			self.game_folder_names.pop(-1)
@@ -182,7 +182,7 @@ class Play_Game(GamePlayer):
 
 	def Count_Played_Time(self):
 		self.played_time_backup_file = self.current_year_played_folder + "Played Time Backup" + self.dot_text
-		Create_Text_File(self.played_time_backup_file, self.global_switches["create_files"])
+		Create_Text_File(self.played_time_backup_file, self.global_switches)
 
 		self.has_hours = False
 

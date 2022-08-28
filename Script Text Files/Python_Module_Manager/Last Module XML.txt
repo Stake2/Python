@@ -1,9 +1,9 @@
-				<key name="Task30" modified="2022-07-22 11:40:09" build="220418">
-					<value name="Name" type="string" data="{Year_Summary_Manager}"/>
+				<key name="Task31" modified="2022-02-08 14:24:07" build="210912">
+					<value name="Name" type="string" data="{Social_Networks}"/>
 					<value name="Flags" type="dword" data="00000004"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
-					<value name="Cmd1" type="string" data="python C:\Apps\SS.py -year_summary_manager"/>
+					<value name="Cmd1" type="string" data="python C:\Apps\SS.py -social_networks"/>
 				</key>

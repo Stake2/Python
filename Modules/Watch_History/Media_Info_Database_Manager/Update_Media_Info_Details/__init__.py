@@ -146,7 +146,7 @@ class Update_Media_Info_Details(Watch_History):
 							Write_To_File(self.media_details_file, Stringfy_Dict(self.new_media_details), self.global_switches)
 
 					if self.no_media_list == False:
-						Create_Folder(self.media_list_folder, self.global_switches["create_folders"])
+						Create_Folder(self.media_list_folder, self.global_switches)
 
 						self.season_file = self.media_list_folder + self.english_season_text + self.dot_text
 
@@ -180,10 +180,10 @@ class Update_Media_Info_Details(Watch_History):
 							Move_File(self.old_file, self.new_file)
 
 						self.media_list_file = self.media_list_folder + self.plural_file_name + self.dot_text
-						Create_Text_File(self.media_list_file, self.global_switches["create_files"])
+						Create_Text_File(self.media_list_file, self.global_switches)
 
 						self.current_media_item_file = self.media_list_folder + self.current_media_item_text + self.dot_text
-						Create_Text_File(self.current_media_item_file, self.global_switches["create_files"])
+						Create_Text_File(self.current_media_item_file, self.global_switches)
 
 						self.media_list_names = Create_Array_Of_File(self.media_list_file)
 						
@@ -234,10 +234,10 @@ class Update_Media_Info_Details(Watch_History):
 						if self.delete_media_list_folder == False:
 							self.current_media_item = Create_Array_Of_File(self.current_media_item_file)[0]
 							self.current_media_item_folder = self.media_list_folder + Remove_Non_File_Characters(self.current_media_item) + "/"
-							Create_Folder(self.current_media_item_folder, self.global_switches["create_folders"])
+							Create_Folder(self.current_media_item_folder, self.global_switches)
 
 							self.media_item_details_file = self.current_media_item_folder + "Media Details" + self.dot_text
-							Create_Text_File(self.media_item_details_file, self.global_switches["create_files"])
+							Create_Text_File(self.media_item_details_file, self.global_switches)
 
 							self.new_media_details = {}
 
@@ -274,19 +274,19 @@ class Update_Media_Info_Details(Watch_History):
 
 							for media_item in self.media_list_names:
 								self.current_media_item_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-								Create_Folder(self.current_media_item_folder, self.global_switches["create_folders"])
+								Create_Folder(self.current_media_item_folder, self.global_switches)
 
 								self.media_item_details_file = self.current_media_item_folder + "Media Details" + self.dot_text
-								Create_Text_File(self.media_item_details_file, self.global_switches["create_files"])
+								Create_Text_File(self.media_item_details_file, self.global_switches)
 
 								self.titles_folder = self.current_media_item_folder + self.mixed_titles_text + "/"
-								Create_Folder(self.titles_folder, self.global_switches["create_folders"])
+								Create_Folder(self.titles_folder, self.global_switches)
 
 								self.english_titles_file = self.titles_folder + full_language_en + self.dot_text
-								Create_Text_File(self.english_titles_file, self.global_switches["create_files"])
+								Create_Text_File(self.english_titles_file, self.global_switches)
 
 								self.portuguese_titles_file = self.titles_folder + full_language_pt + self.dot_text
-								Create_Text_File(self.portuguese_titles_file, self.global_switches["create_files"])
+								Create_Text_File(self.portuguese_titles_file, self.global_switches)
 
 								self.media_item_details = Make_Setting_Dictionary(self.media_item_details_file, read_file = True)
 

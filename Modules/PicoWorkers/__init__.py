@@ -54,13 +54,13 @@ class PicoWorkers():
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.youtube_data_file = self.module_text_files_folder + "YouTube Data" + self.dot_text
-		Create_Text_File(self.youtube_data_file, self.global_switches["create_files"])
+		Create_Text_File(self.youtube_data_file, self.global_switches)
 
 		self.reddit_username_file = self.module_text_files_folder + "Reddit Username" + self.dot_text
-		Create_Text_File(self.reddit_username_file, self.global_switches["create_files"])
+		Create_Text_File(self.reddit_username_file, self.global_switches)
 
 		self.youtube_data = Create_Array_Of_File(self.youtube_data_file)
 		self.youtube_username = self.youtube_data[0]

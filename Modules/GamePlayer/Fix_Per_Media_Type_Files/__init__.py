@@ -16,8 +16,8 @@ class Fix_Per_Media_Type_Files(GamePlayer):
 			self.games_file = self.media_type_files_folder + "Games" + self.dot_text
 			self.times_file = self.media_type_files_folder + "Times" + self.dot_text
 
-			Create_Text_File(self.games_file, self.global_switches["create_files"])
-			Create_Text_File(self.times_file, self.global_switches["create_files"])
+			Create_Text_File(self.games_file, self.global_switches)
+			Create_Text_File(self.times_file, self.global_switches)
 
 			self.games = Create_Array_Of_File(self.games_file)
 			self.times = Create_Array_Of_File(self.times_file)
@@ -28,11 +28,11 @@ class Fix_Per_Media_Type_Files(GamePlayer):
 				replaced_time = time.replace(":", ";").replace("/", "-")
 
 				self.all_files_file = self.all_files_folder + Remove_Non_File_Characters(game) + " " + replaced_time + self.dot_text
-				Create_Text_File(self.all_files_file, self.global_switches["create_files"])
+				Create_Text_File(self.all_files_file, self.global_switches)
 
 				self.game_folder = self.media_type_folders_folder + Remove_Non_File_Characters(game) + "/"
 				self.game_folder_file = self.game_folder + replaced_time + self.dot_text
-				Create_Text_File(self.game_folder_file, self.global_switches["create_files"])
+				Create_Text_File(self.game_folder_file, self.global_switches)
 
 				print()
 				print(game)

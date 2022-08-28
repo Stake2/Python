@@ -64,13 +64,13 @@ class Code(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.programming_network_folder = networks_folder + "Programming Network/"
-		Create_Folder(self.programming_network_folder, self.global_switches["create_folders"])
+		Create_Folder(self.programming_network_folder, self.global_switches)
 
 		self.database_folder = self.programming_network_folder + "Database/"
-		Create_Folder(self.database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.database_folder, self.global_switches)
 
 		self.database_file_names = [
 		"Programming Languages",
@@ -80,7 +80,7 @@ class Code(object):
 
 		for file_name in self.database_file_names:
 			self.database_files[file_name] = self.database_folder + file_name + self.dot_text
-			Create_Text_File(self.database_files[file_name], self.global_switches["create_files"])
+			Create_Text_File(self.database_files[file_name], self.global_switches)
 
 	def Define_Lists(self):
 		self.programming_languages = Create_Array_Of_File(self.database_files["Programming Languages"])
@@ -89,7 +89,7 @@ class Code(object):
 
 		for programming_language in self.programming_languages:
 			self.programming_language_folders[programming_language] = self.database_folder + programming_language + "/"
-			Create_Folder(self.programming_language_folders[programming_language], self.global_switches["create_folders"])
+			Create_Folder(self.programming_language_folders[programming_language], self.global_switches)
 
 		self.basic_functions = {
 			"Open_File": Open_File,

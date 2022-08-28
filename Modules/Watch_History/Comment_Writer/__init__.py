@@ -9,22 +9,22 @@ class Comment_Writer(Watch_History):
 		super().__init__()
 
 		self.comment_writer_folder = self.media_network_folder + "Comment_Writer/"
-		Create_Folder(self.comment_writer_folder, self.global_switches["create_folders"])
+		Create_Folder(self.comment_writer_folder, self.global_switches)
 
 		self.all_comments_folder = self.comment_writer_folder + "All Comments - Todos Os Comentários/"
-		Create_Folder(self.all_comments_folder, self.global_switches["create_folders"])
+		Create_Folder(self.all_comments_folder, self.global_switches)
 
 		for media_type in self.mixed_media_type_names_plural_without_none:
 			media_type_comments_folder = self.all_comments_folder + media_type + "/"
 
-			Create_Folder(media_type_comments_folder, self.global_switches["create_folders"])
+			Create_Folder(media_type_comments_folder, self.global_switches)
 
 		self.all_comments_media_type_folders = {}
 
 		for media_type in self.mixed_media_type_names_plural_without_none:
 			media_type_comments_folder = self.all_comments_folder + media_type + "/"
 
-			Create_Folder(media_type_comments_folder, self.global_switches["create_folders"])
+			Create_Folder(media_type_comments_folder, self.global_switches)
 
 			self.all_comments_media_type_folders[media_type] = media_type_comments_folder
 
@@ -33,7 +33,7 @@ class Comment_Writer(Watch_History):
 		for media_type in self.mixed_media_type_names_plural_without_none:
 			media_type_comment_number_file = self.all_comments_folder + media_type + "/Number" + self.dot_text
 
-			Create_Text_File(media_type_comment_number_file, self.global_switches["create_files"])
+			Create_Text_File(media_type_comment_number_file, self.global_switches)
 
 			if len(Create_Array_Of_File(media_type_comment_number_file)) == 0:
 				Write_To_File(media_type_comment_number_file, "0", self.global_switches)
@@ -45,20 +45,20 @@ class Comment_Writer(Watch_History):
 
 		# All Comments Number file
 		self.all_comments_number_file = self.comment_writer_folder + "All Comments Number" + self.dot_text
-		Create_Text_File(self.all_comments_number_file, self.global_switches["create_files"])
+		Create_Text_File(self.all_comments_number_file, self.global_switches)
 
 		if len(Create_Array_Of_File(self.all_comments_number_file)) == 0:
 			Write_To_File(self.all_comments_number_file, "0", self.global_switches)
 
 		self.year_comment_numbers_folder = self.comment_writer_folder + "Year Comment Numbers/"
-		Create_Folder(self.year_comment_numbers_folder, self.global_switches["create_folders"])
+		Create_Folder(self.year_comment_numbers_folder, self.global_switches)
 
 		self.current_year_comment_number_folder = self.year_comment_numbers_folder + str(current_year) + "/"
-		Create_Folder(self.current_year_comment_number_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_year_comment_number_folder, self.global_switches)
 
 		# Year Comment Number file
 		self.year_comment_number_file = self.current_year_comment_number_folder + "Number" + self.dot_text
-		Create_Text_File(self.year_comment_number_file, self.global_switches["create_files"])
+		Create_Text_File(self.year_comment_number_file, self.global_switches)
 
 		if len(Create_Array_Of_File(self.year_comment_number_file)) == 0:
 			Write_To_File(self.year_comment_number_file, "0", self.global_switches)
@@ -125,7 +125,7 @@ class Write_Comment(Comment_Writer):
 
 		if self.make_comment == True:
 			if self.do_backup == True:
-				Create_Text_File(self.comment_backup_file, self.global_switches["create_files"])
+				Create_Text_File(self.comment_backup_file, self.global_switches)
 
 			self.Define_Files()
 			self.Write_Comment()
@@ -167,26 +167,26 @@ class Write_Comment(Comment_Writer):
 
 		self.comment_file += self.comment_file_name + self.dot_text
 
-		Create_Text_File(self.comment_file, self.global_switches["create_files"])
+		Create_Text_File(self.comment_file, self.global_switches)
 
 		# Media name folder on All comments folder by media type
 		self.all_comments_media_type_media_title_folder = self.all_comments_media_type_folder + Remove_Non_File_Characters(self.media_title) + "/"
-		Create_Folder(self.all_comments_media_type_media_title_folder, self.global_switches["create_folders"])
+		Create_Folder(self.all_comments_media_type_media_title_folder, self.global_switches)
 
 		if self.no_media_list == False:
 			self.all_comments_media_type_media_title_folder += self.media_item_file_safe + "/"
-			Create_Folder(self.all_comments_media_type_media_title_folder, self.global_switches["create_folders"])
+			Create_Folder(self.all_comments_media_type_media_title_folder, self.global_switches)
 
 		# Media type comment file
 		self.media_type_comment_file = self.all_comments_media_type_media_title_folder + self.comment_file_name + self.dot_text
-		Create_Text_File(self.media_type_comment_file, self.global_switches["create_files"])
+		Create_Text_File(self.media_type_comment_file, self.global_switches)
 
 		if self.is_video == True:
 			self.all_comments_media_type_youtube_ids_folder = self.all_comments_media_type_media_title_folder + "YouTube IDs/"
-			Create_Folder(self.all_comments_media_type_youtube_ids_folder, self.global_switches["create_folders"])
+			Create_Folder(self.all_comments_media_type_youtube_ids_folder, self.global_switches)
 
 			self.all_comments_media_type_youtube_id_file = self.all_comments_media_type_youtube_ids_folder + self.comment_file_name + self.dot_text
-			Create_Text_File(self.all_comments_media_type_youtube_id_file, self.global_switches["create_folders"])
+			Create_Text_File(self.all_comments_media_type_youtube_id_file, self.global_switches)
 
 		# Media type comment number file
 		self.media_type_comment_number_file = self.all_comment_number_media_type_files[self.mixed_media_type]
@@ -194,20 +194,16 @@ class Write_Comment(Comment_Writer):
 		# Times file
 		if self.is_series_media == True:
 			self.comment_times_folder = self.all_comments_media_type_media_title_folder + "Times/"
-			Create_Folder(self.comment_times_folder, self.global_switches["create_folders"])
+			Create_Folder(self.comment_times_folder, self.global_switches)
 
 			self.comment_times_file = self.comment_times_folder + self.comment_file_name + self.dot_text
-			Create_Text_File(self.comment_times_file, self.global_switches["create_files"])
+			Create_Text_File(self.comment_times_file, self.global_switches)
 
 		if self.is_series_media == False:
 			self.comment_times_file = self.all_comments_media_type_media_title_folder + "When Commented - Quando Comentou" + self.dot_text
-			Create_Text_File(self.comment_times_file, self.global_switches["create_files"])
+			Create_Text_File(self.comment_times_file, self.global_switches)
 
 		if self.global_switches["verbose"] == True:
-			print()
-			print("Comment File Name:")
-			print(self.comment_file_name)
-
 			print()
 			print("Comment File:")
 			print(self.comment_file)
@@ -232,7 +228,11 @@ class Write_Comment(Comment_Writer):
 
 		self.the_text = self.gender_the_texts[self.mixed_media_type]["the"]
 
-		self.show_text = "----------" + "\n\n"
+		self.show_text = "----------" + "\n"
+		self.show_text += "\n"
+		self.show_text += Language_Item_Definer("Comment File Name", "Nome de Arquivo de Comentário") + ":" + "\n"
+		self.show_text += self.comment_file_name + "\n"
+		self.show_text += "\n"
 
 		# Define masculine or feminine text based on masculine or feminine text with function
 		self.show_text += Language_Item_Definer("Type the comment for {} {}", "Digite o comentário para {} {}").format(self.the_text, self.language_singular_media_type.lower()) + ": "
@@ -240,7 +240,7 @@ class Write_Comment(Comment_Writer):
 		self.show_text += "\n\n" + "----------"
 
 		if self.new_comment == True:
-			self.full_episode_text = "Título:\n" + self.media_item_episode_with_title + "\n"
+			self.full_episode_text = "\n" + "Título:" + "\n" + self.media_item_episode_with_title + "\n"
 
 			self.comment += self.full_episode_text
 

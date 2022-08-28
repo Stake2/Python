@@ -56,7 +56,7 @@ class Block_Websites(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.module_folder = scripts_modules_folder + name + "/"
 
@@ -65,40 +65,40 @@ class Block_Websites(object):
 		self.drivers_etc_folder = self.system32_folder + "drivers/etc/"
 
 		self.database_folder = self.module_text_files_folder + "Database/"
-		Create_Folder(self.database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.database_folder, self.global_switches)
 
 		self.database_domains_folder = self.database_folder + "Domains/"
-		Create_Folder(self.database_domains_folder, self.global_switches["create_folders"])
+		Create_Folder(self.database_domains_folder, self.global_switches)
 
 		self.database_websites_folder = self.database_folder + "Websites/"
-		Create_Folder(self.database_websites_folder, self.global_switches["create_folders"])
+		Create_Folder(self.database_websites_folder, self.global_switches)
 
 		self.allowed_to_unblock_folder = self.database_websites_folder + "Allowed To Unblock/"
-		Create_Folder(self.allowed_to_unblock_folder, self.global_switches["create_folders"])
+		Create_Folder(self.allowed_to_unblock_folder, self.global_switches)
 
 	def Define_Files(self):
 		self.hosts_file = self.drivers_etc_folder + "hosts"
 
 		self.hour_config_file = self.module_text_files_folder + "Hour Config" + self.dot_text
-		Create_Text_File(self.hour_config_file, self.global_switches["create_files"])
+		Create_Text_File(self.hour_config_file, self.global_switches)
 
 		self.blocked_by_default_file = self.module_text_files_folder + "Blocked By Default" + self.dot_text
-		Create_Text_File(self.blocked_by_default_file, self.global_switches["create_files"])
+		Create_Text_File(self.blocked_by_default_file, self.global_switches)
 
 		self.additional_map_file = self.module_text_files_folder + "Additional Map" + self.dot_text
-		Create_Text_File(self.additional_map_file, self.global_switches["create_files"])
+		Create_Text_File(self.additional_map_file, self.global_switches)
 
 		self.websites_to_block_file = self.database_websites_folder + "To Block" + self.dot_text
-		Create_Text_File(self.websites_to_block_file, self.global_switches["create_files"])
+		Create_Text_File(self.websites_to_block_file, self.global_switches)
 
 		self.allowed_to_unlock_by_user_file = self.allowed_to_unblock_folder + "By User" + self.dot_text
-		Create_Text_File(self.allowed_to_unlock_by_user_file, self.global_switches["create_files"])
+		Create_Text_File(self.allowed_to_unlock_by_user_file, self.global_switches)
 
 		self.allowed_to_unlock_by_modules_file = self.allowed_to_unblock_folder + "By Modules" + self.dot_text
-		Create_Text_File(self.allowed_to_unlock_by_modules_file, self.global_switches["create_files"])
+		Create_Text_File(self.allowed_to_unlock_by_modules_file, self.global_switches)
 
 		self.log_file = self.module_text_files_folder + "Log" + self.dot_text
-		Create_Text_File(self.log_file, self.global_switches["create_files"])
+		Create_Text_File(self.log_file, self.global_switches)
 
 	def Define_Texts(self):
 		self.hosts_file_header = """# Copyright (c) 1993-2009 Microsoft Corp.

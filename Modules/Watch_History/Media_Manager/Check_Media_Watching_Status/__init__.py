@@ -52,7 +52,7 @@ class Check_Media_Watching_Status(Watch_History):
 
 				for self.media_title in self.media_info_names[self.english_media_type]:
 					self.local_media_folder = self.local_medias_folder + Remove_Non_File_Characters(self.media_title) + "/"
-					Create_Folder(self.local_media_folder, self.global_switches["create_folders"])
+					Create_Folder(self.local_media_folder, self.global_switches)
 
 				self.i += 1
 

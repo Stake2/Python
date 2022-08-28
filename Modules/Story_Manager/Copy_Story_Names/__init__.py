@@ -108,7 +108,7 @@ class Copy_Story_Names(Story_Manager):
 
 					string = ""
 					for word in self.story_name:
-						uppercase_letters = sum(1 for i in word if i.isupper())
+						uppercase_letters = sum(1 for character in word if character.isupper())
 
 						# If there are only one uppercase character in word
 						if uppercase_letters in [0, 1]:
@@ -119,9 +119,10 @@ class Copy_Story_Names(Story_Manager):
 								string += word[1]
 
 						# If there are more than one uppercase character in word
-						for character in word:
-							if character in ascii_uppercase and uppercase_letters > 1 and character != '"':
-								string += character
+						if uppercase_letters > 1:
+							for character in word:
+								if character in ascii_uppercase and character != '"':
+									string += character
 
 					self.story_name = string
 
@@ -238,6 +239,11 @@ class Copy_Story_Names(Story_Manager):
 
 			self.first_space = True
 
+		if self.first_space == True:
+			first_space = True
+
+			self.first_space = False
+
 		if select == True:
 			self.story_name = Select_Choice_From_List(choices_list = self.story_names_list_with_action, alternative_choice_text = select_text, second_choices_list = self.story_names_list_with_action, return_second_item_parameter = True, return_number = True, add_none = True, first_space = first_space, second_space = second_space)[0]
 
@@ -274,6 +280,8 @@ class Copy_Story_Names(Story_Manager):
 		if self.story_name == self.join_name_text:
 			self.join_story_names = True
 
+			self.first_space = True
+
 			self.action_list[-2] = self.unjoin_name_text
 			self.story_names_list_with_action[-2] = self.unjoin_name_text
 
@@ -298,13 +306,13 @@ class Copy_Story_Names(Story_Manager):
 		self.the_number_text = Language_Item_Definer("the", "o") + " " + Language_Item_Definer("first", "primeiro")
 		self.select_text = self.select_one_to_text_template.format(self.the_number_text + " " + self.copy_mode_text, self.join_text)
 
-		self.Select_And_Copy_Story_Name(select_text = self.select_text, copy = False, first_space = False, second_space = True)
+		self.Select_And_Copy_Story_Name(select_text = self.select_text, copy = False, first_space = True, second_space = True)
 
 		if self.story_name != self.unjoin_name_text:
 			self.join_story_name += self.story_name
 
 			self.the_number_text = Language_Item_Definer("the", "o") + " " + Language_Item_Definer("second", "segundo")
-			self.select_text = self.select_one_to_text_template.format(self.the_number_text + " " + self.copy_mode_text, self.join_text)
+			self.select_text = self.select_one_to_text_template.format(self.the_number_text + " " + self.copy_mode_text, self.join_text, second_space = False)
 
 			self.Select_And_Copy_Story_Name(select_text = self.select_text, copy = False, first_space = False, second_space = True)
 

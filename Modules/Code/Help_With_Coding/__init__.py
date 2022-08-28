@@ -58,7 +58,7 @@ class Help_With_Coding(Code):
 		self.programming_language_folder = self.programming_language_folders[self.programming_language]
 
 		self.programming_language_settings_file = self.programming_language_folder + "Programming Language Settings" + self.dot_text
-		Create_Text_File(self.programming_language_settings_file, self.global_switches["create_files"])
+		Create_Text_File(self.programming_language_settings_file, self.global_switches)
 
 		self.programming_language_settings = Make_Setting_Dictionary(self.programming_language_settings_file, define_yes_or_no = True, define_true_or_false = True, read_file = True)
 
@@ -92,7 +92,7 @@ class Help_With_Coding(Code):
 
 	def Select_Mode(self):
 		self.modes_folder = self.programming_language_folder + "Modes/"
-		Create_Folder(self.modes_folder, self.global_switches["create_folders"])
+		Create_Folder(self.modes_folder, self.global_switches)
 
 		self.modes_folders = List_Folder(self.modes_folder)
 
@@ -202,7 +202,7 @@ class Help_With_Coding(Code):
 
 	def Change_Settings_Files(self):
 		self.setting_files_file = self.item_data["Setting File"]["Folder"] + "Files" + self.dot_text
-		Create_Text_File(self.setting_files_file, self.global_switches["create_files"])
+		Create_Text_File(self.setting_files_file, self.global_switches)
 
 		self.settings_files_data = Make_Setting_Dictionary(self.setting_files_file, read_file = True)
 
@@ -220,7 +220,7 @@ class Help_With_Coding(Code):
 				self.last_setting_data_folder = self.module_text_files_folder + "Last Setting Data/"
 
 				self.last_data_file = self.last_setting_data_folder + setting_file_name
-				Create_Text_File(self.last_data_file, self.global_switches["create_files"])
+				Create_Text_File(self.last_data_file, self.global_switches)
 
 				self.last_data = Read_String(self.last_data_file)
 

@@ -130,10 +130,13 @@ class Register_Watched_Media(Watch_History):
 			Append_To_File(self.youtube_ids_file, text_to_append, self.global_switches, check_file_length = True)
 
 	def Define_Diary_Slim_Watched_Text(self):
-		self.finished_watching_episode_text_template = 'Acabei de assistir {} "{}"'
+		self.finished_watching_episode_text_template = 'Acabei de assistir {}'
+
+		self.the_text = self.gender_the_texts[self.mixed_media_type]["the"]
+		self.this_text = self.gender_the_texts[self.mixed_media_type]["this"]
 
 		if self.is_series_media == True:
-			self.the_text = self.gender_the_texts[self.mixed_media_type]["the"]
+			self.finished_watching_episode_text_template += ' "{}"'
 
 			self.watched_item_text = "esse episódio d" + self.the_text
 
@@ -154,11 +157,11 @@ class Register_Watched_Media(Watch_History):
 
 			if self.is_video_series_media == True:
 				self.watched_media_item_name = Language_Item_Definer("of the " + self.youtube_name + " video series", "da série de vídeos do " + self.youtube_name)
-				self.watched_media_container_type = Language_Item_Definer("channel", "do canal")
+				self.watched_media_container_type = Language_Item_Definer("channel", "canal")
 				self.the_text = self.gender_the_texts[self.mixed_media_type]["feminine"]["the"]
 
 			if self.no_media_list == False and self.media_item != self.media_title:
-				self.watched_item_text = self.watched_item_text.replace("episódio", "episódio {}".format(self.watched_media_item_name + ' "{}"'.format(self.media_item_file_safe)))
+				self.watched_item_text = self.watched_item_text.replace("episódio", "episódio {}".format(self.watched_media_item_name + ' "{}"'.format(self.media_item)))
 
 			if self.is_video_series_media == True:
 				self.watched_media_item_name = Language_Item_Definer(self.youtube_name + " video series", "série de vídeos do " + self.youtube_name)
@@ -168,7 +171,7 @@ class Register_Watched_Media(Watch_History):
 			self.finished_watching_episode_text = self.finished_watching_episode_text_template.format(self.watched_item_text, self.local_media_title)
 
 		if self.is_series_media == False:
-			self.finished_watching_episode_text = self.finished_watching_episode_text_template.format(self.language_singular_media_type, self.media_episode)
+			self.finished_watching_episode_text = self.finished_watching_episode_text_template.format(self.this_text + " " + self.language_singular_media_type.lower())
 
 		media_episode = self.media_episode
 
@@ -281,7 +284,7 @@ class Register_Watched_Media(Watch_History):
 				# YouTude IDs.txt
 
 		self.youtube_ids_file = self.current_year_watched_media_folder + self.youtube_ids_english_text + self.dot_text
-		Create_Text_File(self.youtube_ids_file, self.global_switches["create_files"])
+		Create_Text_File(self.youtube_ids_file, self.global_switches)
 
 		# Episodes.txt
 		text_to_append = self.media_item_episode_with_title
@@ -323,7 +326,7 @@ class Register_Watched_Media(Watch_History):
 		# Files (Appends) > [Media Type] > (YouTube IDs.txt)
 		if self.is_video_series_media == True:
 			self.youtube_ids_file = self.per_media_type_files_folder + self.youtube_ids_english_text + self.dot_text
-			Create_Text_File(self.youtube_ids_file, self.global_switches["create_files"])
+			Create_Text_File(self.youtube_ids_file, self.global_switches)
 
 			text_to_append = self.youtube_video_id
 			Append_To_File(self.youtube_ids_file, text_to_append, self.global_switches, check_file_length = True)
@@ -412,7 +415,7 @@ class Register_Watched_Media(Watch_History):
 		# [Watched number]. [Media name] [Media episode title].txt
 		self.current_episode_file = self.all_watched_files_current_year_folder + str(self.total_watched_number) + ". " + self.media_item_episode_with_title_file + self.dot_text
 
-		Create_Text_File(self.current_episode_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_episode_file, self.global_switches)
 
 		self.full_watched_media_file_text = self.total_watched_number + ", " + self.media_type_watched_number + "\n\n"
 
@@ -451,11 +454,11 @@ class Register_Watched_Media(Watch_History):
 		self.per_media_type_folder = self.per_media_type_folder_folders_dict[self.english_media_type]
 
 		self.watched_media_folder = self.per_media_type_folder + Remove_Non_File_Characters(self.media_title) + "/"
-		Create_Folder(self.watched_media_folder, self.global_switches["create_folders"])
+		Create_Folder(self.watched_media_folder, self.global_switches)
 
 		if self.no_media_list == False:
 			self.watched_media_folder = self.watched_media_folder + self.media_item_file_safe + "/"
-			Create_Folder(self.watched_media_folder, self.global_switches["create_folders"])
+			Create_Folder(self.watched_media_folder, self.global_switches)
 
 		self.media_item_episode_file = Remove_Non_File_Characters(self.media_episode_file_safe)
 
@@ -482,7 +485,7 @@ class Register_Watched_Media(Watch_History):
 		if " " in self.per_media_type_media_episode_file[0]:
 			self.per_media_type_media_episode_file[1:]
 
-		Create_Text_File(self.per_media_type_media_episode_file, self.global_switches["create_files"])
+		Create_Text_File(self.per_media_type_media_episode_file, self.global_switches)
 
 		Write_To_File(self.per_media_type_media_episode_file, self.full_watched_media_file_text, self.global_switches)
 
@@ -504,18 +507,18 @@ class Register_Watched_Media(Watch_History):
 						# ([YouTube ID])
 
 		self.current_year_experienced_media_folder = current_year_experienced_media_folder + self.mixed_media_type + "/"
-		Create_Folder(self.current_year_experienced_media_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_year_experienced_media_folder, self.global_switches)
 
 		# Experienced Media Watched Media Folder
 		self.current_year_experienced_media_name_folder = self.current_year_experienced_media_folder + Remove_Non_File_Characters(self.media_title) + "/"
-		Create_Folder(self.current_year_experienced_media_name_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_year_experienced_media_name_folder, self.global_switches)
 
 		if self.no_media_list == False:
 			self.current_year_experienced_media_name_folder = self.current_year_experienced_media_name_folder + self.media_item_file_safe + "/"
-			Create_Folder(self.current_year_experienced_media_name_folder, self.global_switches["create_folders"])
+			Create_Folder(self.current_year_experienced_media_name_folder, self.global_switches)
 
 		self.current_year_experienced_media_name_file = self.current_year_experienced_media_name_folder + self.media_episode_file_safe + self.dot_text
-		Create_Text_File(self.current_year_experienced_media_name_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_year_experienced_media_name_file, self.global_switches)
 
 		Write_To_File(self.current_year_experienced_media_name_file, self.full_watched_media_file_text, self.global_switches)
 
@@ -543,9 +546,9 @@ class Register_Watched_Media(Watch_History):
 			self.firsts_of_the_year_media_folders[full_language] = self.firsts_of_the_year_folders[full_language] + self.media_language_texts[full_language] + "/"
 			self.firsts_of_the_year_media_type_folders[full_language] = self.firsts_of_the_year_media_folders[full_language] + self.language_singular_media_type + "/"
 
-			Create_Folder(self.firsts_of_the_year_folders[full_language], self.global_switches["create_folders"])
-			Create_Folder(self.firsts_of_the_year_media_folders[full_language], self.global_switches["create_folders"])
-			Create_Folder(self.firsts_of_the_year_media_type_folders[full_language], self.global_switches["create_folders"])
+			Create_Folder(self.firsts_of_the_year_folders[full_language], self.global_switches)
+			Create_Folder(self.firsts_of_the_year_media_folders[full_language], self.global_switches)
+			Create_Folder(self.firsts_of_the_year_media_type_folders[full_language], self.global_switches)
 
 		self.first_watched_media_file_name = self.total_watched_number + ". " + Remove_Non_File_Characters(self.media_item_episode_with_title) + " " + Text_Replacer(Text_Replacer(self.finished_watching_time, ":", ";"), "/", "-")
 
@@ -563,7 +566,7 @@ class Register_Watched_Media(Watch_History):
 			for full_language in full_languages_not_none:
 				media_type_folder = self.firsts_of_the_year_media_type_folders[full_language]
 				self.first_watched_media_file = media_type_folder + self.first_watched_media_file_name + self.dot_text
-				Create_Text_File(self.first_watched_media_file, self.global_switches["create_files"])
+				Create_Text_File(self.first_watched_media_file, self.global_switches)
 
 				text_to_write = self.total_watched_number + ", " + self.media_type_watched_number + "\n\n" + self.media_title + local_full_episode + "\n\n" + self.language_singular_media_type + "\n" + self.english_media_type + "\n\n" + self.finished_watching_time
 
@@ -664,7 +667,7 @@ class Register_Watched_Media(Watch_History):
 			self.media_dates_file = self.media_item_folder + self.mixed_dates_text + self.dot_text
 
 			# Defines the day that the user finished watching the media
-			self.finished_watching_media_day = self.finished_watching_time
+			self.finished_watching_day = self.finished_watching_time
 
 			if self.is_series_media == True:
 				# Creates a text array of the media watched dates text file
@@ -690,7 +693,7 @@ class Register_Watched_Media(Watch_History):
 				self.day_that_started_watching_datetime = datetime.datetime.strptime(self.started_watching_media_day, self.format)
 
 				# Defines the day that the user started watching the media
-				self.day_that_finished_watching_string = self.finished_watching_media_day.split("/")
+				self.day_that_finished_watching_string = self.finished_watching_day.split("/")
 
 				# Defines the time (hours and minutes) that the user started watching the media
 				self.time_and_day = self.day_that_finished_watching_string[0].split(" ")
@@ -884,7 +887,7 @@ class Register_Watched_Media(Watch_History):
 
 			# Appends the finished watching media date to the above array
 			self.media_dates.append("Finished watching in - Terminei de assistir em:")
-			self.media_dates.append(self.finished_watching_media_day)
+			self.media_dates.append(self.finished_watching_day)
 
 			if self.is_series_media == True:
 				# Appends the time spent watching media to the array of the media watched dates text file
@@ -899,7 +902,7 @@ class Register_Watched_Media(Watch_History):
 			text_to_write = self.media_dates
 			Write_To_File(self.media_dates_file, text_to_write, self.global_switches)
 
-			self.finished_watching_episode_time_text += "\n\n" + "De: " + self.started_watching_media_day + "\n" + "Até: " + self.finished_watching_media_day
+			self.finished_watching_episode_time_text += "\n\n" + "De: " + self.started_watching_media_day + "\n" + "Até: " + self.finished_watching_day
 
 			if self.is_series_media == True:
 				self.finished_watching_episode_time_text += "\n" + "Duração: " + self.time_spent_watching_media
@@ -925,7 +928,7 @@ class Register_Watched_Media(Watch_History):
 		if self.media_title in ["The Walking Dead", "Yuru Camp"]:
 			self.posted_on_social_networks_text = self.posted_on_social_networks_text.replace("uma print", "um vídeo resumo")
 
-		self.post_on_social_networks_text = Language_Item_Definer("Post on the social networks", "Postar nas redes sociais") + " (" + self.social_networks_string + ")"
+		self.post_on_social_networks_text = Language_Item_Definer("Post on the Social Networks", "Postar nas Redes Sociais") + " (" + self.social_networks_string + ")"
 
 		self.post_on_social_networks = Yes_Or_No_Definer(self.post_on_social_networks_text, second_space = False)
 
@@ -959,11 +962,13 @@ class Register_Watched_Media(Watch_History):
 		self.local_language_singular_media_type = self.language_singular_media_type
 
 		if self.is_video_series_media == True:
-			self.local_language_singular_media_type = Language_Item_Definer("{} channel", "canal do {}").format(self.youtube_name)
+			self.local_language_singular_media_type = Language_Item_Definer("{} channel", "Canal do {}").format(self.youtube_name)
 
 		print(self.local_language_singular_media_type + ":")
 		print(self.language_media_title)
 		print()
+
+		self.the_text = self.gender_the_texts[self.mixed_media_type]["the"]
 
 		if self.is_video_series_media == True:
 			self.the_text = self.gender_the_texts[self.mixed_media_type]["feminine"]["the"]
@@ -989,7 +994,7 @@ class Register_Watched_Media(Watch_History):
 
 				media_item_episode = self.media_item_episode
 
-				if ": " in self.media_item_episode:
+				if ": " in self.media_item_episode and self.is_video_series_media == False:
 					media_item_episode = self.media_item_episode.replace(": ", "")
 
 				print(media_item_episode)
@@ -1093,40 +1098,36 @@ class Register_Watched_Media(Watch_History):
 			self.finished_watching_media_text_template = Language_Item_Definer("You just finished watching {} {}", "Você acabou de terminar de assistir {} {}")
 
 			if self.is_video_series_media == False:
-				self.watched_media_container_type = language_singular_media_type
+				self.watched_media_container_type = self.language_singular_media_type.lower()
 
-			self.variables = (self.the_text, self.watched_media_container_type)
-
-			print(self.self.congratulations_text)
-			print(self.finished_watching_media_text_template.format(self.variables) + ": ")
+			print(self.congratulations_text)
+			print(self.finished_watching_media_text_template.format(self.the_text, self.watched_media_container_type.lower()) + ": ")
 			print(self.language_media_title)
 			print()
 
-			print(Language_Item_Definer("Finished {} info", "Informações d{}".format(self.the_text) + "{}" + "terminad{}".format(self.the_text)).format(self.language_singular_media_type) + ": ")
+			print(Language_Item_Definer("Finished {} info", "Informações d{}".format(self.the_text) + " {}").format(self.language_singular_media_type.lower()) + ":")
 			print()
 	
-			print(Language_Item_Definer("New watching status", "Novo status de assistindo") + ": ")
+			print(Language_Item_Definer("New watching status", "Novo status de assistindo") + ":")
 			print(self.completed_text)
 			print()
 
-			self.the_media_text = self.the_text + " " + self.watched_media_container_type
+			self.the_media_text = self.the_text + " " + self.watched_media_container_type.lower()
 
-			self.watching_media_time_text_template = Language_Item_Definer("Time and day that you {} watching", "Hora e dia que você {} assistir") + self.the_media_text
+			self.watching_media_time_text_template = Language_Item_Definer("Time and day that you {} watching", "Hora e dia que você {} assistir") + " " + self.the_media_text
 
 			# Started watching media time text and day
-			self.started_watching_media_time_text = self.started_watching_media_time_text_template.format(Language_Item_Definer("started", "começou"))
-
-			if self.is_series_media == False:
-				finished_watching_media_time = finished_watching_media_time.replace("media", "movie").replace("a mídia", "o filme")
+			self.started_watching_media_time_text = self.watching_media_time_text_template.format(Language_Item_Definer("started", "começou a"))
 
 			print(self.started_watching_media_time_text + ":")
 			print(self.started_watching_media_day)
+			print()
 
 			# Finished watching media time text and day
-			self.finished_watching_media_time_text = self.started_watching_media_time_text_template.format(Language_Item_Definer("finished", "terminou"))
+			self.finished_watching_time_text = self.watching_media_time_text_template.format(Language_Item_Definer("finished", "terminou de"))
 
-			print(self.finished_watching_media_time_text + ":")
-			print(self.finished_watching_media_day)
+			print(self.finished_watching_time_text + ":")
+			print(self.finished_watching_day)
 
 			if self.is_series_media == True:
 				print()

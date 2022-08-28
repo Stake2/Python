@@ -59,24 +59,24 @@ class Create_New_Character_Diary_Text_File(Project_Zomboid_Manager):
 			self.character = Select_Choice_From_List(self.characters, local_script_name, self.choice_text, second_choices_list = self.characters, return_second_item_parameter = True, return_number = True, add_none = True, first_space = False)[0]
 
 		self.character_folder = self.city_folder + self.character + "/"
-		Create_Folder(self.character_folder, self.global_switches["create_folders"])
+		Create_Folder(self.character_folder, self.global_switches)
 
 		self.character_database_folder = self.character_folder + "Database/"
-		Create_Folder(self.character_database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.character_database_folder, self.global_switches)
 
 		self.character_date_files = {}
 
 		self.character_date_files["Year"] = self.character_database_folder + "Year" + self.dot_text
-		Create_Text_File(self.character_date_files["Year"], self.global_switches["create_files"])
+		Create_Text_File(self.character_date_files["Year"], self.global_switches)
 
 		self.character_date_files["Month"] = self.character_database_folder + "Month" + self.dot_text
-		Create_Text_File(self.character_date_files["Month"], self.global_switches["create_files"])
+		Create_Text_File(self.character_date_files["Month"], self.global_switches)
 
 		self.character_date_files["Day"] = self.character_database_folder + "Day" + self.dot_text
-		Create_Text_File(self.character_date_files["Day"], self.global_switches["create_files"])
+		Create_Text_File(self.character_date_files["Day"], self.global_switches)
 
 		self.character_date_files["Survival Day"] = self.character_database_folder + "Survival Day" + self.dot_text
-		Create_Text_File(self.character_date_files["Survival Day"], self.global_switches["create_files"])
+		Create_Text_File(self.character_date_files["Survival Day"], self.global_switches)
 
 	def Define_Date_Folders(self):
 		self.date_info = {}
@@ -131,13 +131,13 @@ class Create_New_Character_Diary_Text_File(Project_Zomboid_Manager):
 		self.diary_text = self.diary_template_text.format(number_names_pt[self.date_info["Day"]], self.month_name, self.date_info["Year"], self.full_date.replace("-", "/"), portuguese_day_gender_words[self.day_name], self.day_name)
 
 		self.full_year_folder = self.date_folders["Year"]
-		Create_Folder(self.full_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.full_year_folder, self.global_switches)
 
 		self.full_month_folder = self.full_year_folder + self.month_folder + "/"
-		Create_Folder(self.full_month_folder, self.global_switches["create_folders"])
+		Create_Folder(self.full_month_folder, self.global_switches)
 
 		self.survival_diary_file = self.full_month_folder + self.survival_diary_day_file_name + self.dot_text
-		Create_Text_File(self.character_date_files["Year"], self.global_switches["create_files"])
+		Create_Text_File(self.character_date_files["Year"], self.global_switches)
 
 	def Write_To_Files(self):
 		for key in self.date_info:

@@ -24,6 +24,7 @@ if test_scripts == True:
 	import Unified_Remote_Manager
 	import Watch_History
 	import Year_Summary_Manager
+	import Social_Networks
 	add_import = ""
 
 script_selector_parser = argparse.ArgumentParser()
@@ -73,6 +74,8 @@ script_selector_parser.add_argument("-watch_history", "--watch-history", "-watch
 #script_selector_parser.add_argument("-media_network_manager", "-media_network", "-mnm", "-rede_de_midia", action="store_true", help="Runs the Media_Network_Manager.py script.")
 
 script_selector_parser.add_argument("-year_summary_manager", "-year-summary", "-year_summary", "-manage_year", "-gerenciador_de_sumário_de_ano", "-gerenciador_de_sumario_de_ano", "-gerenciar_ano", action="store_true", help="Runs the Year_Data_Manager.py script.")
+
+script_selector_parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks.py script.")
 
 add_argument = ""
 
@@ -188,3 +191,8 @@ if script_selector_arguments.media_network_manager:
 
 	Media_Network_Manager.Function_Choose()
 '''
+
+if script_selector_arguments.social_networks:
+	import Social_Networks
+
+	Social_Networks.Function_Choose()

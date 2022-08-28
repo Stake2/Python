@@ -10,55 +10,110 @@ is_a_folder = os.path.isdir
 is_a_file = os.path.isfile
 Text_File_Length = os.stat
 
-def Create_Folder(folder, create_folder_switch = None):
-	if create_folder_switch == None:
-		if is_a_folder(folder) == False:
-			os.mkdir(folder)
+def Create_Folder(folder, global_switches = None):
+	create = False
+
+	if global_switches == None:
+		create = True
 
 	else:
-		if create_folder_switch == True:
-			if is_a_folder(folder) == False:
-				os.mkdir(folder)
+		if global_switches["create_folders"] == True:
+			create = True
 
-def Create_File(parameter_file, create_file_switch = None, parameter_extension = ""):
-	file = parameter_file
+	if create == True and is_a_folder(folder) == False:
+		os.mkdir(folder)
 
-	if create_file_switch == None:
-		if is_a_file(file) == False:
-			file_write = open(file, "w", encoding="utf8")
-			file_write.close()
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Created folder: " + folder)
+
+def Create_File(file, global_switches = None):
+	create = False
+
+	if global_switches == None:
+		create = True
 
 	else:
-		if create_file_switch == True:
-			if is_a_file(file) == False:
-				file_write = open(file, "w", encoding="utf8")
-				file_write.close()
+		if global_switches["create_files"] == True:
+			create = True
+
+	if create == True and is_a_file(file) == False:
+		file_write = open(file, "w", encoding="utf8")
+		file_write.close()
+
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Created file: " + file)
 
 def Move_File(old_file, new_file, global_switches = None):
-	if global_switches == None and is_a_file(old_file):
-		shutil.move(old_file, new_file)
+	move = False
 
-	else:
-		if global_switches["move_files"] == True and is_a_file(old_file):
-			shutil.move(old_file, new_file)
-
-def Copy_File(old_file, new_file, global_switches = None):
-	if global_switches == None and is_a_file(old_file):
-		shutil.copy(old_file, new_file)
-
-	else:
-		if global_switches["move_files"] == True and is_a_file(old_file):
-			shutil.copy(old_file, new_file)
-
-def Remove_File(file, global_switches = None):
 	if global_switches == None:
-		if is_a_file(file):
-			os.remove(file)
+		move = True
 
 	else:
 		if global_switches["move_files"] == True:
-			if is_a_file(file):
-				os.remove(file)
+			move = True
+
+	if move == True and is_a_file(old_file) == True:
+		shutil.move(old_file, new_file)
+
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Old file:")
+			print(old_file)
+			print()
+			print("New file:")
+			print(new_file)
+
+def Copy_File(old_file, new_file, global_switches = None):
+	copy = False
+
+	if global_switches == None:
+		copy = True
+
+	else:
+		if global_switches["move_files"] == True:
+			copy = True
+
+	if copy == True and is_a_file(old_file) == True:
+		shutil.copy(old_file, new_file)
+
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Original file:")
+			print(old_file)
+			print()
+			print("Copied file:")
+			print(new_file)
+
+def Remove_File(file, global_switches = None):
+	remove = False
+
+	if global_switches == None:
+		remove = True
+
+	else:
+		if global_switches["move_files"] == True:
+			remove = True
+
+	if remove == True and is_a_file(file) == True:
+		os.remove(file)
+
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Removed file:")
+			print(file)
 
 def Remove_Folder(folder, global_switches = None):
 	remove = False
@@ -70,7 +125,7 @@ def Remove_Folder(folder, global_switches = None):
 		if global_switches["move_files"] == True:
 			remove = True
 
-	if remove == True and is_a_folder(folder):
+	if remove == True and is_a_folder(folder) == True:
 		try:
 			# Empty
 			os.rmdir(folder)
@@ -78,6 +133,13 @@ def Remove_Folder(folder, global_switches = None):
 		except OSError:
 			# Not empty
 			shutil.rmtree(folder)
+
+		if global_switches != None and "verbose" in global_switches and global_switches["verbose"] == True:
+			print()
+			print("-----")
+			print()
+			print("Removed folder:")
+			print(folder)
 
 def Sanitize_Folder(folder):
 	folder = str(folder)

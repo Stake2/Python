@@ -27,6 +27,9 @@ class Watch_Media(Watch_History):
 		if self.status_text == None:
 			self.status_text = self.watching_english_text
 
+		if self.run_as_module == True:
+			self.choice_info = choice_info
+
 		self.Select_Media_Type_And_Media()
 		self.Define_Media_Variables()
 		self.Define_Media_Episode_Variables()
@@ -47,9 +50,6 @@ class Watch_Media(Watch_History):
 			self.lists_dict["media_list"] = self.media_list
 
 			self.choice_info = Select_Media_Type_And_Media(self.lists_dict, status_text = self.status_text)
-
-		if self.run_as_module == True:
-			self.choice_info = choice_info
 
 		# Media Type variables definition
 		self.english_media_type = self.choice_info.english_media_type
@@ -72,13 +72,14 @@ class Watch_Media(Watch_History):
 		self.media_details_file = self.choice_info.media_details_file
 
 		if self.global_switches["verbose"] == True:
+			print()
 			print("media_folder:")
 			print(self.media_folder)
 
 			print()
-			print("media_details:")
-			Dict_Print(self.media_details)
+			Dict_Print(media_details = self.media_details)
 
+			print()
 			print("media_details_file:")
 			print(self.media_details_file)
 			print()
@@ -123,6 +124,10 @@ class Watch_Media(Watch_History):
 
 		self.current_media_item_file = None
 
+		if self.is_series_media == False:
+			self.movie_details_file = self.choice_info.movie_details_file
+			self.movie_details = self.choice_info.movie_details
+
 		# Media list definition for series media
 		if self.is_series_media == True:
 			self.media_list_text = self.media_type_sub_folders[self.mixed_media_type]["media_list_text"]
@@ -135,17 +140,17 @@ class Watch_Media(Watch_History):
 			if is_a_folder(self.media_list_folder) == True:
 				# "Seasons - Temporadas.txt" or "Series - Séries.txt"
 				self.media_list_file = self.media_list_folder + self.media_list_text + self.dot_text
-				Create_Text_File(self.media_list_file, self.global_switches["create_files"])
+				Create_Text_File(self.media_list_file, self.global_switches)
 
 				# "Current Season.txt" or "Current Series.txt"
 				self.current_media_item_file = self.media_list_folder + self.current_media_item_text + self.dot_text
-				Create_Text_File(self.current_media_item_file, self.global_switches["create_files"])
+				Create_Text_File(self.current_media_item_file, self.global_switches)
 
 				self.media_list_item_names = Create_Array_Of_File(self.media_list_file)
 
 				for media_list_item in self.media_list_item_names:
 					media_list_item_folder = self.media_list_folder + Remove_Non_File_Characters(media_list_item) + "/"
-					Create_Folder(media_list_item_folder, self.global_switches["create_folders"])
+					Create_Folder(media_list_item_folder, self.global_switches)
 
 			# Media list folder does not exists
 			else:
@@ -167,7 +172,7 @@ class Watch_Media(Watch_History):
 			if len(self.media_list_item_names) >= 2:
 				self.choice_text = Language_Item_Definer("Select a {} video series", "Selecione uma série de vídeos do {}").format(self.youtube_name)
 
-				self.media_item = Select_Choice_From_List(self.media_list_item_names, alternative_choice_text = self.choice_text, return_first_item = True, add_none = True, first_space = True, second_space = True)
+				self.media_item = Select_Choice_From_List(self.media_list_item_names, alternative_choice_text = self.choice_text, return_first_item = True, add_none = True, first_space = False, second_space = True)
 
 		self.media_item_file_safe = self.media_item
 
@@ -179,29 +184,31 @@ class Watch_Media(Watch_History):
 		# Media item folder definition for series media with media list
 		if self.is_series_media == True and self.no_media_list == False:
 			self.media_item_folder = self.media_list_folder + self.media_item_file_safe + "/"
-			Create_Folder(self.media_item_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_item_folder, self.global_switches)
 
 		# Media item details file and dict definition, is the same as "media_details" if the media has no media list
 		self.media_item_details_file = self.media_item_folder + "Media Details" + self.dot_text
 		self.media_item_details = Make_Setting_Dictionary(self.media_item_details_file, read_file = True)
 
+		self.media_episode_titles = None
+
 		# Titles folder, episode titles files, and commentes folder definition for series media
 		if self.is_series_media == True:
 			self.titles_folder = self.media_item_folder + self.mixed_titles_text + "/"
-			Create_Folder(self.titles_folder, self.global_switches["create_folders"])
+			Create_Folder(self.titles_folder, self.global_switches)
 
 			self.english_titles_file = self.titles_folder + full_language_en + self.dot_text
-			Create_Text_File(self.english_titles_file, self.global_switches["create_files"])
+			Create_Text_File(self.english_titles_file, self.global_switches)
 
 			self.portuguese_titles_file = self.titles_folder + full_language_pt + self.dot_text
-			Create_Text_File(self.portuguese_titles_file, self.global_switches["create_files"])
+			Create_Text_File(self.portuguese_titles_file, self.global_switches)
 
 			self.english_titles = Create_Array_Of_File(self.english_titles_file, add_none = True)
 			self.portuguese_titles = Create_Array_Of_File(self.portuguese_titles_file, add_none = True)
 			self.media_episode_titles = Language_Item_Definer(self.english_titles, self.portuguese_titles)
 
 			self.comments_folder = self.media_item_folder + self.mixed_comments_text + "/"
-			Create_Folder(self.comments_folder, self.global_switches["create_folders"])
+			Create_Folder(self.comments_folder, self.global_switches)
 
 		self.has_dub = False
 
@@ -334,15 +341,16 @@ class Watch_Media(Watch_History):
 			if self.no_media_list == False and self.media_item != self.media_title:
 				self.local_media_folder += self.media_item_file_safe + "/"
 
-			Create_Folder(self.local_media_folder, self.global_switches["create_folders"])
+			Create_Folder(self.local_media_folder, self.global_switches)
 
 		self.media_episode_file_safe = Remove_Non_File_Characters(self.media_episode)
 
 		# Define the media item episode as the same as media episode
 		self.media_item_episode = self.media_episode
+		self.media_item_episode_with_title = self.media_item_episode
 
 		# Change the media item episode to add media item if media has media list
-		if self.no_media_list == False and self.is_video_series_media == False and self.media_item != self.media_title:
+		if self.no_media_list == False and self.is_video_series_media == False and self.is_series_media == True and self.media_item != self.media_title:
 			season_text = re.findall(r"^S[0-9][0-9]", self.media_item)
 
 			self.media_item_episode = self.media_item + self.media_episode
@@ -362,7 +370,7 @@ class Watch_Media(Watch_History):
 			self.media_item_episode_with_title = self.media_title + ": " + self.media_episode
 
 		# Adding media title to media item episode with title
-		if self.no_media_list == True and self.is_video_series_media == False:
+		if self.no_media_list == True and self.is_video_series_media == False and self.is_series_media == True:
 			self.media_item_episode_with_title = self.media_title + " " + self.media_item_episode
 
 		# Creating dubbed media text and adding dubbed text to media item episode if media is anime and is defined to watch it dubbed
@@ -472,7 +480,7 @@ class Watch_Media(Watch_History):
 
 			self.Media_Unit = self.media_episode_link
 
-			Executor = Open_Link
+			self.Executor = Open_Link
 
 		# Local media episode file definition
 		if self.is_local_episode == True:
@@ -481,7 +489,7 @@ class Watch_Media(Watch_History):
 				if self.has_dub == True and self.watch_dubbed == True:
 					self.local_media_folder += full_language_pt + "/"
 
-			Create_Folder(self.local_media_folder, self.global_switches["create_files"])
+			Create_Folder(self.local_media_folder, self.global_switches)
 
 			# Remove re-watched text from media episode
 			self.media_episode_no_rewatched = re.sub(self.mixed_rewatched_regex_text, "", Remove_Non_File_Characters(self.media_episode))
@@ -543,6 +551,8 @@ class Watch_Media(Watch_History):
 		if self.is_video_series_media == True:
 			print(self.media_title + self.media_type_separator + self.media_item)
 
+		print()
+
 		# Show media episode if the media is series media (not a movie)
 		if self.is_series_media == True:
 			self.watched_media_container_type = Language_Item_Definer("season", "temporada")
@@ -550,7 +560,6 @@ class Watch_Media(Watch_History):
 			if self.is_video_series_media == True:
 				self.watched_media_container_type = Language_Item_Definer("{} channel", "canal do {}").format(self.youtube_name)
 
-			print()
 			print(Language_Item_Definer("And this episode", "E esse episódio") + ":")
 			print(self.media_episode)
 			print()
@@ -605,7 +614,7 @@ class Watch_Media(Watch_History):
 		self.finished_watching_media_text_template = Language_Item_Definer("Press Enter when you finish watching the {}", "Pressione Enter quando você terminar de assistir {}")
 
 		# Text to show in the input when the user finishes watching the media (pressing Enter)
-		self.finished_watching_media_text = self.finished_watching_media_text_template.format(self.the_text + " " + self.language_singular_media_type)
+		self.finished_watching_media_text = self.finished_watching_media_text_template.format(self.the_text + " " + self.language_singular_media_type.lower())
 
 		self.finished_watching = Select_Choice(self.finished_watching_media_text, accept_enter = True, enter_equals_empty = True, second_space = False)
 

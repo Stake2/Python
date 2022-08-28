@@ -64,7 +64,7 @@ class Music_Database(object):
 		self.mega_music_folder = mega_music_folder
 
 		self.list_of_symbols_file = self.music_database_folder + "List of Symbols" + self.dot_text
-		Create_Text_File(self.list_of_symbols_file, self.global_switches["create_files"])
+		Create_Text_File(self.list_of_symbols_file, self.global_switches)
 
 		self.music_letter_folders = {}
 		self.database_music_letter_folders = {}
@@ -74,10 +74,10 @@ class Music_Database(object):
 
 			if is_a_folder(self.music_letter_folders[letter]) == True:
 				self.database_music_letter_folders[letter] = self.music_database_folder + letter + "/"
-				Create_Folder(self.database_music_letter_folders[letter], self.global_switches["create_folders"])
+				Create_Folder(self.database_music_letter_folders[letter], self.global_switches)
 
 				self.list_of_items_file = self.database_music_letter_folders[letter] + "List of Items" + self.dot_text
-				Create_Text_File(self.list_of_items_file, self.global_switches["create_files"])
+				Create_Text_File(self.list_of_items_file, self.global_switches)
 
 				self.folders = List_Folder(self.music_letter_folders[letter])
 
@@ -95,7 +95,7 @@ class Music_Database(object):
 					# Artists and Soundtracks
 					for folder in self.list_:
 						self.item_folder = self.database_music_letter_folders[letter] + folder + "/"
-						Create_Folder(self.item_folder, self.global_switches["create_folders"])
+						Create_Folder(self.item_folder, self.global_switches)
 
 						self.music_item_folder = self.music_letter_folders[letter] + folder + "/"
 
@@ -116,7 +116,7 @@ class Music_Database(object):
 								self.files.remove("desktop.ini")
 
 							self.list_of_items_file = self.item_folder + "List of Items" + self.dot_text
-							Create_Text_File(self.list_of_items_file, self.global_switches["create_files"])
+							Create_Text_File(self.list_of_items_file, self.global_switches)
 
 							if Read_String(self.list_of_items_file) != Stringfy_Array(self.files, add_line_break = True):
 								Write_To_File(self.list_of_items_file, Stringfy_Array(self.files, add_line_break = True), self.global_switches)
@@ -130,19 +130,19 @@ class Music_Database(object):
 						# Artists' albums and/or singles folders
 						if self.item_sub_folders != []:
 							self.folders_file = self.item_folder + "Folders" + self.dot_text
-							Create_Text_File(self.folders_file, self.global_switches["create_files"])
+							Create_Text_File(self.folders_file, self.global_switches)
 
 							if Read_String(self.folders_file) != Stringfy_Array(self.item_sub_folders, add_line_break = True):
 								Write_To_File(self.folders_file, Stringfy_Array(self.item_sub_folders, add_line_break = True), self.global_switches)
 
 							for self.item_sub_folder_name in self.item_sub_folders:
 								self.item_sub_folder = self.item_folder + self.item_sub_folder_name + "/"
-								Create_Folder(self.item_sub_folder, self.global_switches["create_folders"])
+								Create_Folder(self.item_sub_folder, self.global_switches)
 
 								self.item_music_sub_folder = self.music_item_folder + self.item_sub_folder_name + "/"
 
 								self.item_sub_folder_files_file = self.item_sub_folder + "Files" + self.dot_text
-								Create_Text_File(self.item_sub_folder_files_file, self.global_switches["create_files"])
+								Create_Text_File(self.item_sub_folder_files_file, self.global_switches)
 
 								self.item_sub_folder_files = List_Files(self.item_music_sub_folder, add_none = False)
 

@@ -84,10 +84,6 @@ if is_a_file(settings_file) == False:
 	settings_filename = "Configurações"
 	settings_file = scripts_folder + settings_filename + ".txt"
 
-if is_a_file(settings_file) == False:
-	settings_filename = "Opções"
-	settings_file = scripts_folder + settings_filename + ".txt"
-
 settings_file = scripts_folder + settings_filename + ".txt"
 
 if is_a_file(settings_file) == False:
@@ -180,7 +176,7 @@ mega_social_networks_text_folder = notepad_folder_effort + "Social Networks/"
 
 mega_social_networks_images_folder = mega_image_folder + "Social Networks/"
 
-mega_stake2_website_folder = mega_folder + "Stake2 Website/"
+mega_stake2_website_folder = mega_folder + "Websites/"
 
 mega_stake2_subdomain_file = mega_stake2_website_folder + "Subdomain.txt"
 netlify_url = "netlify.app"

@@ -87,7 +87,7 @@ class Food_Time():
 		self.food_time_file = self.food_time_files[Language_Item_Definer("English", "Portuguese")]
 
 		for file in self.food_time_files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 	def Get_Time(self):
 		self.now_raw_1 = datetime.datetime.now().time()

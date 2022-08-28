@@ -14,7 +14,7 @@ class Create_New_Diary_Chapter(Diary):
 		self.diary_number = str(self.diary_number + 1)
 
 		self.new_diary_chapter_file = self.diary_chapters_folder + self.diary_number + self.dot_text
-		Create_Text_File(self.new_diary_chapter_file, self.global_switches["create_files"])
+		Create_Text_File(self.new_diary_chapter_file, self.global_switches)
 
 		Open_Text_File(self.new_diary_chapter_file)
 

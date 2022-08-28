@@ -39,3 +39,7 @@ class Select_Media(Watch_History):
 
 		self.media_details_file = self.media_folder + self.media_details_english_text + self.dot_text
 		self.media_details = Make_Setting_Dictionary(self.media_details_file, read_file = True)
+
+		if self.english_media_type == self.movie_media_type_english_plural:
+			self.movie_details_file = self.media_folder + self.movie_details_english_text + self.dot_text
+			self.movie_details = Make_Setting_Dictionary(self.movie_details_file, read_file = True)

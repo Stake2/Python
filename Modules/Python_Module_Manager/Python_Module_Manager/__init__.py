@@ -58,7 +58,7 @@ class Python_Module_Manager(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = self.script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.python_root_code_template_file = self.module_text_files_folder + "Python Root Code Template" + self.dot_text
 		self.python_main_class_code_template_file = self.module_text_files_folder + "Python Main Class Code Template" + self.dot_text
@@ -78,7 +78,7 @@ class Python_Module_Manager(object):
 
 	def Define_Texts(self):
 		self.conemu_task_xml_template = """				<key name="Task[Number]" modified="2022-02-08 14:24:07" build="210912">
-					<value name="Name" type="string" data="{[Script_Name]}"/>
+					<value name="Name" type="string" data="{[Module_Name]}"/>
 					<value name="Flags" type="dword" data="00000004"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -86,3 +86,6 @@ class Python_Module_Manager(object):
 					<value name="Count" type="long" data="1"/>
 					<value name="Cmd1" type="string" data="[module_execution_line]"/>
 				</key>"""
+
+		self.type_the_text = Language_Item_Definer("Type the {} of the Python module in {}", "Digite as {} do módulo de Python em {}")
+		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'

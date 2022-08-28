@@ -276,7 +276,7 @@ class Watch_History(object):
 		self.number_portuguese_text = "Número"
 		self.number_text = Language_Item_Definer(self.number_english_text, self.number_portuguese_text)
 		self.numbers_english_text = self.number_english_text + "s"
-		self.numbers_portuguese_text = self.number_english_text + "s"
+		self.numbers_portuguese_text = self.number_portuguese_text + "s"
 
 		self.and_english_text = "And"
 		self.and_portuguese_text = "E"
@@ -568,7 +568,7 @@ Director - Diretor:
 		self.watch_history_watched_folder = self.watch_history_folder + self.watched_english_text + "/"
 
 		self.current_year_watched_media_folder = self.watch_history_watched_folder + self.current_year + "/"
-		Create_Folder(self.current_year_watched_media_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_year_watched_media_folder, self.global_switches)
 
 		self.total_watched_number_current_year_file = self.current_year_watched_media_folder + self.number_english_text + self.dot_text
 
@@ -576,27 +576,27 @@ Director - Diretor:
 			Write_To_File(self.total_watched_number_current_year_file, "0", self.global_switches)
 
 		self.all_watched_files_current_year_folder = self.current_year_watched_media_folder + self.all_watched_files_english_text + "/"
-		Create_Folder(self.all_watched_files_current_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.all_watched_files_current_year_folder, self.global_switches)
 
 		self.per_media_type_current_year_folder = self.current_year_watched_media_folder + self.per_media_type_english_text + "/"
-		Create_Folder(self.per_media_type_current_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.per_media_type_current_year_folder, self.global_switches)
 
 		self.per_media_type_files_folder = self.per_media_type_current_year_folder + self.files_english_text + "/"
-		Create_Folder(self.per_media_type_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.per_media_type_files_folder, self.global_switches)
 
 		self.per_media_type_folders_folder = self.per_media_type_current_year_folder + self.folders_english_text + "/"
-		Create_Folder(self.per_media_type_folders_folder, self.global_switches["create_folders"])
+		Create_Folder(self.per_media_type_folders_folder, self.global_switches)
 
 		self.movies_folder = self.watch_history_folder + self.movies_english_text + "/"
-		Create_Folder(self.movies_folder, self.global_switches["create_folders"])
+		Create_Folder(self.movies_folder, self.global_switches)
 
 		self.media_info_folder = self.media_network_folder + "Media Info/"
-		Create_Folder(self.media_info_folder, self.global_switches["create_folders"])
+		Create_Folder(self.media_info_folder, self.global_switches)
 
 		self.media_list_file = self.media_info_folder + "Media List - Lista de Mídias" + self.dot_text
 
 		self.media_info_media_details_folder = self.media_info_folder + "Media Details/"
-		Create_Folder(self.media_info_media_details_folder, self.global_switches["create_folders"])
+		Create_Folder(self.media_info_media_details_folder, self.global_switches)
 		self.all_media_number_file = self.media_info_media_details_folder + "All Medias Number" + self.dot_text
 
 		self.type = "/"
@@ -702,7 +702,7 @@ Director - Diretor:
 		}
 
 		for folder in self.per_media_type_folder_folders_dict.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		# Per Media Type files folder dictionary
 		self.per_media_type_files_folders = {
@@ -714,7 +714,7 @@ Director - Diretor:
 		}
 
 		for folder in self.per_media_type_files_folders.values():
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 		self.sub_text = self.episodes_english_text
 		self.type = self.dot_text
@@ -776,14 +776,14 @@ Director - Diretor:
 
 		# Watch History folder names array
 		self.watch_history_folder_names = [
-		"local_medias_folder",
-		"media_network_folder",
-		"watch_history_folder",
-		"current_year_watched_media_folder",
-		"movies_folder",
-		"media_info_folder",
-		"media_info_folders",
-		"media_info_media_details_folders",
+			"local_medias_folder",
+			"media_network_folder",
+			"watch_history_folder",
+			"current_year_watched_media_folder",
+			"movies_folder",
+			"media_info_folder",
+			"media_info_folders",
+			"media_info_media_details_folders",
 		]
 
 	# Creates the Watch History arrays and dictionaries
@@ -848,34 +848,34 @@ Director - Diretor:
 	def Define_File_Lists(self):
 		# Watch History array texts
 		self.watch_history_array_texts = [
-		"media_info_folders",
-		"media_info_name_files",
-		"media_info_names_file_texts",
-		"media_info_number_files",
-		"media_info_numbers_file_texts",
-		"watch_history_folders",
-		"watch_history_folders_keys",
-		"watch_history_files",
-		"watched_texts",
-		"watched_files",
-		"movie_texts",
-		"movie_files",
+			"media_info_folders",
+			"media_info_name_files",
+			"media_info_names_file_texts",
+			"media_info_number_files",
+			"media_info_numbers_file_texts",
+			"watch_history_folders",
+			"watch_history_folders_keys",
+			"watch_history_files",
+			"watched_texts",
+			"watched_files",
+			"movie_texts",
+			"movie_files",
 		]
 
 		# Watch History arrays
 		self.watch_history_arrays = [
-		self.media_info_folders,
-		self.media_info_name_files,
-		self.media_info_names_file_texts,
-		self.media_info_number_files,
-		self.media_info_numbers_file_texts,
-		self.watch_history_folders,
-		self.watch_history_folders_keys,
-		self.watch_history_files,
-		self.watched_texts,
-		self.watched_files,
-		self.movie_texts,
-		self.movie_files,
+			self.media_info_folders,
+			self.media_info_name_files,
+			self.media_info_names_file_texts,
+			self.media_info_number_files,
+			self.media_info_numbers_file_texts,
+			self.watch_history_folders,
+			self.watch_history_folders_keys,
+			self.watch_history_files,
+			self.watched_texts,
+			self.watched_files,
+			self.movie_texts,
+			self.movie_files,
 		]
 
 		####################################################
@@ -914,8 +914,8 @@ Director - Diretor:
 	def Create_Unexistent_Folders_And_Files(self):
 		for folder in self.watch_history_folders:
 			if is_a_folder(folder) == False:
-				Create_Folder(folder, self.global_switches["create_folders"])
+				Create_Folder(folder, self.global_switches)
 
 		for file in self.watch_history_files:
 			if is_a_file(file) == False:
-				Create_Text_File(file, self.global_switches["create_files"])
+				Create_Text_File(file, self.global_switches)

@@ -61,11 +61,11 @@ class Project_Zomboid_Manager(object):
 		self.project_zomboid_text_folder = self.media_multiverse_games_folder + "Project Zomboid/"
 		self.database_folder = self.project_zomboid_text_folder + "Database/"
 
-		Create_Folder(self.stories_folder, self.global_switches["create_folders"])
-		Create_Folder(self.media_multiverse_folder, self.global_switches["create_folders"])
-		Create_Folder(self.media_multiverse_games_folder, self.global_switches["create_folders"])
-		Create_Folder(self.project_zomboid_text_folder, self.global_switches["create_folders"])
-		Create_Folder(self.database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.stories_folder, self.global_switches)
+		Create_Folder(self.media_multiverse_folder, self.global_switches)
+		Create_Folder(self.media_multiverse_games_folder, self.global_switches)
+		Create_Folder(self.project_zomboid_text_folder, self.global_switches)
+		Create_Folder(self.database_folder, self.global_switches)
 
 	def Define_Dictionaries(self):
 		self.kentucky_cities_folders = {}
@@ -75,13 +75,13 @@ class Project_Zomboid_Manager(object):
 
 		for city in self.kentucky_cities:
 			folder = self.project_zomboid_text_folder + city + "/"
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 			database_folder = self.database_folder + city + "/"
-			Create_Folder(database_folder, self.global_switches["create_folders"])
+			Create_Folder(database_folder, self.global_switches)
 
 			database_characters_file = database_folder + "Characters" + self.dot_text
-			Create_Text_File(database_characters_file, self.global_switches["create_files"])
+			Create_Text_File(database_characters_file, self.global_switches)
 
 			self.kentucky_cities_folders[city] = folder
 			self.kentucky_cities_database_folders[city] = folder

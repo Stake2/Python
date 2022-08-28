@@ -99,7 +99,7 @@ class Tasks(object):
 		self.media_history_experienced_folder = self.media_history_folder + self.past_action + "/"
 
 		self.current_year_experienced_media_folder = self.media_history_experienced_folder + current_year + "/"
-		Create_Folder(self.current_year_experienced_media_folder, self.global_switches["create_folders"])
+		Create_Folder(self.current_year_experienced_media_folder, self.global_switches)
 
 		self.total_experienced_number_current_year_file = self.current_year_experienced_media_folder + self.number_english_text + self.dot_text
 
@@ -107,7 +107,7 @@ class Tasks(object):
 			Write_To_File(self.total_experienced_number_current_year_file, "0", self.global_switches)
 
 		self.all_experienced_files_current_year_folder = self.current_year_experienced_media_folder + "All {} Files".format(self.past_action) + "/"
-		Create_Folder(self.all_experienced_files_current_year_folder, self.global_switches["create_folders"])
+		Create_Folder(self.all_experienced_files_current_year_folder, self.global_switches)
 
 		# Task files array creator
 		self.experienced_files = {}
@@ -120,37 +120,37 @@ class Tasks(object):
 		self.per_media_type_files_folder = self.per_media_type_current_year_folder + self.files_english_text + "/"
 		self.per_media_type_folders_folder = self.per_media_type_current_year_folder + self.folders_english_text + "/"
 
-		Create_Folder(self.per_media_type_current_year_folder, self.global_switches["create_folders"])
-		Create_Folder(self.per_media_type_files_folder, self.global_switches["create_folders"])
-		Create_Folder(self.per_media_type_folders_folder, self.global_switches["create_folders"])
+		Create_Folder(self.per_media_type_current_year_folder, self.global_switches)
+		Create_Folder(self.per_media_type_files_folder, self.global_switches)
+		Create_Folder(self.per_media_type_folders_folder, self.global_switches)
 
 		# Per Media Type folder folders dictionary
 		self.per_media_type_folder_folders_dict = {}
 
 		for media_type in self.media_types:
 			self.per_media_type_folder_folders_dict[media_type] = self.per_media_type_folders_folder + media_type + "/"
-			Create_Folder(self.per_media_type_folder_folders_dict[media_type], self.global_switches["create_folders"])
+			Create_Folder(self.per_media_type_folder_folders_dict[media_type], self.global_switches)
 
 		# Per Media Type files folder dictionary
 		self.per_media_type_files_folders = {}
 
 		for media_type in self.media_types:
 			self.per_media_type_files_folders[media_type] = self.per_media_type_files_folder + media_type + "/"
-			Create_Folder(self.per_media_type_files_folders[media_type], self.global_switches["create_folders"])
+			Create_Folder(self.per_media_type_files_folders[media_type], self.global_switches)
 
 		# Per Media Type task files
 		self.per_media_type_task_files = {}
 
 		for media_type in self.media_types:
 			self.per_media_type_task_files[media_type] = self.per_media_type_files_folders[media_type] + "Tasks" + self.dot_text
-			Create_Text_File(self.per_media_type_task_files[media_type], self.global_switches["create_folders"])
+			Create_Text_File(self.per_media_type_task_files[media_type], self.global_switches)
 
 		# Per Media Type time files
 		self.per_media_type_time_files = {}
 
 		for media_type in self.media_types:
 			self.per_media_type_time_files[media_type] = self.per_media_type_files_folders[media_type] + "Times" + self.dot_text
-			Create_Text_File(self.per_media_type_time_files[media_type], self.global_switches["create_folders"])
+			Create_Text_File(self.per_media_type_time_files[media_type], self.global_switches)
 
 		# Per Media Type number files
 		self.per_media_type_number_files = {}

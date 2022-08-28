@@ -9,31 +9,31 @@ import datetime
 import time
 
 global_yes_choice_texts = [
-None,
-1,
-"1",
-"yes",
-"Yes",
-"y",
-"Y",
-"sim",
-"Sim",
-"s",
-"S",
+	None,
+	1,
+	"1",
+	"yes",
+	"Yes",
+	"y",
+	"Y",
+	"sim",
+	"Sim",
+	"s",
+	"S",
 ]
 
 global_no_choice_texts = [
-None,
-2,
-"2",
-"no",
-"No",
-"n",
-"N",
-"não",
-"Não",
-"n",
-"N",
+	None,
+	2,
+	"2",
+	"no",
+	"No",
+	"n",
+	"N",
+	"não",
+	"Não",
+	"n",
+	"N",
 ]
 
 def Define_Yes_Or_No(value):
@@ -199,7 +199,7 @@ def Write(file, text, mode, global_switches):
 			write_to_file.write(text)
 			write_to_file.close()
 
-def Append_To_File(file, text, global_switches = None, check_file_length = None):
+def Append_To_File(file, text, global_switches = None, check_file_length = False):
 	mode = "a"
 
 	file_length = len(Read_Lines(file))
@@ -576,10 +576,17 @@ def For_Append_With_Key(keys_array, append_array, value = None, value_string = N
 def Replace_Setting_Text(array, line_number, text):
 	return array[line_number].replace(text, "")
 
-def Return_Setting_Name_And_Value(setting_line, setting_splitter):
+def Return_Setting_Name_And_Value(setting_line, setting_splitter, settings_list):
 	split = setting_line.split(setting_splitter)
 
 	setting = split[0]
+
+	if setting != "":
+		if " " in setting[-1]:
+			setting = setting[:-1]
+
+		if " " in setting[0]:
+			setting = setting[1:]
 
 	value = split[setting_line.count(setting_splitter)]
 
@@ -596,20 +603,36 @@ def Return_Setting_Name_And_Value(setting_line, setting_splitter):
 			if item != split[-1]:
 				value += setting_splitter
 
+	if "\n" in setting_splitter:
+		i = 0
+		for line in settings_list:
+			if setting == line and (i + 1) != len(settings_list):
+				value = settings_list[i + 1]
+
+			i += 1
+
+	if setting_splitter in setting:
+		setting = setting.replace(setting_splitter, "")
+
 	return [setting, value]
 
-def Make_Setting_Dictionary(settings_list, setting_splitter = ": ", convert_to = None, define_yes_or_no = False, define_true_or_false = False, read_file = False, return_three_lists = False):
+def Make_Setting_Dictionary(settings_list, setting_splitter = ": ", convert_to = None, define_yes_or_no = False, define_true_or_false = False, read_file = False, next_line_value = False, return_three_lists = False):
 	settings = {}
 
 	if read_file == True:
 		settings_list = Create_Array_Of_File(settings_list)
 
-	if return_three_lists == True:
-		setting_names = []
-		setting_values = []
+	if next_line_value == True:
+		if " " in setting_splitter[-1]:
+			setting_splitter = setting_splitter[:-1]
+
+		setting_splitter += "\n"
+
+	setting_names = []
+	setting_values = []
 
 	for setting_line in settings_list:
-		setting, value = Return_Setting_Name_And_Value(setting_line, setting_splitter)
+		setting, value = Return_Setting_Name_And_Value(setting_line, setting_splitter, settings_list)
 
 		if define_yes_or_no == True:
 			value = Define_Yes_Or_No(value)
@@ -620,9 +643,12 @@ def Make_Setting_Dictionary(settings_list, setting_splitter = ": ", convert_to =
 		if convert_to != None:
 			value = convert_to(value)
 
-		settings[setting] = value
+		if ":" in setting:
+			setting = setting.replace(":", "")
 
-		if return_three_lists == True:
+		if setting not in ["", " "] and value not in ["", " "] and value not in setting_values:
+			settings[setting] = value
+
 			setting_names.append(setting)
 			setting_values.append(value)
 
@@ -700,23 +726,38 @@ def Define_True_Or_False(value):
 
 	return value
 
-def Dict_Print(dict, new_line_title = True, space_separator = True, first_space = True, second_space = True):
-	if new_line_title == True:
-		string_format = "{}:\n{}"
+def Dict_Print(**kwargs):
+	keys = list(kwargs.keys())
+	values = list(kwargs.values())
 
-	if new_line_title == False:
-		string_format = "{}: {}"
+	dict_name = list(keys)[0]
+	dict_object = list(values)[0]
+	dict_values = list(dict_object.values())
 
-	if first_space == True:
-		print()
+	string_format = "{}:\n\t\t{}\n"
 
-	for key in dict:
-		print(string_format.format(key, dict.get(key)))
+	if dict_object != {}:
+		print(dict_name.title() + ":")
 
-		if space_separator == True and key != list(dict)[-1]:
+	for key in dict_object:
+		value = dict_object.get(key)
+
+		text = ""
+
+		if value == dict_values[0]:
+			text += "[\n"
+
+		text += string_format.format("\t" + key.title(), value)
+
+		if key == list(dict_object)[-1] and value == dict_values[-1]:
+			text += "]"
+
+		print(text)
+
+		if value != dict_values[-1]:
 			print()
 
-	if second_space == True:
+	if "second_space" in keys and kwargs["second_space"] == True:
 		print()
 
 def Split_Text_And_Backup(text, splitter, number = 0):
@@ -896,15 +937,15 @@ def Make_Time_Difference(file_to_write, first_time = True, language = "", input_
 Time_Jumper = Make_Time_Difference
 
 def Stopwatch(show_text, language = "", show_current_time = True, show_stopwatch_text = True, make_backup = True, backup_file = "Script Text Files/Time Backup.txt"):
-	language_en = "enus"
+	language_en = "en"
 	full_language_en = "English"
 
-	language_pt = "ptbr"
-	full_language_pt = "Português Brasileiro"
+	language_pt = "pt"
+	full_language_pt = "Português"
 
 	full_languages_not_none = [
-	"English",
-	"Português Brasileiro",
+		"English",
+		"Português",
 	]
 
 	time_texts = {
@@ -944,14 +985,14 @@ def Stopwatch(show_text, language = "", show_current_time = True, show_stopwatch
 
 		if hours <= 1:
 			hours_array = {
-			full_language_en: time_texts[full_language_en]["hour"],
-			full_language_pt: time_texts[full_language_pt]["hour"],
+				full_language_en: time_texts[full_language_en]["hour"],
+				full_language_pt: time_texts[full_language_pt]["hour"],
 			}
 
 		if hours > 2:
 			hours_array = {
-			full_language_en: time_texts[full_language_en]["hours"],
-			full_language_pt: time_texts[full_language_pt]["hours"],
+				full_language_en: time_texts[full_language_en]["hours"],
+				full_language_pt: time_texts[full_language_pt]["hours"],
 			}
 
 		has_minutes = False

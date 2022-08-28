@@ -42,25 +42,25 @@ class List_Story_Data(Story_Manager):
 			self.story_info_folder = story_folder + "Story Info/"
 
 			self.story_chapters_folder = story_folder + self.main_story_folders[0] + "/"
-			Create_Folder(self.story_chapters_folder, self.global_switches["create_folders"])
+			Create_Folder(self.story_chapters_folder, self.global_switches)
 
 			self.english_chapters_folder = self.story_chapters_folder + full_language_en + "/"
-			Create_Folder(self.english_chapters_folder, self.global_switches["create_folders"])
+			Create_Folder(self.english_chapters_folder, self.global_switches)
 
 			self.english_chapter_titles_folder = self.english_chapters_folder + "Titles/"
-			Create_Folder(self.english_chapter_titles_folder, self.global_switches["create_folders"])
+			Create_Folder(self.english_chapter_titles_folder, self.global_switches)
 
 			self.english_chapter_titles_file = self.english_chapter_titles_folder + "Titles" + self.dot_text
-			Create_Text_File(self.english_chapter_titles_file, self.global_switches["create_files"])
+			Create_Text_File(self.english_chapter_titles_file, self.global_switches)
 
 			readers_and_reads_folder = story_folder + self.main_story_folders[2] + "/"
-			Create_Folder(readers_and_reads_folder, self.global_switches["create_folders"])
+			Create_Folder(readers_and_reads_folder, self.global_switches)
 
 			story_reader_file = readers_and_reads_folder + "Readers" + self.dot_text
-			Create_Text_File(story_reader_file, self.global_switches["create_files"])
+			Create_Text_File(story_reader_file, self.global_switches)
 
 			self.story_authors_file = self.story_info_folder + "Author" + self.dot_text
-			Create_Text_File(self.story_authors_file, self.global_switches["create_files"])
+			Create_Text_File(self.story_authors_file, self.global_switches)
 			story_authors_text = Create_Array_Of_File(self.story_authors_file)
 
 			story_creation_date = self.story_creation_dates_text[i]

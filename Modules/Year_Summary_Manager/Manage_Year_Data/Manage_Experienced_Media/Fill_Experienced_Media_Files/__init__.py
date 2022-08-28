@@ -19,7 +19,7 @@ class Fill_Experienced_Media_Files(Year_Summary_Manager):
 
 		for language in self.language_year_folders:
 			self.experienced_media_folders[language] = self.language_year_folders[language] + self.year_folder_texts["Experienced Media"][language] + "/"
-			Create_Folder(self.experienced_media_folders[language], self.global_switches["create_folders"])
+			Create_Folder(self.experienced_media_folders[language], self.global_switches)
 
 		self.experienced_media_sub_folders = {}
 
@@ -32,7 +32,7 @@ class Fill_Experienced_Media_Files(Year_Summary_Manager):
 				folder_name = folder_names[i]
 
 				folder = self.experienced_media_folders[language] + folder_name + "/"
-				Create_Folder(folder, self.global_switches["create_folders"])
+				Create_Folder(folder, self.global_switches)
 
 				self.experienced_media_sub_folders[language][folder_name] = folder
 
@@ -41,21 +41,21 @@ class Fill_Experienced_Media_Files(Year_Summary_Manager):
 		self.experienced_media_database_folder = self.experienced_media_folders[full_language_en] + "Database/"
 		self.experienced_media_database_folders = {}
 
-		Create_Folder(self.experienced_media_database_folder, self.global_switches["create_folders"])
+		Create_Folder(self.experienced_media_database_folder, self.global_switches)
 
 		language = "English"
 		folders = self.experienced_media_sub_folders[language]
 		folder_names = self.experienced_media_sub_folder_names[language]
 		self.experienced_media_database_folders[language] = {}
 		database_folder = self.experienced_media_folders[language] + "Database/"
-		Create_Folder(database_folder, self.global_switches["create_folders"])
+		Create_Folder(database_folder, self.global_switches)
 
 		i = 0
 		while i <= len(folder_names) - 1:
 			folder_name = folder_names[i]
 
 			folder = database_folder + folder_name + "/"
-			Create_Folder(folder, self.global_switches["create_folders"])
+			Create_Folder(folder, self.global_switches)
 
 			self.experienced_media_database_folders[language][folder_name] = folder
 
@@ -93,11 +93,11 @@ class Fill_Experienced_Media_Files(Year_Summary_Manager):
 		self.experienced_media_database_file_names_language_ = self.experienced_media_database_file_names_language[self.selected_folder_name][self.full_language]
 
 		self.experienced_media_number_file = self.database_folder + "Number" + self.dot_text
-		Create_Text_File(self.experienced_media_number_file, self.global_switches["create_files"])
+		Create_Text_File(self.experienced_media_number_file, self.global_switches)
 
 		for file_name in self.experienced_media_database_file_names_:
 			file = self.database_folder + file_name + self.dot_text
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		if self.global_switches["verbose"] == True:
 			print(Language_Item_Definer("Folder Name", "Nome da Pasta") + ":")

@@ -109,7 +109,7 @@ class Story_Manager(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = self.script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.chapter_status_template_file = self.module_text_files_folder + "Chapter Status Template" + self.dot_text
 		Create_Text_File(self.chapter_status_template_file)
@@ -165,10 +165,10 @@ class Story_Manager(object):
 				story_folder = Split_And_Add_Text(story_folder, new_separator = "/")
 
 				story_folder = self.stories_folder + story_folder + "/"
-				Create_Folder(story_folder, self.global_switches["create_folders"])
+				Create_Folder(story_folder, self.global_switches)
 
-				Create_Folder(story_folder + "Story Info/", self.global_switches["create_folders"])
-				Create_Folder(story_folder + "Story Info/Writing - Escrita/", self.global_switches["create_folders"])
+				Create_Folder(story_folder + "Story Info/", self.global_switches)
+				Create_Folder(story_folder + "Story Info/Writing - Escrita/", self.global_switches)
 
 				current_status_file = story_folder + "Story Info/Writing - Escrita/Current Status" + self.dot_text
 				Create_Text_File(current_status_file)
@@ -228,7 +228,7 @@ class Story_Manager(object):
 
 	def Create_Unexistent_Folders_And_Files(self):
 		for file in self.story_database_files.values():
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 	def Define_Select_Story_Variables(self):
 		self.story_names = [None]
@@ -348,7 +348,7 @@ class Story_Manager(object):
 		self.website_images_story_covers_folder = mega_stake2_website_media_story_covers_folder + self.english_story_name + "/"
 
 		self.obsidian_story_folder = self.obsidian_stories_folder + self.english_story_name + "/"
-		Create_Folder(self.obsidian_story_folder, self.global_switches["create_folders"])
+		Create_Folder(self.obsidian_story_folder, self.global_switches)
 
 		self.wattpad_id_enus = story_wattpad_ids_enus[self.story_number]
 		self.wattpad_id_ptbr = story_wattpad_ids_ptbr[self.story_number]
@@ -365,10 +365,10 @@ class Story_Manager(object):
 			self.story_website_link = self.story_website_link.replace(self.english_story_name, "New%20World/" + self.english_story_name)
 
 		self.story_info_folder = self.story_folder + "Story Info/"
-		Create_Folder(self.story_info_folder, self.global_switches["create_folders"])
+		Create_Folder(self.story_info_folder, self.global_switches)
 
 		self.story_readers_and_reads_folder = self.story_folder + "Readers and Reads/"
-		Create_Folder(self.story_readers_and_reads_folder, self.global_switches["create_folders"])
+		Create_Folder(self.story_readers_and_reads_folder, self.global_switches)
 
 		self.readers_file = self.story_readers_and_reads_folder + "Readers" + self.dot_text
 
@@ -379,21 +379,21 @@ class Story_Manager(object):
 		self.story_settings_file = self.story_info_folder + "Story Settings" + self.dot_text
 
 		self.story_writing_folder = self.story_info_folder + "Writing - Escrita/"
-		Create_Folder(self.story_writing_folder, self.global_switches["create_folders"])
+		Create_Folder(self.story_writing_folder, self.global_switches)
 
 		self.story_chapter_times_folder = self.story_writing_folder + "Chapter Times/"
-		Create_Folder(self.story_chapter_times_folder, self.global_switches["create_folders"])
+		Create_Folder(self.story_chapter_times_folder, self.global_switches)
 
 		self.last_chapters_folder = self.story_writing_folder + "Last Chapters/"
-		Create_Folder(self.last_chapters_folder, self.global_switches["create_folders"])
+		Create_Folder(self.last_chapters_folder, self.global_switches)
 
 		self.story_obsidian_links_folder = self.story_writing_folder + "Obsidian Links/"
-		Create_Folder(self.story_obsidian_links_folder, self.global_switches["create_folders"])
+		Create_Folder(self.story_obsidian_links_folder, self.global_switches)
 
 		self.chapter_status_file = self.story_writing_folder + "Chapter Status" + self.dot_text
 
 		self.current_status_file = self.story_writing_folder + "Current Status" + self.dot_text
-		Create_Text_File(self.current_status_file, self.global_switches["create_files"])
+		Create_Text_File(self.current_status_file, self.global_switches)
 
 		if is_a_file(self.chapter_status_file) == False:
 			Write_To_File(self.chapter_status_file, self.chapter_status_template, self.global_switches)
@@ -415,7 +415,7 @@ class Story_Manager(object):
 		}
 
 		for file in self.chapter_time_files:
-			Create_Text_File(file, self.global_switches["create_files"])
+			Create_Text_File(file, self.global_switches)
 
 		self.last_chapters_names = [
 		"Written",
@@ -462,9 +462,9 @@ class Story_Manager(object):
 		self.obsidian_story_chapters_enus_folder = self.obsidian_story_chapters_folder + full_language_en + "/"
 		self.obsidian_story_chapters_ptbr_folder = self.obsidian_story_chapters_folder + full_language_pt + "/"
 
-		Create_Folder(self.obsidian_story_chapters_folder, self.global_switches["create_folders"])
-		Create_Folder(self.obsidian_story_chapters_enus_folder, self.global_switches["create_folders"])
-		Create_Folder(self.obsidian_story_chapters_ptbr_folder, self.global_switches["create_folders"])
+		Create_Folder(self.obsidian_story_chapters_folder, self.global_switches)
+		Create_Folder(self.obsidian_story_chapters_enus_folder, self.global_switches)
+		Create_Folder(self.obsidian_story_chapters_ptbr_folder, self.global_switches)
 
 		self.story_vegas_files_folder = story_covers_vegas_files_folder + self.english_story_name + "/"
 
@@ -477,7 +477,7 @@ class Story_Manager(object):
 		self.story_chapter_number_file = self.story_chapters_folder + self.mixed_number_text + self.dot_text
 
 		if is_a_file(self.story_chapter_number_file) == False:
-			Create_Text_File(self.story_chapter_number_file, self.global_switches["create_files"])
+			Create_Text_File(self.story_chapter_number_file, self.global_switches)
 			Write_To_File(self.story_chapter_number_file, "1", self.global_switches)
 
 		if is_a_file(self.story_chapter_number_file) == True:

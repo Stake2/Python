@@ -21,14 +21,15 @@ class GamePlayer(object):
 	def Define_Basic_Variables(self):
 		self.option = True
 
+		# Global Switches dictionary
 		self.global_switches = {
-		"write_to_file": self.option,
-		"create_files": self.option,
-		"create_folders": self.option,
-		"move_files": self.option,
-		"open_game": self.option,
-		"verbose": self.verbose,
-		"testing_script": self.testing_script,
+			"write_to_file": self.option,
+			"create_files": self.option,
+			"create_folders": self.option,
+			"move_files": self.option,
+			"open_game": self.option,
+			"verbose": self.verbose,
+			"testing_script": self.testing_script,
 		}
 
 		if self.parameter_switches != None:
@@ -172,9 +173,9 @@ class GamePlayer(object):
 		}
 
 		self.remove_folder_names = [
-		"C:/Jogos/",
-		"D:/Jogos/",
-		"Shortcuts - Atalhos/",
+			"C:/Jogos/",
+			"D:/Jogos/",
+			"Shortcuts - Atalhos/",
 		]
 
 		self.global_texts_language = self.global_texts[Language_Item_Definer(full_language_en, full_language_pt)]
@@ -196,10 +197,10 @@ class GamePlayer(object):
 			name = __name__.split(".")[0]
 
 		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches["create_folders"])
+		Create_Folder(self.module_text_files_folder, self.global_switches)
 
 		self.game_folder_file = self.module_text_files_folder + "Folders.txt"
-		Create_Text_File(self.game_folder_file, self.global_switches["create_files"])
+		Create_Text_File(self.game_folder_file, self.global_switches)
 		self.game_folder_text = Create_Array_Of_File(self.game_folder_file)
 
 		self.game_network_folder = networks_folder + "Game Network/"
@@ -210,11 +211,11 @@ class GamePlayer(object):
 		self.current_year_played_folder = self.played_folder + str(current_year) + "/"
 		self.played_texts_folder = self.current_year_played_folder + "Played Texts - Textos de Jogatina/"
 
-		Create_Folder(self.game_network_folder, self.global_switches["create_folders"])
-		Create_Folder(self.play_history_folder, self.global_switches["create_folders"])
-		Create_Folder(self.played_folder, self.global_switches["create_folders"])
-		Create_Folder(self.current_year_played_folder, self.global_switches["create_folders"])
-		Create_Folder(self.played_texts_folder, self.global_switches["create_folders"])
+		Create_Folder(self.game_network_folder, self.global_switches)
+		Create_Folder(self.play_history_folder, self.global_switches)
+		Create_Folder(self.played_folder, self.global_switches)
+		Create_Folder(self.current_year_played_folder, self.global_switches)
+		Create_Folder(self.played_texts_folder, self.global_switches)
 
 		self.all_played_files_folder = self.current_year_played_folder + "All Played Files/"
 		self.game_files_folder = self.current_year_played_folder + "Game Files/"
@@ -222,27 +223,27 @@ class GamePlayer(object):
 		self.per_media_type_files_folder = self.per_media_type_folder + "Files/"
 		self.per_media_type_folders_folder = self.per_media_type_folder + "Folders/"
 
-		Create_Folder(self.all_played_files_folder, self.global_switches["create_folders"])
-		Create_Folder(self.game_files_folder, self.global_switches["create_folders"])
-		Create_Folder(self.per_media_type_folder, self.global_switches["create_folders"])
-		Create_Folder(self.per_media_type_files_folder, self.global_switches["create_folders"])
-		Create_Folder(self.per_media_type_folders_folder, self.global_switches["create_folders"])
+		Create_Folder(self.all_played_files_folder, self.global_switches)
+		Create_Folder(self.game_files_folder, self.global_switches)
+		Create_Folder(self.per_media_type_folder, self.global_switches)
+		Create_Folder(self.per_media_type_files_folder, self.global_switches)
+		Create_Folder(self.per_media_type_folders_folder, self.global_switches)
 
 		for game_type in Create_Array_Of_File(self.game_types_file):
 			self.media_type_files_folder = self.per_media_type_files_folder + game_type + "/"
 			self.media_type_folders_folder = self.per_media_type_folders_folder + game_type + "/"
 
-			Create_Folder(self.media_type_files_folder, self.global_switches["create_folders"])
-			Create_Folder(self.media_type_folders_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_type_files_folder, self.global_switches)
+			Create_Folder(self.media_type_folders_folder, self.global_switches)
 
 			if is_a_file(self.media_type_files_folder + "Number" + self.dot_text) == False:
 				Write_To_File(self.media_type_files_folder + "Number" + self.dot_text, "0")
 
-			Create_Text_File(self.media_type_files_folder + "Games" + self.dot_text, self.global_switches["create_files"])
-			Create_Text_File(self.media_type_files_folder + "Times" + self.dot_text, self.global_switches["create_files"])
-			Create_Text_File(self.media_type_files_folder + "Time Spent" + self.dot_text, self.global_switches["create_files"])
+			Create_Text_File(self.media_type_files_folder + "Games" + self.dot_text, self.global_switches)
+			Create_Text_File(self.media_type_files_folder + "Times" + self.dot_text, self.global_switches)
+			Create_Text_File(self.media_type_files_folder + "Time Spent" + self.dot_text, self.global_switches)
 
-			Create_Folder(self.media_type_folders_folder + "All Files/", self.global_switches["create_folders"])
+			Create_Folder(self.media_type_folders_folder + "All Files/", self.global_switches)
 
 		self.has_multiple_game_folders = False
 
@@ -252,7 +253,7 @@ class GamePlayer(object):
 		if len(self.game_folder_text) != 0:
 			if self.has_multiple_game_folders == False:
 				self.game_folder = hard_drive_letter + game_folder_text[0].replace("\\", "/")
-				Create_Folder(self.game_folder, self.global_switches["create_folders"])
+				Create_Folder(self.game_folder, self.global_switches)
 
 			if self.has_multiple_game_folders == True:
 				self.game_folders = []
@@ -260,7 +261,7 @@ class GamePlayer(object):
 				for folder in self.game_folder_text:
 					folder = hard_drive_letter + folder.replace("\\", "")
 
-					Create_Folder(folder, self.global_switches["create_folders"])
+					Create_Folder(folder, self.global_switches)
 
 					if len(List_Files(folder, add_none = False)) != 0:
 						self.game_folders.append(folder)
@@ -275,7 +276,7 @@ class GamePlayer(object):
 
 			self.game_folder_name = Select_Choice(self.game_folder_texts_language["type_game_folder"] + ": " + hard_drive_letter, custom_text = True, first_space = False)
 			self.game_folder = hard_drive_letter + self.game_folder_name + "/"
-			Create_Folder(self.game_folder, self.global_switches["create_folders"])
+			Create_Folder(self.game_folder, self.global_switches)
 
 			self.is_new_game_folder = True
 
@@ -329,7 +330,7 @@ class GamePlayer(object):
 			file = self.game_played_time_files[file]
 
 			if file_name != "Number":
-				Create_Text_File(file, self.global_switches["create_files"])
+				Create_Text_File(file, self.global_switches)
 
 			if file_name == "Number":
 				if is_a_file(file) == False:
@@ -369,13 +370,13 @@ class Add_New_Game_Folder(GamePlayer):
 		self.game_folder_names = []
 
 		self.choices = [
-		self.game_folder_texts_language["type_folder"],
-		self.game_folder_texts_language["find_folder"],
+			self.game_folder_texts_language["type_folder"],
+			self.game_folder_texts_language["find_folder"],
 		]
 
 		self.choices_dict = {
-		"type_folder": self.choices[0],
-		"find_folder": self.choices[1],
+			"type_folder": self.choices[0],
+			"find_folder": self.choices[1],
 		}
 
 		self.choice_text = self.game_folder_texts_language["select_option_from_list"]
@@ -414,13 +415,13 @@ class Add_New_Game_Folder(GamePlayer):
 			self.folder = Select_Choice_From_List(self.disk_root_folders, local_script_name, self.choice_text, second_choices_list = self.disk_root_folders, add_none = True, return_second_item_parameter = True, return_first_and_second_item = True, return_number = True, second_space = False)[0]
 
 			self.find_folder_choices = [
-			self.game_folder_texts_language["choose_folder"],
-			self.game_folder_texts_language["list_folder"],
+				self.game_folder_texts_language["choose_folder"],
+				self.game_folder_texts_language["list_folder"],
 			]
 
 			self.find_folder_choices_dict = {
-			"choose_folder": self.find_folder_choices[0],
-			"list_folder": self.find_folder_choices[1],
+				"choose_folder": self.find_folder_choices[0],
+				"list_folder": self.find_folder_choices[1],
 			}
 
 			self.choice_text = self.game_folder_texts_language["select_option_from_list"]

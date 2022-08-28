@@ -84,14 +84,14 @@ class Create_New_Media_Info_Entry(Watch_History):
 			self.media_details = self.choice_info.media_details
 
 			self.media_folder = self.choice_info.media_folder
-			Create_Folder(self.media_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_folder, self.global_switches)
 
 			if self.is_series_media == True:
 				self.media_list_folder = self.media_folder + self.media_list_text + "/"
-				Create_Folder(self.media_list_folder, self.global_switches["create_folders"]) 
+				Create_Folder(self.media_list_folder, self.global_switches) 
 
 				self.media_list_file = self.media_list_folder + self.media_list_text + self.dot_text
-				Create_Text_File(self.media_list_file, self.global_switches["create_files"])
+				Create_Text_File(self.media_list_file, self.global_switches)
 
 		self.watching_status = self.media_details["Status"]
 		self.origin_type = self.media_details["Origin Type"]
@@ -267,27 +267,27 @@ class Create_New_Media_Info_Entry(Watch_History):
 
 	def Define_Media_Variables(self):
 		self.media_folder = self.media_info_media_type_folder + Remove_Non_File_Characters(self.media_details["Original Name"]) + "/"
-		Create_Folder(self.media_folder, self.global_switches["create_folders"])
+		Create_Folder(self.media_folder, self.global_switches)
 
 		self.media_details_file = self.media_folder + self.media_details_english_text + self.dot_text
-		Create_Text_File(self.media_details_file, self.global_switches["create_files"])
+		Create_Text_File(self.media_details_file, self.global_switches)
 
 		if self.is_series_media == False:
 			self.movie_details_file = self.media_folder + self.movie_details_english_text + self.dot_text
-			Create_Text_File(self.movie_details_file, self.global_switches["create_files"])	
+			Create_Text_File(self.movie_details_file, self.global_switches)	
 
 		if self.is_new_media == False:
 			self.media_details = Make_Setting_Dictionary(self.media_details_file, read_file = True)
 
 		if self.is_series_media == True:
 			self.media_list_folder = self.media_folder + self.media_list_text + "/"
-			Create_Folder(self.media_list_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_list_folder, self.global_switches)
 
 			self.media_list_file = self.media_list_folder + self.media_list_text + self.dot_text
-			Create_Text_File(self.media_list_file, self.global_switches["create_files"])
+			Create_Text_File(self.media_list_file, self.global_switches)
 
 			self.current_media_item_file = self.media_list_folder + self.current_media_item_text + self.dot_text
-			Create_Text_File(self.current_media_item_file, self.global_switches["create_files"])
+			Create_Text_File(self.current_media_item_file, self.global_switches)
 
 			if self.has_media_list == True:
 				media_list_names = []
@@ -297,30 +297,30 @@ class Create_New_Media_Info_Entry(Watch_History):
 
 				for media_item in self.media_list_names:
 					self.current_media_list_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-					Create_Folder(self.current_media_list_folder, self.global_switches["create_folders"])
+					Create_Folder(self.current_media_list_folder, self.global_switches)
 
 					self.media_item_details_file = self.current_media_list_folder + "Media Details" + self.dot_text
-					Create_Text_File(self.media_item_details_file, self.global_switches["create_files"])
+					Create_Text_File(self.media_item_details_file, self.global_switches)
 
 					self.comments_folder = self.current_media_list_folder + self.mixed_comments_text + "/"
-					Create_Folder(self.comments_folder, self.global_switches["create_folders"])
+					Create_Folder(self.comments_folder, self.global_switches)
 
 					self.titles_folder = self.current_media_list_folder + self.mixed_titles_text + "/"
-					Create_Folder(self.titles_folder, self.global_switches["create_folders"])
+					Create_Folder(self.titles_folder, self.global_switches)
 
 					self.english_titles_file = self.titles_folder + full_language_en + self.dot_text
-					Create_Text_File(self.english_titles_file, self.global_switches["create_files"])
+					Create_Text_File(self.english_titles_file, self.global_switches)
 
 					self.portuguese_titles_file = self.titles_folder + full_language_pt + self.dot_text
-					Create_Text_File(self.portuguese_titles_file, self.global_switches["create_files"])
+					Create_Text_File(self.portuguese_titles_file, self.global_switches)
 
 					if self.origin_type == self.remote_english_text or self.origin_type == self.hybrid_english_text:
 						self.links_file = self.current_media_list_folder + "Links" + self.dot_text
-						Create_Text_File(self.links_file, self.global_switches["create_files"])
+						Create_Text_File(self.links_file, self.global_switches)
 
 					if self.is_video_series_media == self.video_media_type_english_plural:
 						self.youtube_ids_file = self.current_media_list_folder + self.youtube_ids_english_text + self.dot_text
-						Create_Text_File(self.youtube_ids_file, self.global_switches["create_files"])
+						Create_Text_File(self.youtube_ids_file, self.global_switches)
 
 			if self.has_media_list == False:
 				self.media_list_names = []
@@ -336,10 +336,10 @@ class Create_New_Media_Info_Entry(Watch_History):
 			]
 
 			for file in self.files_to_create:
-				Create_Text_File(self.media_folder + file + self.dot_text, self.global_switches["create_files"])
+				Create_Text_File(self.media_folder + file + self.dot_text, self.global_switches)
 
 			for folder in self.folders_to_create:
-				Create_Folder(self.media_folder + folder + "/", self.global_switches["create_folders"])
+				Create_Folder(self.media_folder + folder + "/", self.global_switches)
 
 	def Write_To_Files(self):
 		if Read_String(self.media_details_file) != Stringfy_Dict(self.media_details):
@@ -359,10 +359,10 @@ class Create_New_Media_Info_Entry(Watch_History):
 
 				for media_item in self.media_list_names:
 					self.current_media_list_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-					Create_Folder(self.current_media_list_folder, self.global_switches["create_folders"])
+					Create_Folder(self.current_media_list_folder, self.global_switches)
 
 					self.media_item_details_file = self.current_media_list_folder + "Media Details" + self.dot_text
-					Create_Text_File(self.media_item_details_file, self.global_switches["create_files"])
+					Create_Text_File(self.media_item_details_file, self.global_switches)
 
 					if Read_String(self.media_item_details_file) != Stringfy_Dict(self.media_list[media_item]):
 						Write_To_File(self.media_item_details_file, Stringfy_Dict(self.media_list[media_item]), self.global_switches)

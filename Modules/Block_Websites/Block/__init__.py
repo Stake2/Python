@@ -97,7 +97,7 @@ class Block(Block_Websites):
 		self.module_folder_class = self.module_folder + "Block/"
 
 		self.block_python_window_file = self.module_folder_class + "Block.pyw"
-		Create_Text_File(self.block_python_window_file, self.global_switches["create_files"])
+		Create_Text_File(self.block_python_window_file, self.global_switches)
 
 		self.block_python_file = self.module_folder_class + "__init__.py"
 

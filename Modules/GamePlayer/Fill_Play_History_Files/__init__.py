@@ -96,15 +96,15 @@ class Fill_Play_History_Files(GamePlayer):
 					print()
 
 			self.media_type_files_folder = self.per_media_type_files_folder + self.game_type + "/"
-			Create_Folder(self.media_type_files_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_type_files_folder, self.global_switches)
 
 			self.media_type_folders_folder = self.per_media_type_folders_folder + self.game_type + "/"
-			Create_Folder(self.media_type_folders_folder, self.global_switches["create_folders"])
+			Create_Folder(self.media_type_folders_folder, self.global_switches)
 
 			# Write to "Per Media Type/Game Files" text file
 
 			self.game_files_file = self.game_files_folder + Remove_Non_File_Characters(self.game_name) + self.dot_text
-			Create_Text_File(self.game_files_file, self.global_switches["create_files"])
+			Create_Text_File(self.game_files_file, self.global_switches)
 
 			text_to_append = played_time.replace("o jogo \"" + self.game_name + "\" ", "")
 			Append_To_File(self.game_files_file, text_to_append, self.global_switches, check_file_length = True)
@@ -144,7 +144,7 @@ class Fill_Play_History_Files(GamePlayer):
 			self.played_game_file_name = self.when_played.replace(":", ";").replace("/", "-")
 
 			self.all_played_files_file = self.all_played_files_folder + str(self.number_of_games_played) + " " + Remove_Non_File_Characters(self.game_name) + self.dot_text
-			Create_Text_File(self.all_played_files_file, self.global_switches["create_files"])
+			Create_Text_File(self.all_played_files_file, self.global_switches)
 
 			text_to_write = self.game_name + "\n" + self.game_type + "\n" + self.when_played + "\n" + self.played_time + "\n" + str(self.number_of_games_played)
 			Write_To_File(self.all_played_files_file, text_to_write, self.global_switches)
@@ -157,16 +157,16 @@ class Fill_Play_History_Files(GamePlayer):
 			# Create text files in "Per Media Type/Folders" folders
 
 			self.all_files_folder = self.media_type_folders_folder + "All Files/"
-			Create_Folder(self.all_files_folder, self.global_switches["create_folders"])
+			Create_Folder(self.all_files_folder, self.global_switches)
 
 			self.game_media_type_folder = self.media_type_folders_folder + Remove_Non_File_Characters(self.game_name) + "/"
-			Create_Folder(self.game_media_type_folder, self.global_switches["create_folders"])
+			Create_Folder(self.game_media_type_folder, self.global_switches)
 
 			self.all_files_file = self.all_files_folder + Remove_Non_File_Characters(self.game_name) + " " + self.played_game_file_name + self.dot_text
-			Create_Text_File(self.all_files_file, self.global_switches["create_files"])
+			Create_Text_File(self.all_files_file, self.global_switches)
 
 			self.game_folder_file = self.game_media_type_folder + self.played_game_file_name + self.dot_text
-			Create_Text_File(self.game_folder_file, self.global_switches["create_files"])
+			Create_Text_File(self.game_folder_file, self.global_switches)
 
 			text_to_write = self.game_name + "\n" + self.when_played + "\n" + self.played_time + "\n" + str(self.game_type_number)
 			Write_To_File(self.all_files_file, text_to_write, self.global_switches)
