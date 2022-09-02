@@ -2,7 +2,7 @@ from Script_Helper import *
 
 import argparse
 
-test_scripts = False
+test_scripts = True
 
 if test_scripts == True:
 	import Block_Websites
@@ -14,9 +14,10 @@ if test_scripts == True:
 	import Friends_Manager
 	import GamePlayer
 	import Music_Database
-	import PicoWorkers
 	import Project_Zomboid_Manager
 	import Python_Module_Manager
+	import Social_Networks
+	import SproutGigs
 	import Story_Manager
 	import Study
 	import Tasks
@@ -24,7 +25,6 @@ if test_scripts == True:
 	import Unified_Remote_Manager
 	import Watch_History
 	import Year_Summary_Manager
-	import Social_Networks
 	add_import = ""
 
 script_selector_parser = argparse.ArgumentParser()
@@ -53,11 +53,13 @@ script_selector_parser.add_argument("-gameplayer", "--gameplayer", "-gp", "-game
 
 script_selector_parser.add_argument("-music_database", "--music_database", "--music-database", action="store_true", help="Runs the Music_Database.py script.")
 
-script_selector_parser.add_argument("-picoworkers", "--picoworkers", action="store_true", help="Runs the PicoWorkers.py script.")
-
 script_selector_parser.add_argument("-project_zomboid_manager", "-project_zomboid", "-zomboid", "-project-zomboid", action="store_true", help="Runs the Project_Zomboid_Manager.py script.")
 
-script_selector_parser.add_argument("-python_module_manager", "-python", "-module-manager", action="store_true", help="Runs the PicoWorkers.py script.")
+script_selector_parser.add_argument("-python_module_manager", "-python", "-module-manager", action="store_true", help="Runs the Python_Module_Manager.py script.")
+
+script_selector_parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks.py script.")
+
+script_selector_parser.add_argument("-sproutgigs", "--sproutgigs", action="store_true", help="Runs the SproutGigs.py script.")
 
 script_selector_parser.add_argument("-story_manager", "--story-manager", "-stories", "--stories", "-storymanager", "-story", "-histórias", "-história", action="store_true", help="Runs the Story_Manager.py script.")
 
@@ -74,8 +76,6 @@ script_selector_parser.add_argument("-watch_history", "--watch-history", "-watch
 #script_selector_parser.add_argument("-media_network_manager", "-media_network", "-mnm", "-rede_de_midia", action="store_true", help="Runs the Media_Network_Manager.py script.")
 
 script_selector_parser.add_argument("-year_summary_manager", "-year-summary", "-year_summary", "-manage_year", "-gerenciador_de_sumário_de_ano", "-gerenciador_de_sumario_de_ano", "-gerenciar_ano", action="store_true", help="Runs the Year_Data_Manager.py script.")
-
-script_selector_parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks.py script.")
 
 add_argument = ""
 
@@ -135,11 +135,6 @@ if script_selector_arguments.music_database:
 
 	Music_Database.Function_Choose()
 
-if script_selector_arguments.picoworkers:
-	import PicoWorkers
-
-	PicoWorkers.PicoWorkers()
-
 if script_selector_arguments.project_zomboid_manager:
 	import Project_Zomboid_Manager
 
@@ -149,6 +144,16 @@ if script_selector_arguments.python_module_manager:
 	import Python_Module_Manager
 
 	Python_Module_Manager.Function_Choose()
+
+if script_selector_arguments.social_networks:
+	import Social_Networks
+
+	Social_Networks.Function_Choose()
+
+if script_selector_arguments.sproutgigs:
+	import SproutGigs
+
+	SproutGigs.SproutGigs()
 
 if script_selector_arguments.story_manager:
 	import Story_Manager
@@ -191,8 +196,3 @@ if script_selector_arguments.media_network_manager:
 
 	Media_Network_Manager.Function_Choose()
 '''
-
-if script_selector_arguments.social_networks:
-	import Social_Networks
-
-	Social_Networks.Function_Choose()

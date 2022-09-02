@@ -313,16 +313,19 @@ def Print_Lines(lines, remove_none = False):
 def Stringfy_Array(array, add_line_break = False, custom_separator = None):
 	string_to_return = ""
 
+	i = 0
 	for text in array:
 		if text != None:
 			string_to_return += text
 
-			if text != array[-1]:
+			if i != len(array) - 1:
 				if add_line_break == True:
 					string_to_return += "\n"
 
 				if custom_separator != None:
 					string_to_return += custom_separator
+
+		i += 1
 
 	return string_to_return
 

@@ -5,7 +5,7 @@ from Script_Helper import *
 class Social_Networks(object):
 	def __init__(self, parameter_switches = None):
 		# Verbose variable
-		self.verbose = True
+		self.verbose = False
 
 		self.testing_script = False
 
@@ -56,17 +56,11 @@ class Social_Networks(object):
 		self.english_social_networks_text = self.english_social_network_text + "s"
 		self.portuguese_social_networks_text = self.portuguese_social_network_text.replace("de", "des").replace("al", "ais")
 
+		self.language_social_network_text = Language_Item_Definer(self.english_social_network_text, self.portuguese_social_network_text)
+		self.language_social_networks_text = Language_Item_Definer(self.english_social_networks_text, self.portuguese_social_networks_text)
+
 		self.mixed_social_network_text = self.english_social_network_text + self.dash_separator + self.portuguese_social_network_text
 		self.mixed_social_networks_text = self.english_social_networks_text + self.dash_separator + self.portuguese_social_networks_text
-
-		self.english_friend_text = "Friend"
-		self.portuguese_friend_text = "Amigo"
-
-		self.english_friends_text = self.english_friend_text + "s"
-		self.portuguese_friends_text = self.portuguese_friend_text + "s"
-
-		self.mixed_friend_text = self.english_friend_text + self.dash_separator + self.portuguese_friend_text
-		self.mixed_friends_text = self.english_friends_text + self.dash_separator + self.portuguese_friends_text
 
 		self.english_number_text = "Number"
 		self.portuguese_number_text = "Número"
@@ -79,25 +73,19 @@ class Social_Networks(object):
 		self.mixed_number_text = self.english_number_text + self.dash_separator + self.portuguese_number_text
 		self.mixed_numbers_text = self.english_numbers_text + self.dash_separator + self.portuguese_numbers_text
 
+		self.english_information_text = "Information"
+		self.portuguese_information_text = "Informação"
+
+		self.mixed_information_text = self.english_information_text + self.dash_separator + self.portuguese_information_text
+
+		self.opening_social_network_template = Language_Item_Definer("Opening {} on its {} page, with this link", "Abrindo {} em sua página de {}, com este link")
+
 	def Define_Folders_And_Files(self):
 		# Folders
 		self.mega_folder = mega_folder
 		self.notepad_effort_folder = notepad_folder_effort
 
 		self.mega_image_folder = self.mega_folder + "Image/"
-
-		# Friends Folders
-		self.friends_text_folder = self.notepad_effort_folder + self.mixed_friends_text + "/"
-		Create_Folder(self.friends_text_folder, self.global_switches)
-
-		self.friends_database_folder = self.friends_text_folder + "Database/"
-		Create_Folder(self.friends_database_folder, self.global_switches)
-
-		self.friends_information_folder = self.friends_database_folder + "Information/"
-		Create_Folder(self.friends_information_folder, self.global_switches)
-
-		self.friends_image_folder = self.mega_image_folder + self.mixed_friends_text + "/"
-		Create_Folder(self.friends_image_folder, self.global_switches)
 
 		# Social Networks Folders
 		self.social_networks_text_folder = self.notepad_effort_folder + self.english_social_networks_text + "/"
@@ -109,18 +97,6 @@ class Social_Networks(object):
 		self.digital_identities_folder = self.social_networks_image_folder + "Digital Identities/"
 		Create_Folder(self.digital_identities_folder, self.global_switches)
 
-		# Files
-
-		# Friends Files
-		self.friends_file = self.friends_database_folder + self.mixed_friends_text + self.dot_text
-		Create_Text_File(self.friends_file, self.global_switches)
-
-		self.friends_number_file = self.friends_database_folder + self.mixed_number_text + self.dot_text
-		Create_Text_File(self.friends_number_file, self.global_switches)
-
-		self.friends_information_headers_file = self.friends_database_folder + "Information Headers" + self.dot_text
-		Create_Text_File(self.friends_information_headers_file, self.global_switches)
-
 		# Social Networks Files
 		self.social_networks_file = self.social_networks_text_folder + self.english_social_networks_text + self.dot_text
 		Create_Text_File(self.social_networks_file, self.global_switches)
@@ -128,51 +104,29 @@ class Social_Networks(object):
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
 		self.social_networks = Create_Array_Of_File(self.social_networks_file)
-		self.friends_information_headers = Create_Array_Of_File(self.friends_information_headers_file)
 
 		self.list_file_names = [
-			"Parameters",
+			"Information Items",
+			"Portuguese Information Items",
 			"Image Folders",
 		]
 
 		self.dictionary_file_names = [
-			"Information",
+			self.english_information_text,
 			"Profile",
 			"Settings",
 		]
 
-		self.friend_file_names = [
-			"Information",
-			self.english_social_networks_text,
-		]
-
-		self.friends = Create_Array_Of_File(self.friends_file)
-		self.friends_number = Create_Array_Of_File(self.friends_number_file)
-
-		if self.friends_number != []:
-			self.friends_number = self.friends_number[0]
-
 		# Dictionaries
 		self.social_network_folders = {}
-		self.social_network_folders["Text"] = {}
-		self.social_network_folders["Database"] = {}
-		self.social_network_folders["Image"] = {}
-
 		self.social_network_files = {}
 		self.social_network_data = {}
 
-		for file_name in self.list_file_names + self.dictionary_file_names:
-			self.social_network_files[file_name] = {}
-			self.social_network_data[file_name] = {}
-
 		self.social_networks_data = {}
-		self.social_networks_data["Links"] = []
 		self.social_networks_data["Profile links"] = []
-		self.social_networks_data["Message links"] = []
+		self.social_networks_data["Language Information Items"] = {}
 
 		self.social_network_links = {}
-		self.social_network_profile_links = {}
-		self.social_network_message_links = {}
 
 		for social_network in self.social_networks:
 			# Text Folder
@@ -187,31 +141,40 @@ class Social_Networks(object):
 			image_folder = self.social_networks_image_folder + social_network + "/"
 			Create_Folder(image_folder, self.global_switches)
 
-			self.social_network_folders["Text"][social_network] = text_folder
-			self.social_network_folders["Database"][social_network] = database_folder
-			self.social_network_folders["Image"][social_network] = image_folder
+			self.social_network_folders[social_network] = {}
+			self.social_network_files[social_network] = {}
+			self.social_network_data[social_network] = {}
 
-			settings = Make_Setting_Dictionary(database_folder + "Settings" + self.dot_text, read_file = True, next_line_value = True)
+			self.social_network_folders[social_network]["Text"] = text_folder
+			self.social_network_folders[social_network]["Database"] = database_folder
+			self.social_network_folders[social_network]["Image"] = image_folder
 
-			if "Has Image Folders" not in settings:
-				settings["Has Image Folders"] = True
+			settings = {}
 
-			if "Has Image Folders" in settings and settings["Has Image Folders"] == False:
-				settings["Has Image Folders"] = False
+			settings["Has Image Folders"] = True
+
+			if is_a_file(database_folder + "Settings" + self.dot_text) == True:
+				settings = Make_Setting_Dictionary(database_folder + "Settings" + self.dot_text, read_file = True, next_line_value = True)
+
+				if "Has Image Folders" in settings and settings["Has Image Folders"] == False:
+					settings["Has Image Folders"] = False
 
 			# Database Files
 			for file_name in self.list_file_names + self.dictionary_file_names:
-				self.social_network_files[file_name][social_network] = database_folder + file_name + self.dot_text
+				if file_name != "Settings":
+					self.social_network_files[social_network][file_name] = database_folder + file_name + self.dot_text
+					Create_Text_File(self.social_network_files[social_network][file_name], self.global_switches)
 
-				if settings["Has Image Folders"] == True:
-					Create_Text_File(self.social_network_files[file_name][social_network], self.global_switches)
+				if file_name == "Settings":
+					if is_a_file(database_folder + file_name + self.dot_text) == True:
+						self.social_network_files[social_network][file_name] = database_folder + file_name + self.dot_text
 
-				if is_a_file(self.social_network_files[file_name][social_network]) == True:
+				if social_network in self.social_network_files and file_name in self.social_network_files[social_network] and is_a_file(self.social_network_files[social_network][file_name]) == True:
 					if file_name in self.dictionary_file_names:
-						self.social_network_data[file_name][social_network] = Make_Setting_Dictionary(self.social_network_files[file_name][social_network], read_file = True, define_yes_or_no = True, next_line_value = True)
+						self.social_network_data[social_network][file_name] = Make_Setting_Dictionary(self.social_network_files[social_network][file_name], read_file = True, define_yes_or_no = True, next_line_value = True)
 
 					if file_name in self.list_file_names:
-						self.social_network_data[file_name][social_network] = Create_Array_Of_File(self.social_network_files[file_name][social_network])
+						self.social_network_data[social_network][file_name] = Create_Array_Of_File(self.social_network_files[social_network][file_name])
 
 			if self.global_switches["verbose"] == True:
 				print()
@@ -220,114 +183,122 @@ class Social_Networks(object):
 			# Social Networks Data
 			list_ = ["Link", "Profile link", "Message link"]
 
-			for item in list_:
-				if item in self.social_network_data["Information"][social_network]:
-					self.social_networks_data[item + "s"].append(self.social_network_data["Information"][social_network][item])
+			self.social_network_links[social_network] = {}
 
-			if "Profile link" in self.social_network_data["Profile"][social_network]:
+			for item in list_:
+				self.social_network_links[social_network][item.split(" ")[0]] = "None"
+
+				if item in self.social_network_data[social_network]["Information"]:
+					link = self.social_network_data[social_network]["Information"][item]
+
+					self.social_network_links[social_network][item.split(" ")[0]] = link
+
+			if "Profile link" in self.social_network_data[social_network]["Profile"]:
 				self.social_networks_data["Profile links"].append(self.social_network_data["Information"][social_network]["Profile link"])
 
-		self.friends_data = {}
-		self.friends_folders = {}
-		self.friends_files = {}
+		self.information_items_translated_to_portuguese = {}
 
-		# Friends Folders, Files, and Data dictionaries filling
-		for friend in self.friends:
-			self.friends_folders[friend] = {}
-			self.friends_files[friend] = {}
-			self.friends_data[friend] = {}
+		for social_network in self.social_networks:
+			self.social_networks_data["Language Information Items"][social_network] = {}
 
-			# Friends Folders
-			self.friends_folders[friend]["Text"] = {}
+			if self.global_switches["verbose"] == True:
+				print()
+				print(social_network + ":")
 
-			self.friends_folders[friend]["Text"]["Root"] = self.friends_text_folder + friend + "/"
-			Create_Folder(self.friends_folders[friend]["Text"]["Root"], self.global_switches)
+			i = 0
+			for information_item in self.social_network_data[social_network]["Information Items"]:
+				if information_item not in self.information_items_translated_to_portuguese:
+					self.information_items_translated_to_portuguese[information_item] = self.social_network_data[social_network]["Portuguese Information Items"][i]
 
-			self.friends_folders[friend]["Text"][self.english_social_networks_text] = self.friends_folders[friend]["Text"]["Root"] + self.mixed_social_networks_text + "/"
-			Create_Folder(self.friends_folders[friend]["Text"][self.english_social_networks_text], self.global_switches)
+				if information_item not in self.social_networks_data["Language Information Items"]:
+					self.social_networks_data["Language Information Items"][social_network][information_item] = self.information_items_translated_to_portuguese[information_item]
 
-			self.friends_folders[friend]["Image"] = {}
+				if self.global_switches["verbose"] == True:
+					print("\t" + information_item + ", " + self.social_network_data[social_network]["Portuguese Information Items"][i])
 
-			self.friends_folders[friend]["Image"]["Root"] = self.friends_image_folder + friend + "/"
-			Create_Folder(self.friends_folders[friend]["Image"]["Root"], self.global_switches)
+				i += 1
 
-			self.friends_folders[friend]["Image"][self.english_social_networks_text] = self.friends_folders[friend]["Image"]["Root"] + self.mixed_social_networks_text + "/"
-			Create_Folder(self.friends_folders[friend]["Image"][self.english_social_networks_text], self.global_switches)
+		self.information_item_gender_letters = {}
+		self.information_item_gender_letters["the"] = {}
+		self.information_item_gender_letters["this"] = {}
 
-			for file_name in self.friend_file_names:
-				key = file_name
+		self.language_friends_information_headers = []
 
-				text_folder = self.friends_folders[friend]["Text"]["Root"]
+		self.user_information_items = {}
+		self.user_name_items = {}
 
-				if file_name == self.english_social_networks_text:
-					text_folder = self.friends_folders[friend]["Text"][self.english_social_networks_text]
-					Create_Folder(text_folder, self.global_switches)
+		for information_item in self.information_items_translated_to_portuguese:
+			language_information_item = self.information_items_translated_to_portuguese[information_item]
 
-					file_name = self.mixed_social_networks_text
+			self.language_friends_information_headers.append(Language_Item_Definer(information_item, language_information_item))
 
-				# Friends Files
-				self.friends_files[friend][key] = text_folder + file_name + self.dot_text
-				Create_Text_File(self.friends_files[friend][key], self.global_switches)
+			self.information_item_gender_letters["the"][information_item] = Language_Item_Definer("the", "o")
+			self.information_item_gender_letters["this"][information_item] = Language_Item_Definer("this", "este")
 
-				image_folder = self.friends_folders[friend]["Image"][self.english_social_networks_text]
-				image_folder_file = self.friends_folders[friend]["Image"]["Root"] + file_name + self.dot_text
+			self.user_information_items[information_item] = language_information_item
 
-				if key == self.english_social_networks_text:
-					image_folder = self.friends_folders[friend]["Image"][self.english_social_networks_text]
-					image_folder_file = image_folder + self.mixed_social_networks_text + self.dot_text
+			if information_item in ["Nick and Tag", "Username", "Handle", "Contact name"]:
+				self.user_name_items[information_item] = language_information_item
 
-				if Read_String(self.friends_files[friend][key]) != Read_String(image_folder_file):
-					Copy_File(self.friends_files[friend][key], image_folder_file, self.global_switches)
+		self.social_network_link_types = {
+			"Home": "Início",
+			"Profile": "Perfil",
+		}
 
-				# Friends Data
-				if key == self.english_social_networks_text:
-					self.friends_data[friend][key] = Create_Array_Of_File(self.friends_files[friend][key])
+		self.portuguese_social_network_link_types = [
+			"Início",
+			"Perfil",
+		]
 
-				if key != self.english_social_networks_text:
-					self.friends_data[friend][key] = Make_Setting_Dictionary(self.friends_files[friend][key], read_file = True, define_yes_or_no = True, next_line_value = True)
+		self.link_types_map = {
+			"Home": "Link",
+			"Profile": "Profile link",
+		}
 
-			# Social Network folders and profile file creation
-			for social_network in self.friends_data[friend][self.english_social_networks_text]:
-				# Text Folder
-				text_folder = self.friends_folders[friend]["Text"][self.english_social_networks_text] + social_network + "/"
-				Create_Folder(text_folder, self.global_switches)
+	def Select_Social_Network(self, social_network = None, select_social_network = True, social_networks = None, choice_text = None, first_space = False, second_space = False):
+		self.choice_text = choice_text
 
-				# Image Folder
-				image_folder = self.friends_folders[friend]["Image"][self.english_social_networks_text] + social_network + "/"
-				Create_Folder(image_folder, self.global_switches)
+		if self.choice_text == None:
+			self.choice_text = Language_Item_Definer("Select one Social Network to use", "Selecione uma Rede Social para usar")
 
-				image_profile_file = image_folder + "Profile" + self.dot_text
+		if social_networks != None:
+			self.social_networks = social_networks
 
-				profile_file = text_folder + "Profile" + self.dot_text
-				Create_Text_File(profile_file, self.global_switches)
+		if select_social_network == True:
+			if social_network == None:
+				self.social_network = Select_Choice_From_List(self.social_networks, alternative_choice_text = self.choice_text, second_choices_list = self.social_networks, return_second_item_parameter = True, add_none = True, return_number = True, first_space = first_space, second_space = second_space)[0]
 
-				if Read_String(profile_file) != Read_String(image_profile_file):
-					Copy_File(profile_file, image_profile_file, self.global_switches)
+			if social_network != None:
+				self.social_network = social_network
 
-				profile = Make_Setting_Dictionary(profile_file, read_file = True, next_line_value = True)
+			return self.Define_Social_Network_Variables(self.social_network)
 
-				if self.global_switches["verbose"] == False and profile != {}:
-					Dict_Print(profile = profile, second_space = True)
+		else:
+			return {}
 
-			if self.global_switches["verbose"] == False:
-				Dict_Print(friends_data = self.friends_data[friend])
+	def Define_Social_Network_Variables(self, social_network):
+		self.social_network = social_network
 
-		for header in self.friends_information_headers:
-			information_file = self.friends_information_folder + header + self.dot_text
-			Create_Text_File(information_file, self.global_switches)
+		self.social_network_info = {}
 
-			if Create_Array_Of_File(information_file) == []:
-				information_list = []
+		self.social_network_info["Folder"] = {}
+		self.social_network_info["Folder"]["Text"] = self.social_network_folders[self.social_network]["Text"]
+		self.social_network_info["Folder"]["Database"] = self.social_network_folders[self.social_network]["Database"]
+		self.social_network_info["Folder"]["Image"] = self.social_network_folders[self.social_network]["Image"]
 
-				for friend in self.friends:
-					information = "Not filled - Não preenchido"
+		self.social_network_info["Files"] = {}
+		self.social_network_info["Data"] = {}
 
-					if header in self.friends_data[friend]["Information"]:
-						information = self.friends_data[friend]["Information"][header]
+		for file_name in self.list_file_names + self.dictionary_file_names:
+			if social_network in self.social_network_files and file_name in self.social_network_files[social_network]:
+				self.social_network_info["Files"][file_name] = self.social_network_files[self.social_network][file_name]
 
-					information_list.append(information)
+				if is_a_file(self.social_network_info["Files"][file_name]) == True:
+					self.social_network_info["Data"][file_name] = self.social_network_data[self.social_network][file_name]
 
-				text_to_write = Stringfy_Array(information_list, add_line_break = True)
+		self.social_network_info["Data"]["Language Information Items"] = list(self.social_networks_data["Language Information Items"][social_network].values())
 
-				if text_to_write != Read_String(information_file):
-					Write_To_File(information_file, text_to_write, self.global_switches)
+		return {
+			"social_network": self.social_network,
+			"social_network_info": self.social_network_info,
+		}

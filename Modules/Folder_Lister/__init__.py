@@ -209,6 +209,18 @@ def List_Files(folder, add_none = True, add_folder_path = True, bind_shortcuts =
 
 	return files
 
+def Read_Lines(file, custom_encoding = "utf8"):
+	return open(file, "r", encoding = custom_encoding).readlines()
+
+def Map_Link(file):
+	if ".lnk" in file:
+		path = Read_Lines(file)[1]
+		shell = win32com.client.Dispatch("WScript.Shell")
+		shortcut = shell.CreateShortCut(path)
+		target_path = shortcut.Targetpath.replace("\\", "/")
+
+		return target_path
+
 def List_Filenames(folder, add_none = True, test = False):
 	folder = Sanitize_Folder(folder)
 
