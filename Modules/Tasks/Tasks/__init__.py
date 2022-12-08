@@ -1,162 +1,160 @@
 # Tasks.py
 
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
+
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
 
 class Tasks(object):
 	def __init__(self, parameter_switches = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
 		self.Define_Basic_Variables()
+		self.Define_Module_Folder()
 		self.Define_Texts()
-		self.Define_Folders()
+
+		self.Define_Folders_And_Files()
+		self.Define_Lists_And_Dicitionaries()
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
-		self.global_switches = {
-		"write_to_file": self.option,
-		"create_files": self.option,
-		"create_folders": self.option,
-		"move_files": self.option,
-		"verbose": self.verbose,
-		"testing_script": self.testing_script,
-		}
+		# Global Switches dictionary
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
-		self.media_type_separator = " - "
-		self.media_info_setting_separator = ": "
+		self.Sanitize = self.File.Sanitize
+
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
+
+		self.date = self.Date.date
+
+	def Define_Module_Folder(self):
+		name = self.__module__
+
+		if "." in name:
+			name = name.split(".")[0]
+
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
+
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
 	def Define_Texts(self):
-		self.english_task_text = "Task"
-		self.portuguese_task_text = "Tarefa"
-		self.task_text = Language_Item_Definer(self.english_task_text, self.portuguese_task_text)
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
 
-		self.english_tasks_text = self.english_task_text + "s"
-		self.portuguese_tasks_text = self.portuguese_task_text + "s"
-		self.tasks_text = Language_Item_Definer(self.english_tasks_text, self.portuguese_tasks_text)
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.number_english_text = "Number"
-		self.number_portuguese_text = "Número"
-		self.number_text = Language_Item_Definer(self.number_english_text, self.number_portuguese_text)
-		self.numbers_english_text = self.number_english_text + "s"
-		self.numbers_portuguese_text = self.number_english_text + "s"
+		self.large_bar = "-----"
+		self.dash_space = "-"
 
-		self.per_media_type_english_text = "Per Media Type"
-		self.folders_english_text = "Folders"
-		self.files_english_text = "Files"
-		self.times_english_text = "Times"
+	def Define_Folders_And_Files(self):
+		# Folders dictionary
+		self.folders = {
+			"root": self.notepad_folders["networks"]["productive_network"],
+		}
 
-		self.experienced_texts = [
-		self.english_tasks_text,
-		"Task Types",
-		self.times_english_text,
-		self.number_english_text,
-		]
+		self.Folder.Create(self.folders["root"])
 
-	def Define_Folders(self):
-		self.media_network_folder = networks_folder + "Productive Network/"
-		self.media_network_data_folder = self.media_network_folder + "Media Network Data/"
+		# Media Network Data folder
+		self.folders["Media Network Data"] = {
+			"root": self.folders["root"] + "Media Network Data/",
+		}
 
-		self.media_network_parameters_file = self.media_network_data_folder + "Parameters" + self.dot_text
-		self.media_network_parameters = Make_Setting_Dictionary(Create_Array_Of_File(self.media_network_parameters_file), self.media_info_setting_separator)
-		self.item_type = self.media_network_parameters["Type"]
-		self.past_action = self.media_network_parameters["Past Action"]
+		self.Folder.Create(self.folders["Media Network Data"]["root"])
 
-		self.media_types_file = self.media_network_data_folder + self.item_type + " Types" + self.dot_text
-		self.media_types = Create_Array_Of_File(self.media_types_file)
+		# Task Types file
+		self.folders["Media Network Data"]["Task Types"] = self.folders["Media Network Data"]["root"] + self.texts["task_types"]["en"] + ".json"
+		self.File.Create(self.folders["Media Network Data"]["root"])
 
-		self.language_media_types = []
+		# Task History folder
+		self.folders["Task History"] = {
+			"root": self.folders["root"] + "Task History/",
+		}
 
-		for media_type in self.media_types:
-			if " - " in media_type:
-				media_type = media_type.split(" - ")[Language_Item_Definer(0, 1)]
+		self.Folder.Create(self.folders["Task History"]["root"])
 
-			self.language_media_types.append(media_type)
+		# Current year Task History folder
+		self.folders["Task History"][str(self.date["year"])] = {
+			"root": self.folders["Task History"]["root"] + str(self.date["year"]) + "/",
+		}
 
-		self.media_info_folder = self.media_network_folder + self.item_type + " Info/"
+		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["root"])
 
-		self.media_history_name = self.item_type + " History"
-		self.media_history_folder = self.media_network_folder + self.media_history_name + "/"
-		self.media_history_experienced_folder = self.media_history_folder + self.past_action + "/"
+		# Create files on the current year Task History folder
+		for item in ["Number", "Task Types", "Tasks", "Tasks.json", "Times"]:
+			self.folders["Task History"][str(self.date["year"])][item] = self.folders["Task History"][str(self.date["year"])]["root"] + item
 
-		self.current_year_experienced_media_folder = self.media_history_experienced_folder + current_year + "/"
-		Create_Folder(self.current_year_experienced_media_folder, self.global_switches)
+			if ".json" not in item:
+				self.folders["Task History"][str(self.date["year"])][item] += ".txt"
 
-		self.total_experienced_number_current_year_file = self.current_year_experienced_media_folder + self.number_english_text + self.dot_text
+			self.File.Create(self.folders["Task History"][str(self.date["year"])][item])
 
-		if is_a_file(self.total_experienced_number_current_year_file) == False:
-			Write_To_File(self.total_experienced_number_current_year_file, "0", self.global_switches)
+		# Write to number file if it is empty
+		if self.File.Contents(self.folders["Task History"][str(self.date["year"])]["Number"])["lines"] == []:
+			self.File.Edit(self.folders["Task History"][str(self.date["year"])]["Number"], "0", "w")
 
-		self.all_experienced_files_current_year_folder = self.current_year_experienced_media_folder + "All {} Files".format(self.past_action) + "/"
-		Create_Folder(self.all_experienced_files_current_year_folder, self.global_switches)
+		# All Tasks Files folder
+		self.folders["Task History"][str(self.date["year"])]["All Task Files"] = self.folders["Task History"][str(self.date["year"])]["root"] + "All Task Files/"
+		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["All Task Files"])
 
-		# Task files array creator
-		self.experienced_files = {}
-		For_Append_With_Key(self.experienced_texts, self.experienced_files, value_string = self.current_year_experienced_media_folder + "{}" + self.dot_text)
+		# Per Task Type folder
+		self.folders["Task History"][str(self.date["year"])]["Per Task Type"] = {
+			"root": self.folders["Task History"][str(self.date["year"])]["root"] + "Per Task Type/",
+		}
 
-		for file in list(self.experienced_files.values()):
-			Create_Text_File(file)
+		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["root"])
 
-		self.per_media_type_current_year_folder = self.current_year_experienced_media_folder + self.per_media_type_english_text + "/"
-		self.per_media_type_files_folder = self.per_media_type_current_year_folder + self.files_english_text + "/"
-		self.per_media_type_folders_folder = self.per_media_type_current_year_folder + self.folders_english_text + "/"
+		# Per Task Type subfolders
+		for item in ["Files", "Folders"]:
+			self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item] = {
+				"root": self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["root"] + item + "/",
+			}
 
-		Create_Folder(self.per_media_type_current_year_folder, self.global_switches)
-		Create_Folder(self.per_media_type_files_folder, self.global_switches)
-		Create_Folder(self.per_media_type_folders_folder, self.global_switches)
+			self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item]["root"])
 
-		# Per Media Type folder folders dictionary
-		self.per_media_type_folder_folders_dict = {}
+	def Define_Lists_And_Dicitionaries(self):
+		self.task_types = self.Language.JSON_To_Python(self.folders["Media Network Data"]["Task Types"])
 
-		for media_type in self.media_types:
-			self.per_media_type_folder_folders_dict[media_type] = self.per_media_type_folders_folder + media_type + "/"
-			Create_Folder(self.per_media_type_folder_folders_dict[media_type], self.global_switches)
+		# Per Task Type sub-sub-folders
+		for task_type in self.task_types["en"]:
+			for item in ["Files", "Folders"]:
+				self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type] = {
+					"root": self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item]["root"] + task_type + "/",
+				}
 
-		# Per Media Type files folder dictionary
-		self.per_media_type_files_folders = {}
+				self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type]["root"])
 
-		for media_type in self.media_types:
-			self.per_media_type_files_folders[media_type] = self.per_media_type_files_folder + media_type + "/"
-			Create_Folder(self.per_media_type_files_folders[media_type], self.global_switches)
+				for file_name in ["Number", "Task Types", "Tasks", "Tasks.json", "Times"]:
+					self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name] = self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type]["root"] + file_name
 
-		# Per Media Type task files
-		self.per_media_type_task_files = {}
+					if ".json" not in file_name:
+						self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name] += ".txt"
 
-		for media_type in self.media_types:
-			self.per_media_type_task_files[media_type] = self.per_media_type_files_folders[media_type] + "Tasks" + self.dot_text
-			Create_Text_File(self.per_media_type_task_files[media_type], self.global_switches)
-
-		# Per Media Type time files
-		self.per_media_type_time_files = {}
-
-		for media_type in self.media_types:
-			self.per_media_type_time_files[media_type] = self.per_media_type_files_folders[media_type] + "Times" + self.dot_text
-			Create_Text_File(self.per_media_type_time_files[media_type], self.global_switches)
-
-		# Per Media Type number files
-		self.per_media_type_number_files = {}
-
-		for media_type in self.media_types:
-			self.per_media_type_number_files[media_type] = self.per_media_type_files_folders[media_type] + "Number" + self.dot_text
-
-			if is_a_file(self.per_media_type_number_files[media_type]) == False:
-				Write_To_File(self.per_media_type_number_files[media_type], "0", self.global_switches)
+					self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name])

@@ -1,0 +1,168 @@
+{
+    "file": {
+        "en": "file",
+        "pt": "arquivo"
+    },
+    "folder": {
+        "en": "folder",
+        "pt": "file"
+    },
+    "create": {
+        "en": "create",
+        "pt": "criar"
+    },
+    "created": {
+        "en": "created",
+        "pt": {
+            "masculine": "criado",
+            "feminine": "criada"
+        }
+    },
+    "delete": {
+        "en": "delete",
+        "pt": "apagar"
+    },
+    "deleted": {
+        "en": "deleted",
+        "pt": "apagada"
+    },
+    "move": {
+        "en": "move",
+        "pt": "mover"
+    },
+    "copy": {
+        "en": "copy",
+        "pt": "copiar"
+    },
+    "source": {
+        "en": "source",
+        "pt": "fonte"
+    },
+    "destination": {
+        "en": "destination",
+        "pt": "destino"
+    },
+    "edit": {
+        "en": "edit",
+        "pt": "editar"
+    },
+    "edited": {
+        "en": "edited",
+        "pt": {
+            "masculine": "editado",
+            "feminine": "editada"
+        }
+    },
+    "text": {
+        "en": "text",
+        "pt": "texto"
+    },
+    "read": {
+        "en": "read",
+        "pt": "ler"
+    },
+    "source_file": {
+        "en": "Source file",
+        "pt": "Arquivo fonte"
+    },
+    "destination_file": {
+        "en": "Destination file",
+        "pt": "Arquivo destino"
+    },
+    "type_or_paste_the_file": {
+        "en": "Type or paste the file",
+        "pt": "Digite ou cole o arquivo"
+    },
+    "this_file_already_exists": {
+        "en": "This file already exists",
+        "pt": "Este arquivo já existe"
+    },
+    "this_file_does_not_exists": {
+        "en": "This file does not exists",
+        "pt": "Este arquivo não existe"
+    },
+    "the_file_path_is_incorrect_(it_is_a_folder)": {
+        "en": "The file path is incorrect (it is a folder)",
+        "pt": "O caminho do arquivo está incorreto (é uma pasta)"
+    },
+    "it_was_not_possible_to_{}_the_file_permission_not_granted": {
+        "en": "It was not possible to {} the file, permission not granted",
+        "pt": "Não foi possível {} o arquivo, permissão não concedida"
+    },
+    "yes, title()": {
+        "en": "Yes",
+        "pt": "Sim"
+    },
+    "no, title()": {
+        "en": "No",
+        "pt": "Não"
+    },
+    "file, title()": {
+        "pt": "Arquivo",
+        "en": "File"
+    },
+    "folder, title()": {
+        "pt": "File",
+        "en": "Folder"
+    },
+    "create, title()": {
+        "pt": "Criar",
+        "en": "Create"
+    },
+    "created, title(), masculine": {
+        "pt": "criado"
+    },
+    "created, title(), feminine": {
+        "pt": "criada"
+    },
+    "created, title()": {
+        "pt": "criado",
+        "en": "Created"
+    },
+    "delete, title()": {
+        "pt": "Apagar",
+        "en": "Delete"
+    },
+    "deleted, title()": {
+        "pt": "Apagada",
+        "en": "Deleted"
+    },
+    "move, title()": {
+        "pt": "Mover",
+        "en": "Move"
+    },
+    "copy, title()": {
+        "pt": "Copiar",
+        "en": "Copy"
+    },
+    "source, title()": {
+        "pt": "Fonte",
+        "en": "Source"
+    },
+    "destination, title()": {
+        "pt": "Destino",
+        "en": "Destination"
+    },
+    "edit, title()": {
+        "pt": "Editar",
+        "en": "Edit"
+    },
+    "edited, title(), masculine": {
+        "pt": "editado"
+    },
+    "edited, title(), feminine": {
+        "pt": "editada"
+    },
+    "edited, title()": {
+        "pt": "editado",
+        "en": "Edited"
+    },
+    "text, title()": {
+        "pt": "Texto",
+        "en": "Text"
+    },
+    "read, title()": {
+        "pt": "Ler",
+        "en": "Read"
+    }
+}

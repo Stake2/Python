@@ -1,129 +1,124 @@
 # Code.py
 
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
+
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
 
 class Code(object):
 	def __init__(self, parameter_switches = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
 		self.Define_Basic_Variables()
-
+		self.Define_Module_Folder()
 		self.Define_Texts()
+
 		self.Define_Folders()
 		self.Define_Lists()
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
-		self.global_switches = {
-		"write_to_file": self.option,
-		"create_files": self.option,
-		"create_folders": self.option,
-		"move_files": self.option,
-		"verbose": self.verbose,
-		"testing_script": self.testing_script,
-		}
+		# Global Switches dictionary
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
+		self.Sanitize = self.File.Sanitize
+
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
+
+		self.date = self.Date.date
+
+	def Define_Module_Folder(self):
+		name = self.__module__
+
+		if "." in name:
+			name = name.split(".")[0]
+
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
+
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
 	def Define_Texts(self):
-		the_tool_text = Language_Item_Definer("the programming tool", "a ferramenta de programação")
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
 
-		self.texts_dictionary = {}
-		self.texts_dictionary["Opening tool format text"] = Language_Item_Definer("Opening ", "Abrindo ") + the_tool_text + ' \"{}\"...'
-		self.texts_dictionary["Closing tool format text"] = Language_Item_Definer("Closing ", "Fechando ") + the_tool_text + ' \"{}\"...'
-		self.texts_dictionary["Executed first function, exit"] = Language_Item_Definer("First function executed, open the script again to select another function", "Primeira função executada, abra o script novamente para selecionar outra função") + "."
+		self.language_texts = self.Language.Item(self.texts)
 
 		self.large_bar = "-----"
+		self.dash_space = "-"
 
 		self.code_footer = "\n" + self.large_bar + "\n"
 
 	def Define_Folders(self):
-		name = __name__
-
-		if "." in __name__:
-			name = __name__.split(".")[0]
-
-		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches)
-
-		self.programming_network_folder = networks_folder + "Programming Network/"
-		Create_Folder(self.programming_network_folder, self.global_switches)
+		self.programming_network_folder = self.notepad_folders["effort"]["networks"]["root"] + "Programming Network/"
+		self.Folder.Create(self.programming_network_folder)
 
 		self.database_folder = self.programming_network_folder + "Database/"
-		Create_Folder(self.database_folder, self.global_switches)
+		self.Folder.Create(self.database_folder)
 
 		self.database_file_names = [
-		"Programming Languages",
+			"Programming languages",
 		]
 
 		self.database_files = {}
 
 		for file_name in self.database_file_names:
-			self.database_files[file_name] = self.database_folder + file_name + self.dot_text
-			Create_Text_File(self.database_files[file_name], self.global_switches)
+			self.database_files[file_name] = self.database_folder + file_name + ".txt"
+			self.File.Create(self.database_files[file_name])
 
 	def Define_Lists(self):
-		self.programming_languages = Create_Array_Of_File(self.database_files["Programming Languages"])
+		self.programming_languages = self.File.Contents(self.database_files["Programming languages"])["lines"]
 
 		self.programming_language_folders = {}
 
 		for programming_language in self.programming_languages:
 			self.programming_language_folders[programming_language] = self.database_folder + programming_language + "/"
-			Create_Folder(self.programming_language_folders[programming_language], self.global_switches)
+			self.Folder.Create(self.programming_language_folders[programming_language])
 
 		self.basic_functions = {
-			"Open_File": Open_File,
-			"Open_Link": Open_Link,
-			"Close_Program": Close_Program,
+			"self.File.Open": self.File.Open,
+			"self.Text.Open_Link": self.Text.Open_Link,
+			"self.File.Close": self.File.Close,
 		}
 
 		self.programming_mode_item_names = [
-		"Tools",
-		"Custom Tools",
-		"First Function",
-		"Final Function",
-		"Setting File",
-		]
-
-		self.programming_mode_setting_names = []
-
-		for item_name in self.programming_mode_item_names:
-			self.programming_mode_setting_names.append("Has " + item_name)
-
-		self.programming_language_setting_names = []
-
-		for item_name in self.programming_mode_item_names:
-			self.programming_language_setting_names.append("Has " + item_name)
-
-		self.programming_language_setting_names.append("Has Modes")
-
-		self.language_name_texts = [
-		"English Name",
-		"Portuguese Name"
+			"Tools",
+			"Custom tools",
+			"First function",
+			"Final function",
+			"Setting file",
+			"Modes",
 		]
 
 		self.tool_sub_names = [
-		"Programs To Close",
-		"Function",
-		"Close Tool",
+			self.language_texts["programs_to_close"],
+			self.language_texts["function, title()"],
+			self.language_texts["close_tool"],
 		]

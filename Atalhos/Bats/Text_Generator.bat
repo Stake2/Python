@@ -1,1 +1,0 @@
-python SS.py -text_generator

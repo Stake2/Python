@@ -1,365 +1,315 @@
 # Register_Task.py
 
-from Script_Helper import *
-
 from Tasks.Tasks import Tasks as Tasks
 
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 class Register_Task(Tasks):
-	def __init__(self, run_as_module = False, task_data = {}, show_text = True, skip_input = False, parameter_switches = None):
-		super().__init__(parameter_switches)
+	def __init__(self, task_dictionary = {}, show_text = True):
+		super().__init__()
 
-		self.run_as_module = run_as_module
-		self.task_data = task_data
-		self.show_text = show_text
-		self.skip_input = skip_input
+		self.task_dictionary = task_dictionary
 
-		if self.run_as_module == False:
-			self.Select_Type()
-			self.Ask_For_Task_Info()
+		if self.task_dictionary == {}:
+			self.Select_Task_Type()
+			self.Type_Task_Information()
 
-		if self.run_as_module == True:
-			self.experienced_media_type = self.task_data["experienced_media_type"]
-			self.english_task_description = self.task_data["english_task_description"]
-			self.portuguese_task_description = self.task_data["portuguese_task_description"]
-			self.experienced_media_time = self.task_data["experienced_media_time"]
+		if self.task_dictionary != {}:
+			self.task_dictionary["large_bar"] = False
+			self.task_dictionary["input"] = False
 
-			self.english_task_name = self.english_task_description.splitlines()[0]
+		self.Add_To_Task_Numbers()
+		self.Make_Task_Header()
 
-			if "." in self.english_task_name[-1]:
-				self.english_task_name = self.english_task_name[:-1]
+		self.Add_Task_To_Text_Files()
+		self.Create_Task_Text_Files()
 
-			self.portuguese_task_name = self.portuguese_task_description.splitlines()[0]
+		self.Check_First_Task_In_Year()
 
-			if "." in self.portuguese_task_name[-1]:
-				self.portuguese_task_name = self.portuguese_task_name[:-1]
+		self.diary_slim_text = Write_On_Diary_Slim_Module(self.task_dictionary["descriptions"][self.user_language], self.task_dictionary["time"], show_text = False)
 
-			self.task_name = Language_Item_Definer(self.english_task_name, self.portuguese_task_name)
+		self.Show_Task_Information()
 
-			self.language_experienced_media_type = self.experienced_media_type
+		if self.task_dictionary["large_bar"] == True:
+			print()
+			print(self.large_bar)
 
-			if " - " in self.experienced_media_type:
-				self.language_experienced_media_type = self.language_experienced_media_type.split(" - ")[Language_Item_Definer(0, 1)]
+		if self.task_dictionary["input"] == True:
+			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
 
-			self.task_descriptions = {
-			full_language_en: self.english_task_description,
-			full_language_pt: self.portuguese_task_description,
-			}
+	def Select_Task_Type(self):
+		options = self.task_types["en"]
+		language_options = self.task_types[self.user_language]
 
-		self.Add_To_Experienced_Numbers()
-		self.Make_Task_Text()
-		self.Add_Experienced_Media_To_Text_Files()
-		self.Create_Experienced_Media_Text_Files()
-		self.Check_First_Done_In_Year()
+		show_text = self.language_texts["task_types"]
+		select_text = self.language_texts["select_a_task_type"]
 
-		if self.show_text == True:
-			self.Show_Task_Data()
-			self.Register_Experienced_Media_On_Diary_Slim()
+		option_info = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
-			if self.skip_input == False:
-				print()
-				print("---")
-				print()
-				input(Language_Item_Definer("Press Enter when you finish reading the Info Summary", "Pressione Enter quando terminar de ler o Resumo de Informações") + ": ")
-
-	def Select_Type(self):
-		self.choice_text = Language_Item_Definer("Select a Task Type to use", "Selecione um Tipo de Tarefa para usar")
-		self.experienced_media_type = Select_Choice_From_List(self.language_media_types, local_script_name, self.choice_text, second_choices_list = self.media_types, return_second_item_parameter = True, return_number = True, add_none = True, second_space = False)
-
-		self.language_experienced_media_type = self.language_media_types[self.experienced_media_type[1] - 1]
-		self.experienced_media_type = self.experienced_media_type[0]
-
-	def Ask_For_Task_Info(self):
-		self.describe_task_text = Language_Item_Definer("Describe the Task in {}", "Descreva a Tarefa em {}")
-
-		translated_language = full_languages_translated_dict[full_language_en][language_number]
-		self.choice_text = self.describe_task_text.format(translated_language)
-		self.english_task_description = Text_Writer(self.choice_text + ":", finish_text = "default_list", second_space = False, capitalize_lines = True, auto_add_dots = True, accept_enter = True)
-
-		translated_language = full_languages_translated_dict[full_language_pt][language_number]
-		self.choice_text = self.describe_task_text.format(translated_language)
-		self.portuguese_task_description = Text_Writer(self.choice_text + ":", finish_text = "default_list", second_space = False, capitalize_lines = True, auto_add_dots = True, accept_enter = True)
-		self.experienced_media_time = time.strftime("%H:%M %d/%m/%Y")
-
-		self.english_task_name = self.english_task_description.splitlines()[0].replace(".", "")
-		self.portuguese_task_name = self.portuguese_task_description.splitlines()[0].replace(".", "")
-		self.task_name = Language_Item_Definer(self.english_task_name, self.portuguese_task_name)
-
-		self.task_descriptions = {
-			full_language_en: self.english_task_description,
-			full_language_pt: self.portuguese_task_description,
+		self.task_dictionary = {
+			"names": {},
+			"descriptions": {},
+			"type": option_info["option"],
+			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
+			"large_bar": True,
+			"input": True,
 		}
 
-	def Add_To_Experienced_Numbers(self):
-		self.media_type_experienced_number_file = self.per_media_type_number_files[self.experienced_media_type]
+	def Type_Task_Information(self):
+		for language in self.small_languages:
+			translated_language = self.translated_languages[language][self.user_language]
 
-		# Current Year Experienced Media Folder >
+			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
-			# Per Media Type >
+			self.task_dictionary["descriptions"][language] = self.Input.Lines(type_text)["string"]
+
+			self.task_dictionary["names"][language] = self.task_types["task_texts, type: dict"][language][self.task_dictionary["type"]] + "."
+
+	def Add_To_Task_Numbers(self):
+		self.task_type_number_file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
+
+		# Current Year Task History folder >
+			# Per Task Type >
 				# Files (Writes) > 
-					# [Media Type] >
+					# [Task Type] >
 						# Number.txt
 
 			# Writes:
 				# Number.txt
 
-		self.total_experienced_number = Change_Number(Create_Array_Of_File(self.total_experienced_number_current_year_file)[0], "more", 1)
-		self.media_type_experienced_number = Change_Number(Create_Array_Of_File(self.media_type_experienced_number_file)[0], "more", 1)
-
 		# Number.txt
-		text_to_write = str(self.total_experienced_number)
+		file = self.folders["Task History"][str(self.date["year"])]["Number"]
+		self.task_dictionary["number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
 
-		if Read_String(self.total_experienced_number_current_year_file) != text_to_write:
-			Write_To_File(self.total_experienced_number_current_year_file, text_to_write, self.global_switches)
+		self.File.Edit(file, self.task_dictionary["number"], "w")
 
-		# Files (Writes) > [Media Type] > Number.txt
-		text_to_write = str(self.media_type_experienced_number)
+		# Files (Writes) > [Task Type] > Number.txt
+		file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
+		self.task_dictionary["task_type_number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
 
-		if Read_String(self.media_type_experienced_number_file) != text_to_write:
-			Write_To_File(self.media_type_experienced_number_file, text_to_write, self.global_switches)
+		self.File.Edit(file, self.task_dictionary["task_type_number"], "w")
 
-	def Make_Task_Text(self):
-		self.task_text_file_contents = self.total_experienced_number + ", " + self.media_type_experienced_number + "\n" + self.experienced_media_type + "\n" + self.experienced_media_time + "\n\n" + self.english_task_description + "\n\n-\n\n" + self.portuguese_task_description
+	def Make_Task_Header(self):
+		i = 0
+		for task_type in self.task_types["en"]:
+			if task_type == self.task_dictionary["type"]:
+				self.task_dictionary["language_type"] = self.task_types[self.user_language][i]
 
-		self.replaced_experienced_media_time = Text_Replacer(Text_Replacer(self.experienced_media_time, "/", "-"), ":", ";")
+			i += 1
 
-		self.root_task_file_name = self.experienced_media_type + " " + self.replaced_experienced_media_time
-		self.media_type_task_file_name = self.replaced_experienced_media_time
+		self.task_dictionary["header"] = self.task_dictionary["number"] + ", " + self.task_dictionary["task_type_number"] + "\n"
+		self.task_dictionary["header"] += "\n"
+		self.task_dictionary["header"] += self.task_dictionary["type"] + "\n"
 
-	def Add_Experienced_Media_To_Text_Files(self):
-		# Current Year Experienced Media Folder >
+		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
+			self.task_dictionary["header"] += self.task_dictionary["language_type"] + "\n"
 
+		self.task_dictionary["header"] += "\n"
+
+		for language in self.small_languages:
+			self.task_dictionary["header"] += self.task_dictionary["descriptions"][language]
+
+			if language != self.small_languages[-1]:
+				self.task_dictionary["header"] += "\n\n-\n\n"
+
+		self.task_dictionary["time_replaced"] = self.task_dictionary["time"].replace(":", ";").replace("/", "-")
+
+		self.task_dictionary["number_type_and_time"] = self.task_dictionary["number"] + ". " + self.task_dictionary["type"] + " " + self.task_dictionary["time"]
+
+	def Add_Task_To_Text_Files(self):
+		# Current Year Task History folder >
 			# Appends:
 				# Tasks.txt
+				# Tasks.json
 				# Task Types.txt
 				# Times.txt
+
+		folder = self.folders["Task History"][str(self.date["year"])]
 
 		# Tasks.txt
-		text_to_append = self.english_task_name
-		Append_To_File(self.experienced_files[self.english_tasks_text], text_to_append, self.global_switches, check_file_length = True)
+		file = folder["Tasks"]
+		text = self.task_dictionary["names"]["en"].replace(".", "")
+
+		self.File.Edit(file, text, "a")
+
+		# Tasks.json
+		file = folder["Tasks.json"]
+		text = self.Language.JSON_To_Python(file)
+
+		for language in self.small_languages:
+			text[language].append(self.task_dictionary["names"][language].replace(".", ""))
+
+		text = self.Language.Python_To_JSON(text)
+
+		self.File.Edit(file, text, "a")
 
 		# Task Types.txt
-		text_to_append = self.experienced_media_type
-		Append_To_File(self.experienced_files["Task Types"], text_to_append, self.global_switches, check_file_length = True)
+		file = folder["Task Types"]
+		text = self.task_dictionary["type"]
+
+		self.File.Edit(file, text, "a")
 
 		# Times.txt
-		text_to_append = self.experienced_media_time
-		Append_To_File(self.experienced_files[self.times_english_text], text_to_append, self.global_switches, check_file_length = True)
+		file = folder["Times"]
+		text = self.task_dictionary["time"]
+
+		self.File.Edit(file, text, "a")
 
 		# ------------------ #
 
-		# Current Year Experienced Media Folder >
-
-			# Per Media Type >
+		# Current Year Task History folder >
+			# Per Task Type >
 				# Files (Appends) > 
-					# [Media Type] >
-						# Tasks.txt, Times.txt
+					# [Task Type] >
+						# Tasks.txt, Tasks.json, Times.txt
 
-		self.per_media_type_files_folder = self.per_media_type_files_folders[self.experienced_media_type]
-		self.tasks_file = self.per_media_type_task_files[self.experienced_media_type]
-		self.times_file = self.per_media_type_time_files[self.experienced_media_type]
+		folder = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]
 
-		# Files (Appends) > [Media Type] > Tasks.txt
-		text_to_append = self.english_task_name
-		Append_To_File(self.tasks_file, text_to_append, self.global_switches, check_file_length = True)
+		# Files (Appends) > [Task Type] > Tasks.txt
+		file = folder["Tasks"]
+		text = self.task_dictionary["names"]["en"].replace(".", "")
 
-		# Files (Appends) > [Media Type] > Times.txt
-		text_to_append = self.experienced_media_time
-		Append_To_File(self.times_file, text_to_append, self.global_switches, check_file_length = True)
+		self.File.Edit(file, text, "a")
 
-		# ------------------ #
+		# Files (Appends) > [Task Type] > Tasks.json
+		file = folder["Tasks.json"]
+		text = self.Language.JSON_To_Python(file)
 
-		# Current Year Experienced Media Folder >
-			# All Experienced Files (Creates) >
-				# [Experienced number]. [Media name] [Media task title].txt
+		for language in self.small_languages:
+			text[language].append(self.task_dictionary["names"][language].replace(".", ""))
+
+		text = self.Language.Python_To_JSON(text)
+
+		self.File.Edit(file, text, "a")
+
+		# Files (Appends) > [Task Type] > Times.txt
+		file = folder["Times"]
+		text = self.task_dictionary["time"]
+
+		self.File.Edit(file, text, "a")
+
+	def Create_Task_Text_Files(self):
+		# Current Year Task History folder >
+			# All Task Files (Creates) >
+				# [Task number]. [Task type] [Task time].txt
 					# Contents:
-					# [All Tasks Number]
-					# [Media type]
-					# [Experienced time]
+					# [All Tasks number], [Task type number]
 					# 
-					# [English Task description]
+					# [Task type]
+					# ([Mixed task type])
 					# 
-					# -
+					# [Task time]
 					# 
-					# [Portuguese Task description]
+					# [Language task descriptions]
 
-			# Per Media Type >
-				# Files (Appends) > 
-					# [Media Type] >
-						# Tasks.txt, Times.txt, Number.txt
+		# [Task number]. [Task type] [Task time].txt
+		self.task_dictionary["file"] = self.folders["Task History"][str(self.date["year"])]["All Task Files"] + self.task_dictionary["number_type_and_time"] + ".txt"
+		self.File.Create(self.task_dictionary["file"])
 
-				# Folders >
-					# [Media Type] (Creates) >
-						# [Media name] >
-							# [Media task title without media name].txt
-								# Contents:
-								# [All Tasks Number], [Per Media Type Number]
-								# [Media type]
-								# [Experienced time]
-								# 
-								# [English Task description]
-								# 
-								# -
-								# 
-								# [Portuguese Task description]
-
-			# Appends:
-				# Tasks.txt
-				# Task Types.txt
-				# Times.txt
-				# Number.txt
-
-		text = ""
-
-	def Create_Experienced_Media_Text_Files(self):
-		# Current Year Experienced Media Folder >
-
-			# All Experienced Files (Creates) >
-				# [Experienced number]. [Media name] [Media task title].txt
-					# Contents:
-					# [All Tasks Number]
-					# [Media type]
-					# [Experienced time]
-					# 
-					# [English Task description]
-					# 
-					# -
-					# 
-					# [Portuguese Task description]
-
-		# [Experienced number]. [Media name] [Media task title].txt
-		self.current_task_file = self.all_experienced_files_current_year_folder + str(self.total_experienced_number) + ". " + self.root_task_file_name + self.dot_text
-		Create_Text_File(self.current_task_file, self.global_switches)
-
-		text_to_write = self.task_text_file_contents
-		Write_To_File(self.current_task_file, text_to_write, self.global_switches)
+		text = self.task_dictionary["header"]
+		self.File.Edit(self.task_dictionary["file"], text, "w")
 
 		# ------------------ #
 
-		self.per_media_type_folder = self.per_media_type_folder_folders_dict[self.experienced_media_type]
-
-		# Current Year Experienced Media Folder >
-
-			# Per Media Type >
+		# Current Year Task History folder >
+			# Per Task Type >
 				# Folders >
-					# [Media Type] (Creates) >
-						# [Media name] >
-							# [Media task title without media name].txt
-								# Contents:
-								# [All Tasks Number], [Per Media Type Number]
-								# [Media type]
-								# [Experienced time]
-								# 
-								# [English Task description]
-								# 
-								# -
-								# 
-								# [Portuguese Task description]
+					# [Task Type] (Creates) >
+						# [Task time].txt
+							# Contents:
+							# [All Tasks number], [Task type number]
+							# 
+							# [Task type]
+							# ([Mixed task type])
+							# 
+							# [Task time]
+							# 
+							# [Language task descriptions]
 
-		self.per_media_type_media_task_file = self.per_media_type_folder + self.media_type_task_file_name + self.dot_text
-		Create_Text_File(self.per_media_type_media_task_file, self.global_switches)
+		folder = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Folders"][self.task_dictionary["type"]]["root"]
 
-		text_to_write = self.task_text_file_contents
-		Write_To_File(self.per_media_type_media_task_file, text_to_write, self.global_switches)
+		self.task_dictionary["task_type_file"] = folder + self.task_dictionary["time_replaced"] + ".txt"
+		Create_Text_File(self.task_dictionary["task_type_file"])
 
-		# ------------------ #
+		text = self.task_dictionary["header"]
+		self.File.Edit(self.task_dictionary["task_type_file"], text, "w")
 
-		text = ""
-
-	def Check_First_Done_In_Year(self):
-		self.firsts_of_the_year_language_texts = {
-		full_language_en: "Firsts Of The Year",
-		full_language_pt: "Primeiros Do Ano",
+	def Check_First_Task_In_Year(self):
+		self.firsts_of_the_year_folders = {
+			"root": {},
+			"sub_folder": {},
+			"type": {},
 		}
 
-		self.media_language_text = self.experienced_media_type
+		i = 0
+		# Create folders
+		for language in self.small_languages:
+			full_language = self.full_languages[language]
 
-		if self.experienced_media_type == "Stories - Histórias":
-			self.media_language_text = "Art/Story - Arte/História"
+			# Root folders
+			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
+			self.Folder.Create(self.firsts_of_the_year_folders["root"][language])
 
-		if self.experienced_media_type == "Writing - Escrita":
-			self.media_language_text = "Art/Story Chapter - Arte/Capítulo de História"
+			# Subfolders
+			self.firsts_of_the_year_folders["sub_folder"][language] = self.firsts_of_the_year_folders["root"][language] + self.task_types["sub_folders, type: dict"][self.task_dictionary["type"]] + "/"
+			self.Folder.Create(self.firsts_of_the_year_folders["sub_folder"][language])
 
-		if self.experienced_media_type == "Python" or self.experienced_media_type == "PHP":
-			self.media_language_text = "Programming/" + self.experienced_media_type + " - " + "Programação/" + self.experienced_media_type
+			# Task type folders
+			self.firsts_of_the_year_folders["type"][language] = self.firsts_of_the_year_folders["sub_folder"][language] + self.task_types["type_folders, type: dict"][self.task_dictionary["type"]] + "/"
+			self.Folder.Create(self.firsts_of_the_year_folders["type"][language])
 
-		if self.experienced_media_type == "Drawings - Desenhos":
-			self.media_language_text = "Art/Drawing - Arte/Desenho"
+			i += 1
 
-		if self.experienced_media_type == "Videos - Vídeos":
-			self.media_language_text = "Art/Video - Arte/Vídeo"
+		self.task_dictionary["first_task_in_year"] = False
 
-		english = self.media_language_text
-		portuguese = self.media_language_text
+		file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Tasks"]
 
-		if " - " in self.media_language_text:
-			self.media_language_text = self.media_language_text.split(" - ")
-			english = self.media_language_text[0]
-			portuguese = self.media_language_text[1]
+		if self.File.Contents(file)["length"] == 0:
+			self.task_dictionary["first_task_in_year"] = True
 
-		self.media_language_texts = {
-		full_language_en: english,
-		full_language_pt: portuguese,
-		}
+		if self.task_dictionary["first_task_in_year"] == True:
+			for language in self.small_languages:
+				folder = self.firsts_of_the_year_folders["sub_folder"][language]
 
-		self.firsts_of_the_year_folders = {}
-		self.firsts_of_the_year_media_type_folders = {}
+				self.task_dictionary["first_task_in_year_file"] = folder + self.task_dictionary["number_type_and_time"] + ".txt"
+				self.File.Create(self.task_dictionary["first_task_in_year_file"])
 
-		for full_language in full_languages_not_none:
-			self.firsts_of_the_year_folders[full_language] = current_notepad_year_folder + full_language + "/" + self.firsts_of_the_year_language_texts[full_language] + "/"
-			self.firsts_of_the_year_media_type_folders[full_language] = self.firsts_of_the_year_folders[full_language] + self.media_language_texts[full_language] + "/"
+				self.File.Edit(self.task_dictionary["first_task_in_year_file"], self.task_dictionary["header"], "w")
 
-			Create_Folder(self.firsts_of_the_year_folders[full_language], self.global_switches)
-			Create_Folder(self.firsts_of_the_year_media_type_folders[full_language], self.global_switches)
+	def Show_Task_Information(self):
+		print()
+		print(self.large_bar)
+		print()
 
-		self.first_done_task_file_name = self.total_experienced_number + ". " + self.root_task_file_name
+		print(self.language_texts["this_task_was_registered"] + ":")
 
-		self.is_first_made_task_per_type = False
+		for language in self.small_languages:
+			translated_language = self.translated_languages[language][self.user_language]
 
-		if len(Create_Array_Of_File(self.tasks_file)) == 0:
-			self.is_first_made_task_per_type = True
-
-		if self.is_first_made_task_per_type == True:
-			for full_language in full_languages_not_none:
-				media_type_folder = self.firsts_of_the_year_media_type_folders[full_language]
-
-				self.first_done_task_file = media_type_folder + self.first_done_task_file_name + self.dot_text
-				Create_Text_File(self.first_done_task_file, self.global_switches)
-
-				self.text_to_write = self.task_text_file_contents
-				Write_To_File(self.first_done_task_file, self.text_to_write, self.global_switches)
-
-				if self.global_switches["verbose"] == True:
-					print("[" + self.text_to_write + "]")
-
-	def Register_Experienced_Media_On_Diary_Slim(self):
-		Write_On_Diary_Slim_Module(self.portuguese_task_description, self.experienced_media_time, self.global_switches, show_text = self.show_text)
-
-	def Show_Task_Data(self):
-		if self.skip_input == False:
+			print("\t" + translated_language + ":")
+			print("\t" + self.task_dictionary["names"][language])
 			print()
 
-		self.registered_task_text = Language_Item_Definer("This Task was registred", "Esta Tarefa foi registrada") + ":"
+		print(self.language_texts["type, title()"] + ":")
 
-		if self.global_switches["write_to_file"] == False:
-			self.registered_task_text = self.registered_task_text.replace(Language_Item_Definer("was", "foi"), Language_Item_Definer("was not", "não foi"))
-			self.registered_task_text = self.registered_task_text.replace(":", ' ("write_to_file" ' + Language_Item_Definer('is "False"', 'é "False"') + "):")
+		text = self.task_dictionary["type"]
 
-		print("---")
-		print()
-		print(self.registered_task_text)
-		print(self.task_name)
-		print()
-		print(Language_Item_Definer("Type", "Tipo") + ": " + self.experienced_media_type)
-		print(Language_Item_Definer("Type in Language", "Tipo no Idioma") + ": " + self.language_experienced_media_type)
-		print()
-		print(Language_Item_Definer("When", "Quando") + ": " + self.experienced_media_time)
+		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
+			text = "\t" + self.task_dictionary["type"]
+
+		print(text)
+
+		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
+			print(self.task_dictionary["language_type"])
+
 		print()
 
-		for language in full_languages_not_none:
-			translated_language = full_languages_translated_dict[language][language_number]
+		print(self.language_texts["when, title()"] + ":")
+		print(self.task_dictionary["time"])
 
-			print(Language_Item_Definer("{} Task description", "Descrição da Tarefa em {}").format(translated_language) + ": ")
-			print("[" + self.task_descriptions[language] + "]")
+		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.language_texts["can_be_long"] + ")")
+
+		if show_task_description == True:
 			print()
+			print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
+			print("[" + self.task_dictionary["descriptions"][self.user_language] + "]")

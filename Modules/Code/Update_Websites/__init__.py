@@ -1,7 +1,5 @@
 # Update_Websites.py
 
-from Script_Helper import *
-
 from Code.Code import Code as Code
 
 class Update_Websites(Code):
@@ -26,12 +24,15 @@ class Update_Websites(Code):
 
 			i = 0
 			while self.update_more_websites == True:
-				self.update_more_websites = Yes_Or_No_Definer(self.update_more_websites_text, second_space = False)
+				self.update_more_websites = self.Input.Yes_Or_No(self.language_texts["update_more_websites"])
 
 				if self.update_more_websites == True:
 					print()
+
 					self.Select_Website()
+
 					print()
+
 					self.Update_Website(open = True, close = False)
 
 					i += 1
@@ -45,100 +46,114 @@ class Update_Websites(Code):
 		self.Open_Git_Console_Window()
 
 	def Define_Variables(self):
+		self.small_languages_backup = self.small_languages.copy()
+
 		self.languages = [
-		"General",
-		"English",
-		"Portuguese",
+			"general",
+			self.translated_languages["en"]["en"],
+			self.translated_languages["pt"]["en"],
 		]
 
-		self.beautiful_language_names = {
-		"General": Language_Item_Definer("General language", "Idioma Geral"),
-		"English": Language_Item_Definer("English", "Inglês"),
-		"Portuguese": Language_Item_Definer("Portuguese", "Português"),
-		}
+		self.translated_languages["general"] = {}
+
+		for language in self.small_languages:
+			self.translated_languages["general"][language] = self.texts["general"][language]
+
+		self.small_languages.insert(0, "general")
+		self.full_languages["general"] = self.language_texts["general"]
 
 		self.xampp_programs = [
-		"xampp-control",
-		"httpd",
-		"mysql",
+			"xampp-control",
+			"httpd",
+			"mysql",
 		]
 
-		self.finished_loading_text = Language_Item_Definer("Press any key when the pages finished loading", "Pressione qualquer tecla quando as páginas terminarem de carregar") + ": "
+		self.websites = {
+			"files": {},
+		}
 
-		self.update_more_websites_text = Language_Item_Definer("Update more websites", "Atualizar mais sites")
+		for language in self.small_languages:
+			if language != "general":
+				self.websites["files"][language] = self.mega_folders["php"]["variables"]["website"]["list"]["root"] + self.translated_languages[language]["en"] + " websites.txt"
 
-		self.english_websites_file = websites_list_folder + "English Websites" + self.dot_text
-		self.english_websites = Create_Array_Of_File(self.english_websites_file)
+				self.websites[language] = self.File.Contents(self.websites["files"][language])["lines"]
 
-		self.portuguese_websites_file = websites_list_folder + "Portuguese Websites" + self.dot_text
-		self.portuguese_websites = Create_Array_Of_File(self.portuguese_websites_file)
+		self.websites["general"] = self.websites["en"]
 
-		self.language_websites = Language_Item_Definer(self.english_websites, self.portuguese_websites)
-
-		self.update_website_url_template = Create_Array_Of_File(php_url_format_text_file)[1]
+		self.php_url_format_file = self.mega_folders["php"]["variables"]["website"]["root"] + "PHP URL Format.txt"
+		self.update_website_url_template = self.File.Contents(self.php_url_format_file)["lines"][1]
 
 	def Select_Website(self):
 		if self.module_website == None:
-			self.choice_text = Language_Item_Definer("Select a website to update its HTML contents", "Selecione um site para atualizar seus conteúdos de HTML")
-			self.choice_info = Select_Choice_From_List(self.language_websites, local_script_name, self.choice_text, second_choices_list = self.english_websites, return_second_item_parameter = True, return_number = True, add_none = True, first_space = False, second_space = False)
-			self.website_number = self.choice_info[1] - 1
+			self.show_text = self.language_texts["websites"]
+			self.select_text = self.language_texts["select_a_website_to_update_its_html_contents"]
+
+			self.website_number = self.Input.Select(self.websites["en"], self.websites[self.user_language], show_text = self.show_text, select_text = self.select_text)["number"]
 
 		if self.module_website != None:
 			self.websites_number = 0
-			for website in self.english_websites:
+			for website in self.websites["en"]:
 				if self.module_website == website:
 					self.website_number = self.websites_number
 
 				self.websites_number += 1
 
-		self.website = self.english_websites[self.website_number]
-		self.language_website_name = self.language_websites[self.website_number]
+		self.website = {}
+
+		for language in self.small_languages:
+			self.website[language] = self.websites[language][self.website_number]
 
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
-			if self.global_switches["testing_script"] == False:
-				Open_File(xampp)
-				time.sleep(3)
+			if self.global_switches["testing"] == False:
+				self.File.Open(self.root_folders["xampp"]["xampp-control"])
+
+				self.Date.Sleep(3)
 
 		if close == True:
-			if self.global_switches["testing_script"] == False:
+			if self.global_switches["testing"] == False:
 				for program in self.xampp_programs:
-					Close_Program(program)
+					self.File.Close(program)
 
 	def Update_Website(self, open = True, close = True):
-		print("---")
 		print()
-		print(Language_Item_Definer("Updating this website", "Atualizando esse site") + ": ")
-		print(self.language_website_name)
+		print(self.large_bar)
 		print()
+		print(self.language_texts["updating_this_website"] + ":")
+		print(self.website[self.user_language])
 
-		for language in self.languages:
-			self.website_url = self.update_website_url_template.format(self.website, language)
+		self.website["links"] = {}
 
-			print("---")
+		for language in self.small_languages:
+			full_language = self.full_languages[language]
+
+			self.website["links"][language] = self.update_website_url_template.format(self.website[language], full_language)
+
 			print()
-			print(Language_Item_Definer("Website link", "Link do site") + ": ")
-			print(self.website_url)
+			print("-")
 			print()
-			print(Language_Item_Definer("Language", "Idioma") + ": " + self.beautiful_language_names[language])
+			print(self.language_texts["website_link"] + ":")
+			print(self.website["links"][language])
 			print()
+			print(self.Language.language_texts["language, title()"] + ":")
+			print(self.translated_languages[language][self.user_language])
 
-			if self.global_switches["testing_script"] == False:
-				Open_Link(self.website_url)
+			if self.global_switches["testing"] == False:
+				self.File.Open(self.website["links"][language])
 
-				time.sleep(5)
+				self.Date.Sleep(5)
 
-		print("---")
 		print()
+		print(self.large_bar)
 
-		input(self.finished_loading_text)
+		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
 
 	def Open_Git_Console_Window(self):
-		files = List_Files(script_shortcuts_white_icons_folder, add_none = False)
+		files = self.Folder.Contents(self.apps_folders["shortcuts"]["white_shortcuts"])["file"]["list"]
 
 		for file in files:
 			if "GitHub" in file:
 				git_bat_file = file
 
-		if self.global_switches["testing_script"] == False:
-			Open_Link(git_bat_file)
+		if self.global_switches["testing"] == False:
+			self.Text.Open_Link(git_bat_file)

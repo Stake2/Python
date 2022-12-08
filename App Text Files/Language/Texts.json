@@ -1,0 +1,434 @@
+{
+    "your_{}_is": {
+        "pt": "Seu {} é",
+        "en": "Your {} is"
+    },
+    "custom": {
+        "en": "custom",
+        "pt": {
+            "masculine": "personalizado",
+            "feminine": "personalizada"
+        }
+    },
+    "language": {
+        "pt": "idioma",
+        "en": "language"
+    },
+    "languages": {
+        "pt": "idiomas",
+        "en": "languages"
+    },
+    "language_with_country": {
+        "pt": "idioma com país",
+        "en": "language with country"
+    },
+    "full_language": {
+        "pt": "idioma completo",
+        "en": "full language"
+    },
+    "class": {
+        "pt": "classe",
+        "en": "class"
+    },
+    "folder": {
+        "en": "folder",
+        "pt": "pasta"
+    },
+    "file": {
+        "en": "file",
+        "pt": "arquivo"
+    },
+    "created": {
+        "en": "created",
+        "pt": {
+            "masculine": "criado",
+            "feminine": "criada"
+        }
+    },
+    "edited": {
+        "en": "edited",
+        "pt": {
+            "masculine": "editado",
+            "feminine": "editada"
+        }
+    },
+    "settings": {
+        "en": "settings",
+        "pt": "configurações"
+    },
+    "type_or_paste_the_text": {
+        "en": "Type or paste the text",
+        "pt": "Digite ou cole o texto"
+    },
+    "yes": {
+        "en": "yes",
+        "pt": "sim"
+    },
+    "no": {
+        "en": "no",
+        "pt": "não"
+    },
+	"options": {
+		"pt": "opções",
+		"en": "options"
+	},
+	"options, title()": {
+		"pt": "Opções",
+		"en": "Options"
+	},
+	"select_an_item_from_the_list": {
+		"en": "Select an item from the list",
+		"pt": "Selecione um item da lista"
+	},
+    "yes_or_no": {
+        "en": "yes or no",
+        "pt": "sim ou não"
+    },
+    "select_one_{}_(number_or_word)": {
+        "en": "Select one {} (number or word)",
+        "pt": {
+            "masculine": "Selecione um {} (número ou palavra)",
+            "feminine": "Selecione uma {} (número ou palavra)"
+        }
+    },
+    "you_selected_this_option": {
+        "en": "You selected this option",
+        "pt": "Você selecionou essa opção"
+    },
+    "press_enter_when_you_finish_reading_the_info_summary": {
+        "en": "Press Enter when you finish reading the info summary",
+        "pt": "Pressione Enter quando você terminar de ler o resumo de informações"
+    },
+    "finish_selection": {
+        "en": "Finish selection",
+        "pt": "Terminar seleção"
+    },
+    "list": {
+        "en": "list",
+        "pt": "lista"
+    },
+    "custom_language": {
+        "en": "custom language",
+        "pt": "idioma personalizado"
+    },
+    "this_folder_already_exists": {
+        "en": "This folder already exists",
+        "pt": "Esta pasta já existe"
+    },
+    "this_folder_does_not_exists": {
+        "en": "This folder does not exists",
+        "pt": "Esta pasta não existe"
+    },
+    "this_file_already_exists": {
+        "en": "This file already exists",
+        "pt": "Este arquivo já existe"
+    },
+    "this_file_does_not_exists": {
+        "en": "This file does not exists",
+        "pt": "Este arquivo não existe"
+    },
+    "select_{}_or_{}_(number_or_word)": {
+        "en": "Select Yes or No (number or word)",
+        "pt": "Selecione Sim ou Não (número ou palavra)"
+    },
+    "your_{}_is, title()": {
+        "pt": "Seu {} É",
+        "en": "Your {} Is"
+    },
+    "custom, title(), masculine": {
+        "pt": "personalizado"
+    },
+    "custom, title(), feminine": {
+        "pt": "personalizada"
+    },
+    "custom, title()": {
+        "pt": "personalizado",
+        "en": "Custom"
+    },
+    "language, title()": {
+        "pt": "Idioma",
+        "en": "Language"
+    },
+    "languages, title()": {
+        "pt": "Idiomas",
+        "en": "Languages"
+    },
+    "language_with_country, title()": {
+        "pt": "Idioma Com País",
+        "en": "Language With Country"
+    },
+    "full_language, title()": {
+        "pt": "Idioma Completo",
+        "en": "Full Language"
+    },
+    "class, title()": {
+        "pt": "Classe",
+        "en": "Class"
+    },
+    "folder, title()": {
+        "pt": "Pasta",
+        "en": "Folder"
+    },
+    "file, title()": {
+        "pt": "Arquivo",
+        "en": "File"
+    },
+    "created, title(), masculine": {
+        "pt": "criado"
+    },
+    "created, title(), feminine": {
+        "pt": "criada"
+    },
+    "created, title()": {
+        "pt": "criado",
+        "en": "Created"
+    },
+    "edited, title(), masculine": {
+        "pt": "editado"
+    },
+    "edited, title(), feminine": {
+        "pt": "editada"
+    },
+    "edited, title()": {
+        "pt": "editado",
+        "en": "Edited"
+    },
+    "settings, title()": {
+        "pt": "Configurações",
+        "en": "Settings"
+    },
+    "type_or_paste_the_text, title()": {
+        "pt": "Digite Ou Cole O Texto",
+        "en": "Type Or Paste The Text"
+    },
+    "yes, title()": {
+        "pt": "Sim",
+        "en": "Yes"
+    },
+    "no, title()": {
+        "pt": "Não",
+        "en": "No"
+    },
+    "yes_or_no, title()": {
+        "pt": "Sim Ou Não",
+        "en": "Yes Or No"
+    },
+    "select_one_{}_(number_or_word), title(), masculine": {
+        "pt": "Selecione um {} (número ou palavra)"
+    },
+    "select_one_{}_(number_or_word), title(), feminine": {
+        "pt": "Selecione uma {} (número ou palavra)"
+    },
+    "select_one_{}_(number_or_word), title()": {
+        "pt": "Selecione um {} (número ou palavra)",
+        "en": "Select One {} (Number Or Word)"
+    },
+    "you_selected_this_option, title()": {
+        "pt": "Você Selecionou Essa Opção",
+        "en": "You Selected This Option"
+    },
+    "press_enter_when_you_finish_reading_the_info_summary, title()": {
+        "pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+        "en": "Press Enter When You Finish Reading The Info Summary"
+    },
+    "finish_selection, title()": {
+        "pt": "Terminar Seleção",
+        "en": "Finish Selection"
+    },
+    "list, title()": {
+        "pt": "Lista",
+        "en": "List"
+    },
+    "custom_language, title()": {
+        "pt": "Idioma Personalizado",
+        "en": "Custom Language"
+    },
+    "this_folder_already_exists, title()": {
+        "pt": "Esta Pasta Já Existe",
+        "en": "This Folder Already Exists"
+    },
+    "this_folder_does_not_exists, title()": {
+        "pt": "Esta Pasta Não Existe",
+        "en": "This Folder Does Not Exists"
+    },
+    "this_file_already_exists, title()": {
+        "pt": "Este Arquivo Já Existe",
+        "en": "This File Already Exists"
+    },
+    "this_file_does_not_exists, title()": {
+        "pt": "Este Arquivo Não Existe",
+        "en": "This File Does Not Exists"
+    },
+    "select_{}_or_{}_(number_or_word), title()": {
+        "pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+        "en": "Select Yes Or No (Number Or Word)"
+    },
+    "your_{}_is, title()": {
+        "pt": "Seu {} É",
+        "en": "Your {} Is"
+    },
+    "custom, title(), masculine, title()": {
+        "pt": "Personalizado"
+    },
+    "custom, title(), feminine, title()": {
+        "pt": "Personalizada"
+    },
+    "custom, title()": {
+        "pt": "Personalizado",
+        "en": "Custom"
+    },
+    "language, title()": {
+        "pt": "Idioma",
+        "en": "Language"
+    },
+    "languages, title()": {
+        "pt": "Idiomas",
+        "en": "Languages"
+    },
+    "language_with_country, title()": {
+        "pt": "Idioma Com País",
+        "en": "Language With Country"
+    },
+    "full_language, title()": {
+        "pt": "Idioma Completo",
+        "en": "Full Language"
+    },
+    "class, title()": {
+        "pt": "Classe",
+        "en": "Class"
+    },
+    "folder, title()": {
+        "pt": "Pasta",
+        "en": "Folder"
+    },
+    "file, title()": {
+        "pt": "Arquivo",
+        "en": "File"
+    },
+    "created, title(), masculine, title()": {
+        "pt": "Criado"
+    },
+    "created, title(), feminine, title()": {
+        "pt": "Criada"
+    },
+    "created, title()": {
+        "pt": "Criado",
+        "en": "Created"
+    },
+    "edited, title(), masculine, title()": {
+        "pt": "Editado"
+    },
+    "edited, title(), feminine, title()": {
+        "pt": "Editada"
+    },
+    "edited, title()": {
+        "pt": "Editado",
+        "en": "Edited"
+    },
+    "settings, title()": {
+        "pt": "Configurações",
+        "en": "Settings"
+    },
+    "type_or_paste_the_text, title()": {
+        "pt": "Digite Ou Cole O Texto",
+        "en": "Type Or Paste The Text"
+    },
+    "yes, title()": {
+        "pt": "Sim",
+        "en": "Yes"
+    },
+    "no, title()": {
+        "pt": "Não",
+        "en": "No"
+    },
+    "yes_or_no, title()": {
+        "pt": "Sim Ou Não",
+        "en": "Yes Or No"
+    },
+    "select_one_{}_(number_or_word), title(), masculine, title()": {
+        "pt": "Selecione Um {} (Número Ou Palavra)"
+    },
+    "select_one_{}_(number_or_word), title(), feminine, title()": {
+        "pt": "Selecione Uma {} (Número Ou Palavra)"
+    },
+    "select_one_{}_(number_or_word), title()": {
+        "pt": "Selecione Um {} (Número Ou Palavra)",
+        "en": "Select One {} (Number Or Word)"
+    },
+    "you_selected_this_option, title()": {
+        "pt": "Você Selecionou Essa Opção",
+        "en": "You Selected This Option"
+    },
+    "press_enter_when_you_finish_reading_the_info_summary, title()": {
+        "pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+        "en": "Press Enter When You Finish Reading The Info Summary"
+    },
+    "finish_selection, title()": {
+        "pt": "Terminar Seleção",
+        "en": "Finish Selection"
+    },
+    "list, title()": {
+        "pt": "Lista",
+        "en": "List"
+    },
+    "custom_language, title()": {
+        "pt": "Idioma Personalizado",
+        "en": "Custom Language"
+    },
+    "this_folder_already_exists, title()": {
+        "pt": "Esta Pasta Já Existe",
+        "en": "This Folder Already Exists"
+    },
+    "this_folder_does_not_exists, title()": {
+        "pt": "Esta Pasta Não Existe",
+        "en": "This Folder Does Not Exists"
+    },
+    "this_file_already_exists, title()": {
+        "pt": "Este Arquivo Já Existe",
+        "en": "This File Already Exists"
+    },
+    "this_file_does_not_exists, title()": {
+        "pt": "Este Arquivo Não Existe",
+        "en": "This File Does Not Exists"
+    },
+    "select_{}_or_{}_(number_or_word), title()": {
+        "pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+        "en": "Select Yes Or No (Number Or Word)"
+    },
+	"type_the_text_in_{}": {
+		"pt": "Digite o texto em {}",
+		"en": "Type the text in {}"
+	},
+	"copied_text": {
+		"pt": "Texto copiado",
+		"en": "Copied text"
+	},
+	"is_the_json_file_empty": {
+		"pt": "O arquivo JSON está vazio",
+		"en": "Is the JSON file empty"
+	},
+	"select_one_class_to_execute": {
+		"en": "Select one class to execute",
+		"pt": "Selecione uma classe para executar"
+	},
+	"type_or_paste_the_folder_where_you_want_to_create_the_settings_file": {
+		"en": "Type or paste the folder where you want to create the settings file",
+		"pt": "Digite ou cole a pasta onde você quer criar o arquivo de configurações"
+	},
+	"testing": {
+		"en": "Testing: Yes",
+		"pt": "Testando: Sim"
+	},
+	"verbose": {
+		"en": "Verbose on.",
+		"pt": "Verbose ativado."
+	},
+	"user_information": {
+		"en": "User information:\nShown",
+		"pt": "Informações do usuário:\nMostradas"
+	},
+	"the_user_information": {
+		"en": "user information",
+		"pt": "informações do usuário"
+	}
+}

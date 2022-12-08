@@ -1,0 +1,18 @@
+{
+	"show_text": {
+		"en": "Manage Years",
+		"pt": "Gerenciar Anos"
+	},
+	"Verify_Current_Year": {
+		"en": "Verify current Year (for start of Year)",
+		"pt": "Verificar Ano atual (para começo do Ano)"
+	},
+	"Create_Year_Summary": {
+		"en": "Create Year summary (for end of Year)",
+		"pt": "Criar resumo de Ano (para fim do Ano)"
+	},
+	"Show_Year_Information": {
+		"en": "Show Year information",
+		"pt": "Mostrar informações de Ano"
+	}
+}

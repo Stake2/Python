@@ -1,22 +1,41 @@
 # Social_Networks.py
 
-# Script Helper importer
-from Script_Helper import *
-
 from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
 
-def Function_Choose():
-	functions = [
-		Open_Social_Network,
-	]
+from Language import Language as Language
+from Input import Input as Input
+from Folder import Folder as Folder
 
-	descriptions = [
-		Language_Item_Definer("Open Social Network", "Abrir Rede Social"),
-	]
+class Run():
+	def __init__(self):
+		# Global Switches dictionary
+		self.global_switches = {
+			"verbose": False,
+		}
 
-	choice_text = Language_Item_Definer("Manage Social Networks", "Gerenciar Redes Sociais")
+		self.Language = Language(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
 
-	Choose_Function(functions, descriptions, alternative_choice_text = choice_text)
+		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
+
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+
+		self.classes = [
+			Open_Social_Network,
+		]
+
+		self.class_descriptions = []
+
+		for class_ in self.classes:
+			class_description = self.descriptions[class_.__name__]
+
+			self.class_descriptions.append(self.Language.Item(class_description))
+
+		self.language_texts = self.Language.Item(self.descriptions)
+
+		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
 
 if __name__ == "__main__":
-	Function_Choose()
+	Run()

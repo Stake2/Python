@@ -1,0 +1,70 @@
+{
+	"type_the_{}_of_the_python_module_in_{}": {
+		"en": "Type the {} of the Python module in {}",
+		"pt": "Digite as {} do módulo de Python em {}"
+	},
+	"type_the_name_of_the_new_python_module": {
+		"pt": "Digite o nome do novo módulo de Python",
+		"en": "Type the name of the new Python module"
+	},
+	"descriptions": {
+		"en": "descriptions",
+		"pt": "descrições"
+	},
+	"classes": {
+		"en": "classes",
+		"pt": "classes"
+	},
+	"descriptions_of_classes": {
+		"en": "descriptions of classes",
+		"pt": "descrições das classes"
+	},
+	"classes_and_their_descriptions": {
+		"en": "Classes and their descriptions",
+		"pt": "Classes e suas descrições"
+	},
+	"and": {
+		"en": "and",
+		"pt": "e"
+	},
+	"{}_lines_in_thar_order": {
+		"pt": "{} linhas, nesta ordem",
+		"en": "{} lines, in that order"
+	},
+	"separated_by_lines": {
+		"pt": "separadas por linhas",
+		"en": "separated by lines"
+	},
+	"module_name": {
+		"pt": "Nome do módulo",
+		"en": "Module name"
+	},
+	"module_descriptions": {
+		"pt": "Descrições do módulo",
+		"en": "Module descriptions"
+	},
+	"create_more_texts": {
+		"pt": "Criar mais textos",
+		"en": "Create more texts"
+	},
+	"these_are_the_modules_that_exist_in_the_modules_folder": {
+		"pt": "Estes são os módulos que existem na pasta de módulos",
+		"en": "These are the modules that exist on the modules folder"
+	},
+	"utility_modules": {
+		"en": "Utility modules",
+		"pt": "Módulos utilitários"
+	},
+	"usage_modules": {
+		"en": "Usage modules",
+		"pt": "Módulos de uso"
+	},
+	"modules_converted_to_the_new_style": {
+		"en": "Modules converted to the new style",
+		"pt": "Módulos convertidos para o novo estilo"
+	},
+	"converted_to_the_new_style": {
+		"en": "converted to the new style",
+		"pt": "convertido para o novo estilo"
+	}
+}

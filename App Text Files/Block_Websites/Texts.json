@@ -1,0 +1,62 @@
+{
+	"this_website_is_unblocked_for_{}_minutes": {
+		"pt": "Este site está desbloqueado por {} minutos",
+		"en": "This website is unblocked for {} minutes"
+	},
+	"these_websites_are_unblocked_for_{}_minutes": {
+		"pt": "Estes sites estão desbloqueados por {} minutos",
+		"en": "These websites are unblocked for {} minutes"
+	},
+	"working_time": {
+		"pt": "horário de trabalho",
+		"en": "working time"
+	},
+	"you_are_not_in_working_time_all_websites_are_unlocked": {
+		"pt": "Você não está no horário de trabalho, todos os sites estão desbloqueados",
+		"en": "You are not in working time, all websites are unlocked"
+	},
+	"the_websites_are_{}_because_you_are{}_in_working_time": {
+		"pt": "Os sites estão {} porque você{} está no horário de trabalho",
+		"en": "The websites are {} because you are{} in working time"
+	},
+	"blocked_websites": {
+		"pt": "Sites bloqueados",
+		"en": "blocked websites"
+	},
+	"unlocked_websites": {
+		"pt": "Sites desbloqueados",
+		"en": "Unlocked websites"
+	},
+	"blocked": {
+		"pt": "bloqueados",
+		"en": "blocked"
+	},
+	"unlocked": {
+		"pt": "desbloqueados",
+		"en": "unlocked"
+	},
+	"blocking_state": {
+		"pt": "Estado de bloqueio",
+		"en": "Blocking state"
+	},
+	"this_file_will_be_updated_every_{}_minutes_reopen_it_to_update": {
+		"pt": "Este arquivo vai ser atualizado a cada {} minutos, reabra-o para atualizar",
+		"en": "This file will be updated every {} minutes, reopen it to update"
+	},
+	"last_update_in": {
+		"pt": "Última atualização em",
+		"en": "Last update in"
+	},
+	"select_a_website_to_unlock": {
+		"pt": "Selecione um site para desbloquear",
+		"en": "Select a website to unlock"
+	},
+	"websites, title()": {
+		"pt": "Sites",
+		"en": "Websites"
+	},
+	"not": {
+		"pt": "não",
+		"en": "not"
+	}
+}

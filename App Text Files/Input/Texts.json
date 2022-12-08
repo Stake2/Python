@@ -1,0 +1,86 @@
+{
+    "select_an_option_from_the_list": {
+        "en": "Select an option from the list",
+        "pt": "Selecione uma opção da lista"
+    },
+    "options": {
+        "en": "options",
+        "pt": "opções"
+    },
+    "you_selected_this_option": {
+        "en": "You selected this option",
+        "pt": "Você selecionou esta opção"
+    },
+    "yes": {
+        "en": "yes",
+        "pt": "sim"
+    },
+    "no": {
+        "en": "no",
+        "pt": "não"
+    },
+    "yes_or_no": {
+        "en": "yes or no",
+        "pt": "sim ou não"
+    },
+    "select_{}_or_{}_(number_or_word)": {
+        "en": "Select Yes or No (number or word)",
+        "pt": "Selecione Sim ou Não (número ou palavra)"
+    },
+    "type_or_paste_the_text": {
+        "en": "Type or paste the text",
+        "pt": "Digite ou cole o texto"
+    },
+    "type_the_lines_of_text": {
+        "en": "Type the lines of text",
+        "pt": "Digite as linhas de texto"
+    },
+    "to_finish_typing_please_type_one_of_the_texts_below": {
+        "en": "To finish typing, please type one of the texts below",
+        "pt": "Para terminar a digitação, por favor, digite um dos textos abaixo"
+    },
+    "you_finished_typing_the_lines_of_text": {
+        "en": "You finished typing the lines of text",
+        "pt": "Você terminou de digitar as linhas de texto"
+    },
+    "select_an_item_from_the_list, title()": {
+        "pt": "Selecione Um Item Da Lista",
+        "en": "Select An Item From The List"
+    },
+    "options, title()": {
+        "pt": "Opções",
+        "en": "Options"
+    },
+    "you_selected_this_option, title()": {
+        "pt": "Você Selecionou Esta Opção",
+        "en": "You Selected This Option"
+    },
+    "yes, title()": {
+        "pt": "Sim",
+        "en": "Yes"
+    },
+    "no, title()": {
+        "pt": "Não",
+        "en": "No"
+    },
+    "yes_or_no, title()": {
+        "pt": "Sim Ou Não",
+        "en": "Yes Or No"
+    },
+    "select_{}_or_{}_(number_or_word), title()": {
+        "pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+        "en": "Select Yes Or No (Number Or Word)"
+    },
+    "type_or_paste_the_text, title()": {
+        "pt": "Digite Ou Cole O Texto",
+        "en": "Type Or Paste The Text"
+    },
+    "type_the_lines_of_text, title()": {
+        "pt": "Digite As Linhas De Texto",
+        "en": "Type The Lines Of Text"
+    },
+	"example": {
+        "pt": "Exemplo",
+        "en": "Example"
+    }
+}

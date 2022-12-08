@@ -1,182 +1,139 @@
 # Block_Websites.py
 
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
 
-import os
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
 
 class Block_Websites(object):
 	def __init__(self, parameter_switches = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
 		self.Define_Basic_Variables()
-		self.Define_Folders()
-		self.Define_Files()
+		self.Define_Module_Folder()
 		self.Define_Texts()
+
+		from Social_Networks.Social_Networks import Social_Networks as Social_Networks
+		self.Social_Networks = Social_Networks()
+
+		self.Define_Files()
 		self.Define_Lists()
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
 		# Global Switches dictionary
-		self.global_switches = {
-			"write_to_file": self.option,
-			"create_files": self.option,
-			"create_folders": self.option,
-			"move_files": self.option,
-			"verbose": self.verbose,
-		}
-
-		self.global_switches["testing_script"] = self.testing_script
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.small_languages = self.Language.languages["small"]
+		self.full_languages = self.Language.languages["full"]
+		self.translated_languages = self.Language.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
+		self.Sanitize = self.File.Sanitize
 
-	def Define_Folders(self):
-		name = __name__
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
 
-		if "." in __name__:
-			name = __name__.split(".")[0]
+		self.date = self.Date.date
 
-		self.module_text_files_folder = script_text_files_folder + name + "/"
-		Create_Folder(self.module_text_files_folder, self.global_switches)
+	def Define_Module_Folder(self):
+		name = self.__module__
 
-		self.module_folder = scripts_modules_folder + name + "/"
+		if "." in name:
+			name = name.split(".")[0]
 
-		self.system32_folder = Sanitize_File_Path(os.environ["COMSPEC"].replace("cmd.exe", ""))
+		if name == "__main__":
+			name = "Block_Websites"
 
-		self.drivers_etc_folder = self.system32_folder + "drivers/etc/"
+		self.module_folder = self.apps_folders["modules"]["root"] + name + "/"
+		self.Folder.Create(self.module_folder)
 
-		self.database_folder = self.module_text_files_folder + "Database/"
-		Create_Folder(self.database_folder, self.global_switches)
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
 
-		self.database_domains_folder = self.database_folder + "Domains/"
-		Create_Folder(self.database_domains_folder, self.global_switches)
-
-		self.database_websites_folder = self.database_folder + "Websites/"
-		Create_Folder(self.database_websites_folder, self.global_switches)
-
-		self.allowed_to_unblock_folder = self.database_websites_folder + "Allowed To Unblock/"
-		Create_Folder(self.allowed_to_unblock_folder, self.global_switches)
-
-	def Define_Files(self):
-		self.hosts_file = self.drivers_etc_folder + "hosts"
-
-		self.hour_config_file = self.module_text_files_folder + "Hour Config" + self.dot_text
-		Create_Text_File(self.hour_config_file, self.global_switches)
-
-		self.blocked_by_default_file = self.module_text_files_folder + "Blocked By Default" + self.dot_text
-		Create_Text_File(self.blocked_by_default_file, self.global_switches)
-
-		self.additional_map_file = self.module_text_files_folder + "Additional Map" + self.dot_text
-		Create_Text_File(self.additional_map_file, self.global_switches)
-
-		self.websites_to_block_file = self.database_websites_folder + "To Block" + self.dot_text
-		Create_Text_File(self.websites_to_block_file, self.global_switches)
-
-		self.allowed_to_unlock_by_user_file = self.allowed_to_unblock_folder + "By User" + self.dot_text
-		Create_Text_File(self.allowed_to_unlock_by_user_file, self.global_switches)
-
-		self.allowed_to_unlock_by_modules_file = self.allowed_to_unblock_folder + "By Modules" + self.dot_text
-		Create_Text_File(self.allowed_to_unlock_by_modules_file, self.global_switches)
-
-		self.log_file = self.module_text_files_folder + "Log" + self.dot_text
-		Create_Text_File(self.log_file, self.global_switches)
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
 	def Define_Texts(self):
-		self.hosts_file_header = """# Copyright (c) 1993-2009 Microsoft Corp.
-#
-# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
-#
-# This file contains the mappings of IP addresses to host names. Each
-# entry should be kept on an individual line. The IP address should
-# be placed in the first column followed by the corresponding host name.
-# The IP address and the host name should be separated by at least one
-# space.
-#
-# Additionally, comments (such as these) may be inserted on individual
-# lines or following the machine name denoted by a '#' symbol.
-#
-# For example:
-#
-#      102.54.94.97     rhino.acme.com   # source server
-#       38.25.63.10     x.acme.com       # x client host
-#
-# localhost name resolution is handled within DNS itself.
-#	127.0.0.1       localhost
-#	::1      localhost
+		self.large_bar = "-----"
+		self.dash_space = "-"
 
-"""
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
 
-		self.redirect_ip = "127.0.0.1"
-		self.redirect_ip_space = self.redirect_ip + "     "
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.task_name = "Re-Block Websites"
+		self.texts["redirect_ip"] = "127.0.0.1"
+		self.texts["redirect_ip_space"] = self.texts["redirect_ip"] + "     "
+		self.texts["task_name"] = "Re-Block Websites"
+		self.texts["websites_to_block_header"] = "\n## Websites to be blocked by conditions\n#\n\n"
+		self.texts["log"] = self.language_texts["blocking_state"] + ":\n{}\n\n" + self.language_texts["this_file_will_be_updated_every_{}_minutes_reopen_it_to_update"] + ".\n" + self.language_texts["last_update_in"] + ": {}"
 
-		self.website_unblocked_text = Language_Item_Definer("Website unblocked", "Site desbloqueado")
+	def Define_Files(self):
+		self.hosts_file = self.root_folders["system32"]["drivers/etc"] + "hosts"
 
-		self.reason_to_unlock_text = Language_Item_Definer("Reason to unlock", "Razão para liberar")
+		self.additional_maps_file = self.module_text_files_folder + "Additional maps.txt"
+		self.File.Create(self.additional_maps_file)
 
-		self.the_websites_are_text = Language_Item_Definer("The websites are", "Os sites estão") + " "
+		self.blocked_by_default_file = self.module_text_files_folder + "Blocked by default.txt"
+		self.File.Create(self.blocked_by_default_file)
 
-		self.websites_to_block_header = "\n" + "## Websites to be blocked by conditions" + "\n" + "#" + "\n\n"
+		self.hosts_file_header_file = self.module_text_files_folder + "Hosts file header.txt"
+		self.File.Create(self.hosts_file_header_file)
 
-		self.working_time_text = Language_Item_Definer("working time", "horário de trabalho")
+		self.hour_config_file = self.module_text_files_folder + "Hour config.txt"
+		self.File.Create(self.hour_config_file)
 
-		self.not_in_working_hours_text = Language_Item_Definer("You are not in {}, all websites are unlocked", "Você não está em {}, todos os sites estão desbloqueados").format(self.working_time_text)
+		self.log_file = self.module_text_files_folder + "Log.txt"
+		self.File.Create(self.log_file)
 
-		self.log_texts = {}
-		self.log_texts["Blocking State"] = Language_Item_Definer("Blocking State", "Estado de Bloqueio") + ": \n"
-		self.log_texts["Blocked"] = Language_Item_Definer(self.the_websites_are_text + "locked because you are in " + self.working_time_text, self.the_websites_are_text + "bloqueados porque você está " + self.working_time_text)
-		self.log_texts["Unlocked"] = Language_Item_Definer(self.the_websites_are_text + "unlocked because you are not in " + self.working_time_text, self.the_websites_are_text + "desbloqueados porque você não está no " + self.working_time_text)
-		self.log_texts["Log"] = self.log_texts["Blocking State"] + "{}" + "." + "\n\n" + Language_Item_Definer("This file will be updated every {} minutes, reopen it to update", "Este arquivo vai ser atualizado a cada {} minutos, reabra-o para atualizar") + "." + "\n" + Language_Item_Definer("Last update in", "Última atualização em") + ": {}"
+		# Social Networks Folder and Files
+		self.social_networks_text_folder = self.Social_Networks.social_networks_text_folder
+
+		self.social_networks_file = self.Social_Networks.social_networks_file
 
 	def Define_Lists(self):
-		self.blocked_by_default = Create_Array_Of_File(self.blocked_by_default_file)
+		self.hosts_file_header = self.File.Contents(self.hosts_file_header_file)["string"]
 
-		self.additional_maps = Create_Array_Of_File(self.additional_map_file)
+		self.blocked_by_default = self.File.Contents(self.blocked_by_default_file)["lines"]
 
-		self.websites_to_block = Create_Array_Of_File(self.websites_to_block_file)
+		self.additional_maps = self.File.Contents(self.additional_maps_file)["lines"]
 
-		self.allowed_to_unlock_by_user = Make_Setting_Dictionary(Create_Array_Of_File(self.allowed_to_unlock_by_user_file))
-		self.allowed_to_unlock_by_modules = Make_Setting_Dictionary(Create_Array_Of_File(self.allowed_to_unlock_by_modules_file))
+		self.websites_to_block = self.File.Contents(self.social_networks_file)["lines"]
+		self.websites_to_block.remove("Habitica")
 
-		self.allowed_to_unlock = {}
-		self.allowed_to_unlock["User"] = self.allowed_to_unlock_by_user
-		self.allowed_to_unlock["Modules"] = self.allowed_to_unlock_by_modules
+		self.domains = {}
 
-		self.domain_folders = {}
-
+		i = 0
 		for website in self.websites_to_block:
-			self.domain_folders[website] = self.database_domains_folder + website + "/"
-			Create_Folder(self.domain_folders[website])
+			self.domains_file = self.social_networks_text_folder + website + "/Additional Domains.txt"
 
-		self.domain_files = {}
+			self.domains[website] = self.File.Contents(self.domains_file)["lines"]
 
-		for website in self.websites_to_block:
-			self.domain_files[website] = self.domain_folders[website] + "Domains" + self.dot_text
-			Create_Text_File(self.domain_files[website])
+			i += 1
 
 		self.map_dict = {
-		"Blocked By Default": self.blocked_by_default,
-		"Additional Maps": self.additional_maps,
+			"Blocked by default": self.blocked_by_default,
+			"Additional maps": self.additional_maps,
 		}
 
-		self.hour_config = Make_Setting_Dictionary(self.hour_config_file, convert_to = int, read_file = True)
+		self.hour_config = self.File.Dictionary(self.hour_config_file, convert = int)

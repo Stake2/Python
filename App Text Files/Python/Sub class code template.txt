@@ -1,0 +1,9 @@
+# {}.py
+
+from {}.{} import {} as {}
+
+class {}({}):
+	def __init__(self):
+		super().__init__()
+
+		

@@ -1,0 +1,103 @@
+{
+	"game": {
+		"en": "game",
+		"pt": "jogo"
+	},
+	"games": {
+		"en": "games",
+		"pt": "jogos"
+	},
+	"game, title()": {
+		"en": "Game",
+		"pt": "Jogo"
+	},
+	"games, title()": {
+		"en": "Games",
+		"pt": "Jogos"
+	},
+	"opening_this_game": {
+		"en": "Opening this game",
+		"pt": "Abrindo este jogo"
+	},
+	"game_folder": {
+		"en": "Game folder",
+		"pt": "Pasta de jogo"
+	},
+	"game_folders": {
+		"en": "Game folders",
+		"pt": "Pastas de jogo"
+	},
+	"game_file": {
+		"en": "Game file",
+		"pt": "Arquivo de jogo"
+	},
+	"game_category": {
+		"en": "Game category",
+		"pt": "Categoria de jogo"
+	},
+	"played_texts": {
+		"en": "Played texts",
+		"pt": "Textos de jogatina"
+	},
+	"played_texts, en - pt, capitalize()": "Played texts - Textos de jogatina",
+	"all_played_files": {
+		"en": "All Played Files",
+		"pt": "Todos os Arquivos de Jogatina"
+	},
+	"select_a_game_folder": {
+		"en": "Select a game folder",
+		"pt": "Selecione uma pasta de jogo"
+	},
+	"select_a_game": {
+		"en": "Select a game",
+		"pt": "Selecione um jogo"
+	},
+	"start_counting_playing_time": {
+		"en": "Start counting playing time",
+		"pt": "Começar a contar o tempo de jogatina"
+	},
+	"press_enter_when_you_finish_using_the_python_module_of_the_game": {
+        "en": "Press Enter when you finish using the Python module of the game",
+        "pt": "Pressione Enter quando você terminar de usar o módulo de Python do jogo"
+    },
+	"i_am_playing_the_{}_game_called_{}_for_{}_current_time_{}": {
+		"en": "I am playing the \"{}\" game called \"{}\" for {}, current time: {}",
+		"pt": "Estou jogando o jogo de \"{}\" chamado \"{}\" por {}, horário atual: {}"
+	},
+	"i_played_the_{}_game_called_{}_for_{}_current_time_{}": {
+		"en": "I played the \"{}\" game called \"{}\" for {}, current time: {}",
+		"pt": "Eu joguei o jogo de \"{}\" chamado \"{}\" por {}, horário atual: {}"
+	},
+	"firsts_of_the_year": {
+		"pt": "Primeiros Do Ano",
+		"en": "Firsts Of The Year"
+	},
+	"media": {
+		"en": "media",
+		"pt": "mídia"
+	},
+	"media, title()": {
+		"en": "Media",
+		"pt": "Mídia"
+	},
+	"post_on_the_social_networks": {
+		"en": "Post on the Social Networks",
+		"pt": "Postar nas Redes Sociais"
+	},
+	"press_enter_to_copy_the_played_text": {
+		"en": "Press Enter to copy the played text",
+		"pt": "Pressione Enter para copiar o texto de jogatina"
+	},
+	"when_finished_playing": {
+		"en": "When finished playing",
+		"pt": "Quando terminou de jogar"
+	},
+	"for_how_much_time": {
+		"en": "For how much time",
+		"pt": "Por quanto tempo"
+	},
+	"the_{}_game_called_{}": {
+		"en": "the \"{}\" game called \"{}\"",
+		"pt": "o jogo de \"{}\" chamado \"{}\""
+	}
+}

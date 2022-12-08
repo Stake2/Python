@@ -1,206 +1,220 @@
 # Diary_Slim.py
 
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
+
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
 
 class Diary_Slim():
 	def __init__(self, parameter_switches = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
 		self.Define_Basic_Variables()
-		self.Define_Diary_Slim_Variables()
-		self.Define_Double_State_Texts()
+		self.Define_Module_Folder()
+		self.Define_Texts()
+
+		self.Define_Folders_And_Files()
+		self.Define_Lists_And_Dictionaries()
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
 		# Global Switches dictionary
-		self.global_switches = {
-			"write_to_file": self.option,
-			"create_files": self.option,
-			"create_folders": self.option,
-			"move_files": self.option,
-			"verbose": self.verbose,
-			"testing_script": self.testing_script,
-		}
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
+		self.Sanitize = self.File.Sanitize
 
-	def Define_Diary_Slim_Variables(self):
-		self.diary_slim_folder = notepad_folder_effort + "Diary Slim/"
-		Create_Folder(self.diary_slim_folder, self.global_switches)
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
 
-		self.diary_slim_data_folder = self.diary_slim_folder + "Slim Data/"
-		Create_Folder(self.diary_slim_data_folder, self.global_switches)
+		self.date = self.Date.date
 
-		self.diary_slim_double_state_texts_folder = self.diary_slim_data_folder + "Double State Texts/"
-		Create_Folder(self.diary_slim_double_state_texts_folder, self.global_switches)
+	def Define_Module_Folder(self):
+		name = self.__module__
 
-		self.diary_slim_database_folder = self.diary_slim_folder + "Slim Database/"
-		Create_Folder(self.diary_slim_database_folder, self.global_switches)
+		if "." in name:
+			name = name.split(".")[0]
 
-		self.all_file_names_file = self.diary_slim_database_folder + "All File Names" + self.dot_text
-		Create_Text_File(self.all_file_names_file, self.global_switches)
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
 
-		self.all_year_folders_file = self.diary_slim_database_folder + "All Year Folders" + self.dot_text
-		Create_Text_File(self.all_year_folders_file, self.global_switches)
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
-		self.all_month_folders_file = self.diary_slim_database_folder + "All Month Folders" + self.dot_text
-		Create_Text_File(self.all_month_folders_file, self.global_switches)
+	def Define_Texts(self):
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
 
-		self.diary_slim_year_folders = {}
-		Add_Years_To_Array(self.diary_slim_year_folders, str, "dict", self.diary_slim_folder + "{}" + "/", 2020)
+		self.language_texts = self.Language.Item(self.texts)
 
-		for folder in self.diary_slim_year_folders.values():
-			Create_Folder(folder, self.global_switches)
+		self.large_bar = "-----"
+		self.dash_space = "-"
 
-		self.diary_slim_database_year_folders = {}
-		Add_Years_To_Array(self.diary_slim_database_year_folders, str, "dict", self.diary_slim_database_folder + "{}" + "/", 2020)
+		self.text_header_prototype = "- Diário Slim, {} -"
+		self.day_of_of_text = "Dia {} de {} de {}"
+		self.today_is_text_header_prototype = "Hoje é {}, " + self.day_of_of_text + "."
 
-		for folder in self.diary_slim_database_year_folders.values():
-			Create_Folder(folder, self.global_switches)
+	def Define_Folders_And_Files(self):
+		# Folders
+		self.diary_slim_data_folder = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "Data/"
+		self.Folder.Create(self.diary_slim_data_folder)
 
-		self.diary_slim_current_year_folder = self.diary_slim_year_folders[str(current_year)]
-		Create_Folder(self.diary_slim_current_year_folder, self.global_switches)
+		self.state_texts_folder = self.diary_slim_data_folder + "State texts/"
+		self.Folder.Create(self.state_texts_folder)
 
-		self.current_diary_slim_file = self.diary_slim_folder + "Current File" + self.dot_text
-		Create_Text_File(self.current_diary_slim_file, self.global_switches)
+		self.database_folder = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "Database/"
+		self.Folder.Create(self.database_folder)
 
-		self.current_diary_slim = Create_Array_Of_File(self.current_diary_slim_file)[0]
+		self.year_folders = self.Date.Create_Years_List("dict", 2020, function = str, string_format = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "{}" + "/")
 
-		self.diary_slim_things_to_do_file = self.diary_slim_data_folder + "Things To Do" + self.dot_text
-		Create_Text_File(self.diary_slim_things_to_do_file, self.global_switches)
+		for folder in self.year_folders.values():
+			self.Folder.Create(folder)
 
-		self.diary_slim_things_done_texts_file = self.diary_slim_data_folder + "Things Done Texts" + self.dot_text
-		Create_Text_File(self.diary_slim_things_done_texts_file, self.global_switches)
+		self.database_year_folders = self.Date.Create_Years_List("dict", 2020, function = str, string_format = self.database_folder + "{}" + "/")
 
-		self.state_file_names = ["First", "Second", "Current"]
-		self.state_names = []
-		self.state_files = {}
-		self.state_texts = {}
+		for folder in self.database_year_folders.values():
+			self.Folder.Create(folder)
 
-		self.state_folders = List_Folder(self.diary_slim_double_state_texts_folder)
+		self.current_year_folder = self.year_folders[self.date["year"]]
+		self.Folder.Create(self.current_year_folder)
 
-		for folder in self.state_folders:
-			folder_name = folder
-			folder = self.diary_slim_double_state_texts_folder + folder + "/"
+		# Current month folder
+		self.month_folder_name = str(self.Text.Add_Leading_Zeros(self.date["month"])) + " - " + self.date["month_name"]
 
-			self.state_names.append(folder_name)
+		self.current_month_folder = self.current_year_folder + self.month_folder_name + "/"
+		self.Folder.Create(self.current_month_folder)
 
-			files = [
-			folder + "First State" + self.dot_text,
-			folder + "Second State" + self.dot_text,
-			folder + "Current State" + self.dot_text,
-			]
+		# Current month database folder
+		self.current_month_database_folder = self.database_year_folders[self.date["year"]] + self.month_folder_name + "/"
+		self.Folder.Create(self.current_month_database_folder)
 
-			self.state_files[folder_name] = {}
+		# Files
+		self.slim_texts_file = self.diary_slim_data_folder + "Slim texts.json"
+		self.File.Create(self.slim_texts_file)
 
-			i = 0
-			for file_name in self.state_file_names:
-				file_name = file_name + " State"
-				self.state_files[folder_name][file_name] = files[i]
+		self.file_names_file = self.database_folder + "File names.txt"
+		self.File.Create(self.file_names_file)
 
-				i += 1
+		self.year_folders_file = self.database_folder + "Year folders.txt"
+		self.File.Create(self.year_folders_file)
 
-		for folder in self.state_folders:
-			self.state_texts[folder_name] = {}
+		self.month_folders_file = self.database_folder + "Month folders.txt"
+		self.File.Create(self.month_folders_file)
 
-			for file_name in self.state_file_names:
-				file_name = file_name + " State"
-				self.state_texts[folder_name][file_name] = Create_Array_Of_File(self.state_files[folder][file_name])
+		# Current year database file
+		self.current_year_file_names_file = self.database_year_folders[self.date["year"]] + "Year file names.txt"
+		self.File.Create(self.current_year_file_names_file)
 
-				if self.state_texts[folder_name][file_name] != []:
-					self.state_texts[folder_name][file_name] = self.state_texts[folder_name][file_name][0]
+		# Current month database file
+		self.current_month_file_names_file = self.current_month_database_folder + "Month file names.txt"
+		self.File.Create(self.current_month_file_names_file)
 
-	def Define_Double_State_Texts(self):
-		self.english_states = {}
-		self.portuguese_states = {}
+		self.current_diary_slim_file = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "Current file.txt"
+		self.File.Create(self.current_diary_slim_file)
 
-		for state in self.state_names:
-			state_texts = self.state_texts[state]
-			self.current_state = state_texts["Current State"]
-			self.current_state_backup = state_texts["Current State"]
-			self.current_english_state = state_texts["Current State"]
-			self.current_portuguese_state = state_texts["Current State"]
+		self.things_to_do_file = self.diary_slim_data_folder + "Things to do.txt"
+		self.File.Create(self.things_to_do_file)
 
-			changed_state = False
+		self.things_done_texts_file = self.diary_slim_data_folder + "Things done texts.txt"
+		self.File.Create(self.things_done_texts_file)
 
-			if self.current_state_backup != []:
-				self.current_english_state = Split_Text_By_Language(global_language, self.current_english_state, 0)
-				self.current_portuguese_state = Split_Text_By_Language(global_language, self.current_portuguese_state, 1)
+		self.diary_slim_header_file = self.module_text_files_folder + "Header.txt"
+		self.File.Create(self.diary_slim_header_file)
 
-			if self.current_state_backup == []:
-				key = "First State"
-				self.current_state = state_texts[key]
-				self.current_english_state = Split_Text_By_Language(global_language, state_texts[key], 0)
-				self.current_portuguese_state = Split_Text_By_Language(global_language, state_texts[key], 1)
+	def Define_Lists_And_Dictionaries(self):
+		# Lists
+		self.current_diary_slim = self.File.Contents(self.current_diary_slim_file)["lines"][0]
 
-				changed_state = True
+		self.diary_slim_header = self.File.Contents(self.diary_slim_header_file)["string"]
 
-			if self.current_state_backup == state_texts["First State"] and changed_state == False:
-				key = "Second State"
-				self.current_state = state_texts[key]
-				self.current_english_state = Split_Text_By_Language(global_language, state_texts[key], 0)
-				self.current_portuguese_state = Split_Text_By_Language(global_language, state_texts[key], 1)
+		# Dictionaries
+		self.states = {
+			"order_names": [
+				"first",
+				"second",
+				"current",
+			],
+			"names": [],
+			"folders": self.Folder.Contents(self.state_texts_folder),
+		}
 
-				changed_state = True
+		i = 0
+		for state in self.states["folders"]["folder"]["names"]:
+			# Read state names
+			names = self.Language.JSON_To_Python(self.states["folders"]["folder"]["list"][i] + "Names.json")
+			state = names[self.user_language]
 
-			self.english_states[state] = self.current_english_state
-			self.portuguese_states[state] = self.current_portuguese_state
+			# Add state name to names list
+			self.states["names"].append(state)
 
-		self.language_first_state_text = Language_Item_Definer("first state", "primeiro estado")
-		self.language_second_state_text = Language_Item_Definer("second state", "segundo estado")
+			# Create state dictionary and sub-keys
+			self.states[state] = {}
+			self.states[state]["files"] = {}
+			self.states[state]["texts"] = {}
 
-		self.state_position_names = {}
+			# Add state names file and dictionary
+			self.states[state]["files"]["names"] = self.states["folders"]["folder"]["list"][i] + "Names.json"
+			self.states[state]["names"] = names
 
-		for state in self.state_names:
-			state_texts = self.state_texts[state]
-			first_state_text = state_texts["First State"]
-			second_state_text = state_texts["Second State"]
+			# List orders of state, add file and list or dictionary to order dictionary
+			for order_name in self.states["order_names"]:
+				self.states[state]["files"][order_name] = self.states["folders"]["folder"]["list"][i] + order_name.capitalize() + "."
 
-			for file_name in self.state_file_names:
-				self.state_position_names[state] = {}
-				self.state_position_names[state][first_state_text] = self.language_first_state_text
-				self.state_position_names[state][second_state_text] = self.language_second_state_text
+				if order_name == "current":
+					self.states[state]["files"][order_name] += "txt"
+					function = self.File.Contents
 
-	def Change_Double_State_Texts(self, module_current_state = None, reset_current_state = False):
-		self.module_current_state = module_current_state
+				if order_name != "current":
+					self.states[state]["files"][order_name] += "json"
+					function = self.Language.JSON_To_Python
 
-		for folder in self.state_folders:
-			current_state_file = self.state_files[folder]["Current State"]
-			self.file_current_state = Create_Array_Of_File(current_state_file)
+				self.states[state]["texts"][order_name] = function(self.states[state]["files"][order_name])
 
-			if self.file_current_state != []:
-				self.file_current_state = self.file_current_state[0]
+				if order_name == "current":
+					self.states[state]["texts"][order_name] = self.states[state]["texts"][order_name]["lines"]
 
-			text_to_write = None
+			i += 1
 
-			if self.file_current_state != self.module_current_state and reset_current_state == False:
-				text_to_write = self.module_current_state
+	def Update_State(self, selected_state = None, new_order = ""):
+		for state in self.states["names"]:
+			state_texts = self.states[state]["texts"]
 
-			if reset_current_state == True:
-				text_to_write = ""
+			# Define current state file
+			current_state_file = self.states[state]["files"]["current"]
+			string = self.File.Contents(current_state_file)["string"]
 
-			if text_to_write != None:
-				Write_To_File(current_state_file, text_to_write, self.global_switches)
+			# If new order is not empty, get the order from state_texts dictionary
+			if new_order != "":
+				new_order = state_texts[new_order][self.user_language]
+
+			# Write the new order if the state is equal to the selected state
+			# If the state is equal to none, or if the selected state is equal to none
+			if state == selected_state or state == None or selected_state == None:
+				self.File.Edit(current_state_file, new_order, "w")
 
 	def Open_Current_Diary_Slim(self):
-		Open_Text_File(self.current_diary_slim)
+		self.File.Open(self.current_diary_slim)

@@ -1,0 +1,34 @@
+{
+	"city, title()": {
+		"en": "City",
+		"pt": "Cidade"
+	},
+	"kentucky_cities": {
+		"en": "Kentucky cities",
+		"pt": "Cidades de Kentucky"
+	},
+	"select_a_kentucky_city_to_use": {
+		"en": "Select a Kentucky city to use",
+		"pt": "Selecione uma cidade de Kentucky para usar"
+	},
+	"survivor, title()": {
+		"en": "Survivor",
+		"pt": "Sobrevivente"
+	},
+	"survivors, title()": {
+		"en": "Survivors",
+		"pt": "Sobreviventes"
+	},
+	"select_a_survivor_from_{}_to_survive_as_it": {
+		"en": "Select a survivor from {} to survive as it",
+		"pt": "Selecione um sobrevivente de {} para sobreviver como ele"
+	},
+	"the_class_used_predefined_city_and_survivor": {
+		"en": "The class used predefined city and survivor",
+		"pt": "A classe utilizou cidade e sobrevivente pré-definidos"
+	},
+	"this_survival_diary_file_was_created": {
+		"en": "This survivor diary file was created",
+		"pt": "Este arquivo de diário de sobrevivente foi criado"
+	}
+}

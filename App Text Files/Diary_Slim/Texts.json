@@ -1,0 +1,160 @@
+{
+	"creating_diary_slim_for_the_current_day": {
+		"pt": "Criando Diário Slim para o dia atual",
+		"en": "Creating Diary Slim for the current day"
+	},
+	"today_is": {
+		"pt": "Hoje é",
+		"en": "Today is"
+	},
+	"finished_checking_things_on_habitica_and_microsoft_todo": {
+		"en": "Finished checking things on Microsoft Todo and Habitica",
+		"pt": "Terminou de marcar as coisas no Microsoft Todo e Habitica"
+	},
+	"i_opened_firefox_and_checked_the_things_on_microsoft_todo_and_habitica": {
+		"en": "I opened Firefox and checked the things on Microsoft Todo and Habitica",
+		"pt": "Abri o Firefox e marquei as coisas no Microsoft Todo e Habitica"
+	},
+	"type_the_time_that_you_{}": {
+		"en": "Type the time that you {}",
+		"pt": "Digite a hora em que você {}"
+	},
+	"format": {
+		"en": "format",
+		"pt": "formato"
+	},
+	"have_gone_to_sleep": {
+		"en": "have gone to sleep",
+		"pt": "foi dormir"
+	},
+	"woke_up": {
+		"en": "woke up",
+		"pt": "acordou"
+	},
+	"wrong_format_utilize_this_one": {
+		"en": "Wrong format, utilize this one",
+		"pt": "Formato incorreto, utilize este"
+	},
+	"the_file_{}_opening_it": {
+		"en": "The file {}, opening it",
+		"pt": "O arquivo {}, abrindo ele"
+	},
+	"was_created": {
+		"en": "was created",
+		"pt": "foi criado"
+	},
+	"already_existed": {
+		"en": "already existed",
+		"pt": "já existia"
+	},
+	"this_text_was_written_to_the_current_diary_slim": {
+		"en": "This text was written to the current Diary Slim",
+		"pt": "Este texto foi escrito no Diário Slim atual"
+	},
+	"was": {
+		"en": "was",
+		"pt": "foi"
+	},
+	"was_not": {
+		"en": "was not",
+		"pt": "não foi"
+	},
+	"testing_is_true": {
+		"en": "\"testing\" is \"True\"",
+		"pt": "\"testando\" é \"Verdadeiro\""
+	},
+	"first": {
+		"en": "first",
+		"pt": "primeiro"
+	},
+	"second": {
+		"en": "second",
+		"pt": "segundo"
+	},
+	"python_module": {
+		"en": "Python module",
+		"pt": "módulo de Python"
+	},
+	"python_modules": {
+		"en": "Python modules",
+		"pt": "módulos de Python"
+	},
+	"php_website": {
+		"en": "PHP website",
+		"pt": "site em PHP"
+	},
+	"drawing": {
+		"en": "drawing",
+		"pt": "desenho"
+	},
+	"drawings, en - pt, title()": "Drawings - Desenhos",
+	"video": {
+		"en": "video",
+		"pt": "vídeo"
+	},
+	"videos, en - pt, title()": "Videos - Vídeos",
+	"type_the_name_of_the_module": {
+		"en": "Type the name of the module",
+		"pt": "Digite o nome do módulo"
+	},
+	"my_module": {
+		"en": "my module",
+		"pt": "o meu módulo"
+	},
+	"my_modules": {
+		"en": "my modules",
+		"pt": "os meus módulos"
+	},
+	"type_the_name_of_the_drawing_program": {
+		"en": "Type the name of the drawing program",
+		"pt": "Digite o nome do programa de desenho"
+	},
+	"type_how_much_course_classes_you_watched_(1_one)": {
+		"en": "Type how much course classes you watched (1, one)",
+		"pt": "Digite quantas aulas de curso você assistiu (1, uma)"
+	},
+	"say_what_you_did_on_the_{}": {
+		"en": "Say what you did on the {}",
+		"pt": "Diga o que você fez no {}"
+	},
+	"say_what_you_did_on_the_{}, plural": {
+		"en": "Say what you did on the {}",
+		"pt": "Diga o que você fez nos {}"
+	},
+	"say_what_you_did_on_the_{}_but_in_english": {
+		"en": "Say what you did on the {}, but in English",
+		"pt": "Diga o que você fez no {}, mas em Inglês"
+	},
+	"texts_to_write": {
+		"en": "Texts to write",
+		"pt": "Textos para escrever"
+	},
+	"select_a_text_to_write": {
+		"en": "Select a text to write",
+		"pt": "Selecione um texto para escrever"
+	},
+	"you_selected_this_option": {
+		"en": "You selected this option",
+		"pt": "Você selecionou esta opção"
+	},
+	"and": {
+		"en": "and",
+		"pt": "e"
+	},
+	"use_text_file_to_write_description": {
+		"en": "Use text file to write description",
+		"pt": "Usar arquivo de texto para escrever descrição"
+	},
+	"press_enter_when_you_finish_writing_and_saving_the_description_in_{}": {
+		"pt": "Pressione Enter quando você terminar de escrever e salvar a descrição em {}",
+		"en": "Press Enter when you finish writing and saving the description in {}"
+	},
+	"state": {
+		"pt": "estado",
+		"en": "state"
+	},
+	"opening_the_description_files_for_you_to_type_on_them, type: explanation": {
+		"en": "Opening the description files for you to type on them.\nType on them, save and close them, and press Enter to continue.",
+		"pt": "Abrindo os arquivos de descrições para você digitar neles.\nDigite neles, salve-os e feche-os, e pressione Enter para continuar."
+	}
+}

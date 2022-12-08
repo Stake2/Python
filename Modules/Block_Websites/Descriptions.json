@@ -1,0 +1,14 @@
+{
+	"show_text": {
+		"en": "Manage website blocking",
+		"pt": "Gerenciar o bloqueio de sites"
+	},
+	"Block": {
+		"en": "Block",
+		"pt": "Bloquear"
+	},
+	"Unblock": {
+		"en": "Unblock",
+		"pt": "Desbloquear"
+	}
+}

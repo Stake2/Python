@@ -1,0 +1,22 @@
+{
+	"show_text": {
+		"en": "Manage Audiovisual Media Network",
+		"pt": "Gerenciar Rede de Mídias Audiovisuais (Audiovisual Media Network)"
+	},
+	"Watch_Media": {
+		"en": "Watch media",
+		"pt": "Assistir mídia"
+	},
+	"Watch_List_Of_Media": {
+		"en": "Watch list of media",
+		"pt": "Assistir lista de mídia"
+	},
+	"Start_Watching_A_New_Media": {
+		"en": "Start watching a new media",
+		"pt": "Começar a assistir uma nova mídia"
+	},
+	"Media_Info_Database_Manager": {
+		"en": "Manage Media Info Database",
+		"pt": "Gerenciar Banco de Dados de Informações de Mídia"
+	}
+}

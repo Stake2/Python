@@ -1,0 +1,14 @@
+{
+    "current_diary_chapter": {
+		"en": "Current Diary chapter",
+		"pt": "Capítulo atual do Diário"
+	},
+	"presenters, title()": {
+		"en": "Presenters",
+		"pt": "Apresentadores"
+	},
+	"select_a_presenter_to_write_as": {
+		"en": "Select a presenter to write as it",
+		"pt": "Selecione um apresentador para escrever como ele"
+	}
+}

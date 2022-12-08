@@ -1,26 +1,43 @@
 # Diary_Slim.py
 
-from Script_Helper import *
-
 from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
 from Diary_Slim.Write_On_Diary_Slim import Write_On_Diary_Slim as Write_On_Diary_Slim
 
-class Function_Choose():
+from Language import Language as Language
+from Input import Input as Input
+from Folder import Folder as Folder
+
+class Run():
 	def __init__(self):
-		self.Select_Diary_Slim_Function()
+		# Global Switches dictionary
+		self.global_switches = {
+			"verbose": False,
+		}
 
-	def Select_Diary_Slim_Function(self):
-		self.functions = [
-		Create_New_Diary_Slim,
-		Write_On_Diary_Slim,
+		self.Language = Language(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
+
+		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
+
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+
+		self.classes = [
+			Create_New_Diary_Slim,
+			Write_On_Diary_Slim,
 		]
 
-		self.descriptions = [
-		Language_Item_Definer("Create new Diary Slim", "Criar novo Diário Slim"),
-		Language_Item_Definer("Write on Diary Slim", "Escrever no Diário Slim"),
-		]
+		self.class_descriptions = []
 
-		select_function_text = Language_Item_Definer("Select a {} function to execute", "Selecione uma função do {} para executar")
-		choice_text = select_function_text.format(Language_Item_Definer("Diary Slim", "Diário Slim"))
+		for class_ in self.classes:
+			class_description = self.descriptions[class_.__name__]
 
-		Choose_Function(self.functions, self.descriptions, local_script_name, choice_text)
+			self.class_descriptions.append(self.Language.Item(class_description))
+
+		self.language_texts = self.Language.Item(self.descriptions)
+
+		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
+
+if __name__ == "__main__":
+	Run()

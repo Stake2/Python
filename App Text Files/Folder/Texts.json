@@ -1,0 +1,50 @@
+{
+    "folder": {
+        "en": "folder",
+        "pt": "pasta"
+    },
+    "file": {
+        "en": "file",
+        "pt": "arquivo"
+    },
+    "created": {
+        "en": "created",
+        "pt": "criada"
+    },
+    "deleted": {
+        "en": "deleted",
+        "pt": "apagada"
+    },
+    "source": {
+        "en": "source",
+        "pt": "fonte"
+    },
+    "destination": {
+        "en": "destination",
+        "pt": "destino"
+    },
+    "source_folder": {
+        "en": "source folder",
+        "pt": "pasta fonte"
+    },
+    "destination_folder": {
+        "en": "destination folder",
+        "pt": "pasta destino"
+    },
+    "this_folder_already_exists": {
+        "en": "This folder already exists",
+        "pt": "Esta pasta já existe"
+    },
+    "this_folder_does_not_exists": {
+        "en": "This folder does not exists",
+        "pt": "Esta pasta não existe"
+    },
+    "type_or_paste_the_folder": {
+        "en": "Type or paste the folder",
+        "pt": "Digite ou cole o pasta"
+    },
+    "the_folder_path_is_incorrect_(it_is_a_file)": {
+        "en": "The folder path is incorrect (it is a file)",
+        "pt": "O caminho da pasta está incorreto (é um arquivo)"
+    }
+}

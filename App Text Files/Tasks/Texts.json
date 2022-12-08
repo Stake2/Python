@@ -1,0 +1,70 @@
+{
+	"task": {
+		"en": "task",
+		"pt": "tarefa"
+	},
+	"task, title()": {
+		"en": "Task",
+		"pt": "Tarefa"
+	},
+	"tasks": {
+		"en": "tasks",
+		"pt": "tarefas"
+	},
+	"tasks, title()": {
+		"en": "Tasks",
+		"pt": "Tarefas"
+	},
+	"task_types": {
+		"en": "Task types",
+		"pt": "Tipos de tarefa"
+	},
+	"times, title()": {
+		"en": "Times",
+		"pt": "Tempos"
+	},
+	"number": {
+		"en": "number",
+		"pt": "número"
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
+	"firsts_of_the_year": {
+		"pt": "Primeiros Do Ano",
+		"en": "Firsts Of The Year"
+	},
+	"this_task_was_registered": {
+		"en": "This task was registered",
+		"pt": "Esta tarefa foi registrada"
+	},
+	"type, title()": {
+		"en": "Type",
+		"pt": "Tipo"
+	},
+	"when, title()": {
+		"en": "When",
+		"pt": "Quando"
+	},
+	"show_task_description": {
+		"en": "Show task description",
+		"pt": "Mostrar descrição da tarefa"
+	},
+	"can_be_long": {
+		"en": "can be long",
+		"pt": "pode ser longa"
+	},
+	"select_a_task_type": {
+		"en": "Select a task type",
+		"pt": "Selecione um tipo de tarefa"
+	},
+	"describe_the_task_in": {
+		"en": "Describe the task in",
+		"pt": "Descreva a tarefa em"
+	},
+	"task_description_in": {
+		"en": "Task description in",
+		"pt": "Descrição da tarefa em"
+	}
+}

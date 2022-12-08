@@ -1,0 +1,58 @@
+{
+	"username": {
+		"en": "Username",
+		"pt": "Nome de usuário"
+	},
+	"username_of": {
+		"en": "Username of",
+		"pt": "Nome de usuário do"
+	},
+	"link, title()": {
+		"en": "Link",
+		"pt": "Link"
+	},
+	"profile_link": {
+		"en": "Profile link",
+		"pt": "Link de perfil"
+	},
+	"opening_{}_on_this_category_to_work": {
+		"en": "Opening {} on this category to work",
+		"pt": "Abrindo {} nesta categoria para trabalhar"
+	},
+	"changing_to_this_category": {
+		"en": "Changing to this category",
+		"pt": "Mudando para esta categoria"
+	},
+	"categories, title()": {
+		"en": "Categories",
+		"pt": "Categorias"
+	},
+	"select_a_job_category_to_work": {
+		"pt": "Selecione uma categoria de trabalho para trabalhar",
+		"en": "Select a job category to work"
+	},
+	"category_data": {
+		"pt": "Dados da categoria",
+		"en": "Category data"
+	},
+	"select_a_category_data_to_copy": {
+		"pt": "Selecione um dado da categoria para copiar",
+		"en": "Select a category data to copy"
+	},
+	"change_category": {
+		"en": "Change category",
+		"pt": "Mudar de categoria"
+	},
+	"open_category_page": {
+		"en": "Open category page",
+		"pt": "Abrir página da categoria"
+	},
+	"finish_working": {
+		"en": "Finish working",
+		"pt": "Terminar de trabalhar"
+	},
+	"you_finished_working_on": {
+		"en": "You finished working on",
+		"pt": "Você terminou de trabalhar no"
+	}
+}

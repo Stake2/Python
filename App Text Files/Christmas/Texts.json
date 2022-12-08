@@ -1,0 +1,120 @@
+{
+	"christmas, title()": {
+		"en": "Christmas",
+		"pt": "Natal"
+	},
+	"christmas, title(), en - pt": "Christmas - Natal",
+	"planning, title()": {
+		"en": "Planning",
+		"pt": "Planejamento"
+	},
+	"current_date": {
+		"en": "Current date",
+		"pt": "Data atual"
+	},
+	"christmas_date": {
+		"en": "Christmas date",
+		"pt": "Data do Natal"
+	},
+	"day": {
+		"en": "day",
+		"pt": "dia"
+	},
+	"days": {
+		"en": "days",
+		"pt": "dias"
+	},
+	"day_left": {
+		"en": "Day left",
+		"pt": "Dia restante"
+	},
+	"days_left": {
+		"en": "Days left",
+		"pt": "Dias restantes"
+	},
+	"month": {
+		"en": "month",
+		"pt": "mês"
+	},
+	"months": {
+		"en": "months",
+		"pt": "meses"
+	},
+	"month_left": {
+		"en": "Month left",
+		"pt": "Mês restante"
+	},
+	"months_left": {
+		"en": "Months left",
+		"pt": "Meses restantes"
+	},
+	"today_is_not_christmas_day_wait_until": {
+		"pt": "Hoje não é dia de Natal, espere até",
+		"en": "Today is not Christmas day, wait until"
+	},
+	"starting_{}_of_{}...": {
+		"en": "Starting {} of {}...",
+		"pt": "Iniciando {} de {}..."
+	},
+	"to, title()": {
+		"en": "To",
+		"pt": "Para"
+	},
+	"nothing, title()": {
+		"en": "Nothing",
+		"pt": "Nada"
+	},
+	"watch": {
+		"en": "watch",
+		"pt": "assistir"
+	},
+	"watch, title()": {
+		"en": "Watch",
+		"pt": "Assistir"
+	},
+	"watch, title(), en - pt": "Watch - Assistir",
+	"eat": {
+		"en": "eat",
+		"pt": "comer"
+	},
+	"eat, title()": {
+		"en": "Eat",
+		"pt": "Comer"
+	},
+	"opening_{}": {
+		"en": "Opening {}",
+		"pt": "Abrindo {}"
+	},
+	"defining_{}": {
+		"en": "Defining {}",
+		"pt": "Definindo {}"
+	},
+	"christmas_theme": {
+		"en": "Christmas theme",
+		"pt": "tema de Natal"
+	},
+	"press_enter_when_you": {
+		"en": "Press Enter when you",
+		"pt": "Pressione Enter quando você"
+	},
+	"opening_this_website_to_change_the_profile_picture": {
+		"pt": "Abrindo este site para mudar a foto de perfil",
+		"en": "Opening this website to change the profile picture"
+	},
+	"press_enter_when_you_finish_changing_the_profile_picture_of": {
+		"pt": "Pressione Enter quando você terminar de mudar a foto de perfil do",
+		"en": "Press Enter when you finish changing the profile picture of"
+	},
+	"press_enter_when_you_finish_watching_all_of_the_christmas_episodes": {
+		"pt": "Pressione Enter quando você terminar de assistir todos os episódios de Natal",
+		"en": "Press Enter when you finish watching all of the Christmas episodes"
+	},
+	"press_enter_when_you_finish_spending_time_with_monika_on_the_game": {
+		"pt": "Pressione Enter quando você terminar de passar um tempo com a Monika no jogo",
+		"en": "Press Enter when you spending time with Monika on the game"
+	},
+	"your_christmas_of_{}_is_finished_congratulations!": {
+		"pt": "Seu Natal de {} está concluído, parabéns!",
+		"en": "Your Christmas of {} is finished, congratulations!"
+	}
+}

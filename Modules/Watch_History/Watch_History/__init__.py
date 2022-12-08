@@ -1,337 +1,106 @@
 # Watch History.py
 
-# Script Helper importer
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
 
-# Main class Watch_History that provides lists, dictionaries, folders, and files to other classes that implements it
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
+
+from Christmas.Christmas import Christmas as Christmas
+
+# Main class Watch_History that provides variables to the classes that implement it
 class Watch_History(object):
 	def __init__(self, parameter_switches = None, custom_year = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
-		self.current_year = current_year
-		self.custom_year = custom_year
-
 		self.Define_Basic_Variables()
-
-		if self.custom_year != None:
-			self.current_year = str(self.custom_year)
-
-		self.Define_Media_Types()
+		self.Define_Module_Folder()
 		self.Define_Texts()
-		self.Define_Watch_History_Folders()
-		self.Create_Arrays_And_Dictionaries()
-		self.Define_File_Lists()
-		self.Create_Unexistent_Folders_And_Files()
+
+		self.Define_Lists_And_Dictionaries()
+		self.Define_Folders_And_Files()
+
+		self.Christmas = Christmas()
+		self.christmas = self.Christmas.christmas
+		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas
 
 		# Create media type texts array with " (number of medias of each media type)" on the right of each media type
 		# To use as the choice list of the select media type of Watch_Media() class
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
 		# Global Switches dictionary
-		self.global_switches = {
-			"write_to_file": self.option,
-			"create_files": self.option,
-			"create_folders": self.option,
-			"move_files": self.option,
-			"verbose": self.verbose,
-			"testing_script": self.testing_script,
-		}
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
-			self.global_switches["move_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
+		self.Sanitize = self.File.Sanitize
 
-		self.media_type_separator = " - "
-		self.media_info_setting_separator = ": "
-		self.dot_mp4 = ".mp4"
-		self.dot_mkv = ".mkv"
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
 
-	# Defines the Watch History texts
-	def Define_Media_Types(self):
-		# Media Type text arrays
-		self.media_type_names = [
-			None,
-			"Animes",
-			"Cartoons",
-			"Series",
-			"Movies",
-			"Videos",
-		]
+		self.date = self.Date.date
 
-		self.media_type_names_without_none = [
-			"Animes",
-			"Cartoons",
-			"Series",
-			"Movies",
-			"Videos",
-		]
+	def Define_Module_Folder(self):
+		name = self.__module__
 
-		self.media_type_names_english = [
-			None,
-			"Anime",
-			"Cartoon",
-			"Series",
-			"Movie",
-			"Video",
-		]
+		if "." in name:
+			name = name.split(".")[0]
 
-		self.media_type_names_english_plural = [
-			None,
-			"Animes",
-			"Cartoons",
-			"Series",
-			"Movies",
-			"Videos",
-		]
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
 
-		self.media_type_names_portuguese = [
-			None,
-			"Anime",
-			"Desenho",
-			"Série",
-			"Filme",
-			"Vídeo",
-		]
-
-		self.media_type_names_portuguese_plural = [
-			None,
-			"Animes",
-			"Desenhos",
-			"Séries",
-			"Filmes",
-			"Vídeos",
-		]
-
-		# Media Type text variables
-		self.anime_media_type_number = 1
-		self.anime_media_type = self.media_type_names[self.anime_media_type_number]
-		self.anime_media_type_english = self.media_type_names_english[self.anime_media_type_number]
-		self.anime_media_type_portuguese = self.media_type_names_portuguese[self.anime_media_type_number]
-		self.anime_media_type_english_plural = self.media_type_names_english_plural[self.anime_media_type_number]
-		self.anime_media_type_portuguese_plural = self.media_type_names_portuguese_plural[self.anime_media_type_number]
-
-		self.cartoon_media_type_number = 2
-		self.cartoon_media_type = self.media_type_names[self.cartoon_media_type_number]
-		self.cartoon_media_type_english = self.media_type_names_english[self.cartoon_media_type_number]
-		self.cartoon_media_type_portuguese = self.media_type_names_portuguese[self.cartoon_media_type_number]
-		self.cartoon_media_type_english_plural = self.media_type_names_english_plural[self.cartoon_media_type_number]
-		self.cartoon_media_type_portuguese_plural = self.media_type_names_portuguese_plural[self.cartoon_media_type_number]
-
-		self.series_media_type_number = 3
-		self.series_media_type = self.media_type_names[self.series_media_type_number]
-		self.series_media_type_english = self.media_type_names_english[self.series_media_type_number]
-		self.series_media_type_portuguese = self.media_type_names_portuguese[self.series_media_type_number]
-		self.series_media_type_english_plural = self.media_type_names_english_plural[self.series_media_type_number]
-		self.series_media_type_portuguese_plural = self.media_type_names_portuguese_plural[self.series_media_type_number]
-
-		self.movie_media_type_number = 4
-		self.movie_media_type = self.media_type_names[self.movie_media_type_number]
-		self.movie_media_type_english = self.media_type_names_english[self.movie_media_type_number]
-		self.movie_media_type_portuguese = self.media_type_names_portuguese[self.movie_media_type_number]
-		self.movie_media_type_english_plural = self.media_type_names_english_plural[self.movie_media_type_number]
-		self.movie_media_type_portuguese_plural = self.media_type_names_portuguese_plural[self.movie_media_type_number]
-
-		self.video_media_type_number = 5
-		self.video_media_type = self.media_type_names[self.video_media_type_number]
-		self.video_media_type_english = self.media_type_names_english[self.video_media_type_number]
-		self.video_media_type_portuguese = self.media_type_names_portuguese[self.video_media_type_number]
-		self.video_media_type_english_plural = self.media_type_names_english_plural[self.video_media_type_number]
-		self.video_media_type_portuguese_plural = self.media_type_names_portuguese_plural[self.video_media_type_number]
-
-		self.mixed_media_type_names = [
-			None,
-			self.anime_media_type,
-			self.cartoon_media_type_english + self.media_type_separator + self.cartoon_media_type_portuguese,
-			self.series_media_type_english + self.media_type_separator + self.series_media_type_portuguese,
-			self.movie_media_type_english + self.media_type_separator + self.movie_media_type_portuguese,
-			self.video_media_type_english + self.media_type_separator + self.video_media_type_portuguese,
-		]
-
-		self.mixed_media_type_names_plural = [
-			None,
-			self.anime_media_type,
-			self.cartoon_media_type_english_plural + self.media_type_separator + self.cartoon_media_type_portuguese_plural,
-			self.series_media_type_english_plural + self.media_type_separator + self.series_media_type_portuguese_plural,
-			self.movie_media_type_english_plural + self.media_type_separator + self.movie_media_type_portuguese_plural,
-			self.video_media_type_english_plural + self.media_type_separator + self.video_media_type_portuguese_plural,
-		]
-
-		self.mixed_media_type_names_plural_without_none = [
-			self.anime_media_type,
-			self.cartoon_media_type_english_plural + self.media_type_separator + self.cartoon_media_type_portuguese_plural,
-			self.series_media_type_english_plural + self.media_type_separator + self.series_media_type_portuguese_plural,
-			self.movie_media_type_english_plural + self.media_type_separator + self.movie_media_type_portuguese_plural,
-			self.video_media_type_english_plural + self.media_type_separator + self.video_media_type_portuguese_plural,
-		]
-
-		self.mixed_media_type_anime = self.mixed_media_type_names[self.anime_media_type_number]
-		self.mixed_media_type_cartoon = self.mixed_media_type_names[self.cartoon_media_type_number]
-		self.mixed_media_type_series = self.mixed_media_type_names[self.series_media_type_number]
-		self.mixed_media_type_movie = self.mixed_media_type_names[self.movie_media_type_number]
-		self.mixed_media_type_video = self.mixed_media_type_names[self.video_media_type_number]
-
-		self.mixed_media_type_anime_plural = self.mixed_media_type_names_plural[self.anime_media_type_number]
-		self.mixed_media_type_cartoon_plural = self.mixed_media_type_names_plural[self.cartoon_media_type_number]
-		self.mixed_media_type_series_plural = self.mixed_media_type_names_plural[self.series_media_type_number]
-		self.mixed_media_type_movie_plural = self.mixed_media_type_names_plural[self.movie_media_type_number]
-		self.mixed_media_type_video_plural = self.mixed_media_type_names_plural[self.video_media_type_number]
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
 	def Define_Texts(self):
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
+
+		self.language_texts = self.Language.Item(self.texts)
+
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		# File and folder texts variables
-		self.watched_english_text = "Watched"
-		self.movies_english_text = "Movies"
-
-		self.all_watched_files_english_text = "All Watched Files"
-		self.per_media_type_english_text = "Per Media Type"
-
-		self.episodes_english_text = "Episodes"
-		self.folders_english_text = "Folders"
-		self.files_english_text = "Files"
-		self.media_types_english_text = "Media Types"
-		self.status_english_text = "Status"
-
-		self.names_english_text = "Names"
-		self.times_english_text = "Times"
-
-		self.titles_english_text = "Titles"
-		self.titles_portuguese_text = "Títulos"
-		self.titles_text = Language_Item_Definer(self.titles_english_text, self.titles_portuguese_text)
-		self.mixed_titles_text = self.titles_english_text + self.media_type_separator + self.titles_portuguese_text
-
-		self.dates_english_text = "Dates"
-		self.dates_portuguese_text = "Datas"
-		self.dates_text = Language_Item_Definer(self.dates_english_text, self.dates_portuguese_text)
-		self.mixed_dates_text = self.dates_english_text + self.media_type_separator + self.dates_portuguese_text
-
-		self.youtube_name = "YouTube"
-		self.animes_vision_name = "Animes Vision"
-
-		self.remote_origin_names = [
-			self.animes_vision_name,
-			self.youtube_name,		
+	def Define_Lists_And_Dictionaries(self):
+		# Lists
+		self.media_details_parameters = [
+			self.language_texts["original_name"],
+			self.language_texts["[language]_name"],
+			self.language_texts["year, title()"],
+			self.language_texts["has_dub"],
+			self.language_texts["status, title()"],
+			self.language_texts["origin_type"],
 		]
 
-		self.remote_origin_links = {
-			self.animes_vision_name: "https://animes.vision/",
-			self.youtube_name: "https://www.youtube.com/",
-		}
-
-		self.remote_origin_link_names = {
-			self.animes_vision_name: self.animes_vision_name,
-			self.youtube_name: self.youtube_name,
-		}
-
-		self.english_season_text = "Season"
-		self.english_seasons_text = self.english_season_text + "s"
-		self.mixed_seasons_text = self.english_seasons_text + self.media_type_separator + "Temporadas"
-
-		self.english_series_text = "Series"
-		self.mixed_series_text = self.english_series_text + self.media_type_separator + "Séries"
-
-		self.youtube_ids_english_text = self.youtube_name + " IDs"
-
-		self.comment_english_text = "Comment"
-		self.comments_english_text = self.comment_english_text + "s"
-
-		self.comment_portuguese_text = "Comentário"
-		self.comments_portuguese_text = self.comment_portuguese_text + "s"
-
-		self.comment_text = Language_Item_Definer(self.comment_english_text, self.comment_portuguese_text)
-		self.comments_text = Language_Item_Definer(self.comments_english_text, self.comments_portuguese_text)
-
-		self.mixed_comment_text = self.comment_english_text + self.media_type_separator + self.comment_portuguese_text
-		self.mixed_comments_text = self.comments_english_text + self.media_type_separator + self.comments_portuguese_text
-
-		self.started_watching_in_english_text = "Started watching in"
-		self.started_watching_in_portuguese_text = "Comecei a assistir em"
-		self.started_watching_in_text = Language_Item_Definer(self.started_watching_in_english_text, self.started_watching_in_portuguese_text)
-		self.mixed_started_watching_in_text = self.started_watching_in_english_text + self.media_type_separator + self.started_watching_in_portuguese_text
-
-		self.torrent_text = "Torrent"
-
-		self.number_english_text = "Number"
-		self.number_portuguese_text = "Número"
-		self.number_text = Language_Item_Definer(self.number_english_text, self.number_portuguese_text)
-		self.numbers_english_text = self.number_english_text + "s"
-		self.numbers_portuguese_text = self.number_portuguese_text + "s"
-
-		self.and_english_text = "And"
-		self.and_portuguese_text = "E"
-		self.and_text = Language_Item_Definer(self.and_english_text, self.and_portuguese_text)
-		self.and_text_lower = self.and_text.lower()
-
-		self.media_details_english_text = "Media Details"
-		self.movie_details_english_text = "Movie Details"
-		self.series_details_english_text = "Series Details"
-
-		self.subbed_english_text = "Subbed"
-		self.dubbed_english_text = "Dubbed"
-
-		self.subbed_portuguese_text = "Legendado"
-		self.dubbed_portuguese_text = "Dublado"
-
-		self.mixed_subbed_text = self.subbed_english_text + self.media_type_separator + self.subbed_portuguese_text
-		self.mixed_dubbed_text = self.dubbed_english_text + self.media_type_separator + self.dubbed_portuguese_text
-
-		self.remote_english_text = "Remote"
-		self.local_english_text = "Local"
-		self.hybrid_english_text = "Hybrid"
-
-		self.english_origin_types = [
-			self.remote_english_text,
-			self.local_english_text,
-			self.hybrid_english_text,
-		]
-
-		self.portuguese_origin_types = [
-			"Remoto",
-			"Local",
-			"Híbrido",
-		]
-
-		self.portuguese_origin_types_dict = {
-			"Remote": "Remoto",
-			"Local": "Local",
-			"Hybrid": "Híbrido",
-		}
-
-		self.english_watching_statuses = [
-			"Plan To Watch",
-			"Watching",
-			"Completed",
-			"Re-Watching",
-			"On Hold",
-		]
-
-		self.portuguese_watching_statuses = [
-			"Planejo Assistir",
-			"Assistindo",
-			"Completado",
-			"Re-Assistindo",
-			"Em Pausa",
+		self.movie_details_parameters = [
+			"Original name - Nome original",
+			"Portuguese name - Nome Português",
+			"Productor - Produtor",
+			"Distributor - Distribuidor",
+			"Director - Diretor",
 		]
 
 		self.alternative_episode_types = [
@@ -340,582 +109,795 @@ class Watch_History(object):
 			"Special",
 		]
 
-		self.origin_types_language = Language_Item_Definer(self.english_origin_types, self.portuguese_origin_types)
-		self.watching_statuses_language = Language_Item_Definer(self.english_watching_statuses, self.portuguese_watching_statuses)
-
-		self.default_portuguese_template_parameters = {
-			"Original Name": "Nome Original",
-			"Portuguese Name": "Nome Português",
-			"Year": "Ano",
-			"Has Dub": "Tem Dublagem",
-			"Status": "Status",
-			"Origin Type": "Tipo de Origem",
-			"Origin Location": "Local de Origem",
-			"Remote Origin": "Origem Remota",
-			"Episode": "Episódio",
+		# Dictionaries
+		self.remote_origins = {
+			"Animes Vision": "https://animes.vision/",
+			"YouTube": "https://www.youtube.com/",
 		}
 
-		self.media_details_parameters = [
-			"Original Name",
-			"Year",
-			"Has Dub",
-			"Status",
-			"Origin Type",
-		]
-
 		self.media_details_string_parameters = {
-			"Original Name": {
-				"choice_text": Language_Item_Definer("Original Name", self.default_portuguese_template_parameters["Original Name"]),
+			self.language_texts["original_name"]: {
+				"select_text": self.language_texts["original_name"],
 				"default": "",
 			},
 
-			"Portuguese Name": {
-				"choice_text": Language_Item_Definer("Portuguese Name", self.default_portuguese_template_parameters["Portuguese Name"]),
+			self.language_texts["language_name"][self.user_language]: {
+				"select_text": self.language_texts["language_name"][self.user_language],
 				"default": {
-					"format_name": "Original Name",
+					"format_name": self.language_texts["original_name"],
 				},
 			},
 
-			"Year": {
-				"choice_text": Language_Item_Definer("Year", self.default_portuguese_template_parameters["Year"]),
-				"default": time.strftime("%Y"),
+			self.language_texts["year, title()"]: {
+				"select_text": self.language_texts["year, title()"],
+				"default": self.date["year"],
 			},
 		}
 
 		self.media_details_choice_list_parameters = {
-			"Status": {
-				"list": self.watching_statuses_language,
-				"english_list": self.english_watching_statuses,
-				"choice_text": Language_Item_Definer("Select one Watching Status from the status list", "Selecione um Status de Assistindo da lista de status")
+			self.language_texts["status, title()"]: {
+				"language_list": self.language_texts["watching_statuses, type: list"],
+				"english_list": self.language_texts["watching_statuses, type: list"],
+				"select_text": self.language_texts["select_one_watching_status_from_the_status_list"],
 			},
 
-			"Origin Type": {
-				"list": self.origin_types_language,
-				"english_list": self.english_origin_types,
-				"choice_text": Language_Item_Definer("Select one origin type from the list", "Selecione um tipo de origem da lista")
+			self.language_texts["origin_type"]: {
+				"language_list": self.language_texts["origin_types, type: list"],
+				"english_list": self.language_texts["origin_types, type: list"],
+				"select_text": self.language_texts["select_one_origin_type_from_the_list"],
 			},
 		}
 
 		self.media_details_yes_or_no_definer_parameters = {
-			"Has Dub": Language_Item_Definer("Has Dub", "Tem Dublagem"),
+			self.language_texts["has_dub"]: self.language_texts["has_dub"],
 		}
 
-		self.movie_details_parameters = [
-			"Original Name - Nome Original",
-			"Portuguese Name - Nome Português",
-			"Distributor - Distribuidor",
-			"Director - Diretor",
-		]
-
-		self.media_type_sub_folders = {}
-
-		for local_mixed_media_type in self.mixed_media_type_names_plural_without_none:
-			if local_mixed_media_type != None and local_mixed_media_type != self.movie_media_type_english_plural:
-				self.media_type_sub_folders[local_mixed_media_type] = {}
-
-				self.media_type_sub_folders[local_mixed_media_type]["media_list_text"] = self.mixed_seasons_text
-				self.media_type_sub_folders[local_mixed_media_type]["english_singular_media_list_text"] = self.english_season_text
-
-				if local_mixed_media_type == self.mixed_media_type_video_plural:
-					self.media_type_sub_folders[local_mixed_media_type]["media_list_text"] = self.mixed_series_text
-					self.media_type_sub_folders[local_mixed_media_type]["english_singular_media_list_text"] = self.english_series_text
-
-		self.gender_the_texts = {}
-
-		for local_mixed_media_type in self.mixed_media_type_names_plural_without_none:
-			if local_mixed_media_type != None:
-				self.gender_the_texts[local_mixed_media_type] = {}
-				self.gender_the_texts[local_mixed_media_type]["masculine"] = {}
-				self.gender_the_texts[local_mixed_media_type]["feminine"] = {}
-
-				self.gender_the_texts[local_mixed_media_type]["the"] = Language_Item_Definer("the", "o")
-				self.gender_the_texts[local_mixed_media_type]["this"] = Language_Item_Definer("this", "esse")
-				self.gender_the_texts[local_mixed_media_type]["a"] = Language_Item_Definer("one", "um")
-
-				self.gender_the_texts[local_mixed_media_type]["masculine"]["the"] = self.gender_the_texts[local_mixed_media_type]["the"]
-				self.gender_the_texts[local_mixed_media_type]["masculine"]["this"] = Language_Item_Definer("this", "esse")
-
-				self.gender_the_texts[local_mixed_media_type]["feminine"]["the"] = Language_Item_Definer("this", "a")
-				self.gender_the_texts[local_mixed_media_type]["feminine"]["this"] = Language_Item_Definer("this", "essa")
-
-				if local_mixed_media_type == self.mixed_media_type_series_plural:
-					self.gender_the_texts[local_mixed_media_type]["the"] = Language_Item_Definer("the", "a")
-					self.gender_the_texts[local_mixed_media_type]["this"] = Language_Item_Definer("this", "essa")
-					self.gender_the_texts[local_mixed_media_type]["a"] = Language_Item_Definer("one", "uma")
-
-					self.gender_the_texts[local_mixed_media_type]["feminine"]["the"] = self.gender_the_texts[local_mixed_media_type]["the"]
-					self.gender_the_texts[local_mixed_media_type]["feminine"]["this"] = self.gender_the_texts[local_mixed_media_type]["this"]
-
 		self.media_item_details_parameters = {
-			"Original Name": {
+			self.language_texts["original_name"]: {
 				"mode": "string",
-				"choice_text": Language_Item_Definer("Original Name", self.default_portuguese_template_parameters["Original Name"]),
+				"select_text": self.language_texts["original_name"],
 			},
 
-			"Portuguese Name": {
-				"mode": "string",
-				"choice_text": Language_Item_Definer("Portuguese Name", self.default_portuguese_template_parameters["Portuguese Name"]),
+			self.language_texts["language_name"][self.user_language]: {
+				"mode": "string/default-format",
+				"select_text": self.language_texts["language_name"][self.user_language],
+				"default": {
+					"format_name": self.language_texts["original_name"],
+					"functions": [
+						str,
+					],
+				},
 			},
 
-			"Episode": {
+			self.language_texts["episode, title()"]: {
 				"mode": "string/default",
-				"choice_text": Language_Item_Definer("Episode", self.default_portuguese_template_parameters["Episode"]),
+				"select_text": self.language_texts["episode, title()"],
 				"default": "None",
 			},
 
-			"Origin Location": {
+			"Origin location": {
 				"mode": "string/default-format",
-				"choice_text": Language_Item_Definer("Origin Location", self.default_portuguese_template_parameters["Origin Location"]),
+				"select_text": self.language_texts["origin_location"],
 				"default": {
-					"format_name": "Original Name",
+					"format_name": self.language_texts["original_name"],
 					"functions": [
-						Lower_Text,
-						Replace_Space_By_Dash,
-						Remove_Dot,
+						self.Text.Lower,
+						self.Sanitize,
 					],
 				},
 			},
 		}
 
-		self.movie_details_template = '''Name - Nome:
-{}
+		self.media_type_sub_folders = {}
 
-Original Name - Nome Original:
-{}
+		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
+			if plural_media_type != self.texts["plural_media_types, type: list"]["en"][3]:
+				self.media_type_sub_folders[plural_media_type] = {}
 
-Year - Ano:
-{}
+				self.media_type_sub_folders[plural_media_type]["media_list_text"] = self.texts["seasons, title(), en - pt"]
+				self.media_type_sub_folders[plural_media_type]["english_singular_media_list_text"] = self.texts["season"]["en"]
 
-Director - Diretor:
-{}'''
+				if plural_media_type == self.texts["plural_media_types, type: list"]["en"][4]:
+					self.media_type_sub_folders[plural_media_type]["media_list_text"] = self.texts["series, title(), en - pt"]
+					self.media_type_sub_folders[plural_media_type]["english_singular_media_list_text"] = self.texts["series"]["en"]
 
-		self.posted_on_social_networks_text_template = "Postei o texto de assistido e uma print do {} no status do WhatsApp, Instagram, Facebook, e tweet no Twitter."
+		self.gender_the_texts = {}
 
-		i = 0
+		self.gender_items = ["the", "this", "a", "of", "of_the"]
 
-		self.plan_to_watch_english_text = self.english_watching_statuses[i]
-		i += 1
+		for english_plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
+			self.gender_the_texts[english_plural_media_type] = {}
+			self.gender_the_texts[english_plural_media_type]["masculine"] = {}
+			self.gender_the_texts[english_plural_media_type]["feminine"] = {}
 
-		self.watching_english_text = self.english_watching_statuses[i]
-		i += 1
+			for item in self.gender_items:
+				self.gender_the_texts[english_plural_media_type][item] = self.language_texts[item + ", masculine"]
 
-		self.completed_english_text = self.english_watching_statuses[i]
-		i += 1
+			self.gender_the_texts[english_plural_media_type]["masculine"]["the"] = self.language_texts["the, masculine"]
+			self.gender_the_texts[english_plural_media_type]["masculine"]["this"] = self.language_texts["this, masculine"]
+			self.gender_the_texts[english_plural_media_type]["masculine"]["of_the"] = self.language_texts["of_the, masculine"]
 
-		self.rewatching_english_text = self.english_watching_statuses[i]
-		i += 1
+			self.gender_the_texts[english_plural_media_type]["feminine"]["the"] = self.language_texts["the, feminine"]
+			self.gender_the_texts[english_plural_media_type]["feminine"]["this"] = self.language_texts["this, feminine"]
+			self.gender_the_texts[english_plural_media_type]["feminine"]["of_the"] = self.language_texts["of_the, feminine"]
 
-		self.on_hold_english_text = self.english_watching_statuses[i]
-		i += 1
+			if english_plural_media_type == self.texts["series, title()"]["en"]:
+				for item in self.gender_items:
+					self.gender_the_texts[english_plural_media_type][item] = self.language_texts[item + ", feminine"]
 
-		i = 0
+				self.gender_the_texts[english_plural_media_type]["feminine"]["the"] = self.language_texts["the, feminine"]
+				self.gender_the_texts[english_plural_media_type]["feminine"]["this"] = self.language_texts["this, feminine"]
+				self.gender_the_texts[english_plural_media_type]["feminine"]["of_the"] = self.language_texts["of_the, feminine"]
 
-		self.plan_to_watch_portuguese_text = self.portuguese_watching_statuses[i]
-		i += 1
-
-		self.watching_portuguese_text = self.portuguese_watching_statuses[i]
-		i += 1
-
-		self.completed_portuguese_text = self.portuguese_watching_statuses[i]
-		i += 1
-
-		self.rewatching_portuguese_text = self.portuguese_watching_statuses[i]
-		i += 1
-
-		self.on_hold_portuguese_text = self.portuguese_watching_statuses[i]
-		i += 1
-
-		self.watching_status_english_text = "Watching Status"
-
-		self.mixed_rewatched_format_text = "(Rewatched {}x - Reassistido {}x)"
-		self.mixed_rewatched_regex_text = r" \(Rewatched [0-9]x \- Reassistido [0-9]x\)"
-		self.one_episode_number_regex = r"[0-9][0-9]"
-		self.two_episode_numbers_regex = r"[0-9][0-9]\-[0-9][0-9]"
-		self.episode_and_bracket_number = r"[0-9][0-9]\([0-9][0-9]\)"
-
-		# File and folder texts arrays
-		self.watched_texts = [
-			self.episodes_english_text,
-			self.media_types_english_text,
-			self.times_english_text,
-			self.number_english_text,
-		]
-
-		self.movie_texts = [
-			self.names_english_text,
-			self.times_english_text,
-		]
-
-		self.accepted_file_extensions = [
-			"mp4",
-			"mkv",
-		]
-
-		self.social_networks_links = {
-			"WhatsApp": "https://web.whatsapp.com/",
-		}
-
-	# Defines the Watch History folders
-	def Define_Watch_History_Folders(self):
+	def Define_Folders_And_Files(self):
 		# Folder variables
-		self.local_medias_folder = hard_drive_letter + "Mídias/"
+		if "media_folder" in self.app_settings:
+			self.root_folders["media"] = self.app_settings["media_folder"]
 
-		if "local_medias_folder" in settings:
-			self.local_medias_folder = settings["local_medias_folder"]
+		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch History/"
+		self.Folder.Create(self.watch_history_folder)
 
-		self.media_network_folder = networks_folder + "Audiovisual Media Network/"
-		self.watch_history_folder = self.media_network_folder + "Watch History/"
-		self.watch_history_watched_folder = self.watch_history_folder + self.watched_english_text + "/"
+		self.watched_folder = self.watch_history_folder + "Watched/"
+		self.Folder.Create(self.watched_folder)
 
-		self.current_year_watched_media_folder = self.watch_history_watched_folder + self.current_year + "/"
-		Create_Folder(self.current_year_watched_media_folder, self.global_switches)
+		self.current_year_watched_media_folder = self.watched_folder + str(self.date["year"]) + "/"
+		self.Folder.Create(self.current_year_watched_media_folder)
 
-		self.total_watched_number_current_year_file = self.current_year_watched_media_folder + self.number_english_text + self.dot_text
+		self.total_watched_number_current_year_file = self.current_year_watched_media_folder + "Number.txt"
 
-		if is_a_file(self.total_watched_number_current_year_file) == False:
-			Write_To_File(self.total_watched_number_current_year_file, "0", self.global_switches)
+		if self.File.Exist(self.total_watched_number_current_year_file) == False:
+			self.File.Edit(self.total_watched_number_current_year_file, "0", "w")
 
-		self.all_watched_files_current_year_folder = self.current_year_watched_media_folder + self.all_watched_files_english_text + "/"
-		Create_Folder(self.all_watched_files_current_year_folder, self.global_switches)
+		self.current_year_episode_file = self.current_year_watched_media_folder + "Episodes.txt"
+		self.File.Create(self.current_year_episode_file)
 
-		self.per_media_type_current_year_folder = self.current_year_watched_media_folder + self.per_media_type_english_text + "/"
-		Create_Folder(self.per_media_type_current_year_folder, self.global_switches)
+		self.episodes_file = self.current_year_watched_media_folder + "Episodes.json"
+		self.File.Create(self.episodes_file)
 
-		self.per_media_type_files_folder = self.per_media_type_current_year_folder + self.files_english_text + "/"
-		Create_Folder(self.per_media_type_files_folder, self.global_switches)
+		self.all_watched_files_current_year_folder = self.current_year_watched_media_folder + "All Watched Files/"
+		self.Folder.Create(self.all_watched_files_current_year_folder)
 
-		self.per_media_type_folders_folder = self.per_media_type_current_year_folder + self.folders_english_text + "/"
-		Create_Folder(self.per_media_type_folders_folder, self.global_switches)
+		self.per_media_type_current_year_folder = self.current_year_watched_media_folder + "Per Media Type/"
+		self.Folder.Create(self.per_media_type_current_year_folder)
 
-		self.movies_folder = self.watch_history_folder + self.movies_english_text + "/"
-		Create_Folder(self.movies_folder, self.global_switches)
+		self.per_media_type_files_folder = self.per_media_type_current_year_folder + "Files/"
+		self.Folder.Create(self.per_media_type_files_folder)
 
-		self.media_info_folder = self.media_network_folder + "Media Info/"
-		Create_Folder(self.media_info_folder, self.global_switches)
+		self.per_media_type_folders_folder = self.per_media_type_current_year_folder + "Folders/"
+		self.Folder.Create(self.per_media_type_folders_folder)
 
-		self.media_list_file = self.media_info_folder + "Media List - Lista de Mídias" + self.dot_text
+		self.movies_folder = self.watch_history_folder + "Movies/"
+		self.Folder.Create(self.movies_folder)
 
-		self.media_info_media_details_folder = self.media_info_folder + "Media Details/"
-		Create_Folder(self.media_info_media_details_folder, self.global_switches)
-		self.all_media_number_file = self.media_info_media_details_folder + "All Medias Number" + self.dot_text
+		self.media_info_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Media Info/"
+		self.Folder.Create(self.media_info_folder)
 
-		self.type = "/"
+		self.media_list_file = self.media_info_folder + "Media list - Lista de mídias.txt"
+		self.File.Create(self.media_list_file)
 
-		# Media info folders dictionary
-		self.media_info_folders = {
-			self.anime_media_type: self.media_info_folder + self.mixed_media_type_anime_plural + self.type, 
-			self.cartoon_media_type: self.media_info_folder + self.mixed_media_type_cartoon_plural + self.type,
-			self.series_media_type: self.media_info_folder + self.mixed_media_type_series_plural + self.type,
-			self.movie_media_type: self.media_info_folder + self.mixed_media_type_movie_plural + self.type,
-			self.video_media_type: self.media_info_folder + self.mixed_media_type_video_plural + self.type,
-		}
+		self.media_info_media_details_folder = self.media_info_folder + "Media details/"
+		self.Folder.Create(self.media_info_media_details_folder)
 
-		# Media info media details dictionary
-		self.media_info_media_details_folders = {
-			self.anime_media_type: self.media_info_media_details_folder + self.mixed_media_type_anime_plural + self.type, 
-			self.cartoon_media_type: self.media_info_media_details_folder + self.mixed_media_type_cartoon_plural + self.type,
-			self.series_media_type: self.media_info_media_details_folder + self.mixed_media_type_series_plural + self.type,
-			self.movie_media_type: self.media_info_media_details_folder + self.mixed_media_type_movie_plural + self.type,
-			self.video_media_type: self.media_info_media_details_folder + self.mixed_media_type_video_plural + self.type,
-		}
+		self.media_number_file = self.media_info_media_details_folder + "Media number.txt"
+		self.File.Create(self.media_number_file)
 
-		# Media info media details dictionary
-		self.media_info_media_details_watching_status_folders = {}
+		self.comment_writer_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Comment_Writer/"
+		self.Folder.Create(self.comment_writer_folder)
 
-		self.type = "/"
-		self.sub_text = self.watching_status_english_text
+		self.year_comment_numbers_folder = self.comment_writer_folder + "Year comment numbers/"
+		self.Folder.Create(self.year_comment_numbers_folder)
 
-		For_Append_With_Key(self.mixed_media_type_names_plural, self.media_info_media_details_watching_status_folders, value_string = self.media_info_media_details_folder + "{}/" + self.sub_text + self.type, pop_none = True)
+		self.current_year_comment_number_folder = self.year_comment_numbers_folder + str(self.date["year"]) + "/"
+		self.Folder.Create(self.current_year_comment_number_folder)
 
-		# Media info name text files dictionary
-		self.media_info_name_files = {
-			self.anime_media_type: self.media_info_media_details_folders[self.anime_media_type] + self.names_english_text + self.dot_text,
-			self.cartoon_media_type: self.media_info_media_details_folders[self.cartoon_media_type] + self.names_english_text + self.dot_text,
-			self.series_media_type: self.media_info_media_details_folders[self.series_media_type] + self.names_english_text + self.dot_text,
-			self.movie_media_type: self.media_info_media_details_folders[self.movie_media_type] + self.names_english_text + self.dot_text,
-			self.video_media_type: self.media_info_media_details_folders[self.video_media_type] + self.names_english_text + self.dot_text,
-		}
+		self.all_comments_folder = self.comment_writer_folder + "All comments - Todos os comentários/"
+		self.Folder.Create(self.all_comments_folder)
 
-		# Media info number text files dictionary
-		self.media_info_number_files = {
-			self.anime_media_type: self.media_info_media_details_folders[self.anime_media_type] + self.number_english_text + self.dot_text,
-			self.cartoon_media_type: self.media_info_media_details_folders[self.cartoon_media_type] + self.number_english_text + self.dot_text,
-			self.series_media_type: self.media_info_media_details_folders[self.series_media_type] + self.number_english_text + self.dot_text,
-			self.movie_media_type: self.media_info_media_details_folders[self.movie_media_type] + self.number_english_text + self.dot_text,
-			self.video_media_type: self.media_info_media_details_folders[self.video_media_type] + self.number_english_text + self.dot_text,
-		}
+		# Media info folders and media details folders dictionary
+		self.media_info_folders = {}
+		self.media_details_folders = {}
+		self.watching_status_folders = {}
+		self.per_media_type_folder_folders_dict = {}
+		self.per_media_type_files_folders = {}
+		self.all_comments_media_type_folders = {}
 
-		self.type = self.dot_text
+		self.media_info_name_files = {}
+		self.media_info_number_files = {}
+		self.per_media_type_episode_files = {}
+		self.per_media_type_time_files = {}
+		self.per_media_type_number_files = {}
+		self.all_comment_number_media_type_files = {}
+		self.watching_status_files = {}
 
-		# Media info media watching status dictionary
-		self.media_info_media_watching_status_files = {
-			self.anime_media_type: {
-				self.plan_to_watch_english_text: self.media_info_media_details_watching_status_folders[self.anime_media_type] + self.plan_to_watch_english_text + self.type, 
-				self.watching_english_text: self.media_info_media_details_watching_status_folders[self.anime_media_type] + self.watching_english_text + self.type,
-				self.completed_english_text: self.media_info_media_details_watching_status_folders[self.anime_media_type] + self.completed_english_text + self.type,
-				self.rewatching_english_text: self.media_info_media_details_watching_status_folders[self.anime_media_type] + self.rewatching_english_text + self.type,
-				self.on_hold_english_text: self.media_info_media_details_watching_status_folders[self.anime_media_type] + self.on_hold_english_text + self.type,
-			},
+		self.episode_data = {}
 
-			self.cartoon_media_type: {
-				self.plan_to_watch_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_cartoon_plural] + self.plan_to_watch_english_text + self.type, 
-				self.watching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_cartoon_plural] + self.watching_english_text + self.type,
-				self.completed_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_cartoon_plural] + self.completed_english_text + self.type,
-				self.rewatching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_cartoon_plural] + self.rewatching_english_text + self.type,
-				self.on_hold_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_cartoon_plural] + self.on_hold_english_text + self.type,
-			},
+		i = 1
+		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
+			self.watching_status_files[plural_media_type] = {}
 
-			self.series_media_type: {
-				self.plan_to_watch_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_series_plural] + self.plan_to_watch_english_text + self.type, 
-				self.watching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_series_plural] + self.watching_english_text + self.type,
-				self.completed_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_series_plural] + self.completed_english_text + self.type,
-				self.rewatching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_series_plural] + self.rewatching_english_text + self.type,
-				self.on_hold_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_series_plural] + self.on_hold_english_text + self.type,
-			},
+			mixed_plural_media_type = self.texts["plural_media_types, type: list, en - pt"][i - 1]
 
-			self.movie_media_type: {
-				self.plan_to_watch_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_movie_plural] + self.plan_to_watch_english_text + self.type, 
-				self.watching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_movie_plural] + self.watching_english_text + self.type,
-				self.completed_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_movie_plural] + self.completed_english_text + self.type,
-				self.rewatching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_movie_plural] + self.rewatching_english_text + self.type,
-				self.on_hold_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_movie_plural] + self.on_hold_english_text + self.type,
-			},
+			self.media_info_folders[plural_media_type] = self.media_info_folder + mixed_plural_media_type + "/"
+			self.media_details_folders[plural_media_type] = self.media_info_media_details_folder + mixed_plural_media_type + "/"
+			self.watching_status_folders[plural_media_type] = self.media_info_media_details_folder + mixed_plural_media_type + "/Watching status/"
+			self.per_media_type_folder_folders_dict[plural_media_type] = self.per_media_type_folders_folder + mixed_plural_media_type + "/"
+			self.per_media_type_files_folders[plural_media_type] = self.per_media_type_files_folder + mixed_plural_media_type + "/"
+			self.all_comments_media_type_folders[plural_media_type] = self.all_comments_folder + mixed_plural_media_type + "/"
 
-			self.video_media_type: {
-				self.plan_to_watch_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_video_plural] + self.plan_to_watch_english_text + self.type, 
-				self.watching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_video_plural] + self.watching_english_text + self.type,
-				self.completed_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_video_plural] + self.completed_english_text + self.type,
-				self.rewatching_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_video_plural] + self.rewatching_english_text + self.type,
-				self.on_hold_english_text: self.media_info_media_details_watching_status_folders[self.mixed_media_type_video_plural] + self.on_hold_english_text + self.type,
-			},
-		}
+			self.Folder.Create(self.media_info_folders[plural_media_type])
+			self.Folder.Create(self.media_details_folders[plural_media_type])
+			self.Folder.Create(self.watching_status_folders[plural_media_type])
+			self.Folder.Create(self.per_media_type_folder_folders_dict[plural_media_type])
+			self.Folder.Create(self.per_media_type_files_folders[plural_media_type])
+			self.Folder.Create(self.all_comments_media_type_folders[plural_media_type])
 
-		self.type = "/"
+			self.media_info_name_files[plural_media_type] = self.media_details_folders[plural_media_type] + "Names.txt"
+			self.media_info_number_files[plural_media_type] = self.media_details_folders[plural_media_type] + "Number.txt"
+			self.per_media_type_episode_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Episodes.txt"
+			self.per_media_type_time_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Times.txt"
+			self.per_media_type_number_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Number.txt"
+			self.all_comment_number_media_type_files[plural_media_type] = self.all_comments_media_type_folders[plural_media_type] + "/Number.txt"
 
-		# Per Media Type folder folders dictionary
-		self.per_media_type_folder_folders_dict = {
-			self.anime_media_type: self.per_media_type_folders_folder + self.mixed_media_type_anime_plural + self.type, 
-			self.cartoon_media_type: self.per_media_type_folders_folder + self.mixed_media_type_cartoon_plural + self.type,
-			self.series_media_type: self.per_media_type_folders_folder + self.mixed_media_type_series_plural + self.type,
-			self.movie_media_type: self.per_media_type_folders_folder + self.mixed_media_type_movie_plural + self.type,
-			self.video_media_type: self.per_media_type_folders_folder + self.mixed_media_type_video_plural + self.type,
-		}
+			if self.File.Exist(self.per_media_type_number_files[plural_media_type]) == False:
+				self.File.Edit(self.per_media_type_number_files[plural_media_type], "0", "w")
 
-		for folder in self.per_media_type_folder_folders_dict.values():
-			Create_Folder(folder, self.global_switches)
+			if self.File.Contents(self.all_comment_number_media_type_files[plural_media_type])["length"] == 0:
+				self.File.Edit(self.all_comment_number_media_type_files[plural_media_type], "0", "w")
 
-		# Per Media Type files folder dictionary
-		self.per_media_type_files_folders = {
-		self.anime_media_type: self.per_media_type_files_folder + self.mixed_media_type_anime_plural + self.type, 
-		self.cartoon_media_type: self.per_media_type_files_folder + self.mixed_media_type_cartoon_plural + self.type,
-		self.series_media_type: self.per_media_type_files_folder + self.mixed_media_type_series_plural + self.type,
-		self.movie_media_type: self.per_media_type_files_folder + self.mixed_media_type_movie_plural + self.type,
-		self.video_media_type: self.per_media_type_files_folder + self.mixed_media_type_video_plural + self.type,
-		}
+			self.File.Create(self.media_info_name_files[plural_media_type])
+			self.File.Create(self.media_info_number_files[plural_media_type])
+			self.File.Create(self.per_media_type_episode_files[plural_media_type])
+			self.File.Create(self.per_media_type_time_files[plural_media_type])
+			self.File.Create(self.per_media_type_number_files[plural_media_type])
+			self.File.Create(self.all_comment_number_media_type_files[plural_media_type])
 
-		for folder in self.per_media_type_files_folders.values():
-			Create_Folder(folder, self.global_switches)
+			for watching_status in self.language_texts["watching_statuses, type: list"]:
+				self.watching_status_files[plural_media_type][watching_status] = self.watching_status_folders[plural_media_type] + watching_status + ".txt"
+				self.File.Create(self.watching_status_files[plural_media_type][watching_status])
 
-		self.sub_text = self.episodes_english_text
-		self.type = self.dot_text
+			self.episode_data[plural_media_type] = self.File.Contents(self.per_media_type_episode_files[plural_media_type])["lines"]
 
-		# Per Media Type episode files
-		self.per_media_type_episode_files = {
-		self.anime_media_type: self.per_media_type_files_folders[self.anime_media_type] + self.sub_text + self.type, 
-		self.cartoon_media_type: self.per_media_type_files_folders[self.cartoon_media_type] + self.sub_text + self.type,
-		self.series_media_type: self.per_media_type_files_folders[self.series_media_type] + self.sub_text + self.type,
-		self.movie_media_type: self.per_media_type_files_folders[self.movie_media_type] + self.sub_text + self.type,
-		self.video_media_type: self.per_media_type_files_folders[self.video_media_type] + self.sub_text + self.type,
-		}
+			i += 1
 
-		self.sub_text = self.times_english_text
-
-		# Per Media Type time files
-		self.per_media_type_time_files = {
-		self.anime_media_type: self.per_media_type_files_folders[self.anime_media_type] + self.sub_text + self.type, 
-		self.cartoon_media_type: self.per_media_type_files_folders[self.cartoon_media_type] + self.sub_text + self.type,
-		self.series_media_type: self.per_media_type_files_folders[self.series_media_type] + self.sub_text + self.type,
-		self.movie_media_type: self.per_media_type_files_folders[self.movie_media_type] + self.sub_text + self.type,
-		self.video_media_type: self.per_media_type_files_folders[self.video_media_type] + self.sub_text + self.type,
-		}
-
-		self.sub_text = self.number_english_text
-
-		# Per Media Type number files
-		self.per_media_type_number_files = {
-		self.anime_media_type: self.per_media_type_files_folders[self.anime_media_type] + self.sub_text + self.type, 
-		self.cartoon_media_type: self.per_media_type_files_folders[self.cartoon_media_type] + self.sub_text + self.type,
-		self.series_media_type: self.per_media_type_files_folders[self.series_media_type] + self.sub_text + self.type,
-		self.movie_media_type: self.per_media_type_files_folders[self.movie_media_type] + self.sub_text + self.type,
-		self.video_media_type: self.per_media_type_files_folders[self.video_media_type] + self.sub_text + self.type,
-		}
-
-		for file in self.per_media_type_number_files:
-			file = self.per_media_type_number_files[file]
-
-			if is_a_file(file) == False:
-				Write_To_File(file, "0", self.global_switches)
-
-		# Watch History folders array
-		self.watch_history_folders = []
-
-		self.watch_history_folders.append(self.local_medias_folder)
-		self.watch_history_folders.append(self.media_network_folder)
-		self.watch_history_folders.append(self.watch_history_folder)
-		self.watch_history_folders.append(self.current_year_watched_media_folder)
-		self.watch_history_folders.append(self.all_watched_files_current_year_folder)
-		self.watch_history_folders.append(self.movies_folder)
-
-		self.watch_history_folders.append(self.media_info_folder)
-
-		For_Append(self.media_info_folders.values(), self.watch_history_folders)
-		For_Append(self.media_info_media_details_folders.values(), self.watch_history_folders)
-		For_Append(self.media_info_media_details_watching_status_folders.values(), self.watch_history_folders)
-		For_Append(self.per_media_type_folder_folders_dict.values(), self.watch_history_folders)
-		For_Append(self.per_media_type_files_folders.values(), self.watch_history_folders)
-
-		# Watch History folder names array
-		self.watch_history_folder_names = [
-			"local_medias_folder",
-			"media_network_folder",
-			"watch_history_folder",
-			"current_year_watched_media_folder",
-			"movies_folder",
-			"media_info_folder",
-			"media_info_folders",
-			"media_info_media_details_folders",
-		]
-
-	# Creates the Watch History arrays and dictionaries
-	def Create_Arrays_And_Dictionaries(self):
-		# Watch History folders dictionary creator
-		self.watch_history_folders_keys = {}
-		For_Append_With_Key(self.watch_history_folder_names, self.watch_history_folders_keys, value = self.watch_history_folders)
-
-		# Watched files array creator
 		self.watched_files = {}
-		For_Append_With_Key(self.watched_texts, self.watched_files, value_string = self.current_year_watched_media_folder + "{}" + self.dot_text)
 
-		# Watched files array creator
-		self.per_media_type_files = {}
-		For_Append_With_Key(self.watched_texts, self.watched_files, value_string = self.current_year_watched_media_folder + "{}" + self.dot_text)
+		for watched_text in ["Episodes", "Media Types", "Times", "Names"]:
+			self.watched_files[watched_text] = self.current_year_watched_media_folder + watched_text + ".txt"
+			self.File.Create(self.watched_files[watched_text])
 
-		####################################################
-
-		# Movie files dictionary creator
 		self.movie_files = {}
-		For_Append_With_Key(self.movie_texts, self.movie_files, value_string = self.movies_folder + "{}" + self.dot_text)
 
-		####################################################
+		for movie_text in ["Names", "Times"]:
+			self.movie_files[movie_text] = self.movies_folder + movie_text + ".txt"
+			self.File.Create(self.movie_files[movie_text])
 
-		# Media Info Names read lines array creator
-		self.media_info_names_read_lines = []
-		For_Append(self.media_info_name_files.values(), self.media_info_names_read_lines, Function = Create_Array_Of_File, function_parameter = True)
+		# All Comments Number file
+		self.all_comments_number_file = self.comment_writer_folder + "All comments number.txt"
+		self.File.Create(self.all_comments_number_file)
 
-		# Media Info Names file texts dictionary creator
-		self.media_info_names_file_texts = {}
-		For_Append_With_Key(self.media_type_names_without_none, self.media_info_names_file_texts, value = self.media_info_names_read_lines)
+		if self.File.Contents(self.all_comments_number_file)["length"] == 0:
+			self.File.Edit(self.all_comments_number_file, "0", "w")
 
-		# Media Info Numbers read lines array creator
-		self.media_info_numbers_read_lines = []
-		For_Append(self.media_info_number_files.values(), self.media_info_numbers_read_lines, Function = Create_Array_Of_File, function_parameter = True)
+		# Year Comment Number file
+		self.year_comment_number_file = self.current_year_comment_number_folder + "Number.txt"
+		self.File.Create(self.year_comment_number_file)
 
-		# Media Info Numbers file texts dictionary creator
-		self.media_info_numbers_file_texts = {}
-		For_Append_With_Key(self.media_type_names_without_none, self.media_info_numbers_file_texts, value = self.media_info_numbers_read_lines)
+		if self.File.Contents(self.year_comment_number_file)["length"] == 0:
+			self.File.Edit(self.year_comment_number_file, "0", "w")
 
-		####################################################
+		self.episode_data["watched_number"] = self.File.Contents(self.total_watched_number_current_year_file)["lines"][0]
+		self.episode_data["comment_number"] = self.File.Contents(self.year_comment_number_file)["lines"][0]
 
-		# Watch History files array creator
-		self.watch_history_files = []
+		self.File.Edit(self.episodes_file, self.Language.Python_To_JSON(self.episode_data), "w")
 
-		For_Append(self.watched_files.values(), self.watch_history_files)
-		For_Append(self.movie_files.values(), self.watch_history_files)
-		For_Append(self.media_info_name_files.values(), self.watch_history_files)
-		For_Append(self.media_info_number_files.values(), self.watch_history_files)
-		For_Append(self.per_media_type_episode_files.values(), self.watch_history_files)
-		For_Append(self.per_media_type_time_files.values(), self.watch_history_files)
-		For_Append(self.per_media_type_number_files.values(), self.watch_history_files)
+	def Define_The_Text(self, plural_media_type, item_dictionary = None):
+		if type(plural_media_type) == dict:
+			plural_media_type = plural_media_type["en"]
 
-		for media_type in self.media_type_names:
-			i = 0
-			if media_type != None:
-				watching_status = self.english_watching_statuses[i]
-				For_Append(self.media_info_media_watching_status_files[media_type].values(), self.watch_history_files)
+		the_text = self.gender_the_texts[plural_media_type]["the"]
+		this_text = self.gender_the_texts[plural_media_type]["this"]
+		of_text = self.gender_the_texts[plural_media_type]["of"]
+		of_the_text = self.gender_the_texts[plural_media_type]["of_the"]
 
-				i += 1
+		if item_dictionary != None:
+			item_dictionary["main_media_type"] = item_dictionary["singular_media_types"]["language"]
+			item_dictionary["media_item_name"] = item_dictionary["singular_media_types"]["language"]
 
-	def Define_File_Lists(self):
-		# Watch History array texts
-		self.watch_history_array_texts = [
-			"media_info_folders",
-			"media_info_name_files",
-			"media_info_names_file_texts",
-			"media_info_number_files",
-			"media_info_numbers_file_texts",
-			"watch_history_folders",
-			"watch_history_folders_keys",
-			"watch_history_files",
-			"watched_texts",
-			"watched_files",
-			"movie_texts",
-			"movie_files",
+			if self.is_series_media == True:
+				item_dictionary["main_media_type"] = self.language_texts["season"]
+				item_dictionary["media_item_name"] = self.language_texts["season"]
+				item_dictionary["the_text"] = self.gender_the_texts[self.plural_media_types["en"]]["feminine"]["the"]
+
+				if self.is_video_series_media == True:
+					item_dictionary["main_media_type"] = self.language_texts["channel"]
+					item_dictionary["media_item_name"] = self.language_texts["youtube_video_series"]
+
+			return item_dictionary
+
+		if item_dictionary == None:
+			return the_text, this_text, of_text, of_the_text
+
+	def Remove_Media_Type(self, media_types):
+		if type(media_types) == str:
+			media_types = [media_types]
+
+		texts = self.texts.copy()
+
+		for language in self.small_languages:
+			for item in media_types:
+				if item in texts["plural_media_types, type: list"][language]:
+					texts["plural_media_types, type: list"][language].remove(item)
+
+				if item in self.media_info_folders:
+					self.media_info_folders.pop(item)
+
+		return texts
+
+	def Create_Media_List(self, status_text = None, plural_media_types = None):
+		if status_text == None:
+			status_text = self.language_texts["watching, title()"]
+
+		if plural_media_types == None:
+			plural_media_types = self.texts["plural_media_types, type: list"]["en"]
+
+		# Media titles dictionary
+		media_titles = {}
+
+		i = 0
+		for media_info_folder in self.media_info_folders.values():
+			current_watching_status = []
+
+			english_media_type = plural_media_types[i]
+
+			if type(status_text) == str:
+				self.first_status_file = self.watching_status_files[english_media_type][status_text]
+
+				current_watching_status.extend(self.File.Contents(self.first_status_file)["lines"])
+
+				if status_text == self.language_texts["watching, title()"]:
+					self.second_status_file = self.watching_status_files[english_media_type][self.language_texts["re_watching, title()"]]
+
+					current_watching_status.extend(self.File.Contents(self.second_status_file)["lines"])
+
+			if type(status_text) == list:
+				for local_status_text in status_text:
+					self.status_file = self.watching_status_files[english_media_type][local_status_text]
+
+					current_watching_status.extend(self.File.Contents(self.status_file)["lines"])
+
+			media_titles[english_media_type] = sorted(current_watching_status)
+
+			for self.media_title in media_titles[english_media_type]:
+				self.local_media_folder = self.root_folders["media"] + self.Sanitize(self.media_title, restricted_characters = True) + "/"
+				self.Folder.Create(self.local_media_folder)
+
+			i += 1
+
+		return media_titles
+
+	def Select_Media_Type(self, language_media_type_list = None, texts = None):
+		show_text = self.language_texts["media_types"]
+
+		if texts != None and texts[0] != None:
+			show_text = texts[0]
+
+		select_text = self.language_texts["select_one_media_type_to_watch"]
+
+		if texts != None and texts[1] != None:
+			select_text = texts[1]
+
+		self.language_media_type_list = self.language_texts["plural_media_types, type: list"]
+
+		if language_media_type_list != None:
+			self.language_media_type_list = language_media_type_list
+
+		# Select
+		dictionary = self.Input.Select(self.texts["plural_media_types, type: list"]["en"], self.language_media_type_list, show_text = show_text, select_text = select_text)
+
+		option_info = {
+			"media_type_number": dictionary["number"],
+		}
+
+		media_type_number = option_info["media_type_number"]
+
+		option_info["plural_media_type"] = {}
+
+		for language in self.small_languages:
+			if language in self.texts["plural_media_types, type: list"]:
+				option_info["plural_media_type"][language] = self.texts["plural_media_types, type: list"][language][media_type_number]
+
+		option_info["plural_media_type"]["language"] = self.Language.Item(option_info["plural_media_type"])
+
+		option_info["singular_media_type"] = {}
+
+		for language in self.small_languages:
+			if language in self.texts["media_types, type: list"]:
+				option_info["singular_media_type"][language] = self.texts["media_types, type: list"][language][media_type_number]
+
+		option_info["singular_media_type"]["language"] = self.Language.Item(option_info["singular_media_type"])
+
+		option_info["language_singular_media_type"] = self.Language.Item(option_info["singular_media_type"])
+
+		option_info["mixed_plural_media_type"] = self.texts["plural_media_types, type: list, en - pt"][media_type_number]
+
+		option_info["media_info_media_type_folder"] = self.media_info_folders[option_info["plural_media_type"]["en"]]
+
+		option_info["watching_status_files"] = {}
+
+		for watching_status in self.language_texts["watching_statuses, type: list"]:
+			option_info["watching_status_files"][watching_status] = self.watching_status_files[option_info["plural_media_type"]["en"]][watching_status]
+
+		option_info["watching_status_media"] = {}
+
+		for watching_status in option_info["watching_status_files"]:
+			option_info["watching_status_media"][watching_status] = self.File.Contents(option_info["watching_status_files"][watching_status])["lines"]
+
+		return option_info
+
+	def Define_Media_Titles(self, option_info):
+		if self.File.Exist(option_info["media_details_file"]) == True:
+			option_info["media_details"] = self.File.Dictionary(option_info["media_details_file"])
+
+			option_info["media_titles"] = {}
+
+			option_info["media_titles"]["original"] = option_info["media_details"][self.language_texts["original_name"]]
+
+			if option_info["plural_media_types"]["en"] == self.texts["animes"]["en"]:
+				option_info["media_titles"]["romanized"] = option_info["media_details"][self.language_texts["romanized_name"]]
+				option_info["media_titles"]["jp"] = option_info["media_details"][self.language_texts["original_name"]]
+
+			for language in self.small_languages:
+				language_name = self.texts["language_name"][language][self.user_language]
+
+				for key in option_info["media_details"]:
+					if language_name == key:
+						option_info["media_titles"][language] = option_info["media_details"][language_name]
+
+			option_info["media_titles"]["language"] = option_info["media_titles"]["original"]
+
+			if self.user_language in option_info["media_titles"]:
+				option_info["media_titles"]["language"] = option_info["media_titles"][self.user_language]
+
+			if self.user_language not in option_info["media_titles"] and option_info["plural_media_types"]["en"] == self.texts["animes"]["en"]:
+				option_info["media_titles"]["language"] = option_info["media_titles"]["romanized"]
+
+		return option_info
+
+	def Select_Media(self, plural_media_types, singular_media_types, mixed_plural_media_type, media_list, media_info_media_type_folder, texts = None):
+		self.a_text = self.gender_the_texts[plural_media_types["en"]]["a"]
+
+		show_text = self.Text.By_Number(media_list, singular_media_types["language"], plural_media_types["language"])
+
+		select_text = singular_media_types["language"].lower()
+
+		if plural_media_types["en"] == self.texts["videos"]["en"]:
+			show_text = self.Text.By_Number(media_list, self.language_texts["channel, title()"], self.language_texts["channels, title()"])
+			select_text = self.language_texts["channel, title()"]
+
+		if texts != None and texts[0] != None:
+			show_text = texts[0]
+
+		select_text = self.language_texts["select_{}_to_watch"].format(self.a_text + " " + select_text)
+
+		if texts != None and texts[1] != None:
+			select_text = texts[1]
+
+		option_info = {}
+
+		option_info["plural_media_types"] = plural_media_types
+
+		# Select
+		option_info["media"] = self.Input.Select(media_list, show_text = show_text, select_text = select_text)["option"]
+
+		option_info["media_folder"] = media_info_media_type_folder + self.Sanitize(option_info["media"], restricted_characters = True) + "/"
+
+		option_info["media_details_file"] = option_info["media_folder"] + "Media details.txt"
+
+		option_info["media_details"] = {}
+
+		option_info = self.Define_Media_Titles(option_info)
+
+		if plural_media_types["en"] == self.texts["movies"]["en"]:
+			option_info["movie_details_file"] = option_info["media_folder"] + "Movie details.txt"
+			option_info["movie_details"] = self.File.Dictionary(option_info["movie_details_file"], next_line = True)
+
+		return option_info
+
+	def Select_Media_Type_And_Media(self, options = None, status_text = None):
+		self.select_media_type = True
+		self.select_media = True
+
+		self.media_type_list = self.texts["plural_media_types, type: list"]["en"]
+		self.language_media_type_list = self.language_texts["plural_media_types, type: list"]
+
+		items = [
+			"media_type_list",
+			"language_media_type_list",
+			"select_media_type",
+			"select_media",
+			"media_list",
+			"media_type_show_text",
+			"media_type_select_text",
+			"media_show_text",
+			"media_select_text",
 		]
 
-		# Watch History arrays
-		self.watch_history_arrays = [
-			self.media_info_folders,
-			self.media_info_name_files,
-			self.media_info_names_file_texts,
-			self.media_info_number_files,
-			self.media_info_numbers_file_texts,
-			self.watch_history_folders,
-			self.watch_history_folders_keys,
-			self.watch_history_files,
-			self.watched_texts,
-			self.watched_files,
-			self.movie_texts,
-			self.movie_files,
-		]
+		if options == None:
+			options = {}
 
-		####################################################
+			for item in items:
+				if item not in ["select_media_type", "select_media"]:
+					options[item] = None
 
-		self.system_verbose = False
+			options["select_media_type"] = True
+			options["select_media"] = True
 
-		# Watch History arrays lister if verbose == True
-		if self.system_verbose == True:
-			i = 0
-			for array in self.watch_history_arrays:
-				text = self.watch_history_array_texts[i]
+		if options != None:
+			for item in items:
+				if item not in ["select_media_type", "select_media"] and item not in options:
+					options[item] = None
 
-				print(text + ", {}: ".format(type(array)))
+			if "select_media_type" not in options:
+				options["select_media_type"] = True
 
-				if type(array) == list:
-					if len(array) != 0 and type(array[0]) == list:
-						c = 0
-						while c <= len(array):
-							print(array[c])
+			if "select_media" not in options:
+				options["select_media"] = True
 
-							c += 1
+		if "media_type_list" in options and options["media_type_list"] != None:
+			self.media_type_list = options["media_type_list"]
 
-					else:
-						print(array)
+		if "media_list" in options and options["media_list"] != None:
+			self.media_list = options["media_list"]
 
-				if type(array) == type(dict):
-					print(array)
+		self.status_text = status_text
 
-				if array != self.watch_history_arrays[-1]:
+		if self.status_text == None:
+			self.status_text = self.language_texts["watching, title()"]
+
+		option_info = {}
+
+		if options["select_media_type"] == True:
+			option_info.update(self.Select_Media_Type(language_media_type_list = self.language_media_type_list, texts = [options["media_type_show_text"], options["media_type_select_text"]]))
+
+			self.media_type_number = option_info["media_type_number"]
+
+			self.plural_media_types = option_info["plural_media_type"]
+			self.singular_media_types = option_info["singular_media_type"]
+			self.mixed_plural_media_type = option_info["mixed_plural_media_type"]
+
+			self.media_info_media_type_folder = option_info["media_info_media_type_folder"]
+
+			watching_status_files = option_info["watching_status_files"]
+			watching_status_media = option_info["watching_status_media"]
+
+			self.all_media_names = self.File.Contents(self.media_info_name_files[self.plural_media_types["en"]])["lines"]
+
+			self.media_titles = self.Create_Media_List(self.status_text, self.media_type_list)
+
+			if options == None or "media_list" not in options or "media_list" in options and options["media_list"] == None:
+				self.media_list = self.media_titles[self.plural_media_types["en"]]
+
+			if options != None and "media_list" in options and options["media_list"] != None:
+				self.media_list = options["media_list"]
+
+				if options["media_list"] == "all":
+					self.media_list = self.all_media_names
+
+		if options["select_media"] == True:
+			media_information = self.Select_Media(self.plural_media_types, self.singular_media_types, self.mixed_plural_media_type, self.media_list, self.media_info_media_type_folder, texts = [options["media_show_text"], options["media_select_text"]])
+
+			self.media = media_information["media"]
+
+			self.media_folder = media_information["media_folder"]
+
+			self.media_details = media_information["media_details"]
+			self.media_details_file = media_information["media_details_file"]
+
+			self.is_series_media = True
+
+			if self.plural_media_types["en"] == self.texts["movies"]["en"]:
+				self.is_series_media = False
+		
+			if self.is_series_media == False:
+				self.movie_details_file = media_information["movie_details_file"]
+				self.movie_details = media_information["movie_details"]
+
+			media_information.update(option_info)
+			option_info = media_information
+
+		return option_info
+
+	def Show_Media_Title(self, media_dictionary):
+		if media_dictionary["media_titles"]["language"] == media_dictionary["media_titles"]["original"]:
+			print(media_dictionary["media_titles"]["original"])
+
+			if media_dictionary["is_video_series_media"] == True:				
+				print()
+				print(self.Text.Capitalize(media_dictionary["media_item_name"]) + ":")
+				print(media_dictionary["media_item"])
+
+		if media_dictionary["media_titles"]["language"] != media_dictionary["media_titles"]["original"]:
+			print("\t" + media_dictionary["media_titles"]["original"])
+
+			if media_dictionary["is_video_series_media"] == False:
+				if media_dictionary["plural_media_types"]["en"] == self.texts["animes"]["en"]:
+					print("\t" + media_dictionary["media_titles"]["romanized"])
+
+				for language in self.small_languages:
+					language_name = self.texts["language_name"][language][self.user_language]
+
+					if language in media_dictionary["media_titles"] and media_dictionary["media_titles"][language] not in [media_dictionary["media_titles"]["original"]]:
+						print("\t" + media_dictionary["media_titles"][language])
+
+	def Show_Media_Information(self, media_dictionary):
+		media_title = media_dictionary["media_title"]
+		media_titles = media_dictionary["media_titles"]
+
+		media_details = media_dictionary["media_details"]
+
+		media_item = media_dictionary["media_item"]
+		language_media_item = media_dictionary["language_media_item"]
+
+		media_episode = media_dictionary["media_episode"]
+
+		plural_media_types = media_dictionary["plural_media_types"]
+		singular_media_types = media_dictionary["singular_media_types"]
+		mixed_plural_media_type = media_dictionary["mixed_plural_media_type"]
+
+		is_series_media = media_dictionary["is_series_media"]
+		is_video_series_media = media_dictionary["is_video_series_media"]
+
+		no_media_list = media_dictionary["no_media_list"]
+
+		media_the_text = self.media_dictionary["of_the_text"] + " " + singular_media_types["language"].lower()
+
+		# Show opening this media text
+		header_text = singular_media_types["language"] + ":"
+
+		if "header_text" in media_dictionary and "header_text" not in ["", None]:
+			header_text = media_dictionary["header_text"]
+
+		print()
+		print(self.large_bar)
+
+		if "completed_media" in media_dictionary and media_dictionary["completed_media"] == True:
+			print()
+			print(self.language_texts["congratulations"] + "! :3")
+
+		print()
+		print(header_text)
+
+		self.Show_Media_Title(media_dictionary)
+
+		print()
+
+		# Show media episode if the media is series media (not a movie)
+		if is_series_media == True:
+			if is_video_series_media == True:
+				self.media_dictionary["of_the_text"] = self.gender_the_texts[plural_media_types["en"]]["feminine"]["of_the"]
+
+			media_episode_text = "{} {}".format(self.Text.Capitalize(media_dictionary["media_unit_name"]), self.media_dictionary["of_the_text"]) + " "
+
+			if no_media_list == True or is_video_series_media == True:
+				media_episode_text += media_dictionary["media_item_name"]
+
+			else:
+				media_episode_text += media_dictionary["media_container_name"]
+
+			print(media_episode_text + ":")
+			print(media_episode)
+			print()
+
+			text_to_show = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}_title"].format(self.media_dictionary["the_text"] + " " + media_dictionary["media_container_name"])
+
+			# Show media item episode (media episode with media item) if the media has a media list
+			if no_media_list == False and is_video_series_media == False:
+				if media_item != media_title:
+					media_episode_text = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}"].format(media_dictionary["media_item_name"])
+
+					print(media_episode_text + ":")
+					print(language_media_item["language"]["episode"])
 					print()
 
-				i += 1
+				if media_item != media_title:
+					text_to_show += " " + self.language_texts["and_{}"].format(media_dictionary["media_item_name"])
 
-	# Create files that do not exist
-	# Using the watch_history_folders and watch_history_files arrays
-	def Create_Unexistent_Folders_And_Files(self):
-		for folder in self.watch_history_folders:
-			if is_a_folder(folder) == False:
-				Create_Folder(folder, self.global_switches)
+			if is_video_series_media == True:
+				text_to_show = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}"].format(self.language_texts["youtube_channel"])
 
-		for file in self.watch_history_files:
-			if is_a_file(file) == False:
-				Create_Text_File(file, self.global_switches)
+			print(text_to_show + ":")
+			print(language_media_item[self.user_language]["episode_with_title"])
+			print()
+
+		if "completed_media_item" in media_dictionary and media_dictionary["completed_media_item"] == True:
+			print(self.language_texts["congratulations"] + "! :3")
+			print()
+
+			print(self.language_texts["you_finished_watching_this_{}_of_{}"].format(media_dictionary["media_item_name"], self.media_dictionary["of_the_text"] + " " + singular_media_types["language"].lower() + ' "' + media_dictionary["media_titles"]["language"] + '"') + ":")
+			print(media_dictionary["language_media_item"]["language"]["title"])
+
+			if media_dictionary["completed_media"] == False and media_dictionary["is_video_series_media"] == False:
+				print()
+				print(self.language_texts["next_{}_to_watch, feminine"].format(media_dictionary["media_item_name"]) + ": ")
+				print(media_dictionary["language_next_media_item"])
+
+			print()
+
+		# Show media type
+		print(self.language_texts["media_type"] + ":")
+		print(self.Language.Item(plural_media_types))
+		print()
+
+		# Show mixed media type
+		if plural_media_types["en"] != self.texts["plural_media_types, type: list"]["en"][0]:
+			print(self.language_texts["mixed_media_type"] + ":")
+			print(mixed_plural_media_type)
+			print()
+
+		if "media_unit" in media_dictionary:
+			# Show media unit text and Media_Unit
+			print(self.language_texts["media_unit"] + ":")
+			print(media_dictionary["media_unit"])
+
+		if "youtube_video_id" in media_dictionary and media_dictionary["youtube_video_id"] != None:
+			if "next_episode_to_watch" not in media_dictionary:
+				print()
+
+			print(self.language_texts["youtube_ids"] + ":")
+			print(media_dictionary["youtube_video_id"])
+
+			if "next_episode_to_watch" in media_dictionary:
+				print()
+
+		if "first_watched_in_year" in media_dictionary and media_dictionary["first_watched_in_year"] == True:
+			print(self.language_texts["this_is_{}_first_{}_that_you_watch_in_{}"].format(self.media_dictionary["of_the_text"], singular_media_types["language"].lower(), self.date["year"]) + ".")
+			print()
+
+		if "finished_watching_time" in media_dictionary:
+			print(self.language_texts["when_i_finished_watching"] + " " + self.media_dictionary["of_the_text"] + " " + media_dictionary["media_unit_name"] + ":")
+			print(media_dictionary["finished_watching_time"])
+			print()
+
+		if "food" in media_dictionary:
+			print(self.language_texts["food, en - pt"] + ":")
+			print(media_dictionary["food"])
+			print()
+
+		if "drink" in media_dictionary:
+			print(self.language_texts["drink, en - pt"] + ":")
+			print(media_dictionary["drink"])
+			print()
+
+		if "next_episode_to_watch" in media_dictionary:
+			text = self.language_texts["next_{}_to_watch, masculine"]
+
+			if media_dictionary["media_unit_name"][0] not in ["C", "N"]:
+				media_dictionary["media_unit_name"] = self.Text.Capitalize(media_dictionary["media_unit_name"], lower = True)
+
+			print(text.format(media_dictionary["media_unit_name"]) + ": ")
+			print(media_dictionary["next_episode_to_watch"])
+			print()
+
+		if "completed_media" in media_dictionary and media_dictionary["completed_media"] == True:
+			print(self.language_texts["new_watching_status"] + ":")
+			print(media_details[self.language_texts["status, title()"]])
+			print()
+
+			# Started watching media time text and day
+			print(self.language_texts["when_you_started_to_watch"] + ":")
+			print(media_dictionary["started_watching"])
+			print()
+
+			# Finished watching media time text and day
+			print(self.language_texts["when_you_finished_watching"] + ":")
+			print(media_dictionary["finished_watching"])
+			print()
+
+			print(self.language_texts["time_that_you_spent_watching"] + ":")
+			print(media_dictionary["time_spent_watching"])
+			print()
+
+		if "finished_watching" in media_dictionary:
+			print(self.large_bar)
+
+			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

@@ -1,24 +1,43 @@
 # Code.py
 
-# Script Helper importer
-from Script_Helper import *
+from Code.Help_With_Programming import Help_With_Programming as Help_With_Programming
+from Code.Update_Websites import Update_Websites as Update_Websites
 
-from Code.Help_With_Coding import Help_With_Coding as Help_With_Coding
+from Language import Language as Language
+from Input import Input as Input
+from Folder import Folder as Folder
 
-local_script_name = "Code.py"
+class Run():
+	def __init__(self):
+		# Global Switches dictionary
+		self.global_switches = {
+			"verbose": False,
+		}
 
-def Function_Choose():
-	functions = [
-	Help_With_Coding,
-	]
+		self.Language = Language(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
 
-	descriptions = [
-	Language_Item_Definer("Help with coding", "Ajuda com a programação"),
-	]
+		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
-	choice_text = Language_Item_Definer("Code computer scripts", "Programar scripts de computador")
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
 
-	Choose_Function(functions, descriptions, local_script_name, choice_text)
+		self.classes = [
+			Help_With_Programming,
+			Update_Websites,
+		]
+
+		self.class_descriptions = []
+
+		for class_ in self.classes:
+			class_description = self.descriptions[class_.__name__]
+
+			self.class_descriptions.append(self.Language.Item(class_description))
+
+		self.language_texts = self.Language.Item(self.descriptions)
+
+		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
 
 if __name__ == "__main__":
-	Function_Choose()
+	Run()

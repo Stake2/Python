@@ -1,0 +1,247 @@
+{
+	"year": {
+		"pt": "ano",
+		"en": "year"
+	},
+	"year, title()": {
+		"pt": "Ano",
+		"en": "Year"
+	},
+	"years": {
+		"pt": "anos",
+		"en": "years"
+	},
+	"years, title()": {
+		"pt": "Anos",
+		"en": "Years"
+	},
+	"new_year": {
+		"pt": "Ano Novo",
+		"en": "New Year"
+	},
+	"christmas, title()": {
+		"pt": "Natal",
+		"en": "Christmas"
+	},
+	"summary, title()": {
+		"pt": "Resumo",
+		"en": "Summary"
+	},
+	"this_year_i": {
+		"pt": "Este Ano Eu",
+		"en": "This Year I"
+	},
+	"information, title()": {
+		"pt": "Informação",
+		"en": "Information"
+	},
+	"informations, title()": {
+		"pt": "Informações",
+		"en": "Information"
+	},
+	"{}_information": {
+		"pt": "Informações de {}",
+		"en": "{} information"
+	},
+	"data_files": {
+		"pt": "Arquivos de dados",
+		"en": "Data files"
+	},
+	"author, title()": {
+		"pt": "Autor",
+		"en": "Author"
+	},
+	"created_in": {
+		"pt": "Criado em",
+		"en": "Editado em"
+	},
+	"created_in, en - pt": "Created in - Criado em",
+	"edited_in": {
+		"pt": "Editado em",
+		"en": "Edited in"
+	},
+	"edited_in, en - pt": "Edited in - Editado em",
+	"year_summary_header_texts, type: list": {
+		"pt": [
+			"Autor",
+			"Criado em",
+			"Editado em"
+		],
+		"en": [
+			"Author",
+			"Editado em",
+			"Edited in"
+		]
+	},
+	"year_summary_texts, type: list": {
+		"en": [
+			"Things done in {year}",
+			"Productive things",
+			"Watched things",
+			"Media comments",
+			"Game matches played",
+			"Known people"
+		],
+		"pt": [
+			"Coisas feitas em {year}",
+			"Coisas produtivas",
+			"Coisas assistidas",
+			"Comentários de mídia",
+			"Partidas de jogo jogadas",
+			"Pessoas conhecidas"
+		]
+	},
+	"things_done_in_{year}": {
+		"pt": "Coisas feitas em {year}",
+		"en": "Things done in {year}"
+	},
+	"productive_things": {
+		"pt": "Coisas produtivas",
+		"en": "Productive things"
+	},
+	"watched_things": {
+		"pt": "Coisas assistidas",
+		"en": "Watched things"
+	},
+	"media_comments": {
+		"pt": "Comentários de mídia",
+		"en": "Media comments"
+	},
+	"game_matches_played": {
+		"pt": "Partidas de jogo jogadas",
+		"en": "Game matches played"
+	},
+	"known_people": {
+		"pt": "Pessoas conhecidas",
+		"en": "Known people"
+	},
+	"year_summary_detailed_texts, type: list": {
+		"pt": [
+			"Coisas produtivas",
+			"Coisas assistidas",
+			"Partidas de jogo jogadas"
+		],
+		"en": [
+			"Productive things",
+			"Watched things",
+			"Game matches played"
+		]
+	},
+	"the_summary_of_this_year_was_created": {
+		"pt": "O resumo deste Ano foi criado",
+		"en": "The summary of this Year was created"
+	},
+	"summary_in": {
+		"pt": "Resumo em",
+		"en": "Summary in"
+	},
+	"the_program_has_finished_the_creation_of_the_year_summary_for": {
+		"pt": "O programa concluiu a criação do resumo de Ano para",
+		"en": "The program has finished the creation of the Year summary for"
+	},
+	"planning_of_posts": {
+		"pt": "Planejamento dos posts",
+		"en": "Planning of posts"
+	},
+	"tweets, title()": "Tweets",
+	"watch, title()": {
+		"pt": "Assistir",
+		"en": "Watch"
+	},
+	"texts, title()": {
+		"pt": "Textos",
+		"en": "Texts"
+	},
+	"images, title()": {
+		"pt": "Imagens",
+		"en": "Images"
+	},
+	"_(primary_folder)": {
+		"pt": " (Pasta primária)",
+		"en": " (Primary folder)"
+	},
+	"_(secondary_folder)": {
+		"pt": " (Pasta secundária)",
+		"en": " (Secondary folder)"
+	},
+	"_(file)": {
+		"pt": " (Arquivo)",
+		"en": " (File)"
+	},
+	"select_a_year": {
+		"pt": "Selecione um Ano",
+		"en": "Select a Year"
+	},
+	"select_a_year_to_create_its_summary": {
+		"pt": "Selecione um Ano para criar seu resumo",
+		"en": "Select a Year to create its summary"
+	},
+	"26_of_december": {
+		"pt": "26 de Dezembro",
+		"en": "26 of December"
+	},
+	"{} of {}": {
+		"pt": "{} de {}",
+		"en": "{} of {}"
+	},
+	"{} {} {}": {
+		"pt": "{} de {} de {}",
+		"en": "{} {} {}"
+	},
+	"you_already_created_the_summary_for_this_year": {
+		"pt": "Você já criou o resumo para este Ano",
+		"en": "You already created the summary for this Year"
+	},
+	"today_is_not_the_{}_run_this_program_again_when_it_is_today_is": {
+		"pt": "Hoje não é {}, execute este programa novamente quando for, hoje é",
+		"en": "Today is not the {}, run this program again when it is, today is"
+	},
+	"the_sum_of_numbers_below": {
+		"pt": "a soma dos números abaixo",
+		"en": "the sum of numbers below"
+	},
+	"last": {
+		"pt": "últimos",
+		"en": "last"
+	},
+	"last, feminine": {
+		"pt": "últimas",
+		"en": "last"
+	},
+	"episodes": {
+		"pt": "episódios",
+		"en": "episodes"
+	},
+	"select_a_year_to_show_its_information": {
+		"pt": "Selecione um Ano para mostrar suas informações",
+		"en": "Select a Year to show its information"
+	},
+	"empty, title()": {
+		"en": "Empty",
+		"pt": "Vazio"
+	},
+	"the_current_year_did_not_existed_in_the_years_folder": {
+		"pt": "O Ano atual não existia na pasta de Anos",
+		"en": "The current Year did not existed in the Years folder"
+	},
+	"the_current_year_already_exists_in_the_years_folder": {
+		"pt": "O Ano atual já existe na pasta de Anos",
+		"en": "The current Year already exists in the Years folder"
+	},
+	"its_year_folder_was_created": {
+		"pt": "Sua pasta de Ano foi criada",
+		"en": "Its Year folder was created"
+	},
+	"this_is_its_year_folder": {
+		"pt": "Esta é sua pasta de Ano",
+		"en": "This is its Year folder"
+	},
+	"image_folder": {
+		"pt": "Pasta de imagem",
+		"en": "Image folder"
+	},
+	"{}_texts": {
+		"pt": "Textos de {}",
+		"en": "{} texts"
+	}
+}

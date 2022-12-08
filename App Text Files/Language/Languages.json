@@ -1,0 +1,25 @@
+{
+	"small": [
+		"pt",
+		"en"
+	],
+	"full": {
+		"pt": "Português",
+		"en": "English"
+	},
+	"full_translated": {
+		"pt": {
+			"pt": "Português",
+			"en": "Portuguese"
+		},
+		"en": {
+			"pt": "Inglês",
+			"en": "English"
+		}
+	},
+	"types": [
+		"language",
+		"language_with_country",
+		"full_language"
+	]
+}

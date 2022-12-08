@@ -1,12 +1,8 @@
 # Create_New_Media_Info_Entry.py
 
-# Script Helper importer
-from Script_Helper import *
-
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Select_Media_Type_And_Media import Select_Media_Type_And_Media as Select_Media_Type_And_Media
-from Watch_History.Media_Manager import *
+from Watch_History.Media_Info_Database_Manager.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
 
 class Create_New_Media_Info_Entry(Watch_History):
 	def __init__(self, run_as_module = False):
@@ -15,58 +11,60 @@ class Create_New_Media_Info_Entry(Watch_History):
 		self.run_as_module = run_as_module
 
 		if self.run_as_module == False:
-			self.Select_Media_Type()
-			self.Type_Media_Info()
+			self.Define_Media_Type_Variables()
+			self.Type_Media_Information()
 
 			if self.has_media_list == True:
 				self.Type_Media_List()
 
 			self.Define_Media_Variables()
 			self.Write_To_Files()
-			self.Show_Info_Summary()
+			self.Show_Information()
+			Fill_Episode_Titles_File(self.option_info)
 
-	def Select_Media_Type(self):
+	def Define_Media_Type_Variables(self):
 		self.lists_dict = {}
 
 		self.lists_dict["select_media"] = False
-		self.lists_dict["media_type_choice_text"] = Language_Item_Definer("Select the media type of the new entry", "Selecione o tipo de mídia da nova entrada")
+		self.lists_dict["media_type_show_text"] = self.language_texts["select_the_media_type_of_the_new_entry"]
 
-		self.choice_info = Select_Media_Type_And_Media(self.lists_dict, status_text = self.status_text)
-
-		self.media_names_file = self.media_info_name_files[self.english_media_type]
-		self.media_number_file = self.media_info_number_files[self.english_media_type]
+		self.option_info = self.Select_Media_Type_And_Media(self.lists_dict, status_text = None)
 
 		# Media Type variables definition
-		self.english_media_type = self.choice_info.english_media_type
-		self.portuguese_media_type = self.choice_info.portuguese_media_type
-		self.language_singular_media_type = self.choice_info.language_singular_media_type
-		self.mixed_media_type = self.choice_info.mixed_media_type
+		self.plural_media_types = self.option_info["plural_media_type"]
+		self.singular_media_types = self.option_info["singular_media_type"]
+		self.mixed_plural_media_type = self.option_info["mixed_plural_media_type"]
+
+		self.option_info["plural_media_types"] = self.option_info["plural_media_type"]
+
+		self.media_names_file = self.media_info_name_files[self.plural_media_types["en"]]
+		self.media_type_number_file = self.media_info_number_files[self.plural_media_types["en"]]
 
 		self.is_series_media = True
-		self.is_video_series_media = False
+		self.option_info["is_video_series_media"] = False
 
 		# Series media, video series media, and re-watching variables definition
-		if self.english_media_type == self.movie_media_type_english_plural:
+		if self.plural_media_types["en"] == self.texts["movies"]["en"]:
 			self.is_series_media = False
 
-		if self.english_media_type == self.video_media_type_english_plural:
-			self.is_video_series_media = True
+		if self.plural_media_types["en"] == self.texts["videos"]["en"]:
+			self.option_info["is_video_series_media"] = True
 
-		self.media_info_media_type_folder = self.choice_info.media_info_media_type_folder
+		self.media_info_media_type_folder = self.option_info["media_info_media_type_folder"]
 
-		self.all_media_names = Create_Array_Of_File(self.media_info_name_files[self.english_media_type])
+		self.all_media_names = self.File.Contents(self.media_info_name_files[self.plural_media_types["en"]])["lines"]
 
 		self.media_list = self.all_media_names
 
-		self.media_type_media_names = Create_Array_Of_File(self.media_names_file)
+		self.media_type_media_names = self.File.Contents(self.media_names_file)["lines"]
 
-	def Type_Media_Info(self):
+	def Type_Media_Information(self):
 		self.is_new_media = True
 
 		self.add_media_items = False
 
 		if self.is_series_media == True:
-			self.add_media_items = Yes_Or_No_Definer(Language_Item_Definer("Add media items to media", "Adicionar itens de mídia á mídia"), first_space = False)
+			self.add_media_items = self.Input.Yes_Or_No(self.language_texts["add_media_items_to_media"])
 
 		if self.add_media_items == False:
 			self.Type_Media_Details()
@@ -74,112 +72,135 @@ class Create_New_Media_Info_Entry(Watch_History):
 			if self.is_series_media == False:
 				self.Type_Movie_Details()
 
-		self.media_list_text = self.media_type_sub_folders[self.mixed_media_type]["media_list_text"]
-		self.singular_media_list_text = self.media_type_sub_folders[self.mixed_media_type]["english_singular_media_list_text"]
+		self.media_list_text = self.media_type_sub_folders[self.plural_media_types["en"]]["media_list_text"]
+		self.singular_media_list_text = self.media_type_sub_folders[self.plural_media_types["en"]]["english_singular_media_list_text"]
 		self.current_media_item_text = "Current " + self.singular_media_list_text
 
 		if self.add_media_items == True:
-			self.choice_info = Select_Media(self.selected_mixed_media_type, self.selected_media_type_singular_per_language, self.media_list, self.media_info_media_type_folder, True, add_none = True, first_space = False)
+			self.option_info = self.Select_Media(self.plural_media_types, self.singular_media_types, self.mixed_plural_media_type, self.media_list, self.media_info_media_type_folder)
 
-			self.media_details = self.choice_info.media_details
-
-			self.media_folder = self.choice_info.media_folder
-			Create_Folder(self.media_folder, self.global_switches)
+			self.option_info["media_folder"] = self.option_info["media_folder"]
+			self.Folder.Create(self.option_info["media_folder"])
 
 			if self.is_series_media == True:
-				self.media_list_folder = self.media_folder + self.media_list_text + "/"
-				Create_Folder(self.media_list_folder, self.global_switches) 
+				self.media_list_folder = self.option_info["media_folder"] + self.media_list_text + "/"
+				self.Folder.Create(self.media_list_folder) 
 
-				self.media_list_file = self.media_list_folder + self.media_list_text + self.dot_text
-				Create_Text_File(self.media_list_file, self.global_switches)
+				self.media_list_file = self.media_list_folder + self.media_list_text + ".txt"
+				self.File.Create(self.media_list_file)
 
-		self.watching_status = self.media_details["Status"]
-		self.origin_type = self.media_details["Origin Type"]
+		self.watching_status = self.option_info["media_details"][self.language_texts["status, title()"]]
+		self.origin_type = self.option_info["media_details"][self.language_texts["origin_type"]]
 
-		self.watching_status_file = self.media_info_media_watching_status_files[self.english_media_type][self.watching_status]
+		self.watching_status_file = self.watching_status_files[self.plural_media_types["en"]][self.watching_status]
 
-		if self.media_details["Original Name"] in self.media_type_media_names:
+		if self.option_info["media_details"][self.language_texts["original_name"]] in self.media_type_media_names:
 			self.is_new_media = False
 
 		if self.is_series_media == True:
-			if self.media_details["Origin Type"] in ["Remote", "Hybrid"]:
-				self.media_item_details_parameters["Remote Origin"] = {
+			if self.option_info["media_details"][self.language_texts["origin_type"]] in [self.texts["remote, title()"]["en"], self.texts["hybrid, title()"]["en"]]:
+				self.media_item_details_parameters["Remote origin"] = {
 					"mode": "choice_dict",
-					"choice_text": Language_Item_Definer("Remote Origin", self.default_portuguese_template_parameters["Remote Origin"]),
-					"list": list(self.remote_origin_links.keys()),
-					"dict": self.remote_origin_link_names,
+					"select_text": self.language_texts["remote_origin"],
+					"language_list": list(self.remote_origins.keys()),
+					"dictionary": self.remote_origins,
 				}
 
-			self.choice_text = Language_Item_Definer("Has Media List (like seasons or video series)", "Tem Lista de Mídias (como temporadas ou série de vídeos)")
-
 			if self.add_media_items == False:
-				self.has_media_list = Yes_Or_No_Definer(self.choice_text, second_space = False)
+				self.has_media_list = self.Input.Yes_Or_No(self.language_texts["has_media_list_(like_seasons_or_video_series)"])
 
 			if self.add_media_items == True:
 				self.has_media_list = True
 
-	def Type_Media_Details(self):
-		self.media_details = {}
+			if self.has_media_list == False:
+				dict_ = dict()
 
+				for key in self.option_info["media_details"].copy():
+					dict_[key] = self.option_info["media_details"][key]
+
+					if key == self.language_texts["status, title()"]:
+						dict_.update({self.language_texts["episode, title()"]: "None"})
+
+				self.option_info["media_details"] = dict_
+				del dict_
+
+	def Type_Media_Details(self):
+		self.option_info["media_details"] = {}
+
+		print()
 		print("-----")
 		print()
-		print(Language_Item_Definer("Please type the media details", "Por favor digite os detalhes da mídia") + ": ")
+		print(self.language_texts["please_type_the_media_details"] + ":")
 
 		for self.parameter_name in self.media_details_parameters:
 			if self.parameter_name in self.media_details_string_parameters:
 				self.parameter_data = self.media_details_string_parameters[self.parameter_name]
-				self.choice_text = self.parameter_data["choice_text"]
+				self.type_text = self.parameter_data["select_text"]
 				self.default_parameter = self.parameter_data["default"]
 
 				if type(self.default_parameter) == dict:
-					self.default_parameter = self.media_details[self.parameter_data["default"]["format_name"]]
+					self.default_parameter = self.option_info["media_details"][self.default_parameter["format_name"]]
 
-				self.input_parameter = Select_Choice(self.choice_text, accept_enter = True, enter_equals_empty = True, first_space = False, second_space = False)
+				self.input_parameter = self.Input.Type(self.type_text, next_line = True)
 
 				if self.input_parameter == "":
 					self.input_parameter = self.default_parameter
 
 			if self.parameter_name in self.media_details_choice_list_parameters:
 				self.parameter_data = self.media_details_choice_list_parameters[self.parameter_name]
-				self.choice_text = self.parameter_data["choice_text"]
-				self.list_ = self.parameter_data["list"]
+				self.show_text = self.parameter_data["select_text"]
+				self.language_list = self.parameter_data["language_list"]
 				self.english_list = self.parameter_data["english_list"]
 
-				self.first_space = True
-				self.second_space = False
-
-				if self.parameter_name == list(self.media_details_choice_list_parameters.keys())[0]:
-					self.first_space = False
-
-				self.input_parameter = Select_Choice_From_List(self.list_, alternative_choice_text = self.choice_text, second_choices_list = self.english_list, return_second_item_parameter = True, return_number = True, add_none = True, first_space = self.first_space, second_space = self.second_space)[0]
+				self.input_parameter = self.Input.Select(self.english_list, self.language_list, show_text = self.show_text)["option"]
 
 			if self.parameter_name in self.media_details_yes_or_no_definer_parameters:
-				self.input_parameter = Yes_Or_No_Definer(self.media_details_yes_or_no_definer_parameters[self.parameter_name], convert_to_yes_or_no = True, first_space = True)
+				self.input_parameter = self.Input.Yes_Or_No(self.media_details_yes_or_no_definer_parameters[self.parameter_name])
 
-			self.media_details[self.parameter_name] = self.input_parameter
+			if self.parameter_name == self.language_texts["has_dub"] and self.input_parameter == True:
+				self.option_info["media_details"][self.parameter_name] = "Yes"
+
+			if self.parameter_name == self.language_texts["language_name"][self.user_language] and self.input_parameter != self.option_info["media_details"][self.language_texts["original_name"]]:
+				self.option_info["media_details"][self.parameter_name] = self.input_parameter
+
+			if self.parameter_name not in [self.language_texts["language_name"][self.user_language], self.language_texts["has_dub"]]:
+				self.option_info["media_details"][self.parameter_name] = self.input_parameter
+
+			if self.parameter_name == self.language_texts["language_name"][self.user_language] and self.plural_media_types["en"] == self.texts["animes"]["en"]:
+				self.select_text = self.language_texts["romanized_name"]
+
+				self.input_parameter = self.Input.Type(self.select_text, next_line = True)
+
+				self.option_info["media_details"][self.language_texts["romanized_name"]] = self.input_parameter
 
 		print()
-		print(Language_Item_Definer("Finished typing media details", "Terminou de digitar os detalhes da mídia") + ".")
+		print(self.language_texts["you_finished_typing_the_media_details"] + ".")
 		print()
 		print("-----")
 
 	def Type_Movie_Details(self):
 		self.movie_details = {}
 
-		if "Year" in self.media_details:
-			self.movie_details["Year"] = self.media_details["Year"]
+		if self.language_texts["year, title()"] in self.option_info["media_details"]:
+			self.movie_details[self.language_texts["year, title()"]] = self.option_info["media_details"][self.language_texts["year, title()"]]
 
+		print()
 		print("-----")
 		print()
-		print(Language_Item_Definer("Please type the movie details", "Por favor digite os detalhes do filme") + ": ")
+		print(self.language_texts["please_type_the_movie_details"] + ":")
 
 		for self.parameter_name in self.movie_details_parameters:
-			self.choice_text = self.parameter_name.split(" - ")[Language_Item_Definer(0, 1)]
+			texts = {
+				"en": 0,
+				"pt": 1,
+			}
 
-			self.movie_details[self.parameter_name] = Select_Choice(self.choice_text, accept_enter = False, first_space = False, second_space = False)
+			self.select_text = self.parameter_name.split(" - ")[self.Language.Item(texts)]
+
+			self.movie_details[self.parameter_name] = self.Input.Type(self.select_text, accept_enter = False, next_line = True)
 
 		print()
-		print(Language_Item_Definer("Finished typing movie details", "Terminou de digitar os detalhes do filme") + ".")
+		print(self.language_texts["you_finished_typing_the_movie_details"] + ".")
 		print()
 		print("-----")
 
@@ -191,13 +212,13 @@ class Create_New_Media_Info_Entry(Watch_History):
 		if self.is_new_media == False:
 			self.old_media_list_names.extend(self.media_list_names)
 
-			self.media_list_names.extend(Create_Array_Of_File(self.media_list_file))
+			self.media_list_names.extend(self.File.Contents(self.media_list_file)["lines"])
 
-			for media_item in Create_Array_Of_File(self.media_list_file):
-				media_item_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-				media_item_details_file = media_item_folder + "Media Details" + self.dot_text
+			for media_item in self.File.Contents(self.media_list_file)["lines"]:
+				media_item_folder = self.media_list_folder + self.Sanitize(media_item, restricted_characters = True) + "/"
+				media_item_details_file = media_item_folder + "Media details.txt"
 
-				self.media_list[media_item] = Make_Setting_Dictionary(media_item_details_file, read_file = True)
+				self.media_list[media_item] = self.File.Dictionary(media_item_details_file)
 
 		self.add_more_media = True
 
@@ -207,246 +228,335 @@ class Create_New_Media_Info_Entry(Watch_History):
 			print()
 			print("-----")
 			print()
-			print(Language_Item_Definer("Please type the media item details", "Por favor digite os detalhes do item de mídia") + ": ")
+			print(self.language_texts["please_type_the_media_item_details"] + ":")
 
 			for self.parameter_name in self.media_item_details_parameters:
-				self.parameter_data = self.media_item_details_parameters[self.parameter_name]
-				self.choice_text = self.parameter_data["choice_text"]
+				self.parameter_data = self.media_item_details_parameters
+
+				if type(self.parameter_data) == dict:
+					self.parameter_data = self.parameter_data[self.parameter_name]
+
+				self.select_text = self.parameter_data["select_text"]
 
 				if self.parameter_data["mode"] == "string":
-					self.input_parameter = Select_Choice(self.choice_text, accept_enter = False, first_space = False, second_space = False)
+					self.input_parameter = self.Input.Type(self.select_text + ":", accept_enter = False, next_line = True)
 
 				if self.parameter_data["mode"] == "string/default":
 					self.default_parameter = self.parameter_data["default"]
 
-					self.input_parameter = Select_Choice(self.choice_text, accept_enter = True, enter_equals_empty = True, first_space = False, second_space = False)
+					self.input_parameter = self.Input.Type(self.select_text, next_line = True)
 
 					if self.input_parameter == "":
 						self.input_parameter = self.default_parameter
 
 				if self.parameter_data["mode"] == "string/default-format":
-					if self.is_video_series_media == False:
-						self.default_parameter = self.media_details[self.parameter_data["default"]["format_name"]] + "-" + self.media_item_details[self.parameter_data["default"]["format_name"]]
+					if self.option_info["is_video_series_media"] == False:
+						self.default_parameter = self.media_item_details[self.parameter_data["default"]["format_name"]]
+
+						if self.parameter_name == "Origin location" and self.default_parameter != self.media_item_details[self.parameter_data["default"]["format_name"]]:
+							self.default_parameter += "-" + self.media_item_details[self.parameter_data["default"]["format_name"]]
 
 						for function in self.parameter_data["default"]["functions"]:
 							self.default_parameter = function(self.default_parameter)
 
-						self.input_parameter = Select_Choice(self.choice_text, enter_equals_empty = True, first_space = False, second_space = False)
+						self.input_parameter = self.Input.Type(self.select_text, next_line = True)
 
 						if self.input_parameter == "":
 							self.input_parameter = self.default_parameter
 
-					if self.is_video_series_media == True:
-						self.choice_text = Language_Item_Definer("Type the video series playlist link", "Digite o link da playlist da série de vídeos")
-						self.input_parameter = Select_Choice(self.choice_text, enter_equals_empty = True, first_space = False, second_space = False)
+					if self.option_info["is_video_series_media"] == True and self.parameter_name == self.language_texts["[language]_name"]:
+						self.default_parameter = self.media_item_details[self.parameter_data["default"]["format_name"]]
 
-						self.input_parameter = self.input_parameter.split("playlist?list=")[1]
+						for function in self.parameter_data["default"]["functions"]:
+							self.default_parameter = function(self.default_parameter)
+
+						self.input_parameter = self.Input.Type(self.select_text, next_line = True)
+
+						if self.input_parameter == "":
+							self.input_parameter = self.default_parameter
+
+					if self.option_info["is_video_series_media"] == True and self.parameter_name == "Origin location":
+						self.select_text = self.language_texts["type_the_video_series_playlist_link"]
+						self.input_parameter = self.Input.Type(self.select_text, next_line = True).split("playlist?list=")[1]
 
 				if self.parameter_data["mode"] == "choice_dict":
 					self.parameter_data = self.media_item_details_parameters[self.parameter_name]
-					self.choice_text = self.parameter_data["choice_text"]
-					self.list_ = self.parameter_data["list"]
-					self.dict_ = self.parameter_data["dict"]
+					self.show_text = self.parameter_data["select_text"]
+					self.language_list = self.parameter_data["language_list"]
+					self.dictionary = self.parameter_data["dictionary"]
 
-					self.input_parameter = Select_Choice_From_List(self.list_, alternative_choice_text = self.choice_text, return_first_item = True, add_none = True, first_space = True, second_space = False)
-					self.input_parameter = self.dict_[self.input_parameter]
+					self.input_parameter = self.Input.Select(self.language_list, show_text = self.show_text)["option"]
 
-				self.media_item_details[self.parameter_name] = self.input_parameter
+					self.input_parameter = self.dictionary[self.input_parameter]
 
-			self.media_list[self.media_item_details["Original Name"]] = self.media_item_details
-			self.media_list_names.append(self.media_item_details["Original Name"])
-			self.old_media_list_names.append(self.media_item_details["Original Name"])
+				if self.parameter_name == self.language_texts["[language]_name"] and self.input_parameter != self.media_item_details[self.language_texts["original_name"]]:
+					self.media_item_details[self.parameter_name] = self.input_parameter
+
+				if self.parameter_name != self.language_texts["[language]_name"]:
+					self.media_item_details[self.parameter_name] = self.input_parameter
+
+			self.media_list[self.media_item_details[self.language_texts["original_name"]]] = self.media_item_details
+			self.media_list_names.append(self.media_item_details[self.language_texts["original_name"]])
+			self.old_media_list_names.append(self.media_item_details[self.language_texts["original_name"]])
 
 			print()
-			print(Language_Item_Definer("Finished typing media item details", "Terminou de digitar os detalhes do item de mídia") + ".")
+			print(self.language_texts["you_finished_typing_the_media_item_details"] + ".")
 			print()
 			print("-----")
 
-			self.choice_text = Language_Item_Definer("Add more media", "Adicionar mais mídias")
-			self.add_more_media = Yes_Or_No_Definer(self.choice_text, second_space = False)
+			self.show_text = self.language_texts["add_more_media"]
+			self.add_more_media = self.Input.Yes_Or_No(self.show_text)
 
 	def Define_Media_Variables(self):
-		self.media_folder = self.media_info_media_type_folder + Remove_Non_File_Characters(self.media_details["Original Name"]) + "/"
-		Create_Folder(self.media_folder, self.global_switches)
+		name = self.option_info["media_details"][self.language_texts["original_name"]]
 
-		self.media_details_file = self.media_folder + self.media_details_english_text + self.dot_text
-		Create_Text_File(self.media_details_file, self.global_switches)
+		if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+			name = self.option_info["media_details"][self.language_texts["romanized_name"]]
+
+		self.option_info["media_folder"] = self.media_info_media_type_folder + self.Sanitize(name, restricted_characters = True) + "/"
+		self.Folder.Create(self.option_info["media_folder"])
+
+		self.option_info["media_details_file"] = self.option_info["media_folder"] + "Media details.txt"
+		self.File.Create(self.option_info["media_details_file"])
 
 		if self.is_series_media == False:
-			self.movie_details_file = self.media_folder + self.movie_details_english_text + self.dot_text
-			Create_Text_File(self.movie_details_file, self.global_switches)	
+			self.movie_details_file = self.option_info["media_folder"] + "Movie details.txt"
+			self.File.Create(self.movie_details_file)	
 
 		if self.is_new_media == False:
-			self.media_details = Make_Setting_Dictionary(self.media_details_file, read_file = True)
+			self.option_info["media_details"] = self.File.Dictionary(self.option_info["media_details_file"])
 
 		if self.is_series_media == True:
-			self.media_list_folder = self.media_folder + self.media_list_text + "/"
-			Create_Folder(self.media_list_folder, self.global_switches)
-
-			self.media_list_file = self.media_list_folder + self.media_list_text + self.dot_text
-			Create_Text_File(self.media_list_file, self.global_switches)
-
-			self.current_media_item_file = self.media_list_folder + self.current_media_item_text + self.dot_text
-			Create_Text_File(self.current_media_item_file, self.global_switches)
-
 			if self.has_media_list == True:
+				self.media_list_folder = self.option_info["media_folder"] + self.media_list_text + "/"
+				self.Folder.Create(self.media_list_folder)
+
+				self.media_list_file = self.media_list_folder + self.media_list_text + ".txt"
+				self.File.Create(self.media_list_file)
+
+				self.current_media_item_file = self.media_list_folder + self.current_media_item_text + ".txt"
+				self.File.Create(self.current_media_item_file)
+
 				media_list_names = []
 				media_list_names.extend(self.media_list_names)
 
 				self.media_list_names = media_list_names
 
 				for media_item in self.media_list_names:
-					self.current_media_list_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-					Create_Folder(self.current_media_list_folder, self.global_switches)
+					self.current_media_list_folder = self.media_list_folder + self.Sanitize(media_item, restricted_characters = True) + "/"
+					self.Folder.Create(self.current_media_list_folder)
 
-					self.media_item_details_file = self.current_media_list_folder + "Media Details" + self.dot_text
-					Create_Text_File(self.media_item_details_file, self.global_switches)
+					self.media_item_details_file = self.current_media_list_folder + "Media details.txt"
+					self.File.Create(self.media_item_details_file)
 
-					self.comments_folder = self.current_media_list_folder + self.mixed_comments_text + "/"
-					Create_Folder(self.comments_folder, self.global_switches)
+					self.comments_folder = self.current_media_list_folder + self.texts["comments, title(), en - pt"] + "/"
+					self.Folder.Create(self.comments_folder)
 
-					self.titles_folder = self.current_media_list_folder + self.mixed_titles_text + "/"
-					Create_Folder(self.titles_folder, self.global_switches)
+					self.titles_folder = self.current_media_list_folder + self.texts["titles, title(), en - pt"] + "/"
+					self.Folder.Create(self.titles_folder)
 
-					self.english_titles_file = self.titles_folder + full_language_en + self.dot_text
-					Create_Text_File(self.english_titles_file, self.global_switches)
+					for full_language in list(self.Language.languages["full"].values()):
+						self.titles_file = self.titles_folder + full_language + ".txt"
+						self.File.Create(self.titles_file)
 
-					self.portuguese_titles_file = self.titles_folder + full_language_pt + self.dot_text
-					Create_Text_File(self.portuguese_titles_file, self.global_switches)
+					if self.origin_type == self.texts["remote, title()"]["en"] or self.origin_type == self.texts["hybrid, title()"]["en"]:
+						self.links_file = self.current_media_list_folder + "Links.txt"
+						self.File.Create(self.links_file)
 
-					if self.origin_type == self.remote_english_text or self.origin_type == self.hybrid_english_text:
-						self.links_file = self.current_media_list_folder + "Links" + self.dot_text
-						Create_Text_File(self.links_file, self.global_switches)
-
-					if self.is_video_series_media == self.video_media_type_english_plural:
-						self.youtube_ids_file = self.current_media_list_folder + self.youtube_ids_english_text + self.dot_text
-						Create_Text_File(self.youtube_ids_file, self.global_switches)
+					if self.option_info["is_video_series_media"] == True:
+						self.youtube_ids_file = self.current_media_list_folder + self.texts["youtube_ids"]["en"] + ".txt"
+						self.File.Create(self.youtube_ids_file)
 
 			if self.has_media_list == False:
 				self.media_list_names = []
 
 		if self.is_series_media == False:
 			self.files_to_create = [
-				self.mixed_comment_text,
+				self.texts["comment, title(), en - pt"],
 			]
 
 			self.folders_to_create = [
-				self.torrent_text,
+				"Torrent",
 				"Magnets",
 			]
 
 			for file in self.files_to_create:
-				Create_Text_File(self.media_folder + file + self.dot_text, self.global_switches)
+				self.File.Create(self.option_info["media_folder"] + file + ".txt")
 
 			for folder in self.folders_to_create:
-				Create_Folder(self.media_folder + folder + "/", self.global_switches)
+				self.Folder.Create(self.option_info["media_folder"] + folder + "/")
+
+		self.File.Edit(self.option_info["media_details_file"], self.Text.From_Dictionary(self.option_info["media_details"]), "w")
+
+		self.option_info = self.Define_Media_Titles(self.option_info)
 
 	def Write_To_Files(self):
-		if Read_String(self.media_details_file) != Stringfy_Dict(self.media_details):
-			Write_To_File(self.media_details_file, Stringfy_Dict(self.media_details), self.global_switches)
+		self.File.Edit(self.option_info["media_details_file"], self.Text.From_Dictionary(self.option_info["media_details"]), "w")
 
 		if self.is_series_media == False:
-			if Read_String(self.movie_details_file) != Stringfy_Dict(self.movie_details):	
-				Write_To_File(self.movie_details_file, Stringfy_Dict(self.movie_details), self.global_switches)
+			self.File.Edit(self.movie_details_file, self.Text.From_Dictionary(self.movie_details, next_line_value = True), "w")
 
-		if self.is_series_media == True:
-			if self.has_media_list == True:
-				if Read_String(self.media_list_file) != Stringfy_Array(self.media_list_names, add_line_break = True):
-					Write_To_File(self.media_list_file, Stringfy_Array(self.media_list_names, add_line_break = True), self.global_switches)
+		if self.is_series_media == True and self.has_media_list == True:
+			self.File.Edit(self.media_list_file, self.Text.From_List(self.media_list_names), "w")
 
-				if Read_String(self.current_media_item_file) != self.media_list_names[0]:
-					Write_To_File(self.current_media_item_file, self.media_list_names[0], self.global_switches)
+			self.File.Edit(self.current_media_item_file, self.media_list_names[0], "w")
 
-				for media_item in self.media_list_names:
-					self.current_media_list_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
-					Create_Folder(self.current_media_list_folder, self.global_switches)
+			for media_item in self.media_list_names:
+				self.current_media_list_folder = self.media_list_folder + Remove_Non_File_Characters(media_item) + "/"
+				self.Folder.Create(self.current_media_list_folder)
 
-					self.media_item_details_file = self.current_media_list_folder + "Media Details" + self.dot_text
-					Create_Text_File(self.media_item_details_file, self.global_switches)
+				self.media_item_details_file = self.current_media_list_folder + "Media details.txt"
+				self.File.Create(self.media_item_details_file)
 
-					if Read_String(self.media_item_details_file) != Stringfy_Dict(self.media_list[media_item]):
-						Write_To_File(self.media_item_details_file, Stringfy_Dict(self.media_list[media_item]), self.global_switches)
+				self.File.Edit(self.media_item_details_file, self.Text.From_Dictionary(self.media_list[media_item]), "w")
 
-		self.watching_status_text = Create_Array_Of_File(self.watching_status_file)
+		self.watching_status_text = self.File.Contents(self.watching_status_file)["lines"]
 
-		if self.media_details["Original Name"] not in self.watching_status_text:
-			self.watching_status_text.append(self.media_details["Original Name"])
+		name = self.option_info["media_details"][self.language_texts["original_name"]]
 
-		self.watching_status_text = Stringfy_Array(sorted(self.watching_status_text), add_line_break = True)
+		if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+			name = self.option_info["media_details"][self.language_texts["romanized_name"]]
 
-		if Read_String(self.watching_status_file) != self.watching_status_text:
-			Write_To_File(self.watching_status_file, self.watching_status_text, self.global_switches)
+		if name not in self.watching_status_text:
+			self.watching_status_text.append(name)
 
-		if self.media_details["Original Name"] not in self.media_type_media_names:
-			self.media_type_media_names.append(self.media_details["Original Name"])
+		self.watching_status_text = self.Text.From_List(sorted(self.watching_status_text))
 
-			self.media_type_media_names = Stringfy_Array(sorted(self.media_type_media_names), add_line_break = True)
+		self.File.Edit(self.watching_status_file, self.watching_status_text, "w")
 
-			if Read_String(self.media_names_file) != self.media_type_media_names:
-				Write_To_File(self.media_names_file, self.media_type_media_names, self.global_switches)
+		# Add to media type names file
+		if name not in self.media_type_media_names:
+			self.media_type_media_names.append(name)
 
-		self.media_number = Create_Array_Of_File(self.media_number_file)[0]
-		self.all_media_number = Create_Array_Of_File(self.all_media_number_file)[0]
+			self.media_type_media_names = self.Text.From_List(sorted(self.media_type_media_names))
 
-		if self.media_details["Original Name"] not in self.media_type_media_names:
-			text_to_write = self.media_number + 1
+			# Edit media type names file
+			self.File.Edit(self.media_names_file, self.media_type_media_names, "w")
 
-			if Read_String(self.media_number_file) != text_to_write:
-				Write_To_File(self.media_number_file, text_to_write, self.global_switches)
+			self.all_media_number = self.File.Contents(self.media_number_file)["lines"][0]
+			self.media_number = self.File.Contents(self.media_type_number_file)["lines"][0]
 
-			text_to_write = self.all_media_number + 1
+			# Add to all media number file
+			text = str(int(self.all_media_number) + 1)
+			self.File.Edit(self.media_number_file, text, "w")
 
-			if Read_String(self.all_media_number_file) != text_to_write:
-				Write_To_File(self.all_media_number_file, text_to_write, self.global_switches)
+			# Add to media type number file
+			text = str(int(self.media_number) + 1)
+			self.File.Edit(self.media_type_number_file, text, "w")
 
-	def Show_Info_Summary(self):
-		self.large_bar = "-----"
-		self.dash_space = "-"
+	def Show_Information(self):
+		self.the_text, self.this_text, self.of_text = self.Define_The_Text(self.plural_media_types)
 
-		# This text defined by language and word gender (this, esse) for non-series, and (this, essa) for series
-		self.this_text = self.gender_the_texts[self.mixed_media_type]["this"]
+		self.this_media_text = {
+			"en": self.language_texts["added"].title(),
+			"pt": self.language_texts["added"][:-1].title() + self.the_text,
+		}
 
-		self.this_media_text = format(self.this_text) + " " + self.language_singular_media_type
+		if self.option_info["is_video_series_media"] == True:
+			self.singular_media_types["language"] = self.language_texts["channel"]
+
+		self.text_to_show = self.Language.Item(self.this_media_text)
+
+		if self.is_new_media == True:
+			self.text_to_show += " " + self.this_text + " " + self.singular_media_types["language"].lower()
+
+		if self.is_new_media == False:
+			this = self.Text.By_Number(self.old_media_list_names, self.language_texts["this, masculine"], self.language_texts["this, masculine"])
+			these = self.Text.By_Number(self.old_media_list_names, self.language_texts["these, masculine"], self.language_texts["these, masculine"])
+			item = self.Text.By_Number(self.old_media_list_names, self.language_texts["item"], self.language_texts["item"])
+			serie = self.Text.By_Number(self.old_media_list_names, self.language_texts["serie"], self.language_texts["series"])
+			season = self.Text.By_Number(self.old_media_list_names, self.language_texts["season"], self.language_texts["seasons"])
+			s = self.Text.By_Number(self.old_media_list_names, "", "s")
+
+			texts = {
+				"en": "{} media {} to this".format(this, item),
+				"pt": "{} {} de mídia a ".format(this, item) + this,
+			}
+
+			media_item_text = self.Language.Item(texts)
+			self.text_to_show += " " + media_item_text
+
+			if self.option_info["is_video_series_media"] == True:
+				texts = {
+					"en": this + " YouTube video " + serie,
+					"pt": this + " {} de vídeos do YouTube".format(serie, s),
+				}
+
+				this_text = self.Language.Item(texts)
+				self.text_to_show = self.text_to_show.replace(media_item_text, this_text)
+
+			if self.option_info["is_video_series_media"] == False:
+				this_text = this + " " + season
+				self.text_to_show = self.text_to_show.replace(media_item_text, this_text)
+
+			texts = {
+				"en": "on the {} below",
+				"pt": "n{}".format(self.this_text) + " {} abaixo".format(self.singular_media_types["language"].lower()),
+			}
+
+			self.text_to_show += " " + self.Language.Item(texts)
 
 		print()
 		print(self.large_bar)
 		print()
 
 		if self.is_new_media == True:
-			print(Language_Item_Definer("Added", "Adicionado") + self.this_media_text + ":")
-			print(self.media_details["Original Name"])
+			print(self.text_to_show + ":")
+
+			self.Show_Media_Title(self.option_info)
+
+			print()
+			print(self.language_texts["year, title()"] + ":")
+			print(self.option_info["media_details"][self.language_texts["year, title()"]])
+			print()
+
+			print(self.language_texts["has_dub"].capitalize() + ":")
+
+			if self.language_texts["has_dub"] in self.option_info["media_details"]:
+				if self.Input.Define_Yes_Or_No(self.option_info["media_details"][self.language_texts["has_dub"]]) == True:
+					text_to_show = self.language_texts["yes, title()"]
+
+				if self.Input.Define_Yes_Or_No(self.option_info["media_details"][self.language_texts["has_dub"]]) == False:
+					text_to_show = self.language_texts["no, title()"]
+
+			if self.language_texts["has_dub"] not in self.option_info["media_details"]:
+				text_to_show = self.language_texts["no, title()"]
+
+			print(text_to_show)
+
+			print()
+			print(self.language_texts["origin_type"] + ":")
+			print(self.option_info["media_details"][self.language_texts["origin_type"]])
+
+			print()
+			print(self.language_texts["media_type"] + ":")
+			print(self.singular_media_types["language"].capitalize())
+
+			if self.plural_media_types["en"] != self.texts["animes"]["en"]:
+				print()
+				print(self.language_texts["mixed_media_type"] + ":")
+				print(self.mixed_plural_media_type)
 
 		if self.is_new_media == False:
-			this = Define_Text_By_Number(len(self.old_media_list_names), Language_Item_Definer("this", "esse"), Language_Item_Definer("these", "esses"))
-			item = Define_Text_By_Number(len(self.old_media_list_names), Language_Item_Definer("item", "item"), Language_Item_Definer("items", "itens"))
-			s = Define_Text_By_Number(len(self.old_media_list_names), "", "s")
+			print(self.singular_media_types["language"].title() + ":")
+			print(self.option_info["media_details"][self.language_texts["original_name"]])
 
-			english_media_item_text = "{} media {} to this".format(this, item)
-			portuguese_media_item_text = "{} {} de mídia a ".format(this, item) + "ess{}".format(self.this_text)
+			if self.language_texts["[language]_name"] in self.option_info["media_details"] and self.option_info["media_details"][self.language_texts["[language]_name"]] != self.option_info["media_details"][self.language_texts["original_name"]]:
+				print(self.option_info["media_details"][self.language_texts["[language]_name"]])
 
-			self.text_to_show = Language_Item_Definer("Added", "Adicionado") + " " + Language_Item_Definer(english_media_item_text, portuguese_media_item_text)
-
-			if self.is_video_series_media == True:
-				this_text = Language_Item_Definer(this + " " + self.youtube_name + " video series", "essa{} série{} de vídeos do ".format(s, s) + self.youtube_name)
-				self.text_to_show = self.text_to_show.replace(Language_Item_Definer(english_media_item_text, portuguese_media_item_text), this_text)
-
-			if self.is_video_series_media == False:
-				this_text = Language_Item_Definer(this + " season{}".format(s), "essa{} temporada{}".format(s, s))
-				self.text_to_show = self.text_to_show.replace(Language_Item_Definer(english_media_item_text, portuguese_media_item_text), this_text)
-
-			if self.is_video_series_media == True:
-				self.language_singular_media_type = Language_Item_Definer("channel", "canal")
-
-			self.on_the_text = Language_Item_Definer("on the {} below", "n{}".format(self.this_text) + " {} abaixo").format(self.language_singular_media_type.lower())
-
-			print(self.text_to_show + " " + self.on_the_text + ":")
 			print()
 
-			print(self.english_media_type.title() + ": ")
-			print(self.media_details["Original Name"])
-			print()
-	
-			print(Language_Item_Definer("Media " + item, item.capitalize() + " de Mídia") + ": ")
+		if self.has_media_list == True:
+			item = self.Text.By_Number(self.old_media_list_names, self.language_texts["item"], self.language_texts["item"])
+
+			media_item_texts = {
+				"en": "Media " + item,
+				"pt": item.capitalize() + " de mídia",
+			}
+
+			media_item_texts = self.Language.Item(media_item_texts)
+
+			print(media_item_texts + ":")
 			print()
 
 			print("-")
@@ -455,48 +565,27 @@ class Create_New_Media_Info_Entry(Watch_History):
 			for item in self.old_media_list_names:
 				self.media_item_details = self.media_list[item]
 
-				print(item)
+				text = item
+
+				if self.language_texts["[language]_name"] in self.media_item_details and self.media_item_details[self.language_texts["[language]_name"]] != self.media_item_details[self.language_texts["original_name"]]:
+					text += "\n\t" + self.media_item_details[self.language_texts["[language]_name"]]
+
+				print(text + ":")
 				print()
 
-				print(Language_Item_Definer("Episode", "Episódio") + ": " + self.media_item_details["Episode"])
+				print("\t" + self.language_texts["episode, title()"] + ":")
+				print("\t" + self.media_item_details[self.language_texts["episode, title()"]])
 
-				if "Remote Origin" in self.media_item_details:
-					print(Language_Item_Definer("Remote Origin", "Origem Remota") + ": " + self.media_item_details["Remote Origin"])
+				if "Remote origin" in self.media_item_details:
+					print()
+					print("\t" + self.language_texts["remote_origin"] + ":")
+					print("\t" + self.media_item_details["Remote origin"])
 
 				if len(self.old_media_list_names) != 1 and item != self.old_media_list_names[-1]:
 					print()
 					print(self.large_bar)
 
-		if self.is_new_media == True:
-			print()
-
-			print(Language_Item_Definer("Year", self.default_portuguese_template_parameters["Year"]) + ":")
-			print(self.media_details["Year"])
-			print()
-
-			print(Language_Item_Definer("Has Dub", self.default_portuguese_template_parameters["Has Dub"]) + ":")
-			
-			if Define_Yes_Or_No(self.media_details["Has Dub"]) == True:
-				text_to_show = Language_Item_Definer("Yes", "Sim")
-
-			if Define_Yes_Or_No(self.media_details["Has Dub"]) == False:
-				text_to_show = Language_Item_Definer("No", "Não")
-			
-			print(text_to_show)
-
-			print()
-			print(Language_Item_Definer("Origin Type", self.default_portuguese_template_parameters["Origin Type"]) + ":")
-			print(Language_Item_Definer(self.media_details["Origin Type"], self.portuguese_origin_types_dict[self.media_details["Origin Type"]]))
-
-			print()
-			print(Language_Item_Definer("Media type", "Tipo de mídia") + ":")
-			print(self.singular_media_type_per_language.capitalize())
-
-			print()
-			print(Language_Item_Definer("Mixed media type", "Tipo de mídia misturado") + ":")
-			print(self.mixed_media_type)
-
 		print()
 		print(self.large_bar)
-		print()
-		input(Language_Item_Definer("Press Enter when you finish reading the Info Summary", "Pressione Enter quando terminar de ler o Resumo de Informações") + ": ")
+
+		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

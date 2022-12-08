@@ -1,0 +1,35 @@
+{
+	"this_is_the_time_that_you": {
+		"en": "This is the time that you",
+		"pt": "Esta é a hora que você"
+	},
+	"ate": {
+		"en": "ate",
+		"pt": "comeu"
+	},
+	"can_drink_water": {
+		"en": "can drink water",
+		"pt": "pode beber água"
+	},
+	"will_be_hungry": {
+		"en": "will be hungry",
+		"pt": "irá ter fome"
+	},
+	"time_that_i_finished_eating": {
+		"en": "Time that I finished eating",
+		"pt": "Tempo em que terminei de comer"
+	},
+	"raw_times, en - pt": "Raw times - Tempos brutos",
+	"hours": {
+		"en": "hours",
+		"pt": "horas"
+	},
+	"minutes": {
+		"en": "minutes",
+		"pt": "minutos"
+	},
+	"showing_the_meal_times_below": {
+		"en": "Showing the meal times below",
+		"pt": "Mostrando os horários da refeição abaixo"
+	}
+}

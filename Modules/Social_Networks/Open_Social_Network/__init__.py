@@ -1,112 +1,161 @@
 # Open_Social_Network.py
 
-from Script_Helper import *
-
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 
+from Block_Websites.Unblock import Unblock as Unblock
+
 class Open_Social_Network(Social_Networks):
-	def __init__(self, open_social_networks = False, link_type = None):
+	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, first_space = True, second_space = True):
 		super().__init__()
 
 		self.open_social_networks = open_social_networks
-		self.link_type = link_type
+		self.option_info = option_info
+		self.custom_link = custom_link
+		self.first_space = first_space
+		self.second_space = second_space
+
+		social_networks = self.social_networks
 
 		if self.open_social_networks == False:
-			self.social_network = None
+			social_networks = [""]
 
-			self.Define_Social_Network()
-			self.Define_Link_Type()
-			self.Define_Social_Network_Link()
-			self.Open_Social_Network()
+		self.social_networks_list = False
 
-		if self.open_social_networks == True:
-			for self.social_network in self.social_networks:
-				self.Define_Social_Network()
-				self.Define_Link_Type()
-				self.Define_Social_Network_Link()
+		if social_network_parameter != None and first_space == True:
+			print()
 
-				print()
+		self.social_network_list = []
+
+		if type(social_network_parameter) == str:
+			self.social_network_list = [social_network_parameter]
+
+		if type(social_network_parameter) == list:
+			self.social_network_list = social_network_parameter
+
+		self.custom_link_backup = self.custom_link
+
+		for social_network in social_networks:
+			if self.open_social_networks == False and social_network_parameter == None:
+				self.social_network_list = [None]
+
+			i = 0
+			for social_network in self.social_network_list:
+				if len(self.social_network_list) > 1:
+					self.custom_link = self.custom_link_backup[i]
+
+				if i == 1:
+					print()
+
+				self.social_network_link = self.custom_link
+
+				self.Define_Social_Network(social_network)
+
+				self.link_type = None
+				self.link_type_key = None
+				self.language_link_type = "link"
+
+				if len(self.social_network_list) == 1:
+					self.Define_Link_Type()
+					self.Define_Social_Network_Link()
+
+					if self.open_social_networks == True:
+						print()
+
+				if i == 0:
+					self.Unlock_Social_Network()
 
 				self.Open_Social_Network()
 
-	def Define_Social_Network(self):
-		self.choice_text = Language_Item_Definer("Select one {} to open", "Selecione uma {} para abrir").format(self.language_social_network_text)
+				i += 1
 
-		self.social_network_dictionary = self.Select_Social_Network(social_network = self.social_network, choice_text = self.choice_text)
+		if social_network_parameter != None and self.second_space == True:
+			print()
 
-		if self.social_network_dictionary != None and self.social_network_dictionary != {}:
-			self.social_network = self.social_network_dictionary["social_network"]
-			self.social_network_info = self.social_network_dictionary["social_network_info"]
-			self.social_network_information = self.social_network_info["Data"]["Information"]
+	def Define_Social_Network(self, social_network):
+		select_text = self.language_texts["select_one_social_network_to_open"]
+
+		self.social_network = self.Select_Social_Network(social_network = social_network, select_text = select_text)
+
+		if social_network == None:
+			self.social_network_list = [self.social_network["Name"]]
+
+	def Unlock_Social_Network(self):
+		Unblock(options = self.social_network_list)
 
 	def Define_Link_Type(self):
-		self.choice_list = self.social_network_link_types
-		self.language_choice_list = Language_Item_Definer(self.social_network_link_types, self.portuguese_social_network_link_types)
+		if self.option_info != None:
+			option_info = {
+				"option": self.texts[self.option_info["type"] + ", title()"]["en"],
+				"language_option": self.language_texts[self.option_info["type"] + ", title()"],
+			}
 
-		self.choice_text = Language_Item_Definer("Select one link type to open", "Selecione um tipo de link para abrir")
+		show_text = self.language_texts["link_types"]
+		select_text = self.language_texts["select_one_link_type_to_open"]
 
-		if self.open_social_networks == False:
-			self.choice_info = Select_Choice_From_List(self.language_choice_list, alternative_choice_text = self.choice_text, second_choices_list = self.choice_list, return_second_item_parameter = True, add_none = True, return_number = True)
+		if self.open_social_networks == False and self.option_info == None and self.custom_link == None:
+			option_info = self.Input.Select(self.link_types["en"], language_options = self.link_types[self.user_language], show_text = show_text, select_text = select_text)
 
-		if self.open_social_networks == True:
-			self.choice_info = [self.link_type]
+		if self.custom_link != None:
+			option_info = {"option": "", "language_option": ""}
 
-		self.link_type = self.choice_info[0]
-		self.language_link_type = self.social_network_link_types[self.link_type]
+		self.link_type = option_info["option"]
 
-		self.link_type_key = self.link_types_map[self.link_type]
+		if self.custom_link == None:
+			self.language_link_type = option_info["language_option"]
+
+		self.link_type_key = ""
+
+		if self.custom_link == None:
+			self.link_type_key = self.link_types_map[self.link_type]
 
 	def Define_Social_Network_Link(self):
-		self.social_network_link = None
+		if self.custom_link == None:
+			if self.link_type_key in self.social_network["data"]["Information"]:
+				self.social_network_link = self.social_network["data"]["Information"][self.link_type_key]
 
-		if self.link_type_key in self.social_network_information:
-			self.social_network_link = self.social_network_information[self.link_type_key]
+			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
+				self.user_information = {}
 
-		if self.link_type == "Profile" and self.link_type_key in self.social_network_information:
-			self.social_network_profile = self.social_network_info["Data"][self.link_type]
+				for item in self.self.texts["information_items, type: list"]:
+					language_item = self.self.texts["information_items, type: list"][item]
 
-			self.user_information = {}
+					if item in self.social_network["data"][self.link_type]:
+						self.user_information[language_item] = self.social_network["data"][self.link_type][item]
 
-			for user_information_item in self.user_information_items:
-				language_user_information_item = self.user_information_items[user_information_item]
+				self.information_item_to_use = self.social_network["data"]["Information"][self.link_type_key].split("{")[1].split("}")[0]
 
-				if user_information_item in self.social_network_profile:
-					self.user_information[Language_Item_Definer(user_information_item, language_user_information_item)] = self.social_network_profile[user_information_item]
+				self.social_network_link = self.social_network_link.replace("{" + self.information_item_to_use + "}", "")
 
-			self.information_item_to_use = self.social_network_information[self.link_type_key].split("{")[1].split("}")[0]
+				self.social_network_link += self.social_network["data"][self.link_type][self.information_item_to_use]
 
-			self.social_network_link = self.social_network_link.replace("{" + self.information_item_to_use + "}", "")
+				added_user_information = False
 
-			self.social_network_link += self.social_network_profile[self.information_item_to_use]
+				for user_name_item in self.user_name_items:
+					language_user_name_item = self.user_name_items[user_name_item]
 
-			added_user_information = False
+					if user_name_item in self.user_information and added_user_information == False:
+						self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
 
-			for user_name_item in self.user_name_items:
-				language_user_name_item = self.user_name_items[user_name_item]
+						added_user_information = True
 
-				if user_name_item in self.user_information and added_user_information == False:
-					self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
+					if language_user_name_item in self.user_information and added_user_information == False:
+						self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
 
-					added_user_information = True
+						added_user_information = True
 
-				if language_user_name_item in self.user_information and added_user_information == False:
-					self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
-
-					added_user_information = True
-
-		if "Program file" in self.social_network_information:
-			self.social_network_link = self.social_network_information["Program file"]
-			self.opening_social_network_template = self.opening_social_network_template.replace(" " + Language_Item_Definer("on its {} page, with this link", "em sua página de {}, com este link"), "")
+		if "Program file" in self.social_network["data"]["Information"]:
+			self.social_network_link = self.social_network["data"]["Information"]["Program file"]
+			self.language_texts["opening_{}_on_its_{}_page_with_this_link"] = self.language_texts["opening_{}_on_its_{}_page_with_this_link"].split(" {}")[0] + " {}"
 
 	def Open_Social_Network(self):
-		print(self.opening_social_network_template.format(self.social_network, self.language_link_type) + ":")
+		print(self.language_texts["opening_{}_on_its_{}_page_with_this_link"].format(self.social_network["Name"], self.language_link_type.lower()) + ":")
 		print("\t" + self.social_network_link)
 
-		if self.link_type == "Profile" and self.link_type_key in self.social_network_information:
+		if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
 			for key in self.user_information:
 				print()
-				print("\t\t" + key + ":")
-				print("\t\t\t" + self.user_information[key])
+				print("\t" + key + ":")
+				print("\t\t" + self.user_information[key])
 
-		if self.global_switches["testing_script"] == False:
-			Open_Link(self.social_network_link)
+		if self.global_switches["testing"] == False:
+			self.File.Open(self.social_network_link)

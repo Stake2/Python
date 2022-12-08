@@ -1,1 +1,0 @@
-python SS.py -story_manager

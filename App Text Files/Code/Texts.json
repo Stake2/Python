@@ -1,0 +1,119 @@
+{
+	"programming_languages": {
+		"pt": "Linguagens de programação",
+		"en": "Programming languages"
+	},
+	"select_a_programming_language_to_use": {
+		"pt": "Selecione uma Linguagem de Programação para usar",
+		"en": "Select a Programming Language to use"
+	},
+	"you_selected_this_programming_language": {
+		"pt": "Você selecionou esta Linguagem de Programação",
+		"en": "You selected this Programming Language"
+	},
+	"programming_modes": {
+		"pt": "Modos de Programação",
+		"en": "Programming modes"
+	},
+	"select_the_programming_mode": {
+		"pt": "Selecione o modo de Programação",
+		"en": "Select the Programming mode"
+	},
+	"{}_the_programming_tool": {
+		"pt": "{} a ferramenta de programação",
+		"en": "{} the programming tool"
+	},
+	"opening, title()": {
+		"pt": "Abrindo",
+		"en": "Opening"
+	},
+	"closing, title()": {
+		"pt": "Fechando",
+		"en": "Closing"
+	},
+	"original_name": {
+		"pt": "Nome original",
+		"en": "Original name"
+	},
+	"language_name": {
+		"en": {
+			"en": "English name",
+			"pt": "Nome Inglês",
+			"es": "Nombre Inglés"
+		},
+		"pt": {
+			"en": "Portuguese name",
+			"pt": "Nome Português",
+			"es": "Nombre Portugués"
+		},
+		"es": {
+			"en": "Spanish name",
+			"pt": "Nome Espanhol",
+			"es": "Nombre Español"
+		}
+	},
+	"function, title()": {
+		"pt": "Função",
+		"en": "Function"
+	},
+	"path, title()": {
+		"pt": "Caminho",
+		"en": "Path"
+	},
+	"programs_to_close": {
+		"pt": "Programas para fechar",
+		"en": "Programs to close"
+	},
+	"close_tool": {
+		"pt": "Fechar ferramenta",
+		"en": "Close tool"
+	},
+	"file_names": {
+		"pt": "Nomes de arquivos",
+		"en": "File names"
+	},
+	"file_paths": {
+		"pt": "Caminhos de arquivos",
+		"en": "File paths"
+	},
+	"press_enter_when_you_finish_programming_in": {
+		"pt": "Pressione Enter quando você terminar de programar em",
+		"en": "Press Enter when you finish programming in"
+	},
+	"you_finished_programming_in": {
+		"pt": "Você terminou de programar em",
+		"en": "You finished programming in"
+	},
+	"general": {
+		"pt": "Geral",
+		"en": "General"
+	},
+	"websites": {
+		"pt": "Sites",
+		"en": "Websites"
+	},
+	"select_a_website_to_update_its_html_contents": {
+		"pt": "Selecione um site para atualizar seus conteúdos de HTML",
+		"en": "Select a website to update its HTML contents"
+	},
+	"updating_this_website": {
+		"pt": "Atualizando este site",
+		"en": "Updating this website"
+	},
+	"website_link": {
+		"pt": "Link do site",
+		"en": "Website link"
+	},
+	"press_enter_when_the_pages_finish_loading": {
+		"pt": "Pressione Enter quando as páginas terminarem de carregar",
+		"en": "Press Enter when the pages finish loading"
+	},
+	"update_more_websites": {
+		"pt": "Atualizar mais sites",
+		"en": "Update more websites"
+	},
+	"copy_and_paste_the_text": {
+		"pt": "Copie e cole o texto",
+		"en": "Copy and paste the text"
+	}
+}

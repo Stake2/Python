@@ -1,0 +1,633 @@
+{
+	"story": {
+		"en": "story",
+		"pt": "história"
+	},
+	"story, title()": {
+		"en": "Story",
+		"pt": "História"
+	},
+	"stories": {
+		"en": "stories",
+		"pt": "histórias"
+	},
+	"stories, title()": {
+		"en": "Stories",
+		"pt": "Histórias"
+	},
+	"story_title": {
+		"en": "Story title",
+		"pt": "Título da história"
+	},
+	"story_titles": {
+		"en": "Story titles",
+		"pt": "Títulos de história"
+	},
+	"folder, title()": {
+		"en": "Folder",
+		"pt": "Pasta"
+	},
+	"chapter": {
+		"en": "chapter",
+		"pt": "capítulo"
+	},
+	"chapter, title()": {
+		"en": "Chapter",
+		"pt": "Capítulo"
+	},
+	"chapters": {
+		"en": "chapters",
+		"pt": "capítulos"
+	},
+	"chapters, title()": {
+		"en": "Chapters",
+		"pt": "Capítulos"
+	},
+	"select_a_story": {
+		"en": "Select a story",
+		"pt": "Selecione uma história"
+	},
+	"select_a_story_to": {
+		"en": "Select a story to",
+		"pt": "Selecione uma história para"
+	},
+	"select_a_chapter_to": {
+		"en": "Select a chapter to",
+		"pt": "Selecione um capítulo para"
+	},
+	"skip, title()": {
+		"en": "Skip",
+		"pt": "Pular"
+	},
+	"skip_the": {
+		"en": "Skip the",
+		"pt": "Pular a"
+	},
+	"you_skipped_the": {
+		"en": "You skipped the",
+		"pt": "Você pulou a"
+	},
+	"cover_creation": {
+		"en": "cover creation",
+		"pt": "criação de capa"
+	},
+	"covers_creation": {
+		"en": "covers creation",
+		"pt": "criação de capas"
+	},
+	"websites_update": {
+		"en": "websites update",
+		"pt": "atualização de sites"
+	},
+	"wattpad_chapter_posting": {
+		"en": "Wattpad chapter posting",
+		"pt": "postagem do capítulo no Wattpad"
+	},
+	"social_network_posting": {
+		"en": "Social Network posting",
+		"pt": "postagem nas Redes Sociais"
+	},
+	"id, title()": {
+		"en": "ID",
+		"pt": "ID"
+	},
+	"links, title()": {
+		"en": "Links",
+		"pt": "Links"
+	},
+	"website_link": {
+		"en": "Website link",
+		"pt": "Link do site"
+	},
+	"portrait, title()": {
+		"en": "Portrait",
+		"pt": "Retrato"
+	},
+	"landscape, title()": {
+		"en": "Landscape",
+		"pt": "Paisagem"
+	},
+	"in_{}_mode": {
+		"en": "in {} mode",
+		"pt": "em modo {}"
+	},
+	"opening_the_vegas_file_of_chapter_covers, type: long": {
+		"en": "Opening the Vegas file of chapter covers in [{}] mode.\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
+		"pt": "Abrindo o arquivo Vegas de capas de capítulos em modo [{}].\nRenderize a capa em modo [{}] com o título do capítulo e com a extensão [{}]."
+	},
+	"press_enter_to_copy_the_chapter_title": {
+		"en": "Press Enter to copy the chapter title",
+		"pt": "Pressione Enter para copiar o título do capítulo"
+	},
+	"press_enter_to_copy_the_chapter_title_and_paste_it_on_the_vegas_title_media": {
+		"en": "Press Enter to copy the chapter title and paste it on the Vegas title media",
+		"pt": "Pressione Enter para copiar o título de capítulo e cole ele na mídia de título do Vegas"
+	},
+	"press_enter_to_copy_the_chapter_text": {
+		"en": "Press Enter to copy the chapter text",
+		"pt": "Pressione Enter para copiar o texto do capítulo"
+	},
+	"press_enter_when_you_finish_posting_the_card_on_{}": {
+		"en": "Press Enter when you finish posting the card on {}",
+		"pt": "Pressione Enter quando você terminar de postar o card no {}"
+	},
+	"paste_the_first_part_of_the_card_of_{}_on_the_post_text_box": {
+		"en": "Paste the first part of the card of {} on the post text box",
+		"pt": "Cole a primeira parte do card do {} na caixa de texto da postagem"
+	},
+	"paste_the_second_part_of_the_card_of_{}_on_the_post_text_box": {
+		"en": "Paste the second part of the card of {} on the post text box",
+		"pt": "Cole a segunda parte do card do {} na caixa de texto da postagem"
+	},
+	"and": {
+		"en": "and",
+		"pt": "e"
+	},
+	"and_in": {
+		"en": "and in",
+		"pt": "e em"
+	},
+	"copying_the_cover_to_the_{}_folder": {
+		"en": "Copying the cover to the {} folder",
+		"pt": "Copiando a capa para a pasta {}"
+	},
+	"press_enter_when_you_finish_rendering_the_cover": {
+		"en": "Press Enter when you finish rendering the cover",
+		"pt": "Pressione Enter quando você terminar de renderizar a capa"
+	},
+	"press_enter_when_you_finish_rendering_the_covers": {
+		"en": "Press Enter when you finish rendering the covers",
+		"pt": "Pressione Enter quando você terminar de renderizar as capas"
+	},
+	"now_render_the_covers_in": {
+		"en": "Now render the covers in",
+		"pt": "Agora renderize as capas em"
+	},
+	"move, title()": {
+		"en": "Move",
+		"pt": "Mover"
+	},
+	"mega_stories": {
+		"en": "Mega Stories",
+		"pt": "de Histórias do Mega"
+	},
+	"website_story_covers": {
+		"en": "Website story covers",
+		"pt": "de capas de histórias do site"
+	},
+	"paste_the_wattpad_chapter_link": {
+		"en": "Paste the Wattpad chapter link",
+		"pt": "Cole o link do capítulo no Wattpad"
+	},
+	"the_{}_part_of_the": {
+		"en": "the {} of the",
+		"pt": "a {} parte do"
+	},
+	"first": {
+		"en": "first",
+		"pt": "primeira"
+	},
+	"second": {
+		"en": "second",
+		"pt": "segunda"
+	},
+	"one_more_chapter": {
+		"en": "One more chapter",
+		"pt": "Mais um capítulo"
+	},
+	"the_first_chapter": {
+		"en": "The first chapter",
+		"pt": "O primeiro capítulo"
+	},
+	"the_last_chapter": {
+		"en": "The last chapter",
+		"pt": "O último capítulo"
+	},
+	"information_items, type: list": {
+		"en": [
+			"Title",
+			"Author",
+			"Creation date",
+			"Status",
+			"Synopsis"
+		],
+		"pt": [
+			"Título",
+			"Autor",
+			"Data de criação",
+			"Status",
+			"Sinopse"
+		]
+	},
+	"title": {
+		"en": "title",
+		"pt": "título"
+	},
+	"title, title()": {
+		"en": "Title",
+		"pt": "Título"
+	},
+	"titles": {
+		"en": "titles",
+		"pt": "títulos"
+	},
+	"titles, title()": {
+		"en": "Titles",
+		"pt": "Títulos"
+	},
+	"author, title()": {
+		"en": "Author",
+		"pt": "Autor"
+	}, 
+	"creation_date": {
+		"en": "Creation date",
+		"pt": "Data de criação"
+	},
+	"status, title()": {
+		"en": "Status",
+		"pt": "Status"
+	},
+	"synopsis, title()": {
+		"en": "Synopsis",
+		"pt": "Sinopse"
+	},
+	"story_title_in_{}": {
+		"en": "Story title in {}",
+		"pt": "Título da história em {}"
+	},
+	"story_synopsis_in_{}": {
+		"en": "Story synopsis in {}",
+		"pt": "Sinopse da história em {}"
+	},
+	"writing_modes, type: list": {
+		"en": [
+			"Write",
+			"Revise",
+			"Translate"
+		],
+		"pt": [
+			"Escrever",
+			"Revisar",
+			"Traduzir"
+		]
+	},
+	"writing_modes_present_action, type: list": {
+		"en": [
+			"Writing",
+			"Revising",
+			"Translating"
+		],
+		"pt": [
+			"Escrevendo",
+			"Revisando",
+			"Traduzindo"
+		]
+	},
+	"writing_modes_action, type: list": {
+		"en": [
+			"Writing",
+			"Revising",
+			"Translating"
+		],
+		"pt": [
+			"Escrever",
+			"Revisar",
+			"Traduzir"
+		]
+	},
+	"writing_modes_past_action, type: list": {
+		"en": [
+			"Writing",
+			"Revising",
+			"Translating"
+		],
+		"pt": [
+			"Escrita",
+			"Revisão",
+			"Tradução"
+		]
+	},
+	"writing_modes_past, type: list": {
+		"en": [
+			"Wrote",
+			"Revised",
+			"Translated"
+		],
+		"pt": [
+			"Escrevi",
+			"Revisei",
+			"Traduzi"
+		]
+	},
+	"writing_modes": {
+		"en": "Writing modes",
+		"pt": "Modos de escrita"
+	},
+	"write": {
+		"en": "write",
+		"pt": "escrever"
+	},
+	"write, title()": {
+		"en": "Write",
+		"pt": "Escrever"
+	},
+	"revise": {
+		"en": "revise",
+		"pt": "revisar"
+	},
+	"revise, title()": {
+		"en": "Revise",
+		"pt": "Revisar"
+	},
+	"translate": {
+		"en": "translate",
+		"pt": "traduzir"
+	},
+	"translate, title()": {
+		"en": "Translate",
+		"pt": "Traduzir"
+	},
+	"select_a_writing_mode": {
+		"en": "Select a writing mode",
+		"pt": "Selecione um modo de escrita"
+	},
+	"obsidian_link": {
+		"en": "Obsidian link",
+		"pt": "Link do Obsidian"
+	},
+	"press_enter_to_start_counting_{}_time": {
+		"en": "Press Enter to start counting {} time",
+		"pt": "Pressione Enter para começar a contar o tempo de {}"
+	},
+	"press_enter_when_you_finish_{}_the_chapter": {
+		"en": "Press Enter when you finish {} the chapter",
+		"pt": "Pressione Enter quando você terminar de {} o capítulo"
+	},
+	"did_you_finished_{}_the_chapter": {
+		"en": "Did you finished {} the chapter",
+		"pt": "Você terminou de {} o capítulo"
+	},
+	"you_finished_{}_this_chapter": {
+		"en": "You finished {} this chapter",
+		"pt": "Você terminou de {} este capítulo"
+	},
+	"{}_this_chapter": {
+		"en": "{} this chapter",
+		"pt": "{} este capítulo"
+	},
+	"now_time": {
+		"en": "Now time",
+		"pt": "Tempo agora"
+	},
+	"after_{}_time": {
+		"en": "After {} time",
+		"pt": "Tempo após {}"
+	},
+	"time_difference": {
+		"en": "Time difference",
+		"pt": "Diferença de tempo"
+	},
+	"type_or_paste_the_chapter_title_in_{}": {
+		"en": "Type or paste the chapter title in {}",
+		"pt": "Digite ou cole o título do capítulo em {}"
+	},
+	"i_started_{}_the_chapter_{}_of_my_story_{}": {
+		"en": "I started {} the chapter {} of my story \"{}\"",
+		"pt": "Eu comecei a {} o capítulo {} da minha história \"{}\""
+	},
+	"i_{}_the_chapter_{}_of_my_story_{}": {
+		"en": "I {} the chapter {} of my story \"{}\"",
+		"pt": "Eu {} o capítulo {} da minha história \"{}\""
+	},
+	"i_still_did_not_finished_{}_the_chapter": {
+		"en": "I still did not finished {} the chapter",
+		"pt": "Eu ainda não terminei de {} o capítulo"
+	},
+	"to": {
+		"en": "to",
+		"pt": "para"
+	},
+	"to_{}": {
+		"en": "to {}",
+		"pt": "para {}"
+	},
+	"{}_time": {
+		"en": "{} time",
+		"pt": "Tempo de {}"
+	},
+	"post": {
+		"en": "post",
+		"pt": "postar"
+	},
+	"post, title()": {
+		"en": "Post",
+		"pt": "Postar"
+	},
+	"status, type: list": {
+		"en": [
+			"Writing",
+			"Re-Writing",
+			"Reviewing",
+			"Finished",
+			"Published",
+			"On hold"
+		],
+		"pt": [
+			"Escrevendo",
+			"Re-Escrevendo",
+			"Revisando",
+			"Finalizada",
+			"Publicada",
+			"Em pausa"
+		]
+	},
+	"writing_statuses": {
+		"en": "Writing statuses",
+		"pt": "Estados de escrita"
+	},
+	"select_a_writing_status": {
+		"en": "Select a writing status",
+		"pt": "Selecione um estado de escrita"
+	},
+	"folder_names, type: list": [
+		"Chapters",
+		"Comments",
+		"Covers",
+		"Information",
+		"Lore",
+		"Readers and Reads"
+	],
+	"file_names, type: list": [
+		"Author",
+		"Chapter status",
+		"Creation date",
+		"Post template",
+		"Status",
+		"Titles",
+		"Wattpad"
+	],
+	"sub_file_names, type: dict": {
+		"Covers": [
+			"Landscape",
+			"Portrait"
+		]
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
+	"select_{}_to_{}": {
+		"en": "Select {} to {}",
+		"pt": "Selecione {} para {}"
+	},
+	"select_one_{}_to_copy": {
+		"en": "Select one {} to copy",
+		"pt": "Selecione um {} para copiar"
+	},
+	"please_select_one_{}_to_copy": {
+		"en": "Please select one {} to copy",
+		"pt": "Por favor selecione um {} para copiar"
+	},
+	"one_{}": {
+		"en": "one {} to copy",
+		"pt": "um {} para copiar"
+	},
+	"to_copy": {
+		"en": "to copy",
+		"pt": "um {} para copiar"
+	},
+	"copy_modes": {
+		"en": "Copy modes",
+		"pt": "Modos de cópia"
+	},
+	"select_a_copy_mode": {
+		"en": "Select a copy mode",
+		"pt": "Selecione um modo de cópia"
+	},
+	"copy_modes, type: list": {
+		"en": [
+			"Normal",
+			"With quotes",
+			"Acronym"
+		],
+		"pt": [
+			"Normal",
+			"Com aspas",
+			"Acrônimo"
+		]
+	},
+	"normal, title()": {
+		"en": "Normal",
+		"pt": "Normal"
+	},
+	"with_quotes": {
+		"en": "With quotes",
+		"pt": "Com aspas"
+	},
+	"acronym, title()": {
+		"en": "Acronym",
+		"pt": "Acrônimo"
+	},
+	"story_acronym": {
+		"en": "Story acronym",
+		"pt": "Acrônimo de história"
+	},
+	"story_acronyms": {
+		"en": "Story acronyms",
+		"pt": "Acrônimos de história"
+	},
+	"copy_actions, type: list": {
+		"en": [
+			"Change mode",
+			"Join {}",
+			"Disable junction mode",
+			"Quit"
+		],
+		"pt": [
+			"Mudar modo",
+			"Juntar {}",
+			"Desabilitar o modo de junção",
+			"Sair"
+		]
+	},
+	"change_mode": {
+		"en": "Change mode",
+		"pt": "Mudar modo"
+	},
+	"join_{}": {
+		"en": "Join {}",
+		"pt": "Juntar {}"
+	},
+	"disable_junction_mode": {
+		"en": "Disable junction mode",
+		"pt": "Desabilitar o modo de junção"
+	},
+	"quit, title()": {
+		"en": "Quit",
+		"pt": "Sair"
+	},
+	"join": {
+		"en": "join",
+		"pt": "juntar"
+	},
+	"joined, title()": {
+		"en": "Joined",
+		"pt": "Juntado"
+	},
+	"the": {
+		"en": "the",
+		"pt": "o"
+	},
+	"the_first": {
+		"pt": "o primeiro",
+		"en": "the first"
+	},
+	"the_second": {
+		"pt": "o segundo",
+		"en": "the second"
+	},
+	"filler_formatted": {
+		"en": "[ ] (Filler)",
+		"pt": "[ ] (Preenchedor)"
+	},
+	"you_selected_a_filler_text, type: explanation": {
+		"en": "You selected a Filler.\nIt does perform any action, it is only utilized to make the lengths of the lists the same, the length of the current list is {}.",
+		"pt": "Você selecionou um Preenchedor.\nEle não executa nenhuma ação, só é utilizado para tornar os comprimentos das listas iguais, o comprimento da lista atual é {}."
+	},	
+	"finished_copying_the_{}": {
+		"en": "Finished copying the {}",
+		"pt": "Terminou de copiar os {}"
+	},
+	"Write": {
+		"en": "Write",
+		"pt": "Escrever"
+	},
+	"Post": {
+		"en": "Post",
+		"pt": "Postar"
+	},
+	"Update_Chapter_Covers": {
+		"en": "Update chapter covers",
+		"pt": "Atualizar capas de capítulos"
+	},
+	"select_one_story_class_to_execute": {
+		"en": "Select one story class to execute",
+		"pt": "Selecione uma classe de história para executar"
+	},
+	"the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one": {
+		"en": "The selected story ({}) has all of its chapters posted, please select another one",
+		"pt": "A história selecionada ({}) tem todos os seus capítulos postados, por favor selecione outra"
+	},
+	"updating_the_chapter_covers_of_this_story": {
+		"en": "Updating the chapter covers of this story",
+		"pt": "Atualizando as capas de capítulo desta história"
+	},
+	"finished_updating_the_chapter_covers": {
+		"en": "Finished updating the chapter covers",
+		"pt": "Terminou de atualizar as capas de capítulo"
+	},
+	"format, title()": {
+		"en": "Format",
+		"pt": "Formato"
+	}
+}

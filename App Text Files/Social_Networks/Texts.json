@@ -1,0 +1,202 @@
+{
+    "social_network": {
+        "en": "Social Network",
+        "pt": "Rede Social"
+    },
+    "social_networks": {
+        "en": "Social Networks",
+        "pt": "Redes Sociais"
+    },
+    "social_networks, en - pt, title()": "Social Networks - Redes Sociais",
+    "social_network_information": {
+        "en": "Social Network information",
+        "pt": "Informações da Rede Social"
+    },
+    "social_networks_information": {
+        "en": "Social Networks information",
+        "pt": "Informações das Redes Sociais"
+    },
+    "information": {
+        "en": "information",
+        "pt": "informação"
+    },
+    "information, title()": {
+        "en": "Information",
+        "pt": "Informação"
+    },
+    "information, en - pt, title()": "Information - Informação",
+    "information_item": {
+        "en": "Information item",
+        "pt": "Item de informação"
+    },
+    "information_items": {
+        "en": "Information items",
+        "pt": "Itens de informação"
+    },
+    "image_folder": {
+        "en": "Image folder",
+        "pt": "Pasta de imagem"
+    },
+    "image_folders": {
+        "en": "Image folders",
+        "pt": "Pastas de imagem"
+    },
+    "home, title()": {
+        "en": "Home",
+        "pt": "Início"
+    },
+    "profile": {
+        "en": "profile",
+        "pt": "perfil"
+    },
+    "profile, title()": {
+        "en": "Profile",
+        "pt": "Perfil"
+    },
+    "profiles": {
+        "en": "profiles",
+        "pt": "perfis"
+    },
+    "profiles, title()": {
+        "en": "Profiles",
+        "pt": "Perfis"
+    },
+    "setting": {
+        "en": "setting",
+        "pt": "configuração"
+    },
+    "setting, title()": {
+        "en": "Setting",
+        "pt": "Configuração"
+    },
+    "settings": {
+        "en": "settings",
+        "pt": "configurações"
+    },
+    "settings, title()": {
+        "en": "Settings",
+        "pt": "Configurações"
+    },
+    "number, title()": {
+        "en": "Number",
+        "pt": "Número"
+    },
+    "numbers, title()": {
+        "en": "Numbers",
+        "pt": "Números"
+    },
+    "number, en - pt, title()": "Number - Número",
+    "year_numbers, en - pt, capitalize()": "Year numbers - Números de Ano",
+    "the": {
+        "en": "the",
+        "pt": {
+            "masculine": "o",
+            "feminine": "a"
+        }
+    },
+    "this": {
+        "en": "this",
+        "pt": {
+            "masculine": "este",
+            "feminine": "esta"
+        }
+    },
+    "of": {
+        "en": "of",
+        "pt": {
+            "masculine": "do",
+            "feminine": "da"
+        }
+    },
+    "part_of": {
+        "en": "part of",
+        "pt": {
+            "masculine": "parte do",
+            "feminine": "parte da"
+        }
+    },
+    "select_one_social_network_to_use": {
+        "en": "Select one Social Network to use",
+        "pt": "Selecione uma Rede Social para usar"
+    },
+    "select_one_social_network_to_open": {
+        "en": "Select one Social Network to open",
+        "pt": "Selecione uma Rede Social para abrir"
+    },
+    "link_types": {
+        "en": "Link types",
+        "pt": "Tipos de link"
+    },
+    "select_one_link_type_to_open": {
+        "en": "Select one link type to open",
+        "pt": "Selecione um tipo de link para abrir"
+    },
+    "opening_{}_on_its_{}_page_with_this_link": {
+        "pt": "Abrindo {} em sua página de {}, com este link",
+        "en": "Opening {} on its {} page, with this link"
+    },
+    "please_type_the_social_network_profile_information": {
+        "pt": "Por favor digite as informações do perfil da Rede Social",
+        "en": "Please type the Social Network profile information"
+    },
+    "information_items, type: list": {
+        "pt": [
+            "Nick e Tag",
+            "ID",
+            "Nome de usuário",
+            "Link de perfil",
+            "Link de mensagem",
+            "Arroba",
+            "ID de mensagem",
+            "Nome de contato",
+            "Número"
+        ],
+        "en": [
+            "Nick and Tag",
+            "ID",
+            "Username",
+            "Profile link",
+            "Message link",
+            "Handle",
+            "Message ID",
+            "Contact name",
+            "Number"
+        ]
+    },
+    "nick_and_tag": {
+        "en": "Nick and Tag",
+        "pt": "Nick e Tag"
+    },
+    "id": {
+        "en": "ID",
+        "pt": "ID"
+    },
+    "username": {
+        "en": "Username",
+        "pt": "Nome de usuário"
+    },
+    "profile_link": {
+        "en": "Profile link",
+        "pt": "Link de perfil"
+    },
+    "message_link": {
+        "en": "Message link",
+        "pt": "Link de mensagem"
+    },
+    "handle": {
+        "en": "Handle",
+        "pt": "Arroba"
+    },
+    "message_id": {
+        "en": "Message ID",
+        "pt": "ID de mensagem"
+    },
+    "contact_name": {
+        "en": "Contact name",
+        "pt": "Nome de contato"
+    },
+    "number": {
+        "en": "Number",
+        "pt": "Número"
+    }
+}

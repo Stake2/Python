@@ -1,91 +1,133 @@
 # Diary.py
 
-from Script_Helper import *
+from Global_Switches import Global_Switches as Global_Switches
+
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Date import Date as Date
+from Input import Input as Input
+from Text import Text as Text
 
 class Diary():
 	def __init__(self, parameter_switches = None):
-		# Verbose variable
-		self.verbose = False
-
-		self.testing_script = False
-
 		self.parameter_switches = parameter_switches
 
 		self.Define_Basic_Variables()
-		self.Define_Diary_Variables()
+		self.Define_Module_Folder()
+		self.Define_Texts()
+
+		self.Define_Folders_And_Files()
+		self.Define_Lists_And_Dictionaries()
 
 	def Define_Basic_Variables(self):
-		self.option = True
-
-		self.global_switches = {
-		"write_to_file": self.option,
-		"create_files": self.option,
-		"create_folders": self.option,
-		"move_files": self.option,
-		"verbose": self.verbose,
-		"testing_script": self.testing_script,
-		}
+		# Global Switches dictionary
+		self.global_switches = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches = self.parameter_switches
-			self.testing_script = self.global_switches["testing_script"]
+			self.global_switches.update(self.parameter_switches)
 
-		if self.global_switches["testing_script"] == True:
-			print(Language_Item_Definer("Testing script: Yes", "Testando script: Sim"))
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Date = Date(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-		if self.global_switches["verbose"] == True:
-			print(Language_Item_Definer("Verbose on", "Verbose ligado") + ".")
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
 
-		if self.global_switches["testing_script"] == True:
-			self.global_switches["write_to_file"] = False
-			self.global_switches["create_files"] = False
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		self.dot_text = ".txt"
+		self.Sanitize = self.File.Sanitize
 
-	def Define_Diary_Variables(self):
-		self.diary_folder = notepad_diary_folder
-		Create_Folder(self.diary_folder, self.global_switches)
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
 
-		self.diary_chapters_folder = self.diary_folder + "Chapters/"
-		Create_Folder(self.diary_chapters_folder, self.global_switches)
+		self.date = self.Date.date
 
-		self.diary_file = self.diary_folder + "Diary" + self.dot_text
-		Create_Text_File(self.diary_file, self.global_switches)
+	def Define_Module_Folder(self):
+		name = self.__module__
 
-		self.diary_number_file = self.diary_folder + "Number" + self.dot_text
-		Create_Text_File(self.diary_number_file, self.global_switches)
+		if "." in name:
+			name = name.split(".")[0]
 
-		self.current_diary_file = self.diary_folder + "Current File" + self.dot_text
-		Create_Text_File(self.current_diary_file, self.global_switches)
+		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.Folder.Create(self.module_text_files_folder)
 
-		self.current_diary_text_file = Create_Array_Of_File(self.current_diary_file)[0]
+		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.File.Create(self.texts_file)
 
-		self.diary_number = Create_Array_Of_File(self.diary_number_file)[0]
+	def Define_Texts(self):
+		self.texts = self.Language.JSON_To_Python(self.texts_file)
 
-		self.characters = {
-		"Izaque": "Izaque",
-		"Nodus": "Nodus",
-		"Ted": "Ted",
-		}
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.lower_characters = {
-		"Izaque": "izaque",
-		"Nodus": "nodus",
-		"Ted": "ted",
-		}
+		self.large_bar = "-----"
+		self.dash_space = "-"
 
-		self.character_format_texts = {
-		"Izaque": '{}: "{}."',
-		"Nodus": "{}: //{}.",
-		"Ted": "{}: ~{}.",
-		}
+	def Define_Folders_And_Files(self):
+		# Folders
+		self.diary_chapters_folder = self.mega_folders["notepad"]["effort"]["diary"]["root"] + "Chapters/"
+		self.Folder.Create(self.diary_chapters_folder)
+
+		# Files
+		self.diary_file = self.mega_folders["notepad"]["effort"]["diary"]["root"] + "Diary.txt"
+		self.File.Create(self.diary_file)
+
+		self.diary_number_file = self.mega_folders["notepad"]["effort"]["diary"]["root"] + "Number.txt"
+		self.File.Create(self.diary_number_file)
+
+		self.current_diary_file = self.mega_folders["notepad"]["effort"]["diary"]["root"] + "Current File.txt"
+		self.File.Create(self.current_diary_file)
+
+	def Define_Lists_And_Dictionaries(self):
+		# Lists
+		self.current_diary_text_file = self.File.Contents(self.current_diary_file)["lines"][0]
+
+		self.diary_number = self.File.Contents(self.diary_number_file)["lines"][0]
+
+		self.presenters = [
+			"Izaque",
+			"Nodus",
+			"Ted",
+		]
+
+		self.presenter_numbers = [
+			"1",
+			"2",
+			"3",
+		]
 
 		self.finish_texts = [
-		"f",
-		"finish",
-		"t",
-		"terminar",
-		"c",
-		"completar",
-		"acabar",
+			"f",
+			"finish",
+			"stop",
+			"parar",
+			"terminar",
+			"completar",
+			"acabar",
 		]
+
+		list_ = [
+			'{}: {}',
+			"{}: //{}",
+			"{}: ~{}",
+		]
+
+		# Dictionaries
+		self.presenter_format_texts = {}
+
+		i = 0
+		for presenter in self.presenters:
+			self.presenter_format_texts[presenter] = list_[i]
+
+			i += 1

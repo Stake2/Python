@@ -1,322 +1,261 @@
 # Write_On_Diary_Slim.py
 
-from Script_Helper import *
-
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 class Write_On_Diary_Slim(Diary_Slim):
-	def __init__(self, custom_option = None):
+	def __init__(self, option_info = None):
 		super().__init__()
 
-		self.current_diary_slim_file = Create_Array_Of_File(self.current_diary_slim_file)[0]
+		self.option_info = option_info
 
-		self.custom_option = custom_option
-
-		self.use_text_file = False
-
-		self.Define_Texts()
+		self.Define_Slim_Texts()
 		self.Select()
+		self.Define_Text_Variables()
 		self.Write()
 
-	def Define_Texts(self):
-		self.today = datetime.datetime.today()
-		self.week_day = self.today.weekday()
+		print()
+		print(self.large_bar)
 
-		self.today_task_done_text = Create_Array_Of_File(self.diary_slim_things_done_texts_file)[self.week_day]
+	def Define_Slim_Texts(self):
+		self.date = self.Date.Now()
 
-		self.diary_slim_texts = {
-			"Water": "Bebi dois litros de água",
-			"Lunch": "Almocei",
-			"Dinner": "Jantei",
-			"Bike": "Andei de bicicleta pela cidade",
-			"Bath": "Tomei um banho, lavei o rosto, escovei os dentes",
-			"Python": "Programei em Python um pouco, programando o meu módulo" + "...",
-			"PHP": "Programei meus sites em PHP um pouco" + "...",
-			"FreeFileSync": "Sincronizei os arquivos deste computador para o computador da sala usando o programa FreeFileSync",
-			"Drawings - Desenhos": "Desenhei um pouco no" + "...",
-			"Videos - Vídeos": "Editei um pouco um vídeo no Sony Vegas" + "...",
-			"Udemy Course": "Assisti {} {} do meu curso de PHP 7 na Udemy, totalizando {} de curso",
-		}
+		# Get slim texts
+		self.slim_texts = self.Language.JSON_To_Python(self.slim_texts_file)
 
-		self.english_diary_slim_texts = {
-			self.diary_slim_texts["Water"]: "Drank two bottles of water",
-			self.diary_slim_texts["Lunch"]: "I had lunch",
-			self.diary_slim_texts["Dinner"]: "I had dinner",
-			self.diary_slim_texts["Bike"]: "I cycled through the city",
-			self.diary_slim_texts["Bath"]: "I took a shower, washed my face, brushed my teeth",
-			self.diary_slim_texts["FreeFileSync"]: "Synchronized the files of this computer to the living room computer using the program FreeFileSync",
-			self.diary_slim_texts["Python"]: "Programmed in Python a little, coding my module",
-			self.diary_slim_texts["PHP"]: "Programmed my websites in PHP a little",
-			self.diary_slim_texts["Drawings - Desenhos"]: "I drew a little on",
-			self.diary_slim_texts["Videos - Vídeos"]: "I edited a video a little on Sony Vegas",
-			self.diary_slim_texts["Udemy Course"]: "Watched {} {} of my course of PHP 7 on Udemy, totaling {} of course"
-		}
+		# Get today task done text using weekday
+		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["weekday"]]
 
-		self.deactivate_food = True
+		for language in self.small_languages:
+			# Iterate through state names
+			for state in self.states["names"]:
+				state = self.states[state]
+				state_texts = state["texts"]
+				state_name = state["names"][self.user_language]
 
-		if self.deactivate_food == True:
-			self.diary_slim_texts.pop("Lunch")
-			self.diary_slim_texts.pop("Dinner")
+				order = "first"
 
-			self.english_diary_slim_texts.pop("Almocei")
-			self.english_diary_slim_texts.pop("Jantei")
+				# If the current order text is first order, define the order as "second"
+				if state_texts["current"] != [] and state_texts["current"][0] == state_texts["first"][self.user_language]:
+					order = "second"
 
-		self.module_current_state = self.current_state
+				# Define "first" or "second" order text in language
+				text = self.texts[order][language]
 
-		for state in self.state_names:
-			self.current_state_file = self.state_files[state]["Current State"]
-			english_state = self.english_states[state]
-			portuguese_state = self.portuguese_states[state]
-			mixed_state = english_state + ", " + portuguese_state
+				# If the current order text is the second order text, remove the order from slim texts
+				if state_texts["current"] != [] and state_texts["current"][0] == state_texts["second"][self.user_language] and state_name in self.slim_texts:
+					self.slim_texts[language].pop(state_name)
 
-			self.file_current_state = Create_Array_Of_File(self.current_state_file)
+				# If the current order text is empty, or the current order is not equal to the second order text, add state name to slim texts
+				if state_texts["current"] == [] or state_texts["current"] != [] and state_texts["current"][0] != state_texts["second"][self.user_language]:
+					self.slim_texts[language][state_name] = state_name + " (" + text + " " + self.language_texts["state"] + ")"
 
-			self.state_position_name = self.state_position_names[state][mixed_state]
+			# Add today done task to slim texts
+			if self.today_task_done_text != "":
+				if ", " not in self.today_task_done_text:
+					self.slim_texts[language]["Today task"] = self.today_task_done_text
 
-			if self.file_current_state != []:
-				self.file_current_state = self.file_current_state[0]
+				if ", " in self.today_task_done_text:
+					self.slim_texts[language]["First today task"] = self.today_task_done_text.split(", ")[0]
+					self.slim_texts[language]["Second today task"] = self.today_task_done_text.split(", ")[1]
 
-			if self.file_current_state != self.state_texts[state]["Second State"]:
-				self.diary_slim_texts[state] = portuguese_state + " (" + self.state_position_name + ")"
-				self.english_diary_slim_texts[portuguese_state] = english_state + " (" + self.state_position_name + ")"
-
-		if self.today_task_done_text != "":
-			if ", " not in self.today_task_done_text:
-				self.diary_slim_texts["Today Task"] = self.today_task_done_text
-
-			if ", " in self.today_task_done_text:
-				self.diary_slim_texts["First Today Task"] = self.today_task_done_text.split(", ")[0]
-				self.diary_slim_texts["Second Today Task"] = self.today_task_done_text.split(", ")[1]
-
-		self.Define_Double_State_Texts()
-
-		self.diary_slim_module_texts = [
-			"Udemy Course",
-		]
-
-		self.diary_slim_name_texts = {
-			"Python": Language_Item_Definer("Python module", "módulo de Python"),
-			"PHP": Language_Item_Definer("PHP website", "site em PHP"),
-			"Drawings - Desenhos": Language_Item_Definer("drawing", "desenho"),
-			"Videos - Vídeos": Language_Item_Definer("video", "vídeo"),
-		}
-
-		self.diary_slim_data_name_texts = {
-			"Python": Language_Item_Definer("Type the name of the module", "Digite o nome do módulo"),
-			"Drawings - Desenhos": Language_Item_Definer("Type the name of the drawing program", "Digite o nome do programa de desenho"),
-			"Udemy Course": Language_Item_Definer("Type how much course classes you watched (1, one)", "Digite quantas aulas de curso você assistiu (1, uma)"),
-		}
-
-		self.diary_slim_action_name_texts = {
-			"Python": Language_Item_Definer("Say what you did on the {}", "Diga o que você fez no {}"),
-			"Python English": Language_Item_Definer("Say what you did on the {}, but in English", "Diga o que você fez no {}, mas em Inglês"),
-			"PHP": Language_Item_Definer("Say what you did on the {}", "Diga o que você fez no {}"),
-			"PHP English": Language_Item_Definer("Say what you did on the {}, but in English", "Diga o que você fez no {}, mas em Inglês"),
-			"Drawings - Desenhos": Language_Item_Definer("Say what you did on the {}", "Diga o que você fez no {}"),
-			"Drawings - Desenhos English": Language_Item_Definer("Say what you did on the {}, but in English", "Diga o que você fez no {}, mas em Inglês"),
-			"Videos - Vídeos": Language_Item_Definer("Say what you did on the {}", "Diga o que você fez no {}"),
-			"Videos - Vídeos English": Language_Item_Definer("Say what you did on the {}, but in English", "Diga o que você fez no {}, mas em Inglês"),
-		}
-
-		self.format_texts = [
-			"Python",
-			"PHP",
-			"Drawings - Desenhos",
-			"Videos - Vídeos",
-		]
-
-		self.ask_for_text = [
-			"Python",
-			"Drawings - Desenhos",
-		]
-
-		self.text_file_names = {
-			"Python": "",
-			"PHP": ".php",
-			"Drawings - Desenhos": "",
-			"Videos - Vídeos": "",
-		}
-
-		for key in self.diary_slim_module_texts:
-			if key in self.diary_slim_texts and self.custom_option == None:
-				value = self.diary_slim_texts[key]
-
-				self.diary_slim_texts.pop(key)
-				self.english_diary_slim_texts.pop(value)
-
-	def Replace_Selected_Text(self, selected_text):
-		for state in self.state_names:
-			state_texts = self.state_texts[state]
-
-			self.selected_text_items_to_remove = [
-				" (" + self.language_first_state_text + ")",
-				" (" + self.language_second_state_text + ")",
+	def Remove_State_Text(self, text):
+		for state in self.states["names"]:
+			items_to_remove = [
+				" (" + self.language_texts["first"] + " " + self.language_texts["state"] + ")",
+				" (" + self.language_texts["second"] + " " + self.language_texts["state"] + ")",
 			]
 
-			for item in self.selected_text_items_to_remove:
-				if item in selected_text:
-					selected_text = selected_text.replace(item, "")
+			for item in items_to_remove:
+				if item in text:
+					text = text.replace(item, "")
 
-		return selected_text
+		return text
 
 	def Select(self):
-		if self.custom_option == None:
-			self.choice_text = Language_Item_Definer("Select a text to write", "Selecione um texto para escrever")
-			self.selected_text = Select_Choice_From_List(self.diary_slim_texts.values(), local_script_name, self.choice_text, second_choices_list = self.diary_slim_texts, return_second_item_parameter = True, add_none = True, return_number = True, first_space = False)[0]
+		self.text = {}
 
-		else:
-			self.selected_text = self.custom_option
+		if self.option_info == None:
+			show_text = self.language_texts["texts_to_write"]
+			select_text = self.language_texts["select_a_text_to_write"]
 
+			# Ask for text
+			option_info = self.Input.Select(list(self.slim_texts[self.user_language].keys()), language_options = list(self.slim_texts[self.user_language].values()), show_text = show_text, select_text = select_text)
+
+		if self.option_info != None:
 			print("---")
 			print()
-			print(Language_Item_Definer("You selected the \"{}\" option to register on current Diary Slim", "Você selecionou a opção \"{}\" para registrar no Diário Slim atual").format(self.custom_option) + ".")
+			print(self.language_texts["you_selected_this_option"] + ":")
+			print(self.option_info["option"])
 
-		self.selected_text_key = self.selected_text
-		self.selected_text = self.diary_slim_texts[self.selected_text_key]
+		if self.option_info == None:
+			self.option_info = option_info
 
-		self.selected_text = self.Replace_Selected_Text(self.selected_text)
+	def Define_Text_Variables(self):
+		self.text["key"] = self.option_info["option"]
 
-		self.english_selected_text = self.english_diary_slim_texts[self.selected_text]
-		self.selected_text_replaced = self.selected_text.replace("...", "") + "\n"
+		# Define language texts to write
+		self.text["texts"] = {}
 
-		if self.selected_text_key in self.format_texts:
-			self.text_name = self.diary_slim_name_texts[self.selected_text_key]
+		for language in self.small_languages:
+			self.text["texts"][language] = self.slim_texts[language][self.text["key"]].replace("...", "")
 
-			self.selected_text_replaced = self.selected_text_replaced.replace("\n", "")
+		# If key in slim texts, ask for description of text
+		if self.text["key"] in self.slim_texts:
+			self.text_dictionary = self.slim_texts[self.text["key"]]
 
-			if self.selected_text_key in self.ask_for_text:
-				self.text_data = Select_Choice(self.diary_slim_data_name_texts[self.selected_text_key], first_space = False) + self.text_file_names[self.selected_text_key]
-				self.english_text_data = self.text_data
+			# Define explain_text if it is not present
+			if "explain_text" not in self.text_dictionary:
+				self.text_dictionary["explain_text"] = "say_what_you_did_on_the_{}"
 
-				if ", " in self.text_data:
-					self.text_data_split = self.text_data.split(", ")
+			# Ask for text data if type_text is present on text dictionary
+			if "type_text" in self.text_dictionary:
+				self.text["data"] = {
+					self.user_language: self.Input.Type(self.language_texts[self.text_dictionary["type_text"]]),
+				}
 
-					new_text_data = ""
+				for language in self.small_languages:
+					if language not in self.text["data"]:
+						self.text["data"][language] = self.text["data"][self.user_language]
 
-					for item in self.text_data_split:
-						if item == self.text_data_split[-1]:
-							new_text_data += "e "
+				# Split text data items, add commas between them, and add "and" text before the last item
+				if ", " in self.text["data"][self.user_language]:
+					for language in self.small_languages:
+						split = self.text["data"][language].split(", ")
 
-						new_text_data += '"' + item + '"'
+						self.text["data"][language] = ""
 
-						if item != self.text_data_split[-1]:
-							new_text_data += ", "
+						for item in split:
+							if item == split[-1]:
+								self.text["data"][language] += self.texts["and"][language] + " "
 
-					self.text_data = new_text_data
-					self.english_text_data = self.text_data.replace("e ", "and ")
+							self.text["data"][language] += item
 
-					self.selected_text_replaced = self.selected_text_replaced.replace("o meu módulo", "os meus módulos")
-					self.english_selected_text = self.english_selected_text.replace("my module", "my modules")
+							if item != split[-1]:
+								self.text["data"][language] += ", "
 
+						# Replace singular name with plural name on text
+						if "plural_item" in self.text_dictionary:
+							self.text["texts"][language] = self.text["texts"][language].replace(self.texts[self.text_dictionary["singular_name"]][language], self.texts[self.text_dictionary["plural_name"]][language])
+
+					self.text_dictionary["explain_text"] = "say_what_you_did_on_the_{}, plural"
+					self.text_dictionary["item"] = self.text_dictionary["plural_item"]
+
+				# Add quotes to text data
 				else:
-					self.text_data = '"' + self.text_data + '"'
+					for language in self.small_languages:
+						self.text["data"][language] = '"' + self.text["data"][language] + '"'
 
-				self.selected_text_replaced = self.selected_text_replaced + " " + self.text_data
-				self.english_selected_text = self.english_selected_text + " " + self.english_text_data
+				# Add text data to text
+				for language in self.small_languages:
+					self.text["texts"][language] += " " + self.text["data"][language]
 
-			print(self.diary_slim_action_name_texts[self.selected_text_key].format(self.text_name) + ": ")
+			# Type task descriptions for the task
+			self.Type_Task_Descriptions()
 
-			show_text = "\n" + "---"
+	def Type_Task_Descriptions(self):
+		# Define task dictionary with names, descriptions, type, time, and files
+		self.task_dictionary = {
+			"names": {},
+			"descriptions": {},
+			"type": self.text["key"],
+			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
+			"files": {},
+		}
 
-			print(show_text)
+		print()
+		print(self.language_texts["opening_the_description_files_for_you_to_type_on_them, type: explanation"])
+		print()
+		print(self.language_texts[self.text_dictionary["explain_text"]].format(self.language_texts[self.text_dictionary["item"]]) + ".")
 
-			self.use_text_file = Yes_Or_No_Definer(Language_Item_Definer("Use text file to write description", "Usar arquivo de texto para escrever descrição"), second_space = False)
+		# Add files to dictionary, create and open them
+		for language in self.small_languages:
+			full_language = self.full_languages[language]
 
-			if self.use_text_file == True:
-				self.Use_Text_File()
-				self.action_description = self.descriptions[full_language_pt] + "a"
-				self.english_action_description = self.descriptions[full_language_en] + "a"
+			self.task_dictionary["files"][language] = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
+			self.File.Create(self.task_dictionary["files"][language])
 
-			if self.use_text_file == False:
-				self.action_description = Text_Writer(self.selected_text_replaced, finish_text = "default_list", capitalize_lines = True, auto_add_dots = True, first_space = False)
+			if self.File.Exist(self.task_dictionary["files"][language]) == True:
+				self.File.Open(self.task_dictionary["files"][language])
 
-				print("-----")
-				print()
+		# Create text with all languages translated to user language
+		languages_text = ""
 
-				print(self.diary_slim_action_name_texts[self.selected_text_key + " English"].format(self.text_name) + ": ")
+		for language in self.small_languages:
+			translated_language = self.translated_languages[language][self.user_language]
 
-				show_text = "\n" + "---"
+			if len(self.small_languages) == 2 and language != self.small_languages[0]:
+				languages_text += " "
 
-				print(show_text)
+			if language == self.small_languages[-1]:
+				languages_text += self.language_texts["and"] + " "
 
-				self.english_action_description = Text_Writer(self.english_selected_text, finish_text = "default_list", capitalize_lines = True, auto_add_dots = True, first_space = False)
+			languages_text += translated_language
 
-			self.text_to_write = self.selected_text_replaced + ".\n" + self.action_description
+			if len(self.small_languages) != 2 and language != self.small_languages[-1]:
+				languages_text += ", "
 
-		if self.selected_text_key == "Udemy Course":
-			print()
+		# Wait for user to finish writing task descriptions
+		self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(languages_text))
 
-			self.how_much_classes = Select_Choice(self.diary_slim_data_name_texts[self.selected_text_key], first_space = False, accept_enter = False)
+		# Create backup file
+		self.backup_file = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "Descriptions backup.txt"
+		self.File.Create(self.backup_file)
 
-			self.choice_text = Language_Item_Definer("Type how much time you spent watching those classes", "Digite quanto tempo você passou assistindo essas aulas")
-			self.how_much_time = Select_Choice(self.choice_text, first_space = False, accept_enter = False)
+		# Define task descriptions and make a backup of them
+		for language in self.small_languages:
+			self.task_dictionary["names"][language] = self.text["texts"][language] + "."
 
-			self.class_singular_plural_text = "aulas"
+			self.task_dictionary["descriptions"][language] = self.task_dictionary["names"][language] + "\n\n"
+			self.task_dictionary["descriptions"][language] += self.File.Contents(self.task_dictionary["files"][language])["string"]
 
-			if self.how_much_classes in ["uma", "um", 1, "1"]:
-				self.class_singular_plural_text = "aula"
+			text = self.task_dictionary["descriptions"][language]
 
-			self.text_to_write = self.selected_text.format(self.how_much_classes, self.class_singular_plural_text, self.how_much_time) + "."
+			if language != self.small_languages[-1]:
+				text += "\n\n"
 
-		if self.selected_text_key not in self.format_texts and self.selected_text_key != "Udemy Course":
-			self.text_to_write = self.selected_text
+			# Make backup
+			self.File.Edit(self.backup_file, text, "a", next_line = False)
+
+			self.File.Delete(self.task_dictionary["files"][language])
 
 	def Write(self):
-		self.current_time = time.strftime("%H:%M %d/%m/%Y")
+		text_to_write = self.text["texts"][self.user_language]
 
-		if self.selected_text_key in self.format_texts:
-			self.experienced_media_type = self.selected_text_key
-			self.english_task_description = self.english_selected_text + ".\n" + self.english_action_description[:-1]
-			self.portuguese_task_description = self.selected_text_replaced + ".\n" + self.action_description[:-1]
-			self.experienced_media_time = self.current_time
+		# Register task and delete backup file if text key is in slim texts
+		if self.text["key"] in self.slim_texts:
+			from Tasks.Register_Task import Register_Task as Register_Task
 
-			from Tasks.Register_Task_Module import Register_Task_Module as Register_Task_Module
+			Register_Task(self.task_dictionary)
 
-			Register_Task_Module(self.experienced_media_type, self.english_task_description, self.portuguese_task_description, self.experienced_media_time, skip_input = False, parameter_switches = self.global_switches)
+			if self.global_switches["verbose"] == True:
+				print(self.Language.Python_To_JSON(self.task_dictionary))
+				print("[" + self.task_dictionary["descriptions"][self.user_language] + "]")
 
-		if self.selected_text_key not in self.format_texts:
-			if "." not in self.text_to_write[-1]:
-				self.text_to_write += "."
+			self.File.Delete(self.backup_file)
 
-			Write_On_Diary_Slim_Module(self.text_to_write, self.current_time, self.global_switches)
+		# Update state and define text to write if text key is in state names list
+		if self.text["key"] in self.states["names"]:
+			state_texts = self.states[self.text["key"]]["texts"]
 
-		if self.use_text_file == True and self.global_switches["testing_script"] == False:
-			Remove_File(self.backup_file)
+			order = ""
 
-		self.Change_Double_State_Texts(self.module_current_state)
+			if state_texts["current"] == []:
+				order = "first"
 
-	def Use_Text_File(self):
-		self.description_files = {}
-		self.description_files[full_language_en] = self.diary_slim_folder + "Description in " + full_language_en + self.dot_text
-		self.description_files[full_language_pt] = self.diary_slim_folder + "Descrição em " + full_language_pt + self.dot_text
+			if state_texts["current"] != [] and state_texts["current"][0] == state_texts["first"][self.user_language]:
+				order = "second"
 
-		for language in list(self.description_files.keys()):
-			file = self.description_files[language]
-			Create_Text_File(file, self.global_switches)
-			Open_Text_File(file)
+			self.Update_State(self.text["key"], order)
 
-		Select_Choice(Language_Item_Definer("Press Enter when you finish writing and saving the description in {} and {}", "Pressione Enter quando você terminar de escrever e salvar a descrição em {} e {}").format(full_languages_translated_dict[full_language_en][Language_Item_Definer(1, 2)], full_languages_translated_dict[full_language_pt][Language_Item_Definer(1, 2)]), enter_equals_empty = True)
+			text_to_write = state_texts[order][self.user_language]
 
-		self.descriptions = {}
+		# Add dot to end of text if it is not present
+		if "." not in text_to_write[-1]:
+			text_to_write += "."
 
-		self.backup_file = self.diary_slim_folder + "Action Description Backup" + self.dot_text
-		Create_Text_File(self.backup_file, self.global_switches)
+		if self.text["key"] not in self.slim_texts:
+			print()
 
-		for language in list(self.description_files.keys()):
-			file = self.description_files[language]
-
-			self.descriptions[language] = Read_String(file)
-
-			if self.global_switches["testing_script"] == False:
-				Append_To_File(self.backup_file, self.descriptions[language] + "\n", self.global_switches)
-
-			print(language + ": ")
-			print("[" + self.descriptions[language] + "]")
-
-			if self.global_switches["testing_script"] == False:
-				Remove_File(file)
-
-			if language != list(self.description_files.keys())[-1]:
-				print()
+			Write_On_Diary_Slim_Module(text_to_write)

@@ -1,0 +1,18 @@
+{
+	"show_text": {
+		"en": "Manage Python modules",
+		"pt": "Gerenciar módulos de Python"
+	},
+	"Create_New_Module": {
+		"en": "Create new module",
+		"pt": "Criar novo módulo"
+	},
+	"Create_Language_Text": {
+		"en": "Create language text",
+		"pt": "Criar texto de idioma"
+	},
+	"List_Modules": {
+		"en": "List modules",
+		"pt": "Listar módulos"
+	}
+}

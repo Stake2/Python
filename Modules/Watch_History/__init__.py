@@ -1,32 +1,47 @@
 # Watch_History.py
 
-# Script Helper importer
-from Script_Helper import *
-
-# Script name and Media History name
-local_script_name = "Watch_History.py"
-media_network_name = "Audiovisual Media Network"
-
-from Watch_History.Watch_Media import *
+from Watch_History.Watch_Media import Watch_Media as Watch_Media
 from Watch_History.Start_Watching_A_New_Media import Start_Watching_A_New_Media as Start_Watching_A_New_Media
-from Watch_History.Media_Info_Database_Manager import Media_Info_Database_Manager as Manage_Media_Info_Database
+from Watch_History.Media_Info_Database_Manager import Media_Info_Database_Manager as Media_Info_Database_Manager
+from Watch_History.Watch_List_Of_Media import Watch_List_Of_Media as Watch_List_Of_Media
 
-def Function_Choose():
-	functions = [
-	Watch_Media,
-	Start_Watching_A_New_Media,
-	Manage_Media_Info_Database,
-	]
+from Language import Language as Language
+from Input import Input as Input
+from Folder import Folder as Folder
 
-	descriptions = [
-	Language_Item_Definer(Get_Function_Name(functions[0], replace_underline = True, lower = True, capitalize = True), "Assistir mídia"),
-	Language_Item_Definer(Get_Function_Name(functions[1], replace_underline = True, lower = True, capitalize = True), "Comece a assistir uma nova mídia"),
-	Language_Item_Definer("Manage Media Info Database", "Gerenciar Banco de Dados de Informações de Mídia (Media Info)"),
-	]
+class Run():
+	def __init__(self):
+		# Global Switches dictionary
+		self.global_switches = {
+			"verbose": False,
+		}
 
-	choice_text = Language_Item_Definer("Manage Audiovisual Media Network", "Gerenciar Rede de Mídias Audiovisuais (Audiovisual Media Network)")
+		self.Language = Language(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
 
-	Choose_Function(functions, descriptions, local_script_name, choice_text, second_space = False)
+		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
+
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+
+		self.classes = [
+			Watch_Media,
+			Watch_List_Of_Media,
+			Start_Watching_A_New_Media,
+			Media_Info_Database_Manager,
+		]
+
+		self.class_descriptions = []
+
+		for class_ in self.classes:
+			class_description = self.descriptions[class_.__name__]
+
+			self.class_descriptions.append(self.Language.Item(class_description))
+
+		self.language_texts = self.Language.Item(self.descriptions)
+
+		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
 
 if __name__ == "__main__":
-	Function_Choose()
+	Run()

@@ -1,115 +1,112 @@
 # Start_Watching_A_New_Media.py
 
-# Script Helper importer
-from Script_Helper import *
-
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Watch_Media import *
-from Watch_History.Media_Manager import *
+from Watch_History.Watch_Media import Watch_Media as Watch_Media
 
 # Class to set medias as To_Watch
 class Start_Watching_A_New_Media(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.Select_Media()
-
+		self.Select_Media_To_Watch()
 		self.Define_Media_Variables()
+
 		self.Write_Media_Details()
 		self.Write_Watching_Status()
-		self.Show_Media_Info()
-		self.Watch_Media()
 
-	def Select_Media(self):
+		self.Watch_The_Media()
+
+	def Select_Media_To_Watch(self):
 		self.status_text = [
-			self.plan_to_watch_english_text,
-			self.on_hold_english_text,
+			self.language_texts["plan_to_watch, title()"],
+			self.language_texts["on_hold, title()"],
 		]
 
-		self.choice_info = Watch_Media(open_media = False, status_text = self.status_text)
+		self.Watch_Media = Watch_Media(open_media = False, status_text = self.status_text, module = "SWANW")
 
 	def Define_Media_Variables(self):
-		# Media Type variables definition
-		self.english_media_type = self.choice_info.english_media_type
-		self.portuguese_media_type = self.choice_info.portuguese_media_type
-		self.language_singular_media_type = self.choice_info.language_singular_media_type
-		self.mixed_media_type = self.choice_info.mixed_media_type
+		self.option_info = self.Watch_Media.option_info
 
-		# Media variables definition (name, folder, and details)
-		self.media_folder = self.choice_info.media_item_folder
-		self.media_details = self.choice_info.media_details
-		self.media_details_file = self.choice_info.media_details_file
+		# Media Type variables definition
+		self.plural_media_types = self.option_info["plural_media_type"]
+		self.singular_media_types = self.option_info["singular_media_type"]
+		self.mixed_plural_media_type = self.option_info["mixed_plural_media_type"]
+
+		# Media variables definition (folder, details file, and details)
+		self.media_folder = self.option_info["media_folder"]
+		self.media_details_file = self.option_info["media_details_file"]
+		self.media_details = self.File.Dictionary(self.media_details_file)
 
 		# Media title and Portuguese media title variables
-		self.media_title = self.media_details["Original Name"]
+		self.media_title = self.media_details[self.language_texts["original_name"]]
 
 		# Watching Status files and media
-		self.watching_status_files = self.choice_info.watching_status_files
-		self.watching_status_media = self.choice_info.watching_status_media
+		self.watching_status_files = self.option_info["watching_status_files"]
+		self.watching_status_media = self.option_info["watching_status_media"]
 
-		self.plan_to_watch_file = self.watching_status_files[self.plan_to_watch_english_text]
-		self.watching_file = self.watching_status_files[self.watching_english_text]
-		self.on_hold_file = self.watching_status_files[self.on_hold_english_text]
+		self.no_media_list = self.Watch_Media.no_media_list
 
-		self.plan_to_watch_media = self.watching_status_media[self.plan_to_watch_english_text]
-		self.watching_media = self.watching_status_media[self.watching_english_text]
-		self.on_hold_media = self.watching_status_media[self.on_hold_english_text]
-
-		self.no_media_list = self.choice_info.no_media_list
-
-		self.is_series_media = self.choice_info.is_series_media
-
-		if self.is_series_media == False:
-			self.movie_details_file = self.choice_info.movie_details_file
-			self.movie_details = self.choice_info.movie_details
+		self.is_series_media = self.Watch_Media.is_series_media
 
 		if self.is_series_media == True:
-			self.portuguese_titles = self.choice_info.portuguese_titles
+			self.episode_titles = self.Watch_Media.episode_titles
+			self.language_episode_titles = self.Watch_Media.language_episode_titles
 
 		if self.no_media_list == False:
-			self.media_item_details = self.choice_info.media_item_details
-			self.media_item_details_file = self.choice_info.media_item_details_file
+			self.media_item_folder = self.Watch_Media.media_item_folder
+			self.media_item_details = self.Watch_Media.media_item_details
+			self.media_item_details_file = self.Watch_Media.media_item_details_file
 
-		self.media_dates_file = self.media_folder + self.mixed_dates_text + self.dot_text
-		self.media_dates = Create_Array_Of_File(self.media_dates_file)
+		self.media_dictionary = self.Watch_Media.media_dictionary
+
+		self.media_dates_file = self.media_folder + self.texts["dates, title(), en - pt"] + ".txt"
+		self.File.Create(self.media_dates_file)
+
+		if self.no_media_list == False:
+			self.media_item_dates_file = self.media_item_folder + self.texts["dates, title(), en - pt"] + ".txt"
+			self.File.Create(self.media_item_dates_file)
 
 		# Gets the first watching time where the user started watching the media
-		self.started_watching_time = time.strftime("%H:%M %d/%m/%Y")
+		self.started_watching_time = self.Date.Now()["strftime"]
 
-		self.watching_dates_text = self.mixed_started_watching_in_text + ":\n"
+		self.media_dates_text = self.language_texts["when_i_started_to_watch"] + ":\n"
+		self.media_dates_text += self.started_watching_time
 
-		self.watching_dates_text += self.started_watching_time
+		self.item_dates_text = self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["the_item_text"] + " " + self.media_dictionary["media_item_name"] + ":\n"
+		self.item_dates_text += self.started_watching_time
 
 	def Write_Media_Details(self):
 		# Writes the first watching time where the user started watching the media
-		text_to_write = self.watching_dates_text
-		Write_To_File(self.media_dates_file, text_to_write, self.global_switches)
+		text_to_write = self.media_dates_text
+		self.File.Edit(self.media_dates_file, text_to_write, "w")
+
+		if self.no_media_list == False:
+			text_to_write = self.item_dates_text
+			self.File.Edit(self.media_item_dates_file, text_to_write, "w")
 
 		# Changes status to watching
-		self.media_details["Status"] = self.watching_english_text
+		self.media_details[self.language_texts["status, title()"]] = self.language_texts["watching, title()"]
 
 		# Writes first episode to media details file
 		if self.is_series_media == True:
-			self.media_episode = self.portuguese_titles[0]
+			self.first_episode_title = self.language_episode_titles[0]
 
 			# Writes episode to media item details file
 			if self.no_media_list == False:
-				self.media_item_details["Episode"] = self.media_episode
+				self.media_item_details[self.language_texts["episode, title()"]] = self.first_episode_title
 
-				text_to_write = Stringfy_Dict(self.media_item_details)
+				text_to_write = self.Text.From_Dictionary(self.media_item_details)
 
-				if Read_String(self.media_item_details_file) != text_to_write:
-					Write_To_File(self.media_item_details_file, text_to_write, self.global_switches)
+				self.File.Edit(self.media_item_details_file, text_to_write, "w")
 
 			if self.no_media_list == True:
-				self.media_details["Episode"] = self.media_episode
+				self.media_details["Episode"] = self.first_episode_title
 
 		# Writes new status and episode to media details file
-		text_to_write = Stringfy_Dict(self.media_details)
+		text_to_write = self.Text.From_Dictionary(self.media_details)
 
-		if Read_String(self.media_details_file) != text_to_write:
-			Write_To_File(self.media_details_file, text_to_write, self.global_switches)
+		self.File.Edit(self.media_details_file, text_to_write, "w")
 
 	def Write_Watching_Status(self):
 		text_to_write = ""
@@ -128,73 +125,16 @@ class Start_Watching_A_New_Media(Watch_History):
 
 						self.file_to_write = watching_status_file
 
-				self.text_to_write = Stringfy_Array(sorted(watching_status_media), add_line_break = True)
+				self.text_to_write = self.Text.From_List(sorted(watching_status_media))
 
-		print(self.file_to_write)
-
-		if Read_String(self.file_to_write) != text_to_write:
-			Write_To_File(self.file_to_write, text_to_write, self.global_switches)
+		self.File.Edit(self.file_to_write, text_to_write, "w")
 
 		# If media title is not in "Watching" Watching Status media list, then add it to the list
-		if self.media_title not in self.watching_media:
-			self.watching_media.append(self.media_title)
+		if self.media_title not in self.watching_status_media[self.language_texts["watching, title()"]]:
+			self.watching_status_media[self.language_texts["watching, title()"]].append(self.media_title)
 
-		text_to_write = Stringfy_Array(sorted(self.watching_media), add_line_break = True)
+		text_to_write = self.Text.From_List(sorted(self.watching_status_media[self.language_texts["watching, title()"]]))
+		self.File.Edit(self.watching_status_files[self.language_texts["watching, title()"]], text_to_write, "w")
 
-		if Read_String(self.watching_file) != text_to_write:
-			Write_To_File(self.watching_file, text_to_write, self.global_switches)
-
-	def Show_Media_Info(self):
-		large_bar = "-----"
-		dash_space = "-"
-
-		# This text defined by language and word gender (this, esse) for non-series, and (this, essa) for series
-		self.this_text = self.gender_the_texts[self.mixed_media_type]["this"]
-		self.the_text = self.gender_the_texts[self.mixed_media_type]["the"]
-
-		self.this_media_text = format(self.this_text) + " " + self.language_singular_media_type.lower()
-		self.the_media_text = format(self.the_text) + " " + self.language_singular_media_type.lower()
-
-		print()
-		print(large_bar)
-		print()
-		print(Language_Item_Definer("Starting to watch {}", "Começando a assistir {}").format(self.this_media_text) + ":")
-		print(self.media_title)
-		print()
-
-		print(Language_Item_Definer("At this time", "Nessa hora") + ":")
-		print(self.started_watching_time)
-		print()
-
-		print(Language_Item_Definer("{} Details", "Detalhes d{}").format(self.the_media_text) + ":")
-
-		for key in self.media_details:
-			print(Language_Item_Definer(key, self.default_portuguese_template_parameters[key]) + ": " + self.media_details[key])
-
-			if self.is_series_media == False:
-				for movie_key in self.movie_details:
-					if movie_key in ["Original Name - Nome Original", "Portuguese Name - Nome Português"] and key == "Original Name":
-						print(movie_key + ": " + self.movie_details[movie_key])
-
-		if self.is_series_media == False:
-			for key in self.movie_details:
-				if key not in ["Year - Ano", "Original Name - Nome Original", "Portuguese Name - Nome Português"]:
-					print(key + ": " + self.movie_details[key])
-
-		if self.no_media_list == False:
-			print()
-			print(Language_Item_Definer("Media Item Details", "Detalhes do Item de Mídi") + ":")
-
-			for line in self.current_media_item_details:
-				print(line)
-
-			print()
-
-			print(Language_Item_Definer("Episode", "Episódio") + ":")
-			print(self.current_episode)
-
-		print()
-		print(large_bar)
-
-	def Watch_Media(self):
-		Watch_Media(run_as_module = True, choice_info = self.choice_info)
+	def Watch_The_Media(self):
+		Watch_Media(run_as_module = True, option_info = self.option_info)

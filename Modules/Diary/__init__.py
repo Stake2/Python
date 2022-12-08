@@ -1,27 +1,43 @@
 # Diary.py
 
-from Script_Helper import *
-
-from Diary.Write_On_Diary import Write_On_Diary as Write_On_Diary
 from Diary.Create_New_Diary_Chapter import Create_New_Diary_Chapter as Create_New_Diary_Chapter
+from Diary.Write_On_Diary import Write_On_Diary as Write_On_Diary
 
-local_script_name = "Diary.py"
+from Language import Language as Language
+from Input import Input as Input
+from Folder import Folder as Folder
 
-def Function_Choose():
-	functions = [
-	Write_On_Diary,
-	Create_New_Diary_Chapter,
-	]
+class Run():
+	def __init__(self):
+		# Global Switches dictionary
+		self.global_switches = {
+			"verbose": False,
+		}
 
-	descriptions = [
-	Language_Item_Definer("Write on Diary", "Escrever no Diário"),
-	Language_Item_Definer("Create new Diary chapter", "Criar novo capítulo do Diário"),
-	]
+		self.Language = Language(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
 
-	select_function_text = Language_Item_Definer("Select a {} function to execute", "Selecione uma função do {} para executar")
-	choice_text = select_function_text.format(Language_Item_Definer("Diary", "Diário"))
+		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
-	Choose_Function(functions, descriptions, local_script_name, choice_text, second_space = False)
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+
+		self.classes = [
+			Create_New_Diary_Chapter,
+			Write_On_Diary,
+		]
+
+		self.class_descriptions = []
+
+		for class_ in self.classes:
+			class_description = self.descriptions[class_.__name__]
+
+			self.class_descriptions.append(self.Language.Item(class_description))
+
+		self.language_texts = self.Language.Item(self.descriptions)
+
+		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
 
 if __name__ == "__main__":
-	Function_Choose()
+	Run()

@@ -1,0 +1,18 @@
+{
+	"show_text": {
+		"en": "Manage Friends",
+		"pt": "Gerenciar Amigos"
+	},
+	"Open_Friend_File": {
+		"en": "Open Friend file",
+		"pt": "Abrir arquivo de Amigo"
+	},
+	"Create_Friend_File": {
+		"en": "Create Friend file",
+		"pt": "Criar arquivo de Amigo"
+	},
+	"Show_Friend_Information": {
+		"en": "Show information of all Friends",
+		"pt": "Mostrar informações de todos os Amigos"
+	}
+}
