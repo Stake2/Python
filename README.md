@@ -22,12 +22,12 @@ pip install -r requiriments.txt
 ```
 - Add the [Modules folder](https://github.com/Stake2/Python/tree/main/Modules) to your PATH or copy its contents into your Python modules folder
 
-- To list all modules avaliable to run
+- To list all modules avaliable to run (MS = Module Selector)
 ```
-py SS.py --help
+py MS.py --help
 ```
 
 - To run a specific module
 ```
-py SS.py --[module command line argument]
+py MS.py --[module command line argument]
 ```

@@ -85,9 +85,6 @@ class Language():
 		self.languages_file = self.module_text_files_folder + "Languages.json"
 		self.Create(self.languages_file)
 
-		self.user_file = self.module_text_files_folder + "User.json"
-		self.Create(self.user_file)
-
 	def Define_Languages(self):
 		self.languages = self.JSON_To_Python(self.languages_file)
 
