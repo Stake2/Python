@@ -25,43 +25,43 @@ if text_modules == True:
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-testing", "--testing", action="store_true", help="Activates the testing mode of modules.")
-parser.add_argument("-verbose", "--verbose", action="store_true", help="Activates the verbose mode of modules.")
-parser.add_argument("-user_information", "--user-information", "-userinformation", action="store_true", help="Activates the showing of user information on the Language class.")
+parser.add_argument("-testing", "--testing", action="store_true", help="Activates the testing mode of modules")
+parser.add_argument("-verbose", "--verbose", action="store_true", help="Activates the verbose mode of modules")
+parser.add_argument("-user_information", "--user-information", "-userinformation", action="store_true", help="Activates the showing of user information on the Language class")
 
-parser.add_argument("-block_websites", "--block_websites", action="store_true", help="Runs the Block_Websites.py module.")
+parser.add_argument("-block_websites", "--block_websites", action="store_true", help="Runs the Block_Websites module")
 
-parser.add_argument("-christmas", "--christmas", "-natal", action="store_true", help="Runs the Christmas.py module.")
+parser.add_argument("-christmas", "--christmas", "-natal", action="store_true", help="Runs the Christmas module")
 
-parser.add_argument("-code", "--code", action="store_true", help="Runs the Code.py module.")
+parser.add_argument("-code", "--code", action="store_true", help="Runs the Code module")
 
-parser.add_argument("-diary", "--diary", "-diario", "--diario", "-diário", "--diário", action="store_true", help="Runs the Diary.py module.")
+parser.add_argument("-diary", "--diary", "-diario", "--diario", "-diário", "--diário", action="store_true", help="Runs the Diary module")
 
-parser.add_argument("-diary_slim", "--diary_slim", "--diary-slim", "-diario_slim", "-diário_slim", "-slim", action="store_true", help="Runs the Diary_Slim.py module.")
+parser.add_argument("-diary_slim", "--diary_slim", "--diary-slim", "-diario_slim", "-diário_slim", "-slim", action="store_true", help='Runs the "Diary_Slim" module')
 
-parser.add_argument("-food_time", "--food_time", "--food-time", "-foodtime", "--foodtime", "-fdt", action="store_true", help="Runs the Food_Time.py module.")
-parser.add_argument("-set", "-set_food_time", "-sfdt", "-setar", action="store_true", help="Sets the current food time, the time the food was eaten, using the module Food_Time.py.")
-parser.add_argument("-check", "-check_food_time", "-cfdt", action="store_true", help="Checks the current food time, the time the food was eaten, using the module Food_Time.py.")
+parser.add_argument("-food_time", "--food_time", "--food-time", "-foodtime", "--foodtime", "-fdt", action="store_true", help='Runs the "Food_Time" module')
+parser.add_argument("-set", "-set_food_time", "-sfdt", "-setar", action="store_true", help='Sets the current food time, the time the food was eaten, using the module "Food_Time"')
+parser.add_argument("-check", "-check_food_time", "-cfdt", action="store_true", help='Checks the current food time, the time the food was eaten, using the module "Food_Time"')
 
-parser.add_argument("-friends", "-friend", "-amigos", "-amigo", action="store_true", help="Runs the Friends.py module.")
+parser.add_argument("-friends", "-friend", "-amigos", "-amigo", action="store_true", help="Runs the Friends module")
 
-parser.add_argument("-gameplayer", "--gameplayer", "-gp", "-games", "-jogos", "-jogar", action="store_true", help="Runs the GamePlayer.py module.")
+parser.add_argument("-gameplayer", "--gameplayer", "-gp", "-games", "-jogos", "-jogar", action="store_true", help="Runs the GamePlayer module")
 
-parser.add_argument("-project_zomboid", "-zomboid", "-project-zomboid", action="store_true", help="Runs the Project_Zomboid.py module.")
+parser.add_argument("-project_zomboid", "-zomboid", "-project-zomboid", action="store_true", help="Runs the Project_Zomboid module")
 
-parser.add_argument("-python", action="store_true", help="Runs the Python.py module.")
+parser.add_argument("-python", action="store_true", help="Runs the Python module")
 
-parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks.py module.")
+parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks module")
 
-parser.add_argument("-sproutgigs", "--sproutgigs", action="store_true", help="Runs the SproutGigs.py module.")
+parser.add_argument("-sproutgigs", "--sproutgigs", action="store_true", help="Runs the SproutGigs module")
 
-parser.add_argument("-stories", "--stories", "-story", "-histórias", "-história", action="store_true", help="Runs the Stories.py module.")
+parser.add_argument("-stories", "--stories", "-story", "-histórias", "-história", action="store_true", help="Runs the Stories module")
 
-parser.add_argument("-tasks", "--tasks", "-task", "--task", "-tarefa", "-tarefas", action="store_true", help="Runs the Tasks.py module.")
+parser.add_argument("-tasks", "--tasks", "-task", "--task", "-tarefa", "-tarefas", action="store_true", help="Runs the Tasks module")
 
-parser.add_argument("-watch_history", "--watch-history", "-watch-history", "-watch", "--watch", "-assistir", "-watch_3", action="store_true", help="Runs the Watch_History.py module.")
+parser.add_argument("-watch_history", "--watch-history", "-watch-history", "-watch", "--watch", "-assistir", "-watch_3", action="store_true", help="Runs the Watch_History module")
 
-parser.add_argument("-years", "--years", action="store_true", help="Runs the Years.py module.")
+parser.add_argument("-years", "--years", action="store_true", help="Runs the Years module")
 
 add_argument = ""
 

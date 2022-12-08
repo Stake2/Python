@@ -188,7 +188,7 @@ class Create_New_Module(Python):
 		if text_to_add not in self.module_selector_code:
 			self.module_selector_code = self.module_selector_code.replace("\t" + 'add_import = ""', text_to_add)
 
-		text_to_add = 'parser.add_argument("-{}", "--{}", action="store_true", help="Runs the {}.py module.")'.format(self.module_name.lower(), self.module_name.lower(), self.module_name) + "\n\n"
+		text_to_add = 'parser.add_argument("-{}", "--{}", action="store_true", ' + "help='Runs the "{}" module)".format(self.module_name.lower(), self.module_name.lower(), self.module_name) + "\n\n"
 
 		if text_to_add not in self.module_selector_code:
 			self.module_selector_code = self.module_selector_code.replace('add_argument = ""', text_to_add + 'add_argument = ""')

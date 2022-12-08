@@ -7,18 +7,14 @@ AutoHotKey
 AutoHotKey/
 File Syncs
 File Syncs/
-Modules/Website_Bot
-Modules/Website_Bot/
-Modules/Friends_Manager
-Modules/Friends_Manager/
-Script Text Files\Code
-Script Text Files/Code
-Script Text Files\PicoWorkers
-Script Text Files/PicoWorkers
+Modules/Friends
+App Text Files\Code\Last Setting Data
+App Text Files/Code/Last Setting Data
+App Text Files\SproutGigs\Categories
+App Text Files/SproutGigs\Categories
 sync.lnk
 Chat_Bot.py
 Rename Episode Files.py
-Settings.txt
 Test.py
 Time Travel.bat
 Java
