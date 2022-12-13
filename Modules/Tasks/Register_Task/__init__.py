@@ -18,6 +18,9 @@ class Register_Task(Tasks):
 			self.task_dictionary["large_bar"] = False
 			self.task_dictionary["input"] = False
 
+			if "descriptions" not in self.task_dictionary:
+				self.task_dictionary["descriptions"] = self.task_dictionary["names"]
+
 		self.Add_To_Task_Numbers()
 		self.Make_Task_Header()
 
@@ -229,7 +232,7 @@ class Register_Task(Tasks):
 		folder = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Folders"][self.task_dictionary["type"]]["root"]
 
 		self.task_dictionary["task_type_file"] = folder + self.task_dictionary["time_replaced"] + ".txt"
-		Create_Text_File(self.task_dictionary["task_type_file"])
+		self.File.Create(self.task_dictionary["task_type_file"])
 
 		text = self.task_dictionary["header"]
 		self.File.Edit(self.task_dictionary["task_type_file"], text, "w")
@@ -300,7 +303,7 @@ class Register_Task(Tasks):
 		print(text)
 
 		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
-			print(self.task_dictionary["language_type"])
+			print("\t" + self.task_dictionary["language_type"])
 
 		print()
 

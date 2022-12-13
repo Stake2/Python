@@ -69,19 +69,16 @@ class Update_Websites(Code):
 		]
 
 		self.websites = {
-			"files": {},
+			"list": self.Language.JSON_To_Python(self.mega_folders["php"]["website"])["list"],
 		}
 
 		for language in self.small_languages:
 			if language != "general":
-				self.websites["files"][language] = self.mega_folders["php"]["variables"]["website"]["list"]["root"] + self.translated_languages[language]["en"] + " websites.txt"
-
-				self.websites[language] = self.File.Contents(self.websites["files"][language])["lines"]
+				self.websites[language] = self.websites["list"][language]
 
 		self.websites["general"] = self.websites["en"]
 
-		self.php_url_format_file = self.mega_folders["php"]["variables"]["website"]["root"] + "PHP URL Format.txt"
-		self.update_website_url_template = self.File.Contents(self.php_url_format_file)["lines"][1]
+		self.websites["url"] = self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["url"])
 
 	def Select_Website(self):
 		if self.module_website == None:
@@ -127,7 +124,7 @@ class Update_Websites(Code):
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
-			self.website["links"][language] = self.update_website_url_template.format(self.website[language], full_language)
+			self.website["links"][language] = self.websites["url"]["generate_template"].format(self.website[language], full_language)
 
 			print()
 			print("-")

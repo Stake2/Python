@@ -166,7 +166,7 @@ class Register_Playing_Time(GamePlayer):
 		self.Folder.Copy(self.game_media_type_folder, self.experienced_media_type_folder)
 
 	def Register_On_Diary_Slim(self):
-		self.posted_on_social_networks_text = "Postei print do jogo no status do WhatsApp, Instagram, Facebook, e tweet no Twitter."
+		self.posted_on_social_networks_text = "Postei a print do jogo no status do WhatsApp, Instagram, Facebook, e tweet no Twitter."
 
 		self.played_game_text = self.texts_to_use[self.translated_languages[self.user_language]["en"] + " played time"] + "."
 
@@ -185,7 +185,7 @@ class Register_Playing_Time(GamePlayer):
 
 		self.post_on_social_networks_text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks_string + ")"
 
-		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text)
+		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text, first_space = False)
 
 		if self.post_on_social_networks == True:
 			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", second_space = False)

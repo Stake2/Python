@@ -135,10 +135,10 @@ class Stories(object):
 		self.File.Create(self.stories["folders"]["Database"]["Chapter status template"])
 
 		# Create Social Network Card Templates files
-		for item in ["Wattpad", "Twitter " + self.language_texts["and"] + " Facebook"]:
+		for item in ["Wattpad", "Twitter, Facebook"]:
 			file_name = item
 
-			if item == "Twitter " + self.language_texts["and"] + " Facebook":
+			if item == "Twitter, Facebook":
 				file_name = "Twitter, Facebook"
 
 			self.stories["folders"]["Database"]["Social Network Card Templates"][item] = self.stories["folders"]["Database"]["Social Network Card Templates"]["root"] + file_name + ".json"
@@ -266,17 +266,17 @@ class Stories(object):
 				self.Folder.Create(self.stories[story]["folders"]["Obsidian's Vaults"]["Chapters"][full_language])	
 
 			# Set the default author of the story
-			if "Author" not in self.stories[story]["Information"]:
+			if "Author" not in self.stories[story]["Information"] or "Author" in self.stories[story]["Information"] and self.stories[story]["Information"]["Author"] == "":
 				self.stories[story]["Information"]["Author"] = self.author
 
 			# Create files on information folder
 			for key in self.texts["file_names, type: list"]:
 				file_name = key
 
-				if key in ["Titles", "Wattpad"]:
+				if key in ["Information", "Titles", "Wattpad"]:
 					file_name += ".json"
 
-				if key not in ["Titles", "Wattpad"]:
+				if key not in ["Information", "Titles", "Wattpad"]:
 					file_name += ".txt"
 
 				if key != "Author" or key == "Author" and self.stories[story]["Information"]["Author"] != self.author:
@@ -293,7 +293,14 @@ class Stories(object):
 					if ".json" in item:
 						function = self.Language.JSON_To_Python
 
-					self.stories[story]["Information"][key] = function(item)
+					information = function(item)
+
+					if key != "Information":
+						self.stories[story]["Information"][key] = information
+
+					if key == "Information":
+						for sub_key in information:
+							self.stories[story]["Information"][sub_key] = information[sub_key]
 
 					if key == "Chapter status":
 						self.stories[story]["Information"][key] = self.File.Dictionary(item, next_line = True)
@@ -349,7 +356,20 @@ class Stories(object):
 
 				file = self.stories[story]["folders"]["Chapters"][full_language][titles_text][titles_text]
 
-				self.stories[story]["Information"]["Chapter titles"][full_language] = self.File.Contents(file)["lines"]
+				self.stories[story]["Information"]["Chapter titles"][language] = self.File.Contents(file)["lines"]
+
+			# Add chapter number
+			self.stories[story]["Information"]["Chapter number"] = len(self.stories[story]["Information"]["Chapter titles"]["en"])
+
+			# Update chapter number on "Information.json" file
+			file = self.stories[story]["folders"]["Information"]["Information"]
+
+			# Add chapter number to "Information.json" dictionary
+			text = self.Language.JSON_To_Python(file)
+			text["Chapter number"] = self.stories[story]["Information"]["Chapter number"]
+			text = self.Language.Python_To_JSON(text)
+
+			self.File.Edit(file, text, "w")
 
 			# Add language synopsis from synopsis folder inside Information folder
 			self.stories[story]["folders"]["Information"]["Synopsis"] = {
@@ -359,16 +379,17 @@ class Stories(object):
 			self.Folder.Create(self.stories[story]["folders"]["Information"]["Synopsis"]["root"])
 
 			# Create synopsis files
-			for language in list(self.full_languages.values()):
-				self.stories[story]["folders"]["Information"]["Synopsis"][language] = self.stories[story]["folders"]["Information"]["Synopsis"]["root"] + language + ".txt"	
-				self.File.Create(self.stories[story]["folders"]["Information"]["Synopsis"][language])
+			for full_language in list(self.full_languages.values()):
+				self.stories[story]["folders"]["Information"]["Synopsis"][full_language] = self.stories[story]["folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"	
+				self.File.Create(self.stories[story]["folders"]["Information"]["Synopsis"][full_language])
 
 			self.stories[story]["Information"]["Synopsis"] = {}
 
 			# Add synopsis to information dictionary
-			for file_name in self.stories[story]["folders"]["Information"]["Synopsis"]:
-				if file_name != "root":
-					self.stories[story]["Information"]["Synopsis"][file_name] = self.File.Contents(self.stories[story]["folders"]["Information"]["Synopsis"][file_name])["string"]
+			for language in self.small_languages:
+				full_language = self.full_languages[language]
+
+				self.stories[story]["Information"]["Synopsis"][language] = self.File.Contents(self.stories[story]["folders"]["Information"]["Synopsis"][full_language])["string"]
 
 			# Add writing folder
 			self.stories[story]["folders"]["Information"]["Writing"] = {
@@ -401,16 +422,12 @@ class Stories(object):
 
 			website_folder = story
 
-			if self.File.Exist(self.stories[story]["folders"]["Information"]["root"] + "Information.json") == True:
-				self.stories[story]["folders"]["Information"]["Information"] = self.stories[story]["folders"]["Information"]["root"] + "Information.json"
+			# Add custom website link name
+			if "Website link name" in self.stories[story]["Information"]:
+				website_folder = self.stories[story]["Information"]["Website link name"]
 
-				self.stories[story]["Information"]["Information"] = self.Language.JSON_To_Python(self.stories[story]["folders"]["Information"]["Information"])
-
-				if "website_link" in self.stories[story]["Information"]["Information"]:
-					website_folder = self.stories[story]["Information"]["Information"]["website_link"]
-
-					if "{story}" in website_folder:
-						website_folder = website_folder.replace("{story}", story)
+				if "{story}" in website_folder:
+					website_folder = website_folder.replace("{story}", story)
 
 			self.stories[story]["Information"]["Website"]["link"] = self.links["Stake2 Website"] + website_folder + "/"
 
@@ -427,6 +444,8 @@ class Stories(object):
 
 				if story_title not in self.stories["mixed_titles"]:
 					self.stories["mixed_titles"].append(story_title)
+
+			self.stories[story]["Information"]["Readers"] = self.File.Contents(self.stories[story]["folders"]["Readers and Reads"]["Readers"])["lines"]
 
 			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items()))
 
@@ -455,7 +474,7 @@ class Stories(object):
 
 				post = story["Information"]["Chapter status"]["Post"]
 
-				if int(post) == len(story["Information"]["Chapter titles"][self.full_user_language]):
+				if int(post) == len(story["Information"]["Chapter titles"][self.user_language]):
 					for language in self.small_languages:
 						stories["titles"][language].remove(story["Information"]["Titles"][language])
 
@@ -481,7 +500,7 @@ class Stories(object):
 
 		return folder_name
 
-	def Show_Story_Information(self, stories_list):
+	def Show_Story_Information(self, stories_list = None):
 		if stories_list == None:
 			stories_list = self.stories["list"]
 
@@ -557,10 +576,18 @@ class Stories(object):
 				if key != list(story["Information"]["Wattpad"].keys())[-1]:
 					print()
 
+		json_file = self.stories["folders"]["Database"]["root"]
+
 		print()
 		print(self.large_bar)
 
 	def Register_Task(self, task_dictionary, register_task = True):
+		if "type" not in task_dictionary:
+			task_dictionary["type"] = "Stories"
+
+		if "time" not in task_dictionary:
+			task_dictionary["time"] = self.Date.Now()["%H:%M %d/%m/%Y"]
+
 		# Register task with Tasks module, Register_Task class
 		if register_task == True:
 			from Tasks.Register_Task import Register_Task as Register_Task

@@ -156,9 +156,6 @@ class Play(GamePlayer):
 
 			self.has_minutes = False
 
-			print(self.hour_texts)
-			print(self.hours_text)
-
 			if self.hours > 0:
 				for language in self.small_languages:
 					self.hour_texts[language] = self.time_text[language]

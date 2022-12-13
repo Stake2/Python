@@ -51,10 +51,10 @@ class Post(Stories):
 
 		# Select story and define chapter to be posted
 		if self.run_as_module == False:
-			if self.story == None or self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.full_user_language]):
+			if self.story == None or self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.user_language]):
 				select_text = None
 
-				if self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.full_user_language]):
+				if self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.user_language]):
 					story_title = self.story["Information"]["Titles"][self.user_language]
 					select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(story_title)
 
@@ -98,7 +98,7 @@ class Post(Stories):
 			self.File.Open(self.story["folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
-		self.chapter_titles = self.story["Information"]["Chapter titles"][self.full_user_language].copy()
+		self.chapter_titles = self.story["Information"]["Chapter titles"][self.user_language].copy()
 
 		i = 1
 		while i <= int(self.story["Information"]["Chapter status"]["Post"]):
@@ -120,7 +120,7 @@ class Post(Stories):
 
 			self.story["chapter_titles"][language] = ""
 			self.story["chapter_titles"][language] += str(self.Text.Add_Leading_Zeros(self.story["Information"]["Chapter status"]["Post"])) + " - "
-			self.story["chapter_titles"][language] += self.story["Information"]["Chapter titles"][full_language][int(self.story["Information"]["Chapter status"]["Post"]) - 1]
+			self.story["chapter_titles"][language] += self.story["Information"]["Chapter titles"][language][int(self.story["Information"]["Chapter status"]["Post"]) - 1]
 
 		# Define chapter number name
 		self.story["chapter_number_name"] = self.Date.language_texts["number_names, type: list"][int(self.story["chapter_number"])]
@@ -230,7 +230,7 @@ class Post(Stories):
 						print(text)
 						print()
 
-						for chapter_title in self.story["Information"]["Chapter titles"]["English"]:
+						for chapter_title in self.story["Information"]["Chapter titles"]["en"]:
 							print(self.story["chapter_number"])
 
 							self.Move_Cover(language, full_language)
@@ -362,7 +362,7 @@ class Post(Stories):
 		social_networks = {
 			"list": [
 				"Wattpad",
-				"Twitter " + self.language_texts["and"] + " Facebook",
+				"Twitter, Facebook",
 			],
 		}
 
@@ -371,7 +371,7 @@ class Post(Stories):
 			if social_network in ["Wattpad", "Twitter", "Facebook"]:
 				social_networks[social_network] = self.social_networks[social_network]
 
-		social_networks["Twitter " + self.language_texts["and"] + " Facebook"] = social_networks["Twitter"]
+		social_networks["Twitter, Facebook"] = social_networks["Twitter"]
 
 		# Get chapter link
 		self.story["Information"]["Wattpad"]["Chapter link"] = self.Input.Type(self.language_texts["paste_the_wattpad_chapter_link"])
@@ -389,9 +389,9 @@ class Post(Stories):
 		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?({})#".format(str(self.story["chapter_number"]))
 
 		# Format Twitter & Facebook template
-		social_networks["Twitter " + self.language_texts["and"] + " Facebook"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter " + self.language_texts["and"] + " Facebook"])[self.user_language]
+		social_networks["Twitter, Facebook"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
 
-		social_networks["Twitter " + self.language_texts["and"] + " Facebook"]["Card"] = social_networks["Twitter " + self.language_texts["and"] + " Facebook"]["Card"].format(self.story["Information"]["Website"]["Chapter link"], self.story["title_underlined"])
+		social_networks["Twitter, Facebook"]["Card"] = social_networks["Twitter, Facebook"]["Card"].format(self.story["Information"]["Website"]["Chapter link"], self.story["title_underlined"])
 
 		# Replace "One more chapter" with "The first chapter" if the chapter is the first one of the story
 		if int(self.story["chapter_number"]) <= 1:
@@ -413,7 +413,7 @@ class Post(Stories):
 				# Wait for user to finish posting Wattpad card
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_card_on_{}"].format(social_network), first_space = False)
 
-			if social_network == "Twitter " + self.language_texts["and"] + " Facebook":
+			if social_network == "Twitter, Facebook":
 				# Copy Wattpad card
 				self.Text.Copy(social_networks["Wattpad"]["Card"], verbose = False)
 
@@ -424,7 +424,7 @@ class Post(Stories):
 				self.Input.Type(self.language_texts["paste_the_first_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network), first_space = False)
 
 				# Copy Twitter and Facebook card
-				self.Text.Copy(social_networks["Twitter " + self.language_texts["and"] + " Facebook"]["Card"], verbose = False)
+				self.Text.Copy(social_networks["Twitter, Facebook"]["Card"], verbose = False)
 
 				# Wait for user to finish posting Twitter and Facebook card
 				self.Input.Type(self.language_texts["paste_the_second_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network))
@@ -434,18 +434,19 @@ class Post(Stories):
 				print(self.large_bar)
 
 		# Write to post template file
-		self.mixed_cards = social_networks["Wattpad"]["Card"] + "\n\n---\n\n" + social_networks["Twitter " + self.language_texts["and"] + " Facebook"]["Card"]
+		self.mixed_cards = social_networks["Wattpad"]["Card"] + "\n\n---\n\n" + social_networks["Twitter, Facebook"]["Card"]
 		self.File.Edit(self.story["folders"]["Information"]["Post template"], self.mixed_cards, "w")
 
 	def Register_Task(self):
+		# Create task dictionary
 		self.task_dictionary = {
-			"descriptions": {
-				"en": 'I published the chapter {} of my story "{}" on Wattpad and Stake2 Website'.format(self.story["chapter_number_names"]["en"], self.story["Information"]["Titles"]["en"]),
-				"pt": 'Publiquei o capítulo {} da minha história "{}" no Wattpad e no Site Stake2'.format(self.story["chapter_number_names"]["pt"], self.story["Information"]["Titles"]["pt"]),
-			},
-			"type": "Stories",
-			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
+			"names": {}
 		}
+
+		# Add task names
+		for language in self.small_languages:
+			self.task_dictionary["names"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
+			self.task_dictionary["names"][language] = self.task_dictionary["names"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
 
 		# Register task with root method
 		Stories.Register_Task(self, self.task_dictionary, register_task = True)

@@ -461,8 +461,8 @@
 		"Author",
 		"Chapter status",
 		"Creation date",
+		"Information",
 		"Post template",
-		"Status",
 		"Titles",
 		"Wattpad"
 	],
@@ -629,5 +629,9 @@
 	"format, title()": {
 		"en": "Format",
 		"pt": "Formato"
+	},
+	"i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website": {
+		"en": "I published the chapter {} of my story \"{}\" on Wattpad and Stake2 Website",
+		"pt": "Eu publiquei o capítulo {} da minha história \"{}\" no Wattpad e no Site Stake2"
 	}
 }

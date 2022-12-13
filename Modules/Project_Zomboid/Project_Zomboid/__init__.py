@@ -75,7 +75,7 @@ class Project_Zomboid(object):
 		self.dash_space = "-"
 
 	def Define_Folders_And_Files(self):
-		self.media_multiverse_folder = self.mega_folders["stories"]["root"] + "/Others/Media Multiverse/"
+		self.media_multiverse_folder = self.mega_folders["stories"]["root"] + "Others/Media Multiverse/"
 		self.Folder.Create(self.media_multiverse_folder)
 
 		self.media_multiverse_games_folder = self.media_multiverse_folder + "Games - Jogos/"

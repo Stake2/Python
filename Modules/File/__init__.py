@@ -61,9 +61,6 @@ class File():
 		if restricted_characters == False:
 			path = os.path.normpath(path).replace("\\", "/")
 
-			if os.path.splitext(path)[-1] == "" and os.path.isfile(path) == False:
-				self.Verbose(self.language_texts["the_file_path_is_incorrect_(it_is_a_folder)"], path)
-
 		if restricted_characters == True:
 			restricted_characters = [":", "?", '"', "\\", "/", "|", "*", "<", ">"]
 

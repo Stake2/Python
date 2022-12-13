@@ -198,17 +198,21 @@ class Folder():
 			"root": os.path.join(self.mega_folders["root"], "PHP/"),
 		}
 
-		self.mega_folders["php"]["variables"] = {
-			"root": os.path.join(self.mega_folders["php"]["root"], "Variables/"),
+		# Temporary set PHP folder to Remake
+		self.mega_folders["php"] = {
+			"root": os.path.join(self.mega_folders["root"], "PHP/Remake/"),
 		}
 
-		self.mega_folders["php"]["variables"]["website"] = {
-			"root": os.path.join(self.mega_folders["php"]["variables"]["root"], "Website/"),
+		# Mega PHP JSON folder
+		self.mega_folders["php"]["json"] = {
+			"root": os.path.join(self.mega_folders["php"]["root"], "JSON/"),
 		}
 
-		self.mega_folders["php"]["variables"]["website"]["list"] = {
-			"root": os.path.join(self.mega_folders["php"]["variables"]["website"]["root"], "List/"),
-		}
+		# Mega PHP Website.json file
+		self.mega_folders["php"]["website"] = os.path.join(self.mega_folders["php"]["root"], "Website.json")
+
+		# Mega PHP JSON URL.json file
+		self.mega_folders["php"]["json"]["url"] = os.path.join(self.mega_folders["php"]["json"]["root"], "URL.json")
 
 		# Mega Obsidian's Vaults folder
 		self.mega_folders["obsidian_s_vaults"] = {
@@ -284,9 +288,6 @@ class Folder():
 
 			if os.path.splitext(path)[-1] == "" and "/" not in path[-1]:
 				path += "/"
-
-			if os.path.splitext(path)[-1] != "" and check == True:
-				self.Verbose(self.language_texts["the_folder_path_is_incorrect_(it_is_a_file)"], path)
 
 		if restricted_characters == True:
 			restricted_characters = [":", "?", '"', "\\", "/", "|", "*", "<", ">"]
@@ -702,7 +703,7 @@ class Folder():
 				sub_sub_folder_name = root_folder.split("/")[-2]
 
 				# Add sub-sub-folder to dictionary
-				if sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name:
+				if root_folder_name in contents["dictionary"] and sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name:
 					contents["dictionary"][root_folder_name][sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name]:

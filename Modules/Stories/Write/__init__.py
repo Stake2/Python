@@ -59,7 +59,7 @@ class Write(Stories):
 			english_writing_mode = self.texts["writing_modes, type: list"]["en"][i]
 
 			writing_mode_chapter = int(self.story["Information"]["Chapter status"][english_writing_mode])
-			chapter_number = len(self.story["Information"]["Chapter titles"][self.full_user_language])
+			chapter_number = len(self.story["Information"]["Chapter titles"][self.user_language])
 
 			# If writing mode chapter status is equal to chapter number
 			if writing_mode_chapter == chapter_number:
@@ -118,7 +118,7 @@ class Write(Stories):
 
 			if self.writing_mode in ["Revise", "Translate"]:
 				self.chapter["titles"][full_language] += " - "
-				self.chapter["titles"][full_language] += self.story["Information"]["Chapter titles"][full_language][int(self.chapter["number"]) - 1]
+				self.chapter["titles"][full_language] += self.story["Information"]["Chapter titles"][language][int(self.chapter["number"]) - 1]
 
 		print(self.language_texts["{}_this_chapter"].format(self.chapter["writing_mode"]["present_action"][self.user_language].capitalize()) + ":")
 		print(self.chapter["titles"][self.full_user_language])
@@ -368,8 +368,6 @@ class Write(Stories):
 		self.task_dictionary = {
 			"names": {},
 			"descriptions": {},
-			"type": "Stories",
-			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
 		}
 
 		# Define I text based on finished writing or not
@@ -385,6 +383,7 @@ class Write(Stories):
 
 			parameters = self.chapter["writing_mode"]["action"][language], self.chapter["number_names"][language], self.story["Information"]["Titles"][language]
 
+			# Add past writing mode to parameters list
 			if self.chapter["finished_writing"] == True:
 				parameters = list(parameters)
 				parameters[0] = self.chapter["writing_mode"]["past"][language]

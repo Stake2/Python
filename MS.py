@@ -1,5 +1,7 @@
 # Module_Selector.py
 
+# To-Do: Use for loop in modules list to show modules, and use Text.Select to select one of the modules if no argument is present
+
 import argparse
 
 text_modules = False
@@ -75,7 +77,7 @@ for switch in switches:
 	if hasattr(arguments, switch) and getattr(arguments, switch) == True:
 		has_switches = True
 
-# Update Switches file
+# Update Switches file if there are Switch arguments
 if has_switches == True:
 	from Global_Switches import Global_Switches as Global_Switches
 	from File import File as File
@@ -110,7 +112,7 @@ if has_switches == True:
 	# Show Global Switches
 	File.Language.Show_Global_Switches(dictionary, show_ending = True)
 
-# Reset Switches file
+# Reset Switches file if no Switch argument is present
 if has_switches == False:	
 	from File import File as File
 	from Text import Text as Text
@@ -224,8 +226,8 @@ if arguments.years:
 
 	Years.Run()
 
+# Update switches file with the state of the switches before execution of modules
 if has_switches == True:
-	# Update switches file with the old switches before execution of modules
 	from File import File as File
 
 	dictionary = {
