@@ -69,7 +69,7 @@ class Register_Task(Tasks):
 			self.task_dictionary["names"][language] = self.task_types["task_texts, type: dict"][language][self.task_dictionary["type"]] + "."
 
 	def Add_To_Task_Numbers(self):
-		self.task_type_number_file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
+		self.task_type_number_file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
 
 		# Current Year Task History folder >
 			# Per Task Type >
@@ -81,13 +81,13 @@ class Register_Task(Tasks):
 				# Number.txt
 
 		# Number.txt
-		file = self.folders["Task History"][str(self.date["year"])]["Number"]
+		file = self.folders["Task History"][self.current_year]["Number"]
 		self.task_dictionary["number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
 
 		self.File.Edit(file, self.task_dictionary["number"], "w")
 
 		# Files (Writes) > [Task Type] > Number.txt
-		file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
+		file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
 		self.task_dictionary["task_type_number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
 
 		self.File.Edit(file, self.task_dictionary["task_type_number"], "w")
@@ -103,6 +103,8 @@ class Register_Task(Tasks):
 		self.task_dictionary["header"] = self.task_dictionary["number"] + ", " + self.task_dictionary["task_type_number"] + "\n"
 		self.task_dictionary["header"] += "\n"
 		self.task_dictionary["header"] += self.task_dictionary["type"] + "\n"
+		self.task_dictionary["header"] += "\n"
+		self.task_dictionary["header"] += self.task_dictionary["time"] + "\n"
 
 		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
 			self.task_dictionary["header"] += self.task_dictionary["language_type"] + "\n"
@@ -117,7 +119,7 @@ class Register_Task(Tasks):
 
 		self.task_dictionary["time_replaced"] = self.task_dictionary["time"].replace(":", ";").replace("/", "-")
 
-		self.task_dictionary["number_type_and_time"] = self.task_dictionary["number"] + ". " + self.task_dictionary["type"] + " " + self.task_dictionary["time"]
+		self.task_dictionary["number_type_and_time"] = self.task_dictionary["number"] + ". " + self.task_dictionary["type"] + " " + self.task_dictionary["time_replaced"]
 
 	def Add_Task_To_Text_Files(self):
 		# Current Year Task History folder >
@@ -127,7 +129,7 @@ class Register_Task(Tasks):
 				# Task Types.txt
 				# Times.txt
 
-		folder = self.folders["Task History"][str(self.date["year"])]
+		folder = self.folders["Task History"][self.current_year]
 
 		# Tasks.txt
 		file = folder["Tasks"]
@@ -144,7 +146,7 @@ class Register_Task(Tasks):
 
 		text = self.Language.Python_To_JSON(text)
 
-		self.File.Edit(file, text, "a")
+		self.File.Edit(file, text, "w")
 
 		# Task Types.txt
 		file = folder["Task Types"]
@@ -166,7 +168,7 @@ class Register_Task(Tasks):
 					# [Task Type] >
 						# Tasks.txt, Tasks.json, Times.txt
 
-		folder = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]
+		folder = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]
 
 		# Files (Appends) > [Task Type] > Tasks.txt
 		file = folder["Tasks"]
@@ -183,7 +185,7 @@ class Register_Task(Tasks):
 
 		text = self.Language.Python_To_JSON(text)
 
-		self.File.Edit(file, text, "a")
+		self.File.Edit(file, text, "w")
 
 		# Files (Appends) > [Task Type] > Times.txt
 		file = folder["Times"]
@@ -206,7 +208,7 @@ class Register_Task(Tasks):
 					# [Language task descriptions]
 
 		# [Task number]. [Task type] [Task time].txt
-		self.task_dictionary["file"] = self.folders["Task History"][str(self.date["year"])]["All Task Files"] + self.task_dictionary["number_type_and_time"] + ".txt"
+		self.task_dictionary["file"] = self.folders["Task History"][self.current_year]["All Task Files"] + self.task_dictionary["number_type_and_time"] + ".txt"
 		self.File.Create(self.task_dictionary["file"])
 
 		text = self.task_dictionary["header"]
@@ -229,7 +231,7 @@ class Register_Task(Tasks):
 							# 
 							# [Language task descriptions]
 
-		folder = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Folders"][self.task_dictionary["type"]]["root"]
+		folder = self.folders["Task History"][self.current_year]["Per Task Type"]["Folders"][self.task_dictionary["type"]]["root"]
 
 		self.task_dictionary["task_type_file"] = folder + self.task_dictionary["time_replaced"] + ".txt"
 		self.File.Create(self.task_dictionary["task_type_file"])
@@ -265,7 +267,7 @@ class Register_Task(Tasks):
 
 		self.task_dictionary["first_task_in_year"] = False
 
-		file = self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Tasks"]
+		file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Tasks"]
 
 		if self.File.Contents(file)["length"] == 0:
 			self.task_dictionary["first_task_in_year"] = True

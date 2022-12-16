@@ -1,246 +1,186 @@
 # Module_Selector.py
 
-# To-Do: Use for loop in modules list to show modules, and use Text.Select to select one of the modules if no argument is present
+from Global_Switches import Global_Switches as Global_Switches
 
+from Language import Language as Language
+from File import File as File
+from Folder import Folder as Folder
+from Input import Input as Input
+from Text import Text as Text
+
+import importlib
 import argparse
+import inspect
 
-text_modules = False
+class Main():
+	def __init__(self):
+		self.Define_Basic_Variables()
+		self.Define_Module_Folder()
+		self.Define_Texts()
 
-if text_modules == True:
-	import Block_Websites
-	import Christmas
-	import Code
-	import Diary
-	import Diary_Slim
-	import Food_Time
-	import Friends
-	import GamePlayer
-	import Project_Zomboid
-	import Python
-	import Social_Networks
-	import SproutGigs
-	import Stories
-	import Tasks
-	import Watch_History
-	import Years
-	add_import = ""
+		self.parser = argparse.ArgumentParser()
+		self.parser.add_argument("-testing", "--testing", action="store_true", help="Activates the testing mode of modules")
+		self.parser.add_argument("-verbose", "--verbose", action="store_true", help="Activates the verbose mode of modules")
+		self.parser.add_argument("-user_information", "--user-information", "-userinformation", action="store_true", help="Activates the showing of user information on the Language class")
 
-parser = argparse.ArgumentParser()
+		self.Get_Modules()
+		self.Check_Arguments_And_Switches()
 
-parser.add_argument("-testing", "--testing", action="store_true", help="Activates the testing mode of modules")
-parser.add_argument("-verbose", "--verbose", action="store_true", help="Activates the verbose mode of modules")
-parser.add_argument("-user_information", "--user-information", "-userinformation", action="store_true", help="Activates the showing of user information on the Language class")
+		if self.has_arguments == False:
+			self.Select_Module()
 
-parser.add_argument("-block_websites", "--block_websites", action="store_true", help="Runs the Block_Websites module")
+		if self.has_arguments == True:
+			self.Check_Arguments()
 
-parser.add_argument("-christmas", "--christmas", "-natal", action="store_true", help="Runs the Christmas module")
+		self.Switch()
+		self.Run_Module(self.module)
+		self.Reset_Switch()
 
-parser.add_argument("-code", "--code", action="store_true", help="Runs the Code module")
+	def Define_Basic_Variables(self):
+		self.Global_Switches = Global_Switches()
 
-parser.add_argument("-diary", "--diary", "-diario", "--diario", "-diário", "--diário", action="store_true", help="Runs the Diary module")
+		self.global_switches = self.Global_Switches.global_switches
+		self.switches_file = self.Global_Switches.switches_file
+		self.switches = ["testing", "verbose", "user_information"]
 
-parser.add_argument("-diary_slim", "--diary_slim", "--diary-slim", "-diario_slim", "-diário_slim", "-slim", action="store_true", help='Runs the "Diary_Slim" module')
+		self.Language = Language(self.global_switches)
+		self.File = File(self.global_switches)
+		self.Folder = Folder(self.global_switches)
+		self.Input = Input(self.global_switches)
+		self.Text = Text(self.global_switches)
 
-parser.add_argument("-food_time", "--food_time", "--food-time", "-foodtime", "--foodtime", "-fdt", action="store_true", help='Runs the "Food_Time" module')
-parser.add_argument("-set", "-set_food_time", "-sfdt", "-setar", action="store_true", help='Sets the current food time, the time the food was eaten, using the module "Food_Time"')
-parser.add_argument("-check", "-check_food_time", "-cfdt", action="store_true", help='Checks the current food time, the time the food was eaten, using the module "Food_Time"')
+		self.folders = self.Folder.folders
+		self.root_folders = self.folders["root"]
+		self.user_folders = self.folders["user"]
+		self.apps_folders = self.folders["apps"]
+		self.mega_folders = self.folders["mega"]
+		self.notepad_folders = self.folders["notepad"]
 
-parser.add_argument("-friends", "-friend", "-amigos", "-amigo", action="store_true", help="Runs the Friends module")
+	def Define_Module_Folder(self):
+		self.module_name = self.__module__
 
-parser.add_argument("-gameplayer", "--gameplayer", "-gp", "-games", "-jogos", "-jogar", action="store_true", help="Runs the GamePlayer module")
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
 
-parser.add_argument("-project_zomboid", "-zomboid", "-project-zomboid", action="store_true", help="Runs the Project_Zomboid module")
+		if __name__ == "__main__":
+			self.module_name = "Module_Selector"
 
-parser.add_argument("-python", action="store_true", help="Runs the Python module")
+		self.module_name_lower = self.module_name.lower()
 
-parser.add_argument("-social_networks", "--social_networks", action="store_true", help="Runs the Social_Networks module")
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
 
-parser.add_argument("-sproutgigs", "--sproutgigs", action="store_true", help="Runs the SproutGigs module")
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
 
-parser.add_argument("-stories", "--stories", "-story", "-histórias", "-história", action="store_true", help="Runs the Stories module")
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
-parser.add_argument("-tasks", "--tasks", "-task", "--task", "-tarefa", "-tarefas", action="store_true", help="Runs the Tasks module")
+	def Define_Texts(self):
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
-parser.add_argument("-watch_history", "--watch-history", "-watch-history", "-watch", "--watch", "-assistir", "-watch_3", action="store_true", help="Runs the Watch_History module")
+		self.language_texts = self.Language.Item(self.texts)
 
-parser.add_argument("-years", "--years", action="store_true", help="Runs the Years module")
+		self.large_bar = "-----"
+		self.dash_space = "-"
 
-add_argument = ""
+	def Get_Modules(self):
+		self.modules = self.File.Contents(self.apps_folders["modules"]["usage_modules"])["lines"]
 
-arguments = parser.parse_args()
+		self.test_modules = True
 
-switches = ["testing", "verbose", "user_information"]
+		for module_name in self.modules:
+			module_name_lower = module_name.lower()
 
-has_switches = False
+			# Import module to test for and syntax errors
+			if self.test_modules == True:
+				module = importlib.import_module(module_name)
 
-for switch in switches:
-	if hasattr(arguments, switch) and getattr(arguments, switch) == True:
-		has_switches = True
+			self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, action="store_true", help='Runs the "' + module_name + '" module')
 
-# Update Switches file if there are Switch arguments
-if has_switches == True:
-	from Global_Switches import Global_Switches as Global_Switches
-	from File import File as File
-	from Text import Text as Text
+	def Check_Arguments_And_Switches(self):
+		self.arguments = self.parser.parse_args()
 
-	Global_Switches = Global_Switches()
-	File = File()
-	Text = Text()
+		self.has_arguments = False
 
-	# Get switches file
-	switches_file = Global_Switches.switches_file
+		for argument, state in inspect.getmembers(self.arguments):
+			if argument not in self.switches and state == True:
+				self.has_arguments = True
 
-	dictionary = File.Dictionary(switches_file)
-	dictionary_backup = dictionary.copy()
+		self.has_switches = False
 
-	for switch in switches:
-		dictionary[switch.capitalize().replace("_", " ")] = False
+		for switch in self.switches:
+			if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
+				self.has_switches = True
 
-		if hasattr(arguments, switch) and getattr(arguments, switch) == True:
-			dictionary[switch.capitalize().replace("_", " ")] = True			
+	def Select_Module(self):
+		show_text = self.language_texts["modules, title()"]
+		select_text = self.language_texts["select_a_module_from_the_list"]
 
-	# Update Switches file
-	File.Edit(switches_file, Text.From_Dictionary(dictionary), "w")
+		self.module = self.Input.Select(self.modules, show_text = show_text, select_text = select_text)["option"]
 
-	new_dictionary = {}
+	def Check_Arguments(self):
+		for module in self.modules:
+			module_lower = module.lower()
 
-	for key in dictionary.copy():
-		new_dictionary[key.lower().replace(" ", "_")] = dictionary[key]
+			if hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True:
+				self.module = module
 
-	dictionary = new_dictionary
+	def Switch(self):
+		self.reset_dictionary = {
+			"testing": False,
+			"verbose": False,
+			"user_information": False,
+		}
 
-	# Show Global Switches
-	File.Language.Show_Global_Switches(dictionary, show_ending = True)
+		# Update Switches file if there are Switch arguments
+		if self.has_switches == True:
+			self.arguments_dictionary = self.Language.JSON_To_Python(self.switches_file)
 
-# Reset Switches file if no Switch argument is present
-if has_switches == False:	
-	from File import File as File
-	from Text import Text as Text
+			for switch in self.switches:
+				if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
+					self.arguments_dictionary[switch] = getattr(self.arguments, switch)
 
-	# Define dictionary
-	dictionary = {
-		"Testing": False,
-		"Verbose": False,
-		"User information": False,
-	}
+			# Update Switches file
+			from File import File as File
 
-	new_dictionary = {}
+			self.File = File(self.reset_dictionary)
 
-	for key in dictionary.copy():
-		new_dictionary[key.lower().replace(" ", "_")] = dictionary[key]
+			# Edit Switches.txt file
+			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.arguments_dictionary), "w")
 
-	from Global_Switches import Global_Switches as Global_Switches
+			# Show Global Switches
+			self.File.Language.Show_Global_Switches(self.arguments_dictionary, show_ending = True)
 
-	Global_Switches = Global_Switches()
+		# Reset Switches file if no Switch argument is present
+		if self.has_switches == False:	
+			from File import File as File
+			from Text import Text as Text
 
-	# Get switches file
-	switches_file = Global_Switches.switches_file
+			self.File = File(self.reset_dictionary)
+			self.Text = Text(self.reset_dictionary)
 
-	File = File(new_dictionary)
-	Text = Text(new_dictionary)
+			# Reset
+			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_dictionary), "w")
 
-	# Reset
-	File.Edit(switches_file, Text.From_Dictionary(dictionary), "w")
+	def Run_Module(self, module_name):
+		self.module = importlib.import_module(self.module)
 
-if arguments.block_websites:
-	import Block_Websites
+		self.module.Run()
 
-	Block_Websites.Run()
+	def Reset_Switch(self):
+		# Update switches file with the state of the switches before execution of modules
+		from File import File as File
 
-if arguments.christmas:
-	import Christmas
+		self.dictionary = {
+			"testing": False,
+			"verbose": False,
+			"user_information": False,
+		}
 
-	Christmas.Run()
+		self.File = File(self.dictionary)
 
-if arguments.code:
-	import Code
+		self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.dictionary), "w")
 
-	Code.Run()
-
-if arguments.diary:
-	import Diary
-
-	Diary.Run()
-
-if arguments.diary_slim:
-	import Diary_Slim
-
-	Diary_Slim.Run()
-
-if arguments.food_time:
-	from Food_Time import Food_Time as Food_Time
-
-	if arguments.set:
-		Food_Time()
-
-	if arguments.check:
-		Food_Time(register_time = False)
-
-if arguments.friends:
-	import Friends
-
-	Friends.Run()
-
-if arguments.gameplayer:
-	import GamePlayer
-
-	GamePlayer.Run()
-
-if arguments.project_zomboid:
-	import Project_Zomboid
-
-	Project_Zomboid.Run()
-
-if arguments.python:
-	import Python
-
-	Python.Run()
-
-if arguments.social_networks:
-	import Social_Networks
-
-	Social_Networks.Run()
-
-if arguments.sproutgigs:
-	import SproutGigs
-
-	SproutGigs.Run()
-
-if arguments.stories:
-	import Stories
-
-	Stories.Run()
-
-if arguments.tasks:
-	import Tasks
-
-	Tasks.Run()
-
-if arguments.watch_history:
-	import Watch_History
-
-	Watch_History.Run()
-
-if arguments.years:
-	import Years
-
-	Years.Run()
-
-# Update switches file with the state of the switches before execution of modules
-if has_switches == True:
-	from File import File as File
-
-	dictionary = {
-		"Testing": False,
-		"Verbose": False,
-		"User information": False,
-	}
-
-	new_dictionary = {}
-
-	for key in dictionary.copy():
-		new_dictionary[key.lower().replace(" ", "_")] = dictionary[key]
-
-	File = File(new_dictionary)
-
-	File.Edit(switches_file, Text.From_Dictionary(dictionary), "w")
+if __name__ == "__main__":
+	Main()

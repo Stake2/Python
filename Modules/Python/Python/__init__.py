@@ -57,19 +57,24 @@ class Python(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
-		self.Folder.Create(self.module_text_files_folder)
+		self.module_name_lower = self.module_name.lower()
 
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.File.Create(self.texts_file)
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
+
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -88,29 +93,21 @@ class Python(object):
 
 		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'
 
-		self.argument_template = '''if arguments.{}:
-	import {}
-
-	{}.Run()'''
-
 	def Define_Files(self):
-		self.root_code_template_file = self.module_text_files_folder + "Root code template.txt"
+		self.root_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Root code template.txt"
 		self.File.Create(self.root_code_template_file)
 
-		self.main_class_code_template_file = self.module_text_files_folder + "Main class code template.txt"
+		self.main_class_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Main class code template.txt"
 		self.File.Create(self.main_class_code_template_file)
 
-		self.sub_class_code_template_file = self.module_text_files_folder + "Sub class code template.txt"
+		self.sub_class_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Sub class code template.txt"
 		self.File.Create(self.sub_class_code_template_file)
 
-		self.last_module_xml_file = self.module_text_files_folder + "Last module XML.txt"
+		self.last_module_xml_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Last module XML.txt"
 		self.File.Create(self.last_module_xml_file)
 
-		self.last_task_number_file = self.module_text_files_folder + "Last task number.txt"
+		self.last_task_number_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Last task number.txt"
 		self.File.Create(self.last_task_number_file)
-
-		self.module_selector_file = self.apps_folders["root"] + "MS.py"
-		self.File.Create(self.module_selector_file)
 
 		self.conemu_xml_file = self.user_folders["appdata"]["roaming"] + "ConEmu.xml"
 		self.File.Create(self.conemu_xml_file)
@@ -131,5 +128,3 @@ class Python(object):
 		self.root_code_template = self.File.Contents(self.root_code_template_file)["string"]
 		self.main_class_code_template = self.File.Contents(self.main_class_code_template_file)["string"]
 		self.sub_class_code_template = self.File.Contents(self.sub_class_code_template_file)["string"]
-
-		self.module_selector_code = self.File.Contents(self.module_selector_file)["string"]

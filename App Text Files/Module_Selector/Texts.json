@@ -1,0 +1,10 @@
+{
+    "modules, title()": {
+		"en": "Modules",
+		"pt": "Módulos"
+	},
+	"select_a_module_from_the_list": {
+		"en": "Select a module from the list to execute it",
+		"pt": "Selecione um módulo da lista para executá-lo"
+	}
+}

@@ -57,28 +57,34 @@ class Block_Websites(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
 
-		if name == "__main__":
-			name = "Block_Websites"
+		self.module_name_lower = self.module_name.lower()
 
-		self.module_folder = self.apps_folders["modules"]["root"] + name + "/"
-		self.Folder.Create(self.module_folder)
+		if self.module_name == "__main__":
+			self.module_name = "Block_Websites"
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
-		self.Folder.Create(self.module_text_files_folder)
+		self.apps_folders["modules"][self.module_name_lower] = {
+			"root": self.apps_folders["modules"]["root"] + self.module_name + "/",
+		}
 
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.File.Create(self.texts_file)
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
+
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 	def Define_Texts(self):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -91,19 +97,19 @@ class Block_Websites(object):
 	def Define_Files(self):
 		self.hosts_file = self.root_folders["system32"]["drivers/etc"] + "hosts"
 
-		self.additional_maps_file = self.module_text_files_folder + "Additional maps.txt"
+		self.additional_maps_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Additional maps.txt"
 		self.File.Create(self.additional_maps_file)
 
-		self.blocked_by_default_file = self.module_text_files_folder + "Blocked by default.txt"
+		self.blocked_by_default_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Blocked by default.txt"
 		self.File.Create(self.blocked_by_default_file)
 
-		self.hosts_file_header_file = self.module_text_files_folder + "Hosts file header.txt"
+		self.hosts_file_header_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Hosts file header.txt"
 		self.File.Create(self.hosts_file_header_file)
 
-		self.hour_config_file = self.module_text_files_folder + "Hour config.txt"
+		self.hour_config_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Hour config.txt"
 		self.File.Create(self.hour_config_file)
 
-		self.log_file = self.module_text_files_folder + "Log.txt"
+		self.log_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Log.txt"
 		self.File.Create(self.log_file)
 
 		# Social Networks Folder and Files

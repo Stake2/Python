@@ -60,7 +60,7 @@ class Update_Websites(Code):
 			self.translated_languages["general"][language] = self.texts["general"][language]
 
 		self.small_languages.insert(0, "general")
-		self.full_languages["general"] = self.language_texts["general"]
+		self.full_languages["general"] = "general"
 
 		self.xampp_programs = [
 			"xampp-control",
@@ -124,7 +124,7 @@ class Update_Websites(Code):
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
-			self.website["links"][language] = self.websites["url"]["generate_template"].format(self.website[language], full_language)
+			self.website["links"][language] = self.websites["url"]["generate_template"].format(full_language, self.website["en"])
 
 			print()
 			print("-")

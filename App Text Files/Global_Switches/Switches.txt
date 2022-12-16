@@ -1,3 +1,0 @@
-Testing: False
-Verbose: False
-User information: False

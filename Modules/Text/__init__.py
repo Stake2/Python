@@ -33,15 +33,17 @@ class Text():
 	def Define_Folders(self):
 		self.app_text_files_folder = self.Language.app_text_files_folder
 
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
+
+		self.module_name_lower = self.module_name.lower()
 
 		if __name__ == "__main__":
-			name = "Text"
+			self.module_name = "Text"
 
-		self.module_text_files_folder = self.app_text_files_folder + name + "/"
+		self.module_text_files_folder = self.app_text_files_folder + self.module_name + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 

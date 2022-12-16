@@ -64,22 +64,27 @@ class Stories(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
+
+		self.module_name_lower = self.module_name.lower()
 
 		self.module_folder = self.apps_folders["modules"]["root"] + name + "/"
 		self.Folder.Create(self.module_folder)
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
-		self.Folder.Create(self.module_text_files_folder)
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
 
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.File.Create(self.texts_file)
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -446,6 +451,8 @@ class Stories(object):
 					self.stories["mixed_titles"].append(story_title)
 
 			self.stories[story]["Information"]["Readers"] = self.File.Contents(self.stories[story]["folders"]["Readers and Reads"]["Readers"])["lines"]
+
+			self.stories[story]["Information"]["Readers number"] = len(self.stories[story]["Information"]["Readers"])
 
 			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items()))
 

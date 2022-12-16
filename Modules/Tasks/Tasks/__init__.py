@@ -55,19 +55,24 @@ class Tasks(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
-		self.Folder.Create(self.module_text_files_folder)
+		self.module_name_lower = self.module_name.lower()
 
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.File.Create(self.texts_file)
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
+
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -91,7 +96,7 @@ class Tasks(object):
 
 		# Task Types file
 		self.folders["Media Network Data"]["Task Types"] = self.folders["Media Network Data"]["root"] + self.texts["task_types"]["en"] + ".json"
-		self.File.Create(self.folders["Media Network Data"]["root"])
+		self.File.Create(self.folders["Media Network Data"]["Task Types"])
 
 		# Task History folder
 		self.folders["Task History"] = {
@@ -100,44 +105,46 @@ class Tasks(object):
 
 		self.Folder.Create(self.folders["Task History"]["root"])
 
+		self.current_year = str(self.date["year"])
+
 		# Current year Task History folder
-		self.folders["Task History"][str(self.date["year"])] = {
-			"root": self.folders["Task History"]["root"] + str(self.date["year"]) + "/",
+		self.folders["Task History"][self.current_year] = {
+			"root": self.folders["Task History"]["root"] + self.current_year + "/",
 		}
 
-		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["root"])
+		self.Folder.Create(self.folders["Task History"][self.current_year]["root"])
 
 		# Create files on the current year Task History folder
 		for item in ["Number", "Task Types", "Tasks", "Tasks.json", "Times"]:
-			self.folders["Task History"][str(self.date["year"])][item] = self.folders["Task History"][str(self.date["year"])]["root"] + item
+			self.folders["Task History"][self.current_year][item] = self.folders["Task History"][self.current_year]["root"] + item
 
 			if ".json" not in item:
-				self.folders["Task History"][str(self.date["year"])][item] += ".txt"
+				self.folders["Task History"][self.current_year][item] += ".txt"
 
-			self.File.Create(self.folders["Task History"][str(self.date["year"])][item])
+			self.File.Create(self.folders["Task History"][self.current_year][item])
 
 		# Write to number file if it is empty
-		if self.File.Contents(self.folders["Task History"][str(self.date["year"])]["Number"])["lines"] == []:
-			self.File.Edit(self.folders["Task History"][str(self.date["year"])]["Number"], "0", "w")
+		if self.File.Contents(self.folders["Task History"][self.current_year]["Number"])["lines"] == []:
+			self.File.Edit(self.folders["Task History"][self.current_year]["Number"], "0", "w")
 
 		# All Tasks Files folder
-		self.folders["Task History"][str(self.date["year"])]["All Task Files"] = self.folders["Task History"][str(self.date["year"])]["root"] + "All Task Files/"
-		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["All Task Files"])
+		self.folders["Task History"][self.current_year]["All Task Files"] = self.folders["Task History"][self.current_year]["root"] + "All Task Files/"
+		self.Folder.Create(self.folders["Task History"][self.current_year]["All Task Files"])
 
 		# Per Task Type folder
-		self.folders["Task History"][str(self.date["year"])]["Per Task Type"] = {
-			"root": self.folders["Task History"][str(self.date["year"])]["root"] + "Per Task Type/",
+		self.folders["Task History"][self.current_year]["Per Task Type"] = {
+			"root": self.folders["Task History"][self.current_year]["root"] + "Per Task Type/",
 		}
 
-		self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["root"])
+		self.Folder.Create(self.folders["Task History"][self.current_year]["Per Task Type"]["root"])
 
 		# Per Task Type subfolders
 		for item in ["Files", "Folders"]:
-			self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item] = {
-				"root": self.folders["Task History"][str(self.date["year"])]["Per Task Type"]["root"] + item + "/",
+			self.folders["Task History"][self.current_year]["Per Task Type"][item] = {
+				"root": self.folders["Task History"][self.current_year]["Per Task Type"]["root"] + item + "/",
 			}
 
-			self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item]["root"])
+			self.Folder.Create(self.folders["Task History"][self.current_year]["Per Task Type"][item]["root"])
 
 	def Define_Lists_And_Dicitionaries(self):
 		self.task_types = self.Language.JSON_To_Python(self.folders["Media Network Data"]["Task Types"])
@@ -145,16 +152,19 @@ class Tasks(object):
 		# Per Task Type sub-sub-folders
 		for task_type in self.task_types["en"]:
 			for item in ["Files", "Folders"]:
-				self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type] = {
-					"root": self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item]["root"] + task_type + "/",
+				self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type] = {
+					"root": self.folders["Task History"][self.current_year]["Per Task Type"][item]["root"] + task_type + "/",
 				}
 
-				self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type]["root"])
+				self.Folder.Create(self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type]["root"])
 
-				for file_name in ["Number", "Task Types", "Tasks", "Tasks.json", "Times"]:
-					self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name] = self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type]["root"] + file_name
+				if item == "Files":
+					file_names = ["Number", "Tasks", "Tasks.json", "Times"]
 
-					if ".json" not in file_name:
-						self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name] += ".txt"
+					for file_name in file_names:
+						self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type][file_name] = self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type]["root"] + file_name
 
-					self.Folder.Create(self.folders["Task History"][str(self.date["year"])]["Per Task Type"][item][task_type][file_name])
+						if ".json" not in file_name:
+							self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type][file_name] += ".txt"
+
+						self.File.Create(self.folders["Task History"][self.current_year]["Per Task Type"][item][task_type][file_name])

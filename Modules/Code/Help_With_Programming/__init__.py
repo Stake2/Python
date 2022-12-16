@@ -290,7 +290,7 @@ class Help_With_Programming(Code):
 
 		i = 0
 		for setting_file_name in self.settings_files_data[self.language_texts["file_names"]]:
-			self.last_setting_data_folder = self.module_text_files_folder + "Last setting data/"
+			self.last_setting_data_folder = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Last setting data/"
 
 			self.last_data_file = self.last_setting_data_folder + setting_file_name
 			self.File.Create(self.last_data_file)

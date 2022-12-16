@@ -72,12 +72,14 @@ class Language():
 		self.apps_folder = self.hard_drive_letter + "Apps/"
 		self.app_text_files_folder = self.apps_folder + "App Text Files/"
 
-		name = __name__
+		self.module_name = self.__module__
 
-		if "." in __name__:
-			name = __name__.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
 
-		self.module_text_files_folder = self.app_text_files_folder + name + "/"
+		self.module_name_lower = self.module_name.lower()
+
+		self.module_text_files_folder = self.app_text_files_folder + self.module_name + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 		self.Create(self.texts_file)

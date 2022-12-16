@@ -9,7 +9,6 @@ class Create_New_Module(Python):
 		self.Ask_For_Module_Info()
 		self.Define_Variables()
 		self.Write_To_Files()
-		self.Add_To_Module_Selector()
 		self.Create_Module_Bat()
 		self.Add_To_ConEmu_Tasks()
 		self.Add_To_Modules_List()
@@ -22,6 +21,8 @@ class Create_New_Module(Python):
 
 		if " " in self.module_name:
 			self.module_name = self.module_name.replace(" ", "_")
+
+		self.module_name_lower = self.module_name.lower()
 
 		translated_language = ""
 
@@ -118,11 +119,14 @@ class Create_New_Module(Python):
 		self.main_class_python_file = self.main_class_folder + "__init__.py"
 		self.File.Create(self.main_class_python_file)
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + self.module_name + "/"
-		self.Folder.Create(self.module_text_files_folder)
+		self.apps_folders["app_text_files"][self.module_name_lower] = {
+			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		}
 
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.File.Create(self.texts_file)
+		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+
+		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
 
 		self.class_folders = {}
 		self.class_files = {}
@@ -180,25 +184,7 @@ class Create_New_Module(Python):
 			self.File.Edit(class_file, self.sub_class_code, "w")
 
 		# Texts.json
-		self.File.Edit(self.texts_file, "{\n\t\n}", "w")
-
-	def Add_To_Module_Selector(self):
-		text_to_add = "\t" + "import {}".format(self.module_name) + "\n" + "\t" + 'add_import = ""'
-
-		if text_to_add not in self.module_selector_code:
-			self.module_selector_code = self.module_selector_code.replace("\t" + 'add_import = ""', text_to_add)
-
-		text_to_add = 'parser.add_argument("-{}", "--{}", action="store_true", ' + "help='Runs the "{}" module)".format(self.module_name.lower(), self.module_name.lower(), self.module_name) + "\n\n"
-
-		if text_to_add not in self.module_selector_code:
-			self.module_selector_code = self.module_selector_code.replace('add_argument = ""', text_to_add + 'add_argument = ""')
-
-		text_to_add = "\n\n" + self.argument_template.format(self.module_name.lower(), self.module_name, self.module_name)
-
-		if text_to_add not in self.module_selector_code:
-			self.module_selector_code += text_to_add
-
-		self.File.Edit(self.module_selector_file, self.module_selector_code, "w")
+		self.File.Edit(self.apps_folders["app_text_files"][self.module_name_lower]["texts"], "{\n\t\n}", "w")
 
 	def Create_Module_Bat(self):
 		self.bat_file = self.apps_folders["shortcuts"]["root"] + self.module_name + ".bat"

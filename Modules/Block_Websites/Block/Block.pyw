@@ -116,23 +116,26 @@ class Block(Block_Websites):
 		print(self.language_texts["the_websites_are_{}_because_you_are{}_in_working_time"].format(self.language_texts[self.key], " " + self.not_text) + ".")
 
 	def Update_Python_File(self):
-		self.module_folder_class = self.module_folder + "Block/"
-		self.Folder.Create(self.module_folder_class)
+		self.apps_folders["modules"][self.module_name_lower]["block"] = {
+			"root": self.apps_folders["modules"][self.module_name_lower]["root"] + "Block/",
+		}
 
-		self.block_python_window_file = self.module_folder_class + "Block.pyw"
-		self.File.Create(self.block_python_window_file)
+		self.Folder.Create(self.apps_folders["modules"][self.module_name_lower]["block"]["root"])
 
-		self.block_python_file = self.module_folder_class + "__init__.py"
-		self.File.Create(self.block_python_file)
+		self.apps_folders["modules"][self.module_name_lower]["block"]["block"] = self.apps_folders["modules"][self.module_name_lower]["block"]["root"] + "Block.pyw"
+		self.File.Create(self.apps_folders["modules"][self.module_name_lower]["block"]["block"])
 
-		self.block_python_code = self.File.Contents(self.block_python_file)["string"]
+		self.apps_folders["modules"][self.module_name_lower]["block"]["__init__"] = self.apps_folders["modules"][self.module_name_lower]["block"]["root"] + "__init__.py"
+		self.File.Create(self.apps_folders["modules"][self.module_name_lower]["block"]["__init__"])
+
+		self.block_python_code = self.File.Contents(self.apps_folders["modules"][self.module_name_lower]["block"]["__init__"])["string"]
 
 		text = self.block_python_code + "\n\n" + 'if __name__ == "__main__":' + "\n\t" + "Block()"
 
-		self.File.Edit(self.block_python_window_file, text, "w")
+		self.File.Edit(self.apps_folders["modules"][self.module_name_lower]["block"]["block"], text, "w")
 
 		self.texts["task_name"] = "Block Websites"
-		self.Date.Schedule_Task(self.texts["task_name"], self.block_python_window_file, self.hour_config["Update time"])
+		self.Date.Schedule_Task(self.texts["task_name"], self.apps_folders["modules"][self.module_name_lower]["block"]["block"], self.hour_config["Update time"])
 
 if __name__ == "__main__":
 	Block()

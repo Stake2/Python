@@ -71,7 +71,7 @@ class Play(GamePlayer):
 		self.game["category"]["names"] = {}
 
 		for language in self.small_languages:
-			self.game["category"]["names"][language] = self.games["Folder names"][language][self.option_info["number"]]
+			self.game["category"]["names"][language] = self.games["Folder names"][language][self.option_info["number"] - 1]
 
 		self.game["category"]["folder"] = self.option_info["option"]
 
@@ -83,10 +83,10 @@ class Play(GamePlayer):
 		}
 
 		# Define media type files folder and folders folder
-		self.game["category"]["media_type_files_folder"] = self.per_media_type_files_folder + self.game["category"]["name"] + "/"
+		self.game["category"]["media_type_files_folder"] = self.folders["play_history"]["played"]["per_media_type"]["files"] + self.game["category"]["name"] + "/"
 		self.Folder.Create(self.game["category"]["media_type_files_folder"])
 
-		self.game["category"]["media_type_folders_folder"] = self.per_media_type_folders_folder + self.game["category"]["name"] + "/"
+		self.game["category"]["media_type_folders_folder"] = self.folders["play_history"]["played"]["per_media_type"]["folders"] + self.game["category"]["name"] + "/"
 		self.Folder.Create(self.game["category"]["media_type_folders_folder"])
 
 		# Select a game
@@ -97,6 +97,10 @@ class Play(GamePlayer):
 		self.option_info = self.Input.Select(options, show_text = show_text, select_text = select_text)
 
 		self.game["name"] = self.option_info["option"]
+
+		if self.game["name"] in self.game_names:
+			self.game["name"] = self.game_names[self.game["name"]]
+
 		self.game["sanitized_name"] = self.Sanitize(self.game["name"], restricted_characters = True)
 
 		self.game["file"] = self.game["category"]["file"]["list"][self.option_info["number"]]
@@ -119,7 +123,7 @@ class Play(GamePlayer):
 			self.File.Open(self.game["file"])
 
 	def Count(self):
-		self.played_time_backup_file = self.current_year_played_folder + "Played time backup.txt"
+		self.played_time_backup_file = self.folders["play_history"]["played"]["current_year"]["root"] + "Played time backup.txt"
 		self.File.Create(self.played_time_backup_file)
 
 		self.has_hours = False

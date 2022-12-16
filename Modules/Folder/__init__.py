@@ -43,13 +43,15 @@ class Folder():
 		self.Create_Folders()
 
 	def Define_Folders(self):
-		name = self.__module__
+		self.module_name = self.__module__
 
-		if "." in name:
-			name = name.split(".")[0]
+		if "." in self.module_name:
+			self.module_name = self.module_name.split(".")[0]
+
+		self.module_name_lower = self.module_name.lower()
 
 		if __name__ == "__main__":
-			name = "Folder"
+			self.module_name = "Folder"
 
 		self.folders = {}
 
@@ -87,7 +89,11 @@ class Folder():
 			"root": self.Sanitize(os.path.join(self.apps_folders["root"], "Modules/")),
 		}
 
-		self.apps_folders["app_text_files"] = os.path.join(self.apps_folders["root"], "App Text Files/")
+		self.apps_folders["modules"]["usage_modules"] = self.apps_folders["modules"]["root"] + "Usage modules.txt"
+
+		self.apps_folders["app_text_files"] = {
+			"root": os.path.join(self.apps_folders["root"], "App Text Files/"),
+		}
 
 		self.apps_folders["shortcuts"] = {
 			"root": os.path.join(self.apps_folders["root"], "Atalhos/"),
@@ -161,7 +167,9 @@ class Folder():
 
 		self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Audiovisual Media Network/")
 
-		self.mega_folders["notepad"]["effort"]["networks"]["game_network"] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Game Network/")
+		self.mega_folders["notepad"]["effort"]["networks"]["game_network"] = {
+			"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Game Network/"),
+		}
 
 		self.mega_folders["notepad"]["effort"]["networks"]["productive_network"] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Productive Network/")
 
@@ -210,6 +218,9 @@ class Folder():
 
 		# Mega PHP Website.json file
 		self.mega_folders["php"]["website"] = os.path.join(self.mega_folders["php"]["root"], "Website.json")
+
+		# Mega PHP JSON Colors.json file
+		self.mega_folders["php"]["json"]["colors"] = os.path.join(self.mega_folders["php"]["json"]["root"], "Colors.json")
 
 		# Mega PHP JSON URL.json file
 		self.mega_folders["php"]["json"]["url"] = os.path.join(self.mega_folders["php"]["json"]["root"], "URL.json")
@@ -267,7 +278,7 @@ class Folder():
 			"Stake2 Website": "https://" + self.subdomain + "." + self.netlify_domain + "/"
 		}
 
-		self.module_text_files_folder = self.apps_folders["app_text_files"] + name + "/"
+		self.module_text_files_folder = self.apps_folders["app_text_files"]["root"] + self.module_name + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 

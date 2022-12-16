@@ -231,7 +231,6 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			if self.global_switches["verbose"] == True:
 				print(self.Language.Python_To_JSON(self.task_dictionary))
-				print("[" + self.task_dictionary["descriptions"][self.user_language] + "]")
 
 			self.File.Delete(self.backup_file)
 

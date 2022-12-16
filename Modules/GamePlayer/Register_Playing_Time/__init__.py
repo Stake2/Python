@@ -110,7 +110,7 @@ class Register_Playing_Time(GamePlayer):
 
 	def Create_File_In_All_Files_Folder(self):
 		# Create text file in "All Played Files" folder
-		self.all_played_files_file = self.all_played_files_folder + self.file_name["numbered"].replace(".", "") + ".txt"
+		self.all_played_files_file = self.folders["play_history"]["played"]["all_played_files"] + self.file_name["numbered"].replace(".", "") + ".txt"
 		self.File.Create(self.all_played_files_file)
 
 		self.File.Edit(self.all_played_files_file, self.texts_to_use["full_played_text"], "w")
@@ -118,7 +118,7 @@ class Register_Playing_Time(GamePlayer):
 	def Register_On_Game_Files_Folder(self):
 		# Append to "Game Files" folder text file
 
-		self.game_files_file = self.game_files_folder + self.game["sanitized_name"] + ".txt"
+		self.game_files_file = self.folders["play_history"]["played"]["game_files"] + self.game["sanitized_name"] + ".txt"
 		self.File.Create(self.game_files_file)
 
 		# Split
@@ -132,7 +132,7 @@ class Register_Playing_Time(GamePlayer):
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
-			file = self.played_texts_folder + full_language + ".txt"
+			file = self.folders["play_history"]["played"]["current_year"]["played_texts"] + full_language + ".txt"
 
 			text = self.texts_to_use[self.translated_languages[language]["en"] + " played time"]
 
@@ -151,10 +151,10 @@ class Register_Playing_Time(GamePlayer):
 		self.game_media_type_folder = self.game["category"]["media_type_folders_folder"] + self.game["sanitized_name"] + "/"
 		self.Folder.Create(self.game_media_type_folder)
 
-		self.game_folders_file = self.game_media_type_folder + self.file_name["time"] + ".txt"
-		self.File.Create(self.game_folders_file)
+		self.apps_folders["app_text_files"][self.module_name_lower]["folders"] = self.game_media_type_folder + self.file_name["time"] + ".txt"
+		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["folders"])
 
-		self.File.Edit(self.game_folders_file, self.texts_to_use["full_played_text"], "w")
+		self.File.Edit(self.apps_folders["app_text_files"][self.module_name_lower]["folders"], self.texts_to_use["full_played_text"], "w")
 
 		# Copy the "media type folders folder" to the "experienced media type folder" on current year text folder
 		self.experienced_media_folder = self.notepad_folders["years"]["current"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"

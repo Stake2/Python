@@ -4,6 +4,7 @@ import os
 import pathlib
 import platform
 import re
+import json
 
 class Global_Switches():
 	def __init__(self, parameter_switches = None):
@@ -12,7 +13,7 @@ class Global_Switches():
 
 		self.Define_Folders()
 
-		self.dictionary = self.Dictionary(self.switches_file)
+		self.dictionary = self.JSON_To_Python(self.switches_file)
 
 		for key in self.dictionary:
 			changed_key = key.lower().replace(" ", "_")
@@ -46,7 +47,7 @@ class Global_Switches():
 
 		self.module_text_files_folder = self.app_text_files_folder + name + "/"
 
-		self.switches_file = self.module_text_files_folder + "Switches.txt"
+		self.switches_file = self.module_text_files_folder + "Switches.json"
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
@@ -195,5 +196,12 @@ class Global_Switches():
 			if next_line == True:
 				for dictionary_separator in dictionary_separators:
 					self.Split(lines = lines, dict_ = dictionary, separator = dictionary_separator, next_line = next_line, convert = convert)
+
+		return dictionary
+
+	def JSON_To_Python(self, file):
+		file = self.Sanitize(file)
+
+		dictionary = json.load(open(file, encoding = "utf8"))
 
 		return dictionary
