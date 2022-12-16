@@ -33,10 +33,12 @@ py MS.py --[module command line argument]
 ```
 
 ## Translating
-You can now translate my modules, translate them by adding the ISO 639-1 language code to the "Texts.json" of the module you want to translate.<br>
+Check the [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUCT.md).<br>
+You can now translate my modules, translate them by adding the [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) to the "Texts.json" of the module you want to translate.<br>
+<br>
 Soon I will make a module on the root folder called "Translator_Helper.py", to help you translate my modules to your language.<br>
 Allowing you to choose your native language or the language you know, to translate to, choose a module to translate, and show all of the English texts for you to translate.<br>
 For you to translate my modules, you need to know English first, to understand the English texts of the modules and translate them.<br>
 <br>
-You can find more explanation about how to translate and how the "Language" class works in the [Translating](https://github.com/Stake2/Python/blob/main/TRANSLATING.md) file.<br>
+You can find more explanation about how to translate and how the ["Language"](https://github.com/Stake2/Python/blob/main/Modules/Language/__init__.py) class works in the [Translating](https://github.com/Stake2/Python/blob/main/TRANSLATING.md) file.<br>
 Each module also has a "Descriptions.json" file on its root folder, I ask you to translate the descriptions of the module you are translating.
