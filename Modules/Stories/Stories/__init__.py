@@ -71,7 +71,7 @@ class Stories(object):
 
 		self.module_name_lower = self.module_name.lower()
 
-		self.module_folder = self.apps_folders["modules"]["root"] + name + "/"
+		self.module_folder = self.apps_folders["modules"]["root"] + self.module_name + "/"
 		self.Folder.Create(self.module_folder)
 
 		self.apps_folders["app_text_files"][self.module_name_lower] = {
@@ -180,6 +180,12 @@ class Stories(object):
 		self.stories["titles"] = {}
 		self.stories["mixed_titles"] = []
 		self.stories["number"] = len(self.stories["list"])
+
+		self.stories["authors"] = [
+			"Izaque Sanvezzo (Stake2, Funkysnipa Cat)",
+			"Júlia",
+			"Ana",
+		]
 
 		# Dictionaries
 		# Add stories to stories dictionary

@@ -88,7 +88,7 @@ class Block(Block_Websites):
 
 		if self.in_working_hours == False:
 			self.key = "unlocked"
-			self.not_text = self.language_texts["not"]
+			self.not_text = " " + self.language_texts["not"]
 
 		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.hour_config["Update time"], self.date["%H:%M %d/%m/%Y"])
 
@@ -113,7 +113,7 @@ class Block(Block_Websites):
 	def Show(self):
 		print()
 		print(self.language_texts["blocking_state"] + ":")
-		print(self.language_texts["the_websites_are_{}_because_you_are{}_in_working_time"].format(self.language_texts[self.key], " " + self.not_text) + ".")
+		print(self.language_texts["the_websites_are_{}_because_you_are{}_in_working_time"].format(self.language_texts[self.key], self.not_text) + ".")
 
 	def Update_Python_File(self):
 		self.apps_folders["modules"][self.module_name_lower]["block"] = {

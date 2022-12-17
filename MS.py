@@ -98,6 +98,11 @@ class Main():
 
 			self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, action="store_true", help='Runs the "' + module_name + '" module')
 
+			if module_name == "Food_Time":
+				# Food_Time arguments
+				self.parser.add_argument("-set", action="store_true", help='Sets the current food time, the time the food was eaten, using the module "Food_Time"')
+				self.parser.add_argument("-check", action="store_true", help='Checks the current food time, the time the food was eaten, using the module "Food_Time"')
+
 	def Check_Arguments_And_Switches(self):
 		self.arguments = self.parser.parse_args()
 
@@ -166,7 +171,11 @@ class Main():
 	def Run_Module(self, module_name):
 		self.module = importlib.import_module(self.module)
 
-		self.module.Run()
+		if getattr(self.arguments, "check") == False and getattr(self.arguments, "set") == False or getattr(self.arguments, "set") == True:
+			self.module.Run()
+
+		if getattr(self.arguments, "check") == True:
+			self.module.Run(register_time = False)
 
 	def Reset_Switch(self):
 		# Update switches file with the state of the switches before execution of modules
