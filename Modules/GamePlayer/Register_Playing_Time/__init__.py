@@ -185,7 +185,7 @@ class Register_Playing_Time(GamePlayer):
 
 		self.post_on_social_networks_text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks_string + ")"
 
-		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text, first_space = False)
+		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text)
 
 		if self.post_on_social_networks == True:
 			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", second_space = False)

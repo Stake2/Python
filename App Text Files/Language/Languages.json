@@ -17,6 +17,13 @@
 			"en": "English"
 		}
 	},
+	"ISO_639-1": {
+		"pt": [
+			"pt_BR",
+			"pt_PT"
+		],
+		"en": "en_US"
+	},
 	"types": [
 		"language",
 		"language_with_country",

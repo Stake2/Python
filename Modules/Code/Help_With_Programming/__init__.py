@@ -409,16 +409,14 @@ class Help_With_Programming(Code):
 				print(self.language_texts["path, title()"] + ":")
 				print(tool_path)
 
-			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data:
-				if self.global_switches["testing"] == False:
-					for program in programs_to_close:
-						self.File.Close(program)
+			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.global_switches["testing"] == False:
+				for program in programs_to_close:
+					self.File.Close(program)
 
-			if mode == "open":
-				if self.global_switches["testing"] == False:
-					Open(tool_path)
+			if mode == "open" and self.global_switches["testing"] == False:
+				Open(tool_path)
 
-					self.Date.Sleep(2)
+				self.Date.Sleep(2)
 
 			i += 1
 

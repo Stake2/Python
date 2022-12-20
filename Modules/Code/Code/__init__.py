@@ -18,7 +18,7 @@ class Code(object):
 		self.Define_Texts()
 
 		self.Define_Folders()
-		self.Define_Lists()
+		self.Define_Lists_And_Dictioinaries()
 
 	def Define_Basic_Variables(self):
 		# Global Switches dictionary
@@ -85,26 +85,23 @@ class Code(object):
 		self.programming_network_folder = self.notepad_folders["effort"]["networks"]["root"] + "Programming Network/"
 		self.Folder.Create(self.programming_network_folder)
 
-		self.database_folder = self.programming_network_folder + "Database/"
-		self.Folder.Create(self.database_folder)
-
-		self.database_file_names = [
+		self.programming_network_file_names = [
 			"Programming languages",
 		]
 
-		self.database_files = {}
+		self.programming_network_files = {}
 
-		for file_name in self.database_file_names:
-			self.database_files[file_name] = self.database_folder + file_name + ".txt"
-			self.File.Create(self.database_files[file_name])
+		for file_name in self.programming_network_file_names:
+			self.programming_network_files[file_name] = self.programming_network_folder + file_name + ".txt"
+			self.File.Create(self.programming_network_files[file_name])
 
-	def Define_Lists(self):
-		self.programming_languages = self.File.Contents(self.database_files["Programming languages"])["lines"]
+	def Define_Lists_And_Dictioinaries(self):
+		self.programming_languages = self.File.Contents(self.programming_network_files["Programming languages"])["lines"]
 
 		self.programming_language_folders = {}
 
 		for programming_language in self.programming_languages:
-			self.programming_language_folders[programming_language] = self.database_folder + programming_language + "/"
+			self.programming_language_folders[programming_language] = self.programming_network_folder + programming_language + "/"
 			self.Folder.Create(self.programming_language_folders[programming_language])
 
 		self.basic_functions = {

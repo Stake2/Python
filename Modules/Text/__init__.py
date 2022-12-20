@@ -6,6 +6,7 @@ from Language import Language as Language
 
 import pyperclip
 import webbrowser
+import win32clipboard
 
 class Text():
 	def __init__(self, parameter_switches = None):
@@ -153,6 +154,13 @@ class Text():
 			i += 1
 
 		return string
+
+	def Get_Clipboard(self): 
+		win32clipboard.OpenClipboard()
+		data = win32clipboard.GetClipboardData()
+		win32clipboard.CloseClipboard()
+
+		return data
 
 	def Open_Link(self, link):
 		webbrowser.open(link)
