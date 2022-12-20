@@ -252,32 +252,24 @@ class Folder():
 			"root": os.path.join(self.mega_folders["root"], "Websites/"),
 		}
 
-		self.mega_folders["websites"]["subdomain"] = self.mega_folders["websites"]["root"] + "Subdomain.txt"
-		self.mega_folders["websites"]["netlify"] = self.mega_folders["websites"]["root"] + "Netlify.txt"
+		self.mega_folders["websites"]["website"] = self.mega_folders["websites"]["root"] + "Website.json"
 
 		# Mega Websites Images folder
 		self.mega_folders["websites"]["images"] = {
 			"root": self.mega_folders["websites"]["root"] + "Images/",
 		}
 
-		self.mega_folders["websites"]["images"]["story_covers"] = self.mega_folders["websites"]["images"]["root"] + "Story Covers/"		
-
-		# Instantiate File class
-		from File import File as File
-
-		self.File = File(self.global_switches)
+		self.mega_folders["websites"]["images"]["story_covers"] = self.mega_folders["websites"]["images"]["root"] + "Story Covers/"
 
 		# Get website subdomain
-		self.subdomain = self.File.Contents(self.mega_folders["websites"]["subdomain"])["lines"][0]
-
-		# Get Netlify domain
-		self.netlify_domain = self.File.Contents(self.mega_folders["websites"]["netlify"])["lines"][0]
+		self.website = self.Language.JSON_To_Python(self.mega_folders["websites"]["website"])
 
 		# Create links dictionary with Stake2 Website link
 		self.links = {
-			"Stake2 Website": "https://" + self.subdomain + "." + self.netlify_domain + "/"
+			"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
 		}
 
+		# Define Folder related variables (texts file)
 		self.module_text_files_folder = self.apps_folders["app_text_files"]["root"] + self.module_name + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"

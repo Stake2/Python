@@ -460,6 +460,7 @@
 	"file_names, type: list": [
 		"Author",
 		"Chapter status",
+		"Chapter dates",
 		"Creation date",
 		"Information",
 		"Post template",

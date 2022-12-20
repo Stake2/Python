@@ -96,12 +96,16 @@ class Main():
 			if self.test_modules == True:
 				module = importlib.import_module(module_name)
 
-			if module_name != "Diary_Slim":
+			if module_name not in ["Diary_Slim", "Stories"]:
 				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, action="store_true", help='Runs the "' + module_name + '" module')
 
 			if module_name == "Diary_Slim":
 				# Diary_Slim arguments
 				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, "-slim", action="store_true", help='Runs the "' + module_name + '" module')
+
+			if module_name == "Stories":
+				# Stories arguments
+				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, "-story", action="store_true", help='Runs the "' + module_name + '" module')
 
 			if module_name == "Food_Time":
 				# Food_Time arguments

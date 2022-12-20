@@ -317,9 +317,10 @@ class Stories(object):
 						self.stories[story]["Information"][key] = self.File.Dictionary(item, next_line = True)
 
 					if ".txt" in item:
-						self.stories[story]["Information"][key] = self.stories[story]["Information"][key]
+						if key == "Chapter dates":
+							self.stories[story]["Information"][key] = self.stories[story]["Information"][key]["lines"]
 
-						if key != "Chapter status":
+						if key not in ["Chapter status", "Chapter dates"]:
 							self.stories[story]["Information"][key] = self.stories[story]["Information"][key]["string"]
 
 						if len(self.stories[story]["Information"][key]) == 1:
