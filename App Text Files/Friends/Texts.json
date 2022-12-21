@@ -5,7 +5,17 @@
     },
     "friend, title()": {
         "en": "Friend",
-        "pt": "Amigo"
+        "pt": {
+			"masculine": "Amigo",
+			"feminine": "Amiga"
+		}
+    },
+	"the_friend": {
+        "en": "the Friend",
+        "pt": {
+			"masculine": "o Amigo",
+			"feminine": "a Amiga"
+		}
     },
     "friends": {
         "en": "friends",
@@ -203,6 +213,10 @@
         "pt": "Selecione uma Rede Social para abrir seu arquivo de perfil",
         "en": "Select one Social Network to open its profile file"
     },
+    "select_the_social_network_where_you_met_{}": {
+        "pt": "Selecione a Rede Social onde você conheceu {}",
+        "en": "Select the Social Network where you met {}"
+    },
     "add_social_network_to_friend_folder": {
         "pt": "Adicionar Rede Social à pasta de Amigo",
         "en": "Add Social Network to Friend folder"
@@ -210,6 +224,36 @@
     "add_more_social_networks": {
         "pt": "Adicionar mais Redes Sociais",
         "en": "Add more Social Networks"
+    },
+	"add_additional_information_about_origin_social_network": {
+        "pt": "Adicionar informação adicional a Rede Social de Origem",
+        "en": "Add additional information about Origin Social Network"
+    },
+	"type_the_additional_information": {
+        "pt": "Digite a informação adicional",
+        "en": "Type the additional information"
+    },
+    "gender, type: list": {
+        "en": [
+            "Feminine",
+            "Masculine"
+        ],
+        "pt": [
+            "Feminino",
+            "Masculino"
+        ]
+    },
+    "sexuality, type: list": {
+        "en": [
+            "Straight",
+            "Homosexual",
+            "Bisexual"
+        ],
+        "pt": [
+            "Heterossexual",
+            "Homossexual",
+            "Bissexual"
+        ]
     },
     "information_items, type: list": {
         "en": [
@@ -236,17 +280,31 @@
             "Rede Social de Origem",
             "Data que conheci"
         ],
-        "information_items, type: dict, en: pt": {
-            "Name": "Nome",
-            "Age": "Idade",
-            "Gender": "Gênero",
-            "Sexuality": "Sexualidade",
-            "Birthday": "Aniversário",
-            "Height": "Altura",
-            "Hometown": "Localidade Natal",
-            "Residence place": "Local De Residência",
-            "Origin Social Network": "Rede Social De Origem",
-            "Date I met": "Data Que Conheci"
+        "plural": {
+            "en": [
+                "Names",
+                "Ages",
+                "Genders",
+                "Sexualities",
+                "Birthdays",
+                "Heights",
+                "Hometowns",
+                "Residence places",
+                "Origin Social Networks",
+                "Dates I met"
+            ],
+            "pt": [
+                "Nomes",
+                "Idades",
+                "Gêneros",
+                "Sexualidades",
+                "Aniversários",
+                "Alturas",
+                "Localidades natais",
+                "Locais de residência",
+                "Redes Sociais de Origem",
+                "Datas que conheci"
+            ]
         },
         "formats": [
             "",

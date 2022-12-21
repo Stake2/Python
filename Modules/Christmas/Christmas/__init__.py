@@ -100,6 +100,9 @@ class Christmas():
 		self.christmas_folder = self.current_year_folder + self.language_texts["christmas, title(), en - pt"] + "/"
 		self.Folder.Create(self.christmas_folder)
 
+		self.christmas_image_folder = self.mega_folders["image"]["root"] + self.language_texts["christmas, title(), en - pt"] + "/"
+		self.Folder.Create(self.christmas_image_folder)
+
 		self.language_year_folder = self.current_year_folder + self.full_user_language + "/"
 		self.Folder.Create(self.language_year_folder)
 
@@ -146,7 +149,7 @@ class Christmas():
 	def Open_File(self, text):
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
-			"Theme": self.image_folder + self.language_texts["christmas, title(), en - pt"] + "/Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
+			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
 		}
 
 		texts = {
@@ -179,7 +182,7 @@ class Christmas():
 		if social_network_backup != self.twitter_scheduled_text:
 			self.Social_Networks = Social_Networks()
 
-			social_networks = self.Social_Networks.social_networks
+			social_networks = self.Social_Networks.social_networks["Names"]
 			social_networks.remove("Habitica")
 
 			self.option_info = {"type": "profile"}
@@ -228,7 +231,7 @@ class Christmas():
 					print()
 
 	def Run_Script(self, script_name):
-		files = self.Folder.Contents(self.white_shortcuts_folder)["file"]["list"]
+		files = self.Folder.Contents(self.apps_folders["shortcuts"]["white_shortcuts"])["file"]["list"]
 
 		self.press_enter_text = self.language_texts["press_enter_when_you"] + " {}"
 

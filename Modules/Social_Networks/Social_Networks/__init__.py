@@ -327,7 +327,7 @@ class Social_Networks(object):
 				self.social_network = social_network
 
 			if self.social_network in social_networks:
-				self.social_network = self.social_networks[self.social_network]
+				self.social_network = social_networks[self.social_network]
 
 				return self.social_network
 
@@ -348,7 +348,7 @@ class Social_Networks(object):
 
 		i = 0
 		for information_item in self.social_network["data"][self.texts["information_items"]["en"]]["en"]:
-			language_information_item = self.texts["information_items, type: list"][self.user_language][i]
+			language_information_item = self.social_network["data"][self.texts["information_items"]["en"]][self.user_language][i]
 
 			information = self.Input.Type(language_information_item, next_line = True)
 

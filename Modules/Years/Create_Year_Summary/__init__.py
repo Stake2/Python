@@ -43,12 +43,14 @@ class Create_Year_Summary(Years):
 			self.year = self.Select_Year(years_list, select_text)
 
 	def Check_Day(self):
+		self.today_is_summary_day = False
+
 		if self.date["day"] == self.summary_date["day"] and self.date["month"] == self.summary_date["month"]:
 			self.today_is_summary_day = True
 
-		if self.date["day"] != self.summary_date["day"] and self.date["month"] != self.summary_date["month"]:
-			self.today_is_summary_day = False
+		self.today_is_summary_day = True
 
+		if self.today_is_summary_day == False:
 			day_month = self.language_texts["{} {} {}"].format(self.summary_date["day"], self.summary_date["month_name"], self.date["year"])
 			today = self.language_texts["{} {} {}"].format(self.date["day"], self.date["month_name"], self.date["year"])
 
@@ -139,7 +141,7 @@ class Create_Year_Summary(Years):
 			while len(media_type_episodes) > self.itens_per_type:
 				media_type_episodes.pop(0)
 
-		self.texts["plural_media_types, type: list"] = self.Language.JSON_To_Python(self.apps_folders["app_text_files"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
+		self.texts["plural_media_types, type: list"] = self.Language.JSON_To_Python(self.apps_folders["app_text_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
 
 		self.plural_media_types = self.texts["plural_media_types, type: list"]
 

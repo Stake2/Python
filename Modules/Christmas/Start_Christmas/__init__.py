@@ -39,7 +39,7 @@ class Start_Christmas(Christmas):
 		if self.today_is_christmas == True:
 			self.Execute_Steps()
 
-			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.year))
+			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.date["year"]))
 
 		print()
 		print(self.large_bar)
@@ -48,7 +48,7 @@ class Start_Christmas(Christmas):
 		self.planning = self.File.Contents(self.planning_file)["lines"]
 		self.objects = self.File.Contents(self.objects_file)["lines"]
 
-		print(self.language_texts["starting_{}_of_{}..."].format(self.language_texts["christmas, title()"], self.year))
+		print(self.language_texts["starting_{}_of_{}..."].format(self.language_texts["christmas, title()"], self.date["year"]))
 		print()
 		print("-")
 		print()

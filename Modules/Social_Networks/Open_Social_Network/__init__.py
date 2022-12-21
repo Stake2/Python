@@ -116,8 +116,8 @@ class Open_Social_Network(Social_Networks):
 			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
 				self.user_information = {}
 
-				for item in self.self.texts["information_items, type: list"]:
-					language_item = self.self.texts["information_items, type: list"][item]
+				for item in self.texts["information_items, type: list"]:
+					language_item = self.texts["information_items, type: list"][item]
 
 					if item in self.social_network["data"][self.link_type]:
 						self.user_information[language_item] = self.social_network["data"][self.link_type][item]
@@ -138,7 +138,7 @@ class Open_Social_Network(Social_Networks):
 
 						added_user_information = True
 
-					if language_user_name_item in self.user_information and added_user_information == False:
+					if language_user_name_item in list(self.user_information.keys()) and added_user_information == False:
 						self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
 
 						added_user_information = True

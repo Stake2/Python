@@ -238,7 +238,7 @@ class Input():
 		if text == None:
 			text = self.language_texts["type_or_paste_the_text"]
 
-		if add_colon == True and ":" not in text[-1]:
+		if add_colon == True and ":" not in text[-1] and text[-2] + text[-1] != ": ":
 			text += ": "
 
 		if type(text) == dict:
@@ -276,8 +276,8 @@ class Input():
 			while search == None:
 				text_ = text
 
-				if ":" in text:
-					text_ = text_.replace(":", ":\n" + self.language_texts["example"] + ": " + split_[1])
+				if ": " in text:
+					text_ = text_.replace(": ", ":\n" + self.language_texts["example"] + ' "' + split_[1] + '": ')
 
 				typed = self.Type(text_, accept_enter, next_line, first_space = first_space)
 
