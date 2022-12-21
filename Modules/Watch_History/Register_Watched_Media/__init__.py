@@ -748,7 +748,7 @@ class Register_Watched_Media(Watch_History):
 		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text)
 
 		if self.post_on_social_networks == True:
-			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", second_space = False)
+			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", first_space = False, second_space = False)
 
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"])
 

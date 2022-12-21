@@ -12,6 +12,8 @@ class Start_Christmas(Christmas):
 		print(self.large_bar)
 		print()
 
+		self.today_is_christmas = True
+
 		if self.today_is_christmas == False:
 			self.months_left = abs((self.date["year"] - self.christmas["year"]) * 12 + self.date["month"] - self.christmas["month"])
 			self.days_left = abs(abs((self.date["date"] - self.christmas["date"]).days - 1) - (self.months_left * monthrange(self.date["year"], self.date["month"])[1]))
@@ -73,11 +75,7 @@ class Start_Christmas(Christmas):
 				print(text + ".")
 
 			if object == "None":
-				if self.global_switches["testing"] == False:
-					self.Input.Type(text)
-
-				if self.global_switches["testing"] == True:
-					print(text)
+				self.Input.Type(text, first_space = False)
 
 			if object != "None":
 				function(object_data)

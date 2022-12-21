@@ -6,16 +6,16 @@
     "friend, title()": {
         "en": "Friend",
         "pt": {
-			"masculine": "Amigo",
-			"feminine": "Amiga"
-		}
+            "masculine": "Amigo",
+            "feminine": "Amiga"
+        }
     },
-	"the_friend": {
+    "the_friend": {
         "en": "the Friend",
         "pt": {
-			"masculine": "o Amigo",
-			"feminine": "a Amiga"
-		}
+            "masculine": "o Amigo",
+            "feminine": "a Amiga"
+        }
     },
     "friends": {
         "en": "friends",
@@ -225,11 +225,11 @@
         "pt": "Adicionar mais Redes Sociais",
         "en": "Add more Social Networks"
     },
-	"add_additional_information_about_origin_social_network": {
+    "add_additional_information_about_origin_social_network": {
         "pt": "Adicionar informação adicional a Rede Social de Origem",
         "en": "Add additional information about Origin Social Network"
     },
-	"type_the_additional_information": {
+    "type_the_additional_information": {
         "pt": "Digite a informação adicional",
         "en": "Type the additional information"
     },

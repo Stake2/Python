@@ -172,12 +172,10 @@ class Christmas():
 
 		social_networks = [""]
 		self.option_info = None
-		self.second_space = True
 
 		if social_network == self.twitter_scheduled_text:
 			social_network_link = self.twitter_scheduled_link
 			social_networks = ["Twitter"]
-			self.second_space = False
 
 		if social_network_backup != self.twitter_scheduled_text:
 			self.Social_Networks = Social_Networks()
@@ -188,17 +186,16 @@ class Christmas():
 			self.option_info = {"type": "profile"}
 
 		for social_network in social_networks:
-			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, second_space = self.second_space)
+			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, first_space = False, second_space = False)
+
+			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
 
 			if social_network_backup != "Twitter Scheduled":
 				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
 
-				if self.global_switches["testing"] == False:
-					self.Input.Type(text)
+			self.Input.Type(text)
 
-				if self.global_switches["testing"] == True:
-					print(text)
-
+			if social_network_backup != "Twitter Scheduled":
 				print()
 				print("-")
 
@@ -212,18 +209,13 @@ class Christmas():
 
 				print(self.language_texts["opening_{}"].format(social_network) + ":")
 				print("\t" + link)
-				print()
 
 				if self.global_switches["testing"] == False:
 					self.File.Open(link)
 
 				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
 
-				if self.global_switches["testing"] == False:
-					self.Input.Type(text)
-
-				if self.global_switches["testing"] == True:
-					print(text)
+				self.Input.Type(text)
 
 				if social_network != social_networks[-1]:
 					print()
@@ -255,6 +247,8 @@ class Christmas():
 
 			for text in files:
 				file = files[text]
+				self.File.Open(file)
+
 				lines = self.File.Contents(file)["lines"]
 
 				print()
@@ -269,9 +263,4 @@ class Christmas():
 
 					i += 1
 
-		if self.global_switches["testing"] == False:
-			self.Input.Type(script_texts[script_name])
-
-		if self.global_switches["testing"] == True:
-			print()
-			print(script_texts[script_name])
+		self.Input.Type(script_texts[script_name])

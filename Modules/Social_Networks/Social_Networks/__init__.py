@@ -352,11 +352,20 @@ class Social_Networks(object):
 
 			information = self.Input.Type(language_information_item, next_line = True)
 
-			if information_item in ["Profile link", "Message link"] and \
-			   information_item in self.social_network["data"]["Information"] and \
-			   self.social_network["data"]["Information"][information_item].split("{")[1].split("}")[0] == information_item and \
-			   information == "":
-				information = self.social_network["data"]["Information"][information_item].replace("{" + self.information_item_to_use + "}", "") + information
+			print(information_item)
+
+			# Format Social Network link if information_item is present in Social Network data values
+			for social_network_information_item in list(self.social_network["data"]["Information"].values()):
+				if information_item in ["Profile link", "Message link", "Message ID"] and information_item in social_network_information_item:
+					information = social_network_information_item.replace("{" + information_item + "}", "") + information
+
+				if information_item in self.social_network["data"]["Information"]["Profile link"]:
+					link = self.social_network["data"]["Information"]["Profile link"]
+					self.social_network_information[self.social_network["Name"]]["Profile link"] = link.replace("{" + information_item + "}", "") + information
+
+				if information_item in self.social_network["data"]["Information"]["Message link"]:
+					link = self.social_network["data"]["Information"]["Message link"]
+					self.social_network_information[self.social_network["Name"]]["Message link"] = link.replace("{" + information_item + "}", "") + information
 
 			self.social_network_information[self.social_network["Name"]][information_item] = information
 

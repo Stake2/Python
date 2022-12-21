@@ -735,9 +735,9 @@
 		"pt": "Assistir o episódio dublado no seu idioma",
 		"en": "Watch the dubbed episode in your language"
 	},
-	"type_the_number_of_times_you_watched": {
-		"pt": "Digite o número de vezes que você assistiu",
-		"en": "Type the number of times you watched"
+	"type_the_number_of_times_that_you_re_watched": {
+		"pt": "Digite o número de vezes que você re-assistiu",
+		"en": "Type the number of times that you re-watched"
 	},
 	"when_commented, en - pt": "When commented - Quando comentou",
 	"re_watched, type: format, en - pt": "(Re-Watched {}x - Re-Assistido {}x)",

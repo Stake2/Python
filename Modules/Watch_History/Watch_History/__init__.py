@@ -548,7 +548,9 @@ class Watch_History(object):
 			option_info["media_titles"]["original"] = option_info["media_details"][self.language_texts["original_name"]]
 
 			if option_info["plural_media_types"]["en"] == self.texts["animes"]["en"]:
-				option_info["media_titles"]["romanized"] = option_info["media_details"][self.language_texts["romanized_name"]]
+				if self.language_texts["romanized_name"] in option_info["media_details"]:
+					option_info["media_titles"]["romanized"] = option_info["media_details"][self.language_texts["romanized_name"]]
+
 				option_info["media_titles"]["jp"] = option_info["media_details"][self.language_texts["original_name"]]
 
 			for language in self.small_languages:

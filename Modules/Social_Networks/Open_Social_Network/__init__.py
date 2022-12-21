@@ -80,6 +80,7 @@ class Open_Social_Network(Social_Networks):
 			self.social_network_list = [self.social_network["Name"]]
 
 	def Unlock_Social_Network(self):
+		print()
 		Unblock(options = self.social_network_list)
 
 	def Define_Link_Type(self):
@@ -116,17 +117,7 @@ class Open_Social_Network(Social_Networks):
 			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
 				self.user_information = {}
 
-				for item in self.texts["information_items, type: list"]:
-					language_item = self.texts["information_items, type: list"][item]
-
-					if item in self.social_network["data"][self.link_type]:
-						self.user_information[language_item] = self.social_network["data"][self.link_type][item]
-
-				self.information_item_to_use = self.social_network["data"]["Information"][self.link_type_key].split("{")[1].split("}")[0]
-
-				self.social_network_link = self.social_network_link.replace("{" + self.information_item_to_use + "}", "")
-
-				self.social_network_link += self.social_network["data"][self.link_type][self.information_item_to_use]
+				self.social_network_link = self.social_network["data"]["Profile"][self.link_type_key]
 
 				added_user_information = False
 

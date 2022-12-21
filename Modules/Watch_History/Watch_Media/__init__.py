@@ -81,7 +81,6 @@ class Watch_Media(Watch_History):
 
 			print(self.language_texts["media_details"] + ":")
 
-			# To-Do: Remake Dict_Print function into "Text.Show" with list or dictionary check and use the method here
 			for item in self.media_details:
 				if item != list(self.media_details.keys())[0]:
 					print()
@@ -209,24 +208,23 @@ class Watch_Media(Watch_History):
 
 		self.media_dates_file = self.media_item_folder + self.texts["dates, title(), en - pt"] + ".txt"
 
-		self.language_media_item = {}
+		dict_ = {
+			"media_details_file": self.media_item_details_file,
+			"plural_media_types": self.plural_media_types,
+		}
+
+		self.language_media_item = self.Define_Media_Titles(dict_)["media_titles"]
 
 		for language in self.small_languages:
-			language_name = self.texts["language_name"][language]
+			if language in self.language_media_item:
+				string = self.language_media_item[language]
 
 			self.language_media_item[language] = {}
 
-			self.language_media_item[language]["title"] = self.media_item_details[self.language_texts["original_name"]]
+			if language in self.language_media_item:
+				self.language_media_item[language]["title"] = string
 
-			if self.plural_media_types["en"] == self.texts["animes"]["en"] and self.language_texts["romanized_name"] in self.media_item_details:
-				self.language_media_item[language]["title"] = self.media_item_details[self.language_texts["romanized_name"]]
-
-			for key in self.media_item_details:
-				if language_name == key:
-					self.language_media_item[language]["title"] = self.media_item_details[language_name]
-
-		self.language_media_item["language"] = {}
-		self.language_media_item["language"]["title"] = self.language_media_item[self.user_language]["title"]
+		self.language_media_item["language"] = self.language_media_item[self.user_language]
 
 		self.language_episode_titles = None
 
@@ -384,11 +382,10 @@ class Watch_Media(Watch_History):
 
 		# Adding "Re-Watched ?x - Re-Assistido ?x" text to media episode
 		if self.re_watching == True:
-			self.re_watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_you_watched"], accept_enter = False)
+			self.re_watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_re_watched"], accept_enter = False)
 
 			if int(self.re_watched_times) != 0:
-				if int(self.re_watched_times) != 1:
-					self.re_watched_times = str(int(self.re_watched_times))
+				self.re_watched_times = str(int(self.re_watched_times) + 1)
 
 				self.re_watched_string = self.texts["re_watched, type: format, en - pt"].format(self.re_watched_times, self.re_watched_times)
 				self.media_episode += " " + self.re_watched_string

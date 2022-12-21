@@ -113,6 +113,10 @@
 		"pt": "Pressione Enter quando você terminar de passar um tempo com a Monika no jogo",
 		"en": "Press Enter when you spending time with Monika on the game"
 	},
+	"press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet": {
+		"en": "Press Enter when you finish adding the screenshots of the decoreated computer to the scheduled tweet",
+		"pt": "Pressione Enter quando você terminar de adicionar as prints do computador decorado ao tweet programado"
+	},
 	"your_christmas_of_{}_is_finished_congratulations!": {
 		"pt": "Seu Natal de {} está concluído, parabéns!",
 		"en": "Your Christmas of {} is finished, congratulations!"
