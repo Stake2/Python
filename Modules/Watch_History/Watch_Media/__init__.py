@@ -216,13 +216,18 @@ class Watch_Media(Watch_History):
 		self.language_media_item = self.Define_Media_Titles(dict_)["media_titles"]
 
 		for language in self.small_languages:
+			string = self.language_media_item["original"]
+
+			if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+				if "romanized" in self.language_media_item:
+					string = self.language_media_item["romanized"]
+
 			if language in self.language_media_item:
 				string = self.language_media_item[language]
 
-			self.language_media_item[language] = {}
-
-			if language in self.language_media_item:
-				self.language_media_item[language]["title"] = string
+			self.language_media_item[language] = {
+				"title": string,
+			}				
 
 		self.language_media_item["language"] = self.language_media_item[self.user_language]
 
@@ -692,9 +697,13 @@ class Watch_Media(Watch_History):
 
 	def Open_Media_Unit(self):
 		# Open media unit with its executor
-		#if self.global_switches["testing"] == False:
-		#	self.Executor(self.Media_Unit)
-		test = ""
+		if self.global_switches["testing"] == False:
+			if self.is_remote_episode == True:
+				self.Executor(self.Media_Unit)
+
+			if self.is_local_episode == True:
+				import subprocess
+				subprocess.Popen('"C:\Program Files (x86)\Mozilla Firefox\Firefox.exe" ' + '"' + self.Media_Unit + '"')
 
 	# Make Custom Discord Status for the media episode that is going to be watched and copy  it
 	def Make_Discord_Status(self):

@@ -140,10 +140,7 @@ class Post(Stories):
 				"portrait, title()",
 				"landscape, title()",
 			],
-			"extensions": [
-				"jpeg",
-				"png",
-			],
+			"extension": "jpg",
 		}
 
 		list_ = []
@@ -156,7 +153,7 @@ class Post(Stories):
 			self.cover_types[english_text] = {
 				"name": english_text,
 				"title": self.language_texts[item],
-				"extension": self.cover_types["extensions"][i],
+				"extension": self.cover_types["extension"],
 				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg",
 			}
 
@@ -259,8 +256,14 @@ class Post(Stories):
 		self.Text.Copy(self.story["chapter_titles"][language], verbose = False)
 
 	def Move_Cover(self, language, full_language):
-		# [Cover_Type]/[Full_Language]/X - XX/
-		folder_name = self.cover_type["name"] + "/" + full_language + "/" + self.Cover_Folder_Name(self.story["chapter_number"]) + "/"
+		folder_name = ""
+
+		# [Cover_Type]/
+		if self.cover_type["name"] != self.texts["landscape, title()"]["en"]:
+			folder_name += self.cover_type["name"] + "/"
+
+		# [Full_Language]/X - XX/
+		folder_name += full_language + "/" + self.Cover_Folder_Name(self.story["chapter_number"]) + "/"
 
 		# Source file name
 		source_file_name = self.cover_type["name"]
@@ -345,7 +348,7 @@ class Post(Stories):
 			Open_Social_Network(social_network_parameter = "Wattpad", custom_link = wattpad_link, first_space = False)
 
 			# Copy chapter title
-			self.Copy_Title(language)
+			self.Copy_Title(language, post_chapter = True)
 
 			# Copy chapter text
 			self.Copy_Chapter_Text(language, full_language)
@@ -378,7 +381,6 @@ class Post(Stories):
 
 		print()
 		print(self.large_bar)
-		print()
 
 		# Format Wattpad template
 		social_networks["Wattpad"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
@@ -418,7 +420,7 @@ class Post(Stories):
 				self.Text.Copy(social_networks["Wattpad"]["Card"], verbose = False)
 
 				# Open Twitter
-				Open_Social_Network(social_network_parameter = ["Twitter", "Facebook"], custom_link = [self.social_networks["Twitter"]["profile"]["profile"], self.social_networks["Facebook"]["profile"]["profile"]])
+				Open_Social_Network(social_network_parameter = ["Twitter", "Facebook"], custom_link = [self.social_networks["Twitter"]["profile"]["profile"], self.social_networks["Facebook"]["profile"]["profile"]], first_space = False)
 
 				# Wait for user to finish posting
 				self.Input.Type(self.language_texts["paste_the_first_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network), first_space = False)
