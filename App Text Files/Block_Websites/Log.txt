@@ -1,5 +1,8 @@
 Estado de bloqueio:
-Sites desbloqueados
+Sites bloqueados
 
 Este arquivo vai ser atualizado a cada 30 minutos, reabra-o para atualizar.
-Última atualização em: 21:13 22/12/2022
+Última atualização em: 14:50 24/12/2022
+
+Este site está desbloqueado por 30 minutos:
+Facebook

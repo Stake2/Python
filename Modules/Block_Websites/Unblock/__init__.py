@@ -12,7 +12,10 @@ class Unblock(Block_Websites):
 		if self.options != None:
 			self.website_to_unlock = self.options
 
-			if type(self.options) == dict:
+			if type(self.website_to_unlock) == str:
+				self.website_to_unlock = [self.website_to_unlock]
+
+			if type(self.website_to_unlock) == dict:
 				self.website_to_unlock = [self.website_to_unlock["Website"]]
 
 		self.in_working_hours = Block(show_text = False, block = False).in_working_hours

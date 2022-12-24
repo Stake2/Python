@@ -286,7 +286,7 @@ class Register_Watched_Media(Watch_History):
 		self.File.Edit(self.watched_files["Times"], text_to_append, "a")
 
 		# YouTube IDs.txt
-		text_to_append = "None"
+		text_to_append = " "
 
 		if self.is_video_series_media == True:
 			text_to_append = self.media_dictionary["youtube_video_id"]

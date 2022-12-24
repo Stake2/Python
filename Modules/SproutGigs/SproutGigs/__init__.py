@@ -9,6 +9,9 @@ from Date import Date as Date
 from Input import Input as Input
 from Text import Text as Text
 
+from Social_Networks.Social_Networks import Social_Networks as Social_Networks
+import Block_Websites
+
 class SproutGigs():
 	def __init__(self, parameter_switches = None):
 		self.parameter_switches = parameter_switches
@@ -20,6 +23,8 @@ class SproutGigs():
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
 		self.Define_Categories()
+
+		self.Social_Networks = Social_Networks(self.global_switches)
 
 	def Define_Basic_Variables(self):
 		# Global Switches dictionary
@@ -167,6 +172,10 @@ class SproutGigs():
 
 		self.Open_Category_Tab(self.category)
 
+		if self.category["name"] in self.Social_Networks.social_networks:
+			print()
+			Block_Websites.Unblock(self.category["name"])
+
 	def Open_Category_Tab(self, category, open = False):
 		text = self.language_texts["opening_{}_on_this_category_to_work"].format(self.website["name"])
 
@@ -179,7 +188,15 @@ class SproutGigs():
 
 		print(text + ":")
 		print(category["name"])
-		print()
+
+		if self.first_time == True:
+			print()
+
+		if self.first_time == False and category["name"] not in self.Social_Networks.social_networks and open == False:
+			print()
+
+		if open == True:
+			print()
 
 		if self.first_time == True or open == True:
 			self.category["info"]["link"] = self.website["category_link_template"].format(category["info"]["number"])
