@@ -55,8 +55,7 @@ class Start_Christmas(Christmas):
 		print("-")
 		print()
 
-		if self.global_switches["testing"] == False:
-			self.File.Open(self.planning_file)
+		self.File.Open(self.planning_file)
 
 		self.planning_steps = ""
 

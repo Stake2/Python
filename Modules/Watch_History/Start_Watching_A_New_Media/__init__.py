@@ -23,7 +23,7 @@ class Start_Watching_A_New_Media(Watch_History):
 			self.language_texts["on_hold, title()"],
 		]
 
-		self.Watch_Media = Watch_Media(open_media = False, status_text = self.status_text, module = "SWANW")
+		self.Watch_Media = Watch_Media(open_media = False, status_text = self.status_text)
 
 	def Define_Media_Variables(self):
 		self.option_info = self.Watch_Media.option_info
@@ -137,4 +137,4 @@ class Start_Watching_A_New_Media(Watch_History):
 		self.File.Edit(self.watching_status_files[self.language_texts["watching, title()"]], text_to_write, "w")
 
 	def Watch_The_Media(self):
-		Watch_Media(run_as_module = True, option_info = self.option_info)
+		Watch_Media(run_as_module = True, option_info_parameter = self.option_info)

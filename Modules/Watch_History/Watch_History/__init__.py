@@ -242,6 +242,7 @@ class Watch_History(object):
 		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch History/"
 		self.Folder.Create(self.watch_history_folder)
 
+		# Watched folders and files
 		self.watched_folder = self.watch_history_folder + "Watched/"
 		self.Folder.Create(self.watched_folder)
 
@@ -274,6 +275,7 @@ class Watch_History(object):
 		self.movies_folder = self.watch_history_folder + "Movies/"
 		self.Folder.Create(self.movies_folder)
 
+		# Media Info folders and files
 		self.media_info_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Media Info/"
 		self.Folder.Create(self.media_info_folder)
 
@@ -286,6 +288,7 @@ class Watch_History(object):
 		self.media_number_file = self.media_info_media_details_folder + "Media number.txt"
 		self.File.Create(self.media_number_file)
 
+		# Comment_Writer folders and files
 		self.comment_writer_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Comment_Writer/"
 		self.Folder.Create(self.comment_writer_folder)
 
@@ -297,6 +300,9 @@ class Watch_History(object):
 
 		self.all_comments_folder = self.comment_writer_folder + "All comments - Todos os comentários/"
 		self.Folder.Create(self.all_comments_folder)
+
+		# Audiovisual Media Network root files
+		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
 
 		# Media info folders and media details folders dictionary
 		self.media_info_folders = {}
@@ -472,15 +478,15 @@ class Watch_History(object):
 
 			media_titles[english_media_type] = sorted(current_watching_status)
 
-			for self.media_title in media_titles[english_media_type]:
-				self.local_media_folder = self.root_folders["media"] + self.Sanitize(self.media_title, restricted_characters = True) + "/"
+			for media_title in media_titles[english_media_type]:
+				self.local_media_folder = self.root_folders["media"] + self.Sanitize(media_title, restricted_characters = True) + "/"
 				self.Folder.Create(self.local_media_folder)
 
 			i += 1
 
 		return media_titles
 
-	def Select_Media_Type(self, language_media_type_list = None, texts = None):
+	def Select_Media_Type(self, language_media_type_list = None, texts = None, dictionary = None):
 		show_text = self.language_texts["media_types"]
 
 		if texts != None and texts[0] != None:
@@ -497,7 +503,8 @@ class Watch_History(object):
 			self.language_media_type_list = language_media_type_list
 
 		# Select
-		dictionary = self.Input.Select(self.texts["plural_media_types, type: list"]["en"], self.language_media_type_list, show_text = show_text, select_text = select_text)
+		if dictionary == None:
+			dictionary = self.Input.Select(self.texts["plural_media_types, type: list"]["en"], self.language_media_type_list, show_text = show_text, select_text = select_text)
 
 		option_info = {
 			"media_type_number": dictionary["number"],
@@ -565,12 +572,12 @@ class Watch_History(object):
 			if self.user_language in option_info["media_titles"]:
 				option_info["media_titles"]["language"] = option_info["media_titles"][self.user_language]
 
-			if self.user_language not in option_info["media_titles"] and option_info["plural_media_types"]["en"] == self.texts["animes"]["en"]:
+			if self.user_language not in option_info["media_titles"] and option_info["plural_media_types"]["en"] == self.texts["animes"]["en"] and "romanized" in option_info["media_titles"]:
 				option_info["media_titles"]["language"] = option_info["media_titles"]["romanized"]
 
 		return option_info
 
-	def Select_Media(self, plural_media_types, singular_media_types, mixed_plural_media_type, media_list, media_info_media_type_folder, texts = None):
+	def Select_Media(self, plural_media_types, singular_media_types, mixed_plural_media_type, media_list, media_info_media_type_folder, texts = None, option_info_parameter = None):
 		self.a_text = self.gender_the_texts[plural_media_types["en"]]["a"]
 
 		show_text = self.Text.By_Number(media_list, singular_media_types["language"], plural_media_types["language"])
@@ -593,8 +600,12 @@ class Watch_History(object):
 
 		option_info["plural_media_types"] = plural_media_types
 
-		# Select
-		option_info["media"] = self.Input.Select(media_list, show_text = show_text, select_text = select_text)["option"]
+		if option_info_parameter == None:
+			# Select
+			option_info["media"] = self.Input.Select(media_list, show_text = show_text, select_text = select_text)["option"]
+
+		if option_info_parameter != None:
+			option_info.update(option_info_parameter)
 
 		option_info["media_folder"] = media_info_media_type_folder + self.Sanitize(option_info["media"], restricted_characters = True) + "/"
 

@@ -34,7 +34,7 @@ class Fill_Episode_Titles_File(Watch_History):
 		self.media_details_file = self.option_info["media_details_file"]
 		self.media_details = self.File.Dictionary(self.media_details_file)
 
-		self.Watch_Media = Watch_Media(run_as_module = True, open_media = False, option_info = self.option_info)
+		self.Watch_Media = Watch_Media(run_as_module = True, open_media = False, option_info_parameter = self.option_info)
 
 		self.episode_titles_files = self.Watch_Media.episode_titles_files
 

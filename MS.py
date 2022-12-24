@@ -39,15 +39,20 @@ class Main():
 	def Define_Basic_Variables(self):
 		self.Global_Switches = Global_Switches()
 
-		self.global_switches = self.Global_Switches.global_switches
+		self.reset_switches = {
+			"testing": False,
+			"verbose": False,
+			"user_information": False,
+		}
+
 		self.switches_file = self.Global_Switches.switches_file
 		self.switches = ["testing", "verbose", "user_information"]
 
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.Text = Text(self.global_switches)
+		self.Language = Language(self.reset_switches)
+		self.File = File(self.reset_switches)
+		self.Folder = Folder(self.reset_switches)
+		self.Input = Input(self.reset_switches)
+		self.Text = Text(self.reset_switches)
 
 		self.folders = self.Folder.folders
 		self.root_folders = self.folders["root"]
@@ -141,24 +146,13 @@ class Main():
 				self.module = module
 
 	def Switch(self):
-		self.reset_dictionary = {
-			"testing": False,
-			"verbose": False,
-			"user_information": False,
-		}
-
 		# Update Switches file if there are Switch arguments
 		if self.has_switches == True:
-			self.arguments_dictionary = self.Language.JSON_To_Python(self.switches_file)
+			self.arguments_dictionary = self.reset_switches.copy()
 
 			for switch in self.switches:
 				if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
-					self.arguments_dictionary[switch] = getattr(self.arguments, switch)
-
-			# Update Switches file
-			from File import File as File
-
-			self.File = File(self.reset_dictionary)
+					self.arguments_dictionary[switch] = getattr(self.arguments, switch)	
 
 			# Edit Switches.txt file
 			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.arguments_dictionary), "w")
@@ -168,14 +162,7 @@ class Main():
 
 		# Reset Switches file if no Switch argument is present
 		if self.has_switches == False:	
-			from File import File as File
-			from Text import Text as Text
-
-			self.File = File(self.reset_dictionary)
-			self.Text = Text(self.reset_dictionary)
-
-			# Reset
-			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_dictionary), "w")
+			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_switches), "w")
 
 	def Run_Module(self, module_name):
 		self.module = importlib.import_module(self.module)

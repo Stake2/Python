@@ -1,11 +1,11 @@
 {
-	"this_website_is_unblocked_for_{}_minutes": {
-		"pt": "Este site está desbloqueado por {} minutos",
-		"en": "This website is unblocked for {} minutes"
+	"this_website_is_unblocked_for_{}": {
+		"pt": "Este site está desbloqueado por {}",
+		"en": "This website is unblocked for {}"
 	},
-	"these_websites_are_unblocked_for_{}_minutes": {
-		"pt": "Estes sites estão desbloqueados por {} minutos",
-		"en": "These websites are unblocked for {} minutes"
+	"these_websites_are_unblocked_for_{}": {
+		"pt": "Estes sites estão desbloqueados por {}",
+		"en": "These websites are unblocked for {}"
 	},
 	"working_time": {
 		"pt": "horário de trabalho",
@@ -58,5 +58,17 @@
 	"not": {
 		"pt": "não",
 		"en": "not"
+	},
+	"minutes": {
+		"en": "minutes",
+		"pt": "minutos"
+	},
+	"hour": {
+		"en": "hour",
+		"pt": "hora"
+	},
+	"hours": {
+		"en": "hours",
+		"pt": "horas"
 	}
 }

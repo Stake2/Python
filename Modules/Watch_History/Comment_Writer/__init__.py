@@ -19,8 +19,8 @@ class Comment_Writer(Watch_History):
 		self.is_series_media = media_dictionary["is_series_media"]
 
 		if self.is_series_media == True:
-			self.media_episode_number = media_dictionary["media_episode_number"]
-			self.media_episode_number_text = media_dictionary["media_episode_number_text"]
+			self.episode_number = media_dictionary["episode_number"]
+			self.episode_number_text = media_dictionary["episode_number_text"]
 
 		self.no_media_list = media_dictionary["no_media_list"]
 		self.re_watching = media_dictionary["re_watching"]
@@ -32,6 +32,11 @@ class Comment_Writer(Watch_History):
 		self.media_item = media_dictionary["media_item"]
 		self.media_item_file_safe = media_dictionary["media_item_file_safe"]
 		self.media_item_episode_with_title = media_dictionary["media_item_episode_with_title"]
+
+		self.media_link = ""
+
+		if "media_link" in media_dictionary:
+			self.media_link = media_dictionary["media_link"]
 
 		self.do_backup = True
 
@@ -73,8 +78,12 @@ class Comment_Writer(Watch_History):
 				self.texts["videos"]["en"],
 			]
 
-			if self.plural_media_types["en"] in media_types_with_comment_posting:
+			if self.plural_media_types["en"] in media_types_with_comment_posting and self.media_link != "":
 				self.Text.Copy(self.comment)
+
+				self.File.Open(self.media_link)
+
+				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
 
 				if self.plural_media_types["en"] == self.texts["videos"]["en"]:
 					self.youtube_comment_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
@@ -82,8 +91,6 @@ class Comment_Writer(Watch_History):
 					self.youtube_comment_id = self.youtube_comment_link.split("&lc=")[1]
 
 					self.File.Edit(self.all_comments_media_type_youtube_id_file, self.youtube_comment_id + "\n" + self.youtube_comment_link, "w")
-
-				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
 
 	def Define_Files(self):
 		# Comment file for non-movies
@@ -96,9 +103,9 @@ class Comment_Writer(Watch_History):
 				if alternative_episode_type in self.media_episode:
 					self.comment_file_name += alternative_episode_type + " "
 
-			self.comment_file_name += self.media_episode_number_text
+			self.comment_file_name += self.episode_number_text
 
-			if self.re_watching == True:
+			if self.re_watching == True and self.re_watched_string != "":
 				self.comment_file_name += " " + self.re_watched_string
 
 		# Comment file for movies

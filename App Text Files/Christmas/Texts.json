@@ -85,6 +85,10 @@
 		"en": "Opening {}",
 		"pt": "Abrindo {}"
 	},
+	"opening_this_file_{}": {
+		"en": "Opening this file:\n{}",
+		"pt": "Abrindo este arquivo:\n{}"
+	},
 	"defining_{}": {
 		"en": "Defining {}",
 		"pt": "Definindo {}"
@@ -120,5 +124,10 @@
 	"your_christmas_of_{}_is_finished_congratulations!": {
 		"pt": "Seu Natal de {} está concluído, parabéns!",
 		"en": "Your Christmas of {} is finished, congratulations!"
+	},
+	"texts, title(), en - pt": "Texts - Textos",
+	"list": {
+		"en": "list",
+		"pt": "lista"
 	}
 }

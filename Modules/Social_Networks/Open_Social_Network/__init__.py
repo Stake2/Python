@@ -5,7 +5,7 @@ from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Block_Websites.Unblock import Unblock as Unblock
 
 class Open_Social_Network(Social_Networks):
-	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, first_space = True, second_space = True):
+	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, unblock = True, first_space = True, second_space = True):
 		super().__init__()
 
 		self.open_social_networks = open_social_networks
@@ -61,7 +61,7 @@ class Open_Social_Network(Social_Networks):
 					if self.open_social_networks == True:
 						print()
 
-				if i == 0:
+				if i == 0 and unblock == True:
 					self.Unlock_Social_Network()
 
 				self.Open_Social_Network()

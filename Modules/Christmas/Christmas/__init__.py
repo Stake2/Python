@@ -11,6 +11,7 @@ from Text import Text as Text
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
+import Block_Websites
 
 class Christmas():
 	def __init__(self, parameter_switches = None):
@@ -128,6 +129,7 @@ class Christmas():
 		self.objects_file = self.christmas_language_folders["en"] + "Objects.txt"
 
 		self.things_to_watch_file = self.christmas_folder + self.language_texts["watch, title(), en - pt"] + ".txt"
+		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
 		self.things_to_eat_file = self.christmas_language_folders[self.user_language] + self.language_texts["eat, title()"] + ".txt"
 
 	def Define_Lists(self):
@@ -146,24 +148,32 @@ class Christmas():
 			"Run_Script": self.Run_Script,
 		}
 
-	def Open_File(self, text):
+	def Open_File(self, key):
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
 			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
+			"Texts - Textos": self.christmas_folder + self.language_texts["texts, title(), en - pt"] + ".txt",
 		}
 
 		texts = {
 			"Foobar2000": self.language_texts["opening_{}"].format("Foobar2000"),
 			"Theme": self.language_texts["defining_{}"].format(self.language_texts["christmas_theme"]),
+			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title(), en - pt"] + ".txt"),
 		}
 
-		file = files[text]
-		text = texts[text]
+		file = files[key]
+		text = texts[key]
 
-		if self.global_switches["testing"] == False:
+		if self.global_switches["testing"] == False or self.global_switches["testing"] == True and key not in ["Foobar2000", "Theme"]:
 			self.File.Open(file)
 
-		print(text + "...")
+		if key != self.language_texts["texts, title(), en - pt"]:
+			text += "..."
+
+		if key == self.language_texts["texts, title(), en - pt"]:
+			text = "\n" + text
+
+		print(text)
 
 	def Open_Social_Network(self, social_network):
 		social_network_link = None
@@ -173,40 +183,57 @@ class Christmas():
 		social_networks = [""]
 		self.option_info = None
 
+		self.Social_Networks = Social_Networks()
+
 		if social_network == self.twitter_scheduled_text:
+			# Unblock Social Networks
+			Block_Websites.Unblock(self.Social_Networks.social_networks["Names"], 60)
+
 			social_network_link = self.twitter_scheduled_link
 			social_networks = ["Twitter"]
 
 		if social_network_backup != self.twitter_scheduled_text:
-			self.Social_Networks = Social_Networks()
-
-			social_networks = self.Social_Networks.social_networks["Names"]
+			social_networks = sorted(self.Social_Networks.social_networks["Names"])
 			social_networks.remove("Habitica")
 
 			self.option_info = {"type": "profile"}
 
+		if social_network_backup != self.twitter_scheduled_text:
+			self.social_networks_len = str(len(social_networks) + 3)
+
+		i = 1
 		for social_network in social_networks:
-			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, first_space = False, second_space = False)
+			if social_network_backup != self.twitter_scheduled_text:
+				if social_network == social_networks[0]:
+					print()
+
+				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
+				print()
+
+			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
 
 			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
 
-			if social_network_backup != "Twitter Scheduled":
+			if social_network_backup != self.twitter_scheduled_text:
 				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
 
 			self.Input.Type(text)
 
-			if social_network_backup != "Twitter Scheduled":
+			if social_network_backup != self.twitter_scheduled_text:
 				print()
 				print("-")
+				print()
+
+			i += 1
 
 		if social_network_backup != self.twitter_scheduled_text:
 			social_networks = ["Github", "DeviantArt", "YouTube"]
 
-			print()
-
 			for social_network in social_networks:
 				link = self.alternative_social_networks_links[social_network]
 
+				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
+				print()
 				print(self.language_texts["opening_{}"].format(social_network) + ":")
 				print("\t" + link)
 
@@ -221,6 +248,8 @@ class Christmas():
 					print()
 					print("-")
 					print()
+
+				i += 1
 
 	def Run_Script(self, script_name):
 		files = self.Folder.Contents(self.apps_folders["shortcuts"]["white_shortcuts"])["file"]["list"]
@@ -242,6 +271,7 @@ class Christmas():
 		if script_name == "Watch_History":
 			files = {
 				self.language_texts["watch"]: self.things_to_watch_file,
+				self.language_texts["watch"] + " (" + self.language_texts["list"] + ")": self.watch_list_file,
 				self.language_texts["eat"]: self.things_to_eat_file,
 			}
 

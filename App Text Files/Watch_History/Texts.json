@@ -390,6 +390,10 @@
 		"en": "Has dub",
 		"pt": "Tem dublagem"
 	},
+	"subbed": {
+		"en": "subbed",
+		"pt": "legendado"
+	},
 	"dubbed": {
 		"en": "dubbed",
 		"pt": "dublado"
@@ -735,6 +739,10 @@
 		"pt": "Assistir o episódio dublado no seu idioma",
 		"en": "Watch the dubbed episode in your language"
 	},
+	"type_the_number_of_times_that_you_watched": {
+		"pt": "Digite o número de vezes que você assistiu",
+		"en": "Type the number of times that you watched"
+	},
 	"type_the_number_of_times_that_you_re_watched": {
 		"pt": "Digite o número de vezes que você re-assistiu",
 		"en": "Type the number of times that you re-watched"
@@ -753,6 +761,10 @@
 	"re_watched, title()": {
 		"pt": "Re-Assistido",
 		"en": "Re-Watched"
+	},
+	"watched, title()": {
+		"pt": "Assistido",
+		"en": "Watched"
 	},
 	"title, title()": {
 		"pt": "Título",
@@ -1349,5 +1361,17 @@
 	"christmas_special_{}": {
 		"en": "Christmas special {}",
 		"pt": "{} especial de Natal"
+	},
+	"list_of_media_to_watch": {
+		"en": "List of media to watch",
+		"pt": "Lista de mídia para assistir"
+	},
+	"list_of_watched_media": {
+		"en": "List of watched media",
+		"pt": "Lista de mídia assistida"
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
 	}
 }

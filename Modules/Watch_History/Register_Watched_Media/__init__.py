@@ -81,7 +81,6 @@ class Register_Watched_Media(Watch_History):
 		self.is_video_series_media = self.media_dictionary["is_video_series_media"]
 
 		if self.is_series_media == True:
-			self.media_episode_number = self.media_dictionary["media_episode_number"]
 			self.episode_titles = self.media_dictionary["episode_titles"]
 			self.language_episode_titles = self.media_dictionary["language_episode_titles"]
 
@@ -601,7 +600,7 @@ class Register_Watched_Media(Watch_History):
 			self.media_dictionary["completed_media"] = True
 
 		if self.media_dictionary["completed_media"] == False and self.media_dictionary["completed_media_item"] == False:
-			self.media_dictionary["next_episode_to_watch"] = self.language_episode_titles[int(self.media_episode_number)]
+			self.media_dictionary["next_episode_to_watch"] = self.language_episode_titles[int(self.media_dictionary["episode_number"])]
 
 			if self.is_hybrid == True:
 				self.media_dictionary["next_episode_to_watch"] += self.origin_type

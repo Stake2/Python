@@ -10,22 +10,26 @@ from urllib.parse import urlparse, parse_qs
 
 # A class to Watch media that has the "Watching" or "Re-Watching" Watching Status
 class Watch_Media(Watch_History):
-	def __init__(self, run_as_module = False, open_media = True, media_list = None, status_text = None, option_info = None, module = None):
+	def __init__(self, run_as_module = False, open_media = True, media_list = None, status_text = None, option_info_parameter = None):
 		super().__init__()
 
 		self.run_as_module = run_as_module
 		self.open_media = open_media
 		self.media_list = media_list
-
 		self.status_text = status_text
 
-		if self.run_as_module == True:
-			self.option_info = option_info
+		self.option_info_parameter = option_info_parameter
+
+		if self.option_info_parameter != None:
+			self.option_info = self.option_info_parameter
 
 		self.Define_Media_Type_Variables()
+
+		self.media_dictionary = {}
+
 		self.Define_Media_Variables()
 
-		if self.open_media == False and module != None:
+		if self.open_media == False:
 			self.Define_Media_Episode_Variables()
 			self.Define_Media_Dictionary()
 
@@ -40,7 +44,7 @@ class Watch_Media(Watch_History):
 			self.Register_Media()
 
 	def Define_Media_Type_Variables(self):
-		if self.run_as_module == False:
+		if self.option_info == None:
 			self.lists_dict = {}
 
 			self.lists_dict["media_list"] = self.media_list
@@ -71,7 +75,7 @@ class Watch_Media(Watch_History):
 		self.media_folder = self.option_info["media_folder"]
 		self.media_details_file = self.option_info["media_details_file"]
 		self.media_details = self.File.Dictionary(self.media_details_file)
-		self.media_titles = self.option_info["media_titles"]
+		self.media_titles_list = self.option_info["media_titles"]
 
 		if self.global_switches["verbose"] == True and self.open_media == True:
 			print()
@@ -80,30 +84,23 @@ class Watch_Media(Watch_History):
 			print()
 
 			print(self.language_texts["media_details"] + ":")
-
-			for item in self.media_details:
-				if item != list(self.media_details.keys())[0]:
-					print()
-
-				print("\t" + item + ": ")
-				print("\t\t" + self.media_details[item])
+			print(self.Language.Python_To_JSON(self.media_details))
 
 			print()
-
 			print(self.language_texts["media_details_file"] + ":")
 			print(self.media_details_file)
 
 		# Media title and Portuguese media title variables
-		self.media_title = self.media_titles["original"]
+		self.media_title = self.media_titles_list["original"]
 
 		if self.plural_media_types["en"] == self.texts["animes"]["en"]:
-			self.media_title = self.media_titles["romanized"]
+			self.media_title = self.media_titles_list["romanized"]
 
-		if " (" in self.media_titles["original"] and " (" not in self.media_titles["language"]:
-			self.media_titles["language"] = self.media_titles["language"] + " (" + self.media_titles["original"].split(" (")[-1]
+		if " (" in self.media_titles_list["original"] and " (" not in self.media_titles_list["language"]:
+			self.media_titles_list["language"] = self.media_titles_list["language"] + " (" + self.media_titles_list["original"].split(" (")[-1]
 
-			if self.user_language in self.media_titles:
-				self.media_titles[self.user_language] = self.media_titles[self.user_language] + " (" + self.media_titles["original"].split(" (")[-1]
+			if self.user_language in self.media_titles_list:
+				self.media_titles_list[self.user_language] = self.media_titles_list[self.user_language] + " (" + self.media_titles_list["original"].split(" (")[-1]
 
 		self.media_title_file_safe = self.Sanitize(self.media_title, restricted_characters = True)
 
@@ -155,7 +152,7 @@ class Watch_Media(Watch_History):
 				self.media_list_file = self.media_list_folder + self.media_list_text + ".txt"
 				self.File.Create(self.media_list_file)
 
-				# "Current Season.txt" or "Current Series.txt"
+				# "Current season.txt" or "Current series.txt"
 				self.current_media_item_file = self.media_list_folder + self.current_media_item_text + ".txt"
 				self.File.Create(self.current_media_item_file)
 
@@ -188,7 +185,11 @@ class Watch_Media(Watch_History):
 			self.show_text = self.Text.Capitalize(self.language_texts["youtube_video_series"])
 			self.select_text = self.language_texts["select_a_youtube_video_series"]
 
-			self.media_item = self.Input.Select(self.media_list_item_names, show_text = self.show_text, select_text = self.select_text)["option"]
+			if self.option_info_parameter == False:
+				self.media_item = self.Input.Select(self.media_list_item_names, show_text = self.show_text, select_text = self.select_text)["option"]
+
+			if self.option_info_parameter == True:
+				self.media_item = self.media_list_item_names[0]
 
 		self.media_item_file_safe = self.media_item
 
@@ -324,10 +325,33 @@ class Watch_Media(Watch_History):
 				self.is_remote_episode = True
 
 		# Remote or hybrid remote media origin, code, and link
-		if self.origin_type == self.texts["remote, title()"]["en"] or self.is_remote_episode == True:
-			self.media_remote_origin_name = self.media_item_details[self.language_texts["remote_origin, title()"]]
-			self.media_remote_origin_code = self.media_item_details[self.language_texts["origin_location, title()"]]
-			self.media_remote_origin = self.remote_origins[self.media_remote_origin_name]
+		if self.language_texts["remote_origin, title()"] in self.media_details or self.language_texts["remote_origin, title()"] in self.media_item_details:
+			values = {}
+
+			for item in ["remote_origin, title()", "origin_location, title()"]:
+				if self.language_texts[item] in self.media_details:
+					values[item] = self.media_details[self.language_texts[item]]
+
+				if self.language_texts[item] in self.media_item_details:
+					values[item] = self.media_item_details[self.language_texts[item]]
+
+				if self.language_texts[item] not in self.media_details and self.language_texts[item] not in self.media_item_details:
+					values[item] = ""
+
+			self.remote_data = {
+				"name": values["remote_origin, title()"],
+				"origin_code": values["origin_location, title()"],
+			}
+
+			if self.remote_data["origin_code"] == "":
+				if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+					self.remote_data["origin_code"] = self.Sanitize(self.media_title.lower(), restricted_characters = True)
+					self.remote_data["origin_code"] = self.remote_data["origin_code"].replace(" ", "-")
+					self.remote_data["origin_code"] = self.remote_data["origin_code"].replace("!", "")
+					self.remote_data["origin_code"] = self.remote_data["origin_code"].replace(",", "")
+					self.remote_data["origin_code"] = self.remote_data["origin_code"].replace("△", "")
+
+			self.remote_data["origin"] = self.remote_origins[self.remote_data["name"]]
 
 		self.one_episode_number_regex = r"[0-9][0-9]"
 		self.two_episode_numbers_regex = r"[0-9][0-9]\-[0-9][0-9]"
@@ -336,7 +360,7 @@ class Watch_Media(Watch_History):
 		self.language_media_episode = self.media_episode
 
 		if self.is_series_media == False:
-			self.language_media_episode = self.media_titles["language"]
+			self.language_media_episode = self.media_titles_list["language"]
 
 		# Media episode number definition by episode titles file line
 		if self.is_series_media == True:
@@ -348,31 +372,31 @@ class Watch_Media(Watch_History):
 			i = 1
 			for line in self.language_episode_titles:
 				if line in media_episode:
-					self.media_episode_number = i
+					self.media_dictionary["episode_number"] = i
 
 				i += 1
 
-			self.media_episode_number_text = str(self.Text.Add_Leading_Zeros(self.media_episode_number))
-			self.media_episode_number_text_backup = self.media_episode_number_text
+			self.media_dictionary["episode_number_text"] = str(self.Text.Add_Leading_Zeros(self.media_dictionary["episode_number"]))
+			self.media_episode_number_text_backup = self.media_dictionary["episode_number_text"]
 
 			one_episode_number = re.findall(self.one_episode_number_regex, self.media_episode)
 			one_episode_number_and_bracket = re.findall(self.episode_and_bracket_number, self.media_episode)
 			two_episode_numbers = re.findall(self.two_episode_numbers_regex, self.media_episode)
 
 			if one_episode_number != [] and str(one_episode_number[0]) != self.media_episode_number_text_backup:
-				self.media_episode_number_text = one_episode_number[0]
+				self.media_dictionary["episode_number_text"] = one_episode_number[0]
 
 			if one_episode_number_and_bracket != [] and one_episode_number_and_bracket[0].split("(")[0] != self.media_episode_number_text_backup:
-				self.media_episode_number_text = one_episode_number_and_bracket[0]
+				self.media_dictionary["episode_number_text"] = one_episode_number_and_bracket[0]
 
 			if one_episode_number_and_bracket != [] and one_episode_number_and_bracket[0].split("(")[0] == self.media_episode_number_text_backup:
-				self.media_episode_number_text = one_episode_number_and_bracket[0].split(" ")[0].split("(")[1].split(")")[0]
+				self.media_dictionary["episode_number_text"] = one_episode_number_and_bracket[0].split(" ")[0].split("(")[1].split(")")[0]
 
 			if two_episode_numbers != []:
-				self.media_episode_number_text = two_episode_numbers[0]
+				self.media_dictionary["episode_number_text"] = two_episode_numbers[0]
 
-			if self.media_episode_number_text != self.media_episode_number_text_backup:
-				self.media_episode_number_text = self.media_episode_number_text_backup + " (" + self.media_episode_number_text + ")"
+			if self.media_dictionary["episode_number_text"] != self.media_episode_number_text_backup:
+				self.media_dictionary["episode_number_text"] = self.media_episode_number_text_backup + " (" + self.media_dictionary["episode_number_text"] + ")"
 
 		self.youtube_video_id = None
 
@@ -381,16 +405,27 @@ class Watch_Media(Watch_History):
 			self.youtube_video_ids = self.File.Contents(self.youtube_video_ids_file)["lines"]
 
 			if self.youtube_video_ids != []:
-				self.youtube_video_id = self.youtube_video_ids[self.media_episode_number - 1]
+				self.youtube_video_id = self.youtube_video_ids[self.media_dictionary["episode_number"] - 1]
 
 		self.re_watched_string = ""
 
 		# Adding "Re-Watched ?x - Re-Assistido ?x" text to media episode
 		if self.re_watching == True:
-			self.re_watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_re_watched"], accept_enter = False)
+			if self.run_as_module == False:
+				print()
+				print(self.media_titles_list["language"] + " " + self.media_episode)
 
-			if int(self.re_watched_times) != 0:
-				self.re_watched_times = str(int(self.re_watched_times) + 1)
+				self.watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_watched"], accept_enter = False)
+
+			if self.run_as_module == True:
+				self.watched_times = 1
+
+			if int(self.watched_times) != 0:
+				if int(self.watched_times) != 1:
+					self.re_watched_times = str(int(self.watched_times) + 1)
+
+				else:
+					self.re_watched_times = str(self.watched_times)
 
 				self.re_watched_string = self.texts["re_watched, type: format, en - pt"].format(self.re_watched_times, self.re_watched_times)
 				self.media_episode += " " + self.re_watched_string
@@ -398,7 +433,7 @@ class Watch_Media(Watch_History):
 				self.language_re_watched_string = self.language_texts["re_watched, type: format"].format(self.re_watched_times)
 				self.language_media_episode += " " + self.language_re_watched_string
 
-			if int(self.re_watched_times) == 0:
+			if int(self.watched_times) == 0:
 				self.re_watching = False
 
 		# Defining the local media folder to use in local or hybrid local media
@@ -485,8 +520,8 @@ class Watch_Media(Watch_History):
 			self.language_media_item[language]["episode"] = self.media_item_episode
 			self.language_media_item[language]["episode_with_title"] = self.media_item_episode_with_title
 
-			if self.media_title in self.language_media_item[language]["episode_with_title"] and language in self.media_titles:
-				self.language_media_item[language]["episode_with_title"] = self.language_media_item[language]["episode_with_title"].replace(self.media_title, self.media_titles[language])
+			if self.media_title in self.language_media_item[language]["episode_with_title"] and language in self.media_titles_list:
+				self.language_media_item[language]["episode_with_title"] = self.language_media_item[language]["episode_with_title"].replace(self.media_title, self.media_titles_list[language])
 
 			if self.media_item in self.language_media_item[language]["episode"]:
 				self.language_media_item[language]["episode"] = self.language_media_item[language]["episode"].replace(self.media_item, self.language_media_item[language]["title"])
@@ -513,9 +548,9 @@ class Watch_Media(Watch_History):
 				self.media_item_episode_with_title = self.media_item_episode_with_title.replace(self.media_title, self.media_title + " " + self.language_texts["dubbed"])
 
 	def Define_Media_Dictionary(self):
-		self.media_dictionary = {
+		self.media_dictionary.update({
 			"media_title": self.media_title,
-			"media_titles": self.media_titles,
+			"media_titles": self.media_titles_list,
 			"media_title_file_safe": self.media_title_file_safe,
 
 			"media_folder": self.media_folder,
@@ -548,7 +583,7 @@ class Watch_Media(Watch_History):
 			"re_watching": self.re_watching,
 			"re_watched_string": self.re_watched_string,
 			"no_media_list": self.no_media_list,
-		}
+		})
 
 		self.media_dictionary["the_text"], self.media_dictionary["this_text"], self.media_dictionary["of_text"], self.media_dictionary["of_the_text"] = self.Define_The_Text(self.plural_media_types)
 		self.media_dictionary["the_item_text"] = self.media_dictionary["the_text"]
@@ -576,8 +611,6 @@ class Watch_Media(Watch_History):
 			self.media_dictionary["episode_titles_files"] = self.episode_titles_files
 			self.media_dictionary["episode_titles"] = self.episode_titles
 			self.media_dictionary["language_episode_titles"] = self.language_episode_titles
-			self.media_dictionary["media_episode_number"] = self.media_episode_number
-			self.media_dictionary["media_episode_number_text"] = self.media_episode_number_text
 			self.media_dictionary["comments_folder"] = self.comments_folder
 
 		self.media_dictionary["media_item"] = self.media_item
@@ -605,35 +638,44 @@ class Watch_Media(Watch_History):
 		]
 
 		# Remote media episode link definition
-		if self.is_remote_episode == True:
-			self.media_episode_link = self.media_remote_origin
+		if self.language_texts["remote_origin, title()"] in self.media_item_details:
+			self.media_dictionary["media_link"] = self.remote_data["origin"]
 
 			# Media episode link definition for Animes Vision website
-			if self.media_remote_origin_name == "Animes Vision":
+			if self.remote_data["name"] == "Animes Vision":
 				# Add Portuguese media type and origin code (media title) to media episode link
-				self.media_episode_link += self.portuguese_media_type.lower() + "/" + self.media_remote_origin_code
+				self.media_dictionary["media_link"] += self.plural_media_types["pt"].lower() + "/" + self.remote_data["origin_code"]
 
 				# Add dubbed text
 				if self.has_dub == True and self.watch_dubbed == True:
-					self.media_episode_link += "-" + self.texts["dubbed"]["pt"].lower()
+					self.media_dictionary["media_link"] += "-" + self.texts["dubbed"]["pt"].lower()
 
-				self.media_episode_link += "/"
+				self.media_dictionary["media_link"] += "/"
 
 				# Add episode number
-				self.media_episode_link += "episodio-" + self.media_episode_number_text + "/"
+				self.media_dictionary["media_link"] += "episodio-" + str(self.Text.Add_Leading_Zeros(self.media_dictionary["episode_number"])) + "/"
+
+				# Add dubbed text to media link if the media has a dub in the user language and user wants to watch it dubbed
+				if self.has_dub == True and self.watch_dubbed == True:
+					self.media_dictionary["media_link"] += self.texts["dubbed"]["pt"]
+
+				# Add subbed text to media link if there is no dub for the media or the user wants to watch it subbed
+				if self.has_dub == False or self.watch_dubbed == False:
+					self.media_dictionary["media_link"] += self.texts["subbed"]["pt"]
 
 			# Media episode link definition for YouTube website
-			if self.media_remote_origin_name == "YouTube":
+			if self.remote_data["name"] == "YouTube":
 				# Add watch and video id to media episode link if it is in the remote origin code
 				if "v=" not in self.media_remote_origin_code:
-					self.media_episode_link += "watch?v=" + self.media_dictionary["youtube_video_id"] + "&list=" + self.media_remote_origin_code + "&index=" + str(self.media_episode_number)
+					self.media_dictionary["media_link"] += "watch?v=" + self.media_dictionary["youtube_video_id"] + "&list=" + self.remote_data["origin_code"] + "&index=" + str(self.media_dictionary["episode_number"])
 
-				if "v=" in self.media_remote_origin_code:
-					self.media_episode_link += "watch?" + self.media_remote_origin_code
+				if "v=" in self.remote_data["origin_code"]:
+					self.media_dictionary["media_link"] += "watch?" + self.remote_data["origin_code"]
 
-			self.Media_Unit = self.media_episode_link
+			self.media_dictionary["media_unit"] = self.media_dictionary["media_link"]
 
-			self.Executor = self.Text.Open_Link
+			if self.is_remote_episode == True:
+				self.Executor = self.Text.Open_Link
 
 		# Local media episode file definition
 		if self.is_local_episode == True:
@@ -648,23 +690,23 @@ class Watch_Media(Watch_History):
 			self.media_episode_no_re_watched = re.sub(" " + self.texts["re_watched, type: regex, en - pt"], "", self.media_episode_file_safe)
 
 			# Add media episode to local media folder
-			self.media_episode_file = self.local_media_folder + self.media_episode_no_re_watched
+			self.media_dictionary["media_file"] = "file:///" + self.local_media_folder + self.media_episode_no_re_watched
 
 			self.file_does_exist = False
 
 			# Check if a media episode file with one of the accepted extensions exist
 			for extension in self.accepted_file_extensions:
-				file = self.media_episode_file + "." + extension
+				file = self.media_dictionary["media_file"] + "." + extension
 
-				if self.File.Exist(file) == True:
-					self.media_episode_file = file
+				if self.File.Exist(file.replace("file:///", "")) == True:
+					self.media_dictionary["media_file"] = file
 
 					self.file_does_exist = True
 
 			# If it does not, then, ask if the user wants to move the file from somewhere to the correct folder
 			if self.file_does_exist == False:
 				print()
-				print(self.media_episode_file)
+				print(self.media_dictionary["media_file"])
 				print()
 				print(self.language_texts["the_media_file_does_not_exist"] + ".")
 				print()
@@ -674,20 +716,15 @@ class Watch_Media(Watch_History):
 				self.bring_file = self.Input.Yes_Or_No(self.ask_text, first_space = False)
 
 				if self.bring_file == True:
-					self.media_episode_file = self.Find_Media_file(self.media_episode)
+					self.media_dictionary["media_file"] = self.Find_Media_file(self.media_episode)
 
 				if self.bring_file == False:
 					print()
 					quit(self.language_texts["alright"] + ".")
 
-			self.Media_Unit = "file:///"
-
-			if self.media_episode_file != None:
-				self.Media_Unit += self.media_episode_file
+			self.media_dictionary["media_unit"] = self.media_dictionary["media_file"]
 
 			self.Executor = self.File.Open
-
-		self.media_dictionary["media_unit"] = self.Media_Unit
 
 	def Show_Opening_Media_Info(self):
 		if self.is_video_series_media == False and self.Today_Is_Christmas() == True:
@@ -699,11 +736,11 @@ class Watch_Media(Watch_History):
 		# Open media unit with its executor
 		if self.global_switches["testing"] == False:
 			if self.is_remote_episode == True:
-				self.Executor(self.Media_Unit)
+				self.Executor(self.media_dictionary["media_unit"])
 
 			if self.is_local_episode == True:
 				import subprocess
-				subprocess.Popen('"C:\Program Files (x86)\Mozilla Firefox\Firefox.exe" ' + '"' + self.Media_Unit + '"')
+				subprocess.Popen('"C:\Program Files (x86)\Mozilla Firefox\Firefox.exe" ' + '"' + self.media_dictionary["media_unit"] + '"')
 
 	# Make Custom Discord Status for the media episode that is going to be watched and copy  it
 	def Make_Discord_Status(self):
