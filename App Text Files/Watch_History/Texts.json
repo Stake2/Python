@@ -1373,5 +1373,9 @@
 	"number, title()": {
 		"en": "Number",
 		"pt": "Número"
+	},
+	"add_one_to_the_re_watched_times_number": {
+		"en": "Add one to the Re-Watched times number",
+		"pt": "Adicionar um ao número de vezes Re-Assistidas"
 	}
 }

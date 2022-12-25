@@ -121,7 +121,7 @@ class Comment_Writer(Watch_History):
 		self.all_comments_media_type_media_title_folder = self.all_comments_media_type_folder + self.Sanitize(self.media_title, restricted_characters = True) + "/"
 		self.Folder.Create(self.all_comments_media_type_media_title_folder)
 
-		if self.no_media_list == False:
+		if self.no_media_list == False and self.media_item != self.media_title:
 			self.all_comments_media_type_media_title_folder += self.media_item_file_safe + "/"
 			self.Folder.Create(self.all_comments_media_type_media_title_folder)
 

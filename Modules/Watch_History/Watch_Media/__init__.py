@@ -20,6 +20,8 @@ class Watch_Media(Watch_History):
 
 		self.option_info_parameter = option_info_parameter
 
+		self.option_info = None
+
 		if self.option_info_parameter != None:
 			self.option_info = self.option_info_parameter
 

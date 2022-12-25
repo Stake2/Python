@@ -3,12 +3,17 @@
 from Block_Websites.Block_Websites import Block_Websites as Block_Websites
 
 class Block(Block_Websites):
-	def __init__(self, show_text = True, block = True, website_to_unlock = None):
+	def __init__(self, show_text = True, block = True, website_to_unlock = None, time = None, text = None):
 		super().__init__()
 
 		self.show_text = show_text
 		self.block = block
 		self.website_to_unlock = website_to_unlock
+		self.time = time
+		self.text = text
+
+		if self.time == None:
+			self.time = self.hour_config["Update time"]
 
 		self.Check_Time()
 		self.Mount_Text_String()
@@ -90,17 +95,10 @@ class Block(Block_Websites):
 			self.key = "unlocked"
 			self.not_text = " " + self.language_texts["not"]
 
-		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.hour_config["Update time"], self.date["%H:%M %d/%m/%Y"])
+		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.time, self.date["%H:%M %d/%m/%Y"])
 
 		if self.website_to_unlock != None:
-			text = self.language_texts["this_website_is_unblocked_for_{}_minutes"]
-
-			if len(self.website_to_unlock) > 1:
-				text = self.language_texts["these_websites_are_unblocked_for_{}_minutes"]
-
-			text = text.format(self.hour_config["Update time"]) + ":"
-
-			self.log_text += "\n\n" + text + "\n"
+			self.log_text += "\n\n" + self.text + "\n"
 
 			for item in self.website_to_unlock:
 				self.log_text += item
@@ -135,7 +133,7 @@ class Block(Block_Websites):
 		self.File.Edit(self.apps_folders["modules"][self.module_name_lower]["block"]["block"], text, "w")
 
 		self.texts["task_name"] = "Block Websites"
-		self.Date.Schedule_Task(self.texts["task_name"], self.apps_folders["modules"][self.module_name_lower]["block"]["block"], self.hour_config["Update time"])
+		self.Date.Schedule_Task(self.texts["task_name"], self.apps_folders["modules"][self.module_name_lower]["block"]["block"], self.time)
 
 if __name__ == "__main__":
 	Block()

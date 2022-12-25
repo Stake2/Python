@@ -12,8 +12,6 @@ class Start_Christmas(Christmas):
 		print(self.large_bar)
 		print()
 
-		self.today_is_christmas = True
-
 		if self.today_is_christmas == False:
 			self.months_left = abs((self.date["year"] - self.christmas["year"]) * 12 + self.date["month"] - self.christmas["month"])
 			self.days_left = abs(abs((self.date["date"] - self.christmas["date"]).days - 1) - (self.months_left * monthrange(self.date["year"], self.date["month"])[1]))

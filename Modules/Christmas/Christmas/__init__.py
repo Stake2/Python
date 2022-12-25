@@ -227,7 +227,7 @@ class Christmas():
 			i += 1
 
 		if social_network_backup != self.twitter_scheduled_text:
-			social_networks = ["Github", "DeviantArt", "YouTube"]
+			social_networks = ["YouTube"]
 
 			for social_network in social_networks:
 				link = self.alternative_social_networks_links[social_network]
