@@ -48,8 +48,6 @@ class Create_Year_Summary(Years):
 		if self.date["day"] == self.summary_date["day"] and self.date["month"] == self.summary_date["month"]:
 			self.today_is_summary_day = True
 
-		self.today_is_summary_day = True
-
 		if self.today_is_summary_day == False:
 			day_month = self.language_texts["{} {} {}"].format(self.summary_date["day"], self.summary_date["month_name"], self.date["year"])
 			today = self.language_texts["{} {} {}"].format(self.date["day"], self.date["month_name"], self.date["year"])

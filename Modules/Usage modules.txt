@@ -12,5 +12,6 @@ Social_Networks
 SproutGigs
 Stories
 Tasks
+Text_Generator
 Watch_History
 Years
