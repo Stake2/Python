@@ -128,5 +128,3 @@ class Generate_CSS_Selectors():
 			i += 1
 
 		self.string += "\n}"
-
-Generate_CSS_Selectors()

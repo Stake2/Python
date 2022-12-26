@@ -15,6 +15,8 @@ Read [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUC
 ## Contribute
 [How to Contribute](https://github.com/Stake2/Python/blob/main/CONTRIBUTING.md)<br>
 
+[Translating](https://github.com/Stake2/Python/blob/main/TRANSLATING.md)<br>
+
 ## Installing
 - Install the requirements in the [Requirements file](https://github.com/Stake2/Python/blob/main/requirements.txt)
 ```
