@@ -115,13 +115,7 @@ class Years(object):
 		self.year_texts_folder = self.years_folder + self.texts["texts, title()"]["en"] + "/"
 		self.Folder.Create(self.year_texts_folder)
 
-		self.year_texts_new_year_folder = self.year_texts_folder + self.texts["new_year, en - pt"] + "/"
-		self.Folder.Create(self.year_texts_new_year_folder)
-
-		self.year_texts_christmas_folder = self.year_texts_folder + self.texts["new_year, en - pt"] + "/"
-		self.Folder.Create(self.year_texts_christmas_folder)
-
-		self.years_file = self.years_folder + self.texts["years, title()"]["en"] + ".txt"
+		self.years_file = self.years_folder + self.texts["years, title()"]["en"] + ".json"
 		self.File.Create(self.years_file)
 
 		# Year image folders
@@ -135,19 +129,17 @@ class Years(object):
 		# Lists
 		self.summary_date = self.Date.From_String("26/12/{}".format(self.date["year"]), "%d/%m/%Y")
 
-		self.years_list = []
-
-		for year in range(2018, int(self.date["year"]) + 1):
-			self.years_list.append(str(year))
-
-		# Write all Years into the Years file
-		self.File.Edit(self.years_file, self.Text.From_List(self.years_list), "w")
-
 		# Dictionaries
-		self.years = {}
+		self.years = {
+			"list": [],
+		}
+
+		# Add Years to Years list
+		for year in range(2018, int(self.date["year"]) + 1):
+			self.years["list"].append(str(year))
 
 		# Dictionaries filling
-		for year in self.years_list:
+		for year in self.years["list"]:
 			self.years[year] = {}
 
 			self.years[year]["number"] = year
@@ -163,12 +155,19 @@ class Years(object):
 			# Define folders
 			self.years[year]["folders"] = self.Folder.Contents(self.years[year]["folder"])["dictionary"]
 
+		# Write Years dictionary converted to JSON on "Years.json" file
+		text = self.Language.Python_To_JSON(self.years)
+		self.File.Edit(self.years_file, text, "w")
+
+		# Define "Year Texts" folders and files
+		self.year_texts_contents = self.Folder.Contents(self.year_texts_folder)["dictionary"]
+
 		# Current Year dictionary definition
 		self.current_year = self.years[str(self.date["year"])]
 
 	def Select_Year(self, years = None, select_text = None):
 		if years == None:
-			years = self.years_list
+			years = self.years["list"]
 
 		show_text = self.language_texts["years, title()"]
 

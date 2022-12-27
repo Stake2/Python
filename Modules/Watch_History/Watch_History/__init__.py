@@ -254,9 +254,6 @@ class Watch_History(object):
 		if self.File.Exist(self.total_watched_number_current_year_file) == False:
 			self.File.Edit(self.total_watched_number_current_year_file, "0", "w")
 
-		self.current_year_episode_file = self.current_year_watched_media_folder + "Episodes.txt"
-		self.File.Create(self.current_year_episode_file)
-
 		self.episodes_file = self.current_year_watched_media_folder + "Episodes.json"
 		self.File.Create(self.episodes_file)
 
@@ -301,6 +298,20 @@ class Watch_History(object):
 		self.all_comments_folder = self.comment_writer_folder + "All comments - Todos os comentários/"
 		self.Folder.Create(self.all_comments_folder)
 
+		# All Comments Number file
+		self.all_comments_number_file = self.comment_writer_folder + "All comments number.txt"
+		self.File.Create(self.all_comments_number_file)
+
+		if self.File.Contents(self.all_comments_number_file)["length"] == 0:
+			self.File.Edit(self.all_comments_number_file, "0", "w")
+
+		# Year Comment Number file
+		self.year_comment_number_file = self.current_year_comment_number_folder + "Number.txt"
+		self.File.Create(self.year_comment_number_file)
+
+		if self.File.Contents(self.year_comment_number_file)["length"] == 0:
+			self.File.Edit(self.year_comment_number_file, "0", "w")
+
 		# Audiovisual Media Network root files
 		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
 
@@ -321,6 +332,15 @@ class Watch_History(object):
 		self.watching_status_files = {}
 
 		self.episode_data = {}
+
+		for watched_text in ["Episodes", "Media Types", "Times", "YouTube IDs", "Number"]:
+			file = self.current_year_watched_media_folder + watched_text + ".txt"
+			self.episode_data[watched_text] = self.File.Contents(file)["lines"]
+
+			if watched_text == "Number":
+				self.episode_data[watched_text] = self.episode_data[watched_text][0]
+
+		self.episode_data["Comments"] = self.File.Contents(self.year_comment_number_file)["lines"][0]
 
 		i = 1
 		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
@@ -347,7 +367,7 @@ class Watch_History(object):
 			self.per_media_type_episode_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Episodes.txt"
 			self.per_media_type_time_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Times.txt"
 			self.per_media_type_number_files[plural_media_type] = self.per_media_type_files_folders[plural_media_type] + "Number.txt"
-			self.all_comment_number_media_type_files[plural_media_type] = self.all_comments_media_type_folders[plural_media_type] + "/Number.txt"
+			self.all_comment_number_media_type_files[plural_media_type] = self.all_comments_media_type_folders[plural_media_type] + "Number.txt"
 
 			if self.File.Exist(self.per_media_type_number_files[plural_media_type]) == False:
 				self.File.Edit(self.per_media_type_number_files[plural_media_type], "0", "w")
@@ -366,13 +386,20 @@ class Watch_History(object):
 				self.watching_status_files[plural_media_type][watching_status] = self.watching_status_folders[plural_media_type] + watching_status + ".txt"
 				self.File.Create(self.watching_status_files[plural_media_type][watching_status])
 
-			self.episode_data[plural_media_type] = self.File.Contents(self.per_media_type_episode_files[plural_media_type])["lines"]
+			self.episode_data[plural_media_type] = {
+				"Episodes": self.File.Contents(self.per_media_type_episode_files[plural_media_type])["lines"],
+				"Times": self.File.Contents(self.per_media_type_time_files[plural_media_type])["lines"],
+				"Number": self.File.Contents(self.per_media_type_number_files[plural_media_type])["lines"][0],
+			}
+
+			if plural_media_type == self.texts["videos"]["en"]:
+				self.episode_data[plural_media_type]["YouTube IDs"] = self.File.Contents(self.per_media_type_files_folders[plural_media_type] + "YouTube IDs.txt")["lines"]
 
 			i += 1
 
 		self.watched_files = {}
 
-		for watched_text in ["Episodes", "Media Types", "Times", "Names"]:
+		for watched_text in ["Episodes", "Media Types", "Times"]:
 			self.watched_files[watched_text] = self.current_year_watched_media_folder + watched_text + ".txt"
 			self.File.Create(self.watched_files[watched_text])
 
@@ -381,23 +408,6 @@ class Watch_History(object):
 		for movie_text in ["Names", "Times"]:
 			self.movie_files[movie_text] = self.movies_folder + movie_text + ".txt"
 			self.File.Create(self.movie_files[movie_text])
-
-		# All Comments Number file
-		self.all_comments_number_file = self.comment_writer_folder + "All comments number.txt"
-		self.File.Create(self.all_comments_number_file)
-
-		if self.File.Contents(self.all_comments_number_file)["length"] == 0:
-			self.File.Edit(self.all_comments_number_file, "0", "w")
-
-		# Year Comment Number file
-		self.year_comment_number_file = self.current_year_comment_number_folder + "Number.txt"
-		self.File.Create(self.year_comment_number_file)
-
-		if self.File.Contents(self.year_comment_number_file)["length"] == 0:
-			self.File.Edit(self.year_comment_number_file, "0", "w")
-
-		self.episode_data["watched_number"] = self.File.Contents(self.total_watched_number_current_year_file)["lines"][0]
-		self.episode_data["comment_number"] = self.File.Contents(self.year_comment_number_file)["lines"][0]
 
 		self.File.Edit(self.episodes_file, self.Language.Python_To_JSON(self.episode_data), "w")
 

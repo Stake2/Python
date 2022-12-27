@@ -31,6 +31,10 @@
 		"pt": "Este Ano Eu",
 		"en": "This Year I"
 	},
+	"this_year_i_post": {
+		"pt": "Este Ano Eu (post)",
+		"en": "This Year I (post)"
+	},
 	"information, title()": {
 		"pt": "Informação",
 		"en": "Information"
@@ -48,17 +52,17 @@
 		"en": "Data files"
 	},
 	"author, title()": {
-		"pt": "Autor",
-		"en": "Author"
+		"en": "Author",
+		"pt": "Autor"
 	},
 	"created_in": {
-		"pt": "Criado em",
-		"en": "Editado em"
+		"en": "Created in",
+		"pt": "Criado em"
 	},
 	"created_in, en - pt": "Created in - Criado em",
 	"edited_in": {
-		"pt": "Editado em",
-		"en": "Edited in"
+		"en": "Edited in",
+		"pt": "Editado em"
 	},
 	"edited_in, en - pt": "Edited in - Editado em",
 	"year_summary_header_texts, type: list": {
@@ -69,7 +73,7 @@
 		],
 		"en": [
 			"Author",
-			"Editado em",
+			"Created in",
 			"Edited in"
 		]
 	},
@@ -241,7 +245,7 @@
 		"en": "Image folder"
 	},
 	"{}_texts": {
-		"pt": "Textos de {}",
-		"en": "{} texts"
+		"pt": "Textos de \"{}\"",
+		"en": "\"{}\" texts"
 	}
 }

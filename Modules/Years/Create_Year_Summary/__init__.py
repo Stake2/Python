@@ -6,7 +6,7 @@ class Create_Year_Summary(Years):
 	def __init__(self):
 		super().__init__(select_year = False)
 
-		self.Select_The_Year()
+		self.Define_Year()
 
 		if self.year != None:
 			self.Check_Day()
@@ -18,8 +18,8 @@ class Create_Year_Summary(Years):
 				self.Write_Summary_To_Files()
 				self.Show_Summary_Information()
 
-	def Select_The_Year(self):
-		years_list = self.years_list.copy()
+	def Define_Year(self):
+		years_list = self.years["list"].copy()
 
 		for year in self.years:
 			english_files = self.years[year]["folders"][self.full_languages["en"]]
@@ -28,19 +28,19 @@ class Create_Year_Summary(Years):
 			self.File.Contents(english_files[self.texts["summary, title()"]["en"]])["lines"] != []:
 				years_list.remove(year)
 
-		select_text = self.language_texts["select_a_year_to_create_its_summary"]
-
 		if years_list == []:
 			print()
 			print("--------------------")
 			print()
 			print(self.language_texts["you_already_created_the_summary_for_this_year"] + ":")
 			print(self.date["year"])
+			print()
+			print("--------------------")
 
 		self.year = None
 
 		if years_list != []:
-			self.year = self.Select_Year(years_list, select_text)
+			self.year = self.years[str(years_list[0])]
 
 	def Check_Day(self):
 		self.today_is_summary_day = False
@@ -98,27 +98,26 @@ class Create_Year_Summary(Years):
 		from Friends.Friends import Friends as Friends
 
 		# GamePlayer instantiate
-		self.Tasks = Tasks()
-		self.GamePlayer = GamePlayer()
+		self.Tasks = Tasks(self.global_switches)
+		self.GamePlayer = GamePlayer(self.global_switches)
 
 		self.year_numbers["things_done_in_{year}"] = 0
 
 		# Tasks data
 		self.tasks = self.Language.JSON_To_Python(self.Tasks.folders["Task History"][str(self.date["year"])]["Tasks.json"])
+		self.task_times = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Times"])["lines"]
 
 		# Watch History data
 		self.watch_history_data = self.Language.JSON_To_Python(self.episodes_file)
 
 		self.year_numbers["productive_things"] = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Number"])["lines"][0]
-		self.year_numbers["watched_things"] = self.watch_history_data["watched_number"]
-		self.year_numbers["media_comments"] = self.watch_history_data["comment_number"]
+		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
+		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
 		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
-		self.year_numbers["known_people"] = Friends(select_social_network = False).current_year_friends_number
+		self.year_numbers["known_people"] = Friends(self.global_switches, select_social_network = False).current_year_friends_number
 
 		for data in self.year_numbers:
 			self.year_numbers["things_done_in_{year}"] += int(self.year_numbers[data])
-
-		del self.watch_history_data["watched_number"], self.watch_history_data["comment_number"]
 
 		self.year_data["detailed"] = {}
 		self.year_data["detailed"]["productive_things"] = {}
@@ -133,15 +132,16 @@ class Create_Year_Summary(Years):
 
 		self.year_data["detailed"]["watched_things"] = self.watch_history_data
 
-		for media_type in self.year_data["detailed"]["watched_things"]:
-			media_type_episodes = self.year_data["detailed"]["watched_things"][media_type]
+		self.plural_media_types = self.Language.JSON_To_Python(self.apps_folders["app_text_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
 
-			while len(media_type_episodes) > self.itens_per_type:
-				media_type_episodes.pop(0)
+		for key in self.year_data["detailed"]["watched_things"]:
+			if key in self.plural_media_types["en"]:
+				media_type_episodes = self.year_data["detailed"]["watched_things"][key]["Episodes"]
+				media_type_times = self.year_data["detailed"]["watched_things"][key]["Times"]
 
-		self.texts["plural_media_types, type: list"] = self.Language.JSON_To_Python(self.apps_folders["app_text_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
-
-		self.plural_media_types = self.texts["plural_media_types, type: list"]
+				while len(media_type_episodes) > self.itens_per_type:
+					media_type_episodes.pop(0)
+					media_type_times.pop(0)
 
 		self.year_data["detailed"]["game_matches_played"] = {}
 
@@ -171,7 +171,7 @@ class Create_Year_Summary(Years):
 			for summary_text in self.year_numbers:
 				summary_text_backup = summary_text
 
-				summary_text = self.language_texts[summary_text]
+				summary_text = self.texts[summary_text][language]
 
 				if "{year}" in summary_text:
 					summary_text = summary_text.replace("{year}", self.year["number"])
@@ -195,7 +195,7 @@ class Create_Year_Summary(Years):
 
 			# Detailed texts
 			for summary_text in self.year_data["detailed"]:
-				self.summary_text[language] += self.language_texts[summary_text]
+				self.summary_text[language] += self.texts[summary_text][language]
 
 				if summary_text not in ["productive_things", "watched_things"]:
 					number = self.itens_per_type
@@ -211,7 +211,10 @@ class Create_Year_Summary(Years):
 				if summary_text != "watched_things":
 					i = 1
 					for data in self.year_data["detailed"][summary_text][language]:
-						self.summary_text[language] += str(i) + ". " + data
+						self.summary_text[language] += "\t" + str(i) + ". " + data
+
+						if summary_text == "productive_things":
+							self.summary_text[language] += " (" + self.task_times[i] + ")"
 
 						if data != self.year_data["detailed"][summary_text][language][-1]:
 							self.summary_text[language] += "\n"
@@ -220,8 +223,8 @@ class Create_Year_Summary(Years):
 
 				if summary_text == "watched_things":
 					c = 0
-					for media_type in self.year_data["detailed"][summary_text]:
-						media_type_episodes = self.year_data["detailed"][summary_text][media_type]
+					for media_type in self.plural_media_types["en"]:
+						media_type_episodes = self.year_data["detailed"][summary_text][media_type]["Episodes"]
 
 						language_media_type = self.plural_media_types[language][c]
 
@@ -237,6 +240,8 @@ class Create_Year_Summary(Years):
 						i = 1
 						for data in media_type_episodes:
 							self.summary_text[language] += "\t\t" + str(i) + ". " + data
+
+							self.summary_text[language] += " (" + self.year_data["detailed"][summary_text][media_type]["Times"][i - 1] + ")"
 
 							if data != media_type_episodes[-1]:
 								self.summary_text[language] += "\n"
