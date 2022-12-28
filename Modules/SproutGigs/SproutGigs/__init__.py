@@ -173,7 +173,6 @@ class SproutGigs():
 		self.Open_Category_Tab(self.category)
 
 		if self.category["name"] in self.Social_Networks.social_networks:
-			print()
 			Block_Websites.Unblock(self.category["name"])
 
 	def Open_Category_Tab(self, category, open = False):

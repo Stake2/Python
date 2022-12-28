@@ -36,27 +36,29 @@ class Verify_Current_Year(Years):
 
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
+			self.files = {}
+
 			# Christmas Texts file
 			self.christmas_folder = self.current_year["folder"] + self.language_texts["christmas, en - " + self.user_language] + "/"
-			self.christmas_texts_file = self.christmas_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
+			self.files["christmas, title()"] = self.christmas_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
 
-			text_to_write = self.File.Contents(self.christmas_texts_file)["string"]
+			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
 
 			if "{current_year}" in text_to_write:
 				text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
 
-			self.File.Edit(self.christmas_texts_file, text_to_write, "w")
+			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
 
 			# New Year Texts file
 			self.new_year_folder = self.current_year["folder"] + self.language_texts["new_year, en - " + self.user_language] + "/"
-			self.new_year_texts_file = self.new_year_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
+			self.files["new_year"] = self.new_year_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
 
-			text_to_write = self.File.Contents(self.new_year_texts_file)["string"]
+			text_to_write = self.File.Contents(self.files["new_year"])["string"]
 
 			if "{next_year}" in text_to_write:
 				text_to_write = text_to_write.replace("{next_year}", str(self.date["year"] + 1))
 
-			self.File.Edit(self.new_year_texts_file, text_to_write, "w")
+			self.File.Edit(self.files["new_year"], text_to_write, "w")
 
 			# Created In file
 			self.created_in_file = self.current_year["folder"] + self.language_texts["created_in, en - " + self.user_language] + ".txt"
@@ -69,30 +71,16 @@ class Verify_Current_Year(Years):
 			# New Year posts folder
 			self.new_year_posts_folder = self.new_year_folder + "Posts/"
 
-			# Twitter posts file
-			self.twitter_file = self.new_year_posts_folder + "Twitter.txt"
+			# Social Networks posts files
+			for item in ["Instagram, Facebook", "Twitter", "WhatsApp"]:
+				file = self.new_year_posts_folder + item + ".txt"
 
-			text_to_write = self.File.Contents(self.twitter_file)["string"]
+				text_to_write = self.File.Contents(file)["string"]
 
-			if "{current_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+				if "{current_year}" in text_to_write:
+					text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
 
-			self.File.Edit(self.twitter_file, text_to_write, "w")
-
-			# WhatsApp, Instagram, and Facebook posts file
-			self.whatsapp_instagram_facebook_file = self.new_year_posts_folder + "WhatsApp, Instagram, Facebook.txt"
-
-			text_to_write = self.File.Contents(self.whatsapp_instagram_facebook_file)["string"]
-
-			if "{current_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
-
-			self.File.Edit(self.whatsapp_instagram_facebook_file, text_to_write, "w")
-
-			self.sub_files = {
-				self.language_texts["christmas, title()"]: self.christmas_file,
-				self.language_texts["new_year"]: self.new_year_file,
-			}
+				self.File.Edit(file, text_to_write, "w")
 
 		# Tells the user that the current Year already exists in the Years folder
 		text_to_show = self.language_texts["the_current_year_already_exists_in_the_years_folder"]
@@ -120,8 +108,10 @@ class Verify_Current_Year(Years):
 		if self.folder_size == 0:
 			print()
 
-			for language_text in self.sub_files:
-				file = self.sub_files[language_text]
+			for item in self.files:
+				file = self.files[item]
+
+				language_text = self.language_texts[item]
 
 				print(self.language_texts["{}_texts"].format(language_text) + ":")
 
@@ -131,9 +121,9 @@ class Verify_Current_Year(Years):
 					print("\t" + line)
 
 				print("]")
+				print()
 
-				if language_text != list(self.sub_files.keys())[-1]:
-					print()
+		else:
+			print()
 
-		print()
 		print("-----")
