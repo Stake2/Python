@@ -112,9 +112,9 @@ class Food_Time():
 		for language in self.small_languages:
 			self.show_texts[language] = {}
 
-			for time_type in self.time_types:
-				prefix = self.texts["this_is_the_time_that_you"][language] + " "
+			prefix = self.texts["this_is_the_time_that_you"][language] + " "
 
+			for time_type in self.time_types:
 				self.show_texts[language][time_type] = prefix + self.texts[time_type][language]
 
 	def Define_Files(self):
