@@ -10,9 +10,10 @@ from Input import Input as Input
 from Text import Text as Text
 
 class Food_Time():
-	def __init__(self, parameter_switches = None, register_time = True):
+	def __init__(self, parameter_switches = None, show_text = True, register_time = True):
 		self.parameter_switches = parameter_switches
 
+		self.show_text = show_text
 		self.register_time = register_time
 
 		self.Define_Basic_Variables()
@@ -21,15 +22,17 @@ class Food_Time():
 
 		self.Define_Files()
 
-		if self.register_time == True:
-			self.Get_Time()
-			self.Define_Times()
-			self.Register_Times()
+		if self.show_text == True:
+			if self.register_time == True:
+				self.Get_Time()
+				self.Define_Times()
+				self.Register_Times()
+				self.Set_Timer()
 
-		if self.register_time == False:
-			self.Get_Times_From_File()
+			if self.register_time == False:
+				self.Get_Times_From_File()
 
-		self.Show_Times()
+			self.Show_Times()
 
 	def Define_Basic_Variables(self):
 		# Global Switches dictionary
@@ -66,27 +69,26 @@ class Food_Time():
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
+		self.module = self.__module__
 
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		if __name__ == "__main__":
-			self.module_name = "Food_Time"
-
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		if self.module["name"] == "__main__":
+			self.module["name"] = "Food_Time"
+
+		self.module["key"] = self.module["name"].lower()
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -124,13 +126,17 @@ class Food_Time():
 	def Get_Time(self):
 		self.date = self.Date.Now()
 
-		self.food_times = {}
+		self.dates = {
+			"ate": self.date,
+			"can_drink_water": self.Date.Now(self.date["date"] + self.Date.Timedelta(minutes = self.times["can_drink_water"])),
+			"will_be_hungry": self.Date.Now(self.date["date"] + self.Date.Timedelta(hours = self.times["will_be_hungry"])),
+		}
 
-		self.food_times["ate"] = self.date["%H:%M"]
-
-		self.food_times["can_drink_water"] = self.Date.Strftime(self.date["date"] + self.Date.Timedelta(minutes = self.times["can_drink_water"]), format = "%H:%M")
-
-		self.food_times["will_be_hungry"] = self.Date.Strftime(self.date["date"] + self.Date.Timedelta(hours = self.times["will_be_hungry"]), format = "%H:%M")
+		self.food_times = {
+			"ate": self.dates["ate"]["%H:%M"],
+			"can_drink_water": self.Date.Strftime(self.dates["can_drink_water"]["date"], format = "%H:%M"),
+			"will_be_hungry": self.Date.Strftime(self.dates["will_be_hungry"]["date"], format = "%H:%M"),
+		}
 
 	def Define_Times(self):
 		self.food_time_texts = {}
@@ -156,6 +162,65 @@ class Food_Time():
 				text_to_write += "\n"
 
 		self.File.Edit(self.raw_times_file, text_to_write, "w")
+
+	def Set_Timer(self):
+		# Define website timer to countdown to "will_be_hungry" time
+		from urllib.parse import urlencode
+
+		# Define URL template to use
+		self.timer_url_template = "https://www.timeanddate.com/countdown/generic?"
+
+		# Define default URL parameters
+		parameters = {
+			"p0": "543",
+			"msg": self.language_texts["time_that_you_will_be_hungry"],
+			"font": "slab",
+		}
+
+		self.timer_url_template = self.timer_url_template + urlencode(parameters)
+
+		# Define English "minute" and "second" texts
+		self.minute_and_second_texts = [
+			self.Date.texts["minute"]["en"],
+			self.Date.texts["second"]["en"],
+		]
+
+		self.timer_url = self.timer_url_template
+
+		self.time_parameters = {}
+
+		# Iterate through date and time attributes
+		for attribute in self.Date.texts["date_attributes, type: list"]["en"]:
+			self.time_parameters[attribute] = {
+				"parameter": attribute,
+			}
+
+			# If the attribute name is "minute" or "second", remove the three last characters (for Time And Date URL to work)
+			if attribute in self.minute_and_second_texts:
+				self.time_parameters[attribute]["parameter"] = attribute[:-3]
+
+			# If the attribute is the first one, then add "&" to start adding URL parameters
+			if attribute == self.Date.texts["date_attributes, type: list"]["en"][0]:
+				self.timer_url += "&"
+
+			# Add the attribute name, an equals sign, and the attribute (from date)
+			self.timer_url += self.time_parameters[attribute]["parameter"] + "=" + str(self.dates["will_be_hungry"][attribute])
+
+			# If the attribute is not the last one, then add "&" to continue adding URL parameters
+			if attribute != self.Date.texts["date_attributes, type: list"]["en"][-1]:
+				self.timer_url += "&"
+
+		# Open formatted timer URL with parameters
+		self.File.Open(self.timer_url)
+
+		# Define scheduled task to play alarm sound when the "will_be_hungry" time is reached
+		self.parameters = {
+			"task_title": self.language_texts["play_alarm_sound_when_you_are_hungry"],
+			"path": self.apps_folders["modules"][self.module["key"]]["play_alarm"]["__init__"],
+			"start_time": self.dates["will_be_hungry"]["date"],
+		}
+
+		self.Date.Schedule_Task(**self.parameters)
 
 	def Get_Times_From_File(self):
 		self.food_times = {}

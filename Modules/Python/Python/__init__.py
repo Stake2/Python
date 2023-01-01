@@ -57,24 +57,29 @@ class Python(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
+		}
+
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -94,19 +99,19 @@ class Python(object):
 		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'
 
 	def Define_Files(self):
-		self.root_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Root code template.txt"
+		self.root_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Root code template.txt"
 		self.File.Create(self.root_code_template_file)
 
-		self.main_class_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Main class code template.txt"
+		self.main_class_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Main class code template.txt"
 		self.File.Create(self.main_class_code_template_file)
 
-		self.sub_class_code_template_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Sub class code template.txt"
+		self.sub_class_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Sub class code template.txt"
 		self.File.Create(self.sub_class_code_template_file)
 
-		self.last_module_xml_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Last module XML.txt"
+		self.last_module_xml_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Last module XML.txt"
 		self.File.Create(self.last_module_xml_file)
 
-		self.last_task_number_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Last task number.txt"
+		self.last_task_number_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Last task number.txt"
 		self.File.Create(self.last_task_number_file)
 
 		self.conemu_xml_file = self.user_folders["appdata"]["roaming"] + "ConEmu.xml"

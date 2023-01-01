@@ -55,24 +55,29 @@ class Diary_Slim():
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
+		}
+
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -147,7 +152,7 @@ class Diary_Slim():
 		self.things_done_texts_file = self.diary_slim_data_folder + "Things done texts.txt"
 		self.File.Create(self.things_done_texts_file)
 
-		self.diary_slim_header_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Header.txt"
+		self.diary_slim_header_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Header.txt"
 		self.File.Create(self.diary_slim_header_file)
 
 	def Define_Lists_And_Dictionaries(self):

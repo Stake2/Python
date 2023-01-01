@@ -61,24 +61,29 @@ class SproutGigs():
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
+		}
+
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -87,11 +92,11 @@ class SproutGigs():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.categories_folder = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Categories/"
+		self.categories_folder = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Categories/"
 		self.Folder.Create(self.categories_folder)
 
 		# Files
-		self.website_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Website.txt"
+		self.website_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Website.txt"
 		self.File.Create(self.website_file)
 
 		self.categories_file = self.categories_folder + "Categories.txt"

@@ -42,17 +42,19 @@ class Date():
 	def Define_Folders(self):
 		self.app_text_files_folder = self.Language.app_text_files_folder
 
-		self.module_name = self.__module__
+		self.module = {
+			"name": self.__module__,
+		}
 
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
 		if __name__ == "__main__":
-			self.module_name = "Date"
+			self.module["name"] = "Date"
 
-		self.module_text_files_folder = self.app_text_files_folder + self.module_name + "/"
+		self.module["key"] = self.module["name"].lower()
+
+		self.module_text_files_folder = self.app_text_files_folder + self.module["name"] + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 
@@ -111,6 +113,9 @@ class Date():
 		date["%d/%m/%Y"] = date["date"].strftime("%d/%m/%Y")
 		date["%d-%m-%Y"] = date["date"].strftime("%d-%m-%Y")
 		date["%H:%M %d/%m/%Y"] = date["strftime"]
+
+		date["ISO8601"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
+		date["%Y-%m-%dT%H:%M:%s"] = date["ISO8601"]
 
 		return date
 
@@ -463,7 +468,7 @@ class Date():
 
 		return text
 
-	def Schedule_Task(self, task_name, path, time_from_now = 5):
+	def Schedule_Task(self, task_title, path = "", start_time = "", time_from_now = 5):
 		# Initiate 
 		scheduler = win32com.client.Dispatch("Schedule.Service")
 		scheduler.Connect()
@@ -471,7 +476,8 @@ class Date():
 		task_def = scheduler.NewTask(0)
 
 		# Create trigger
-		start_time = self.Now()["date"] + timedelta(minutes = time_from_now)
+		if start_time == "":
+			start_time = self.Now()["date"] + self.Timedelta(minutes = time_from_now)
 
 		TASK_TRIGGER_TIME = 1 # Triggers the task at a specific time of day.
 		trigger = task_def.Triggers.Create(TASK_TRIGGER_TIME)
@@ -480,11 +486,13 @@ class Date():
 		# Create action
 		TASK_ACTION_EXEC = 0 # performs a command-line operation, for example, the action could run a script
 		action = task_def.Actions.Create(TASK_ACTION_EXEC)
-		action.ID = task_name.title()
-		action.Path = path
+		action.ID = task_title
+
+		if path != "":
+			action.Path = path
 
 		# Set parameters
-		task_def.RegistrationInfo.Description = task_name
+		task_def.RegistrationInfo.Description = task_title
 		task_def.Settings.AllowDemandStart = True
 		task_def.Settings.AllowHardTerminate = True
 		task_def.Settings.DisallowStartIfOnBatteries = False
@@ -502,7 +510,7 @@ class Date():
 		TASK_CREATE_OR_UPDATE = 6
 		TASK_LOGON_NONE = 0
 		root_folder.RegisterTaskDefinition(
-			task_name, # Task name
+			task_title, # Task name
 			task_def, # Task definition
 			TASK_CREATE_OR_UPDATE, # 6, The Task Scheduler either registers the task as a new task or as an updated version if the task already exists
 			"", # No user

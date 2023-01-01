@@ -43,15 +43,15 @@ class Folder():
 		self.Create_Folders()
 
 	def Define_Folders(self):
-		self.module_name = self.__module__
+		self.module = {
+			"name": self.__module__,
+		}
 
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.module_name_lower = self.module_name.lower()
-
-		if __name__ == "__main__":
-			self.module_name = "Folder"
+		if self.module["name"] == "__main__":
+			self.module["name"] = "Folder"
 
 		self.folders = {}
 
@@ -91,8 +91,8 @@ class Folder():
 
 		self.apps_folders["modules"]["usage_modules"] = self.apps_folders["modules"]["root"] + "Usage modules.txt"
 
-		self.apps_folders["app_text_files"] = {
-			"root": os.path.join(self.apps_folders["root"], "App Text Files/"),
+		self.apps_folders["module_files"] = {
+			"root": os.path.join(self.apps_folders["root"], "Module Files/"),
 		}
 
 		self.apps_folders["shortcuts"] = {
@@ -260,7 +260,7 @@ class Folder():
 		}
 
 		# Define Folder related variables (texts file)
-		self.module_text_files_folder = self.apps_folders["app_text_files"]["root"] + self.module_name + "/"
+		self.module_text_files_folder = self.apps_folders["module_files"]["root"] + self.module["name"] + "/"
 
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 
@@ -583,7 +583,7 @@ class Folder():
 
 		return dictionary
 
-	def Contents(self, folder, add_sub_folders = True):
+	def Contents(self, folder, add_sub_folders = True, lower_key = False):
 		folder = self.Sanitize(folder)
 		folder_name = folder.split("/")[-1]
 
@@ -620,7 +620,7 @@ class Folder():
 
 				contents["folder"]["names"].append(root_folder_name)
 
-			# Add files to dictionary
+			# Add files to list and names lists
 			i = 0
 			for file in files:
 				file_name = files[i].split(".")[0]
@@ -651,6 +651,9 @@ class Folder():
 			# Root folder on dictionary if slash count of root folder is equal to folder plus one slash or equal to folder
 			# Add subfolders
 			if folder.count("/") + 1 == root_folder.count("/") or folder.count("/") == root_folder.count("/"):
+				if lower_key == True:
+					root_folder_name = root_folder_name.lower().replace(" ", "_")
+
 				if root_folder_name not in contents["dictionary"] and root_folder_name != folder_name:
 					contents["dictionary"][root_folder_name] = {}
 
@@ -671,6 +674,9 @@ class Folder():
 
 								if item != files[i].split("/")[-1].split(".")[-2]:
 									file_name += "."
+
+					if lower_key == True:
+						file_name = file_name.lower().replace(" ", "_")
 
 					# If file is root file, from folder, add it to the root key
 					if folder.count("/") == root_folder.count("/"):
@@ -694,6 +700,10 @@ class Folder():
 
 				root_folder_name = root_folder.split("/")[-3]
 				sub_sub_folder_name = root_folder.split("/")[-2]
+
+				if lower_key == True:
+					root_folder_name = root_folder_name.lower().replace(" ", "_")
+					sub_sub_folder_name = sub_sub_folder_name.lower().replace(" ", "_")
 
 				# Add sub-sub-folder to dictionary
 				if root_folder_name in contents["dictionary"] and sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name:

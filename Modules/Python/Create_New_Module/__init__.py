@@ -119,14 +119,14 @@ class Create_New_Module(Python):
 		self.main_class_python_file = self.main_class_folder + "__init__.py"
 		self.File.Create(self.main_class_python_file)
 
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.apps_folders["module_files"][self.module_name_lower] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module_name + "/",
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		self.Folder.Create(self.apps_folders["module_files"][self.module_name_lower]["root"])
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.apps_folders["module_files"][self.module["key"]]["texts"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.class_folders = {}
 		self.class_files = {}
@@ -184,7 +184,7 @@ class Create_New_Module(Python):
 			self.File.Edit(class_file, self.sub_class_code, "w")
 
 		# Texts.json
-		self.File.Edit(self.apps_folders["app_text_files"][self.module_name_lower]["texts"], "{\n\t\n}", "w")
+		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], "{\n\t\n}", "w")
 
 	def Create_Module_Bat(self):
 		self.bat_file = self.apps_folders["shortcuts"]["root"] + self.module_name + ".bat"

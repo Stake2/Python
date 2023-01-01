@@ -72,17 +72,17 @@ class Main():
 
 		self.module_name_lower = self.module_name.lower()
 
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.apps_folders["module_files"][self.module_name_lower] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module_name + "/",
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		self.Folder.Create(self.apps_folders["module_files"][self.module_name_lower]["root"])
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.apps_folders["module_files"][self.module_name_lower]["texts"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["texts"])
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module_name_lower]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 

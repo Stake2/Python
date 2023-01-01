@@ -57,34 +57,35 @@ class Block_Websites(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		if self.module_name == "__main__":
-			self.module_name = "Block_Websites"
-
-		self.apps_folders["modules"][self.module_name_lower] = {
-			"root": self.apps_folders["modules"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
+
+		if self.module["name"] == "__main__":
+			self.module["name"] = "Block_Websites"
+
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -97,19 +98,19 @@ class Block_Websites(object):
 	def Define_Files(self):
 		self.hosts_file = self.root_folders["system32"]["drivers/etc"] + "hosts"
 
-		self.additional_maps_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Additional maps.txt"
+		self.additional_maps_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Additional maps.txt"
 		self.File.Create(self.additional_maps_file)
 
-		self.blocked_by_default_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Blocked by default.txt"
+		self.blocked_by_default_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Blocked by default.txt"
 		self.File.Create(self.blocked_by_default_file)
 
-		self.hosts_file_header_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Hosts file header.txt"
+		self.hosts_file_header_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Hosts file header.txt"
 		self.File.Create(self.hosts_file_header_file)
 
-		self.hour_config_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Hour config.txt"
+		self.hour_config_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Hour config.txt"
 		self.File.Create(self.hour_config_file)
 
-		self.log_file = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Log.txt"
+		self.log_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Log.txt"
 		self.File.Create(self.log_file)
 
 		# Social Networks Folder and Files

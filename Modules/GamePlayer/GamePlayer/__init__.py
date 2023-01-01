@@ -56,24 +56,29 @@ class GamePlayer(object):
 		self.date = self.Date.date
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		self.module_name_lower = self.module_name.lower()
-
-		self.apps_folders["app_text_files"][self.module_name_lower] = {
-			"root": self.apps_folders["app_text_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["app_text_files"][self.module_name_lower]["root"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
 
-		self.apps_folders["app_text_files"][self.module_name_lower]["texts"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
+		}
+
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -137,16 +142,16 @@ class GamePlayer(object):
 		# Files
 
 		# Game folder names file
-		self.apps_folders["app_text_files"][self.module_name_lower]["folder_names"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Folder names.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["folder_names"])
+		self.apps_folders["module_files"][self.module_name_lower]["folder_names"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Folder names.json"
+		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["folder_names"])
 
 		# Game folders file
-		self.apps_folders["app_text_files"][self.module_name_lower]["folders"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Folders.txt"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["folders"])
+		self.apps_folders["module_files"][self.module_name_lower]["folders"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Folders.txt"
+		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["folders"])
 
 		# Game names file
-		self.apps_folders["app_text_files"][self.module_name_lower]["game_names"] = self.apps_folders["app_text_files"][self.module_name_lower]["root"] + "Game names.json"
-		self.File.Create(self.apps_folders["app_text_files"][self.module_name_lower]["game_names"])
+		self.apps_folders["module_files"][self.module_name_lower]["game_names"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Game names.json"
+		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["game_names"])
 
 		# Game categories file
 		self.notepad_folders["networks"]["game_network"]["media_network_data"]["game_categories"] = self.notepad_folders["networks"]["game_network"]["media_network_data"]["root"] + "Game categories.txt"
@@ -154,7 +159,7 @@ class GamePlayer(object):
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
-		self.game_folder_text = self.File.Contents(self.apps_folders["app_text_files"][self.module_name_lower]["folders"])["lines"]
+		self.game_folder_text = self.File.Contents(self.apps_folders["module_files"][self.module_name_lower]["folders"])["lines"]
 
 		self.game_played_file_names = [
 			"Games",
@@ -223,7 +228,7 @@ class GamePlayer(object):
 			self.media_type_folders_folder = self.folders["play_history"]["played"]["per_media_type"]["folders"] + game_category + "/"
 			self.Folder.Create(self.media_type_folders_folder)
 
-		self.game_names = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["game_names"])
+		self.game_names = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module_name_lower]["game_names"])
 
 	def Create_Games_List(self):
 		self.has_multiple_game_folders = False
@@ -241,7 +246,7 @@ class GamePlayer(object):
 			"files": {},
 		}
 
-		self.games["Folder names"] = self.Language.JSON_To_Python(self.apps_folders["app_text_files"][self.module_name_lower]["folder_names"])
+		self.games["Folder names"] = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module_name_lower]["folder_names"])
 
 		if len(self.game_folder_text) != 0:
 			for folder in self.game_folder_text:

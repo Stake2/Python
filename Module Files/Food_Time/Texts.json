@@ -19,6 +19,10 @@
 		"en": "Time that I finished eating",
 		"pt": "Tempo em que terminei de comer"
 	},
+	"time_that_you_will_be_hungry": {
+		"en": "Time that you will be hungry",
+		"pt": "Horário em que você terá fome"
+	},
 	"raw_times, en - pt": "Raw times - Tempos brutos",
 	"hours": {
 		"en": "hours",
@@ -31,5 +35,9 @@
 	"showing_the_meal_times_below": {
 		"en": "Showing the meal times below",
 		"pt": "Mostrando os horários da refeição abaixo"
+	},
+	"play_alarm_sound_when_you_are_hungry": {
+		"en": "Play alarm sound when you are hungry",
+		"pt": "Tocar som de alarme quando você estiver com fome"
 	}
 }

@@ -132,7 +132,7 @@ class Create_Year_Summary(Years):
 
 		self.year_data["detailed"]["watched_things"] = self.watch_history_data
 
-		self.plural_media_types = self.Language.JSON_To_Python(self.apps_folders["app_text_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
+		self.plural_media_types = self.Language.JSON_To_Python(self.apps_folders["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
 
 		for key in self.year_data["detailed"]["watched_things"]:
 			if key in self.plural_media_types["en"]:

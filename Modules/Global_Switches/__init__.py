@@ -35,7 +35,7 @@ class Global_Switches():
 			self.hard_drive_letter = "D:/"
 
 		self.apps_folder = self.hard_drive_letter + "Apps/"
-		self.app_text_files_folder = self.apps_folder + "App Text Files/"
+		self.app_text_files_folder = self.apps_folder + "Module Files/"
 
 		name = __name__
 
