@@ -242,12 +242,12 @@ class Register_Watched_Media(Watch_History):
 			# Writes:
 				# Number.txt
 
-		self.total_watched_number = str(int(self.File.Contents(self.total_watched_number_current_year_file)["lines"][0]) + 1)
+		self.total_watched_number = str(int(self.File.Contents(self.watched_files["Number"])["lines"][0]) + 1)
 		self.media_type_watched_number = str(int(self.File.Contents(self.media_type_watched_number_file)["lines"][0]) + 1)
 
 		# Number.txt
 		text_to_write = self.total_watched_number
-		self.File.Edit(self.total_watched_number_current_year_file, text_to_write, "w")
+		self.File.Edit(self.watched_files["Number"], text_to_write, "w")
 
 		# Files (Writes) > [Media Type] > Number.txt
 		text_to_write = self.media_type_watched_number

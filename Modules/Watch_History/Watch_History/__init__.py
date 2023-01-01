@@ -251,9 +251,6 @@ class Watch_History(object):
 
 		self.total_watched_number_current_year_file = self.current_year_watched_media_folder + "Number.txt"
 
-		if self.File.Exist(self.total_watched_number_current_year_file) == False:
-			self.File.Edit(self.total_watched_number_current_year_file, "0", "w")
-
 		self.episodes_file = self.current_year_watched_media_folder + "Episodes.json"
 		self.File.Create(self.episodes_file)
 
@@ -393,6 +390,11 @@ class Watch_History(object):
 
 			self.episode_data[plural_media_type]["Number"] = self.File.Contents(self.per_media_type_number_files[plural_media_type])["lines"]
 
+			if self.episode_data[plural_media_type]["Number"] == []:
+				self.File.Edit(self.per_media_type_number_files[plural_media_type], "0", "w")
+
+			self.episode_data[plural_media_type]["Number"] = self.File.Contents(self.per_media_type_number_files[plural_media_type])["lines"]
+
 			if self.episode_data[plural_media_type]["Number"] != []:
 				self.episode_data[plural_media_type]["Number"] = self.episode_data[plural_media_type]["Number"][0]
 
@@ -403,9 +405,17 @@ class Watch_History(object):
 
 		self.watched_files = {}
 
-		for watched_text in ["Episodes", "Media Types", "Times"]:
-			self.watched_files[watched_text] = self.current_year_watched_media_folder + watched_text + ".txt"
-			self.File.Create(self.watched_files[watched_text])
+		for file_name in ["Episodes", "Media Types", "Number", "Times", "YouTube IDs"]:
+			if file_name != "Number":
+				self.watched_files[file_name] = self.current_year_watched_media_folder + file_name + ".txt"
+				self.File.Create(self.watched_files[file_name])
+
+			if file_name == "Number":
+				self.watched_files[file_name] = self.current_year_watched_media_folder + file_name + ".txt"
+
+				if self.File.Exist(self.watched_files[file_name]) == False or self.File.Contents(self.watched_files[file_name])["lines"] == []:
+					self.File.Create(self.watched_files[file_name])
+					self.File.Edit(self.watched_files[file_name], "0", "w")
 
 		self.movie_files = {}
 
