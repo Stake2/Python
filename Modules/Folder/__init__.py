@@ -177,16 +177,6 @@ class Folder():
 			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Years/"),
 		}
 
-		self.mega_folders["notepad"]["effort"]["years"]["current"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"]["root"], str(self.date["year"]) + "/"),
-		}
-
-		self.mega_folders["notepad"]["effort"]["years"][str(self.date["year"])] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"]["root"], str(self.date["year"]) + "/"),
-		}
-
-		self.mega_folders["notepad"]["effort"]["years"]["current"]["experienced_media"] = os.path.join(self.mega_folders["notepad"]["effort"]["years"]["current"]["root"], "Experienced Media - Mídias Experimentadas/")
-
 		# Notepad folders
 		self.notepad_folders = {}
 
@@ -322,17 +312,6 @@ class Folder():
 		if os.path.isdir(folder) == False:
 			return False
 
-	def Create_Folders(self, folders = None, depth = 0):
-		if folders == None:
-			folders = self.folders
-
-		for value in folders.values():
-			if type(value) != dict and os.path.isfile(value) == False:
-				self.Create(value)
-
-			if type(value) == dict:
-				found = self.Create_Folders(value, depth = depth + 1)
-
 	def Type(self, text = None):
 		if text == None:
 			text = self.language_texts["type_or_paste_the_folder"] + ": "
@@ -359,6 +338,17 @@ class Folder():
 
 		else:
 			return False
+
+	def Create_Folders(self, folders = None, depth = 0):
+		if folders == None:
+			folders = self.folders
+
+		for value in folders.values():
+			if type(value) != dict and os.path.isfile(value) == False:
+				self.Create(value)
+
+			if type(value) == dict:
+				found = self.Create_Folders(value, depth = depth + 1)
 
 	def Delete(self, folder):
 		if folder == None:

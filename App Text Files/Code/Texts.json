@@ -96,9 +96,17 @@
 		"pt": "Selecione um site para atualizar seus conteúdos de HTML",
 		"en": "Select a website to update its HTML contents"
 	},
+	"select_a_website_to_add_it_to_the_list": {
+		"pt": "Selecione um site para adicioná-lo à lista",
+		"en": "Select a website to add it to the list"
+	},
 	"updating_this_website": {
 		"pt": "Atualizando este site",
 		"en": "Updating this website"
+	},
+	"updating_these_websites": {
+		"pt": "Atualizando estes sites",
+		"en": "Updating these websites"
 	},
 	"website_link": {
 		"pt": "Link do site",
@@ -115,5 +123,21 @@
 	"copy_and_paste_the_text": {
 		"pt": "Copie e cole o texto",
 		"en": "Copy and paste the text"
+	},
+	"create_website_list_to_update": {
+		"pt": "Criar lista de sites para atualizar",
+		"en": "Create website list to update"
+	},
+	"finish_selection": {
+		"pt": "Terminar seleção",
+		"en": "Finish selection"
+	},
+	"you_finished_updating_the_website": {
+		"pt": "Você terminou de atualizar o site",
+		"en": "You finished updating the website"
+	},
+	"you_finished_updating_the_websites": {
+		"pt": "Você terminou de atualizar os sites",
+		"en": "You finished updating the websites"
 	}
 }

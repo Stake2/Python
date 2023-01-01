@@ -12,15 +12,17 @@ class Update_Websites(Code):
 		if self.module_website != None:
 			self.update_one_website = True
 
+		self.update_more_websites = False
+		self.first_time = True
+
 		self.Define_Variables()
 		self.Select_Website()
 
 		self.Open_And_Close_XAMPP(open = True)
 		self.Update_Website()
 
-		if self.update_one_website == False:
+		if self.update_one_website == False and self.create_website_list_to_update == False:
 			self.update_more_websites = True
-			self.first_time = False
 
 			i = 0
 			while self.update_more_websites == True:
@@ -37,6 +39,8 @@ class Update_Websites(Code):
 
 					i += 1
 
+					self.first_time = False
+
 				if self.update_more_websites == False:
 					self.Open_And_Close_XAMPP(close = True)
 
@@ -44,6 +48,17 @@ class Update_Websites(Code):
 			self.Open_And_Close_XAMPP(close = True)
 
 		self.Open_Git_Console_Window()
+
+		print()
+		print(self.large_bar)
+		print()
+
+		text = self.language_texts["you_finished_updating_the_website"]
+
+		if len(self.websites["update"]) > 1:
+			text = self.language_texts["you_finished_updating_the_websites"]
+
+		print(text + ".")
 
 	def Define_Variables(self):
 		self.small_languages_backup = self.small_languages.copy()
@@ -60,7 +75,7 @@ class Update_Websites(Code):
 			self.translated_languages["general"][language] = self.texts["general"][language]
 
 		self.small_languages.insert(0, "general")
-		self.full_languages["general"] = "general"
+		self.full_languages["general"] = "General"
 
 		self.xampp_programs = [
 			"xampp-control",
@@ -70,6 +85,7 @@ class Update_Websites(Code):
 
 		self.websites = {
 			"list": self.Language.JSON_To_Python(self.mega_folders["php"]["website"])["list"],
+			"update": {},
 		}
 
 		for language in self.small_languages:
@@ -81,31 +97,119 @@ class Update_Websites(Code):
 		self.websites["url"] = self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["url"])
 
 	def Select_Website(self):
-		if self.module_website == None:
-			self.show_text = self.language_texts["websites"]
-			self.select_text = self.language_texts["select_a_website_to_update_its_html_contents"]
+		self.websites["numbers"] = []
 
-			self.website_number = self.Input.Select(self.websites["en"], self.websites[self.user_language], show_text = self.show_text, select_text = self.select_text)["number"]
+		if self.module_website == None:
+			first_space = True
+
+			if self.update_more_websites == True:
+				first_space = False
+
+			self.create_website_list_to_update = self.Input.Yes_Or_No(self.language_texts["create_website_list_to_update"], first_space = first_space)
+
+			self.show_text = self.language_texts["websites"]
+
+			if self.create_website_list_to_update == False:
+				self.select_text = self.language_texts["select_a_website_to_update_its_html_contents"]
+
+				number = self.Input.Select(self.websites["en"], language_options = self.websites[self.user_language], show_text = self.show_text, select_text = self.select_text)["number"]
+
+				self.websites["numbers"].append(number)
+
+			if self.create_website_list_to_update == True:
+				self.Create_Websites_List()
 
 		if self.module_website != None:
-			self.websites_number = 0
-			for website in self.websites["en"]:
-				if self.module_website == website:
-					self.website_number = self.websites_number
+			# If the module website is a string find the number of that website
+			# If the module website is an integer, add it to the website numbers list
+			if type(self.module_website) in [str, int]:
+				number = 0
+				for website in self.websites["en"]:
+					if self.module_website == website or self.module_website == number:
+						self.websites["numbers"].append(number)
 
-				self.websites_number += 1
+					number += 1
 
-		self.website = {}
+			# If the module website is a list, make the website numbers list as the module website
+			if type(self.module_website) == list:
+				self.websites["numbers"] = self.module_website
 
-		for language in self.small_languages:
-			self.website[language] = self.websites[language][self.website_number]
+		# Add websites to update dictionary in websites dictionary
+		for number in self.websites["numbers"]:
+			website = self.websites["en"][number]
+
+			# Add key
+			self.websites["update"][website] = {
+				"number": number,
+			}
+
+			# Add website titles per language
+			for language in self.small_languages:
+				self.websites["update"][website][language] = self.websites[language][number]
+
+			# Add website links per language
+			self.websites["update"][website]["links"] = {}
+
+			for language in self.small_languages:
+				full_language = self.full_languages[language]
+
+				self.websites["update"][website]["links"][language] = self.websites["url"]["generate_template"].format(full_language, self.websites["update"][website]["en"])
+
+	def Create_Websites_List(self):
+		# Define local websites dictionary
+		websites = {
+			"en": self.websites["en"].copy(),
+			self.user_language: self.websites[self.user_language].copy(),
+			"numbers": [],
+			"select_list": [],
+		}
+
+		# Add "finish_selection" text to local websites dictionary
+		websites["en"].append("[" + self.texts["finish_selection"]["en"] + "]")
+		websites[self.user_language].append("[" + self.language_texts["finish_selection"] + "]")
+
+		# Define select text
+		self.select_text = self.language_texts["select_a_website_to_add_it_to_the_list"]
+
+		# Wait for user to finish selecting websites
+		dictionary = {
+			"option": "",
+		}
+
+		while dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
+			print()
+			print(self.Language.language_texts["list, title()"] + ":")
+			print(self.Language.Python_To_JSON(websites["select_list"]))
+
+			# Select website from the list and return its number
+			dictionary = self.Input.Select(websites["en"], language_options = websites[self.user_language], show_text = self.show_text, select_text = self.select_text)
+
+			if dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
+				# Add selected website number to website numbers list
+				# (It haves to iterate through the English websites list to find the correct number because the local website list is of a different length)
+				number = 0
+				for website in self.websites["en"]:
+					if dictionary["option"] == website:
+						websites["numbers"].append(number)
+
+					number += 1
+
+				# Add selected website to select list
+				websites["select_list"].append(dictionary["language_option"])
+
+				# Remove selected website from list
+				websites["en"].remove(dictionary["option"])
+				websites[self.user_language].remove(dictionary["language_option"])
+
+		# Define the "numbers" key of the "website" dictionary as the list that the user created
+		self.websites["numbers"] = websites["numbers"]
 
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
 			if self.global_switches["testing"] == False:
 				self.File.Open(self.root_folders["xampp"]["xampp-control"])
 
-				self.Date.Sleep(3)
+				self.Date.Sleep(4)
 
 		if close == True:
 			if self.global_switches["testing"] == False:
@@ -113,32 +217,59 @@ class Update_Websites(Code):
 					self.File.Close(program)
 
 	def Update_Website(self, open = True, close = True):
+		text = self.language_texts["updating_this_website"]
+
+		if len(self.websites["update"]) > 1:
+			text = self.language_texts["updating_these_websites"]
+
+		# Show website info
 		print()
 		print(self.large_bar)
 		print()
-		print(self.language_texts["updating_this_website"] + ":")
-		print(self.website[self.user_language])
+		print(text + ":")
 
-		self.website["links"] = {}
+		if len(self.websites["update"]) == 1:
+			key = list(self.websites["update"].keys())[0]
+			website = self.websites["update"][key][self.user_language]
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+			print("\t" + website)
 
-			self.website["links"][language] = self.websites["url"]["generate_template"].format(full_language, self.website["en"])
+		if len(self.websites["update"]) > 1:
+			for key in self.websites["update"]:
+				website_title = self.websites["update"][key][self.user_language]
 
-			print()
-			print("-")
-			print()
-			print(self.language_texts["website_link"] + ":")
-			print(self.website["links"][language])
-			print()
-			print(self.Language.language_texts["language, title()"] + ":")
-			print(self.translated_languages[language][self.user_language])
+				print("\t" + website_title)
 
-			if self.global_switches["testing"] == False:
-				self.File.Open(self.website["links"][language])
+		# Open website links to update them
+		for key in self.websites["update"]:
+			website = self.websites["update"][key]
 
-				self.Date.Sleep(5)
+			if len(self.websites["update"]) > 1:
+				# Show website info for current website
+				print()
+				print(self.large_bar)
+				print()
+				print(self.language_texts["updating_this_website"] + ":")
+				print(website[self.user_language])
+
+			for language in self.small_languages:
+				full_language = self.full_languages[language]
+
+				link = website["links"][language]
+
+				print()
+				print("-")
+				print()
+				print(self.language_texts["website_link"] + ":")
+				print(link)
+				print()
+				print(self.Language.language_texts["language, title()"] + ":")
+				print(self.translated_languages[language][self.user_language])
+
+				if self.global_switches["testing"] == False:
+					self.File.Open(link)
+
+					self.Date.Sleep(5)
 
 		print()
 		print(self.large_bar)

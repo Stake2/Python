@@ -9,9 +9,10 @@ from Date import Date as Date
 from Input import Input as Input
 from Text import Text as Text
 
+import Block_Websites
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
-import Block_Websites
+from Years.Years import Years as Years
 
 class Christmas():
 	def __init__(self, parameter_switches = None):
@@ -21,6 +22,8 @@ class Christmas():
 		self.Define_Module_Folder()
 		self.Define_Texts()
 		self.Today_Is_Christmas()
+
+		self.Years = Years(self.global_switches, select_year = False)
 
 		self.Define_Folders()
 		self.Define_Files()
@@ -95,42 +98,23 @@ class Christmas():
 		return self.today_is_christmas
 
 	def Define_Folders(self):
-		self.current_year_folder = self.notepad_folders["years"]["current"]["root"]
-		self.Folder.Create(self.current_year_folder)
-
-		self.christmas_folder = self.current_year_folder + self.language_texts["christmas, title(), en - pt"] + "/"
-		self.Folder.Create(self.christmas_folder)
+		self.current_year = self.Years.current_year
 
 		self.christmas_image_folder = self.mega_folders["image"]["root"] + self.language_texts["christmas, title(), en - pt"] + "/"
 		self.Folder.Create(self.christmas_image_folder)
 
-		self.language_year_folder = self.current_year_folder + self.full_user_language + "/"
-		self.Folder.Create(self.language_year_folder)
-
-		self.language_year_folders = {}
-		self.christmas_language_folders = {}
-
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
-
-			self.language_year_folders[language] = self.current_year_folder + full_language + "/"
-			self.Folder.Create(self.language_year_folders[language])
-
-			self.christmas_language_folders[language] = self.language_year_folders[language] + self.texts["christmas, title()"][language] + "/"
-			self.Folder.Create(self.christmas_language_folders[language])
-
 	def Define_Files(self):
-		self.planning_files = {}
+		if self.full_user_language in self.current_year["folders"]:
+			self.planning_file = self.current_year["folders"][self.full_user_language][self.language_texts["christmas, title()"]]
+			self.planning_file = self.planning_file[self.language_texts["planning, title()"]]
 
-		for language in self.small_languages:
-			self.planning_files[language] = self.christmas_language_folders[language] + self.texts["planning, title()"][language] + ".txt"
+			self.objects_file = self.current_year["folders"]["English"][self.texts["christmas, title()"]["en"]]["root"] + "Objects.txt"
 
-		self.planning_file = self.planning_files[self.user_language]
-		self.objects_file = self.christmas_language_folders["en"] + "Objects.txt"
+			self.things_to_watch_file = self.current_year["folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["watch, title(), en - pt"] + ".txt"
 
-		self.things_to_watch_file = self.christmas_folder + self.language_texts["watch, title(), en - pt"] + ".txt"
-		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
-		self.things_to_eat_file = self.christmas_language_folders[self.user_language] + self.language_texts["eat, title()"] + ".txt"
+			self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
+
+			self.things_to_eat_file = self.current_year["folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
 
 	def Define_Lists(self):
 		self.twitter_scheduled_text = "Twitter Scheduled"
@@ -152,7 +136,7 @@ class Christmas():
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
 			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
-			"Texts - Textos": self.christmas_folder + self.language_texts["texts, title(), en - pt"] + ".txt",
+			"Texts - Textos": self.current_year["folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt",
 		}
 
 		texts = {

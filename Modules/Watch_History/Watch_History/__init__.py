@@ -337,7 +337,7 @@ class Watch_History(object):
 			file = self.current_year_watched_media_folder + watched_text + ".txt"
 			self.episode_data[watched_text] = self.File.Contents(file)["lines"]
 
-			if watched_text == "Number":
+			if watched_text == "Number" and self.episode_data[watched_text] != []:
 				self.episode_data[watched_text] = self.episode_data[watched_text][0]
 
 		self.episode_data["Comments"] = self.File.Contents(self.year_comment_number_file)["lines"][0]
@@ -389,8 +389,12 @@ class Watch_History(object):
 			self.episode_data[plural_media_type] = {
 				"Episodes": self.File.Contents(self.per_media_type_episode_files[plural_media_type])["lines"],
 				"Times": self.File.Contents(self.per_media_type_time_files[plural_media_type])["lines"],
-				"Number": self.File.Contents(self.per_media_type_number_files[plural_media_type])["lines"][0],
 			}
+
+			self.episode_data[plural_media_type]["Number"] = self.File.Contents(self.per_media_type_number_files[plural_media_type])["lines"]
+
+			if self.episode_data[plural_media_type]["Number"] != []:
+				self.episode_data[plural_media_type]["Number"] = self.episode_data[plural_media_type]["Number"][0]
 
 			if plural_media_type == self.texts["videos"]["en"]:
 				self.episode_data[plural_media_type]["YouTube IDs"] = self.File.Contents(self.per_media_type_files_folders[plural_media_type] + "YouTube IDs.txt")["lines"]

@@ -13,15 +13,18 @@ class Verify_Current_Year(Years):
 		print("-----")
 		print()
 
-		self.folder_size = self.Folder.Contents(self.current_year["folder"])["size"]
+		folder_list = self.Folder.Contents(self.current_year["folder"])["folder"]["list"]
 
 		# Creates the new Year text and image folder, copies the Year template files to the text folder, and edits some of them
-		if self.folder_size == 0:
+		if folder_list == []:
 			# Copy "Year Texts" folder to Current Year folder
-			self.Folder.Copy(self.year_texts_contents["root"], self.current_year["folder"])
+			self.Folder.Copy(self.years["year_texts"]["root"], self.current_year["folder"])
 
 			# Copy "Year Images" folder to Current Year Image folder
 			self.Folder.Copy(self.year_images_folder, self.current_year["image_folder"])
+
+			# Re-define folders (re-read directory)
+			self.current_year["folders"] = self.Folder.Contents(self.current_year["folder"])["dictionary"]
 
 			# This Year I (post) file
 			for language in self.small_languages:
@@ -36,12 +39,12 @@ class Verify_Current_Year(Years):
 
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
-			self.files = {}
+			self.files = {
+				"christmas, title()": self.current_year["folders"][self.language_texts["christmas, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
+				"new_year": self.current_year["folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
+			}
 
-			# Christmas Texts file
-			self.christmas_folder = self.current_year["folder"] + self.language_texts["christmas, en - " + self.user_language] + "/"
-			self.files["christmas, title()"] = self.christmas_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
-
+			# Replace "{current_year}" with current Year number on Christmas Texts file
 			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
 
 			if "{current_year}" in text_to_write:
@@ -49,10 +52,7 @@ class Verify_Current_Year(Years):
 
 			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
 
-			# New Year Texts file
-			self.new_year_folder = self.current_year["folder"] + self.language_texts["new_year, en - " + self.user_language] + "/"
-			self.files["new_year"] = self.new_year_folder + self.language_texts["texts, en - " + self.user_language] + ".txt"
-
+			# Replace "{current_year}" with current Year number on New Year Texts file
 			text_to_write = self.File.Contents(self.files["new_year"])["string"]
 
 			if "{next_year}" in text_to_write:
@@ -69,7 +69,7 @@ class Verify_Current_Year(Years):
 			self.File.Edit(self.edited_in_file, self.Date.Now()["strftime"], "w")
 
 			# New Year posts folder
-			self.new_year_posts_folder = self.new_year_folder + "Posts/"
+			self.new_year_posts_folder = self.current_year["folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + "Posts/"
 
 			# Social Networks posts files
 			for item in ["Instagram, Facebook", "Twitter", "WhatsApp"]:
@@ -86,7 +86,7 @@ class Verify_Current_Year(Years):
 		text_to_show = self.language_texts["the_current_year_already_exists_in_the_years_folder"]
 
 		# Tells the user that the current Year did not existed in the Years folder
-		if self.folder_size == 0:
+		if folder_list == []:
 			text_to_show = self.language_texts["the_current_year_did_not_existed_in_the_years_folder"]
 
 		print(text_to_show + ":")
@@ -95,7 +95,7 @@ class Verify_Current_Year(Years):
 
 		text_to_show = self.language_texts["this_is_its_year_folder"]
 
-		if self.folder_size == 0:
+		if folder_list == []:
 			text_to_show = self.language_texts["its_year_folder_was_created"]
 
 		print(text_to_show + ":")
@@ -105,7 +105,7 @@ class Verify_Current_Year(Years):
 		print(self.language_texts["image_folder"] + ":")
 		print(self.current_year["image_folder"])
 
-		if self.folder_size == 0:
+		if folder_list == []:
 			print()
 
 			for item in self.files:

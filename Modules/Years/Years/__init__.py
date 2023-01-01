@@ -109,13 +109,10 @@ class Years(object):
 		self.File.Create(self.episodes_file)
 
 		# Year text folders
-		self.years_folder = self.folders["notepad"]["effort"]["root"] + self.texts["years, title()"]["en"] + "/"
-		self.Folder.Create(self.years_folder)
-
-		self.year_texts_folder = self.years_folder + self.texts["texts, title()"]["en"] + "/"
+		self.year_texts_folder = self.notepad_folders["effort"]["years"]["root"] + self.texts["texts, title()"]["en"] + "/"
 		self.Folder.Create(self.year_texts_folder)
 
-		self.years_file = self.years_folder + self.texts["years, title()"]["en"] + ".json"
+		self.years_file = self.notepad_folders["effort"]["years"]["root"] + self.texts["years, title()"]["en"] + ".json"
 		self.File.Create(self.years_file)
 
 		# Year image folders
@@ -127,7 +124,7 @@ class Years(object):
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
-		self.summary_date = self.Date.From_String("26/12/{}".format(self.date["year"]), "%d/%m/%Y")
+		self.summary_date = self.Date.From_String("30/12/{}".format(self.date["year"]), "%d/%m/%Y")
 
 		# Dictionaries
 		self.years = {
@@ -145,7 +142,7 @@ class Years(object):
 			self.years[year]["number"] = year
 
 			# Define root folder
-			self.years[year]["folder"] = self.years_folder + year + "/"
+			self.years[year]["folder"] = self.notepad_folders["effort"]["years"]["root"] + year + "/"
 			self.Folder.Create(self.years[year]["folder"])
 
 			# Define image folder
@@ -155,15 +152,15 @@ class Years(object):
 			# Define folders
 			self.years[year]["folders"] = self.Folder.Contents(self.years[year]["folder"])["dictionary"]
 
-		# Write Years dictionary converted to JSON on "Years.json" file
-		text = self.Language.Python_To_JSON(self.years)
-		self.File.Edit(self.years_file, text, "w")
-
 		# Define "Year Texts" folders and files
-		self.year_texts_contents = self.Folder.Contents(self.year_texts_folder)["dictionary"]
+		self.years["year_texts"] = self.Folder.Contents(self.year_texts_folder)["dictionary"]
 
 		# Current Year dictionary definition
 		self.current_year = self.years[str(self.date["year"])]
+
+		# Write Years dictionary converted to JSON on "Years.json" file
+		text = self.Language.Python_To_JSON(self.years)
+		self.File.Edit(self.years_file, text, "w")
 
 	def Select_Year(self, years = None, select_text = None):
 		if years == None:
