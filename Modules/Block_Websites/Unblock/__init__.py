@@ -4,7 +4,7 @@ from Block_Websites.Block_Websites import Block_Websites as Block_Websites
 from Block_Websites.Block import Block as Block
 
 class Unblock(Block_Websites):
-	def __init__(self, options = None, time = None, first_space = True, second_space = True):
+	def __init__(self, options = None, time = None, first_space = True, second_space = False):
 		super().__init__()
 
 		self.options = options
@@ -47,7 +47,9 @@ class Unblock(Block_Websites):
 				if website not in self.File.Contents(self.hosts_file)["string"]:
 					self.websites_to_block.remove(website)
 
-			self.website_to_unlock = self.Input.Select(self.websites_to_block, show_text = show_text, select_text = select_text)["option"]
+			self.website_to_unlock = [self.Input.Select(self.websites_to_block, show_text = show_text, select_text = select_text, first_space = False)["option"]]
+
+			print()
 
 		self.text = self.language_texts["this_website_is_unblocked_for_{}"]
 

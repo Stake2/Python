@@ -58,4 +58,4 @@ class Media_Info_Database_Manager():
 
 		Input().Select(classes, language_options = names, show_text = self.language_texts["show_text"], select_text = self.language_texts["select_one_class_to_execute"], function = True)
 
-Update_Media_Info_Details()
+#Update_Media_Info_Details()
