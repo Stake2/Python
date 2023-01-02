@@ -92,11 +92,11 @@ class SproutGigs():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.categories_folder = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Categories/"
+		self.categories_folder = self.apps_folders["module_files"][self.module["key"]]["root"] + "Categories/"
 		self.Folder.Create(self.categories_folder)
 
 		# Files
-		self.website_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Website.txt"
+		self.website_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Website.txt"
 		self.File.Create(self.website_file)
 
 		self.categories_file = self.categories_folder + "Categories.txt"

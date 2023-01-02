@@ -55,8 +55,6 @@ class Block(Block_Websites):
 					if map == map_list[-1] and map_dict != list(self.map_dict.keys())[-1]:
 						self.text_to_write += "\n\n"
 
-		self.websites_to_block_text = self.texts["websites_to_block_header"]
-
 		if self.website_to_unlock != None:
 			if type(self.website_to_unlock) == str:
 				self.websites_to_block.remove(self.website_to_unlock)
@@ -65,6 +63,16 @@ class Block(Block_Websites):
 				for website in self.website_to_unlock:
 					if website in self.websites_to_block:
 						self.websites_to_block.remove(website)
+
+		self.websites_to_block_text = "\n" \
+		"######################################" + "\n" \
+		"#          " + "Block_Websites.py" + "          #" + "\n"
+
+		if self.websites_to_block != []:
+			self.websites_to_block_text += self.texts["websites_to_block_header"]
+
+		if self.websites_to_block == []:
+			self.websites_to_block_text += self.texts["all_websites_are_unlocked_header"]
 
 		# Add maps of websites to block from "self.websites_to_block"
 		for website in self.websites_to_block:

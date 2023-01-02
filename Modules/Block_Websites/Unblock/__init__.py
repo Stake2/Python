@@ -40,16 +40,22 @@ class Unblock(Block_Websites):
 
 	def Choose_Website(self):
 		if self.options == None:
-			show_text = self.language_texts["websites, title()"]
-			select_text = self.language_texts["select_a_website_to_unlock"]
+			self.show_text = self.language_texts["websites, title()"]
+			self.select_text = self.language_texts["select_a_website_to_unlock"]
 
 			for website in self.websites_to_block:
 				if website not in self.File.Contents(self.hosts_file)["string"]:
 					self.websites_to_block.remove(website)
 
-			self.website_to_unlock = [self.Input.Select(self.websites_to_block, show_text = show_text, select_text = select_text, first_space = False)["option"]]
+			self.create_website_list_to_unblock = self.Input.Yes_Or_No(self.language_texts["create_website_list_to_unblock"], first_space = False)
 
-			print()
+			if self.create_website_list_to_unblock == False:
+				self.website_to_unlock = [self.Input.Select(self.websites_to_block, show_text = self.show_text, select_text = self.select_text)["option"]]
+
+				print()
+
+			if self.create_website_list_to_unblock == True:
+				self.website_to_unlock = self.Create_Websites_List()
 
 		self.text = self.language_texts["this_website_is_unblocked_for_{}"]
 
@@ -81,6 +87,44 @@ class Unblock(Block_Websites):
 				self.text += "\n"
 
 		print(self.text)
+
+	def Create_Websites_List(self):
+		# Define local websites list
+		websites_to_block = self.websites_to_block.copy()
+
+		# Add "finish_selection" text to local websites list
+		websites_to_block.append("[" + self.language_texts["finish_selection"] + "]")
+
+		# Define select text
+		self.select_text = self.language_texts["select_a_website_to_add_it_to_the_list"]
+
+		# Wait for user to finish selecting websites
+		dictionary = {
+			"option": "",
+		}
+
+		# Define websites to unlock list
+		website_to_unlock = []
+
+		while dictionary["option"] != "[" + self.language_texts["finish_selection"] + "]":
+			if website_to_unlock != []:
+				print()
+				print(self.Language.language_texts["list, title()"] + ":")
+				print(self.Language.Python_To_JSON(website_to_unlock))
+
+			# Select website from the list
+			dictionary = self.Input.Select(websites_to_block, show_text = self.show_text, select_text = self.select_text)
+
+			if dictionary["option"] != "[" + self.language_texts["finish_selection"] + "]":
+				# Add selected website to websites to unlock list
+				website_to_unlock.append(dictionary["option"])
+
+				# Remove selected website from list
+				websites_to_block.remove(dictionary["option"])
+
+		print()
+
+		return website_to_unlock
 
 	def Unblock(self):
 		Block(show_text = False, website_to_unlock = self.website_to_unlock, time = self.time, text = self.text)

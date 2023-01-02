@@ -72,7 +72,7 @@ class Update_Websites(Code):
 		self.translated_languages["general"] = {}
 
 		for language in self.small_languages:
-			self.translated_languages["general"][language] = self.texts["general"][language]
+			self.translated_languages["general"][language] = self.texts["general, title()"][language]
 
 		self.small_languages.insert(0, "general")
 		self.full_languages["general"] = "General"
@@ -107,7 +107,7 @@ class Update_Websites(Code):
 
 			self.create_website_list_to_update = self.Input.Yes_Or_No(self.language_texts["create_website_list_to_update"], first_space = first_space)
 
-			self.show_text = self.language_texts["websites"]
+			self.show_text = self.language_texts["websites, title()"]
 
 			if self.create_website_list_to_update == False:
 				self.select_text = self.language_texts["select_a_website_to_update_its_html_contents"]

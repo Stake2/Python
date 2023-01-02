@@ -151,10 +151,10 @@ class Register_Playing_Time(GamePlayer):
 		self.game_media_type_folder = self.game["category"]["media_type_folders_folder"] + self.game["sanitized_name"] + "/"
 		self.Folder.Create(self.game_media_type_folder)
 
-		self.apps_folders["module_files"][self.module_name_lower]["folders"] = self.game_media_type_folder + self.file_name["time"] + ".txt"
-		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["folders"])
+		self.apps_folders["module_files"][self.module["key"]]["folders"] = self.game_media_type_folder + self.file_name["time"] + ".txt"
+		self.File.Create(self.apps_folders["module_files"][self.module["key"]]["folders"])
 
-		self.File.Edit(self.apps_folders["module_files"][self.module_name_lower]["folders"], self.texts_to_use["full_played_text"], "w")
+		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["folders"], self.texts_to_use["full_played_text"], "w")
 
 		# Copy the "media type folders folder" to the "experienced media type folder" on current year text folder
 		self.experienced_media_folder = self.notepad_folders["years"]["current"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"

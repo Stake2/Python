@@ -211,7 +211,7 @@ class Food_Time():
 				self.timer_url += "&"
 
 		# Open formatted timer URL with parameters
-		self.File.Open(self.timer_url)
+		#self.File.Open(self.timer_url)
 
 		# Define scheduled task to play alarm sound when the "will_be_hungry" time is reached
 		self.parameters = {
@@ -220,7 +220,7 @@ class Food_Time():
 			"start_time": self.dates["will_be_hungry"]["date"],
 		}
 
-		self.Date.Schedule_Task(**self.parameters)
+		#self.Date.Schedule_Task(**self.parameters)
 
 	def Get_Times_From_File(self):
 		self.food_times = {}

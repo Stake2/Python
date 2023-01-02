@@ -152,7 +152,7 @@ class Diary_Slim():
 		self.things_done_texts_file = self.diary_slim_data_folder + "Things done texts.txt"
 		self.File.Create(self.things_done_texts_file)
 
-		self.diary_slim_header_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Header.txt"
+		self.diary_slim_header_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Header.txt"
 		self.File.Create(self.diary_slim_header_file)
 
 	def Define_Lists_And_Dictionaries(self):

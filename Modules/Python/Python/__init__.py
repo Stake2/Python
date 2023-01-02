@@ -99,19 +99,19 @@ class Python(object):
 		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'
 
 	def Define_Files(self):
-		self.root_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Root code template.txt"
+		self.root_code_template_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Root code template.txt"
 		self.File.Create(self.root_code_template_file)
 
-		self.main_class_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Main class code template.txt"
+		self.main_class_code_template_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Main class code template.txt"
 		self.File.Create(self.main_class_code_template_file)
 
-		self.sub_class_code_template_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Sub class code template.txt"
+		self.sub_class_code_template_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Sub class code template.txt"
 		self.File.Create(self.sub_class_code_template_file)
 
-		self.last_module_xml_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Last module XML.txt"
+		self.last_module_xml_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Last module XML.txt"
 		self.File.Create(self.last_module_xml_file)
 
-		self.last_task_number_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Last task number.txt"
+		self.last_task_number_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Last task number.txt"
 		self.File.Create(self.last_task_number_file)
 
 		self.conemu_xml_file = self.user_folders["appdata"]["roaming"] + "ConEmu.xml"

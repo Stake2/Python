@@ -22,7 +22,7 @@ class Create_New_Module(Python):
 		if " " in self.module_name:
 			self.module_name = self.module_name.replace(" ", "_")
 
-		self.module_name_lower = self.module_name.lower()
+		self.module["key"] = self.module_name.lower()
 
 		translated_language = ""
 
@@ -119,13 +119,13 @@ class Create_New_Module(Python):
 		self.main_class_python_file = self.main_class_folder + "__init__.py"
 		self.File.Create(self.main_class_python_file)
 
-		self.apps_folders["module_files"][self.module_name_lower] = {
+		self.apps_folders["module_files"][self.module["key"]] = {
 			"root": self.apps_folders["module_files"]["root"] + self.module_name + "/",
 		}
 
-		self.Folder.Create(self.apps_folders["module_files"][self.module_name_lower]["root"])
+		self.Folder.Create(self.apps_folders["module_files"][self.module["key"]]["root"])
 
-		self.apps_folders["module_files"][self.module["key"]]["texts"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Texts.json"
+		self.apps_folders["module_files"][self.module["key"]]["texts"] = self.apps_folders["module_files"][self.module["key"]]["root"] + "Texts.json"
 		self.File.Create(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.class_folders = {}

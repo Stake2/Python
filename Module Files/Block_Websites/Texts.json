@@ -70,5 +70,17 @@
 	"hours": {
 		"en": "hours",
 		"pt": "horas"
+	},
+	"create_website_list_to_unblock": {
+		"en": "Create website list to unblock",
+		"pt": "Criar lista de sites para desbloquear"
+	},
+	"select_a_website_to_add_it_to_the_list": {
+		"pt": "Selecione um site para adicioná-lo à lista",
+		"en": "Select a website to add it to the list"
+	},
+	"finish_selection": {
+		"pt": "Terminar seleção",
+		"en": "Finish selection"
 	}
 }

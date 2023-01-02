@@ -97,7 +97,7 @@ class Project_Zomboid(object):
 		self.database_folder = self.project_zomboid_folder + "Database/"
 		self.Folder.Create(self.database_folder)
 
-		self.predefined_values_file = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Predefined values.json"
+		self.predefined_values_file = self.apps_folders["module_files"][self.module["key"]]["root"] + "Predefined values.json"
 		self.File.Create(self.predefined_values_file)
 
 	def Define_Lists_And_Dictionaries(self):

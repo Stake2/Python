@@ -84,11 +84,15 @@
 		"pt": "Você terminou de programar em",
 		"en": "You finished programming in"
 	},
-	"general": {
+	"general, title()": {
 		"pt": "Geral",
 		"en": "General"
 	},
 	"websites": {
+		"pt": "sites",
+		"en": "websites"
+	},
+	"websites, title()": {
 		"pt": "Sites",
 		"en": "Websites"
 	},
