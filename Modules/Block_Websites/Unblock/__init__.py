@@ -43,13 +43,13 @@ class Unblock(Block_Websites):
 			self.show_text = self.language_texts["websites, title()"]
 			self.select_text = self.language_texts["select_a_website_to_unlock"]
 
-			for website in self.websites_to_block:
-				if website not in self.File.Contents(self.hosts_file)["string"]:
-					self.websites_to_block.remove(website)
-
 			self.create_website_list_to_unblock = self.Input.Yes_Or_No(self.language_texts["create_website_list_to_unblock"], first_space = False)
 
 			if self.create_website_list_to_unblock == False:
+				for website in self.websites_to_block:
+					if website not in self.File.Contents(self.hosts_file)["string"]:
+						self.websites_to_block.remove(website)
+
 				self.website_to_unlock = [self.Input.Select(self.websites_to_block, show_text = self.show_text, select_text = self.select_text)["option"]]
 
 				print()

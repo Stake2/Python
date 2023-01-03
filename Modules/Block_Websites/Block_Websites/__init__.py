@@ -92,7 +92,6 @@ class Block_Websites(object):
 		self.texts["redirect_ip"] = "127.0.0.1"
 		self.texts["redirect_ip_space"] = self.texts["redirect_ip"] + "     "
 		self.texts["task_name"] = "Re-Block Websites"
-		self.texts["websites_to_block_header"] = "\n# Websites to be blocked by conditions\n#\n\n"
 		self.texts["all_websites_are_unlocked_header"] = "\n# All websites are unlocked"
 		self.texts["log"] = self.language_texts["blocking_state"] + ":\n{}\n\n" + self.language_texts["this_file_will_be_updated_every_{}_minutes_reopen_it_to_update"] + ".\n" + self.language_texts["last_update_in"] + ": {}"
 

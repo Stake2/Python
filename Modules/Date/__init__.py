@@ -122,8 +122,8 @@ class Date():
 	def Timedelta(self, **arguments):
 		return timedelta(**arguments)
 
-	def Strftime(self, string, format = "%H:%M %d/%m/%Y"):
-		date = string.strftime(format)
+	def Strftime(self, date, format = "%H:%M %d/%m/%Y"):
+		date = date.strftime(format)
 
 		return date
 

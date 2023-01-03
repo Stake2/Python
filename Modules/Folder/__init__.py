@@ -153,12 +153,8 @@ class Folder():
 			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Diary Slim/"),
 		}
 
-		self.mega_folders["notepad"]["effort"]["food_and_water_registers"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Food and Water Registers/"),
-		}
-
-		self.mega_folders["notepad"]["effort"]["food_and_water_registers"]["food"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["food_and_water_registers"]["root"], "Food/"),
+		self.mega_folders["notepad"]["effort"]["food"] = {
+			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Food/"),
 		}
 
 		self.mega_folders["notepad"]["effort"]["networks"] = {

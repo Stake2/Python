@@ -20,17 +20,12 @@ class Food_Time():
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
-		self.Define_Files()
+		self.Define_Lists_And_Dictionaries()
 
 		if self.show_text == True:
 			if self.register_time == True:
 				self.Get_Time()
-				self.Define_Times()
-				self.Register_Times()
 				self.Set_Timer()
-
-			if self.register_time == False:
-				self.Get_Times_From_File()
 
 			self.Show_Times()
 
@@ -95,73 +90,62 @@ class Food_Time():
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.times = {
-			"can_drink_water": 40,
-			"will_be_hungry": 3,
-		}
+	def Define_Lists_And_Dictionaries(self):
+		# Read Times.json file
+		self.times = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["times"])
 
-		self.time_units = {
-			"can_drink_water": self.texts["minutes"],
-			"will_be_hungry": self.texts["hours"],
-		}
+		# Iterate through time types
+		for time_type in self.times["types"]:
+			# If the dictionary of the time type is not present in JSON, add it
+			if time_type not in self.times:
+				# Define dictionary
+				self.times[time_type] = {
+					"time": self.times["times"][time_type],
+				}
 
-		self.show_texts = {}
+				# Define time unit
+				if len(str(self.times[time_type]["time"])) == 1:
+					self.times[time_type]["unit_name"] = "hours"
 
-		self.time_types = ["ate", "can_drink_water", "will_be_hungry"]
+				if len(str(self.times[time_type]["time"])) == 2:
+					self.times[time_type]["unit_name"] = "minutes"
 
-		for language in self.small_languages:
-			self.show_texts[language] = {}
+				# Define unit name text
+				self.times[time_type]["unit"] = self.texts[self.times[time_type]["unit_name"]]
 
-			prefix = self.texts["this_is_the_time_that_you"][language] + " "
+				# Format "this_is_the_time_that_you" text with the time type text per language
+				self.times[time_type]["texts"] = {}
 
-			for time_type in self.time_types:
-				self.show_texts[language][time_type] = prefix + self.texts[time_type][language]
+				for language in self.small_languages:
+					prefix = self.texts["this_is_the_time_that_you"][language] + " "
 
-	def Define_Files(self):
-		self.file_path = self.notepad_folders["food_and_water_registers"]["food"]["root"] + "{}.txt"
-
-		self.raw_times_file = self.file_path.format(self.texts["raw_times, en - pt"])
-		self.File.Create(self.raw_times_file)
+					self.times[time_type]["texts"][language] = prefix + self.texts[time_type][language]
 
 	def Get_Time(self):
-		self.date = self.Date.Now()
+		# Iterate through time types
+		for time_type in self.times["types"]:
+			# If the time type is "ate", its date is only a normal date
+			if time_type == "ate":
+				self.times[time_type]["date"] = self.Date.Now()["date"]
 
-		self.dates = {
-			"ate": self.date,
-			"can_drink_water": self.Date.Now(self.date["date"] + self.Date.Timedelta(minutes = self.times["can_drink_water"])),
-			"will_be_hungry": self.Date.Now(self.date["date"] + self.Date.Timedelta(hours = self.times["will_be_hungry"])),
-		}
+			# If the time type is not "ate", its date is the "ate" date plus the timedelta of the time type "time to add"
+			if time_type != "ate":
+				dictionary = {
+					self.times[time_type]["unit_name"]: self.times[time_type]["time"],
+				}
 
-		self.food_times = {
-			"ate": self.dates["ate"]["%H:%M"],
-			"can_drink_water": self.Date.Strftime(self.dates["can_drink_water"]["date"], format = "%H:%M"),
-			"will_be_hungry": self.Date.Strftime(self.dates["will_be_hungry"]["date"], format = "%H:%M"),
-		}
+				# Add the "ate" date to the timedelta of the "time to add" of the time type
+				self.times[time_type]["date"] = self.Date.Now(self.times["ate"]["date"] + self.Date.Timedelta(**dictionary))["date"]
 
-	def Define_Times(self):
-		self.food_time_texts = {}
+			# Format the date as "Hours:Minutes", "HH:MM"
+			self.times[time_type]["time_string"] = self.Date.Now(self.times[time_type]["date"])["%H:%M"]
 
-		for language in self.small_languages:
-			self.food_time_texts[language] = {}
+		# Stringfy "datetime" objects to write them into the JSON file
+		for time_type in self.times["types"]:
+			self.times[time_type]["date"] = str(self.times[time_type]["date"])
 
-			for time_type in self.time_types:
-				self.food_time_texts[language][time_type] = self.show_texts[language][time_type] + ": " + self.food_times[time_type]
-
-				if time_type != "ate":
-					self.food_time_texts[language][time_type] += " ({} + {} {})".format(self.food_times["ate"].split(" ")[0], self.times[time_type], self.time_units[time_type][language])
-
-		self.language_food_time_texts = self.food_time_texts[self.user_language]
-
-	def Register_Times(self):
-		text_to_write = ""
-
-		for food_time in self.food_times.values():
-			text_to_write += food_time
-
-			if food_time != list(self.food_times.values())[-1]:
-				text_to_write += "\n"
-
-		self.File.Edit(self.raw_times_file, text_to_write, "w")
+		# Write the new time type dictionaries with the stringfied datetimes
+		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["times"], self.Language.Python_To_JSON(self.times), "w")
 
 	def Set_Timer(self):
 		# Define website timer to countdown to "will_be_hungry" time
@@ -204,7 +188,9 @@ class Food_Time():
 				self.timer_url += "&"
 
 			# Add the attribute name, an equals sign, and the attribute (from date)
-			self.timer_url += self.time_parameters[attribute]["parameter"] + "=" + str(self.dates["will_be_hungry"][attribute])
+			date = self.Date.From_String(self.times["will_be_hungry"]["date"], "%Y-%m-%d %H:%M:%S.%f")
+
+			self.timer_url += self.time_parameters[attribute]["parameter"] + "=" + str(date[attribute])
 
 			# If the attribute is not the last one, then add "&" to continue adding URL parameters
 			if attribute != self.Date.texts["date_attributes, type: list"]["en"][-1]:
@@ -217,34 +203,27 @@ class Food_Time():
 		self.parameters = {
 			"task_title": self.language_texts["play_alarm_sound_when_you_are_hungry"],
 			"path": self.apps_folders["modules"][self.module["key"]]["play_alarm"]["__init__"],
-			"start_time": self.dates["will_be_hungry"]["date"],
+			"start_time": self.times["will_be_hungry"]["date"],
 		}
 
 		#self.Date.Schedule_Task(**self.parameters)
-
-	def Get_Times_From_File(self):
-		self.food_times = {}
-
-		i = 0
-		for food_time in self.File.Contents(self.raw_times_file)["lines"]:
-			self.food_times[self.time_types[i]] = food_time
-
-			i += 1
 
 	def Show_Times(self):
 		print()
 		print(self.language_texts["showing_the_meal_times_below"] + ":")
 
-		i = 0
-		for food_time in self.File.Contents(self.raw_times_file)["lines"]:
-			time_type = self.time_types[i]
-
+		# Iterate through time types
+		for time_type in self.times["types"]:
 			print()
-			print(self.show_texts[self.user_language][time_type] + ":")
 
+			# Show time type text ("this_is_the_time_that_you" + the time type text in user language)
+			print(self.times[time_type]["texts"][self.user_language] + ":")
+
+			# Define the time as the date format (HH:MM)
+			time = self.times[time_type]["time_string"]
+
+			# If time type is not ate, add the time that is added into the "ate" time, examples: (ate + 40 minutes), (ate + 3 hours)
 			if time_type != "ate":
-				food_time += " ({} + {} {})".format(self.food_times["ate"].split(" ")[0], self.times[time_type], self.time_units[time_type][self.user_language])
+				time += " ({} + {} {})".format(self.times["ate"]["time_string"], self.times[time_type]["time"], self.times[time_type]["unit"][self.user_language])
 
-			print(food_time)
-
-			i += 1
+			print(time)

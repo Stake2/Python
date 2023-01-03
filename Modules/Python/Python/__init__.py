@@ -124,10 +124,10 @@ class Python(object):
 
 		self.module_files = {}
 
-		for type in self.module_types:
-			language_type = self.language_texts[type]
+		for key in self.module_types:
+			language_type = self.language_texts[key]
 
-			self.module_files[language_type] = self.apps_folders["modules"]["root"] + self.Text.Capitalize(self.texts[type]["en"]) + ".txt"
+			self.module_files[language_type] = self.apps_folders["modules"]["root"] + self.Text.Capitalize(self.texts[key]["en"]) + ".txt"
 
 	def Define_Lists(self):
 		self.root_code_template = self.File.Contents(self.root_code_template_file)["string"]

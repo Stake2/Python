@@ -66,10 +66,8 @@ class Block(Block_Websites):
 
 		self.websites_to_block_text = "\n" \
 		"#######################################" + "\n" \
-		"#          " + "Block_Websites.py" + "          #" + "\n"
-
-		if self.websites_to_block != []:
-			self.websites_to_block_text += self.texts["websites_to_block_header"]
+		"#          " + "Block_Websites.py" + "          #" + "\n" + \
+		"#                                     #" + "\n\n"
 
 		if self.websites_to_block == []:
 			self.websites_to_block_text += self.texts["all_websites_are_unlocked_header"]
@@ -106,13 +104,7 @@ class Block(Block_Websites):
 		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.time, self.date["%H:%M %d/%m/%Y"])
 
 		if self.website_to_unlock != None:
-			self.log_text += "\n\n" + self.text + "\n"
-
-			for item in self.website_to_unlock:
-				self.log_text += item
-
-				if item != self.website_to_unlock[-1]:
-					self.log_text += "\n"
+			self.log_text += "\n\n" + self.text
 
 		self.File.Edit(self.log_file, self.log_text, "w")
 
