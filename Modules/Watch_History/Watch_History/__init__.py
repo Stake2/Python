@@ -244,7 +244,7 @@ class Watch_History(object):
 		if "media_folder" in self.app_settings:
 			self.root_folders["media"] = self.app_settings["media_folder"]
 
-		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch History/"
+		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Watch History/"
 		self.Folder.Create(self.watch_history_folder)
 
 		# Watched folders and files
@@ -275,7 +275,7 @@ class Watch_History(object):
 		self.Folder.Create(self.movies_folder)
 
 		# Media Info folders and files
-		self.media_info_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Media Info/"
+		self.media_info_folder = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Media Info/"
 		self.Folder.Create(self.media_info_folder)
 
 		self.media_list_file = self.media_info_folder + "Media list - Lista de mídias.txt"
@@ -288,7 +288,7 @@ class Watch_History(object):
 		self.File.Create(self.media_number_file)
 
 		# Comment_Writer folders and files
-		self.comment_writer_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Comment_Writer/"
+		self.comment_writer_folder = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Comment_Writer/"
 		self.Folder.Create(self.comment_writer_folder)
 
 		self.year_comment_numbers_folder = self.comment_writer_folder + "Year comment numbers/"
@@ -315,7 +315,7 @@ class Watch_History(object):
 			self.File.Edit(self.year_comment_number_file, "0", "w")
 
 		# Audiovisual Media Network root files
-		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
+		self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Watch List.txt"
 
 		# Media info folders and media details folders dictionary
 		self.media_info_folders = {}

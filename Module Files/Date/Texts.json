@@ -258,5 +258,13 @@
 	"and": {
 		"en": "and",
 		"pt": "e"
+	},
+	"date_format": {
+		"en": "%m/%d/%Y",
+		"pt": "%d/%m/%Y"
+	},
+	"date_time_format": {
+		"en": "%H:%M %m/%d/%Y",
+		"pt": "%H:%M %d/%m/%Y"
 	}
 }

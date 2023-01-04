@@ -19,17 +19,24 @@ class Register_Task(Tasks):
 			self.task_dictionary["input"] = False
 
 			if "descriptions" not in self.task_dictionary:
-				self.task_dictionary["descriptions"] = self.task_dictionary["names"]
+				self.task_dictionary["descriptions"] = self.task_dictionary["titles"]
 
-		self.Add_To_Task_Numbers()
-		self.Make_Task_Header()
+		self.task_dictionary["language_type"] = self.task_dictionary["type"]
 
-		self.Add_Task_To_Text_Files()
-		self.Create_Task_Text_Files()
+		i = 0
+		for task_type in self.task_types["en"]:
+			if task_type == self.task_dictionary["language_type"] and self.task_types[self.user_language][i] != self.task_dictionary["type"]:
+				self.task_dictionary["language_type"] = self.task_types[self.user_language][i]
+
+			i += 1
+
+		self.Register_Task_In_JSON()
+		self.Create_Task_File()
 
 		self.Check_First_Task_In_Year()
 
-		self.diary_slim_text = Write_On_Diary_Slim_Module(self.task_dictionary["descriptions"][self.user_language], self.task_dictionary["time"], show_text = False)
+		# Write on Diary Slim
+		Write_On_Diary_Slim_Module(self.task_dictionary["descriptions"][self.user_language], self.task_dictionary["Times"]["Language DateTime"][self.user_language], show_text = False)
 
 		self.Show_Task_Information()
 
@@ -50,10 +57,10 @@ class Register_Task(Tasks):
 		option_info = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
 		self.task_dictionary = {
-			"names": {},
+			"titles": {},
 			"descriptions": {},
 			"type": option_info["option"],
-			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
+			"time": self.Date.Now(),
 			"large_bar": True,
 			"input": True,
 		}
@@ -66,178 +73,175 @@ class Register_Task(Tasks):
 
 			self.task_dictionary["descriptions"][language] = self.Input.Lines(type_text)["string"]
 
-			self.task_dictionary["names"][language] = self.task_types["task_texts, type: dict"][language][self.task_dictionary["type"]] + "."
+			self.task_dictionary["titles"][language] = self.task_types["task_texts, type: dict"][language][self.task_dictionary["type"]] + "."
 
-	def Add_To_Task_Numbers(self):
-		self.task_type_number_file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
-
-		# Current Year Task History folder >
-			# Per Task Type >
-				# Files (Writes) > 
-					# [Task Type] >
-						# Number.txt
-
-			# Writes:
-				# Number.txt
-
-		# Number.txt
-		file = self.folders["Task History"][self.current_year]["Number"]
-		self.task_dictionary["number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
-
-		self.File.Edit(file, self.task_dictionary["number"], "w")
-
-		# Files (Writes) > [Task Type] > Number.txt
-		file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Number"]
-		self.task_dictionary["task_type_number"] = str(int(self.File.Contents(file)["lines"][0]) + 1)
-
-		self.File.Edit(file, self.task_dictionary["task_type_number"], "w")
-
-	def Make_Task_Header(self):
-		i = 0
-		for task_type in self.task_types["en"]:
-			if task_type == self.task_dictionary["type"]:
-				self.task_dictionary["language_type"] = self.task_types[self.user_language][i]
-
-			i += 1
-
-		self.task_dictionary["header"] = self.task_dictionary["number"] + ", " + self.task_dictionary["task_type_number"] + "\n"
-		self.task_dictionary["header"] += "\n"
-		self.task_dictionary["header"] += self.task_dictionary["type"] + "\n"
-		self.task_dictionary["header"] += "\n"
-		self.task_dictionary["header"] += self.task_dictionary["time"] + "\n"
-
-		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
-			self.task_dictionary["header"] += self.task_dictionary["language_type"] + "\n"
-
-		self.task_dictionary["header"] += "\n"
+	def Register_Task_In_JSON(self):
+		self.task_dictionary["Times"] = {
+			"ISO8601": self.task_dictionary["time"]["%Y-%m-%d %H:%M:%S"],
+			"Language DateTime": {},
+		}
 
 		for language in self.small_languages:
-			self.task_dictionary["header"] += self.task_dictionary["descriptions"][language]
+			self.task_dictionary["Times"]["Language DateTime"][language] = self.task_dictionary["time"]["date_time_format"][language]
+
+		self.task_type = self.task_dictionary["type"]
+
+		# Add to number
+		self.tasks["Number"] += 1
+
+		# Add to types list
+		self.tasks["Types"].append(self.task_type)
+
+		# Add to titles and descriptions list
+		for language in self.small_languages:
+			self.tasks["Titles"][language].append(self.task_dictionary["titles"][language])
+
+			self.tasks["Descriptions"][language].append(self.task_dictionary["descriptions"][language])
+
+		# Add to times dictionary
+		self.tasks["Times"]["ISO8601"].append(self.task_dictionary["Times"]["ISO8601"])
+
+		for language in self.small_languages:
+			self.tasks["Times"]["Language DateTime"][language].append(self.task_dictionary["Times"]["Language DateTime"][language])
+
+		# Define [Number. Task Type (Time)] and sanitized version for files
+		self.task_dictionary["Number. Task Type (Time)"] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["Times"]["Language DateTime"][self.user_language] + ")"
+		self.task_dictionary["Number. Task Type (Time) Sanitized"] = self.task_dictionary["Number. Task Type (Time)"].replace(":", ";").replace("/", "-")
+
+		# Define [Number. Task Type (Time)] sanitized for files per language
+		self.task_dictionary["Number. Task Type (Time) Sanitized Languages"] = {}
+
+		for language in self.small_languages:
+			self.task_dictionary["Number. Task Type (Time) Sanitized Languages"][language] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
+
+		# Add to [Number. Task Type (Time)] list
+		self.tasks["Number. Task Type (Time)"].append(self.task_dictionary["Number. Task Type (Time)"])
+
+		# Update "Tasks.json" file to add new Tasks JSON dictionary
+		self.File.Edit(self.folders["task_history"]["current_year"]["tasks"], self.Language.Python_To_JSON(self.tasks), "w")
+
+		# Add [Number. Task Type (Time)] to "Task list.txt" file
+		self.File.Edit(self.folders["task_history"]["current_year"]["task_list"], self.task_dictionary["Number. Task Type (Time)"], "a")
+
+		# ----------------------------------------- #
+
+		self.Add_Task_Types_To_Tasks()
+
+		# Add to task type number
+		self.tasks[self.task_type]["Number"] += 1
+
+		# Add to titles and descriptions list, and add Language DateTime
+		for language in self.small_languages:
+			self.tasks[self.task_type]["Titles"][language].append(self.task_dictionary["titles"][language])
+
+			self.tasks[self.task_type]["Descriptions"][language].append(self.task_dictionary["descriptions"][language])
+
+			self.tasks[self.task_type]["Times"]["Language DateTime"][language].append(self.task_dictionary["Times"]["Language DateTime"][language])
+
+		self.tasks[self.task_type]["Number. Task Type (Time)"].append(self.task_dictionary["Number. Task Type (Time)"])
+
+		self.tasks[self.task_type]["Times"]["ISO8601"].append(self.task_dictionary["Times"]["ISO8601"])
+
+		# Update task type "Tasks.json" file to add new task type Tasks JSON dictionary
+		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["tasks"], self.Language.Python_To_JSON(self.tasks[self.task_type]), "w")
+
+		# Add [Number. Task Type (Time)] to task type "Task list.txt" file
+		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["task_list"], self.task_dictionary["Number. Task Type (Time)"], "a")
+
+	def Create_Task_File(self):
+		# Number: [Task number]
+		# Task type number: [Task type number]
+		# Type: [Task type]
+		# Time: [Task times]
+		# 
+		# File name: [Number. Task Type (Time)]
+		# 
+		# English title:
+		# Portuguese title:
+		# 
+		# Task descriptions:
+		# 
+		# English:
+		# [English task description]
+		# 
+		# -
+		# 
+		# Português:
+		# [Portuguese task description]
+
+		# Define task file
+		folder = self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["files"]["root"]
+		file = folder + self.task_dictionary["Number. Task Type (Time) Sanitized"] + ".txt"
+		self.File.Create(file)
+
+		self.task_dictionary["task_text"] = {}
+
+		# Define task text per language
+		for language in self.small_languages:
+			full_language = self.full_languages[language]
+
+			self.task_dictionary["task_text"][language] = self.texts["task_text_template"][language]
+
+			# Define items to be added to task text template
+			items = [
+				self.tasks["Number"],
+				self.tasks[self.task_type]["Number"],
+				self.task_type,
+				self.task_dictionary["Times"]["ISO8601"] + "\n" + self.task_dictionary["Times"]["Language DateTime"][language] + "\n",
+				self.task_dictionary["Number. Task Type (Time)"],
+			]
+
+			self.task_dictionary["task_text"][language] = self.task_dictionary["task_text"][language].format(*items)
+
+			# Define task title
+			self.task_dictionary["task_text"][language] += "\n\n" + self.texts["[language]_title"][language] + ":" + "\n" + self.task_dictionary["titles"][language]
+
+			# Define task description
+			self.task_dictionary["task_text"][language] += "\n\n" + self.texts["task_description"][language] + ":" + "\n" + self.task_dictionary["descriptions"][language]
+
+		# Define general task text
+		self.task_dictionary["task_text"]["general"] = self.texts["task_text_template"][language]
+
+		# Define items to be added to template
+		items = [
+			self.tasks["Number"],
+			self.tasks[self.task_type]["Number"],
+			self.task_type,
+			self.task_dictionary["Times"]["ISO8601"],
+			self.task_dictionary["Number. Task Type (Time)"],
+		]
+
+		for language in self.small_languages:
+			# Add to task time
+			items[3] += "\n" + self.task_dictionary["Times"]["Language DateTime"][language]
+
+			if language == self.small_languages[-1]:
+				items[3] += "\n"
+
+		self.task_dictionary["task_text"]["general"] = self.task_dictionary["task_text"]["general"].format(*items)
+
+		self.task_dictionary["task_text"]["general"] += "\n\n"
+
+		for language in self.small_languages:
+			# Define task titles per language
+			self.task_dictionary["task_text"]["general"] += self.texts["[language]_title"][language] + ":" + "\n" + self.task_dictionary["titles"][language]
 
 			if language != self.small_languages[-1]:
-				self.task_dictionary["header"] += "\n\n-\n\n"
+				self.task_dictionary["task_text"]["general"] += "\n\n"
 
-		self.task_dictionary["time_replaced"] = self.task_dictionary["time"].replace(":", ";").replace("/", "-")
-
-		self.task_dictionary["number_type_and_time"] = self.task_dictionary["number"] + ". " + self.task_dictionary["type"] + " " + self.task_dictionary["time_replaced"]
-
-	def Add_Task_To_Text_Files(self):
-		# Current Year Task History folder >
-			# Appends:
-				# Tasks.txt
-				# Tasks.json
-				# Task Types.txt
-				# Times.txt
-
-		folder = self.folders["Task History"][self.current_year]
-
-		# Tasks.txt
-		file = folder["Tasks"]
-		text = self.task_dictionary["names"]["en"].replace(".", "")
-
-		self.File.Edit(file, text, "a")
-
-		# Tasks.json
-		file = folder["Tasks.json"]
-		text = self.Language.JSON_To_Python(file)
+		self.task_dictionary["task_text"]["general"] += "\n\n" + self.texts["task_descriptions"]["en"] + ":" + "\n\n"
 
 		for language in self.small_languages:
-			text[language].append(self.task_dictionary["names"][language].replace(".", ""))
+			full_language = self.full_languages[language]
 
-		text = self.Language.Python_To_JSON(text)
+			# Define task descriptions per language
+			self.task_dictionary["task_text"]["general"] += full_language + ":" + "\n" + self.task_dictionary["descriptions"][language]
 
-		self.File.Edit(file, text, "w")
+			if language != self.small_languages[-1]:
+				self.task_dictionary["task_text"]["general"] += "\n\n"
 
-		# Task Types.txt
-		file = folder["Task Types"]
-		text = self.task_dictionary["type"]
-
-		self.File.Edit(file, text, "a")
-
-		# Times.txt
-		file = folder["Times"]
-		text = self.task_dictionary["time"]
-
-		self.File.Edit(file, text, "a")
-
-		# ------------------ #
-
-		# Current Year Task History folder >
-			# Per Task Type >
-				# Files (Appends) > 
-					# [Task Type] >
-						# Tasks.txt, Tasks.json, Times.txt
-
-		folder = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]
-
-		# Files (Appends) > [Task Type] > Tasks.txt
-		file = folder["Tasks"]
-		text = self.task_dictionary["names"]["en"].replace(".", "")
-
-		self.File.Edit(file, text, "a")
-
-		# Files (Appends) > [Task Type] > Tasks.json
-		file = folder["Tasks.json"]
-		text = self.Language.JSON_To_Python(file)
-
-		for language in self.small_languages:
-			text[language].append(self.task_dictionary["names"][language].replace(".", ""))
-
-		text = self.Language.Python_To_JSON(text)
-
-		self.File.Edit(file, text, "w")
-
-		# Files (Appends) > [Task Type] > Times.txt
-		file = folder["Times"]
-		text = self.task_dictionary["time"]
-
-		self.File.Edit(file, text, "a")
-
-	def Create_Task_Text_Files(self):
-		# Current Year Task History folder >
-			# All Task Files (Creates) >
-				# [Task number]. [Task type] [Task time].txt
-					# Contents:
-					# [All Tasks number], [Task type number]
-					# 
-					# [Task type]
-					# ([Mixed task type])
-					# 
-					# [Task time]
-					# 
-					# [Language task descriptions]
-
-		# [Task number]. [Task type] [Task time].txt
-		self.task_dictionary["file"] = self.folders["Task History"][self.current_year]["All Task Files"] + self.task_dictionary["number_type_and_time"] + ".txt"
-		self.File.Create(self.task_dictionary["file"])
-
-		text = self.task_dictionary["header"]
-		self.File.Edit(self.task_dictionary["file"], text, "w")
-
-		# ------------------ #
-
-		# Current Year Task History folder >
-			# Per Task Type >
-				# Folders >
-					# [Task Type] (Creates) >
-						# [Task time].txt
-							# Contents:
-							# [All Tasks number], [Task type number]
-							# 
-							# [Task type]
-							# ([Mixed task type])
-							# 
-							# [Task time]
-							# 
-							# [Language task descriptions]
-
-		folder = self.folders["Task History"][self.current_year]["Per Task Type"]["Folders"][self.task_dictionary["type"]]["root"]
-
-		self.task_dictionary["task_type_file"] = folder + self.task_dictionary["time_replaced"] + ".txt"
-		self.File.Create(self.task_dictionary["task_type_file"])
-
-		text = self.task_dictionary["header"]
-		self.File.Edit(self.task_dictionary["task_type_file"], text, "w")
+		# Write task text into task file
+		self.File.Edit(file, self.task_dictionary["task_text"]["general"], "w")
 
 	def Check_First_Task_In_Year(self):
 		self.firsts_of_the_year_folders = {
@@ -252,34 +256,32 @@ class Register_Task(Tasks):
 			full_language = self.full_languages[language]
 
 			# Root folders
-			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
+			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current_year"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["root"][language])
 
 			# Subfolders
-			self.firsts_of_the_year_folders["sub_folder"][language] = self.firsts_of_the_year_folders["root"][language] + self.task_types["sub_folders, type: dict"][self.task_dictionary["type"]] + "/"
+			self.firsts_of_the_year_folders["sub_folder"][language] = self.firsts_of_the_year_folders["root"][language] + self.task_types["sub_folders, type: dict"][self.task_type][language] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["sub_folder"][language])
 
-			# Task type folders
-			self.firsts_of_the_year_folders["type"][language] = self.firsts_of_the_year_folders["sub_folder"][language] + self.task_types["type_folders, type: dict"][self.task_dictionary["type"]] + "/"
+			# Task type folder
+			self.firsts_of_the_year_folders["type"][language] = self.firsts_of_the_year_folders["sub_folder"][language] + self.task_dictionary["language_type"] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["type"][language])
 
 			i += 1
 
 		self.task_dictionary["first_task_in_year"] = False
 
-		file = self.folders["Task History"][self.current_year]["Per Task Type"]["Files"][self.task_dictionary["type"]]["Tasks"]
-
-		if self.File.Contents(file)["length"] == 0:
+		if self.tasks["Number"] == 1:
 			self.task_dictionary["first_task_in_year"] = True
 
 		if self.task_dictionary["first_task_in_year"] == True:
 			for language in self.small_languages:
-				folder = self.firsts_of_the_year_folders["sub_folder"][language]
+				folder = self.firsts_of_the_year_folders["type"][language]
 
-				self.task_dictionary["first_task_in_year_file"] = folder + self.task_dictionary["number_type_and_time"] + ".txt"
+				self.task_dictionary["first_task_in_year_file"] = folder + self.task_dictionary["Number. Task Type (Time) Sanitized Languages"][language] + ".txt"
 				self.File.Create(self.task_dictionary["first_task_in_year_file"])
 
-				self.File.Edit(self.task_dictionary["first_task_in_year_file"], self.task_dictionary["header"], "w")
+				self.File.Edit(self.task_dictionary["first_task_in_year_file"], self.task_dictionary["task_text"][language], "w")
 
 	def Show_Task_Information(self):
 		print()
@@ -292,7 +294,7 @@ class Register_Task(Tasks):
 			translated_language = self.translated_languages[language][self.user_language]
 
 			print("\t" + translated_language + ":")
-			print("\t" + self.task_dictionary["names"][language])
+			print("\t" + self.task_dictionary["titles"][language])
 			print()
 
 		print(self.language_texts["type, title()"] + ":")
@@ -310,7 +312,7 @@ class Register_Task(Tasks):
 		print()
 
 		print(self.language_texts["when, title()"] + ":")
-		print(self.task_dictionary["time"])
+		print(self.task_dictionary["Times"]["Language DateTime"][self.user_language])
 
 		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.language_texts["can_be_long"] + ")")
 

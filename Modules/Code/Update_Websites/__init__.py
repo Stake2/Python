@@ -84,7 +84,7 @@ class Update_Websites(Code):
 		]
 
 		self.websites = {
-			"list": self.Language.JSON_To_Python(self.mega_folders["php"]["website"])["list"],
+			"list": self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["websites"]),
 			"update": {},
 		}
 

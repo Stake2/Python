@@ -492,7 +492,7 @@ class Register_Watched_Media(Watch_History):
 						# [Watched time]
 						# ([YouTube ID])
 
-		self.current_year_experienced_media_folder = self.notepad_folders["years"]["current"]["experienced_media"] + self.mixed_plural_media_type + "/"
+		self.current_year_experienced_media_folder = self.notepad_folders["years"]["current_year"]["experienced_media"]["root"] + self.mixed_plural_media_type + "/"
 		self.Folder.Create(self.current_year_experienced_media_folder)
 
 		# Experienced Media Watched Media Folder
@@ -523,7 +523,7 @@ class Register_Watched_Media(Watch_History):
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
-			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
+			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current_year"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["root"][language])
 
 			self.firsts_of_the_year_folders["subfolder"][language] = self.firsts_of_the_year_folders["root"][language] + self.texts["media"][language] + "/"
@@ -747,6 +747,8 @@ class Register_Watched_Media(Watch_History):
 		self.post_on_social_networks = self.Input.Yes_Or_No(self.post_on_social_networks_text)
 
 		if self.post_on_social_networks == True:
+			print()
+
 			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", first_space = False, second_space = False)
 
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"])

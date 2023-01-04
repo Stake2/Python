@@ -155,12 +155,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.Type_Task_Descriptions()
 
 	def Type_Task_Descriptions(self):
-		# Define task dictionary with names, descriptions, type, time, and files
+		# Define task dictionary with titles, descriptions, type, time, and files
 		self.task_dictionary = {
-			"names": {},
+			"titles": {},
 			"descriptions": {},
 			"type": self.text["key"],
-			"time": self.Date.Now()["%H:%M %d/%m/%Y"],
+			"time": self.Date.Now(),
 			"files": {},
 		}
 
@@ -205,9 +205,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Define task descriptions and make a backup of them
 		for language in self.small_languages:
-			self.task_dictionary["names"][language] = self.text["texts"][language] + "."
+			self.task_dictionary["titles"][language] = self.text["texts"][language] + "."
 
-			self.task_dictionary["descriptions"][language] = self.task_dictionary["names"][language] + "\n\n"
+			self.task_dictionary["descriptions"][language] = self.task_dictionary["titles"][language] + "\n\n"
 			self.task_dictionary["descriptions"][language] += self.File.Contents(self.task_dictionary["files"][language])["string"]
 
 			text = self.task_dictionary["descriptions"][language]
@@ -230,6 +230,8 @@ class Write_On_Diary_Slim(Diary_Slim):
 			Register_Task(self.task_dictionary)
 
 			if self.global_switches["verbose"] == True:
+				self.task_dictionary["time"] = str(self.task_dictionary["time"])
+
 				print(self.Language.Python_To_JSON(self.task_dictionary))
 
 			self.File.Delete(self.backup_file)

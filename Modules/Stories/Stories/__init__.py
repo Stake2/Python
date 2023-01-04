@@ -602,7 +602,7 @@ class Stories(object):
 			task_dictionary["type"] = "Stories"
 
 		if "time" not in task_dictionary:
-			task_dictionary["time"] = self.Date.Now()["%H:%M %d/%m/%Y"]
+			task_dictionary["time"] = self.Date.Now()
 
 		# Register task with Tasks module, Register_Task class
 		if register_task == True:

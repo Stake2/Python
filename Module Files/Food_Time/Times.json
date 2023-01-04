@@ -20,8 +20,8 @@
             "pt": "Esta é a hora que você comeu",
             "en": "This is the time that you ate"
         },
-        "date": "2023-01-03 03:46:24.086882",
-        "time_string": "03:46"
+        "date": "2023-01-04 15:35:55.453557",
+        "time_string": "15:35"
     },
     "can_drink_water": {
         "time": 40,
@@ -34,8 +34,8 @@
             "pt": "Esta é a hora que você pode beber água",
             "en": "This is the time that you can drink water"
         },
-        "date": "2023-01-03 04:26:24.086882",
-        "time_string": "04:26"
+        "date": "2023-01-04 16:15:55.453557",
+        "time_string": "16:15"
     },
     "will_be_hungry": {
         "time": 3,
@@ -48,7 +48,7 @@
             "pt": "Esta é a hora que você irá ter fome",
             "en": "This is the time that you will be hungry"
         },
-        "date": "2023-01-03 06:46:24.086882",
-        "time_string": "06:46"
+        "date": "2023-01-04 18:35:55.453557",
+        "time_string": "18:35"
     }
 }

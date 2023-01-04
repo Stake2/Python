@@ -49,7 +49,7 @@ class Register_Playing_Time(GamePlayer):
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
-			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
+			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current_year"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["root"][language])
 
 			self.firsts_of_the_year_folders["media"][language] = self.firsts_of_the_year_folders["root"][language] + self.texts["media"][language] + "/" + self.texts["game, title()"][language] + "/"
@@ -157,7 +157,7 @@ class Register_Playing_Time(GamePlayer):
 		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["folders"], self.texts_to_use["full_played_text"], "w")
 
 		# Copy the "media type folders folder" to the "experienced media type folder" on current year text folder
-		self.experienced_media_folder = self.notepad_folders["years"]["current"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"
+		self.experienced_media_folder = self.notepad_folders["years"]["current_year"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"
 		self.Folder.Create(self.experienced_media_folder)
 
 		self.experienced_media_type_folder = self.experienced_media_folder + self.game["category"]["name"] + "/"

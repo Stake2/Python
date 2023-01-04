@@ -94,28 +94,56 @@ class Date():
 		if date_parameter != None:
 			date["date"] = date_parameter
 
+		# Day
 		date["day"] = date["date"].day
 		date["weekday"] = date["date"].weekday()
 		date["day_name"] = self.language_texts["day_names, type: list"][date["weekday"]]
 
+		date["day_names"] = {}
+
+		for language in self.small_languages:
+			date["day_names"][language] = self.texts["day_names, type: list"][language][date["weekday"]]
+
+		# Month
 		date["month"] = date["date"].month
 		date["month_name"] = self.language_texts["month_names, type: list"][date["month"]]
 
+		date["month_names"] = {}
+
+		for language in self.small_languages:
+			date["month_names"][language] = self.texts["month_names, type: list"][language][date["month"]]
+
+		# Year
 		date["year"] = date["date"].year
 
+		# Time
 		date["time"] = date["date"].time()
 		date["hour"] = date["date"].hour
 		date["minute"] = date["date"].minute
 		date["second"] = date["date"].second
 
-		date["strftime"] = date["date"].strftime("%H:%M %d/%m/%Y")
-		date["%H:%M"] = date["date"].strftime("%H:%M")
+		# Date formats
 		date["%d/%m/%Y"] = date["date"].strftime("%d/%m/%Y")
 		date["%d-%m-%Y"] = date["date"].strftime("%d-%m-%Y")
-		date["%H:%M %d/%m/%Y"] = date["strftime"]
+
+		date["date_format"] = {}
+
+		for language in self.small_languages:
+			date["date_format"][language] = date["date"].strftime(self.texts["date_format"][language])
+
+		# Time formats
+		date["%H:%M"] = date["date"].strftime("%H:%M")
+
+		# Date time formats
+		date["date_time_format"] = {}
+
+		for language in self.small_languages:
+			date["date_time_format"][language] = date["date"].strftime(self.texts["date_time_format"][language])
 
 		date["ISO8601"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
-		date["%Y-%m-%dT%H:%M:%s"] = date["ISO8601"]
+		date["%Y-%m-%dT%H:%M:%S"] = date["ISO8601"]
+		date["%Y-%m-%d %H:%M:%S"] = date["date"].strftime("%Y-%m-%d %H:%M:%S")
+		date["%H:%M %d/%m/%Y"] = date["date"].strftime("%H:%M %d/%m/%Y")
 
 		return date
 

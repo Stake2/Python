@@ -366,7 +366,7 @@ class Write(Stories):
 	def Define_Task_Dictionary(self):
 		# Define task dictionary, to use it on Tasks class
 		self.task_dictionary = {
-			"names": {},
+			"titles": {},
 			"descriptions": {},
 		}
 
@@ -376,7 +376,7 @@ class Write(Stories):
 		if self.chapter["finished_writing"] == True:
 			i_text = self.texts["i_{}_the_chapter_{}_of_my_story_{}"]
 
-		# Create task names and descriptions
+		# Create task titles and descriptions
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 			translated_user_language = self.translated_languages[self.user_language][language]
@@ -389,18 +389,18 @@ class Write(Stories):
 				parameters[0] = self.chapter["writing_mode"]["past"][language]
 				parameters = tuple(parameters)
 
-			# Create task names
-			self.task_dictionary["names"][language] = i_text[language]
-			self.task_dictionary["names"][language] = self.task_dictionary["names"][language].format(*parameters)
+			# Create task titles
+			self.task_dictionary["titles"][language] = i_text[language]
+			self.task_dictionary["titles"][language] = self.task_dictionary["titles"][language].format(*parameters)
 
 			# Add translated user language to task name if writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["names"][language] += " " + self.texts["to"][language] + " " + translated_user_language
+				self.task_dictionary["titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
 
-			self.task_dictionary["names"][language] += "."
+			self.task_dictionary["titles"][language] += "."
 
 			# Create task descriptions
-			self.task_dictionary["descriptions"][language] = self.task_dictionary["names"][language]
+			self.task_dictionary["descriptions"][language] = self.task_dictionary["titles"][language]
 
 			# Add writing time
 			self.task_dictionary["descriptions"][language] += "\n\n"

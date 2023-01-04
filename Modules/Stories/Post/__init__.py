@@ -442,13 +442,13 @@ class Post(Stories):
 	def Register_Task(self):
 		# Create task dictionary
 		self.task_dictionary = {
-			"names": {}
+			"titles": {}
 		}
 
-		# Add task names
+		# Add task titles
 		for language in self.small_languages:
-			self.task_dictionary["names"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
-			self.task_dictionary["names"][language] = self.task_dictionary["names"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
+			self.task_dictionary["titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
+			self.task_dictionary["titles"][language] = self.task_dictionary["titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
 
 		# Register task with root method
 		Stories.Register_Task(self, self.task_dictionary, register_task = True)

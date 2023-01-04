@@ -63,8 +63,24 @@
 		"en": "Describe the task in",
 		"pt": "Descreva a tarefa em"
 	},
+	"[language]_title": {
+		"en": "English title",
+		"pt": "Título em Português"
+	},
+	"task_description": {
+		"en": "Task description",
+		"pt": "Descrição da tarefa"
+	},
+	"task_descriptions": {
+		"en": "Task descriptions",
+		"pt": "Descrições da tarefa"
+	},
 	"task_description_in": {
 		"en": "Task description in",
 		"pt": "Descrição da tarefa em"
+	},
+	"task_text_template": {
+		"en": "Number: {}\nTask type number: {}\nType: {}\nTime: {}\nFile name: {}",
+		"pt": "Número: {}\nNúmero de tipo de tarefa: {}\nTipo: {}\nTempo: {}\nNome de arquivo: {}"
 	}
 }

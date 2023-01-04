@@ -1,6 +1,7 @@
 # Tasks.py
 
 from Tasks.Register_Task import Register_Task as Register_Task
+from Tasks.Show_Tasks import Show_Tasks as Show_Tasks
 
 from Language import Language as Language
 from Input import Input as Input
@@ -24,6 +25,7 @@ class Run():
 
 		self.classes = [
 			Register_Task,
+			Show_Tasks,
 		]
 
 		self.class_descriptions = []

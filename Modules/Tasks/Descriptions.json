@@ -6,5 +6,9 @@
 	"Register_Task": {
 		"en": "Register a task",
 		"pt": "Registrar uma tarefa"
+	},
+	"Show_Tasks": {
+		"en": "Show all tasks",
+		"pt": "Mostrar todas as tarefas"
 	}
 }

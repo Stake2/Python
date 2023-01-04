@@ -4,7 +4,7 @@ from Block_Websites.Block_Websites import Block_Websites as Block_Websites
 from Block_Websites.Block import Block as Block
 
 class Unblock(Block_Websites):
-	def __init__(self, options = None, time = None, first_space = True, second_space = False):
+	def __init__(self, options = None, time = None, first_space = True, second_space = True):
 		super().__init__()
 
 		self.options = options
@@ -17,6 +17,9 @@ class Unblock(Block_Websites):
 
 			if type(self.website_to_unlock) == dict:
 				self.website_to_unlock = [self.website_to_unlock["Website"]]
+
+		if self.options == None:
+			second_space = False
 
 		self.time = time
 

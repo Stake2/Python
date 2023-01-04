@@ -117,7 +117,7 @@ class Christmas():
 
 			self.things_to_watch_file = self.current_year["folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["watch, title(), en - pt"] + ".txt"
 
-			self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch List.txt"
+			self.watch_list_file = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Watch List.txt"
 
 			self.things_to_eat_file = self.current_year["folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
 

@@ -4,6 +4,7 @@ from Global_Switches import Global_Switches as Global_Switches
 
 from Language import Language as Language
 from Date import Date as Date
+from File import File as File
 
 import os
 import platform
@@ -35,6 +36,7 @@ class Folder():
 
 		self.Language = Language(self.global_switches)
 		self.Date = Date(self.global_switches)
+		self.File = File(self.global_switches)
 
 		self.date = self.Date.date
 
@@ -85,19 +87,18 @@ class Folder():
 			"root": self.root_folders["apps"],
 		}
 
-		self.apps_folders["modules"] = {
-			"root": self.Sanitize(os.path.join(self.apps_folders["root"], "Modules/")),
-		}
+		# Apps sub folders
+		for folder in ["Module Files", "Modules", "Shortcuts"]:
+			key = folder.lower().replace(" ", "_")
+
+			if key == "shortcuts":
+				folder = "Atalhos"
+
+			self.apps_folders[key] = {
+				"root": os.path.join(self.apps_folders["root"], folder + "/"),
+			}
 
 		self.apps_folders["modules"]["usage_modules"] = self.apps_folders["modules"]["root"] + "Usage modules.txt"
-
-		self.apps_folders["module_files"] = {
-			"root": os.path.join(self.apps_folders["root"], "Module Files/"),
-		}
-
-		self.apps_folders["shortcuts"] = {
-			"root": os.path.join(self.apps_folders["root"], "Atalhos/"),
-		}
 
 		self.apps_folders["shortcuts"]["white_shortcuts"] = os.path.join(self.apps_folders["shortcuts"]["root"], "Ícone Branco/")
 
@@ -106,28 +107,40 @@ class Folder():
 			"root": self.Sanitize(os.path.join(self.root_folders["users"], pathlib.Path.home().name + "/")),
 		}
 
-		self.user_folders["downloads"] = {}
-		self.user_folders["downloads"]["root"] = self.Sanitize(os.path.join(self.user_folders["root"], "Downloads/"))
+		# User sub folders
+		for folder in ["AppData", "Downloads", "Pictures", "Videos"]:
+			key = folder.lower().replace(" ", "_")
 
-		self.user_folders["videos"] = self.Sanitize(os.path.join(self.user_folders["downloads"]["root"], "Vídeos/"))
-		self.user_folders["mega"] = self.Sanitize(os.path.join(self.user_folders["downloads"]["root"], "Mega/"))
+			self.user_folders[key] = {
+				"root": os.path.join(self.user_folders["root"], folder + "/"),
+			}
 
-		self.user_folders["appdata"] = {
-			"root": self.Sanitize("/".join(self.Sanitize(os.getenv("APPDATA")).split("/")[:4])),
-		}
+		# Downloads folders
+		for folder in ["Mega", "Vídeos"]:
+			key = folder.lower().replace(" ", "_")
 
-		self.user_folders["appdata"]["local"] = self.Sanitize(os.path.join(self.user_folders["appdata"]["root"], "Local/"))
-		self.user_folders["appdata"]["roaming"] = self.Sanitize(os.path.join(self.user_folders["appdata"]["root"], "Roaming/"))
+			self.user_folders["downloads"][key] = {
+				"root": os.path.join(self.user_folders["downloads"]["root"], folder + "/"),
+			}
+
+		# AppData folders
+		for folder in ["Local", "Roaming"]:
+			key = folder.lower().replace(" ", "_")
+
+			self.user_folders["appdata"][key] = {
+				"root": os.path.join(self.user_folders["appdata"]["root"], folder + "/"),
+			}
 
 		# System32 subfolders
 		self.root_folders["system32"]["drivers/etc"] = self.Sanitize(os.path.join(self.root_folders["system32"]["root"], "drivers/etc/"))
 
 		# Sony Vegas Files subfolders
-		# Render
-		self.root_folders["sony_vegas_files"]["render"] = self.root_folders["sony_vegas_files"]["root"] + "Render/"
+		for folder in ["Render", "Story Covers"]:
+			key = folder.lower().replace(" ", "_")
 
-		# Story Covers
-		self.root_folders["sony_vegas_files"]["story_covers"] = self.root_folders["sony_vegas_files"]["root"] + "Story Covers/"
+			self.root_folders["sony_vegas_files"][key] = {
+				"root": os.path.join(self.root_folders["sony_vegas_files"]["root"], folder + "/"),
+			}
 
 		# XAMPP folder
 		self.root_folders["xampp"]["xampp-control"] = self.root_folders["xampp"]["root"] + "xampp-control.exe"
@@ -137,41 +150,80 @@ class Folder():
 			"root": self.root_folders["mega"],
 		}
 
-		self.mega_folders["notepad"] = {
-			"root": os.path.join(self.mega_folders["root"], "Bloco De Notas/"),
-		}
+		# Mega subfolders
+		for folder in ["Notepad", "Image", "PHP", "Obsidian's Vaults", "Stories", "Websites"]:
+			key = folder.lower().replace(" ", "_").replace("'", "_")
 
+			if key == "notepad":
+				folder = "Bloco De Notas"
+
+			self.mega_folders[key] = {
+				"root": os.path.join(self.mega_folders["root"], folder + "/"),
+			}
+
+		# Mega Notepad folders
 		self.mega_folders["notepad"]["effort"] = {
 			"root": os.path.join(self.mega_folders["notepad"]["root"], "Dedicação/"),
 		}
 
-		self.mega_folders["notepad"]["effort"]["diary"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Diary/"),
-		}
+		# Mega Notepad Effort folders
+		for folder in ["Diary", "Diary Slim", "Food", "Networks", "Years"]:
+			key = folder.lower().replace(" ", "_")
 
-		self.mega_folders["notepad"]["effort"]["diary_slim"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Diary Slim/"),
-		}
+			self.mega_folders["notepad"]["effort"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], folder + "/"),
+			}
 
-		self.mega_folders["notepad"]["effort"]["food"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Food/"),
-		}
+		# Mega Notepad Effort Networks folders
+		for folder in ["Audiovisual Media Network", "Game Network", "Productive Network"]:
+			key = folder.lower().replace(" ", "_")
 
-		self.mega_folders["notepad"]["effort"]["networks"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Networks/"),
-		}
+			self.mega_folders["notepad"]["effort"]["networks"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], folder + "/"),
+			}
 
-		self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Audiovisual Media Network/")
+		# Mega Notepad/Effort/Networks/Productive Network folders
+		for item in ["Media Network Data", "Task Data", "Task History"]:
+			key = item.lower().replace(" ", "_")
 
-		self.mega_folders["notepad"]["effort"]["networks"]["game_network"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Game Network/"),
-		}
+			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["root"], item + "/"),
+			}
 
-		self.mega_folders["notepad"]["effort"]["networks"]["productive_network"] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], "Productive Network/")
+		# Networks/Productive Network/Task History folders
+		for item in [self.date["year"]]:
+			key = str(item).lower().replace(" ", "_")
 
-		self.mega_folders["notepad"]["effort"]["years"] = {
-			"root": os.path.join(self.mega_folders["notepad"]["effort"]["root"], "Years/"),
-		}
+			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"]["root"], str(item) + "/"),
+			}
+
+			for item in ["Per Task Type"]:
+				self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key][item] = {
+					"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"], str(item) + "/"),
+				}
+
+			# Tasks.json file
+			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["tasks"] = self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Tasks.json"
+
+			# Task list.txt file
+			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["task_list"] = self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Task list.txt"
+
+		# Years folders
+		for item in range(2021, self.date["year"] + 1):
+			key = str(item).lower().replace(" ", "_")
+
+			self.mega_folders["notepad"]["effort"]["years"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"]["root"], str(item) + "/"),
+			}
+
+			# Experienced Media folder
+			self.mega_folders["notepad"]["effort"]["years"][key]["experienced_media"] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"][key]["root"], "Experienced Media/"),
+			}
+
+			if key == str(self.date["year"]):
+				self.mega_folders["notepad"]["effort"]["years"]["current_year"] = self.mega_folders["notepad"]["effort"]["years"][key]
 
 		# Notepad folders
 		self.notepad_folders = {}
@@ -182,68 +234,60 @@ class Folder():
 		for key in self.mega_folders["notepad"]["effort"]:
 			self.notepad_folders[key] = self.mega_folders["notepad"]["effort"][key]
 
-		# Mega image folder
-		self.mega_folders["image"] = {
-			"root": os.path.join(self.mega_folders["root"], "Image/"),
-		}
-
-		# Mega PHP folder
-		self.mega_folders["php"] = {
-			"root": os.path.join(self.mega_folders["root"], "PHP/"),
-		}
-
 		# Temporary set PHP folder to Remake
 		self.mega_folders["php"] = {
-			"root": os.path.join(self.mega_folders["root"], "PHP/Remake/"),
+			"root": os.path.join(self.mega_folders["php"]["root"], "Remake/"),
 		}
 
-		# Mega PHP JSON folder
-		self.mega_folders["php"]["json"] = {
-			"root": os.path.join(self.mega_folders["php"]["root"], "JSON/"),
-		}
+		# Mega PHP folders
+		for item in ["JSON"]:
+			key = item.lower().replace(" ", "_")
 
-		# Mega PHP Website.json file
-		self.mega_folders["php"]["website"] = os.path.join(self.mega_folders["php"]["root"], "Website.json")
+			self.mega_folders["php"][key] = {
+				"root": os.path.join(self.mega_folders["php"]["root"], item + "/"),
+			}
 
-		# Mega PHP JSON Colors.json file
-		self.mega_folders["php"]["json"]["colors"] = os.path.join(self.mega_folders["php"]["json"]["root"], "Colors.json")
+		# Mega PHP JSON files
+		for item in ["Colors", "URL"]:
+			key = item.lower().replace(" ", "_")
 
-		# Mega PHP JSON URL.json file
-		self.mega_folders["php"]["json"]["url"] = os.path.join(self.mega_folders["php"]["json"]["root"], "URL.json")
+			self.mega_folders["php"]["json"][key] = os.path.join(self.mega_folders["php"]["json"]["root"], item + ".json")
 
-		# Mega Obsidian's Vaults folder
-		self.mega_folders["obsidian_s_vaults"] = {
-			"root": os.path.join(self.mega_folders["root"], "Obsidian's Vaults/"),
-		}
+		# Mega Obsidian's Vaults folders
+		for item in ["Creativity"]:
+			key = item.lower().replace(" ", "_")
 
-		self.mega_folders["obsidian_s_vaults"]["creativity"] = {
-			"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["root"], "Creativity/"),
-		}
+			self.mega_folders["obsidian_s_vaults"][key] = {
+				"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["root"], item + "/"),
+			}
 
-		self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"] = {
-			"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["creativity"]["root"], "Literature/"),
-		}
+		# Mega Obsidian's Vaults/Creativity folders
+		for item in ["Literature"]:
+			key = item.lower().replace(" ", "_")
 
-		self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"]["stories"] = {
-			"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"]["root"], "Stories/"),
-		}
+			self.mega_folders["obsidian_s_vaults"]["creativity"][key] = {
+				"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["creativity"]["root"], item + "/"),
+			}
 
-		# Mega Stories folder
-		self.mega_folders["stories"] = {
-			"root": os.path.join(self.mega_folders["root"], "Stories/"),
-		}
+		# Mega Obsidian's Vaults/Creativity/Literature folders
+		for item in ["Stories"]:
+			key = item.lower().replace(" ", "_")
 
-		# Mega Websites folder
-		self.mega_folders["websites"] = {
-			"root": os.path.join(self.mega_folders["root"], "Websites/"),
-		}
+			self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"][key] = {
+				"root": os.path.join(self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/"),
+			}
 
-		self.mega_folders["websites"]["website"] = self.mega_folders["websites"]["root"] + "Website.json"
+		# Mega Websites folders and files
+		for item in ["Website.json", "Images"]:
+			key = item.lower().replace(" ", "_").replace(".json", "")
 
-		# Mega Websites Images folder
-		self.mega_folders["websites"]["images"] = {
-			"root": self.mega_folders["websites"]["root"] + "Images/",
-		}
+			if "." in item:
+				self.mega_folders["websites"][key] = os.path.join(self.mega_folders["websites"]["root"], item)
+
+			else:
+				self.mega_folders["websites"][key] = {
+					"root": os.path.join(self.mega_folders["websites"]["root"], item + "/"),
+				}
 
 		self.mega_folders["websites"]["images"]["story_covers"] = self.mega_folders["websites"]["images"]["root"] + "Story Covers/"
 
@@ -299,13 +343,13 @@ class Folder():
 			print("\t" + text + ":")
 			print("\t" + item)
 
-	def Exist(self, folder):
-		folder = self.Sanitize(folder)
+	def Exist(self, path):
+		path = self.Sanitize(path)
 
-		if os.path.isdir(folder) == True:
+		if os.path.isdir(path) == True:
 			return True
 
-		if os.path.isdir(folder) == False:
+		if os.path.isdir(path) == False:
 			return False
 
 	def Type(self, text = None):
@@ -340,8 +384,12 @@ class Folder():
 			folders = self.folders
 
 		for value in folders.values():
-			if type(value) != dict and os.path.isfile(value) == False:
-				self.Create(value)
+			if type(value) != dict:
+				if os.path.isfile(value) == False and "." not in value:
+					self.Create(value)
+
+				if os.path.isfile(value) == False and "." in value:
+					self.File.Create(value)
 
 			if type(value) == dict:
 				found = self.Create_Folders(value, depth = depth + 1)
@@ -672,7 +720,7 @@ class Folder():
 									file_name += "."
 
 					if lower_key == True:
-						file_name = file_name.lower().replace(" ", "_")
+						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# If file is root file, from folder, add it to the root key
 					if folder.count("/") == root_folder.count("/"):
@@ -689,7 +737,7 @@ class Folder():
 
 				contents["size"] += os.stat(root_folder).st_size
 
-			# Root folder on dictionary if slash count of root folder is equal to folder plus one slash or equal to folder
+			# Root folder on dictionary if slash count of root folder is equal to folder plus two slash or equal to folder
 			# Add sub-sub-folders
 			if folder.count("/") + 2 == root_folder.count("/"):
 				root_folder = self.Sanitize(root_folder)
@@ -723,9 +771,114 @@ class Folder():
 								if item != files[i].split("/")[-1].split(".")[-2]:
 									file_name += "."
 
+					if lower_key == True:
+						file_name = file_name.lower().replace(" ", "_").replace(".", "")
+
 					# Add file if root_folder_name key is not string
-					if root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name]) != str:
+					if type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]
+
+					if os.path.isfile(files[i]) == True:
+						contents["size"] += os.stat(files[i]).st_size
+
+					i += 1
+
+				contents["size"] += os.stat(root_folder).st_size
+
+			# Root folder on dictionary if slash count of root folder is equal to folder plus three slash or equal to folder
+			# Add sub-sub-sub-folders
+			if folder.count("/") + 3 == root_folder.count("/"):
+				root_folder = self.Sanitize(root_folder)
+
+				root_folder_name = root_folder.split("/")[-4]
+				sub_sub_folder_name = root_folder.split("/")[-3]
+				sub_sub_sub_folder_name = root_folder.split("/")[-2]
+
+				if lower_key == True:
+					root_folder_name = root_folder_name.lower().replace(" ", "_")
+					sub_sub_folder_name = sub_sub_folder_name.lower().replace(" ", "_")
+					sub_sub_sub_folder_name = sub_sub_sub_folder_name.lower().replace(" ", "_")
+
+				# Add sub-sub-sub-folder to dictionary
+				if root_folder_name in contents["dictionary"]:
+					contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name] = {}
+
+					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]:
+						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]["root"] = self.Sanitize(root_folder)
+
+				# Add sub-sub-sub-sub-files to dictionary
+				i = 0
+				for file in files:
+					file_name = files[i].split("/")[-1].split(".")[0]
+
+					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+						file_name = ""
+
+						for item in files[i].split("/")[-1].split("."):
+							if item != files[i].split("/")[-1].split(".")[-1]:
+								file_name += item
+
+								if item != files[i].split("/")[-1].split(".")[-2]:
+									file_name += "."
+
+					if lower_key == True:
+						file_name = file_name.lower().replace(" ", "_").replace(".", "")
+
+					# Add file if root_folder_name key is not string
+					if root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]) != str:
+						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][file_name] = files[i]
+
+					if os.path.isfile(files[i]) == True:
+						contents["size"] += os.stat(files[i]).st_size
+
+					i += 1
+
+				contents["size"] += os.stat(root_folder).st_size
+
+			# Root folder on dictionary if slash count of root folder is equal to folder plus four slash or equal to folder
+			# Add sub-sub-sub-sub-folders
+			if folder.count("/") + 4 == root_folder.count("/"):
+				root_folder = self.Sanitize(root_folder)
+
+				root_folder_name = root_folder.split("/")[-5]
+				sub_sub_folder_name = root_folder.split("/")[-4]
+				sub_sub_sub_folder_name = root_folder.split("/")[-3]
+				sub_sub_sub_sub_folder_name = root_folder.split("/")[-2]
+
+				if lower_key == True:
+					root_folder_name = root_folder_name.lower().replace(" ", "_")
+					sub_sub_folder_name = sub_sub_folder_name.lower().replace(" ", "_")
+					sub_sub_sub_folder_name = sub_sub_sub_folder_name.lower().replace(" ", "_")
+					sub_sub_sub_sub_folder_name = sub_sub_sub_sub_folder_name.lower().replace(" ", "_")
+
+				# Add sub-sub-sub-folder to dictionary
+				if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
+					contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name] = {}
+
+					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name]:
+						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name]["root"] = self.Sanitize(root_folder)
+
+				# Add sub-sub-sub-sub-files to dictionary
+				i = 0
+				for file in files:
+					file_name = files[i].split("/")[-1].split(".")[0]
+
+					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+						file_name = ""
+
+						for item in files[i].split("/")[-1].split("."):
+							if item != files[i].split("/")[-1].split(".")[-1]:
+								file_name += item
+
+								if item != files[i].split("/")[-1].split(".")[-2]:
+									file_name += "."
+
+					if lower_key == True:
+						file_name = file_name.lower().replace(" ", "_").replace(".", "")
+
+					# Add file if root_folder_name key is not string
+					if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
+						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
 						contents["size"] += os.stat(files[i]).st_size

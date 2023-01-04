@@ -101,7 +101,7 @@ class Years(object):
 		self.author = "Izaque Sanvezzo (Stake2, Funkysnipa Cat)"
 
 	def Define_Folders_And_Files(self):
-		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"] + "Watch History/"
+		self.watch_history_folder = self.notepad_folders["networks"]["audiovisual_media_network"]["root"] + "Watch History/"
 		self.Folder.Create(self.watch_history_folder)
 
 		self.watched_folder = self.watch_history_folder + "Watched/"
