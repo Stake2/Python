@@ -98,7 +98,6 @@ class Tasks(object):
 			"Number": 0,
 			"Types": [],
 			"Titles": {},
-			"Descriptions": {},
 			"Times": {
 				"ISO8601": [],
 				"Language DateTime": {},
@@ -106,10 +105,9 @@ class Tasks(object):
 			"Number. Task Type (Time)": [],
 		}
 
-		# Add language lists to tasks and task descriptions dictionaries
+		# Add language lists to task titles and task Language DateTime dictionaries
 		for language in self.small_languages:
 			self.tasks["Titles"][language] = []
-			self.tasks["Descriptions"][language] = []
 			self.tasks["Times"]["Language DateTime"][language] = []
 
 		# If Tasks.json is not empty, get Tasks dictionary from it
@@ -123,29 +121,6 @@ class Tasks(object):
 	def Add_Task_Types_To_Tasks(self):
 		# Iterate through English task types list
 		for task_type in self.task_types["en"]:
-			self.tasks[task_type] = {}
-
-			# Create number integer key
-			self.tasks[task_type]["Number"] = 0
-
-			# Add language lists to tasks and task descriptions dictionaries
-			for key in ["Titles", "Descriptions"]:
-				self.tasks[task_type][key] = {}
-
-				for language in self.small_languages:
-					self.tasks[task_type][key][language] = []
-
-			# Create times list key
-			self.tasks[task_type]["Times"] = {
-				"ISO8601": [],
-				"Language DateTime": {},
-			}
-
-			for language in self.small_languages:
-				self.tasks[task_type]["Times"]["Language DateTime"][language] = []
-
-			self.tasks[task_type]["Number. Task Type (Time)"] = []
-
 			# Create "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][task_type] = {
 				"root": self.folders["task_history"]["current_year"]["per_task_type"]["root"] + task_type + "/",
@@ -165,13 +140,35 @@ class Tasks(object):
 
 			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"])
 
-			# Write default Tasks dictionary inside "Tasks.json" file
-			self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"], self.Language.Python_To_JSON(self.tasks[task_type]), "w")
+			# Get Tasks dictionary from Tasks.json file if it is not empty
+			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"])["lines"] != []:
+				self.tasks[task_type] = self.Language.JSON_To_Python(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"])
+
+			# Define default task type dictionary if Tasks.json file is empty
+			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"])["lines"] == []:
+				self.tasks[task_type] = {
+					"Number": 0,
+					"Titles": {},
+				}
+
+				for language in self.small_languages:
+					self.tasks[task_type]["Titles"][language] = []
+
+				# Create times list key
+				self.tasks[task_type]["Times"] = {
+					"ISO8601": [],
+					"Language DateTime": {},
+				}
+
+				for language in self.small_languages:
+					self.tasks[task_type]["Times"]["Language DateTime"][language] = []
+
+				self.tasks[task_type]["Number. Task Type (Time)"] = []
+
+				# Write default Tasks dictionary inside "Tasks.json" file
+				self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"], self.Language.Python_To_JSON(self.tasks[task_type]), "w")
 
 			# Create "Task list.txt" file in "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][task_type]["task_list"] = self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"] + "Task list.txt"
 
 			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["task_list"])
-
-			# Write default "Number. Task Type (Time)" list inside "Task list.txt" file
-			self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["task_list"], self.Text.From_List(self.tasks[task_type]["Number. Task Type (Time)"]), "w")

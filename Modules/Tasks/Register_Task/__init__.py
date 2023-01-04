@@ -92,11 +92,9 @@ class Register_Task(Tasks):
 		# Add to types list
 		self.tasks["Types"].append(self.task_type)
 
-		# Add to titles and descriptions list
+		# Add to titles list
 		for language in self.small_languages:
 			self.tasks["Titles"][language].append(self.task_dictionary["titles"][language])
-
-			self.tasks["Descriptions"][language].append(self.task_dictionary["descriptions"][language])
 
 		# Add to times dictionary
 		self.tasks["Times"]["ISO8601"].append(self.task_dictionary["Times"]["ISO8601"])
@@ -130,11 +128,9 @@ class Register_Task(Tasks):
 		# Add to task type number
 		self.tasks[self.task_type]["Number"] += 1
 
-		# Add to titles and descriptions list, and add Language DateTime
+		# Add to titles list and add Language DateTime
 		for language in self.small_languages:
 			self.tasks[self.task_type]["Titles"][language].append(self.task_dictionary["titles"][language])
-
-			self.tasks[self.task_type]["Descriptions"][language].append(self.task_dictionary["descriptions"][language])
 
 			self.tasks[self.task_type]["Times"]["Language DateTime"][language].append(self.task_dictionary["Times"]["Language DateTime"][language])
 
