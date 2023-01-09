@@ -3,6 +3,46 @@
 		"en": "Modules",
 		"pt": "Módulos"
 	},
+	"description_executes_the_module_specified_in_the_optional_arguments": {
+		"en": "Description:\nExecutes the module specified in the optional arguments.",
+		"pt": "Descrição:\nExecuta o módulo especificado no argumento opcional."
+	},
+	"epilogue_and_that_is_how_you_execute_a_module_using_the_{}": {
+		"en": "Epilogue:\nAnd that is how you execute a module using the \"{}.py\".",
+		"pt": "Epílogo:\nE é assim que você executa um módulo usando o \"{}.py\"."
+	},
+	"activates_the_{}_mode_of_the_modules": {
+		"pt": "Ativa o modo \"{}\" dos módulos",
+		"en": "Activates the \"{}\" mode of the modules"
+	},
+	"help, title()": {
+		"pt": "Ajuda",
+		"en": "Help"
+	},
+	"testing, title()": {
+		"pt": "Testando",
+		"en": "Testing"
+	},
+	"verbose, title()": {
+		"pt": "Prolixo",
+		"en": "Verbose"
+	},
+	"user_information": {
+		"pt": "Informação do usuário",
+		"en": "User information"
+	},
+	"shows_this_help_text_and_ends_the_program_execution": {
+		"pt": "Mostra este texto de ajuda e finaliza a execução do programa",
+		"en": "Shows this help text and ends the program execution"
+	},
+	"activates_the_displaying_of_user_information_on_the_language_class": {
+		"pt": "Ativa a exibição de informações do usuário na classe \"Language\"",
+		"en": "Activates the displaying of user information on the \"Language\" class"
+	},
+	"executes_the_{}_module": {
+		"pt": "Executa o módulo \"{}\"",
+		"en": "Executes the \"{}\" module"
+	},
 	"select_a_module_from_the_list": {
 		"en": "Select a module from the list to execute it",
 		"pt": "Selecione um módulo da lista para executá-lo"

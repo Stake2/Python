@@ -45,16 +45,16 @@ class Start_Watching_A_New_Media(Watch_History):
 		self.watching_status_files = self.option_info["watching_status_files"]
 		self.watching_status_media = self.option_info["watching_status_media"]
 
-		self.no_media_list = self.Watch_Media.no_media_list
+		self.media_dictionary["media"]["states"]["media_list"] = self.Watch_Media.no_media_list
 
-		self.is_series_media = self.Watch_Media.is_series_media
+		self.media_dictionary["media"]["states"]["series_media"] = self.Watch_Media.is_series_media
 
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.episode_titles = self.Watch_Media.episode_titles
 			self.language_episode_titles = self.Watch_Media.language_episode_titles
 
-		if self.no_media_list == False:
-			self.media_item_folder = self.Watch_Media.media_item_folder
+		if self.media_dictionary["media"]["states"]["media_list"] == False:
+			self.media_dictionary["media"]["item"]["folders"]["root"] = self.Watch_Media.media_item_folder
 			self.media_item_details = self.Watch_Media.media_item_details
 			self.media_item_details_file = self.Watch_Media.media_item_details_file
 
@@ -63,8 +63,8 @@ class Start_Watching_A_New_Media(Watch_History):
 		self.media_dates_file = self.media_folder + self.texts["dates, title(), en - pt"] + ".txt"
 		self.File.Create(self.media_dates_file)
 
-		if self.no_media_list == False:
-			self.media_item_dates_file = self.media_item_folder + self.texts["dates, title(), en - pt"] + ".txt"
+		if self.media_dictionary["media"]["states"]["media_list"] == False:
+			self.media_item_dates_file = self.media_dictionary["media"]["item"]["folders"]["root"] + self.texts["dates, title(), en - pt"] + ".txt"
 			self.File.Create(self.media_item_dates_file)
 
 		# Gets the first watching time where the user started watching the media
@@ -81,7 +81,7 @@ class Start_Watching_A_New_Media(Watch_History):
 		text_to_write = self.media_dates_text
 		self.File.Edit(self.media_dates_file, text_to_write, "w")
 
-		if self.no_media_list == False:
+		if self.media_dictionary["media"]["states"]["media_list"] == False:
 			text_to_write = self.item_dates_text
 			self.File.Edit(self.media_item_dates_file, text_to_write, "w")
 
@@ -89,18 +89,18 @@ class Start_Watching_A_New_Media(Watch_History):
 		self.media_details[self.language_texts["status, title()"]] = self.language_texts["watching, title()"]
 
 		# Writes first episode to media details file
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.first_episode_title = self.language_episode_titles[0]
 
 			# Writes episode to media item details file
-			if self.no_media_list == False:
+			if self.media_dictionary["media"]["states"]["media_list"] == False:
 				self.media_item_details[self.language_texts["episode, title()"]] = self.first_episode_title
 
 				text_to_write = self.Text.From_Dictionary(self.media_item_details)
 
 				self.File.Edit(self.media_item_details_file, text_to_write, "w")
 
-			if self.no_media_list == True:
+			if self.media_dictionary["media"]["states"]["media_list"] == True:
 				self.media_details["Episode"] = self.first_episode_title
 
 		# Writes new status and episode to media details file

@@ -259,8 +259,7 @@ class Post(Stories):
 		folder_name = ""
 
 		# [Cover_Type]/
-		if self.cover_type["name"] != self.texts["landscape, title()"]["en"]:
-			folder_name += self.cover_type["name"] + "/"
+		folder_name += self.cover_type["name"] + "/"
 
 		# [Full_Language]/X - XX/
 		folder_name += full_language + "/" + self.Cover_Folder_Name(self.story["chapter_number"]) + "/"
@@ -280,8 +279,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.root_folders["sony_vegas_files"]["render"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.root_folders["sony_vegas_files"]["render"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.root_folders["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.root_folders["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
@@ -304,7 +303,7 @@ class Post(Stories):
 
 		# Copy cover file to Mega Websites Story covers folder if cover type is Landscape
 		if self.cover_type["name"] == self.texts["landscape, title()"]["en"]:
-			destination_file = self.story["folders"]["Websites Story Covers"] + folder_name + file_name
+			destination_file = self.story["folders"]["Websites Story Covers"] + folder_name.replace(self.texts["landscape, title()"]["en"] + "/", "") + file_name
 
 			print()
 			print(self.language_texts["copying_the_cover_to_the_{}_folder"].format(self.language_texts["website_story_covers"]) + ":")
@@ -388,7 +387,7 @@ class Post(Stories):
 		social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].format(self.story["title_underlined"], self.story["chapter_number_name"], self.story["chapter_number"], self.story["Information"]["Wattpad"]["Chapter link"], self.story["title_underlined"])
 
 		# Make website chapter link
-		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?({})#".format(str(self.story["chapter_number"]))
+		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?chapter={}#".format(str(self.story["chapter_number"]))
 
 		# Format Twitter & Facebook template
 		social_networks["Twitter, Facebook"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]

@@ -176,8 +176,8 @@ class Stories(object):
 		self.stories["list"] = self.Folder.Contents(self.mega_folders["stories"]["root"])["folder"]["names"]
 		self.stories["list"] = self.Folder.Remove_Folders(self.stories["list"], to_remove)
 
-		# Update stories file with new story names
-		self.File.Edit(self.stories["folders"]["Database"]["Stories"], self.Text.From_List(self.stories["list"]), "w")
+		# Update stories list file with new story names
+		self.File.Edit(self.stories["folders"]["Database"]["Stories list"], self.Text.From_List(self.stories["list"]), "w")
 
 		self.stories["titles"] = {}
 		self.stories["mixed_titles"] = []
@@ -255,8 +255,8 @@ class Stories(object):
 				self.Folder.Create(self.stories[story]["folders"]["Websites Story Covers"])
 
 			# Add Sony Vegas Files covers folder
-			if self.Folder.Exist(self.root_folders["sony_vegas_files"]["story_covers"] + story + "/") == True:
-				self.stories[story]["folders"]["Sony Vegas Covers"] = self.root_folders["sony_vegas_files"]["story_covers"] + story + "/"
+			if self.Folder.Exist(self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
+				self.stories[story]["folders"]["Sony Vegas Covers"] = self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Sony Vegas Covers"])
 
 			# Add Obsidian's Vaults folder
@@ -465,7 +465,7 @@ class Stories(object):
 
 			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items()))
 
-		# Write stories dictionary to stories.json
+		# Write stories dictionary to Stories.json
 		self.File.Edit(self.stories["folders"]["Database"]["Stories"], self.Language.Python_To_JSON(self.stories), "w")
 
 	def Select_Story(self, select_text_parameter = None):
@@ -494,7 +494,7 @@ class Stories(object):
 					for language in self.small_languages:
 						stories["titles"][language].remove(story["Information"]["Titles"][language])
 
-		self.option = self.Input.Select(self.stories["titles"]["en"], language_options = stories["titles"][self.user_language], show_text = show_text, select_text = select_text)["option"]
+		self.option = self.Input.Select(stories["titles"]["en"], language_options = stories["titles"][self.user_language], show_text = show_text, select_text = select_text)["option"]
 
 		self.story = self.stories[self.option]
 

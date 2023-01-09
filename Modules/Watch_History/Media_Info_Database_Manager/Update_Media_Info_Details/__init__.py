@@ -14,7 +14,7 @@ class Update_Media_Info_Details(Watch_History):
 
 	def Update_Media_List(self):
 		self.all_medias_number = 0
-		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
+		for plural_media_type in self.media_types["plural"]["en"]:
 			media_type_number_file = self.media_info_number_files[plural_media_type]
 			self.media_number = self.File.Contents(media_type_number_file)["lines"][0]
 
@@ -28,7 +28,7 @@ class Update_Media_Info_Details(Watch_History):
 
 		i = 0
 		self.all_medias_number = 0
-		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
+		for plural_media_type in self.media_types["plural"]["en"]:
 			self.media_names_file = self.media_info_name_files[plural_media_type]
 			media_type_number_file = self.media_info_number_files[plural_media_type]
 
@@ -37,7 +37,7 @@ class Update_Media_Info_Details(Watch_History):
 
 			text_to_write += plural_media_type + ": " + self.media_number + "\n" + self.Text.From_List(self.media_names)
 
-			if plural_media_type != self.texts["plural_media_types, type: list"]["en"][-1]:
+			if plural_media_type != self.media_types["plural"]["en"][-1]:
 				text_to_write += "\n\n"
 
 			i += 1
@@ -58,8 +58,8 @@ class Update_Media_Info_Details(Watch_History):
 		]
 
 		i = 0
-		for plural_media_type in self.texts["plural_media_types, type: list"]["en"]:
-			self.media_type_info_folder = self.media_info_folders[plural_media_type]
+		for plural_media_type in self.media_types["plural"]["en"]:
+			self.media_type_info_folder = self.folders["media_info"][plural_media_type]
 
 			self.media_names_file = self.media_info_name_files[plural_media_type]
 			self.media_number_file = self.media_info_number_files[plural_media_type]
@@ -85,24 +85,24 @@ class Update_Media_Info_Details(Watch_History):
 				self.media_status = self.media_details[self.language_texts["status, title()"]]
 
 				if plural_media_type != self.texts["movies"]["en"]:
-					self.plural_file_name = self.media_type_sub_folders[plural_media_type]["media_list_text"]
-					self.file_name = self.media_type_sub_folders[plural_media_type]["english_singular_media_list_text"]
+					self.plural_file_name = self.media_types["subfolders"][plural_media_type]["media_list"]
+					self.file_name = self.media_types["subfolders"][plural_media_type]["singular_media_list"]
 					self.current_media_item_text = "Current " + self.file_name
 
-					self.media_list_folder = self.media_folder + self.plural_file_name + "/"
+					self.media_dictionary["media"]["item"]["folders"]["root"] = self.media_folder + self.plural_file_name + "/"
 
-					self.no_media_list = False
+					self.media_dictionary["media"]["states"]["media_list"] = False
 
-					if self.Folder.Exist(self.media_list_folder) == False:
-						self.no_media_list = True
+					if self.Folder.Exist(self.media_dictionary["media"]["item"]["folders"]["root"]) == False:
+						self.media_dictionary["media"]["states"]["media_list"] = True
 
-					if self.no_media_list == False:
-						self.Folder.Create(self.media_list_folder)
+					if self.media_dictionary["media"]["states"]["media_list"] == False:
+						self.Folder.Create(self.media_dictionary["media"]["item"]["folders"]["root"])
 
-						self.media_list_file = self.media_list_folder + self.plural_file_name + ".txt"
+						self.media_list_file = self.media_dictionary["media"]["item"]["folders"]["root"] + self.plural_file_name + ".txt"
 						self.File.Create(self.media_list_file)
 
-						self.current_media_item_file = self.media_list_folder + self.current_media_item_text + ".txt"
+						self.current_media_item_file = self.media_dictionary["media"]["item"]["folders"]["root"] + self.current_media_item_text + ".txt"
 						self.File.Create(self.current_media_item_file)
 
 						self.media_list_names = self.File.Contents(self.media_list_file)["lines"]
@@ -110,14 +110,14 @@ class Update_Media_Info_Details(Watch_History):
 						if self.media_list_names == None:
 							self.media_list_names = []
 
-						contents = self.Folder.Contents(self.media_list_folder)
+						contents = self.Folder.Contents(self.media_dictionary["media"]["item"]["folders"]["root"])
 
 						for item in self.sub_folders_to_remove:
 							if item in contents["folder"]["names"]:
 								contents["folder"]["names"].remove(item)
 
-							if self.media_list_folder + item + "/" in contents["folder"]["list"]:
-								contents["folder"]["list"].remove(self.media_list_folder + item + "/")
+							if self.media_dictionary["media"]["item"]["folders"]["root"] + item + "/" in contents["folder"]["list"]:
+								contents["folder"]["list"].remove(self.media_dictionary["media"]["item"]["folders"]["root"] + item + "/")
 
 						if self.File.Contents(self.media_list_file)["lines"] == []:
 							self.File.Edit(self.media_list_file, self.Text.From_List(contents["folder"]["names"]), "w")

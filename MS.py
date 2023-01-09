@@ -18,11 +18,7 @@ class Main():
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
-		self.parser = argparse.ArgumentParser()
-		self.parser.add_argument("-testing", "--testing", action="store_true", help="Activates the testing mode of modules")
-		self.parser.add_argument("-verbose", "--verbose", action="store_true", help="Activates the verbose mode of modules")
-		self.parser.add_argument("-user_information", "--user-information", "-userinformation", action="store_true", help="Activates the showing of user information on the Language class")
-
+		self.Define_Parser()
 		self.Get_Modules()
 		self.Check_Arguments_And_Switches()
 
@@ -54,6 +50,15 @@ class Main():
 		self.Input = Input(self.reset_switches)
 		self.Text = Text(self.reset_switches)
 
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.small_languages = self.languages["small"]
+		self.full_languages = self.languages["full"]
+		self.translated_languages = self.languages["full_translated"]
+
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
+
 		self.folders = self.Folder.folders
 		self.root_folders = self.folders["root"]
 		self.user_folders = self.folders["user"]
@@ -62,32 +67,131 @@ class Main():
 		self.notepad_folders = self.folders["notepad"]
 
 	def Define_Module_Folder(self):
-		self.module_name = self.__module__
-
-		if "." in self.module_name:
-			self.module_name = self.module_name.split(".")[0]
-
-		if __name__ == "__main__":
-			self.module_name = "Module_Selector"
-
-		self.module_name_lower = self.module_name.lower()
-
-		self.apps_folders["module_files"][self.module_name_lower] = {
-			"root": self.apps_folders["module_files"]["root"] + self.module_name + "/",
+		self.module = {
+			"name": self.__module__,
 		}
 
-		self.Folder.Create(self.apps_folders["module_files"][self.module_name_lower]["root"])
+		if __name__ == "__main__":
+			self.module["name"] = "Module_Selector"
 
-		self.apps_folders["module_files"][self.module_name_lower]["texts"] = self.apps_folders["module_files"][self.module_name_lower]["root"] + "Texts.json"
-		self.File.Create(self.apps_folders["module_files"][self.module_name_lower]["texts"])
+		if "." in self.module["name"]:
+			self.module["name"] = self.module["name"].split(".")[0]
+
+		self.module["key"] = self.module["name"].lower()
+
+		self.apps_folders["modules"][self.module["key"]] = {
+			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
+		}
+
+		self.apps_folders["module_files"][self.module["key"]] = {
+			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
+		}
+
+		for item in ["module_files", "modules"]:
+			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module_name_lower]["texts"])
+		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
 		self.large_bar = "-----"
 		self.dash_space = "-"
+
+	def Define_Parser(self):
+		# Define prefix
+		self.argparse = {
+			"prefix": "-",
+			"ArgumentParser": {
+				"prog": self.module["name"] + ".py",
+				"description": self.language_texts["description_executes_the_module_specified_in_the_optional_arguments"],
+				"epilog": self.language_texts["epilogue_and_that_is_how_you_execute_a_module_using_the_{}"].format(self.module["name"]),
+				"formatter_class": argparse.RawDescriptionHelpFormatter,
+				"add_help": False,
+			},
+			"default_arguments": {
+				"help": {
+					"list": ["help"],
+					"text_key": "shows_this_help_text_and_ends_the_program_execution",
+					"action": "help",
+				},
+				"testing": ["testing"],
+				"verbose": ["verbose"],
+				"user_information": {
+					"list": ["user_information", "userinfo", "user"],
+					"text_key": "activates_the_displaying_of_user_information_on_the_language_class",
+				},
+			},
+			"default_options": {
+				"action": "store_true",
+				"help": self.language_texts["activates_the_{}_mode_of_the_modules"],
+			}
+		}
+
+		self.parser = argparse.ArgumentParser(**self.argparse["ArgumentParser"])
+
+		self.Add_Argument(self.argparse["default_arguments"], self.argparse["default_options"])
+
+	def Add_Argument(self, dictionary, options):
+		# Add arguments to ArgumentParser
+		keys = list(dictionary.keys())
+
+		for key in keys:
+			dict_ = options.copy()
+
+			# Get list of arguments
+			if type(dictionary[key]) != dict:
+				dict_["list"] = dictionary[key]
+
+				dict_["help"] = dict_["help"].format(self.language_texts[key + ", title()"])
+
+			if type(dictionary[key]) == dict:
+				argument_dictionary = dictionary[key]
+
+				if "text" not in argument_dictionary:
+					dict_["help"] = self.language_texts[argument_dictionary["text_key"]]
+
+				if "text" in argument_dictionary:
+					dict_["help"] = argument_dictionary["text"]
+
+				if "action" in argument_dictionary:
+					dict_["action"] = argument_dictionary["action"]
+
+				dict_["list"] = argument_dictionary["list"]
+
+				if "{}" in dict_["help"]:
+					dict_["help"] = dict_["help"].format(argument_dictionary["name"])
+
+			# Add arguments per language
+			if len(keys) > 1:
+				for language in self.small_languages:
+					if language != "en":
+						if key in self.texts:
+							text = self.texts[key]
+
+						if key + ", title()" in self.texts:
+							text = self.texts[key + ", title()"]
+
+						text = text[language].lower()
+
+						if text not in dict_["list"]:
+							dict_["list"].append(text.replace(" ", ""))
+
+							if text.split(" ")[0] != text:
+								dict_["list"].append(text.split(" ")[0])
+
+			i = 0
+			for item in dict_["list"]:
+				dict_["list"][i] = self.argparse["prefix"] + dict_["list"][i]
+
+				i += 1
+
+			tuple_ = tuple(dict_["list"])
+
+			dict_.pop("list")
+
+			self.parser.add_argument(*tuple_, **dict_)
 
 	def Get_Modules(self):
 		self.modules = self.File.Contents(self.apps_folders["modules"]["usage_modules"])["lines"]
@@ -95,27 +199,59 @@ class Main():
 		self.test_modules = True
 
 		for module_name in self.modules:
-			module_name_lower = module_name.lower()
+			module = {
+				"name": module_name,
+				"key": module_name.lower(),
+				"module": importlib.import_module(module_name),
+			}
 
-			# Import module to test for and syntax errors
-			if self.test_modules == True:
-				module = importlib.import_module(module_name)
+			module.update({
+				"dictionary": {
+					module["name"]: {
+						"name": module["name"],
+						"list": [module["key"]],
+						"text_key": "executes_the_{}_module"
+					}
+				}
+			})
 
-			if module_name not in ["Diary_Slim", "Stories"]:
-				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, action="store_true", help='Runs the "' + module_name + '" module')
+			# Add custom argument names from module
+			if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == list:
+				arguments = module["module"].arguments
 
-			if module_name == "Diary_Slim":
-				# Diary_Slim arguments
-				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, "-slim", action="store_true", help='Runs the "' + module_name + '" module')
+				for argument in arguments:
+					module["dictionary"][module["name"]]["list"].append(argument)
 
-			if module_name == "Stories":
-				# Stories arguments
-				self.parser.add_argument("-" + module_name_lower, "--" + module_name_lower, "-story", action="store_true", help='Runs the "' + module_name + '" module')
+			self.Add_Argument(module["dictionary"], self.argparse["default_options"])
 
-			if module_name == "Food_Time":
-				# Food_Time arguments
-				self.parser.add_argument("-set", action="store_true", help='Sets the current food time, the time the food was eaten, using the module "Food_Time"')
-				self.parser.add_argument("-check", action="store_true", help='Checks the current food time, the time the food was eaten, using the module "Food_Time"')
+			# Add additional arguments from module
+			if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == dict:
+				arguments = module["module"].arguments
+
+				for key in arguments:
+					dict_ = arguments[key]
+
+					dictionary = {
+						key: {
+							"list": [key],
+							"text": dict_["text"]
+						}
+					}
+
+					if "{module}" in dictionary[key]["text"]:
+						dictionary[key]["text"] = dictionary[key]["text"].replace("{module}", '"' + module["name"] + '"')
+
+					self.Add_Argument(dictionary, self.argparse["default_options"])
+
+		# Add "Language" module argument
+		dictionary = {
+			"Language": {
+				"list": ["language"],
+				"text": "Language"
+			}
+		}
+
+		self.Add_Argument(dictionary, self.argparse["default_options"])
 
 	def Check_Arguments_And_Switches(self):
 		self.arguments = self.parser.parse_args()
@@ -136,14 +272,22 @@ class Main():
 		show_text = self.language_texts["modules, title()"]
 		select_text = self.language_texts["select_a_module_from_the_list"]
 
-		self.module = self.Input.Select(self.modules, show_text = show_text, select_text = select_text)["option"]
+		option = self.Input.Select(self.modules, show_text = show_text, select_text = select_text)["option"]
+
+		self.module = {
+			"name": option,
+			"key": option.lower()
+		}
 
 	def Check_Arguments(self):
 		for module in self.modules:
 			module_lower = module.lower()
 
 			if hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True:
-				self.module = module
+				self.module = {
+					"name": module,
+					"key": module.lower(),
+				}
 
 	def Switch(self):
 		# Update Switches file if there are Switch arguments
@@ -154,36 +298,35 @@ class Main():
 				if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
 					self.arguments_dictionary[switch] = getattr(self.arguments, switch)	
 
+			# Define File module to show Global Switches
+			self.File = File(self.arguments_dictionary, show_global_switches = True)
+
+			# Define File module again to be able to write the new switches
+			self.File = File(self.reset_switches)
+
 			# Edit Switches.txt file
 			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.arguments_dictionary), "w")
-
-			# Show Global Switches
-			self.File.Language.Show_Global_Switches(self.arguments_dictionary, show_ending = True)
 
 		# Reset Switches file if no Switch argument is present
 		if self.has_switches == False:	
 			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_switches), "w")
 
-	def Run_Module(self, module_name):
-		self.module = importlib.import_module(self.module)
+	def Run_Module(self, module):
+		if module["name"] != "Module_Selector":
+			self.module = importlib.import_module(module["name"])
 
-		if getattr(self.arguments, "check") == False and getattr(self.arguments, "set") == False or getattr(self.arguments, "set") == True:
-			self.module.Run()
+			if getattr(self.arguments, "check") == False and getattr(self.arguments, "set") == False or getattr(self.arguments, "set") == True:
+				self.module.Run()
 
-		if getattr(self.arguments, "check") == True:
-			self.module.Run(register_time = False)
+			if getattr(self.arguments, "check") == True:
+				self.module.Run(register_time = False)
+
+		if getattr(self.arguments, "language") == True:
+			self.Language.Create_Language_Text()
 
 	def Reset_Switch(self):
 		# Update switches file with the state of the switches before execution of modules
-		from File import File as File
-
-		self.dictionary = {
-			"testing": False,
-			"verbose": False,
-			"user_information": False,
-		}
-
-		self.File = File(self.dictionary)
+		self.File = File(self.reset_switches)
 
 		self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.dictionary), "w")
 

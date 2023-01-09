@@ -53,15 +53,19 @@
 		"en": "Cartoons",
 		"pt": "Desenhos"
 	},
-	"series, title()": {
-		"en": "Series",
-		"pt": "Séries"
-	},
 	"movies": {
 		"en": "Movies",
 		"pt": "Filmes"
 	},
+	"movies, title()": {
+		"en": "Movies",
+		"pt": "Filmes"
+	},
 	"videos": {
+		"en": "Videos",
+		"pt": "Vídeos"
+	},
+	"videos, title()": {
 		"en": "Videos",
 		"pt": "Vídeos"
 	},
@@ -76,6 +80,10 @@
 	"series": {
 		"en": "series",
 		"pt": "série"
+	},
+	"series, title()": {
+		"en": "Series",
+		"pt": "Séries"
 	},
 	"movie": {
 		"en": "movie",
@@ -250,6 +258,10 @@
 		"en": "Media folder",
 		"pt": "Pasta de mídia"
 	},
+	"current_{}": {
+		"en": "Current {}",
+		"pt": "{} atual"
+	},
 	"and": {
 		"en": "and",
 		"pt": "e"
@@ -393,6 +405,14 @@
 	"subbed": {
 		"en": "subbed",
 		"pt": "legendado"
+	},
+	"dubbing": {
+		"en": "dubbing",
+		"pt": "dublagem"
+	},
+	"dubbing, title()": {
+		"en": "Dubbing",
+		"pt": "Dublagem"
 	},
 	"dubbed": {
 		"en": "dubbed",
@@ -1354,6 +1374,10 @@
 		"en": "Episode separator",
 		"pt": "Separador de episódio"
 	},
+	"episode_number_name": {
+		"en": "Episode number name",
+		"pt": "Nome do número do episódio"
+	},
 	"watch_dubbed": {
 		"en": "Watch dubbed",
 		"pt": "Assistir dublado"
@@ -1377,5 +1401,13 @@
 	"add_one_to_the_re_watched_times_number": {
 		"en": "Add one to the Re-Watched times number",
 		"pt": "Adicionar um ao número de vezes Re-Assistidas"
+	},
+	"details, title()": {
+		"en": "Details",
+		"pt": "Detalhes"
+	},
+	"information, title()": {
+		"en": "Information",
+		"pt": "Informação"
 	}
 }

@@ -38,6 +38,7 @@ class Folder():
 		self.Date = Date(self.global_switches)
 		self.File = File(self.global_switches)
 
+		self.app_settings = self.Language.app_settings
 		self.date = self.Date.date
 
 		self.Define_Folders()
@@ -81,6 +82,9 @@ class Folder():
 				"root": os.path.join(self.hard_drive_letter, "XAMPP/"),
 			},
 		}
+
+		if "media_folder" in self.app_settings:
+			self.root_folders["media"] = self.app_settings["media_folder"]
 
 		# Apps folders
 		self.apps_folders = {
@@ -182,8 +186,52 @@ class Folder():
 				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["root"], folder + "/"),
 			}
 
+		# Mega Notepad/Effort/Networks/Audiovisual Media Network folders
+		for item in ["Comments", "Data", "Media Info", "Network Data", "Watch History"]:
+			key = item.lower().replace(" ", "_")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["root"], item + "/"),
+			}
+
+		# Audiovisual Media Network/Media Info folders and files
+		for item in ["Info.json"]:
+			key = item.lower().replace(" ", "_").replace(".json", "")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["media_info"][key] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["media_info"]["root"], item)
+
+		# Audiovisual Media Network/Network Data files
+		for item in ["Media Types.json"]:
+			key = item.lower().replace(" ", "_").replace(".json", "")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["network_data"][key] = os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["network_data"]["root"], item)
+
+		# Audiovisual Media Network/Watch History folders
+		for item in ["Movies"]:
+			key = item.lower().replace(" ", "_")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], item + "/"),
+			}
+
+		# Audiovisual Media Network/Watch History year folders
+		for item in [self.date["year"]]:
+			key = str(item).lower().replace(" ", "_")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], str(item) + "/"),
+			}
+
+			for item in ["Per Media Type"]:
+				self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key][item] = {
+					"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"], str(item) + "/"),
+				}
+
+			# Episodes.json file
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["episodes"] = self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Episodes.json"
+
 		# Mega Notepad/Effort/Networks/Productive Network folders
-		for item in ["Media Network Data", "Task Data", "Task History"]:
+		for item in ["Data", "Network Data", "Task History"]:
 			key = item.lower().replace(" ", "_")
 
 			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"][key] = {
@@ -248,7 +296,7 @@ class Folder():
 			}
 
 		# Mega PHP JSON files
-		for item in ["Colors", "URL"]:
+		for item in ["Colors", "URL", "Websites"]:
 			key = item.lower().replace(" ", "_")
 
 			self.mega_folders["php"]["json"][key] = os.path.join(self.mega_folders["php"]["json"]["root"], item + ".json")
@@ -750,7 +798,7 @@ class Folder():
 					sub_sub_folder_name = sub_sub_folder_name.lower().replace(" ", "_")
 
 				# Add sub-sub-folder to dictionary
-				if root_folder_name in contents["dictionary"] and sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name:
+				if root_folder_name in contents["dictionary"] and sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name and type(contents["dictionary"][root_folder_name]) != str:
 					contents["dictionary"][root_folder_name][sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
@@ -775,7 +823,7 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
+					if type(contents["dictionary"]) != str and type(contents["dictionary"][root_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
@@ -800,7 +848,7 @@ class Folder():
 					sub_sub_sub_folder_name = sub_sub_sub_folder_name.lower().replace(" ", "_")
 
 				# Add sub-sub-sub-folder to dictionary
-				if root_folder_name in contents["dictionary"]:
+				if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
 					contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]:
@@ -825,7 +873,9 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]) != str:
+					if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and \
+					sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name] and \
+					type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]) != str:
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:

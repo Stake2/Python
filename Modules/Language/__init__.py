@@ -76,6 +76,9 @@ class Language():
 			"name": self.__module__,
 		}
 
+		if __name__ == "__main__":
+			self.module["name"] = "Language"
+
 		if "." in self.module["name"]:
 			self.module["name"] = self.module["name"].split(".")[0]
 
@@ -728,11 +731,15 @@ class Language():
 		for language_type in self.languages["types"]:
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
-		self.settings_file = os.path.join(self.apps_folder, self.language_texts["settings"].capitalize() + ".txt")
+		self.settings_file = os.path.join(self.apps_folder, self.language_texts["settings"].capitalize() + ".json")
+
+		if os.path.isfile(self.settings_file) == False:
+			self.Create(self.settings_file)
+			self.Edit(self.settings_file, self.Python_To_JSON({}), "w")
 
 	def Read_Settings_File(self):
 		if os.path.isfile(self.settings_file) == True:
-			settings = self.File_Dictionary(self.settings_file, self.dictionary_separators)
+			settings = self.JSON_To_Python(self.settings_file)
 
 			for setting_name in self.setting_names:
 				possible_setting_names = self.setting_names[setting_name]["list"]
@@ -817,7 +824,17 @@ class Language():
 			typed = self.Type(self.language_texts["type_the_text_in_{}"].format(translated_language) + ": ", accept_enter = False, next_line = True)
 
 			if language == "en":
-				text = text.replace("[key]", typed.lower().replace(" ", "_"))
+				key = typed.lower().replace(" ", "_")
+
+				for item in [":", '"', "'", "\n", "."]:
+					key = key.replace(item, "")
+
+				if " " not in typed and typed[0].isupper() == True:
+					key += ", title()"
+
+				text = text.replace("[key]", key)
+
+			typed = typed.replace('"', '\\"')
 
 			language_text = '"' + language + '": "' + typed + '"'
 
@@ -830,9 +847,32 @@ class Language():
 
 		return text
 
+	def Show_Global_Switches(self, local_switches, show_ending = False):
+		has_true_variables = False
+
+		for key in local_switches:
+			if local_switches[key] == True:
+				has_true_variables = True
+
+		if has_true_variables == True:
+			print()
+			print("-----")
+			print()
+
+		for key in local_switches:
+			if local_switches[key] == True:
+				if key == "user_information":
+					print()
+
+				print(self.language_texts[key])
+
+		if has_true_variables == True and local_switches["user_information"] == False or show_ending == True:
+			print()
+			print("-----")
+
 	def Show_User_Information(self):
 		print()
-		print(self.language_texts["class"].title() + ' "Language", ' + self.language_texts["the_user_information"] + ":")
+		print(self.language_texts["class, title()"] + ' "' + self.module["name"] + '", ' + self.language_texts["the_user_information"] + ":")
 
 		for language_type in self.languages["types"]:
 			print("\t" + self.language_texts[language_type].capitalize() + ":")
@@ -849,22 +889,6 @@ class Language():
 		print()
 		print("-----")
 
-	def Show_Global_Switches(self, local_switches, show_ending = False):
-		has_true_variables = False
-
-		for key in local_switches:
-			if local_switches[key] == True:
-				has_true_variables = True
-
-		if has_true_variables == True:
-			print()
-			print("-----")
-			print()
-
-		for key in local_switches:
-			if local_switches[key] == True:
-				print(self.language_texts[key])
-
-		if has_true_variables == True and local_switches["user_information"] == False or show_ending == True:
-			print()
-			print("-----")
+if __name__ == "__main__":
+	Language = Language()
+	Language.Create_Language_Text()

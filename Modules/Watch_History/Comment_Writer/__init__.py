@@ -16,21 +16,21 @@ class Comment_Writer(Watch_History):
 		self.singular_media_types = media_dictionary["singular_media_types"]
 		self.mixed_plural_media_type = media_dictionary["mixed_plural_media_type"]
 
-		self.is_series_media = media_dictionary["is_series_media"]
+		self.media_dictionary["media"]["states"]["series_media"] = media_dictionary["is_series_media"]
 
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.episode_number = media_dictionary["episode_number"]
 			self.episode_number_text = media_dictionary["episode_number_text"]
 
-		self.no_media_list = media_dictionary["no_media_list"]
-		self.re_watching = media_dictionary["re_watching"]
+		self.media_dictionary["media"]["states"]["media_list"] = media_dictionary["no_media_list"]
+		self.media_dictionary["media"]["states"]["re_watching"] = media_dictionary["re_watching"]
 		self.re_watched_string = media_dictionary["re_watched_string"]
 
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.comments_folder = media_dictionary["comments_folder"]
 
-		self.media_item = media_dictionary["media_item"]
-		self.media_item_file_safe = media_dictionary["media_item_file_safe"]
+		self.media_dictionary["media"]["item"] = media_dictionary["media_item"]
+		self.media_dictionary["media"]["item"]["title_sanitized"] = media_dictionary["media_item_file_safe"]
 		self.media_item_episode_with_title = media_dictionary["media_item_episode_with_title"]
 
 		self.media_link = ""
@@ -94,7 +94,7 @@ class Comment_Writer(Watch_History):
 
 	def Define_Files(self):
 		# Comment file for non-movies
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.comment_file = self.comments_folder
 
 			self.comment_file_name = ""
@@ -105,11 +105,11 @@ class Comment_Writer(Watch_History):
 
 			self.comment_file_name += self.episode_number_text
 
-			if self.re_watching == True and self.re_watched_string != "":
+			if self.media_dictionary["media"]["states"]["re_watching"] == True and self.re_watched_string != "":
 				self.comment_file_name += " " + self.re_watched_string
 
 		# Comment file for movies
-		if self.is_series_media == False:
+		if self.media_dictionary["media"]["states"]["series_media"] == False:
 			self.comment_file = self.media_folder
 			self.comment_file_name = self.texts["comment, title(), en - pt"]
 
@@ -121,8 +121,8 @@ class Comment_Writer(Watch_History):
 		self.all_comments_media_type_media_title_folder = self.all_comments_media_type_folder + self.Sanitize(self.media_title, restricted_characters = True) + "/"
 		self.Folder.Create(self.all_comments_media_type_media_title_folder)
 
-		if self.no_media_list == False and self.media_item != self.media_title:
-			self.all_comments_media_type_media_title_folder += self.media_item_file_safe + "/"
+		if self.media_dictionary["media"]["states"]["media_list"] == False and self.media_dictionary["media"]["item"] != self.media_title:
+			self.all_comments_media_type_media_title_folder += self.media_dictionary["media"]["item"]["title_sanitized"] + "/"
 			self.Folder.Create(self.all_comments_media_type_media_title_folder)
 
 		if self.plural_media_types["en"] == self.texts["videos"]["en"]:
@@ -140,14 +140,14 @@ class Comment_Writer(Watch_History):
 		self.media_type_comment_number_file = self.all_comment_number_media_type_files[self.plural_media_types["en"]]
 
 		# Times file
-		if self.is_series_media == True:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			self.comment_times_folder = self.all_comments_media_type_media_title_folder + "Times/"
 			self.Folder.Create(self.comment_times_folder)
 
 			self.comment_times_file = self.comment_times_folder + self.comment_file_name + ".txt"
 			self.File.Create(self.comment_times_file)
 
-		if self.is_series_media == False:
+		if self.media_dictionary["media"]["states"]["series_media"] == False:
 			self.comment_times_file = self.all_comments_media_type_media_title_folder + self.texts["when_commented, en - pt"] + ".txt"
 			self.File.Create(self.comment_times_file)
 
