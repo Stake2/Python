@@ -328,7 +328,7 @@ class Main():
 		# Update switches file with the state of the switches before execution of modules
 		self.File = File(self.reset_switches)
 
-		self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.dictionary), "w")
+		self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_switches), "w")
 
 if __name__ == "__main__":
 	Main()
