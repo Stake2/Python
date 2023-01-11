@@ -54,7 +54,7 @@ class Update_Media_Info_Details(Watch_History):
 		self.settings_to_remove = [
 			"Current Episode",
 			"Remote origin",
-			"Origin location",
+			self.language_texts["origin_location"],
 		]
 
 		i = 0

@@ -55,8 +55,8 @@ class Start_Watching_A_New_Media(Watch_History):
 
 		if self.media_dictionary["media"]["states"]["media_list"] == False:
 			self.media_dictionary["media"]["item"]["folders"]["root"] = self.Watch_Media.media_item_folder
-			self.media_item_details = self.Watch_Media.media_item_details
-			self.media_item_details_file = self.Watch_Media.media_item_details_file
+			self.media_dictionary["media"]["item"]["details"] = self.Watch_Media.media_item_details
+			self.media_dictionary["media"]["item"]["folders"]["details"] = self.Watch_Media.media_item_details_file
 
 		self.media_dictionary = self.Watch_Media.media_dictionary
 
@@ -94,11 +94,11 @@ class Start_Watching_A_New_Media(Watch_History):
 
 			# Writes episode to media item details file
 			if self.media_dictionary["media"]["states"]["media_list"] == False:
-				self.media_item_details[self.language_texts["episode, title()"]] = self.first_episode_title
+				self.media_dictionary["media"]["item"]["details"][self.language_texts["episode, title()"]] = self.first_episode_title
 
-				text_to_write = self.Text.From_Dictionary(self.media_item_details)
+				text_to_write = self.Text.From_Dictionary(self.media_dictionary["media"]["item"]["details"])
 
-				self.File.Edit(self.media_item_details_file, text_to_write, "w")
+				self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["details"], text_to_write, "w")
 
 			if self.media_dictionary["media"]["states"]["media_list"] == True:
 				self.media_details["Episode"] = self.first_episode_title

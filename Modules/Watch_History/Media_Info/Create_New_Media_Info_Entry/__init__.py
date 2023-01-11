@@ -2,7 +2,7 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Media_Info_Database_Manager.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
+from Watch_History.Media_Info.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
 
 class Create_New_Media_Info_Entry(Watch_History):
 	def __init__(self, run_as_module = False):
@@ -100,7 +100,7 @@ class Create_New_Media_Info_Entry(Watch_History):
 			self.is_new_media = False
 
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
-			if self.option_info["media_details"][self.language_texts["origin_type"]] in [self.texts["remote, title()"]["en"], self.texts["hybrid, title()"]["en"]]:
+			if self.option_info["media_details"][self.language_texts["origin_type"]] in [self.language_texts["remote, title()"], self.texts["hybrid, title()"]["en"]]:
 				self.media_item_details_parameters["Remote origin"] = {
 					"mode": "choice_dict",
 					"select_text": self.language_texts["remote_origin"],
@@ -225,7 +225,7 @@ class Create_New_Media_Info_Entry(Watch_History):
 		self.add_more_media = True
 
 		while self.add_more_media == True:
-			self.media_item_details = {}
+			self.media_dictionary["media"]["item"]["details"] = {}
 
 			print()
 			print("-----")
@@ -253,10 +253,10 @@ class Create_New_Media_Info_Entry(Watch_History):
 
 				if self.parameter_data["mode"] == "string/default-format":
 					if self.option_info["is_video_series_media"] == False:
-						self.default_parameter = self.media_item_details[self.parameter_data["default"]["format_name"]]
+						self.default_parameter = self.media_dictionary["media"]["item"]["details"][self.parameter_data["default"]["format_name"]]
 
-						if self.parameter_name == "Origin location" and self.default_parameter != self.media_item_details[self.parameter_data["default"]["format_name"]]:
-							self.default_parameter += "-" + self.media_item_details[self.parameter_data["default"]["format_name"]]
+						if self.parameter_name == self.language_texts["origin_location"] and self.default_parameter != self.media_dictionary["media"]["item"]["details"][self.parameter_data["default"]["format_name"]]:
+							self.default_parameter += "-" + self.media_dictionary["media"]["item"]["details"][self.parameter_data["default"]["format_name"]]
 
 						for function in self.parameter_data["default"]["functions"]:
 							self.default_parameter = function(self.default_parameter)
@@ -267,7 +267,7 @@ class Create_New_Media_Info_Entry(Watch_History):
 							self.input_parameter = self.default_parameter
 
 					if self.option_info["is_video_series_media"] == True and self.parameter_name == self.language_texts["[language]_name"]:
-						self.default_parameter = self.media_item_details[self.parameter_data["default"]["format_name"]]
+						self.default_parameter = self.media_dictionary["media"]["item"]["details"][self.parameter_data["default"]["format_name"]]
 
 						for function in self.parameter_data["default"]["functions"]:
 							self.default_parameter = function(self.default_parameter)
@@ -277,7 +277,7 @@ class Create_New_Media_Info_Entry(Watch_History):
 						if self.input_parameter == "":
 							self.input_parameter = self.default_parameter
 
-					if self.option_info["is_video_series_media"] == True and self.parameter_name == "Origin location":
+					if self.option_info["is_video_series_media"] == True and self.parameter_name == self.language_texts["origin_location"]:
 						self.select_text = self.language_texts["type_the_video_series_playlist_link"]
 						self.input_parameter = self.Input.Type(self.select_text, next_line = True).split("playlist?list=")[1]
 
@@ -291,15 +291,15 @@ class Create_New_Media_Info_Entry(Watch_History):
 
 					self.input_parameter = self.dictionary[self.input_parameter]
 
-				if self.parameter_name == self.language_texts["[language]_name"] and self.input_parameter != self.media_item_details[self.language_texts["original_name"]]:
-					self.media_item_details[self.parameter_name] = self.input_parameter
+				if self.parameter_name == self.language_texts["[language]_name"] and self.input_parameter != self.media_dictionary["media"]["item"]["details"][self.language_texts["original_name"]]:
+					self.media_dictionary["media"]["item"]["details"][self.parameter_name] = self.input_parameter
 
 				if self.parameter_name != self.language_texts["[language]_name"]:
-					self.media_item_details[self.parameter_name] = self.input_parameter
+					self.media_dictionary["media"]["item"]["details"][self.parameter_name] = self.input_parameter
 
-			self.media_list[self.media_item_details[self.language_texts["original_name"]]] = self.media_item_details
-			self.media_list_names.append(self.media_item_details[self.language_texts["original_name"]])
-			self.old_media_list_names.append(self.media_item_details[self.language_texts["original_name"]])
+			self.media_list[self.media_dictionary["media"]["item"]["details"][self.language_texts["original_name"]]] = self.media_dictionary["media"]["item"]["details"]
+			self.media_list_names.append(self.media_dictionary["media"]["item"]["details"][self.language_texts["original_name"]])
+			self.old_media_list_names.append(self.media_dictionary["media"]["item"]["details"][self.language_texts["original_name"]])
 
 			print()
 			print(self.language_texts["you_finished_typing_the_media_item_details"] + ".")
@@ -348,8 +348,8 @@ class Create_New_Media_Info_Entry(Watch_History):
 					self.current_media_list_folder = self.media_dictionary["media"]["item"]["folders"]["root"] + self.Sanitize(media_item, restricted_characters = True) + "/"
 					self.Folder.Create(self.current_media_list_folder)
 
-					self.media_item_details_file = self.current_media_list_folder + "Media details.txt"
-					self.File.Create(self.media_item_details_file)
+					self.media_dictionary["media"]["item"]["folders"]["details"] = self.current_media_list_folder + "Media details.txt"
+					self.File.Create(self.media_dictionary["media"]["item"]["folders"]["details"])
 
 					self.comments_folder = self.current_media_list_folder + self.texts["comments, title(), en - pt"] + "/"
 					self.Folder.Create(self.comments_folder)
@@ -361,7 +361,7 @@ class Create_New_Media_Info_Entry(Watch_History):
 						self.titles_file = self.titles_folder + full_language + ".txt"
 						self.File.Create(self.titles_file)
 
-					if self.media_dictionary["media"]["details"][self.language_texts["origin_type"]] == self.texts["remote, title()"]["en"] or self.media_dictionary["media"]["details"][self.language_texts["origin_type"]] == self.texts["hybrid, title()"]["en"]:
+					if self.media_dictionary["media"]["details"][self.language_texts["origin_type"]] == self.language_texts["remote, title()"] or self.media_dictionary["media"]["details"][self.language_texts["origin_type"]] == self.language_texts["hybrid, title()"]:
 						self.links_file = self.current_media_list_folder + "Links.txt"
 						self.File.Create(self.links_file)
 
@@ -407,10 +407,10 @@ class Create_New_Media_Info_Entry(Watch_History):
 				self.current_media_list_folder = self.media_dictionary["media"]["item"]["folders"]["root"] + Remove_Non_File_Characters(media_item) + "/"
 				self.Folder.Create(self.current_media_list_folder)
 
-				self.media_item_details_file = self.current_media_list_folder + "Media details.txt"
-				self.File.Create(self.media_item_details_file)
+				self.media_dictionary["media"]["item"]["folders"]["details"] = self.current_media_list_folder + "Media details.txt"
+				self.File.Create(self.media_dictionary["media"]["item"]["folders"]["details"])
 
-				self.File.Edit(self.media_item_details_file, self.Text.From_Dictionary(self.media_list[media_item]), "w")
+				self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["details"], self.Text.From_Dictionary(self.media_list[media_item]), "w")
 
 		self.watching_status_text = self.File.Contents(self.watching_status_file)["lines"]
 
@@ -565,23 +565,23 @@ class Create_New_Media_Info_Entry(Watch_History):
 			print()
 
 			for item in self.old_media_list_names:
-				self.media_item_details = self.media_list[item]
+				self.media_dictionary["media"]["item"]["details"] = self.media_list[item]
 
 				text = item
 
-				if self.language_texts["[language]_name"] in self.media_item_details and self.media_item_details[self.language_texts["[language]_name"]] != self.media_item_details[self.language_texts["original_name"]]:
-					text += "\n\t" + self.media_item_details[self.language_texts["[language]_name"]]
+				if self.language_texts["[language]_name"] in self.media_dictionary["media"]["item"]["details"] and self.media_dictionary["media"]["item"]["details"][self.language_texts["[language]_name"]] != self.media_dictionary["media"]["item"]["details"][self.language_texts["original_name"]]:
+					text += "\n\t" + self.media_dictionary["media"]["item"]["details"][self.language_texts["[language]_name"]]
 
 				print(text + ":")
 				print()
 
 				print("\t" + self.language_texts["episode, title()"] + ":")
-				print("\t" + self.media_item_details[self.language_texts["episode, title()"]])
+				print("\t" + self.media_dictionary["media"]["item"]["details"][self.language_texts["episode, title()"]])
 
-				if "Remote origin" in self.media_item_details:
+				if "Remote origin" in self.media_dictionary["media"]["item"]["details"]:
 					print()
 					print("\t" + self.language_texts["remote_origin"] + ":")
-					print("\t" + self.media_item_details["Remote origin"])
+					print("\t" + self.media_dictionary["media"]["item"]["details"]["Remote origin"])
 
 				if len(self.old_media_list_names) != 1 and item != self.old_media_list_names[-1]:
 					print()

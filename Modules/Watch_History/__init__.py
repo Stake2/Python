@@ -2,7 +2,7 @@
 
 from Watch_History.Watch_Media import Watch_Media as Watch_Media
 from Watch_History.Start_Watching_A_New_Media import Start_Watching_A_New_Media as Start_Watching_A_New_Media
-from Watch_History.Media_Info_Database_Manager import Media_Info_Database_Manager as Media_Info_Database_Manager
+from Watch_History.Media_Info import Media_Info as Media_Info
 from Watch_History.Watch_List_Of_Media import Watch_List_Of_Media as Watch_List_Of_Media
 
 from Language import Language as Language
@@ -29,7 +29,7 @@ class Run():
 			Watch_Media,
 			Watch_List_Of_Media,
 			Start_Watching_A_New_Media,
-			Media_Info_Database_Manager,
+			Media_Info,
 		]
 
 		self.class_descriptions = []

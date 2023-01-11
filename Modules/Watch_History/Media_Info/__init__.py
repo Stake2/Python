@@ -1,14 +1,14 @@
-# Media_Info_Database_Manager.py
+# Media_Info.py
 
-from Watch_History.Media_Info_Database_Manager.Create_New_Media_Info_Entry import Create_New_Media_Info_Entry as Create_New_Media_Info_Entry
-from Watch_History.Media_Info_Database_Manager.Open_Data_File_Of_Media import Open_Data_File_Of_Media as Open_Data_File_Of_Media
-from Watch_History.Media_Info_Database_Manager.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
-from Watch_History.Media_Info_Database_Manager.Update_Media_Info_Details import Update_Media_Info_Details as Update_Media_Info_Details
+from Watch_History.Media_Info.Create_New_Media_Info_Entry import Create_New_Media_Info_Entry as Create_New_Media_Info_Entry
+from Watch_History.Media_Info.Open_Data_File_Of_Media import Open_Data_File_Of_Media as Open_Data_File_Of_Media
+from Watch_History.Media_Info.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
+from Watch_History.Media_Info.Update_Media_Info_Details import Update_Media_Info_Details as Update_Media_Info_Details
 
 from Language import Language as Language
 from Input import Input as Input
 
-class Media_Info_Database_Manager():
+class Media_Info():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {

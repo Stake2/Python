@@ -10,7 +10,7 @@ class Comment_Writer(Watch_History):
 
 		self.media_folder = media_dictionary["media_folder"]
 
-		self.media_episode = media_dictionary["media_episode"]
+		self.media_dictionary["media"]["episode"]["title"] = media_dictionary["media_episode"]
 
 		self.plural_media_types = media_dictionary["plural_media_types"]
 		self.singular_media_types = media_dictionary["singular_media_types"]
@@ -100,7 +100,7 @@ class Comment_Writer(Watch_History):
 			self.comment_file_name = ""
 
 			for alternative_episode_type in self.alternative_episode_types:
-				if alternative_episode_type in self.media_episode:
+				if alternative_episode_type in self.media_dictionary["media"]["episode"]["title"]:
 					self.comment_file_name += alternative_episode_type + " "
 
 			self.comment_file_name += self.episode_number_text

@@ -22,7 +22,7 @@ class Watch_History(object):
 
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
-		self.Define_Media_Types_Dictionary()
+		self.Define_Media_Types()
 
 		# Load Christmas module
 		self.Christmas = Christmas()
@@ -196,7 +196,7 @@ class Watch_History(object):
 				"default": "None",
 			},
 
-			"Origin location": {
+			self.language_texts["origin_location"]: {
 				"mode": "string/default-format",
 				"select_text": self.language_texts["origin_location"],
 				"default": {
@@ -209,11 +209,10 @@ class Watch_History(object):
 			},
 		}
 
-	def Define_Media_Types_Dictionary(self):
+	def Define_Media_Types(self):
 		self.media_types = {
 			"singular": self.texts["media_types, type: list"],
 			"plural": self.texts["plural_media_types, type: list"],
-			"subfolders": {},
 			"genders": {},
 			"gender_items": ["the", "these", "this", "a", "of", "of_the"],
 		}
@@ -228,10 +227,32 @@ class Watch_History(object):
 		for plural_media_type in self.media_types["plural"]["en"]:
 			language_media_type = self.media_types["plural"][self.user_language][i]
 
+			# Create media type dictionary
+			self.media_types[plural_media_type] = {
+				"singular": {},
+				"plural": {},
+				"texts": {},
+				"folders": {},
+				"subfolders": {},
+				"genders": {},
+				"status": [
+					self.texts["watching, title()"]["en"],
+					self.texts["re_watching, title()"]["en"],
+				]
+			}
+
+			# Define singular and plural media types
+			for language in self.small_languages:
+				for item in ["singular", "plural"]:
+					self.media_types[plural_media_type][item][language] = self.media_types[item][language][i]
+
+			# Define select text for "Videos" media type
+			if self.media_types[plural_media_type]["plural"]["en"] == self.texts["videos"]["en"]:
+				self.media_types[plural_media_type]["singular"]["select"] = self.language_texts["channel, title()"]
+				self.media_types[plural_media_type]["plural"]["select"] = self.language_texts["channels, title()"]
+
 			# Define media type subfolders
 			if plural_media_type != self.texts["movies, title()"]["en"]:
-				self.media_types["subfolders"][plural_media_type] = {}
-
 				text = "season"
 
 				if plural_media_type == self.texts["videos, title()"]["en"]:
@@ -241,18 +262,24 @@ class Watch_History(object):
 					if item == "plural":
 						text += "s"
 
-					self.media_types["subfolders"][plural_media_type][item] = self.language_texts[text + ", title()"]
+					self.media_types[plural_media_type]["subfolders"][item] = self.language_texts[text + ", title()"]
+
+				# Define current "season/series" folder
+				text = self.media_types[plural_media_type]["subfolders"]["singular"]
+
+				if "{" not in self.language_texts["current_{}"][0]:
+					text = text.lower()
+
+				self.media_types[plural_media_type]["subfolders"]["current"] = self.language_texts["current_{}"].format(text)
 
 			# Define genders
-			self.media_types["genders"][plural_media_type] = {}
-
 			gender = "masculine"
 
 			if plural_media_type == self.texts["series, title()"]["en"]:
 				gender = "feminine"
 
 			for item in self.media_types["gender_items"]:
-				self.media_types["genders"][plural_media_type][item] = self.language_texts[item + ", " + gender]
+				self.media_types[plural_media_type]["genders"][item] = self.language_texts[item + ", " + gender]
 
 			# Create folders
 			for root_folder in ["Comments", "Media Info", "Watch History"]:
@@ -285,6 +312,54 @@ class Watch_History(object):
 					}
 
 					self.Folder.Create(self.folders[root_key]["current_year"]["per_media_type"][key]["files"]["root"])
+
+			# Define media type folders and files
+			key = self.media_types[plural_media_type]["plural"]["en"].lower().replace(" ", "_")
+
+			self.media_types[plural_media_type]["folders"] = self.folders["media_info"][key]
+
+			# Define Info.json file
+			self.media_types[plural_media_type]["folders"]["info"] = self.media_types[plural_media_type]["folders"]["root"] + "Info.json"
+			self.File.Create(self.media_types[plural_media_type]["folders"]["info"])
+
+			# Read Info.json file
+			self.media_types[plural_media_type]["json"] = self.Language.JSON_To_Python(self.media_types[plural_media_type]["folders"]["info"])
+
+			# Define media list
+			self.media_types[plural_media_type]["media_list"] = []
+
+			format = "{} [{}]"
+
+			if type(self.media_types[plural_media_type]["status"]) == str:
+				self.media_types[plural_media_type]["status"] = [self.media_types[plural_media_type]["status"]]
+
+			for status in self.media_types[plural_media_type]["status"]:
+				self.media_types[plural_media_type]["media_list"].extend(self.media_types[plural_media_type]["json"]["Status"][status])
+
+			self.media_types[plural_media_type]["media_list"] = sorted(self.media_types[plural_media_type]["media_list"])
+
+			add_status = False			
+
+			# Add status to "media list option" list if add_status is True
+			if add_status == True:
+				self.media_types[plural_media_type]["media_list_option"] = self.media_types[plural_media_type]["media_list"].copy()
+
+				i = 0
+				for media in self.media_types[plural_media_type]["media_list"]:
+					for status in self.media_types[plural_media_type]["status"]:
+						if media in self.media_types[plural_media_type]["json"]["Status"][status]:
+							language_status = self.Get_Language_Status(status)
+
+					self.media_types[plural_media_type]["media_list_option"][i] = format.format(self.media_types[plural_media_type]["media_list_option"][i], language_status)
+
+					i += 1
+
+			# Add media list length numbers to media types list to show on select media type
+			for language in self.small_languages:
+				for item in ["singular", "plural"]:
+					self.media_types[plural_media_type][item]["show"] = self.media_types[plural_media_type][item][self.user_language] + " (" + str(len(self.media_types[plural_media_type]["media_list"])) + ")"
+
+			self.media_types[plural_media_type]["texts"]["show"] = self.Text.By_Number(self.media_types[plural_media_type]["media_list"], self.media_types[plural_media_type]["singular"]["show"], self.media_types[plural_media_type]["plural"]["show"])
 
 			i += 1
 
@@ -346,6 +421,10 @@ class Watch_History(object):
 				"en": self.media_types["plural"]["en"].copy(),
 				self.user_language: self.media_types["plural"][self.user_language].copy(),
 			},
+			"status": [
+				self.texts["watching, title()"]["en"],
+				self.texts["re_watching, title()"]["en"],
+			],
 		}
 
 		# Define media type media numbers
@@ -353,7 +432,8 @@ class Watch_History(object):
 
 		i = 0
 		for plural_media_type in self.media_types["plural"]["en"]:
-			dictionary["list"][self.user_language][i] = dictionary["list"][self.user_language][i] + " (" + str(numbers[plural_media_type]) + ")"
+			for language in self.small_languages:
+				dictionary["list"][language][i] = dictionary["list"][language][i] + " (" + str(numbers[plural_media_type]) + ")"
 
 			i += 1
 
@@ -361,90 +441,12 @@ class Watch_History(object):
 			dictionary = self.Define_Options(dictionary, options)
 
 		# Select the media type
-		if "number" not in dictionary:
-			dictionary["number"] = self.Input.Select(dictionary["list"]["en"], dictionary["list"][self.user_language], show_text = dictionary["texts"]["show"], select_text = dictionary["texts"]["select"])["number"]
+		if "option" not in dictionary:
+			dictionary["option"] = self.Input.Select(dictionary["list"]["en"], dictionary["list"][self.user_language], show_text = dictionary["texts"]["show"], select_text = dictionary["texts"]["select"])["option"]
+			dictionary["option"] = dictionary["option"].split(" (")[0]
 
-		# Define media type dictionary
-		dictionary.update({
-			"singular": {},
-			"plural": {},
-			"subfolders": {},
-			"genders": {},
-		})
-
-		# Add language singular and plural media types to media type dictionary
-		for language in self.small_languages:
-			for item in ["singular", "plural"]:
-				plural_media_type = self.media_types["plural"][language][dictionary["number"]]
-
-				dictionary[item][language] = self.media_types[item][language][dictionary["number"]]
-
-		if dictionary["plural"]["en"] == self.texts["videos"]["en"]:
-			dictionary["singular"]["select"] = self.language_texts["channel, title()"]
-			dictionary["plural"]["select"] = self.language_texts["channels, title()"]
-
-		# Define subfolders
-		for item in ["singular", "plural"]:
-			dictionary["subfolders"][item] = self.media_types["subfolders"][dictionary["plural"]["en"]][item]
-
-		dictionary["subfolders"]["list"] = dictionary["subfolders"]["plural"]
-
-		text = dictionary["subfolders"]["singular"]
-
-		if "{" not in self.language_texts["current_{}"][0]:
-			text = text.lower()
-
-		dictionary["subfolders"]["current"] = self.language_texts["current_{}"].format(text)
-
-		# Define media type genders
-		dictionary["genders"] = self.media_types["genders"][dictionary["plural"]["en"]]
-
-		# Define media type folders and files
-		key = dictionary["plural"]["en"].lower().replace(" ", "_")
-
-		dictionary["folders"] = self.folders["media_info"][key]
-
-		# Define Info.json file
-		dictionary["folders"]["info"] = dictionary["folders"]["root"] + "Info.json"
-		self.File.Create(dictionary["folders"]["info"])
-
-		# Read Info.json file
-		dictionary["json"] = self.Language.JSON_To_Python(dictionary["folders"]["info"])
-
-		# Define media list
-		dictionary["media_list"] = []
-
-		format = "{} [{}]"
-
-		if type(dictionary["status"]) == str:
-			dictionary["status"] = [dictionary["status"]]
-
-		for status in dictionary["status"]:
-			dictionary["media_list"].extend(dictionary["json"]["Status"][status])
-
-		dictionary["media_list"] = sorted(dictionary["media_list"])
-
-		dictionary["media_list_option"] = dictionary["media_list"].copy()
-
-		add_status = False
-
-		# Add status to "media list option" list if add_status is True
-		if add_status == True:
-			i = 0
-			for media in dictionary["media_list"]:
-				for status in dictionary["status"]:
-					if media in dictionary["json"]["Status"][status]:
-						language_status = self.Get_Language_Status(status)
-
-				dictionary["media_list_option"][i] = format.format(dictionary["media_list_option"][i], language_status)
-
-				i += 1
-
-		for language in self.small_languages:
-			for item in ["singular", "plural"]:
-				dictionary[item]["show"] = dictionary[item][self.user_language] + " (" + str(len(dictionary["media_list"])) + ")"
-
-		dictionary["texts"]["show"] = self.Text.By_Number(dictionary["media_list"], dictionary["singular"]["show"], dictionary["plural"]["show"])
+		# Get selected media type dictionary from media types dictionary
+		dictionary.update(self.media_types[dictionary["option"]])
 
 		return dictionary
 
@@ -471,8 +473,13 @@ class Watch_History(object):
 
 		# Select media
 		if "title" not in media:
+			language_options = dictionary["media_type"]["media_list"]
+
+			if "media_list_option" in dictionary["media_type"]:
+				language_options = dictionary["media_type"]["media_list_option"]
+
 			media.update({
-				"title": self.Input.Select(dictionary["media_type"]["media_list"], language_options = dictionary["media_type"]["media_list_option"], show_text = dictionary["texts"]["show"], select_text = dictionary["texts"]["select"])["option"],
+				"title": self.Input.Select(dictionary["media_type"]["media_list"], language_options = language_options, show_text = dictionary["texts"]["show"], select_text = dictionary["texts"]["select"])["option"],
 			})
 
 		# Define media info and local media folder

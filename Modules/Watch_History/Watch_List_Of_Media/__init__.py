@@ -138,17 +138,17 @@ class Watch_List_Of_Media(Watch_History):
 				option_info.update(self.Watch_Media.media_dictionary)
 
 				self.media_details = self.Watch_Media.media_details
-				self.media_item_details = self.Watch_Media.media_item_details
+				self.media_dictionary["media"]["item"]["details"] = self.Watch_Media.media_item_details
 
 				print()
 				print("[" + self.singular_media_types["language"] + ":")
 
 				self.Show_Media_Title(option_info)
 
-				if self.language_texts["episode, title()"] in self.media_item_details:
+				if self.language_texts["episode, title()"] in self.media_dictionary["media"]["item"]["details"]:
 					print()
 					print(self.language_texts["episode, title()"] + ":")
-					print(self.media_item_details[self.language_texts["episode, title()"]] + "]")
+					print(self.media_dictionary["media"]["item"]["details"][self.language_texts["episode, title()"]] + "]")
 					print()
 
 				if option_info["media"] not in self.media_list_dict:
