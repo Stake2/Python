@@ -194,6 +194,15 @@ class Folder():
 				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["root"], item + "/"),
 			}
 
+
+		# Audiovisual Media Network/Comments folders
+		for item in ["Backups"]:
+			key = item.lower().replace(" ", "_")
+
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["comments"][key] = {
+				"root": os.path.join(self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["comments"]["root"], item + "/"),
+			}
+
 		# Audiovisual Media Network/Media Info folders and files
 		for item in ["Info.json"]:
 			key = item.lower().replace(" ", "_").replace(".json", "")

@@ -23,14 +23,12 @@ class Watch_History(object):
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
 		self.Define_Media_Types()
+		self.Define_JSON_Files()
 
 		# Load Christmas module
 		self.Christmas = Christmas()
 		self.christmas = self.Christmas.christmas
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas
-
-		# Create media type texts array with " (number of medias of each media type)" on the right of each media type
-		# To use as the choice list of the select media type of Watch_Media() class
 
 	def Define_Basic_Variables(self):
 		# Global Switches dictionary
@@ -366,7 +364,7 @@ class Watch_History(object):
 		# Write media types dictionary into "Media Types.json" file
 		self.File.Edit(self.folders["network_data"]["media_types"], self.Language.Python_To_JSON(self.media_types), "w")
 
-	def Define_Episode_JSON_Files(self):
+	def Define_JSON_Files(self):
 		print(0)
 
 	def Remove_Media_Type(self, media_types_list):
@@ -552,7 +550,7 @@ class Watch_History(object):
 			# Define titles key
 			media["titles"] = {
 				"original": media["details"][self.language_texts["original_name"]],
-				"original_sanitized": media["details"][self.language_texts["original_name"]],
+				"sanitized": media["details"][self.language_texts["original_name"]],
 			}
 
 			# If media type is "Animes", define romanized name and jp name
@@ -560,10 +558,9 @@ class Watch_History(object):
 				if self.language_texts["romanized_name"] in media["details"]:
 					media["titles"]["romanized"] = media["details"][self.language_texts["romanized_name"]]
 
-				media["titles"]["jp"] = media["details"][self.language_texts["original_name"]]
+				media["titles"]["sanitized"] = media["titles"]["romanized"]
 
-			if dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
-				media["titles"]["original_sanitized"] = media["titles"]["romanized"]
+				media["titles"]["jp"] = media["details"][self.language_texts["original_name"]]
 
 			if " (" in media["titles"]["original"] and " (" not in media["titles"]["language"]:
 				media["titles"]["language"] = media["titles"]["language"] + " (" + media["titles"]["original"].split(" (")[-1]
@@ -588,10 +585,10 @@ class Watch_History(object):
 				media["titles"]["language"] = media["titles"]["romanized"]
 
 			# Sanitize media title
-			if media["titles"]["original_sanitized"][0] + media["titles"]["original_sanitized"][1] == ": ":
-				media["titles"]["original_sanitized"] = media["titles"]["original_sanitized"][2:]
+			if media["titles"]["sanitized"][0] + media["titles"]["sanitized"][1] == ": ":
+				media["titles"]["sanitized"] = media["titles"]["sanitized"][2:]
 
-			media["titles"]["original_sanitized"] = self.Sanitize(media["titles"]["original_sanitized"], restricted_characters = True)
+			media["titles"]["sanitized"] = self.Sanitize(media["titles"]["sanitized"], restricted_characters = True)
 
 		return dictionary
 

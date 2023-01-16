@@ -1,5 +1,5 @@
 {
-    "testing": false,
+    "testing": true,
     "verbose": false,
     "user_information": false
 }

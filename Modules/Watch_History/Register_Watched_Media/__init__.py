@@ -90,7 +90,7 @@ class Register_Watched_Media(Watch_History):
 
 		self.media_dictionary["media"]["item"] = self.media_dictionary["media_item"]
 		self.language_media_item = self.media_dictionary["language_media_item"]
-		self.media_dictionary["media"]["item"]["title_sanitized"] = self.media_dictionary["media_item_file_safe"]
+		self.media_dictionary["media"]["item"]["sanitized"] = self.media_dictionary["media_item_file_safe"]
 		self.media_item_episode = self.media_dictionary["media_item_episode"]
 		self.media_item_episode_with_title = self.media_dictionary["media_item_episode_with_title"]
 		self.media_dictionary["media"]["item"]["folders"]["root"] = self.media_dictionary["media_item_folder"]
@@ -129,7 +129,7 @@ class Register_Watched_Media(Watch_History):
 			if self.media_episode_without_re_watched == self.language_episode_titles[-1] or len(self.language_episode_titles) == 1:
 				self.watched_item_text = self.watched_item_text.replace(self.language_texts["this, masculine"], self.language_texts["the_last, masculine"])
 
-			self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.media_dictionary["media_unit_name"])
+			self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.media_dictionary["media"]["texts"]["unit"])
 
 			self.of_the_text = self.language_texts["of_the_{}"]
 
@@ -148,7 +148,7 @@ class Register_Watched_Media(Watch_History):
 				self.watched_media_container_type = self.language_texts["channel"]
 
 			if self.media_dictionary["media"]["states"]["media_list"] == False:
-				self.watched_item_text = self.watched_item_text.replace(self.media_dictionary["media_unit_name"], self.media_dictionary["media_unit_name"] + " {}".format(self.of_the_text))
+				self.watched_item_text = self.watched_item_text.replace(self.media_dictionary["media"]["texts"]["unit"], self.media_dictionary["media"]["texts"]["unit"] + " {}".format(self.of_the_text))
 
 				if self.media_dictionary["media"]["item"] != self.media_title:
 					self.watched_item_text = self.watched_item_text.replace(self.of_the_text, self.of_the_text + ' "' + self.language_media_item[self.user_language]["title"] + '"')
@@ -444,7 +444,7 @@ class Register_Watched_Media(Watch_History):
 		self.Folder.Create(self.watched_media_folder)
 
 		if self.media_dictionary["media"]["states"]["media_list"] == False and self.media_dictionary["media"]["item"] != self.media_title:
-			self.watched_media_folder = self.watched_media_folder + self.media_dictionary["media"]["item"]["title_sanitized"] + "/"
+			self.watched_media_folder = self.watched_media_folder + self.media_dictionary["media"]["item"]["sanitized"] + "/"
 			self.Folder.Create(self.watched_media_folder)
 
 		self.media_item_episode_file = self.Sanitize(self.media_dictionary["media"]["episode"]["sanitized"], restricted_characters = True)
@@ -500,7 +500,7 @@ class Register_Watched_Media(Watch_History):
 		self.Folder.Create(self.current_year_experienced_media_name_folder)
 
 		if self.media_dictionary["media"]["states"]["media_list"] == False and self.media_dictionary["media"]["item"] != self.media_title:
-			self.current_year_experienced_media_name_folder = self.current_year_experienced_media_name_folder + self.media_dictionary["media"]["item"]["title_sanitized"] + "/"
+			self.current_year_experienced_media_name_folder = self.current_year_experienced_media_name_folder + self.media_dictionary["media"]["item"]["sanitized"] + "/"
 			self.Folder.Create(self.current_year_experienced_media_name_folder)
 
 		self.current_year_experienced_media_name_file = self.current_year_experienced_media_name_folder + self.media_dictionary["media"]["episode"]["sanitized"] + ".txt"
@@ -763,7 +763,7 @@ class Register_Watched_Media(Watch_History):
 		Write_On_Diary_Slim_Module(diary_slim_watched_text, self.media_dictionary["finished_watching"], add_time = False)
 
 	def Show_Watched_Media_Info(self):
-		del self.media_dictionary["header_text"], self.media_dictionary["media_unit"]
+		del self.media_dictionary["header_text"], self.media_dictionary["media"]["episode"]["unit"]
 
 		self.media_dictionary["header_text"] = self.Text.Capitalize(self.media_dictionary["media_container_name"]) + ": "
 

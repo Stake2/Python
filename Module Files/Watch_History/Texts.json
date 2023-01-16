@@ -525,7 +525,7 @@
 	},
 	"youtube_ids": {
 		"en": "YouTube IDs",
-		"pt": "ID do YouTube"
+		"pt": "IDs do YouTube"
 	},
 	"opening_{}_to_watch": {
 		"en": "Opening {} to watch",
@@ -971,7 +971,7 @@
 		"en": "Dubbed"
 	},
 	"remote, title()": {
-		"pt": "Remoto",
+		"pt": "Remota",
 		"en": "Remote"
 	},
 	"local, title()": {
@@ -1019,12 +1019,12 @@
 		"en": "Origin location"
 	},
 	"youtube_id, title()": {
-		"pt": "Id Do Youtube",
-		"en": "Youtube ID"
+		"pt": "ID do YouTube",
+		"en": "YouTube ID"
 	},
 	"youtube_ids, title()": {
-		"pt": "Id Do Youtube",
-		"en": "Youtube IDs"
+		"pt": "IDs do YouTube",
+		"en": "YouTube IDs"
 	},
 	"opening_{}_to_watch, title()": {
 		"pt": "Abrindo {} Para Assistir",
