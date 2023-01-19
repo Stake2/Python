@@ -133,6 +133,7 @@ class Create_Friend_File(Friends):
 
 	def Write_To_Files(self):
 		# Friend file names iteration
+		# file_names["en"] = ["Information", "Social Networks"]
 		for file_name in self.file_names["en"]:
 			key = file_name
 			file = self.friend_files[self.friend][key]

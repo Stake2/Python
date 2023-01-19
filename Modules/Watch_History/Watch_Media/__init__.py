@@ -2,7 +2,7 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Register_Watched_Media import Register_Watched_Media as Register_Watched_Media
+from Watch_History.Register_Media import Register_Media as Register_Media
 from Watch_History.Comment_Writer import Comment_Writer as Comment_Writer
 
 import re
@@ -65,6 +65,9 @@ class Watch_Media(Watch_History):
 			"has_dubbing": False,
 			"watch_dubbed": False,
 			"open_media": self.open_media,
+			"completed": False,
+			"first_watched_in_year": False,
+			"finished_watching": False
 		}
 
 		# Define origin type state
@@ -108,34 +111,40 @@ class Watch_Media(Watch_History):
 				}
 			}
 
-			for item in ["list", "current"]:
-				key = item
+			if self.Folder.Exist(self.media_dictionary["media"]["items"]["folders"]["root"]) == True:
+				for item in ["list", "current"]:
+					key = item
 
-				if item == "list":
-					key = "plural"
+					if item == "list":
+						key = "plural"
 
-				self.media_dictionary["media"]["items"]["folders"][item] = self.media_dictionary["media"]["items"]["folders"]["root"] + self.media_dictionary["media_type"]["subfolders"][key] + ".txt"
-				self.File.Create(self.media_dictionary["media"]["items"]["folders"][item])
+					self.media_dictionary["media"]["items"]["folders"][item] = self.media_dictionary["media"]["items"]["folders"]["root"] + self.media_dictionary["media_type"]["subfolders"][key] + ".txt"
+					self.File.Create(self.media_dictionary["media"]["items"]["folders"][item])
 
-				self.media_dictionary["media"]["items"][item] = self.File.Contents(self.media_dictionary["media"]["items"]["folders"][item])["lines"]
+					self.media_dictionary["media"]["items"][item] = self.File.Contents(self.media_dictionary["media"]["items"]["folders"][item])["lines"]
 
-				if item == "current":
-					self.media_dictionary["media"]["items"][item] = self.media_dictionary["media"]["items"][item][0]
+					if self.media_dictionary["media"]["items"][item] != [] and item == "current":
+						self.media_dictionary["media"]["items"][item] = self.media_dictionary["media"]["items"][item][0]
 
-			# Define media item folders
-			for item in self.media_dictionary["media"]["items"]["list"]:
-				if item[0] + item[1] == ": ":
-					item = item[2:]
+				# Define media item folders
+				for item in self.media_dictionary["media"]["items"]["list"]:
+					if item[0] + item[1] == ": ":
+						item = item[2:]
 
-				self.media_dictionary["media"]["items"]["folders"][item] = self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(item, restricted_characters = True) + "/"
-				self.Folder.Create(self.media_dictionary["media"]["items"]["folders"][item])
+					self.media_dictionary["media"]["items"]["folders"][item] = self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(item, restricted_characters = True) + "/"
+					self.Folder.Create(self.media_dictionary["media"]["items"]["folders"][item])
 
-			if len(self.media_dictionary["media"]["items"]["list"]) > 1:
+				# Define current media item
+				title = self.media_dictionary["media"]["items"]["current"]
+
 				# Has media list
 				self.media_dictionary["media"]["states"]["media_list"] = True
 
+			else:
+				self.media_dictionary["media"]["states"]["media_list"] = False
+
 			# Define current media item
-			title = self.media_dictionary["media"]["items"]["current"]
+			title = self.media_dictionary["media"]["title"]
 
 			# Select video series from channel for video series media
 			if self.media_dictionary["media"]["states"]["video"] == True and self.media_dictionary["media"]["states"]["media_list"] == True:
@@ -154,14 +163,32 @@ class Watch_Media(Watch_History):
 				}
 			}
 
+			if self.media_dictionary["media"]["states"]["media_list"] == False:
+				self.media_dictionary["media"]["item"]["folders"] = self.media_dictionary["media"]["folders"]
+
 			if self.media_dictionary["media"]["states"]["local"] == True:
 				self.media_dictionary["media"]["item"]["folders"]["media"] = self.media_dictionary["media"]["folders"]["media"]
 
 				if self.media_dictionary["media"]["states"]["media_list"] == True:
-					self.media_dictionary["media"]["item"]["folders"]["media"] = self.media_dictionary["media"]["item"]["folders"]["media"] + self.Sanitize(title, restricted_characters = True) + "/"
+					self.media_dictionary["media"]["item"]["folders"]["media"] += self.Sanitize(title, restricted_characters = True) + "/"
 
 			# Define media item variables
 			self.media_dictionary = self.Select_Media(self.media_dictionary, item = True)
+
+			# Define media type comments folder for media with media list
+			if self.media_dictionary["media"]["states"]["media_list"] == True:
+				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] += self.Sanitize(title, restricted_characters = True) + "/"
+
+				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.language_texts["comments, title()"] + ".json"
+				self.File.Create(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
+
+				dict_ = {
+					"File names": [],
+					"Dictionary": {}
+				}
+
+				if self.File.Contents(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])["lines"] == []:
+					self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.Language.Python_To_JSON(dict_), "w")
 
 			# Define media item folders
 			for item in ["Comments", "Titles"]:
@@ -697,16 +724,15 @@ class Watch_Media(Watch_History):
 					quit(self.language_texts["alright"] + ".")
 
 	def Show_Information(self):
-		variable = ""
-		#self.Show_Media_Information(self.media_dictionary)
+		self.Show_Media_Information(self.media_dictionary)
 
 	def Open_Episode_Unit(self):
 		# Open media unit with its executor
 		if self.global_switches["testing"] == False:
-			if self.is_remote_episode == True:
+			if self.media_dictionary["media"]["states"]["remote"] == True:
 				self.File.Open(self.media_dictionary["media"]["episode"]["unit"])
 
-			if self.is_local_episode == True:
+			if self.media_dictionary["media"]["states"]["local"] == True:
 				import subprocess
 				subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
 
@@ -722,21 +748,20 @@ class Watch_Media(Watch_History):
 		# Ask to comment on media (using Comment_Writer class)
 		Comment_Writer(self.media_dictionary)
 
-		self.Text.Copy(self.media_dictionary["media"])
-
 	def Register_Media(self):
 		template = self.language_texts["press_enter_when_you_finish_watching_the_{}"]
 
 		# Text to show in the input when the user finishes watching the media (pressing Enter)
-		text = template.format(self.media_dictionary["texts"]["unit"])
+		text = template.format(self.media_dictionary["media"]["texts"]["unit"])
 
-		self.finished_watching = self.Input.Type(text)
+		self.media_dictionary["media"]["states"]["finished_watching"] = self.Input.Type(text)
+		self.media_dictionary["media"]["states"]["finished_watching"] = True
 
 		# Register finished watching time
 		self.media_dictionary["media"]["finished_watching"] = self.Date.Now()
 
-		# Use "Register_Watched_Media" class to register watched media, running it as a module, and giving the media_dictionary to it
-		Register_Watched_Media(run_as_module = True, media_dictionary = self.media_dictionary)
+		# Use the "Register_Media" class to register the watched media, running it as a module, and giving the media_dictionary to it
+		Register_Media(run_as_module = True, media_dictionary = self.media_dictionary)
 
 	def Find_Media_file(self, file_name):
 		self.frequently_used_folders = [

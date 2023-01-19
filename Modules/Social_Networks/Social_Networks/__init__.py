@@ -357,7 +357,7 @@ class Social_Networks(object):
 
 			information = self.Input.Type(language_information_item, next_line = True)
 
-			print(information_item)
+			self.social_network_information[self.social_network["Name"]][information_item] = information
 
 			# Format Social Network link if information_item is present in Social Network data values
 			for social_network_information_item in list(self.social_network["data"]["Information"].values()):
@@ -371,8 +371,6 @@ class Social_Networks(object):
 				if information_item in self.social_network["data"]["Information"]["Message link"]:
 					link = self.social_network["data"]["Information"]["Message link"]
 					self.social_network_information[self.social_network["Name"]]["Message link"] = link.replace("{" + information_item + "}", "") + information
-
-			self.social_network_information[self.social_network["Name"]][information_item] = information
 
 			i += 1
 

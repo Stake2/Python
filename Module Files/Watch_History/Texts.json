@@ -1230,10 +1230,18 @@
 		"pt": "comida",
 		"en": "food"
 	},
+	"food, title()": {
+		"pt": "Comida",
+		"en": "Food"
+	},
 	"food, title(), en - pt": "Food - Comida",
 	"drink": {
 		"pt": "bebida",
 		"en": "drink"
+	},
+	"drink, title()": {
+		"pt": "Bebida",
+		"en": "Drink"
 	},
 	"drink, title(), en - pt": "Drink - Bebida",
 	"firsts_of_the_year": {
@@ -1311,6 +1319,10 @@
 	"new_watching_status": {
 		"pt": "Novo status de assistindo",
 		"en": "New watching status"
+	},
+	"time, title()": {
+		"en": "Time",
+		"pt": "Tempo"
 	},
 	"time_and_day_that_you_{}_watching": {
 		"pt": "Hora e dia que você {} assistir",

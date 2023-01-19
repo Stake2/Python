@@ -1,11 +1,11 @@
-# Start_Watching_A_New_Media.py
+# Start_Watching_Media.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 from Watch_History.Watch_Media import Watch_Media as Watch_Media
 
 # Class to set medias as To_Watch
-class Start_Watching_A_New_Media(Watch_History):
+class Start_Watching_Media(Watch_History):
 	def __init__(self):
 		super().__init__()
 
@@ -73,7 +73,7 @@ class Start_Watching_A_New_Media(Watch_History):
 		self.media_dates_text = self.language_texts["when_i_started_to_watch"] + ":\n"
 		self.media_dates_text += self.started_watching_time
 
-		self.item_dates_text = self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["the_item_text"] + " " + self.media_dictionary["media_item_name"] + ":\n"
+		self.item_dates_text = self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["the_item_text"] + " " + self.media_dictionary["media"]["texts"]["item"] + ":\n"
 		self.item_dates_text += self.started_watching_time
 
 	def Write_Media_Details(self):

@@ -1,4 +1,4 @@
-# Register_Watched_Media.py
+# Register_Media.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
@@ -8,7 +8,7 @@ from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as 
 
 import re
 
-class Register_Watched_Media(Watch_History):
+class Register_Media(Watch_History):
 	def __init__(self, run_as_module = False, media_dictionary = None):
 		super().__init__()
 
@@ -17,8 +17,6 @@ class Register_Watched_Media(Watch_History):
 
 		if self.run_as_module == False:
 			self.Ask_For_Media_Info()
-
-		self.Define_Media_Variables()
 
 		self.Define_Diary_Slim_Watched_Text()
 		self.Ask_For_Food_And_Drink()
@@ -39,7 +37,7 @@ class Register_Watched_Media(Watch_History):
 			print()
 			print(self.large_bar)
 			print()
-			print("Register_Watched_Media:")
+			print("Register_Media:")
 
 		self.Show_Watched_Media_Info()
 
@@ -47,68 +45,6 @@ class Register_Watched_Media(Watch_History):
 		# To-Do: Make this method
 
 		self.media_dictionary = {}
-
-	def Define_Media_Variables(self):
-		self.media_title = self.media_dictionary["media_title"]
-		self.media_titles = self.media_dictionary["media_titles"]
-		self.media_dictionary["media"]["titles"]["original_file_name"] = self.media_dictionary["media_title_file_safe"]
-
-		self.language_media_title = self.media_titles["language"]
-
-		self.media_folder = self.media_dictionary["media_folder"]
-		self.media_details = self.media_dictionary["media_details"]
-		self.media_details_file = self.media_dictionary["media_details_file"]
-
-		self.media_dictionary["media"]["episode"]["title"] = self.media_dictionary["media_episode"]
-		self.media_dictionary["media"]["episode"]["sanitized"] = self.media_dictionary["media_episode_file_safe"]
-		self.language_media_episode = self.media_dictionary["language_media_episode"]
-
-		self.plural_media_types = self.media_dictionary["plural_media_types"]
-		self.singular_media_types = self.media_dictionary["singular_media_types"]
-		self.mixed_plural_media_type = self.media_dictionary["mixed_plural_media_type"]
-
-		self.media_dictionary["media"]["details"][self.language_texts["origin_type"]] = self.media_dictionary["origin_type"]
-
-		self.per_media_type_files_folder = self.media_dictionary["per_media_type_files_folder"]
-		self.per_media_type_episodes_file = self.media_dictionary["per_media_type_episodes_file"]
-		self.per_media_type_times_file = self.media_dictionary["per_media_type_times_file"]
-
-		self.media_dictionary["media"]["states"]["remote"] = self.media_dictionary["is_remote"]
-		self.media_dictionary["media"]["states"]["local"] = self.media_dictionary["is_local"]
-		self.media_dictionary["media"]["states"]["hybrid"] = self.media_dictionary["is_hybrid"]
-
-		self.media_dictionary["media"]["states"]["series_media"] = self.media_dictionary["is_series_media"]
-		self.media_dictionary["media"]["states"]["video"] = self.media_dictionary["switches"]["video"]
-
-		if self.media_dictionary["media"]["states"]["series_media"] == True:
-			self.episode_titles = self.media_dictionary["episode_titles"]
-			self.language_episode_titles = self.media_dictionary["language_episode_titles"]
-
-		self.media_dictionary["media"]["states"]["re_watching"] = self.media_dictionary["re_watching"]
-
-		self.media_dictionary["media"]["states"]["media_list"] = self.media_dictionary["no_media_list"]
-
-		self.media_dictionary["media"]["item"] = self.media_dictionary["media_item"]
-		self.language_media_item = self.media_dictionary["language_media_item"]
-		self.media_dictionary["media"]["item"]["sanitized"] = self.media_dictionary["media_item_file_safe"]
-		self.media_item_episode = self.media_dictionary["media_item_episode"]
-		self.media_item_episode_with_title = self.media_dictionary["media_item_episode_with_title"]
-		self.media_dictionary["media"]["item"]["folders"]["root"] = self.media_dictionary["media_item_folder"]
-		self.current_media_item_file = self.media_dictionary["current_media_item_file"]
-
-		if self.media_dictionary["media"]["states"]["media_list"] == False:
-			self.media_dictionary["media"]["item"]["details"] = self.media_dictionary["media_item_details"]
-			self.media_dictionary["media"]["item"]["folders"]["details"] = self.media_dictionary["media_item_details_file"]
-			self.media_list_item_names = self.media_dictionary["media_list_item_names"]
-
-		if self.media_dictionary["media"]["states"]["video"] == True:
-			self.media_dictionary["youtube_video_id"] = self.media_dictionary["youtube_video_id"]
-
-		if self.plural_media_types["en"] == self.media_types["plural"]["en"][0] and "dubbed_media_text" in self.media_dictionary:
-			self.dubbed_media_text = self.media_dictionary["dubbed_media_text"]
-
-		if self.plural_media_types["en"] == self.media_types["plural"]["en"][4]:
-			self.media_dictionary["media"]["states"]["video"] = True
 
 	def Define_Diary_Slim_Watched_Text(self):
 		template = self.language_texts["i_just_finished_watching_{}"]
@@ -140,7 +76,7 @@ class Register_Watched_Media(Watch_History):
 				if self.media_dictionary["media"]["item"] == self.media_list_item_names[-1]:
 					self.of_the_text = self.language_texts["of_the_final_{}"]
 
-			self.of_the_text = self.of_the_text.format(self.media_dictionary["media_item_name"])
+			self.of_the_text = self.of_the_text.format(self.media_dictionary["media"]["texts"]["item"])
 
 			self.watched_media_container_type = self.singular_media_types["language"].lower()
 
@@ -656,7 +592,7 @@ class Register_Watched_Media(Watch_History):
 
 		# Completed media time and date part
 		self.media_the_text = self.media_dictionary["the_text"] + " " + self.media_dictionary["media_container_name"]
-		self.media_item_the_text = self.media_dictionary["the_item_text"] + " " + self.media_dictionary["media_item_name"]
+		self.media_item_the_text = self.media_dictionary["the_item_text"] + " " + self.media_dictionary["media"]["texts"]["item"]
 
 		# Gets the date that the user started and finished watching the media item and writes it to the media dates text file
 		if self.media_dictionary["completed_media_item"] == True:

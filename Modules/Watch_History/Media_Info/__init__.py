@@ -1,7 +1,7 @@
 # Media_Info.py
 
 from Watch_History.Media_Info.Create_New_Media_Info_Entry import Create_New_Media_Info_Entry as Create_New_Media_Info_Entry
-from Watch_History.Media_Info.Open_Data_File_Of_Media import Open_Data_File_Of_Media as Open_Data_File_Of_Media
+from Watch_History.Media_Info.Open_Details_File_Of_Media import Open_Details_File_Of_Media as Open_Details_File_Of_Media
 from Watch_History.Media_Info.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
 from Watch_History.Media_Info.Update_Media_Info_Details import Update_Media_Info_Details as Update_Media_Info_Details
 
@@ -19,18 +19,18 @@ class Media_Info():
 
 		classes = [
 			Create_New_Media_Info_Entry,
-			Open_Data_File_Of_Media,
+			Open_Details_File_Of_Media,
 			Fill_Episode_Titles_File,
 		]
 
 		names_per_language = [
 			{
-				"en": "Add new media to Media Info Database",
-				"pt": "Adicionar nova mídia ao Banco de Dados de Informações de Mídia",
+				"en": "Add new media to the Database",
+				"pt": "Adicionar nova mídia ao Banco de Dados",
 			},
 			{
-				"en": "Open media data file",
-				"pt": "Abrir arquivo de dados de mídia",
+				"en": "Open media details file",
+				"pt": "Abrir arquivo de detalhes de mídia",
 			},
 			{
 				"en": "Fill episode titles file",

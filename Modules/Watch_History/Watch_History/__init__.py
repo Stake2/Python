@@ -365,7 +365,7 @@ class Watch_History(object):
 		self.File.Edit(self.folders["network_data"]["media_types"], self.Language.Python_To_JSON(self.media_types), "w")
 
 	def Define_JSON_Files(self):
-		print(0)
+		variable = ""
 
 	def Remove_Media_Type(self, media_types_list):
 		if type(media_types_list) == str:
@@ -491,12 +491,36 @@ class Watch_History(object):
 			media["folders"] = {
 				"root": dictionary["media_type"]["folders"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
 				"media": self.root_folders["media"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
+				"media_type_comments": {
+					"root": self.folders["comments"][dictionary["media_type"]["plural"]["en"].lower()]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/"
+				}
 			}
+
+			media["folders"]["media_type_comments"]["comments"] = media["folders"]["media_type_comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
+			self.File.Create(media["folders"]["media_type_comments"]["comments"])
+
+			dict_ = {
+				"File names": [],
+				"Dictionary": {}
+			}
+
+			if self.File.Contents(media["folders"]["media_type_comments"]["comments"])["lines"] == []:
+				self.File.Edit(media["folders"]["media_type_comments"]["comments"], self.Language.Python_To_JSON(dict_), "w")
+
+			if dictionary["media_type"]["plural"]["en"] != self.texts["movies"]["en"]:
+				media["folders"]["comments"] = {
+					"root": media["folders"]["root"] + self.language_texts["comments, title()"] + "/"
+				}
 
 		# Create folders
 		for key in media["folders"]:
 			folder = media["folders"][key]
-			self.Folder.Create(folder)
+
+			if "root" in folder:
+				folder = folder["root"]
+
+			if "." not in folder:
+				self.Folder.Create(folder)
 
 		# Define media text files
 		for file_name in ["Details.txt", "Information.json", "Dates.txt"]:
@@ -596,10 +620,10 @@ class Watch_History(object):
 		if dictionary["media"]["titles"]["language"] == dictionary["media"]["titles"]["original"]:
 			print(dictionary["media"]["titles"]["original"])
 
-			if dictionary["switches"]["video"] == True:				
+			if dictionary["media"]["states"]["video"] == True:				
 				print()
-				print(self.Text.Capitalize(dictionary["media"]["item_name"]) + ":")
-				print(dictionary["media"]["item"])
+				print(self.Text.Capitalize(dictionary["media"]["texts"]["item"]) + ":")
+				print(dictionary["media"]["item"]["title"])
 
 		if dictionary["media"]["titles"]["language"] != dictionary["media"]["titles"]["original"]:
 			print("\t" + dictionary["media"]["titles"]["original"])
@@ -611,175 +635,162 @@ class Watch_History(object):
 				if language in dictionary["media"]["titles"] and dictionary["media"]["titles"][language] != dictionary["media"]["titles"]["original"]:
 					print("\t" + dictionary["media"]["titles"][language])
 
-	def Show_Media_Information(self, media_dictionary):
-		media_title = media_dictionary["media_title"]
-		media_titles = media_dictionary["media"]["titles"]
-
-		media_details = media_dictionary["media_details"]
-
-		media_item = media_dictionary["media_item"]
-		language_media_item = media_dictionary["language_media_item"]
-
-		media_episode = media_dictionary["media_episode"]
-
-		plural_media_types = media_dictionary["plural_media_types"]
-		singular_media_types = media_dictionary["singular_media_types"]
-		mixed_plural_media_type = media_dictionary["mixed_plural_media_type"]
-
-		is_series_media = media_dictionary["is_series_media"]
-		is_video_series_media = media_dictionary["switches"]["video"]
-
-		no_media_list = media_dictionary["no_media_list"]
-
-		media_the_text = self.media_dictionary["of_the_text"] + " " + singular_media_types["language"].lower()
-
+	def Show_Media_Information(self, dictionary):
 		# Show opening this media text
-		header_text = singular_media_types["language"] + ":"
+		header_text = dictionary["media_type"]["singular"][self.user_language] + ":"
 
-		if "header_text" in media_dictionary and "header_text" not in ["", None]:
-			header_text = media_dictionary["header_text"]
+		if "header_text" in dictionary and "header_text" not in ["", None]:
+			header_text = dictionary["header_text"]
 
 		print()
 		print(self.large_bar)
 
-		if "completed_media" in media_dictionary and media_dictionary["completed_media"] == True:
+		if "completed" in dictionary["media"]["states"] and dictionary["media"]["states"]["completed"] == True:
 			print()
 			print(self.language_texts["congratulations"] + "! :3")
 
 		print()
 		print(header_text)
 
-		self.Show_Media_Title(media_dictionary)
+		# Show the title of the media
+		self.Show_Media_Title(dictionary)
 
 		print()
 
 		# Show media episode if the media is series media (not a movie)
-		if is_series_media == True:
-			if is_video_series_media == True:
-				self.media_dictionary["of_the_text"] = self.gender_the_texts[plural_media_types["en"]]["feminine"]["of_the"]
+		if dictionary["media"]["states"]["series_media"] == True:
+			if dictionary["media"]["states"]["video"] == True:
+				dictionary["media_type"]["genders"]["of_the"] = self.media_types["genders"]["feminine"]["of_the"]
 
-			media_episode_text = "{} {}".format(self.Text.Capitalize(media_dictionary["media_unit_name"]), self.media_dictionary["of_the_text"]) + " "
+			media_episode_text = "{} {}".format(self.Text.Capitalize(dictionary["media"]["texts"]["unit"]), dictionary["media_type"]["genders"]["of_the"]) + " "
 
-			if no_media_list == True or is_video_series_media == True:
-				media_episode_text += media_dictionary["media_item_name"]
+			if dictionary["media"]["states"]["media_list"] == False or dictionary["media"]["states"]["video"] == True:
+				media_episode_text += dictionary["media"]["texts"]["item"]
 
 			else:
-				media_episode_text += media_dictionary["media_container_name"]
+				media_episode_text += dictionary["media"]["texts"]["container"]
 
 			print(media_episode_text + ":")
-			print(media_episode)
+			print(dictionary["media"]["episode"]["title"])
 			print()
 
-			text_to_show = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}_title"].format(self.media_dictionary["the_text"] + " " + media_dictionary["media_container_name"])
+			text_to_show = self.Text.Capitalize(dictionary["media"]["texts"]["unit"]) + " " + self.language_texts["with_{}_title"].format(dictionary["media_type"]["genders"]["the"] + " " + dictionary["media"]["texts"]["container"])
 
-			# Show media item episode (media episode with media item) if the media has a media list
-			if no_media_list == False and is_video_series_media == False:
-				if media_item != media_title:
-					media_episode_text = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}"].format(media_dictionary["media_item_name"])
+			# Show media episode (episode with media item) if the media has a media list
+			if dictionary["media"]["states"]["media_list"] == True and dictionary["media"]["states"]["video"] == False:
+				if dictionary["media"]["item"]["title"] != dictionary["media"]["title"]:
+					media_episode_text = self.Text.Capitalize(dictionary["media"]["texts"]["unit"]) + " " + self.language_texts["with_{}"].format(dictionary["media"]["texts"]["item"])
 
 					print(media_episode_text + ":")
-					print(language_media_item["language"]["episode"])
+					print(dictionary["media"]["episode"]["with_item"][self.user_language])
 					print()
 
-				if media_item != media_title:
-					text_to_show += " " + self.language_texts["and_{}"].format(media_dictionary["media_item_name"])
+					text_to_show += " " + self.language_texts["and_{}"].format(dictionary["media"]["texts"]["item"])
 
-			if is_video_series_media == True:
-				text_to_show = self.Text.Capitalize(media_dictionary["media_unit_name"]) + " " + self.language_texts["with_{}"].format(self.language_texts["youtube_channel"])
+				key = "with_title_and_item"
+
+			# Show only media title with episode if the media has no media list
+			if dictionary["media"]["states"]["media_list"] == False and dictionary["media"]["states"]["video"] == False:
+				key = "with_title"
+
+			if dictionary["media"]["states"]["video"] == True:
+				text_to_show = self.Text.Capitalize(dictionary["media"]["texts"]["unit"]) + " " + self.language_texts["with_{}"].format(self.language_texts["youtube_channel"])
 
 			print(text_to_show + ":")
-			print(language_media_item[self.user_language]["episode_with_title"])
+			print(dictionary["media"]["episode"][key][self.user_language])
 			print()
 
-		if "completed_media_item" in media_dictionary and media_dictionary["completed_media_item"] == True:
+		if "completed_item" in dictionary["media"]["states"] and dictionary["media"]["states"]["completed_item"] == True:
 			print(self.language_texts["congratulations"] + "! :3")
 			print()
 
-			print(self.language_texts["you_finished_watching_this_{}_of_{}"].format(media_dictionary["media_item_name"], self.media_dictionary["of_the_text"] + " " + singular_media_types["language"].lower() + ' "' + media_dictionary["media"]["titles"]["language"] + '"') + ":")
-			print(media_dictionary["language_media_item"]["language"]["title"])
+			print(self.language_texts["you_finished_watching_this_{}_of_{}"].format(dictionary["media"]["texts"]["item"], dictionary["media_type"]["genders"]["of_the"] + " " + dictionary["media_type"]["singular"][self.user_language].lower() + ' "' + dictionary["media"]["titles"]["language"] + '"') + ":")
+			print(dictionary["media"]["item"]["titles"]["language"])
 
-			if media_dictionary["completed_media"] == False and media_dictionary["switches"]["video"] == False:
+			if dictionary["media"]["states"]["completed"] == False and dictionary["media"]["states"]["video"] == False:
 				print()
-				print(self.language_texts["next_{}_to_watch, feminine"].format(media_dictionary["media_item_name"]) + ": ")
-				print(media_dictionary["language_next_media_item"])
+				print(self.language_texts["next_{}_to_watch, feminine"].format(dictionary["media"]["texts"]["item"]) + ": ")
+				print(dictionary["media"]["item"]["next"])
 
 			print()
 
 		# Show media type
 		print(self.language_texts["media_type"] + ":")
-		print(self.Language.Item(plural_media_types))
-		print()
+		print(dictionary["media_type"]["plural"][self.user_language])
 
-		# Show mixed media type
-		if plural_media_types["en"] != self.media_types["plural"]["en"][0]:
-			print(self.language_texts["mixed_media_type"] + ":")
-			print(mixed_plural_media_type)
+		if dictionary["media"]["states"]["finished_watching"] == True:
 			print()
 
-		if "media_unit" in media_dictionary:
+		# Show mixed media type for non-anime media types
+		if dictionary["media_type"]["plural"]["en"] != self.texts["animes"]["en"]:
+			print(self.language_texts["mixed_media_type"] + ":")
+			print(dictionary["media_type"]["plural"]["en"] + " - " + dictionary["media_type"]["plural"][self.user_language])
+			print()
+
+		if "media_unit" in dictionary["media"]["episode"]:
 			# Show media unit text and Media_Unit
 			print(self.language_texts["media_unit"] + ":")
-			print(media_dictionary["media_unit"])
+			print(dictionary["media"]["episode"]["unit"])
 
-		if "youtube_video_id" in media_dictionary and media_dictionary["youtube_video_id"] != None:
-			if "next_episode_to_watch" not in media_dictionary:
+		if "youtube_id" in dictionary["media"]["episode"]:
+			if "next" not in dictionary["media"]["episode"]:
 				print()
 
-			print(self.language_texts["youtube_ids"] + ":")
-			print(media_dictionary["youtube_video_id"])
+			print(self.language_texts["youtube_id"] + ":")
+			print(dictionary["media"]["episode"]["youtube_id"])
 
-			if "next_episode_to_watch" in media_dictionary:
+			if "next" in dictionary["media"]["episode"]:
 				print()
 
-		if "first_watched_in_year" in media_dictionary and media_dictionary["first_watched_in_year"] == True:
-			print(self.language_texts["this_is_{}_first_{}_that_you_watch_in_{}"].format(self.media_dictionary["of_the_text"], singular_media_types["language"].lower(), self.date["year"]) + ".")
+		if "first_watched_in_year" in dictionary["media"]["states"] and dictionary["media"]["states"]["first_watched_in_year"] == True:
+			print(self.language_texts["this_is_{}_first_{}_that_you_watch_in_{}"].format(dictionary["media_type"]["genders"]["of_the"], dictionary["media_type"]["singular"][self.user_language].lower(), str(self.date["year"])) + ".")
 			print()
 
-		if "finished_watching_time" in media_dictionary:
-			print(self.language_texts["when_i_finished_watching"] + " " + self.media_dictionary["of_the_text"] + " " + media_dictionary["media_unit_name"] + ":")
-			print(media_dictionary["finished_watching_time"])
+		if "finished_watching" in dictionary["media"]:
+			print(self.language_texts["when_i_finished_watching"] + " " + dictionary["media_type"]["genders"]["of_the"] + " " + dictionary["media"]["texts"]["unit"] + ":")
+			print(dictionary["media"]["finished_watching"])
 			print()
 
-		if "food" in media_dictionary:
-			print(self.language_texts["food, en - pt"] + ":")
-			print(media_dictionary["food"])
+		if "food" in dictionary["media"]["episode"]:
+			print(self.language_texts["food, title()"] + ":")
+			print(dictionary["media"]["episode"]["food"])
 			print()
 
-		if "drink" in media_dictionary:
-			print(self.language_texts["drink, en - pt"] + ":")
-			print(media_dictionary["drink"])
+		if "drink" in dictionary["media"]["episode"]:
+			print(self.language_texts["drink, title()"] + ":")
+			print(dictionary["media"]["episode"]["drink"])
 			print()
 
-		if "next_episode_to_watch" in media_dictionary:
+		if "next" in dictionary["media"]["episode"]:
 			text = self.language_texts["next_{}_to_watch, masculine"]
 
-			if media_dictionary["media_unit_name"][0] not in ["C", "N"]:
-				media_dictionary["media_unit_name"] = self.Text.Capitalize(media_dictionary["media_unit_name"], lower = True)
+			if dictionary["media"]["texts"]["unit"][0] not in ["C", "N"]:
+				dictionary["media"]["texts"]["unit"] = self.Text.Capitalize(dictionary["media"]["texts"]["unit"], lower = True)
 
-			print(text.format(media_dictionary["media_unit_name"]) + ": ")
-			print(media_dictionary["next_episode_to_watch"])
+			print(text.format(dictionary["media"]["texts"]["unit"]) + ": ")
+			print(dictionary["media"]["episode"]["next"])
 			print()
 
-		if "completed_media" in media_dictionary and media_dictionary["completed_media"] == True:
+		if "completed" in dictionary["media"]["states"] and dictionary["media"]["states"]["completed"] == True:
 			print(self.language_texts["new_watching_status"] + ":")
-			print(media_details[self.language_texts["status, title()"]])
+			print(dictionary["media"]["details"][self.language_texts["status, title()"]])
 			print()
 
 			# Started watching media time text and day
 			print(self.language_texts["when_you_started_to_watch"] + ":")
-			print(media_dictionary["started_watching"])
+			print(dictionary["media"]["started_watching"])
 			print()
 
 			# Finished watching media time text and day
 			print(self.language_texts["when_you_finished_watching"] + ":")
-			print(media_dictionary["finished_watching"])
+			print(dictionary["media"]["finished_watching"])
 			print()
 
 			print(self.language_texts["time_that_you_spent_watching"] + ":")
-			print(media_dictionary["time_spent_watching"])
+			print(dictionary["media"]["time_spent_watching"])
 			print()
 
-		if "finished_watching" in media_dictionary:
+		if "finished_watching" in dictionary["media"]["states"] and dictionary["media"]["states"]["finished_watching"] == True:
 			print(self.large_bar)
 
 			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
