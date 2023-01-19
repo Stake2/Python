@@ -239,6 +239,9 @@ class Folder():
 			# Episodes.json file
 			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["episodes"] = self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Episodes.json"
 
+			# File list.txt file
+			self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["file_list"] = self.mega_folders["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "File list.txt"
+
 		# Mega Notepad/Effort/Networks/Productive Network folders
 		for item in ["Data", "Network Data", "Task History"]:
 			key = item.lower().replace(" ", "_")

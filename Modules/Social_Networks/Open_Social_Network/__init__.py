@@ -21,7 +21,7 @@ class Open_Social_Network(Social_Networks):
 
 		self.social_networks_list = False
 
-		if social_network_parameter != None and first_space == True:
+		if first_space == True:
 			print()
 
 		self.social_network_list = []
@@ -80,7 +80,6 @@ class Open_Social_Network(Social_Networks):
 			self.social_network_list = [self.social_network["Name"]]
 
 	def Unlock_Social_Network(self):
-		print()
 		Unblock(options = self.social_network_list)
 
 	def Define_Link_Type(self):

@@ -3,6 +3,10 @@
         "en": "file",
         "pt": "arquivo"
     },
+	"file_name": {
+        "en": "File name",
+        "pt": "Nome de arquivo"
+    },
     "folder": {
         "en": "folder",
         "pt": "file"

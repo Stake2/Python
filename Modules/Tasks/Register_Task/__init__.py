@@ -78,7 +78,7 @@ class Register_Task(Tasks):
 	def Register_Task_In_JSON(self):
 		self.task_dictionary["Times"] = {
 			"ISO8601": self.task_dictionary["time"]["%Y-%m-%d %H:%M:%S"],
-			"Language DateTime": {},
+			"Language DateTime": {}
 		}
 
 		for language in self.small_languages:

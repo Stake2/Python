@@ -1,0 +1,18 @@
+{
+	"show_text": {
+		"en": "Manage Media Info Database",
+		"pt": "Gerenciar Banco de Dados de Informações de Mídia"
+	},
+	"Add_New_Media": {
+		"en": "Add a new media to the Database",
+		"pt": "Adicionar uma nova mídia ao Banco de Dados"
+	},
+	"Open_Details_File_Of_Media": {
+		"en": "Open media details file",
+		"pt": "Abrir arquivo de detalhes de mídia"
+	},
+	"Fill_Episode_Titles_File": {
+		"en": "Fill episode titles file",
+		"pt": "Preencher arquivo de títulos de episódio"
+	}
+}

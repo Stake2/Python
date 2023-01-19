@@ -430,5 +430,9 @@
 	"the_user_information": {
 		"en": "user information",
 		"pt": "informações do usuário"
+	},
+	"string_numbers, type: format": {
+		"en": "0 1",
+		"pt": "1 0"
 	}
 }

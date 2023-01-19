@@ -266,5 +266,9 @@
 	"date_time_format": {
 		"en": "%H:%M %m/%d/%Y",
 		"pt": "%H:%M %d/%m/%Y"
+	},
+	"times, title()": {
+		"en": "Times",
+		"pt": "Tempos"
 	}
 }

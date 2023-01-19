@@ -123,14 +123,14 @@ class Tasks(object):
 		for task_type in self.task_types["en"]:
 			# Create "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][task_type] = {
-				"root": self.folders["task_history"]["current_year"]["per_task_type"]["root"] + task_type + "/",
+				"root": self.folders["task_history"]["current_year"]["per_task_type"]["root"] + task_type + "/"
 			}
 
 			self.Folder.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"])
 
 			# Create "Files" folder on "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][task_type]["files"] = {
-				"root": self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"] + "Files/",
+				"root": self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"] + "Files/"
 			}
 
 			self.Folder.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["files"]["root"])
@@ -148,7 +148,7 @@ class Tasks(object):
 			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"])["lines"] == []:
 				self.tasks[task_type] = {
 					"Number": 0,
-					"Titles": {},
+					"Titles": {}
 				}
 
 				for language in self.small_languages:
@@ -157,7 +157,7 @@ class Tasks(object):
 				# Create times list key
 				self.tasks[task_type]["Times"] = {
 					"ISO8601": [],
-					"Language DateTime": {},
+					"Language DateTime": {}
 				}
 
 				for language in self.small_languages:

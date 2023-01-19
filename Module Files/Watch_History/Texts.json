@@ -122,6 +122,14 @@
 		"pt": "Tipo De Mídia Misturado",
 		"en": "Mixed Media Type"
 	},
+	"media_type_number": {
+		"en": "Media type number",
+		"pt": "Número de tipo de mídia"
+	},
+	"type, title()": {
+		"en": "Type",
+		"pt": "Tipo"
+	},
 	"media": {
 		"en": "media",
 		"pt": "mídia"
@@ -273,6 +281,10 @@
 			"feminine": "a"
 		}
 	},
+	"of, neutral": {
+		"en": "of",
+		"pt": "de"
+	},
 	"of": {
 		"en": "of",
 		"pt": {
@@ -285,6 +297,20 @@
 		"pt": {
 			"masculine": "do",
 			"feminine": "da"
+		}
+	},
+	"first": {
+		"en": "first",
+		"pt": {
+			"masculine": "primeiro",
+			"feminine": "primeira"
+		}
+	},
+	"last": {
+		"en": "last",
+		"pt": {
+			"masculine": "último",
+			"feminine": "última"
 		}
 	},
 	"the_first": {
@@ -461,6 +487,14 @@
 	"watching": {
 		"en": "watching",
 		"pt": "assistindo"
+	},
+	"watching, infinitive": {
+		"en": "watching",
+		"pt": "assistir"
+	},
+	"re_watching, infinitive": {
+		"en": "re-watching",
+		"pt": "re-assistir"
 	},
 	"completed": {
 		"en": "completed",
@@ -746,6 +780,18 @@
 	"type_or_paste_the_episode_title_in_{}": {
 		"pt": "Digite ou cole o título de episódio em {}",
 		"en": "Type or paste the episode title in {}"
+	},
+	"episode_title": {
+		"en": "Episode title",
+		"pt": "Título de episódio"
+	},
+	"episode_titles": {
+		"en": "Episode titles",
+		"pt": "Títulos de episódio"
+	},
+	"video_titles": {
+		"en": "Video titles",
+		"pt": "Títulos de vídeo"
 	},
 	"episode_titles_file_in_{}": {
 		"pt": "Arquivo de títulos de episódio em {}",
@@ -1182,6 +1228,10 @@
 		"pt": "este episódio {}",
 		"en": "this episode {}"
 	},
+	"this_{}_{}": {
+		"pt": "este {} {}",
+		"en": "this {} {}"
+	},
 	"of_the_{}": {
 		"pt": "da {}",
 		"en": "of the {}"
@@ -1264,17 +1314,9 @@
 		"pt": "Informações da mídia assistida",
 		"en": "Watched media info"
 	},
-	"this_is_{}_first_{}_that_you_watch_in_{}": {
-		"pt": "Essa é {} primeira {} que você assiste em {}",
-		"en": "This is {} first {} that you watch in {}"
-	},
-	"this_is_{}_first_{}_that_you_watch_in_{}, masculine": {
-		"pt": "Esse é {} primeiro {} que você assiste em {}",
-		"en": "This is {} first {} that you watch in {}"
-	},
-	"this_is_{}_first_{}_that_you_watch_in_{}, feminine": {
-		"pt": "Essa é {} primeira {} que você assiste em {}",
-		"en": "This is {} first {} that you watch in {}"
+	"{}_is_{}_{}_{}_that_you_watched_in_{}": {
+		"pt": "{} é {} {} {} que você assistiu em {}",
+		"en": "{} is {} {} {} that you watched in {}"
 	},
 	"when_i_finished_watching": {
 		"pt": "Quando terminei de assistir",
@@ -1288,9 +1330,9 @@
 		"pt": "Parabéns",
 		"en": "Congratulations"
 	},
-	"you_finished_watching_this_{}_of_{}": {
-		"pt": "Você terminou de assistir esta {} d{}",
-		"en": "You finished watching this {} of {}"
+	"you_finished_watching": {
+		"pt": "Você terminou de assistir",
+		"en": "You finished watching"
 	},
 	"next_{}_to_watch": {
 		"pt": "Próximo {} para assistir",

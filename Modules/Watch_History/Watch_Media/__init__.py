@@ -66,7 +66,8 @@ class Watch_Media(Watch_History):
 			"watch_dubbed": False,
 			"open_media": self.open_media,
 			"completed": False,
-			"first_watched_in_year": False,
+			"completed_item": False,
+			"first_episode_in_year": False,
 			"finished_watching": False
 		}
 
@@ -144,7 +145,8 @@ class Watch_Media(Watch_History):
 				self.media_dictionary["media"]["states"]["media_list"] = False
 
 			# Define current media item
-			title = self.media_dictionary["media"]["title"]
+			if self.media_dictionary["media"]["states"]["media_list"] == False:
+				title = self.media_dictionary["media"]["title"]
 
 			# Select video series from channel for video series media
 			if self.media_dictionary["media"]["states"]["video"] == True and self.media_dictionary["media"]["states"]["media_list"] == True:
@@ -160,25 +162,18 @@ class Watch_Media(Watch_History):
 				"titles": {},
 				"folders": {
 					"root": self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(title, restricted_characters = True) + "/",
-				}
+				},
+				"number": 0
 			}
 
 			if self.media_dictionary["media"]["states"]["media_list"] == False:
 				self.media_dictionary["media"]["item"]["folders"] = self.media_dictionary["media"]["folders"]
-
-			if self.media_dictionary["media"]["states"]["local"] == True:
-				self.media_dictionary["media"]["item"]["folders"]["media"] = self.media_dictionary["media"]["folders"]["media"]
-
-				if self.media_dictionary["media"]["states"]["media_list"] == True:
-					self.media_dictionary["media"]["item"]["folders"]["media"] += self.Sanitize(title, restricted_characters = True) + "/"
 
 			# Define media item variables
 			self.media_dictionary = self.Select_Media(self.media_dictionary, item = True)
 
 			# Define media type comments folder for media with media list
 			if self.media_dictionary["media"]["states"]["media_list"] == True:
-				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] += self.Sanitize(title, restricted_characters = True) + "/"
-
 				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.language_texts["comments, title()"] + ".json"
 				self.File.Create(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
 
@@ -189,6 +184,13 @@ class Watch_Media(Watch_History):
 
 				if self.File.Contents(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])["lines"] == []:
 					self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.Language.Python_To_JSON(dict_), "w")
+
+				i = 0
+				for item in self.media_dictionary["media"]["items"]["list"]:
+					if self.media_dictionary["media"]["item"]["title"] == item:
+						self.media_dictionary["media"]["item"]["number"] = i
+
+					i += 1
 
 			# Define media item folders
 			for item in ["Comments", "Titles"]:
@@ -277,13 +279,6 @@ class Watch_Media(Watch_History):
 		if self.media_dictionary["media"]["states"]["series_media"] == False:
 			# Define media dictionary with titles and folder
 			self.media_dictionary["media"]["item"] = self.media_dictionary["media"]
-
-		dictionary = self.media_dictionary["media"].copy()
-		dictionary.pop("select")
-		dictionary.pop("list")
-
-		# Write dictionary into media "Information.json" file
-		self.File.Edit(self.media_dictionary["media"]["folders"]["information"], self.Language.Python_To_JSON(dictionary), "w")
 
 	def Define_Episode_Variables(self):
 		# Definition of episode to watch if the media is not series media
@@ -489,10 +484,7 @@ class Watch_Media(Watch_History):
 				if text in self.media_dictionary["media"]["details"]:
 					separators[item + "_separator"] = self.media_dictionary["media"]["details"][text]
 
-			title = self.media_dictionary["media"]["titles"]["original"]
-
-			if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
-				title = self.media_dictionary["media"]["titles"]["romanized"]
+			title = self.Get_Media_Title(self.media_dictionary)
 
 			self.media_dictionary["media"]["episode"].update({
 				"with_title_default": {}
@@ -528,22 +520,10 @@ class Watch_Media(Watch_History):
 				# Define episode with item and episode with title and item texts per language
 				for language in self.small_languages:
 					# Define media title as the original
-					media_title = self.media_dictionary["media"]["titles"]["original"]
-
-					# Define media title as the romanized one for Animes media
-					if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
-						media_title = self.media_dictionary["media"]["titles"]["romanized"]
-
-					# If a language media title exists, define it as the local media title
-					if language in self.media_dictionary["media"]["item"]["titles"]:
-						media_title = self.media_dictionary["media"]["titles"][language]
+					media_title = self.Get_Media_Title(self.media_dictionary)
 
 					# Define the media item title as the original one
-					item_title = self.media_dictionary["media"]["item"]["title"]
-
-					# If a language item title exists, define it as the local item title
-					if language in self.media_dictionary["media"]["item"]["titles"]:
-						item_title = self.media_dictionary["media"]["item"]["titles"][language]
+					item_title = self.Get_Media_Title(self.media_dictionary, item = True)
 
 					# Define the episode with item as the language media item + the episode separator and language episode title
 					self.media_dictionary["media"]["episode"]["with_item"][language] = item_title + separators["episode"] + self.media_dictionary["media"]["episode"]["titles"][language]
@@ -648,16 +628,34 @@ class Watch_Media(Watch_History):
 
 		dict_ = self.media_dictionary["media"]["texts"].copy()
 
-		for item in ["the", "this"]:
+		for item in ["the", "this", "of"]:
 			for key in dict_:
 				if key != "genders":
-					self.media_dictionary["media"]["texts"][item + "_" + key] = self.media_dictionary["media_type"]["genders"][item] + " " + self.media_dictionary["media"]["texts"][key]
+					if self.media_dictionary["media"]["texts"][key] != self.language_texts["season"]:
+						item_text = self.media_dictionary["media_type"]["genders"][item]
+
+					if self.media_dictionary["media"]["texts"][key] == self.language_texts["season"]:
+						for gender_key in dict_["genders"]:
+
+							gender = dict_["genders"][gender_key]
+
+							if item == gender_key:
+								item_text = self.media_types["genders"]["feminine"][gender_key]
+
+					self.media_dictionary["media"]["texts"][item + "_" + key] = item_text + " " + self.media_dictionary["media"]["texts"][key]
 
 		if self.media_dictionary["media"]["states"]["video"] == False and self.Today_Is_Christmas() == True:
 			self.media_dictionary["media"]["texts"]["unit"] = self.language_texts["christmas_special_{}"].format(self.media_dictionary["media"]["texts"]["unit"])
 
 		# Define the header text to be used on the "Show_Media_Information" root method
 		self.media_dictionary["header_text"] = self.language_texts["opening_{}_to_watch"].format(self.media_dictionary["media"]["texts"]["this_container"]) + ":"
+
+		dictionary = self.media_dictionary["media"].copy()
+		dictionary.pop("select")
+		dictionary.pop("list")
+
+		# Write dictionary into media "Information.json" file
+		self.File.Edit(self.media_dictionary["media"]["folders"]["information"], self.Language.Python_To_JSON(dictionary), "w")
 
 	def Define_Episode_Unit(self):
 		# Remote media episode link definition
@@ -734,7 +732,7 @@ class Watch_Media(Watch_History):
 
 			if self.media_dictionary["media"]["states"]["local"] == True:
 				import subprocess
-				subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
+				#subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
 
 	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
 	def Create_Discord_Status(self):

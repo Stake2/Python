@@ -1,10 +1,10 @@
-# Create_New_Media_Info_Entry.py
+# Add_New_Media.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 from Watch_History.Media_Info.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
 
-class Create_New_Media_Info_Entry(Watch_History):
+class Add_New_Media(Watch_History):
 	def __init__(self, run_as_module = False):
 		super().__init__()
 

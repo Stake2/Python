@@ -273,17 +273,25 @@ class Date():
 					if language not in date["difference_strings"]:
 						date["difference_strings"][language] = ""
 
-					if attribute != texts["plural_date_attributes, type: list"]["en"][0]:
+					if attribute != "years":
 						date["difference_strings"][language] += ", "
 
-					date["difference_strings"][language] += str(date["difference"][attribute])
+					if attribute == "months" and date["difference"][attribute] != 12:
+						date["difference_strings"][language] += str(date["difference"][attribute])
+
+					else:
+						date["difference_strings"][language] += str(date["difference"][attribute])
 
 					list_ = texts["date_attributes, type: list"][language]
 
 					if date["difference"][attribute] > 1:
 						list_ = texts["plural_date_attributes, type: list"][language]
 
-					date["difference_strings"][language] += " " + list_[i]
+					if attribute == "months" and date["difference"][attribute] != 12:
+						date["difference_strings"][language] += " " + list_[i]
+
+					else:
+						date["difference_strings"][language] += " " + list_[i]
 
 			i += 1
 
