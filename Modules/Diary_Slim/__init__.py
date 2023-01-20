@@ -6,6 +6,7 @@ from Diary_Slim.Write_On_Diary_Slim import Write_On_Diary_Slim as Write_On_Diary
 from Language import Language as Language
 from Input import Input as Input
 from Folder import Folder as Folder
+from JSON import JSON as JSON
 
 class Run():
 	def __init__(self):
@@ -17,11 +18,12 @@ class Run():
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
-		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
 		self.classes = [
 			Create_New_Diary_Slim,

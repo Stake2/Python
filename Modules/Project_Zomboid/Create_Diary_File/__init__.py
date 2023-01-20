@@ -6,7 +6,7 @@ class Create_Diary_File(Project_Zomboid):
 	def __init__(self):
 		super().__init__()
 
-		self.predefined_values = self.Language.JSON_To_Python(self.predefined_values_file)
+		self.predefined_values = self.JSON.To_Python(self.predefined_values_file)
 
 		self.Select_City()
 		self.Select_Character()

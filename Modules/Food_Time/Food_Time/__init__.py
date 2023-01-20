@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 class Food_Time():
@@ -41,6 +42,7 @@ class Food_Time():
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -83,7 +85,7 @@ class Food_Time():
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -92,7 +94,7 @@ class Food_Time():
 
 	def Define_Lists_And_Dictionaries(self):
 		# Read Times.json file
-		self.times = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["times"])
+		self.times = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["times"])
 
 		# Iterate through time types
 		for time_type in self.times["types"]:
@@ -145,7 +147,7 @@ class Food_Time():
 			self.times[time_type]["date"] = str(self.times[time_type]["date"])
 
 		# Write the new time type dictionaries with the stringfied datetimes
-		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["times"], self.Language.Python_To_JSON(self.times), "w")
+		self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["times"], self.times)
 
 	def Set_Timer(self):
 		# Define website timer to countdown to "will_be_hungry" time

@@ -5,6 +5,7 @@ from Food_Time.Food_Time import Food_Time as Food_Time
 from Language import Language as Language
 from Input import Input as Input
 from Folder import Folder as Folder
+from JSON import JSON as JSON
 
 class Run(Food_Time):
 	def __init__(self, run = True, register_time = True):
@@ -16,11 +17,12 @@ class Run(Food_Time):
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
-		self.descriptions = self.Language.JSON_To_Python(self.descriptions_file)
+		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
 		self.language_texts = self.Language.Item(self.descriptions)
 

@@ -84,7 +84,7 @@ class Update_Websites(Code):
 		]
 
 		self.websites = {
-			"list": self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["websites"]),
+			"list": self.JSON.To_Python(self.mega_folders["php"]["json"]["websites"]),
 			"update": {},
 		}
 
@@ -94,7 +94,7 @@ class Update_Websites(Code):
 
 		self.websites["general"] = self.websites["en"]
 
-		self.websites["url"] = self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["url"])
+		self.websites["url"] = self.JSON.To_Python(self.mega_folders["php"]["json"]["url"])
 
 	def Select_Website(self):
 		self.websites["numbers"] = []
@@ -179,7 +179,7 @@ class Update_Websites(Code):
 		while dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
 			print()
 			print(self.Language.language_texts["list, title()"] + ":")
-			print(self.Language.Python_To_JSON(websites["select_list"]))
+			print(self.JSON.From_Python(websites["select_list"]))
 
 			# Select website from the list and return its number
 			dictionary = self.Input.Select(websites["en"], language_options = websites[self.user_language], show_text = self.show_text, select_text = self.select_text)

@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 class GamePlayer(object):
@@ -33,6 +34,7 @@ class GamePlayer(object):
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -78,7 +80,7 @@ class GamePlayer(object):
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -228,7 +230,7 @@ class GamePlayer(object):
 			self.media_type_folders_folder = self.folders["play_history"]["played"]["per_media_type"]["folders"] + game_category + "/"
 			self.Folder.Create(self.media_type_folders_folder)
 
-		self.game_names = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["game_names"])
+		self.game_names = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["game_names"])
 
 	def Create_Games_List(self):
 		self.has_multiple_game_folders = False
@@ -246,7 +248,7 @@ class GamePlayer(object):
 			"files": {},
 		}
 
-		self.games["Folder names"] = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["folder_names"])
+		self.games["Folder names"] = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["folder_names"])
 
 		if len(self.game_folder_text) != 0:
 			for folder in self.game_folder_text:

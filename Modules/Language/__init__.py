@@ -2,6 +2,8 @@
 
 from Global_Switches import Global_Switches as Global_Switches
 
+from JSON import JSON as JSON
+
 import os
 import locale
 import re
@@ -26,6 +28,8 @@ class Language():
 
 		if parameter_switches != None:
 			self.global_switches.update(parameter_switches)
+
+		self.JSON = JSON(self.global_switches)
 
 		self.Define_Lists_And_Dictionaries()
 		self.Define_Folders()
@@ -66,9 +70,6 @@ class Language():
 	def Define_Folders(self):
 		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
-		if platform.release() == "10":
-			self.hard_drive_letter = "D:/"
-
 		self.apps_folder = self.hard_drive_letter + "Apps/"
 		self.app_text_files_folder = self.apps_folder + "Module Files/"
 
@@ -94,7 +95,7 @@ class Language():
 		self.Create(self.languages_file)
 
 	def Define_Languages(self):
-		self.languages = self.JSON_To_Python(self.languages_file)
+		self.languages = self.JSON.To_Python(self.languages_file)
 
 	def Get_System_Information(self):
 		self.system_information = {}
@@ -484,19 +485,6 @@ class Language():
 		self.user_language = self.app_settings["language"]
 		self.full_user_language = self.languages["full"][self.user_language]
 
-	def Python_To_JSON(self, item):
-		return json.dumps(item, indent = 4, ensure_ascii = False)
-
-	def JSON_To_Python(self, file):
-		file = self.Sanitize(file)
-
-		dictionary = json.load(open(file, encoding = "utf8"))
-
-		return dictionary
-
-	def Show_JSON(self, json):
-		print(self.Python_To_JSON(json))
-
 	def Item(self, texts, user_language = None):
 		if user_language == None:
 			user_language = self.user_language
@@ -721,7 +709,7 @@ class Language():
 		return text.split(separator)[language_number]
 
 	def Define_Texts(self):
-		self.texts = self.JSON_To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.texts_file)
 
 	def Define_Language_Texts(self):
 		self.texts = self.Title(self.texts)
@@ -739,7 +727,7 @@ class Language():
 
 	def Read_Settings_File(self):
 		if os.path.isfile(self.settings_file) == True:
-			settings = self.JSON_To_Python(self.settings_file)
+			settings = self.JSON.To_Python(self.settings_file)
 
 			for setting_name in self.setting_names:
 				possible_setting_names = self.setting_names[setting_name]["list"]

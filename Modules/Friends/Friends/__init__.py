@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
@@ -65,6 +66,7 @@ class Friends(object):
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -110,7 +112,7 @@ class Friends(object):
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -181,7 +183,7 @@ class Friends(object):
 				self.file_names[key].append(value)
 
 		# Add information items list to texts dictionary
-		self.texts["information_items, type: list"] = self.Language.JSON_To_Python(self.information_items_file)
+		self.texts["information_items, type: list"] = self.JSON.To_Python(self.information_items_file)
 
 		dict_ = {}
 
@@ -201,7 +203,7 @@ class Friends(object):
 		self.texts.update(dict_)
 
 		# Add information items to texts JSON file
-		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], self.Language.Python_To_JSON(self.texts), "w")
+		self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], self.texts)
 
 		self.exact_match_information_items = [
 			self.texts["name"]["en"],
@@ -419,7 +421,7 @@ class Friends(object):
 			self.File.Edit(information_item_file, text_to_write, "w")
 
 		# Edit Information.json file to add JSON dictionary
-		text_to_write = self.Language.Python_To_JSON(self.information)
+		text_to_write = self.JSON.From_Python(self.information)
 		self.File.Edit(self.information_file, text_to_write, "w")
 
 		self.current_year_friends_number = self.year_friends_numbers[str(self.date["year"])]

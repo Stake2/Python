@@ -22,7 +22,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.date = self.Date.Now()
 
 		# Get slim texts
-		self.slim_texts = self.Language.JSON_To_Python(self.slim_texts_file)
+		self.slim_texts = self.JSON.To_Python(self.slim_texts_file)
 
 		# Get today task done text using weekday
 		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["weekday"]]
@@ -232,7 +232,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			if self.global_switches["verbose"] == True:
 				self.task_dictionary["time"] = str(self.task_dictionary["time"])
 
-				print(self.Language.Python_To_JSON(self.task_dictionary))
+				print(self.JSON.From_Python(self.task_dictionary))
 
 			self.File.Delete(self.backup_file)
 

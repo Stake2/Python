@@ -1463,5 +1463,17 @@
 	"information, title()": {
 		"en": "Information",
 		"pt": "Informação"
+	},
+	"productor, title()": {
+		"en": "Productor",
+		"pt": "Produtor"
+	},
+	"distributor, title()": {
+		"en": "distributor",
+		"pt": "Distribuidor"
+	},
+	"director, title()": {
+		"en": "Director",
+		"pt": "Diretor"
 	}
 }

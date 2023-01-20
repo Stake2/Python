@@ -4,6 +4,7 @@ from Global_Switches import Global_Switches as Global_Switches
 
 from Language import Language as Language
 from File import File as File
+from JSON import JSON as JSON
 
 import re
 
@@ -17,6 +18,7 @@ class Input():
 
 		self.Language = Language(self.global_switches)
 		self.File = File(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 
 		self.Define_Folders()
 		self.Define_Texts()
@@ -39,7 +41,7 @@ class Input():
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.texts_file)
 
 		self.language_texts = self.Language.Item(self.texts)
 

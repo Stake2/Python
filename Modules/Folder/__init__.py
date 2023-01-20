@@ -5,6 +5,7 @@ from Global_Switches import Global_Switches as Global_Switches
 from Language import Language as Language
 from Date import Date as Date
 from File import File as File
+from JSON import JSON as JSON
 
 import os
 import platform
@@ -37,6 +38,7 @@ class Folder():
 		self.Language = Language(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.File = File(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
 		self.date = self.Date.date
@@ -352,7 +354,7 @@ class Folder():
 		self.mega_folders["websites"]["images"]["story_covers"] = self.mega_folders["websites"]["images"]["root"] + "Story Covers/"
 
 		# Get website subdomain
-		self.website = self.Language.JSON_To_Python(self.mega_folders["websites"]["website"])
+		self.website = self.JSON.To_Python(self.mega_folders["websites"]["website"])
 
 		# Create links dictionary with Stake2 Website link
 		self.links = {
@@ -371,7 +373,7 @@ class Folder():
 		self.folders["notepad"] = self.notepad_folders
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.texts_file)
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -399,7 +401,7 @@ class Folder():
 			import inspect
 
 			print()
-			print(inspect.stack()[1][3] + "():")
+			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 

@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 class Years(object):
@@ -37,6 +38,7 @@ class Years(object):
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -85,7 +87,7 @@ class Years(object):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.texts = self.Language.Mix(self.texts, "years, title()", ["en", "pt"], item = True)
 		self.texts = self.Language.Mix(self.texts, "new_year", ["en", "pt"], item = True)
@@ -164,7 +166,7 @@ class Years(object):
 		self.current_year = self.years[str(self.date["year"])]
 
 		# Write Years dictionary converted to JSON on "Years.json" file
-		text = self.Language.Python_To_JSON(self.years)
+		text = self.JSON.From_Python(self.years)
 		self.File.Edit(self.years_file, text, "w")
 
 	def Select_Year(self, years = None, select_text = None):

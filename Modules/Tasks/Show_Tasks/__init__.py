@@ -6,7 +6,7 @@ class Show_Tasks(Tasks):
 	def __init__(self):
 		super().__init__()
 
-		self.tasks = self.Language.Python_To_JSON(self.tasks)
+		self.tasks = self.JSON.From_Python(self.tasks)
 		self.tasks = self.tasks.replace("{", "[")
 		self.tasks = self.tasks.replace("}", "]")
 		self.tasks = self.tasks.replace("],", "]\n")

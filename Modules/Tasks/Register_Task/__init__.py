@@ -116,7 +116,7 @@ class Register_Task(Tasks):
 		self.tasks["Number. Task Type (Time)"].append(self.task_dictionary["Number. Task Type (Time)"])
 
 		# Update "Tasks.json" file to add new Tasks JSON dictionary
-		self.File.Edit(self.folders["task_history"]["current_year"]["tasks"], self.Language.Python_To_JSON(self.tasks), "w")
+		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.tasks)
 
 		# Add [Number. Task Type (Time)] to "Task list.txt" file
 		self.File.Edit(self.folders["task_history"]["current_year"]["task_list"], self.task_dictionary["Number. Task Type (Time)"], "a")
@@ -139,7 +139,7 @@ class Register_Task(Tasks):
 		self.tasks[self.task_type]["Times"]["ISO8601"].append(self.task_dictionary["Times"]["ISO8601"])
 
 		# Update task type "Tasks.json" file to add new task type Tasks JSON dictionary
-		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["tasks"], self.Language.Python_To_JSON(self.tasks[self.task_type]), "w")
+		self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["tasks"], self.tasks[self.task_type])
 
 		# Add [Number. Task Type (Time)] to task type "Task list.txt" file
 		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][self.task_type]["task_list"], self.task_dictionary["Number. Task Type (Time)"], "a")

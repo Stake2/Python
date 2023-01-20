@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
@@ -38,6 +39,7 @@ class SproutGigs():
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -83,7 +85,7 @@ class SproutGigs():
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -143,7 +145,7 @@ class SproutGigs():
 			self.File.Create(data_file)
 
 			# Data Dictionary
-			data = self.Language.JSON_To_Python(data_file)
+			data = self.JSON.To_Python(data_file)
 
 			# Add category data to category dictionary
 			self.categories[category]["data"] = {}

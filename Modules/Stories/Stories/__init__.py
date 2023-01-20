@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
@@ -40,6 +41,7 @@ class Stories(object):
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -86,7 +88,7 @@ class Stories(object):
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -304,7 +306,7 @@ class Stories(object):
 					function = self.File.Contents
 
 					if ".json" in item:
-						function = self.Language.JSON_To_Python
+						function = self.JSON.To_Python
 
 					information = function(item)
 
@@ -379,9 +381,9 @@ class Stories(object):
 			file = self.stories[story]["folders"]["Information"]["Information"]
 
 			# Add chapter number to "Information.json" dictionary
-			text = self.Language.JSON_To_Python(file)
+			text = self.JSON.To_Python(file)
 			text["Chapter number"] = self.stories[story]["Information"]["Chapter number"]
-			text = self.Language.Python_To_JSON(text)
+			text = self.JSON.From_Python(text)
 
 			self.File.Edit(file, text, "w")
 
@@ -425,11 +427,11 @@ class Stories(object):
 				dict_[item]["last"] = ""
 
 			if self.File.Contents(self.stories[story]["folders"]["Information"]["Writing"]["Time"])["lines"] == []:
-				self.File.Edit(self.stories[story]["folders"]["Information"]["Writing"]["Time"], self.Language.Python_To_JSON(dict_), "w")
+				self.JSON.Edit(self.stories[story]["folders"]["Information"]["Writing"]["Time"], dict_)
 
 			# Read writing time file
 			self.stories[story]["Information"]["Writing"] = {}
-			self.stories[story]["Information"]["Writing"]["Time"] = self.Language.JSON_To_Python(self.stories[story]["folders"]["Information"]["Writing"]["Time"])
+			self.stories[story]["Information"]["Writing"]["Time"] = self.JSON.To_Python(self.stories[story]["folders"]["Information"]["Writing"]["Time"])
 
 			# Add Website link
 			self.stories[story]["Information"]["Website"] = {}
@@ -466,7 +468,7 @@ class Stories(object):
 			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items()))
 
 		# Write stories dictionary to Stories.json
-		self.File.Edit(self.stories["folders"]["Database"]["Stories"], self.Language.Python_To_JSON(self.stories), "w")
+		self.JSON.Edit(self.stories["folders"]["Database"]["Stories"], self.stories)
 
 	def Select_Story(self, select_text_parameter = None):
 		show_text = self.language_texts["stories, title()"]

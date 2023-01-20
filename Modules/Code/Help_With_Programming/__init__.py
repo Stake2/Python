@@ -135,7 +135,7 @@ class Help_With_Programming(Code):
 				self.mode_settings_read = self.File.Dictionary(self.mode_settings_file, true_or_false = True)
 
 			# Mode names
-			self.mode["Language names"] = self.Language.JSON_To_Python(mode_folder + "Data.json")
+			self.mode["Language names"] = self.JSON.To_Python(mode_folder + "Data.json")
 
 			self.language_mode_names[mode_name] = {}
 
@@ -243,7 +243,7 @@ class Help_With_Programming(Code):
 		self.data = {}
 
 		if self.File.Exist(self.data_file) == True:
-			self.data.update(self.Language.JSON_To_Python(self.data_file))
+			self.data.update(self.JSON.To_Python(self.data_file))
 
 		for key in self.data:
 			if self.data[key] == "True":
@@ -277,7 +277,7 @@ class Help_With_Programming(Code):
 		self.setting_files_file = self.item_data["Setting file"]["Folder"] + "Data.json"
 		self.File.Create(self.setting_files_file)
 
-		self.settings_files_data = self.Language.JSON_To_Python(self.setting_files_file)
+		self.settings_files_data = self.JSON.To_Python(self.setting_files_file)
 
 		if self.custom_options != None:
 			self.programming_mode = self.custom_options["Mode"]

@@ -3,6 +3,7 @@
 from Global_Switches import Global_Switches as Global_Switches
 
 from Language import Language as Language
+from JSON import JSON as JSON
 
 import pyperclip
 import webbrowser
@@ -18,6 +19,7 @@ class Text():
 		})
 
 		self.Language = Language({"verbose": False})
+		self.JSON = JSON(self.global_switches)
 
 		self.Define_Folders()
 		self.Define_Texts()
@@ -27,7 +29,7 @@ class Text():
 			import inspect
 
 			print()
-			print(inspect.stack()[1][3] + "():")
+			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 
@@ -49,7 +51,7 @@ class Text():
 		self.texts_file = self.module_text_files_folder + "Texts.json"
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.texts_file)
 
 		self.language_texts = self.Language.Item(self.texts)
 

@@ -193,6 +193,7 @@ class Register_Media(Watch_History):
 
 		# Add to [Number. Media Type (Time)] list
 		self.episodes["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"])
+		self.media_type_episodes[self.media_type]["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"])
 
 		# Add episode dictionary to episodes dictionary
 		media_titles = self.media_dictionary["media"]["titles"].copy()
@@ -238,19 +239,19 @@ class Register_Media(Watch_History):
 		self.media_type_episodes[self.media_type]["Dictionary"] = self.episodes["Dictionary"][key].copy()
 
 		# Get Comments dictionary from file
-		self.comments = self.Language.JSON_To_Python(self.folders["comments"]["comments"])
+		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# Get year comment number from "Comments.json" file
 		self.episodes["Comments"] = self.comments["Year numbers"][str(self.date["year"])]
 
 		# Update "Episodes.json" file
-		self.File.Edit(self.folders["watch_history"]["current_year"]["episodes"], self.Language.Python_To_JSON(self.episodes), "w")
+		self.JSON.Edit(self.folders["watch_history"]["current_year"]["episodes"], self.episodes)
 
 		# Get year media type comment number from "Comments.json" file
-		self.media_type_episodes["Comments"] = self.comments["Media type year numbers"][str(self.date["year"])][self.media_type]
+		self.media_type_episodes[self.media_type]["Comments"] = self.comments["Media type year numbers"][str(self.date["year"])][self.media_type]
 
 		# Update media type "Episodes.json" file
-		self.File.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["episodes"], self.Language.Python_To_JSON(self.media_type_episodes[self.media_type]), "w")
+		self.JSON.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["episodes"], self.media_type_episodes[self.media_type])
 
 		# Add to root and media type "File list.txt" file
 		self.File.Edit(self.folders["watch_history"]["current_year"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"], "a")
@@ -425,7 +426,7 @@ class Register_Media(Watch_History):
 			for language in self.small_languages:
 				folder = self.firsts_of_the_year_folders["type"][language]
 
-				file_name = self.media_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-")
+				file_name = self.media_dictionary["register"]["Number. Media Type (Time) Sanitized Languages"][language]
 
 				self.media_dictionary["first_episode_in_year_file"] = folder + file_name + ".txt"
 				self.File.Create(self.media_dictionary["first_episode_in_year_file"])
@@ -434,51 +435,49 @@ class Register_Media(Watch_History):
 
 	def Check_Media_Status(self):
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
-			# If the media has a media list
-			if self.media_dictionary["media"]["states"]["media_list"] == True:
-				# And the episode title is the last one
-				if self.media_dictionary["media"]["episode"]["title"] == self.media_dictionary["media"]["item"]["episodes"]["titles"][self.user_language][-1]:
-					# And the episode is not a video
-					if self.media_dictionary["media"]["states"]["video"] == False:
-						# If the media item is the last media item, define the media as completed
-						if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][-1]:
-							self.media_dictionary["media"]["states"]["completed"] = True
+			# If the media has a media list and the episode title is the last one
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["episode"]["title"] == self.media_dictionary["media"]["item"]["episodes"]["titles"][self.user_language][-1]:
+				# And the episode is not a video
+				if self.media_dictionary["media"]["states"]["video"] == False:
+					# If the media item is the last media item, define the media as completed
+					if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][-1]:
+						self.media_dictionary["media"]["states"]["completed"] = True
 
-						# If the media item is not the last media item (media is not completed), get next media item
-						if self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["items"]["list"][-1]:
-							title = self.media_dictionary["media"]["items"]["list"][self.media_dictionary["media"]["item"]["number"] + 1]
+					# If the media item is not the last media item (media is not completed), get next media item
+					if self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["items"]["list"][-1]:
+						title = self.media_dictionary["media"]["items"]["list"][self.media_dictionary["media"]["item"]["number"] + 1]
 
-							# Define next media item
-							self.media_dictionary["media"]["item"]["next"] = {
-								"title": title,
-								"sanitized": self.Sanitize(title, restricted_characters = True),
-								"titles": {},
-								"folders": {
-									"root": self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(title, restricted_characters = True) + "/",
-									"media": self.media_dictionary["media"]["folders"]["media"] + self.Sanitize(title, restricted_characters = True) + "/",
-									"media_type_comments": {
-										"root": self.media_dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(title, restricted_characters = True) + "/"
-									}
-								},
-								"number": self.media_dictionary["media"]["item"]["number"] + 1
-							}
+						# Define next media item
+						self.media_dictionary["media"]["item"]["next"] = {
+							"title": title,
+							"sanitized": self.Sanitize(title, restricted_characters = True),
+							"titles": {},
+							"folders": {
+								"root": self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(title, restricted_characters = True) + "/",
+								"media": self.media_dictionary["media"]["folders"]["media"] + self.Sanitize(title, restricted_characters = True) + "/",
+								"media_type_comments": {
+									"root": self.media_dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(title, restricted_characters = True) + "/"
+								}
+							},
+							"number": self.media_dictionary["media"]["item"]["number"] + 1
+						}
 
-							# Define local media dictionary to update it
-							dictionary = {
-								"texts": {
-									"select": "",
-								},
-								"media_type": self.media_dictionary["media_type"],
-								"media": self.media_dictionary["media"]["item"]["next"]
-							}
+						# Define local media dictionary to update it
+						dictionary = {
+							"texts": {
+								"select": "",
+							},
+							"media_type": self.media_dictionary["media_type"],
+							"media": self.media_dictionary["media"]["item"]["next"]
+						}
 
-							# Update the titles and folders of the next media item dictionary
-							self.media_dictionary["media"]["item"]["next"] = self.Select_Media(dictionary)["media"]
+						# Update the titles and folders of the next media item dictionary
+						self.media_dictionary["media"]["item"]["next"] = self.Select_Media(dictionary)["media"]
 
-							# Update current media item file
-							self.File.Edit(self.media_dictionary["media"]["items"]["folders"]["current"], self.media_dictionary["media"]["item"]["next"]["title"], "w")
+						# Update current media item file
+						self.File.Edit(self.media_dictionary["media"]["items"]["folders"]["current"], self.media_dictionary["media"]["item"]["next"]["title"], "w")
 
-					self.media_dictionary["media"]["states"]["completed_item"] = True
+				self.media_dictionary["media"]["states"]["completed_item"] = True
 
 			# If the media has no media list and the episode title is the last one, define the media as completed
 			if self.media_dictionary["media"]["states"]["media_list"] == False and self.media_dictionary["media"]["episode"]["title"] == self.media_dictionary["media"]["item"]["episodes"]["titles"][self.user_language][-1]:
@@ -571,7 +570,7 @@ class Register_Media(Watch_History):
 			# Update media type "Info.json" file
 
 			# Read JSON file
-			self.media_type = self.Language.JSON_To_Python(self.media_dictionary["media_type"]["folders"]["media_info"]["info"])
+			self.media_type = self.JSON.To_Python(self.media_dictionary["media_type"]["folders"]["media_info"]["info"])
 
 			media_title = self.Get_Media_Title(self.media_dictionary)
 
@@ -590,7 +589,7 @@ class Register_Media(Watch_History):
 				self.media_type["Status"][text] = sorted(self.media_type["Status"][text])
 
 			# Update media type json file
-			self.File.Edit(self.media_dictionary["media_type"]["folders"]["media_info"]["info"], self.Language.Python_To_JSON(self.media_type), "w")
+			self.JSON.Edit(self.media_dictionary["media_type"]["folders"]["media_info"]["info"], self.media_type)
 
 	def Post_On_Social_Networks(self):
 		self.social_networks = [

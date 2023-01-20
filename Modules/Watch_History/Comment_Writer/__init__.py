@@ -101,10 +101,10 @@ class Comment_Writer(Watch_History):
 		self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"])
 
 		# Read Comments.json file to get comments dictionary
-		self.comments = self.Language.JSON_To_Python(self.folders["comments"]["comments"])
+		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# Read selected media "Comments.json" file to get media comments dictionary
-		self.media_comments = self.Language.JSON_To_Python(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
+		self.media_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
 
 	def Write_Comment(self):
 		# Define comment as an empty string
@@ -167,17 +167,17 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
 			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
-		# Media type comment file
-		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
-
-		# Media folder comment file
-		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
-	
 		# Define comment time
 		self.media_dictionary["media"]["comment"]["time"] = self.Date.Now()
 
 		# Replace time text in comment with comment time
 		self.media_dictionary["media"]["comment"]["comment"] = self.media_dictionary["media"]["comment"]["comment"].replace("[Time]", self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language])
+
+		# Media type comment file
+		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
+
+		# Media folder comment file
+		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
 
 		# Add comment file name to file names list
 		self.media_comments["File names"].append(self.media_dictionary["media"]["comment"]["file_name"])
@@ -196,7 +196,7 @@ class Comment_Writer(Watch_History):
 			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["YouTube ID"] = self.media_dictionary["media"]["episode"]["youtube_id"]
 
 		# Update media type Comments.json file
-		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.Language.Python_To_JSON(self.media_comments), "w")
+		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_comments)
 
 		# --- #
 
@@ -215,4 +215,4 @@ class Comment_Writer(Watch_History):
 		self.comments["Media type year numbers"][str(self.date["year"])][self.media_dictionary["media_type"]["plural"]["en"]] += 1
 
 		# Update root Comments.json file
-		self.File.Edit(self.folders["comments"]["comments"], self.Language.Python_To_JSON(self.comments), "w")
+		self.JSON.Edit(self.folders["comments"]["comments"], self.comments)

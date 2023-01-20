@@ -3,6 +3,7 @@
 from Global_Switches import Global_Switches as Global_Switches
 
 from Language import Language as Language
+from JSON import JSON as JSON
 from Text import Text as Text
 
 import os
@@ -28,6 +29,7 @@ class Date():
 			self.global_switches.update(parameter_switches)
 
 		self.Language = Language(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.small_languages = self.Language.languages["small"]
@@ -81,7 +83,7 @@ class Date():
 		return item
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.texts_file)
 
 		self.language_texts = self.Language.Item(self.texts)
 

@@ -166,7 +166,7 @@ class Create_New_Module(Python):
 		# Descriptions
 		dictionary = {**{"show_text": self.module_descriptions}, **self.class_descriptions}
 
-		self.descriptions = self.Language.Python_To_JSON(dictionary)
+		self.descriptions = self.JSON.From_Python(dictionary)
 
 		self.File.Edit(self.descriptions_file, self.descriptions, "w")
 

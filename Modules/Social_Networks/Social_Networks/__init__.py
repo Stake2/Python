@@ -7,6 +7,7 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 class Social_Networks(object):
@@ -33,6 +34,7 @@ class Social_Networks(object):
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -78,7 +80,7 @@ class Social_Networks(object):
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -204,12 +206,12 @@ class Social_Networks(object):
 
 					# If file uses JSON format
 					if file_name == self.texts["information_items"]["en"]:
-						self.social_networks[social_network]["data"][file_name] = self.Language.JSON_To_Python(self.social_networks[social_network]["files"][file_name])
+						self.social_networks[social_network]["data"][file_name] = self.JSON.To_Python(self.social_networks[social_network]["files"][file_name])
 
 			# Add information items to root information items key
 			for key in self.social_networks[social_network]["data"]["Information items"]:
 				# If type of information items key is list, add to list
-				self.social_networks[social_network]["data"]["Information items"] = self.Language.JSON_To_Python(self.social_networks[social_network]["files"]["Information items"])
+				self.social_networks[social_network]["data"]["Information items"] = self.JSON.To_Python(self.social_networks[social_network]["files"]["Information items"])
 
 				for item in self.social_networks[social_network]["data"]["Information items"][key]:
 					if item not in self.social_networks["Information items"][key]:
@@ -279,7 +281,7 @@ class Social_Networks(object):
 		self.texts.update(dict_)
 
 		# Add information items to texts JSON file
-		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], self.Language.Python_To_JSON(self.texts), "w")
+		self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], self.texts)
 
 		# Update Social Networks links file
 		self.File.Edit(self.social_networks_links_file, self.Text.From_List(self.social_networks["Links"]), "w")

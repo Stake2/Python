@@ -382,7 +382,7 @@ class Post(Stories):
 		print(self.large_bar)
 
 		# Format Wattpad template
-		social_networks["Wattpad"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
+		social_networks["Wattpad"]["Card"] = self.JSON.To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
 
 		social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].format(self.story["title_underlined"], self.story["chapter_number_name"], self.story["chapter_number"], self.story["Information"]["Wattpad"]["Chapter link"], self.story["title_underlined"])
 
@@ -390,7 +390,7 @@ class Post(Stories):
 		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?chapter={}#".format(str(self.story["chapter_number"]))
 
 		# Format Twitter & Facebook template
-		social_networks["Twitter, Facebook"]["Card"] = self.Language.JSON_To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
+		social_networks["Twitter, Facebook"]["Card"] = self.JSON.To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
 
 		social_networks["Twitter, Facebook"]["Card"] = social_networks["Twitter, Facebook"]["Card"].format(self.story["Information"]["Website"]["Chapter link"], self.story["title_underlined"])
 

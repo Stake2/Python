@@ -126,7 +126,7 @@ class Create_New_Story(Stories):
 				text = self.stories[self.story_titles["en"]]["Information"][key]
 
 			if key in ["Titles", "Wattpad"]:
-				text = self.Language.Python_To_JSON(text)
+				text = self.JSON.From_Python(text)
 				file_name += ".json"
 
 			if key not in ["Chapter status", "Titles", "Wattpad"]:

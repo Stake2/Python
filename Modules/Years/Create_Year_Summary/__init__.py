@@ -104,11 +104,11 @@ class Create_Year_Summary(Years):
 		self.year_numbers["things_done_in_{year}"] = 0
 
 		# Tasks data
-		self.tasks = self.Language.JSON_To_Python(self.Tasks.folders["Task History"][str(self.date["year"])]["Tasks.json"])
+		self.tasks = self.JSON.To_Python(self.Tasks.folders["Task History"][str(self.date["year"])]["Tasks.json"])
 		self.task_times = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Times"])["lines"]
 
 		# Watch History data
-		self.watch_history_data = self.Language.JSON_To_Python(self.episodes_file)
+		self.watch_history_data = self.JSON.To_Python(self.episodes_file)
 
 		self.year_numbers["productive_things"] = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Number"])["lines"][0]
 		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
@@ -132,7 +132,7 @@ class Create_Year_Summary(Years):
 
 		self.year_data["detailed"]["watched_things"] = self.watch_history_data
 
-		self.plural_media_types = self.Language.JSON_To_Python(self.apps_folders["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
+		self.plural_media_types = self.JSON.To_Python(self.apps_folders["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
 
 		for key in self.year_data["detailed"]["watched_things"]:
 			if key in self.plural_media_types["en"]:

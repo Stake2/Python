@@ -191,15 +191,8 @@ class Add_New_Media(Watch_History):
 		print()
 		print(self.language_texts["please_type_the_movie_details"] + ":")
 
-		for self.parameter_name in self.movie_details_parameters:
-			texts = {
-				"en": 0,
-				"pt": 1,
-			}
-
-			self.select_text = self.parameter_name.split(" - ")[self.Language.Item(texts)]
-
-			self.movie_details[self.parameter_name] = self.Input.Type(self.select_text, accept_enter = False, next_line = True)
+		for parameter in self.movie_details_parameters:
+			self.movie_details[parameter] = self.Input.Type(parameter, accept_enter = False, next_line = True)
 
 		print()
 		print(self.language_texts["you_finished_typing_the_movie_details"] + ".")

@@ -3,5 +3,6 @@ File
 Folder
 Global_Switches
 Input
+JSON
 Language
 Text

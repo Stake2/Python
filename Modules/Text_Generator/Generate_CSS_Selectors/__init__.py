@@ -7,13 +7,14 @@ from File import File as File
 from Folder import Folder as Folder
 from Date import Date as Date
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 class Generate_CSS_Selectors():
 	def __init__(self):
 		self.Define_Basic_Variables()
 
-		self.json = self.Language.JSON_To_Python(self.mega_folders["php"]["json"]["colors"])
+		self.json = self.JSON.To_Python(self.mega_folders["php"]["json"]["colors"])
 		self.colors = self.json["names"]
 		self.hex = self.json["hex"]
 
@@ -55,6 +56,7 @@ class Generate_CSS_Selectors():
 		self.Folder = Folder(self.global_switches)
 		self.Date = Date(self.global_switches)
 		self.Input = Input(self.global_switches)
+		self.JSON = JSON(self.global_switches)
 		self.Text = Text(self.global_switches)
 
 		self.app_settings = self.Language.app_settings

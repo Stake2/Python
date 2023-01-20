@@ -303,7 +303,7 @@ class Write(Stories):
 
 		# Update writing time JSON file
 		file = self.story["folders"]["Information"]["Writing"]["Time"]
-		self.File.Edit(file, self.Language.Python_To_JSON(dict_), "w")
+		self.JSON.Edit(file, dict_)
 
 		# Make time difference from past first and last writing times
 		if self.chapter["finished_writing"] == True:	

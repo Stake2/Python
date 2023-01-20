@@ -162,9 +162,9 @@ class Create_Friend_File(Friends):
 
 		if self.global_switches["verbose"] == True:
 			print()
-			print("Folders: " + self.Language.Python_To_JSON(self.friend_folders[self.friend]))
+			print("Folders: " + self.JSON.From_Python(self.friend_folders[self.friend]))
 			print()
-			print("Files: " + self.Language.Python_To_JSON(self.friend_files[self.friend]))
+			print("Files: " + self.JSON.From_Python(self.friend_files[self.friend]))
 
 	def Show_Information(self):
 		print()

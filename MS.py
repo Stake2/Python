@@ -6,6 +6,7 @@ from Language import Language as Language
 from File import File as File
 from Folder import Folder as Folder
 from Input import Input as Input
+from JSON import JSON as JSON
 from Text import Text as Text
 
 import importlib
@@ -48,6 +49,7 @@ class Main():
 		self.File = File(self.reset_switches)
 		self.Folder = Folder(self.reset_switches)
 		self.Input = Input(self.reset_switches)
+		self.JSON = JSON(self.reset_switches)
 		self.Text = Text(self.reset_switches)
 
 		self.app_settings = self.Language.app_settings
@@ -92,7 +94,7 @@ class Main():
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.Language.JSON_To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -305,11 +307,11 @@ class Main():
 			self.File = File(self.reset_switches)
 
 			# Edit Switches.txt file
-			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.arguments_dictionary), "w")
+			self.File.Edit(self.switches_file, self.JSON.From_Python(self.arguments_dictionary), "w")
 
 		# Reset Switches file if no Switch argument is present
 		if self.has_switches == False:	
-			self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_switches), "w")
+			self.File.Edit(self.switches_file, self.JSON.From_Python(self.reset_switches), "w")
 
 	def Run_Module(self, module):
 		if module["name"] != "Module_Selector":
@@ -328,7 +330,7 @@ class Main():
 		# Update switches file with the state of the switches before execution of modules
 		self.File = File(self.reset_switches)
 
-		self.File.Edit(self.switches_file, self.Language.Python_To_JSON(self.reset_switches), "w")
+		self.File.Edit(self.switches_file, self.JSON.From_Python(self.reset_switches), "w")
 
 if __name__ == "__main__":
 	Main()
