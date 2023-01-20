@@ -168,5 +168,9 @@
     "read, title()": {
         "pt": "Ler",
         "en": "Read"
-    }
+    },
+	"opening, title()": {
+		"en": "Opening",
+		"pt": "Abrindo"
+	}
 }

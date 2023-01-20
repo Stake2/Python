@@ -175,7 +175,7 @@ class Register_Media(Watch_History):
 		youtube_id = ""
 
 		if self.media_dictionary["media"]["states"]["video"] == True:
-			youtube_id = self.media_dictionary["episode"]["youtube_id"]
+			youtube_id = self.media_dictionary["media"]["episode"]["youtube_id"]
 
 		# Add empty string or YouTube ID to "YouTube IDs" key
 		self.episodes["YouTube IDs"].append(youtube_id)
@@ -236,7 +236,7 @@ class Register_Media(Watch_History):
 			self.episodes["Dictionary"][key]["YouTube ID"] = youtube_id
 
 		# Add episode dictionary to media type episodes dictionary
-		self.media_type_episodes[self.media_type]["Dictionary"] = self.episodes["Dictionary"][key].copy()
+		self.media_type_episodes[self.media_type]["Dictionary"][key] = self.episodes["Dictionary"][key].copy()
 
 		# Get Comments dictionary from file
 		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
@@ -362,16 +362,28 @@ class Register_Media(Watch_History):
 				items.append(item_titles + "\n")
 
 			# Add episode titles to episode titles list
-			titles = ""
+			episode_titles = ""
 
 			if language_parameter != "general":
-				titles = self.media_dictionary["media"]["episode"]["titles"][language] + "\n"
+				episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
+
+				if episode_title == "":
+					episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
+
+				episode_titles = episode_title + "\n"
 
 			if language_parameter == "general":
-				for language in self.small_languages:
-					titles += self.media_dictionary["media"]["episode"]["titles"][language] + "\n"
+				line_break = True
 
-			items.append(titles)
+				for language in self.small_languages:
+					episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
+
+					if episode_title == "":
+						episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
+
+					episode_titles += episode_title + "\n"
+
+			items.append(episode_titles)
 
 		times = ""
 

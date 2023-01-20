@@ -1,0 +1,33 @@
+{
+    "edit": {
+        "en": "edit",
+        "pt": "editar"
+    },
+    "edited": {
+        "en": "edited",
+        "pt": {
+            "masculine": "editado",
+            "feminine": "editada"
+        }
+    },
+    "text": {
+        "en": "text",
+        "pt": "texto"
+    },
+    "this_file_does_not_exists": {
+        "en": "This file does not exists",
+        "pt": "Este arquivo não existe"
+    },
+    "it_was_not_possible_to_{}_the_file_permission_not_granted": {
+        "en": "It was not possible to {} the file, permission not granted",
+        "pt": "Não foi possível {} o arquivo, permissão não concedida"
+    },
+    "file, title()": {
+        "pt": "Arquivo",
+        "en": "File"
+    },
+    "text, title()": {
+        "pt": "Texto",
+        "en": "Text"
+    }
+}

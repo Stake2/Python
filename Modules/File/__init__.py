@@ -17,6 +17,7 @@ class File():
 		self.global_switches = Global_Switches().global_switches
 
 		self.global_switches.update({
+			"testing": False,
 			"file": {
 				"create": True,
 				"delete": True,
@@ -363,10 +364,14 @@ class File():
 
 		return dictionary
 
-	def Open(self, file):
-		file = self.Sanitize(file)
+	def Open(self, item):
+		if "https" not in item:
+			item = self.Sanitize(item)
 
-		os.startfile(file)
+		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
+
+		if self.global_switches["testing"] == False:
+			os.startfile(item)
 
 	def Close(self, program):
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):

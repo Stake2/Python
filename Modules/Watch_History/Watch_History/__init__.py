@@ -803,7 +803,7 @@ class Watch_History(object):
 				key = "with_title_and_item"
 
 			# Show only media title with episode if the media has no media list
-			if dictionary["media"]["states"]["media_list"] == False and dictionary["media"]["states"]["video"] == False:
+			if dictionary["media"]["states"]["media_list"] == False or dictionary["media"]["states"]["video"] == True:
 				key = "with_title"
 
 			if dictionary["media"]["states"]["video"] == True:

@@ -383,9 +383,8 @@ class Stories(object):
 			# Add chapter number to "Information.json" dictionary
 			text = self.JSON.To_Python(file)
 			text["Chapter number"] = self.stories[story]["Information"]["Chapter number"]
-			text = self.JSON.From_Python(text)
 
-			self.File.Edit(file, text, "w")
+			self.JSON.Edit(file, text)
 
 			# Add language synopsis from synopsis folder inside Information folder
 			self.stories[story]["folders"]["Information"]["Synopsis"] = {

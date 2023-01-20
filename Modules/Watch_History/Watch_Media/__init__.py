@@ -6,7 +6,6 @@ from Watch_History.Register_Media import Register_Media as Register_Media
 from Watch_History.Comment_Writer import Comment_Writer as Comment_Writer
 
 import re
-from urllib.parse import urlparse, parse_qs
 
 # A class to Watch media that has the "Watching" or "Re-Watching" Watching Status
 class Watch_Media(Watch_History):
@@ -97,7 +96,7 @@ class Watch_Media(Watch_History):
 			"separator": ""
 		}
 
-		if self.language_texts["remote_origin, title()"] in self.media_dictionary["media"]["details"]:
+		if self.media_dictionary["media"]["states"]["remote"] == True or self.language_texts["remote_origin, title()"] in self.media_dictionary["media"]["details"]:
 			self.media_dictionary["media"]["episode"]["remote"] = {
 				"title": "",
 				"link": "",
@@ -171,7 +170,7 @@ class Watch_Media(Watch_History):
 				self.media_dictionary = self.Select_Media(self.media_dictionary, item = True)
 
 				# Define media type comments folder for media with media list
-				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.language_texts["comments, title()"] + ".json"
+				self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
 				self.File.Create(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
 
 				dict_ = {
@@ -242,6 +241,9 @@ class Watch_Media(Watch_History):
 
 				if self.language_texts["episode_number_name"] in self.media_dictionary["media"]["item"]["details"]:
 					self.media_dictionary["media"]["episode"]["separator"] = self.media_dictionary["media"]["item"]["details"][self.language_texts["episode_number_name"]]
+
+				if self.media_dictionary["media"]["states"]["video"] == True:
+					self.media_dictionary["media"]["episode"]["separator"] = ""
 
 				# Iterate through episode titles
 				if self.media_dictionary["media"]["episode"]["separator"] != "":
@@ -314,7 +316,14 @@ class Watch_Media(Watch_History):
 			# Get episode number
 			i = 1
 			for episode_title in language_titles:
-				if episode_title.split(" ")[1] in self.media_dictionary["media"]["episode"]["title"]:
+				if self.media_dictionary["media"]["episode"]["separator"] in episode_title:
+					episode_title = re.sub(self.media_dictionary["media"]["episode"]["separator"] + "[0-9]{1,3} ", "", episode_title)
+					expression = episode_title in self.media_dictionary["media"]["episode"]["title"]
+
+				else:
+					expression = episode_title == self.media_dictionary["media"]["episode"]["title"]
+
+				if expression:
 					self.media_dictionary["media"]["episode"]["number"] = i
 
 				i += 1
@@ -470,7 +479,7 @@ class Watch_Media(Watch_History):
 				self.media_dictionary["media"]["states"]["re_watching"] = False
 
 		# Define media episode with item if media has media list
-		if self.media_dictionary["media"]["states"]["series_media"] == True and self.media_dictionary["media"]["states"]["video"] == False:
+		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			separators = {
 				"title": " ",
 				"episode": " "
@@ -480,12 +489,16 @@ class Watch_Media(Watch_History):
 				text = self.language_texts[item + "_separator"]
 
 				if text in self.media_dictionary["media"]["details"]:
-					separators[item + "_separator"] = self.media_dictionary["media"]["details"][text]
+					separators[item] = self.media_dictionary["media"]["details"][text]
+
+				elif self.media_dictionary["media"]["states"]["video"] == True:
+					separators[item] = ": "
 
 			title = self.Get_Media_Title(self.media_dictionary)
 
 			self.media_dictionary["media"]["episode"].update({
-				"with_title_default": {}
+				"with_title_default": "",
+				"with_title": {}
 			})
 
 			# Define episode with item and episode with title and item keys
@@ -531,33 +544,25 @@ class Watch_Media(Watch_History):
 
 				self.media_dictionary["media"]["episode"]["with_title_default"] = self.media_dictionary["media"]["episode"]["with_title_and_item"][self.user_language]
 
-			# Define episode with media title key
+			# Define the episode with title as the media title + the episode separator and episode title
+			self.media_dictionary["media"]["episode"]["with_title"]["original"] = title + separators["title"] + self.media_dictionary["media"]["episode"]["title"]
+
+			# Define the episode with title texts per language
+			for language in self.small_languages:
+				# Define media title as the original
+				media_title = self.media_dictionary["media"]["titles"]["original"]
+
+				# Define media title as the romanized one for Animes media
+				if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
+					media_title = self.media_dictionary["media"]["titles"]["romanized"]
+
+				# If a language media title exists, define it as the local media title
+				if language in self.media_dictionary["media"]["item"]["titles"]:
+					media_title = self.media_dictionary["media"]["titles"][language]
+
+				self.media_dictionary["media"]["episode"]["with_title"][language] = media_title + separators["title"] + self.media_dictionary["media"]["episode"]["titles"][language]
+
 			if self.media_dictionary["media"]["states"]["media_list"] == False:
-				self.media_dictionary["media"]["episode"].update({
-					"with_title": {}
-				})
-
-				if self.media_dictionary["media"]["states"]["video"] == True and separators["title"] == " ":
-					separators["title"] = ": "
-
-				# Define the episode with title as the media title + the episode separator and episode title
-				self.media_dictionary["media"]["episode"]["with_title"]["original"] = title + separators["title"] + self.media_dictionary["media"]["episode"]["title"]
-
-				# Define the episode with title texts per language
-				for language in self.small_languages:
-					# Define media title as the original
-					media_title = self.media_dictionary["media"]["titles"]["original"]
-
-					# Define media title as the romanized one for Animes media
-					if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
-						media_title = self.media_dictionary["media"]["titles"]["romanized"]
-
-					# If a language media title exists, define it as the local media title
-					if language in self.media_dictionary["media"]["item"]["titles"]:
-						media_title = self.media_dictionary["media"]["titles"][language]
-
-					self.media_dictionary["media"]["episode"]["with_title"][language] = media_title + separators["title"] + self.media_dictionary["media"]["episode"]["titles"][language]
-
 				self.media_dictionary["media"]["episode"]["with_title_default"] = self.media_dictionary["media"]["episode"]["with_title"][self.user_language]
 
 		# Defining dubbed media text and it to the media episode if the media is "Animes", has dubbing, and is set to be watched dubbed
@@ -724,13 +729,12 @@ class Watch_Media(Watch_History):
 
 	def Open_Episode_Unit(self):
 		# Open media unit with its executor
-		if self.global_switches["testing"] == False:
-			if self.media_dictionary["media"]["states"]["remote"] == True:
-				self.File.Open(self.media_dictionary["media"]["episode"]["unit"])
+		if self.media_dictionary["media"]["states"]["remote"] == True:
+			self.File.Open(self.media_dictionary["media"]["episode"]["unit"])
 
-			if self.media_dictionary["media"]["states"]["local"] == True:
-				import subprocess
-				#subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
+		if self.media_dictionary["media"]["states"]["local"] == True and self.global_switches["testing"] == False:
+			import subprocess
+			subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
 
 	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
 	def Create_Discord_Status(self):

@@ -232,7 +232,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			if self.global_switches["verbose"] == True:
 				self.task_dictionary["time"] = str(self.task_dictionary["time"])
 
-				print(self.JSON.From_Python(self.task_dictionary))
+				self.JSON.Show(self.task_dictionary)
 
 			self.File.Delete(self.backup_file)
 

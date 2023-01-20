@@ -1,8 +1,8 @@
-# Open_Details_File_Of_Media.py
+# Open_Details_File.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-class Open_Details_File_Of_Media(Watch_History):
+class Open_Details_File(Watch_History):
 	def __init__(self):
 		super().__init__()
 

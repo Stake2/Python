@@ -10,6 +10,8 @@ from Input import Input as Input
 from JSON import JSON as JSON
 from Text import Text as Text
 
+from copy import deepcopy
+
 class Years(object):
 	def __init__(self, parameter_switches = None, select_year = True):
 		self.parameter_switches = parameter_switches
@@ -166,8 +168,13 @@ class Years(object):
 		self.current_year = self.years[str(self.date["year"])]
 
 		# Write Years dictionary converted to JSON on "Years.json" file
-		text = self.JSON.From_Python(self.years)
-		self.File.Edit(self.years_file, text, "w")
+		dictionary = deepcopy(self.years)
+
+		for key in dictionary:
+			if key not in ["list", "year_texts"]:
+				dictionary[key].pop("folders")
+
+		self.JSON.Edit(self.years_file, dictionary)
 
 	def Select_Year(self, years = None, select_text = None):
 		if years == None:

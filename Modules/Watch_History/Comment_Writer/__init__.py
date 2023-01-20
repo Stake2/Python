@@ -2,6 +2,9 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
+from urllib.parse import urlparse, parse_qs
+import validators
+
 class Comment_Writer(Watch_History):
 	def __init__(self, media_dictionary):
 		super().__init__()
@@ -34,7 +37,6 @@ class Comment_Writer(Watch_History):
 			# Run methods
 			self.Define_Files()
 			self.Write_Comment()
-			self.Write_Comment_To_Files()
 
 			# Show text showing that the user finished writing the comment
 			print("----------")
@@ -42,14 +44,14 @@ class Comment_Writer(Watch_History):
 			print(self.language_texts["you_finished_writing_the_comment"] + ".")
 
 			# Define media types where user can post comments
-			media_types_with_comment_posting = [
+			self.media_types["comment_posting"] = [
 				self.texts["animes"]["en"],
 				self.texts["cartoons"]["en"],
 				self.texts["videos"]["en"],
 			]
 
 			# If media type is inside the above list, and the episode is a remote one, open remote episode link to post comment
-			if self.media_dictionary["media_type"]["plural"]["en"] in media_types_with_comment_posting and \
+			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and \
 				"remote" in self.media_dictionary["media"]["episode"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
 				# Copy the comment
 				self.Text.Copy(self.media_dictionary["media"]["comment"]["comment"])
@@ -60,13 +62,7 @@ class Comment_Writer(Watch_History):
 				# Wait for user to finish posting comment
 				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
 
-				# Ask for YouTube comment link for the video media type
-				if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
-					self.youtube_comment_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
-
-					self.youtube_comment_id = self.youtube_comment_link.split("&lc=")[1]
-
-					self.File.Edit(self.all_comments_media_type_youtube_id_file, self.youtube_comment_id + "\n" + self.youtube_comment_link, "w")
+			self.Write_Comment_To_Files()
 
 	def Define_Files(self):
 		self.media_dictionary["media"]["comment"] = {
@@ -90,7 +86,7 @@ class Comment_Writer(Watch_History):
 
 		# Media type comment file name for movies
 		if self.media_dictionary["media"]["states"]["series_media"] == False:
-			self.media_dictionary["media"]["comment"]["file_name"] = self.texts["comment, title()"]
+			self.media_dictionary["media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
 
 		# Media type comments folder comment file
 		self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
@@ -182,7 +178,7 @@ class Comment_Writer(Watch_History):
 		# Add comment file name to file names list
 		self.media_comments["File names"].append(self.media_dictionary["media"]["comment"]["file_name"])
 
-		# Add comment file name key to comments dictionary
+		# Add comment file name, times, and titles keys to comment dictionary
 		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
 			"File name": self.media_dictionary["media"]["comment"]["file_name"],
 			"Times": {
@@ -192,8 +188,29 @@ class Comment_Writer(Watch_History):
 			"Titles": self.media_dictionary["media"]["episode"]["titles"]
 		}
 
+		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media_dictionary["media"]["states"]["video"] == True:
-			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["YouTube ID"] = self.media_dictionary["media"]["episode"]["youtube_id"]
+			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
+				"YouTube ID": self.media_dictionary["media"]["episode"]["youtube_id"],
+			})
+
+			print("print")
+			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and \
+				"remote" in self.media_dictionary["media"]["episode"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
+				link = ""
+
+				while validators.url(link) != True:
+					# Ask for YouTube comment link
+					link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+
+				if validators.url(link) == True:
+					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Link"] = link
+
+					link = urlparse(link)
+					query = link.query
+					parameters = parse_qs(query)
+
+					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
 
 		# Update media type Comments.json file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_comments)

@@ -37,7 +37,7 @@ class Block(Block_Websites):
 			self.in_working_hours = True
 
 	def Mount_Text_String(self):
-		self.text_to_write = self.hosts_file_header
+		self.text_to_write = self.hosts_file_header + self.texts["header"]
 
 		# Add first maps, getting them from "self.map_dict"
 		for map_dict in self.map_dict:
@@ -64,10 +64,10 @@ class Block(Block_Websites):
 					if website in self.websites_to_block:
 						self.websites_to_block.remove(website)
 
-		self.websites_to_block_text = self.texts["header"]
+		self.websites_to_block_text = ""
 
 		if self.websites_to_block == []:
-			self.websites_to_block_text += self.texts["all_websites_are_unlocked_header"]
+			self.websites_to_block_text = self.texts["all_websites_are_unlocked_header"]
 
 		# Add maps of websites to block from "self.websites_to_block"
 		for website in self.websites_to_block:
@@ -86,7 +86,7 @@ class Block(Block_Websites):
 
 	def Write_To_Hosts_File(self):
 		if self.in_working_hours == True:
-			self.text_to_write += "\n" + self.websites_to_block_text
+			self.text_to_write += "\n\n" + self.websites_to_block_text
 
 		self.File.Edit(self.hosts_file, self.text_to_write, "w")
 

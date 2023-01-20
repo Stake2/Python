@@ -164,11 +164,9 @@ class Create_New_Module(Python):
 		self.File.Edit(self.root_python_file, self.root_code, "w")
 
 		# Descriptions
-		dictionary = {**{"show_text": self.module_descriptions}, **self.class_descriptions}
+		self.descriptions = {**{"show_text": self.module_descriptions}, **self.class_descriptions}
 
-		self.descriptions = self.JSON.From_Python(dictionary)
-
-		self.File.Edit(self.descriptions_file, self.descriptions, "w")
+		self.JSON.Edit(self.descriptions_file, self.descriptions)
 
 		# Main class code
 		self.main_class_code = self.main_class_code_template.replace("[]", self.module_name)

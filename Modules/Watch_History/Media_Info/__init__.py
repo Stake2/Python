@@ -1,8 +1,8 @@
 # Media_Info.py
 
 from Watch_History.Media_Info.Add_New_Media import Add_New_Media as Add_New_Media
-from Watch_History.Media_Info.Open_Details_File_Of_Media import Open_Details_File_Of_Media as Open_Details_File_Of_Media
-from Watch_History.Media_Info.Fill_Episode_Titles_File import Fill_Episode_Titles_File as Fill_Episode_Titles_File
+from Watch_History.Media_Info.Open_Details_File import Open_Details_File as Open_Details_File
+from Watch_History.Media_Info.Fill_Episode_Titles import Fill_Episode_Titles as Fill_Episode_Titles
 from Watch_History.Media_Info.Update_Media_Info_Details import Update_Media_Info_Details as Update_Media_Info_Details
 
 from Language import Language as Language
@@ -28,8 +28,8 @@ class Media_Info():
 
 		self.classes = [
 			Add_New_Media,
-			Open_Details_File_Of_Media,
-			Fill_Episode_Titles_File,
+			Open_Details_File,
+			Fill_Episode_Titles,
 		]
 
 		self.class_descriptions = []

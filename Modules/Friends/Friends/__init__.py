@@ -421,8 +421,7 @@ class Friends(object):
 			self.File.Edit(information_item_file, text_to_write, "w")
 
 		# Edit Information.json file to add JSON dictionary
-		text_to_write = self.JSON.From_Python(self.information)
-		self.File.Edit(self.information_file, text_to_write, "w")
+		self.JSON.Edit(self.information_file, self.information)
 
 		self.current_year_friends_number = self.year_friends_numbers[str(self.date["year"])]
 

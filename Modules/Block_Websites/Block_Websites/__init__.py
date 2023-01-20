@@ -97,8 +97,7 @@ class Block_Websites(object):
 		self.texts["all_websites_are_unlocked_header"] = "# All websites are unlocked"
 		self.texts["log"] = self.language_texts["blocking_state"] + ":\n{}\n\n" + self.language_texts["this_file_will_be_updated_every_{}_minutes_reopen_it_to_update"] + ".\n" + self.language_texts["last_update_in"] + ": {}"
 
-		self.texts["header"] = "\n" \
-		"#######################################" + "\n" \
+		self.texts["header"] = "#######################################" + "\n" \
 		"#          " + "Block_Websites.py" + "          #" + "\n" + \
 		"#######################################" + "\n\n"
 

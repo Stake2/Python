@@ -1,10 +1,10 @@
-# Fill_Episode_Titles_File.py
+# Fill_Episode_Titles.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 from Watch_History.Watch_Media import Watch_Media
 
-class Fill_Episode_Titles_File(Watch_History):
+class Fill_Episode_Titles(Watch_History):
 	def __init__(self, option_info = None):
 		super().__init__()
 
@@ -152,8 +152,7 @@ class Fill_Episode_Titles_File(Watch_History):
 		print(self.language_texts["finished_filling_episode_titles_files"] + ".")
 
 	def Fill_YouTube_IDs_File(self):
-		from urllib.parse import urlparse as urlparse
-		from urllib.parse import parse_qs
+		from urllib.parse import urlparse, parse_qs
 		import validators
 
 		print()
