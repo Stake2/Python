@@ -658,8 +658,6 @@ class Register_Media(Watch_History):
 		Write_On_Diary_Slim_Module(self.media_dictionary["register"]["diary_slim"]["text"], add_time = False)
 
 	def Show_Information(self):
-		del self.media_dictionary["media"]["episode"]["unit"]
-
 		self.media_dictionary["header_text"] = self.Text.Capitalize(self.media_dictionary["media"]["texts"]["container"]) + ": "
 
 		if self.media_dictionary["media"]["states"]["completed"] == True:

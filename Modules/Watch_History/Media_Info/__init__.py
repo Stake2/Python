@@ -43,4 +43,4 @@ class Media_Info():
 
 		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
 
-#Update_Media_Info_Details()
+Update_Media_Info_Details()

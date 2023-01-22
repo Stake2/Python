@@ -320,6 +320,7 @@ class Watch_History(object):
 			key = self.media_types[plural_media_type]["plural"]["en"].lower().replace(" ", "_")
 
 			self.media_types[plural_media_type]["folders"] = {
+				"comments": self.folders["comments"][key],
 				"media_info": self.folders["media_info"][key],
 				"per_media_type": self.folders["watch_history"]["current_year"]["per_media_type"][key]
 			}
@@ -523,7 +524,7 @@ class Watch_History(object):
 
 		return dictionary
 
-	def Select_Media(self, options = None, item = False):
+	def Select_Media(self, options = None, item = False, watch = False):
 		dictionary = {}
 
 		if options != None:
@@ -564,11 +565,32 @@ class Watch_History(object):
 				}
 			})
 
+			# Create folders
+			for key in media["folders"]:
+				folder = media["folders"][key]
+
+				if "root" in folder:
+					folder = folder["root"]
+
+				self.Folder.Create(folder)
+
 		if "folders" in media and "root" not in media["folders"]:
 			media["folders"].update({
 				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
 				"media": self.root_folders["media"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
+				"media_type_comments": {
+					"root": dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/"
+				}
 			})
+
+			# Create folders
+			for key in media["folders"]:
+				folder = media["folders"][key]
+
+				if "root" in folder:
+					folder = folder["root"]
+
+				self.Folder.Create(folder)
 
 		if "folders" not in media:
 			media["folders"] = {
@@ -579,30 +601,13 @@ class Watch_History(object):
 				}
 			}
 
-			media["folders"]["media_type_comments"]["comments"] = media["folders"]["media_type_comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
-			self.File.Create(media["folders"]["media_type_comments"]["comments"])
+			# Create folders
+			for key in media["folders"]:
+				folder = media["folders"][key]
 
-			dict_ = {
-				"File names": [],
-				"Dictionary": {}
-			}
+				if "root" in folder:
+					folder = folder["root"]
 
-			if self.File.Contents(media["folders"]["media_type_comments"]["comments"])["lines"] == []:
-				self.JSON.Edit(media["folders"]["media_type_comments"]["comments"], dict_)
-
-			if dictionary["media_type"]["plural"]["en"] != self.texts["movies"]["en"]:
-				media["folders"]["comments"] = {
-					"root": media["folders"]["root"] + self.language_texts["comments, title()"] + "/"
-				}
-
-		# Create folders
-		for key in media["folders"]:
-			folder = media["folders"][key]
-
-			if "root" in folder:
-				folder = folder["root"]
-
-			if "." not in folder:
 				self.Folder.Create(folder)
 
 		# Define media text files
@@ -618,20 +623,242 @@ class Watch_History(object):
 		# Define media details
 		media["details"] = self.File.Dictionary(media["folders"]["details"])
 
+		if item == False:
+			# Define media states dictionary
+			states = {
+				"remote": False,
+				"local": False,
+				"hybrid": False,
+				"series_media": True,
+				"video": False,
+				"media_list": False,
+				"re_watching": False,
+				"has_dubbing": False,
+				"watch_dubbed": False,
+				"completed": False,
+				"completed_item": False,
+				"first_episode_in_year": False,
+				"finished_watching": False
+			}
+
+			if "states" in media:
+				media["states"].update(states)
+
+			if "states" not in media:
+				media["states"] = states
+
+			# Define origin type state
+			for key in ["local", "remote", "hybrid"]:
+				if media["details"][self.language_texts["origin_type"]] == self.language_texts[key + ", title()"]:
+					media["states"][key] = True
+
+			# Define non-series media state for movies
+			if dictionary["media_type"]["plural"]["en"] == self.texts["movies"]["en"]:
+				media["states"]["series_media"] = False
+
+			# Define video state for videos
+			if dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
+				media["states"]["video"] = True
+
+			# Define Re-Watching state for Re-Watching status
+			if media["details"][self.language_texts["status, title()"]] == self.language_texts["re_watching, title()"]:
+				media["states"]["re_watching"] = True
+
+			media["episode"] = {
+				"title": "",
+				"titles": {},
+				"sanitized": "",
+				"number": 1,
+				"number_text": "1",
+				"separator": ""
+			}
+
+			if media["states"]["remote"] == True or self.language_texts["remote_origin, title()"] in media["details"]:
+				media["episode"]["remote"] = {
+					"title": "",
+					"link": "",
+					"code": ""
+				}
+
 		dictionary = self.Define_Media_Titles(dictionary, item)
+
+		if item == False:
+			dictionary = self.Define_Media_Item(dictionary, watch)
 
 		return dictionary
 
-	def Select_Media_Type_And_Media(self, options = None, status_text = None):
+	def Define_Media_Item(self, dictionary, watch = False):
+		dictionary["media"]["items"] = {
+			"folders": {
+				"root": dictionary["media"]["folders"]["root"] + dictionary["media_type"]["subfolders"]["plural"] + "/",
+			}
+		}
+
+		if self.Folder.Exist(dictionary["media"]["items"]["folders"]["root"]) == True:
+			for name in ["list", "current"]:
+				key = name
+
+				if name == "list":
+					key = "plural"
+
+				dictionary["media"]["items"]["folders"][name] = dictionary["media"]["items"]["folders"]["root"] + dictionary["media_type"]["subfolders"][key] + ".txt"
+				self.File.Create(dictionary["media"]["items"]["folders"][name])
+
+				dictionary["media"]["items"][name] = self.File.Contents(dictionary["media"]["items"]["folders"][name])["lines"]
+
+				if dictionary["media"]["items"][name] != [] and name == "current":
+					dictionary["media"]["items"][name] = dictionary["media"]["items"][name][0]
+
+			# Define media item folders
+			for name in dictionary["media"]["items"]["list"]:
+				if name[0] + name[1] == ": ":
+					name = name[2:]
+
+				dictionary["media"]["items"]["folders"][name] = dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(name, restricted_characters = True) + "/"
+				self.Folder.Create(dictionary["media"]["items"]["folders"][name])
+
+			# Define current media item
+			title = dictionary["media"]["items"]["current"]
+
+			# Has media list
+			dictionary["media"]["states"]["media_list"] = True
+
+			# Select video series from channel for video series media
+			if dictionary["media"]["states"]["video"] == True:
+				show_text = self.Text.Capitalize(self.language_texts["youtube_video_series"])
+				select_text = self.language_texts["select_a_youtube_video_series"]
+
+				if watch == True:
+					title = self.Input.Select(dictionary["media"]["items"]["list"], show_text = show_text, select_text = select_text)["option"]
+
+			# Define media item dictionary with titles and folder
+			dictionary["media"]["item"] = {
+				"title": title,
+				"sanitized": self.Sanitize(title, restricted_characters = True),
+				"titles": {},
+				"folders": {
+					"root": dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(title, restricted_characters = True) + "/",
+				},
+				"number": 0
+			}
+
+			dictionary = self.Select_Media(dictionary, item = True)
+
+			# Define media type comments folder for media with media list
+			dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
+			self.File.Create(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
+
+			dict_ = {
+				"File names": [],
+				"Dictionary": {}
+			}
+
+			if self.File.Contents(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])["lines"] == []:
+				self.JSON.Edit(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], dict_)
+
+			i = 0
+			for name in dictionary["media"]["items"]["list"]:
+				if dictionary["media"]["item"]["title"] == name:
+					dictionary["media"]["item"]["number"] = i
+
+				i += 1
+
+		if self.Folder.Exist(dictionary["media"]["items"]["folders"]["root"]) == False:
+			dictionary["media"]["states"]["media_list"] = False
+
+		# Define media item as the media for media that has no media list
+		if dictionary["media"]["states"]["media_list"] == False or dictionary["media"]["states"]["series_media"] == False:
+			dictionary["media"]["item"] = dictionary["media"].copy()
+
+		# Define media item folders for series media
+		if dictionary["media"]["states"]["series_media"] == True:
+			for name in ["Comments", "Titles"]:
+				key = name.lower().replace(" ", "_")
+				name = self.language_texts[key + ", title()"]
+
+				dictionary["media"]["item"]["folders"][key] = {
+					"root": dictionary["media"]["item"]["folders"]["root"] + name + "/",
+				}
+
+				self.Folder.Create(dictionary["media"]["item"]["folders"][key]["root"])
+
+		# Define media item files
+		file_names = ["Dates"]
+
+		if dictionary["media"]["states"]["video"] == True:
+			file_names.append("YouTube IDs")
+
+		for name in file_names:
+			key = name.lower().replace(" ", "_")
+			name = self.language_texts[key + ", title()"]
+
+			dictionary["media"]["item"]["folders"][key] = dictionary["media"]["item"]["folders"]["root"] + name + ".txt"
+			self.File.Create(dictionary["media"]["item"]["folders"][key])
+
+		# Define episodes dictionary
+		dictionary["media"]["item"]["episodes"] = {
+			"titles": {
+				"files": {},
+			}
+		}
+
+		# Define episode titles files and lists
+		for language in self.small_languages:
+			full_language = self.full_languages[language]
+
+			# Define episode titles file
+			dictionary["media"]["item"]["episodes"]["titles"]["files"][language] = dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
+			self.File.Create(dictionary["media"]["item"]["episodes"]["titles"]["files"][language])
+
+			# Get language episode titles from file
+			dictionary["media"]["item"]["episodes"]["titles"][language] = self.File.Contents(dictionary["media"]["item"]["episodes"]["titles"]["files"][language])["lines"]
+
+			# Define episode number name as "EP"
+			dictionary["media"]["episode"].update({
+				"separator": "EP"
+			})
+
+			# Or custom episode number name
+			if self.language_texts["episode_number_name"] in dictionary["media"]["details"]:
+				dictionary["media"]["episode"]["separator"] = dictionary["media"]["details"][self.language_texts["episode_number_name"]]
+
+			if self.language_texts["episode_number_name"] in dictionary["media"]["item"]["details"]:
+				dictionary["media"]["episode"]["separator"] = dictionary["media"]["item"]["details"][self.language_texts["episode_number_name"]]
+
+			if dictionary["media"]["states"]["video"] == True:
+				dictionary["media"]["episode"]["separator"] = ""
+
+			# Iterate through episode titles
+			if dictionary["media"]["episode"]["separator"] != "":
+				i = 1
+				for episode_title in dictionary["media"]["item"]["episodes"]["titles"][language]:
+					number = str(self.Text.Add_Leading_Zeros(i))
+
+					# Add episode number name to local episode title
+					episode_title = dictionary["media"]["episode"]["separator"] + number + " " + episode_title
+
+					# Add episode number name to episode titles if the number name is not present
+					if number not in dictionary["media"]["item"]["episodes"]["titles"][language][i - 1]:
+						dictionary["media"]["item"]["episodes"]["titles"][language][i - 1] = episode_title
+
+					i += 1
+
+		if dictionary["media"]["states"]["media_list"] == True:
+			# Write dictionary into media item "Information.json" file
+			self.JSON.Edit(dictionary["media"]["item"]["folders"]["information"], dictionary["media"]["item"])
+
+		return dictionary
+
+	def Select_Media_Type_And_Media(self, options = None, watch = False):
 		dictionary = {
 			"media_type": {
 				"select": True,
-				"status": self.texts["watching, title()"]["en"],
+				"status": self.texts["watching, title()"]["en"]
 			},
 			"media": {
 				"select": True,
-				"list": {},
-			},
+				"list": {}
+			}
 		}
 
 		if options != None:
@@ -641,7 +868,7 @@ class Watch_History(object):
 			dictionary["media_type"] = self.Select_Media_Type(dictionary["media_type"])
 
 		if dictionary["media"]["select"] == True:
-			dictionary["media"] = self.Select_Media(dictionary)["media"]
+			dictionary["media"] = self.Select_Media(dictionary, watch = watch)["media"]
 
 		return dictionary
 
