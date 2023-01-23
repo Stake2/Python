@@ -122,24 +122,7 @@ class Update_Files(Watch_History):
 							"Titles": {}
 						}
 
-						dict_ = {}
-
-						keys = [
-							"re_watched",
-							"christmas",
-							"dubbed"
-						]
-
-						for key in keys:
-							state = states[key]
-
-							expression = state == True
-
-							if key == "re_watched":
-								expression = state != {}
-
-							if expression:
-								dict_[key.title()] = states[key.lower()]
+						dict_ = self.Define_States_Dictionary(self.dictionary)
 
 						if dict_ != {}:
 							comments_json["Dictionary"][file_name]["States"] = dict_

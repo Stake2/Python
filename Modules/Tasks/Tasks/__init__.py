@@ -93,7 +93,7 @@ class Tasks(object):
 		self.folders["task_history"]["current_year"] = self.folders["task_history"][str(self.date["year"])]
 
 	def Define_Lists_And_Dicitionaries(self):
-		self.task_types = self.JSON.To_Python(self.folders["media_network_data"]["task_types"])
+		self.task_types = self.JSON.To_Python(self.folders["network_data"]["task_types"])
 
 		# Define default Tasks dictionary
 		self.tasks = {
@@ -170,7 +170,7 @@ class Tasks(object):
 				# Write default Tasks dictionary inside "Tasks.json" file
 				self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["tasks"], self.tasks[task_type])
 
-			# Create "Task list.txt" file in "Per Task Type" task type folder
-			self.folders["task_history"]["current_year"]["per_task_type"][task_type]["task_list"] = self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"] + "Task list.txt"
+			# Create "File list.txt" file in "Per Task Type" task type folder
+			self.folders["task_history"]["current_year"]["per_task_type"][task_type]["file_list"] = self.folders["task_history"]["current_year"]["per_task_type"][task_type]["root"] + "File list.txt"
 
-			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["task_list"])
+			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][task_type]["file_list"])

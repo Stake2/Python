@@ -271,7 +271,7 @@ class Folder():
 			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["tasks"] = self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Tasks.json"
 
 			# Task list.txt file
-			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["task_list"] = self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Task list.txt"
+			self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["file_list"] = self.mega_folders["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "File list.txt"
 
 		# Years folders
 		for item in range(2021, self.date["year"] + 1):

@@ -868,6 +868,9 @@ class Watch_History(object):
 			# Write dictionary into media item "Information.json" file
 			self.JSON.Edit(dictionary["media"]["item"]["folders"]["information"], dictionary["media"]["item"])
 
+		if self.episodes["Number"] == 0:
+			dictionary["media"]["states"]["first_episode_in_year"] = True
+
 		return dictionary
 
 	def Select_Media_Type_And_Media(self, options = None, watch = False):

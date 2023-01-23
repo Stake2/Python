@@ -30,7 +30,7 @@ class Register_Media(Watch_History):
 		self.Register_Episode_In_JSON()
 		self.Create_Episode_File()
 
-		self.Add_Episode_To_Years_Folder()
+		self.Add_File_To_Year_Folder()
 
 		self.Check_Media_Status()
 
@@ -129,9 +129,6 @@ class Register_Media(Watch_History):
 		# Add to episode and media type episode numbers
 		self.episodes["Number"] += 1
 		self.media_type_episodes[self.media_type]["Number"] += 1
-
-		if self.episodes["Number"] == 1:
-			self.media_dictionary["media"]["states"]["first_episode_in_year"] = True
 
 		# Add media title to media titles list
 		media_title = self.Get_Media_Title(self.media_dictionary)
@@ -455,7 +452,7 @@ class Register_Media(Watch_History):
 
 		return episode_text.format(*items)
 
-	def Add_Episode_To_Years_Folder(self):
+	def Add_File_To_Year_Folder(self):
 		# Create folders
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
@@ -518,8 +515,6 @@ class Register_Media(Watch_History):
 				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder][file_name])
 
 				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder][file_name], self.media_dictionary["register"]["episode_text"][language], "w")
-
-		self.JSON.Show(self.current_year["folders"])
 
 	def Check_Media_Status(self):
 		if self.media_dictionary["media"]["states"]["series_media"] == True:

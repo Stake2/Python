@@ -217,31 +217,7 @@ class Comment_Writer(Watch_History):
 
 					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
 
-		dict_ = {}
-
-		keys = [
-			"re_watching",
-			"christmas",
-			"watch_dubbed"
-		]
-
-		for key in keys:
-			if self.media_dictionary["media"]["states"][key] == True:
-				if key == "watch_dubbed":
-					key = "dubbed"
-
-				state = True
-
-				if key == "re_watching":
-					key = "re_watched"
-
-					state = {
-						"Times": self.media_dictionary["media"]["episode"]["re_watched"]["times"]
-					}
-
-				key = key.title()
-
-				dict_[key] = state
+		dict_ = self.Define_States_Dictionary(self.media_dictionary)
 
 		if dict_ != {}:
 			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
