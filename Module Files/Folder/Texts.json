@@ -3,6 +3,18 @@
         "en": "folder",
         "pt": "pasta"
     },
+	"folder, title()": {
+        "en": "Folder",
+        "pt": "Pasta"
+    },
+	"folders": {
+        "en": "folders",
+        "pt": "pastas"
+    },
+	"folders, title()": {
+        "en": "Folders",
+        "pt": "Pastas"
+    },
     "file": {
         "en": "file",
         "pt": "arquivo"
@@ -46,5 +58,9 @@
     "the_folder_path_is_incorrect_(it_is_a_file)": {
         "en": "The folder path is incorrect (it is a file)",
         "pt": "O caminho da pasta está incorreto (é um arquivo)"
-    }
+    },
+	"contents, title()": {
+		"en": "Contents",
+		"pt": "Conteúdo"
+	}
 }

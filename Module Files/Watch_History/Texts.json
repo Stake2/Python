@@ -448,6 +448,10 @@
 		"en": "Dubbed to title",
 		"pt": "Dublado no título"
 	},
+	"dubbed_{}": {
+		"en": "Dubbed {}",
+		"pt": "{} dublado"
+	},
 	"remote": {
 		"en": "remote",
 		"pt": "remoto"
@@ -709,9 +713,9 @@
 		"en": "Press Enter when you finish posting the comment",
 		"pt": "Pressione Enter quando você terminar de postar o comentário"
 	},
-	"press_enter_when_you_finish_watching_the_{}": {
+	"press_enter_when_you_finish_watching_{}": {
 		"pt": "Pressione Enter quando você terminar de assistir {}",
-		"en": "Press Enter when you finish watching the {}"
+		"en": "Press Enter when you finish watching {}"
 	},
 	"please_type_the_media_details": {
 		"en": "Please type the media details",
@@ -1298,6 +1302,14 @@
 		"pt": "Primeiros Do Ano",
 		"en": "Firsts Of The Year"
 	},
+	"first_in_year": {
+		"en": "First in year",
+		"pt": "Primeiro no ano"
+	},
+	"first_{}_in_year": {
+		"en": "First {} in year",
+		"pt": "Primeiro {} no ano"
+	},
 	"i_posted_the_watched_text_and_{}_on_the_status_of_{}_and_tweet_on_{}": {
 		"pt": "Postei o texto de assistido e {} no status do {}, e tweet no {}",
 		"en": "I posted the watched text and {} on the status of {}, and tweet on {}"
@@ -1440,6 +1452,10 @@
 		"en": "Christmas special {}",
 		"pt": "{} especial de Natal"
 	},
+	"watched_media": {
+		"en": "Watched media",
+		"pt": "Mídia assistida"
+	},
 	"list_of_media_to_watch": {
 		"en": "List of media to watch",
 		"pt": "Lista de mídia para assistir"
@@ -1475,5 +1491,9 @@
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
+	},
+	"states, title()": {
+		"en": "States",
+		"pt": "Estados"
 	}
 }

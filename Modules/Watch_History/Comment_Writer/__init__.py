@@ -71,18 +71,19 @@ class Comment_Writer(Watch_History):
 
 		# Media type comment file name for non-movies
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
+			add = False
 			for alternative_episode_type in self.alternative_episode_types:
-				if alternative_episode_type in self.media_dictionary["media"]["episode"]["title"]:
-					self.media_dictionary["media"]["comment"]["file_name"] += self.media_dictionary["media"]["episode"]["separator"] + " "
+				if alternative_episode_type in self.media_dictionary["media"]["episode"]["separator"]:
+					add = True
+
+			if add == True:
+				self.media_dictionary["media"]["comment"]["file_name"] += self.media_dictionary["media"]["episode"]["separator"] + " "
 
 			if "number_text" in self.media_dictionary["media"]["episode"]:
 				self.media_dictionary["media"]["comment"]["file_name"] += self.media_dictionary["media"]["episode"]["number_text"]
 
 			else:
 				self.media_dictionary["media"]["comment"]["file_name"] += str(self.Text.Add_Leading_Zeros(self.media_dictionary["media"]["episode"]["number"]))
-
-			if self.media_dictionary["media"]["states"]["re_watching"] == True and self.media_dictionary["media"]["episode"]["re_watched"]["text"] != "":
-				self.media_dictionary["media"]["comment"]["file_name"] += " " + self.media_dictionary["media"]["episode"]["re_watched"]["text"]
 
 		# Media type comment file name for movies
 		if self.media_dictionary["media"]["states"]["series_media"] == False:
@@ -130,11 +131,16 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["media"]["states"]["comment_writer"]["new"] == True:
 			key = "with_title"
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True:
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
 				key = "with_title_and_item"
 
+			title = self.media_dictionary["media"]["episode"][key][self.user_language]
+
+			if self.media_dictionary["media"]["states"]["re_watching"] == True:
+				title += self.media_dictionary["media"]["episode"]["re_watched"]["text"]
+
 			# Define episode text (episode title)
-			episode_text = self.language_texts["title, title()"] + ":" + "\n" + self.media_dictionary["media"]["episode"][key][self.user_language] + "\n"
+			episode_text = self.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
 			self.media_dictionary["media"]["comment"]["comment"] += episode_text + "\n"
 
@@ -194,7 +200,6 @@ class Comment_Writer(Watch_History):
 				"YouTube ID": self.media_dictionary["media"]["episode"]["youtube_id"],
 			})
 
-			print("print")
 			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and \
 				"remote" in self.media_dictionary["media"]["episode"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
 				link = ""
@@ -211,6 +216,35 @@ class Comment_Writer(Watch_History):
 					parameters = parse_qs(query)
 
 					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
+
+		dict_ = {}
+
+		keys = [
+			"re_watching",
+			"christmas",
+			"watch_dubbed"
+		]
+
+		for key in keys:
+			if self.media_dictionary["media"]["states"][key] == True:
+				if key == "watch_dubbed":
+					key = "dubbed"
+
+				state = True
+
+				if key == "re_watching":
+					key = "re_watched"
+
+					state = {
+						"Times": self.media_dictionary["media"]["episode"]["re_watched"]["times"]
+					}
+
+				key = key.title()
+
+				dict_[key] = state
+
+		if dict_ != {}:
+			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
 
 		# Update media type Comments.json file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_comments)

@@ -100,7 +100,7 @@ class Start_Watching_Media(Watch_History):
 
 				self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["details"], text_to_write, "w")
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True:
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
 				self.media_details["Episode"] = self.first_episode_title
 
 		# Writes new status and episode to media details file

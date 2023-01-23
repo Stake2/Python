@@ -247,5 +247,13 @@
 	"{}_texts": {
 		"pt": "Textos de \"{}\"",
 		"en": "\"{}\" texts"
+	},
+	"watched_media": {
+		"en": "Watched media",
+		"pt": "Mídia assistida"
+	},
+	"firsts_of_the_year": {
+		"pt": "Primeiros Do Ano",
+		"en": "Firsts Of The Year"
 	}
 }

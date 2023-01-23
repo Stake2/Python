@@ -14,5 +14,9 @@
 	"Fill_Episode_Titles": {
 		"en": "Fill episode titles file",
 		"pt": "Preencher arquivo de títulos de episódio"
+	},
+	"Update_Files": {
+		"en": "Update files",
+		"pt": "Atualizar arquivos"
 	}
 }

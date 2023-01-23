@@ -3,6 +3,18 @@
         "en": "file",
         "pt": "arquivo"
     },
+	"file, title()": {
+        "en": "File",
+        "pt": "Arquivo"
+    },
+	"files": {
+        "en": "files",
+        "pt": "arquivos"
+    },
+	"files, title()": {
+        "en": "Files",
+        "pt": "Arquivos"
+    },
 	"file_name": {
         "en": "File name",
         "pt": "Nome de arquivo"

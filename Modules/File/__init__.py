@@ -75,6 +75,11 @@ class File():
 
 		return path
 
+	def Name(self, file):
+		file = self.Sanitize(file)
+
+		return os.path.splitext(os.path.basename(file))[0]
+
 	def Verbose(self, text, item, verbose = False):
 		if self.global_switches["verbose"] == True or verbose == True:
 			import inspect

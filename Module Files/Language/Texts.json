@@ -438,5 +438,13 @@
 	"empty, title()": {
 		"en": "Empty",
 		"pt": "Vazio"
+	},
+	"{}_time": {
+		"en": "{} time",
+		"pt": "{} vez"
+	},
+	"{}_times": {
+		"en": "{} times",
+		"pt": "{} vezes"
 	}
 }

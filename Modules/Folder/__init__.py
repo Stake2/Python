@@ -41,6 +41,8 @@ class Folder():
 		self.JSON = JSON(self.global_switches)
 
 		self.app_settings = self.Language.app_settings
+		self.small_languages = self.Language.languages["small"]
+		self.full_languages = self.Language.languages["full"]
 		self.date = self.Date.date
 
 		self.Define_Folders()
@@ -279,12 +281,15 @@ class Folder():
 				"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"]["root"], str(item) + "/"),
 			}
 
-			# Experienced Media folder
-			self.mega_folders["notepad"]["effort"]["years"][key]["experienced_media"] = {
-				"root": os.path.join(self.mega_folders["notepad"]["effort"]["years"][key]["root"], "Experienced Media/"),
-			}
-
 			if key == str(self.date["year"]):
+				# Per language years folder
+				for language in self.small_languages:
+					full_language = self.full_languages[language]
+
+					self.mega_folders["notepad"]["effort"]["years"][key][full_language] = {
+						"root": self.mega_folders["notepad"]["effort"]["years"][key]["root"] + full_language + "/"
+					}
+
 				self.mega_folders["notepad"]["effort"]["years"]["current_year"] = self.mega_folders["notepad"]["effort"]["years"][key]
 
 		# Notepad folders
