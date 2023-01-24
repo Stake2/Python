@@ -56,8 +56,9 @@ class Comment_Writer(Watch_History):
 				# Copy the comment
 				self.Text.Copy(self.media_dictionary["media"]["comment"]["comment"])
 
-				# Open remote episode link
-				self.File.Open(self.media_dictionary["media"]["episode"]["remote"]["link"])
+				if self.media_dictionary["media"]["states"]["remote"] == False:
+					# Open remote episode link
+					self.File.Open(self.media_dictionary["media"]["episode"]["remote"]["link"])
 
 				# Wait for user to finish posting comment
 				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
@@ -131,7 +132,7 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["media"]["states"]["comment_writer"]["new"] == True:
 			key = "with_title"
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False:
 				key = "with_title_and_item"
 
 			title = self.media_dictionary["media"]["episode"][key][self.user_language]
@@ -164,16 +165,16 @@ class Comment_Writer(Watch_History):
 		# Ask for user to write comment
 		self.media_dictionary["media"]["comment"]["comment"] += self.Input.Lines(show_text, line_options = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])["string"]
 
-	def Write_Comment_To_Files(self):
-		# Delete backup file
-		if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
-			self.File.Delete(self.folders["comments"]["backups"]["backup"])
-
 		# Define comment time
 		self.media_dictionary["media"]["comment"]["time"] = self.Date.Now()
 
 		# Replace time text in comment with comment time
 		self.media_dictionary["media"]["comment"]["comment"] = self.media_dictionary["media"]["comment"]["comment"].replace("[Time]", self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language])
+
+	def Write_Comment_To_Files(self):
+		# Delete backup file
+		if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
+			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
 		# Media type comment file
 		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")

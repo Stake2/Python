@@ -60,8 +60,13 @@ class Register_Media(Watch_History):
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			template += ' "{}"'
 
+			text = self.media_dictionary["media_type"]["genders"]["of_the"]
+
+			if self.media_dictionary["media"]["states"]["video"] == True:
+				text = self.media_types["genders"]["masculine"]["of_the"]
+
 			# Add unit and "of the" text
-			self.watched_item_text = self.language_texts["this_{}_{}"].format(self.media_dictionary["media"]["texts"]["unit"], self.media_dictionary["media_type"]["genders"]["of_the"])
+			self.watched_item_text = self.language_texts["this_{}_{}"].format(self.media_dictionary["media"]["texts"]["unit"][self.user_language], text)
 
 			# Replaced "watching" with "re-watching" text
 			if self.media_dictionary["media"]["states"]["re_watching"] == True:
@@ -79,20 +84,24 @@ class Register_Media(Watch_History):
 
 			self.of_the_text = self.language_texts["of_the_{}"]
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False:
-				# Replace "of the" text with "of the first" if the media item is the first one
-				if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][0]:
-					key = "first"
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
+				if self.media_dictionary["media"]["states"]["video"] == False:
+					# Replace "of the" text with "of the first" if the media item is the first one
+					if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][0]:
+						key = "first"
 
-				# Replace "of the" text with "of the last" if the media item is the last one
-				if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][-1]:
-					key = "last"
+					# Replace "of the" text with "of the last" if the media item is the last one
+					if self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["items"]["list"][-1]:
+						key = "last"
 
-				# Add item text ("season" or "series") to "of the" text
-				self.of_the_text = self.media_types["genders"]["feminine"]["of_the"] + " " + self.language_texts[key + ", feminine"] + " " + self.media_dictionary["media"]["texts"]["item"]
+					# Add item text ("season" or "series") to "of the" text
+					self.of_the_text = self.of_the_text.format(self.language_texts[key + ", feminine"] + " " + self.media_dictionary["media"]["texts"]["item"][self.user_language])
+
+				if self.media_dictionary["media"]["states"]["video"] == True:
+					self.of_the_text = self.of_the_text.format(self.language_texts["video_serie"])
 
 				# Add "of the" text next to unit ("episode" or "video") text
-				self.watched_item_text = self.watched_item_text.replace(self.media_dictionary["media"]["texts"]["unit"], self.media_dictionary["media"]["texts"]["unit"] + " {}".format(self.of_the_text))
+				self.watched_item_text = self.watched_item_text.replace(self.media_dictionary["media"]["texts"]["unit"][self.user_language], self.media_dictionary["media"]["texts"]["unit"][self.user_language] + " {}".format(self.of_the_text))
 
 				# Add media item title to "of the" text
 				self.watched_item_text = self.watched_item_text.replace(self.of_the_text, self.of_the_text + ' "' + self.media_dictionary["media"]["item"]["title"] + '"')
@@ -101,8 +110,8 @@ class Register_Media(Watch_History):
 				if self.media_dictionary["media"]["title"] + " " in self.media_dictionary["media"]["item"]:
 					self.watched_item_text = self.watched_item_text.replace(self.media_dictionary["media"]["title"] + " ", "")
 
-			# Add container (media type or "YouTube Channel" text for video media type) to watched item text
-			self.watched_item_text += " " + self.media_dictionary["media"]["texts"]["container"]
+			# Add container (media type or "YouTube channel" text for video media type) to watched item text
+			self.watched_item_text += " " + self.media_dictionary["media"]["texts"]["container_text"]["container"]
 
 			# Define Diary Slim text as the template formatted with the "watched item text" and the media title per language
 			self.media_dictionary["register"]["Diary Slim"]["text"] = template.format(self.watched_item_text, self.media_dictionary["media"]["titles"]["language"])
@@ -351,16 +360,7 @@ class Register_Media(Watch_History):
 						language_text = self.texts[text_key][language]
 
 					if key == "first_episode_in_year":
-						if self.language_texts["dubbed"] in self.media_dictionary["media"]["texts"]["container"]:
-							self.media_dictionary["media"]["texts"]["container"] = self.media_dictionary["media"]["texts"]["container"].replace(self.language_texts["dubbed"], "")
-
-							if " " in self.media_dictionary["media"]["texts"]["container"][0]:
-								self.media_dictionary["media"]["texts"]["container"] = self.media_dictionary["media"]["texts"]["container"][1:]
-
-							if " " in self.media_dictionary["media"]["texts"]["container"][-1]:
-								self.media_dictionary["media"]["texts"]["container"] = self.media_dictionary["media"]["texts"]["container"][:-1]
-		
-						language_text = self.texts["first_{}_in_year"][language].format(self.media_dictionary["media"]["texts"]["container"])
+						language_text = self.texts["first_{}_in_year"][language].format(self.media_dictionary["media"]["texts"]["container"][self.user_language].lower())
 
 					text += language_text
 
@@ -631,13 +631,13 @@ class Register_Media(Watch_History):
 			self.media_dictionary["media"]["dates"] = self.File.Dictionary(self.media_dictionary["media"]["folders"]["dates"], next_line = True)
 
 			# Get started watching time
-			self.media_dictionary["media"]["started_watching"] = self.Date.From_String(self.media_dictionary["media"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["media"]["texts"]["the_container"]])
+			self.media_dictionary["media"]["started_watching"] = self.Date.From_String(self.media_dictionary["media"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["media"]["texts"]["container_text"]["the"]])
 
 			# Define time spent watching using started watching time and finished watching time
 			self.media_dictionary["media"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["media"]["started_watching"], self.media_dictionary["media"]["finished_watching"])["difference_strings"][self.user_language]
 
 			# Format the time template
-			self.media_dictionary["media"]["item"]["formatted_template"] = "\n\n" + template.format(self.media_dictionary["media"]["texts"]["the_container"], self.media_dictionary["media"]["time_spent_watching"])
+			self.media_dictionary["media"]["item"]["formatted_template"] = "\n\n" + template.format(self.media_dictionary["media"]["texts"]["container_text"]["the"], self.media_dictionary["media"]["time_spent_watching"])
 
 			# Add the time template to the media dates text
 			self.media_dictionary["media"]["finished_watching_text"] = self.File.Contents(self.media_dictionary["media"]["folders"]["dates"])["string"] + self.media_dictionary["media"]["item"]["formatted_template"]
@@ -729,10 +729,10 @@ class Register_Media(Watch_History):
 		Write_On_Diary_Slim_Module(self.media_dictionary["register"]["Diary Slim"]["text"], add_time = False)
 
 	def Show_Information(self):
-		self.media_dictionary["header_text"] = self.Text.Capitalize(self.media_dictionary["media"]["texts"]["container"]) + ": "
+		self.media_dictionary["header_text"] = self.Text.Capitalize(self.media_dictionary["media"]["texts"]["container_text"]["container"]) + ": "
 
 		if self.media_dictionary["media"]["states"]["completed"] == True:
-			text = self.media_dictionary["media_type"]["genders"]["this"] + " " + self.media_dictionary["media"]["texts"]["container"]
+			text = self.media_dictionary["media"]["texts"]["container_text"]["this"]
 			self.media_dictionary["header_text"] = self.language_texts["you_finished_watching_{}"].format(text) + ": "
 
 		self.Show_Media_Information(self.media_dictionary)

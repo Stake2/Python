@@ -539,7 +539,7 @@
 	},
 	"origin_location": {
 		"en": "Origin location",
-		"pt": "Local de Origem"
+		"pt": "Local de origem"
 	},
 	"watching_statuses, type: list": {
 		"en": [
@@ -644,6 +644,10 @@
 	"select_{}_to_watch": {
 		"en": "Select {} to watch",
 		"pt": "Selecione {} para assistir"
+	},
+	"video_serie": {
+		"pt": "série de vídeos",
+		"en": "video series"
 	},
 	"youtube_video": {
 		"pt": "vídeo do YouTube",
@@ -820,6 +824,10 @@
 	"when_commented, en - pt": "When commented - Quando comentou",
 	"re_watched, type: format, en - pt": "(Re-Watched {}x - Re-Assistido {}x)",
 	"re_watched, type: regex, en - pt": "\\(Re-Watched [0-9]{1,}x - Re-Assistido [0-9]{1,}x\\)",
+	"re_watched, type: regex": {
+		"pt": "(Re-Assistido [0-9]{1,}x)",
+		"en": "(Re-Watched [0-9]{1,}x)"
+	},
 	"re_watched, type: format": {
 		"pt": "(Re-Assistido {}x)",
 		"en": "(Re-Watched {}x)"
