@@ -1,4 +1,4 @@
 Fui dormir {}, acordei {}, levantei.
-Lavei o rosto, liguei o computador.
-Bebi um pouco de água, fiz login no computador.
+Lavei o rosto, bebi um pouco de água.
+Liguei o computador, fiz login no computador.
 Abri o Diary_Slim.py, criei o novo Diário Slim e o Diary_Slim.py escreveu nele.

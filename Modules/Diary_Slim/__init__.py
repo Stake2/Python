@@ -1,12 +1,6 @@
 # Diary_Slim.py
 
-from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
-from Diary_Slim.Write_On_Diary_Slim import Write_On_Diary_Slim as Write_On_Diary_Slim
 
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
 
 class Run():
 	def __init__(self):
@@ -14,6 +8,11 @@ class Run():
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -24,6 +23,9 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
+		from Diary_Slim.Write_On_Diary_Slim import Write_On_Diary_Slim as Write_On_Diary_Slim
 
 		self.classes = [
 			Create_New_Diary_Slim,

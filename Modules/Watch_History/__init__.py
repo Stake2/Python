@@ -1,21 +1,16 @@
 # Watch_History.py
 
-from Watch_History.Watch_Media import Watch_Media as Watch_Media
-from Watch_History.Start_Watching_Media import Start_Watching_Media as Start_Watching_Media
-from Watch_History.Media_Info import Media_Info as Media_Info
-from Watch_History.Watch_List_Of_Media import Watch_List_Of_Media as Watch_List_Of_Media
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -26,6 +21,11 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Watch_History.Watch_Media import Watch_Media as Watch_Media
+		from Watch_History.Start_Watching_Media import Start_Watching_Media as Start_Watching_Media
+		from Watch_History.Media_Info import Media_Info as Media_Info
+		from Watch_History.Watch_List_Of_Media import Watch_List_Of_Media as Watch_List_Of_Media
 
 		self.classes = [
 			Watch_Media,

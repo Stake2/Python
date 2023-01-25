@@ -1,19 +1,16 @@
 # Diary.py
 
-from Diary.Create_New_Diary_Chapter import Create_New_Diary_Chapter as Create_New_Diary_Chapter
-from Diary.Write_On_Diary import Write_On_Diary as Write_On_Diary
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -24,6 +21,9 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Diary.Create_New_Diary_Chapter import Create_New_Diary_Chapter as Create_New_Diary_Chapter
+		from Diary.Write_On_Diary import Write_On_Diary as Write_On_Diary
 
 		self.classes = [
 			Create_New_Diary_Chapter,

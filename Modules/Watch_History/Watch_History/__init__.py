@@ -561,17 +561,23 @@ class Watch_History(object):
 				"title": self.Input.Select(dictionary["media_type"]["media_list"], language_options = language_options, show_text = dictionary["texts"]["show"], select_text = dictionary["texts"]["select"])["option"],
 			})
 
+
+		sanitized_title = media["title"]
+
+		if sanitized_title[0] + sanitized_title[1] == ": ":
+			sanitized_title = sanitized_title[2:]
+
 		# Define media info and local media folder
 		if "folders" in media and "root" in media["folders"]:
 			media["folders"].update({
 				"media": dictionary["media"]["folders"]["media"],
 				"media_type_comments": {
-					"root": dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/"
+					"root": dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
 			})
 
-			if media["title"] + "/" not in media["folders"]["media"]:
-				media["folders"]["media"] += self.Sanitize(media["title"], restricted_characters = True) + "/"
+			if sanitized_title + "/" not in media["folders"]["media"]:
+				media["folders"]["media"] += self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 
 			# Create folders
 			for key in media["folders"]:
@@ -584,10 +590,10 @@ class Watch_History(object):
 
 		if "folders" in media and "root" not in media["folders"]:
 			media["folders"].update({
-				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
-				"media": self.root_folders["media"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
+				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
+				"media": self.root_folders["media"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
 				"media_type_comments": {
-					"root": dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/"
+					"root": dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
 			})
 
@@ -602,10 +608,10 @@ class Watch_History(object):
 
 		if "folders" not in media:
 			media["folders"] = {
-				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
-				"media": self.root_folders["media"] + self.Sanitize(media["title"], restricted_characters = True) + "/",
+				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
+				"media": self.root_folders["media"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
 				"media_type_comments": {
-					"root": self.folders["comments"][dictionary["media_type"]["plural"]["en"].lower()]["root"] + self.Sanitize(media["title"], restricted_characters = True) + "/"
+					"root": self.folders["comments"][dictionary["media_type"]["plural"]["en"].lower()]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
 			}
 
@@ -751,8 +757,30 @@ class Watch_History(object):
 				show_text = self.Text.Capitalize(self.language_texts["youtube_video_series"])
 				select_text = self.language_texts["select_a_youtube_video_series"]
 
+				list_ = dictionary["media"]["items"]["list"].copy()
+
+				for series in dictionary["media"]["items"]["list"].copy():
+					folders = {
+						"root": dictionary["media"]["items"]["folders"]["root"] + self.Sanitize(series, restricted_characters = True) + "/"
+					}
+
+					folders["details"] = folders["root"] + self.language_texts["details, title()"] + ".txt"
+
+					folders["titles"] = {
+						"root": folders["root"] + self.language_texts["titles, title()"] + "/"
+					}
+
+					folders["titles"]["file"] = folders["titles"]["root"] + self.full_user_language + ".txt"
+
+					titles = self.File.Contents(folders["titles"]["file"])["lines"]
+
+					details = self.File.Dictionary(folders["details"])
+
+					if details[self.language_texts["episode, title()"]] == titles[-1]:
+						list_.remove(series)
+
 				if watch == True:
-					title = self.Input.Select(dictionary["media"]["items"]["list"], show_text = show_text, select_text = select_text)["option"]
+					title = self.Input.Select(list_, show_text = show_text, select_text = select_text)["option"]
 
 			if media_item != None:
 				title = media_item
@@ -801,7 +829,11 @@ class Watch_History(object):
 
 				self.Folder.Create(dictionary["media"]["item"]["folders"][key]["root"])
 
-			# Define media type comments folder for media with media list
+			# Define media comments folder comments file for media with media list
+			dictionary["media"]["item"]["folders"]["comments"]["comments"] = dictionary["media"]["item"]["folders"]["comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
+			self.File.Create(dictionary["media"]["item"]["folders"]["comments"]["comments"])
+
+			# Define media type comments folder comments file for media with media list
 			dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"] = dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.texts["comments, title()"]["en"] + ".json"
 			self.File.Create(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
 
@@ -809,6 +841,9 @@ class Watch_History(object):
 				"File names": [],
 				"Dictionary": {}
 			}
+
+			if self.File.Contents(dictionary["media"]["item"]["folders"]["comments"]["comments"])["lines"] == []:
+				self.JSON.Edit(dictionary["media"]["item"]["folders"]["comments"]["comments"], dict_)
 
 			if self.File.Contents(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])["lines"] == []:
 				self.JSON.Edit(dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], dict_)

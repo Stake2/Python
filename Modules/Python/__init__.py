@@ -1,20 +1,16 @@
 # Python.py
 
-from Python.Create_New_Module import Create_New_Module as Create_New_Module
-from Python.Create_Language_Text import Create_Language_Text as Create_Language_Text
-from Python.List_Modules import List_Modules as List_Modules
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -25,6 +21,10 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Python.Create_New_Module import Create_New_Module as Create_New_Module
+		from Python.Create_Language_Text import Create_Language_Text as Create_Language_Text
+		from Python.List_Modules import List_Modules as List_Modules
 
 		self.classes = [
 			Create_New_Module,

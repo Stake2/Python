@@ -1,19 +1,16 @@
 # Tasks.py
 
-from Tasks.Register_Task import Register_Task as Register_Task
-from Tasks.Show_Tasks import Show_Tasks as Show_Tasks
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -24,6 +21,9 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Tasks.Register_Task import Register_Task as Register_Task
+		from Tasks.Show_Tasks import Show_Tasks as Show_Tasks
 
 		self.classes = [
 			Register_Task,

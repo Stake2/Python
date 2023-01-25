@@ -58,6 +58,10 @@ class Update_Files(Watch_History):
 
 		contents = self.Folder.Contents(folder)
 
+		media_comments_folder = self.dictionary["media"]["item"]["folders"]["comments"]["root"]
+
+		comments_contents = self.Folder.Contents(media_comments_folder)["dictionary"]
+
 		if len(contents["file"]["list"]) != 1:
 			if self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"]:
 				print()
@@ -68,8 +72,9 @@ class Update_Files(Watch_History):
 			print()
 			print(self.language_texts["comments, title()"] + ":")
 			print()
-			print(self.Folder.language_texts["folder, title()"] + ":")
+			print(self.Folder.language_texts["folders, title()"] + ":")
 			print(folder)
+			print(media_comments_folder)
 			print()
 
 			if self.dictionary["media"]["states"]["series_media"] == True:
@@ -104,7 +109,9 @@ class Update_Files(Watch_History):
 
 						comment[1] = comment[1].replace(self.dictionary["media"]["title"], self.dictionary["media"]["titles"]["language"])
 
-						if self.language_texts["dubbed, title()"] in comment[1]:
+						self.dictionary["media"]["states"]["watch_dubbed"] = False
+
+						if " " + self.language_texts["dubbed, title()"] in self.Text.From_List(comment):
 							self.dictionary["media"]["states"]["watch_dubbed"] = True
 
 						time = ""
@@ -126,12 +133,24 @@ class Update_Files(Watch_History):
 							comment.insert(5, "")
 
 						if re.search(" " + self.texts["re_watched, type: regex, en - pt"], file_name) != None:
-							file_name = re.sub(" " + self.texts["re_watched, type: regex, en - pt"], "", file_name)
+							file_name = re.sub(self.texts["re_watched, type: regex"]["en"] + " - ", "", file_name)
 
 							if re.search(" " + self.texts["re_watched, type: regex, en - pt"], comment[1]) != None:
 								comment[1] = re.sub(self.texts["re_watched, type: regex"]["en"] + " - ", "", comment[1])
 
-							#self.File.Move(file, folder + file_name + ".txt")
+							self.File.Move(file, folder + file_name + ".txt")
+							file = folder + file_name + ".txt"
+
+						text = self.Text.From_List(comment)
+						self.File.Edit(file, text, "w")
+
+						if file_name not in comments_contents:
+							comments_contents[file_name] = comments_contents["root"] + file_name + ".txt"
+							self.File.Create(comments_contents[file_name])
+
+						self.File.Edit(comments_contents[file_name], text, "w")
+
+						self.dictionary["media"]["states"]["christmas"] = False
 
 						if "25/12" in time:
 							self.dictionary["media"]["states"]["christmas"] = True
@@ -195,7 +214,7 @@ class Update_Files(Watch_History):
 
 							comments_json["Dictionary"][file_name].update({
 								"YouTube ID": youtube_id,
-								"YouTube link": self.remote_origins["YouTube"] + "watch?v=" + youtube_id + "&list=" + self.dictionary["media"]["item"]["details"][self.language_texts["origin_location"]] + "&index=" + str(int(episode_number) + 1),
+								"YouTube link": self.remote_origins["YouTube"] + "watch?v=" + youtube_id + "&list=" + self.dictionary["media"]["item"]["details"][self.language_texts["origin_location"]] + "&index=" + str(int(episode_number)),
 							})
 
 							comments_json["Dictionary"][file_name].update({
@@ -203,6 +222,11 @@ class Update_Files(Watch_History):
 								"ID": youtube_comment_ids[0]
 							})
 
+				#if "Times" in contents["dictionary"]:
+					#self.Folder.Delete(contents["dictionary"]["Times"]["root"])
+
+				#if "YouTube IDs" in contents["dictionary"]:
+					#self.Folder.Delete(contents["dictionary"]["YouTube IDs"]["root"])
+
 				self.JSON.Show(comments_json)
-				self.Text.Copy(self.Text.From_List(comment))
 				input()

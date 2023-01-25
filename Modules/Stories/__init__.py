@@ -1,21 +1,16 @@
 # Stories.py
 
-from Stories.Select_Story import Select_Story as Select_Story
-from Stories.Create_New_Story import Create_New_Story as Create_New_Story
-from Stories.Show_Story_Information import Show_Story_Information as Show_Story_Information
-from Stories.Copy_Story_Titles import Copy_Story_Titles as Copy_Story_Titles
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -26,6 +21,11 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Stories.Select_Story import Select_Story as Select_Story
+		from Stories.Create_New_Story import Create_New_Story as Create_New_Story
+		from Stories.Show_Story_Information import Show_Story_Information as Show_Story_Information
+		from Stories.Copy_Story_Titles import Copy_Story_Titles as Copy_Story_Titles
 
 		self.classes = [
 			Select_Story,

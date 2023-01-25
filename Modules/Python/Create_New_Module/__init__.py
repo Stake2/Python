@@ -147,7 +147,7 @@ class Create_New_Module(Python):
 
 			self.classes_string += class_ + ","
 
-			self.import_classes_string += "from {}.{} import {} as {}".format(self.module_name, class_, class_, class_)
+			self.import_classes_string += "\t\t" + "from {}.{} import {} as {}".format(self.module_name, class_, class_, class_)
 
 			if class_ != list(self.classes)[-1]:
 				self.classes_string += "\n"
@@ -241,11 +241,11 @@ class Create_New_Module(Python):
 	def Change_Global_Switches(self):
 		self.switches_file = self.Global_Switches.switches_file
 
-		self.switches = self.File.Dictionary(self.switches_file)
-		self.switches["Testing"] = True
-		self.switches["Verbose"] = True
+		self.switches = self.JSON.To_Python(self.switches_file)
+		self.switches["testing"] = True
+		self.switches["versbose"] = True
 
-		self.File.Edit(self.switches_file, self.Text.From_Dictionary(self.switches), "w")
+		self.File.Edit(self.switches_file, sself.JSON.From_Python(self.switches), "w")
 
 	def Show_Module_Info(self):
 		print(self.large_bar)

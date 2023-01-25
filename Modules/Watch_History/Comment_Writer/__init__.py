@@ -102,7 +102,10 @@ class Comment_Writer(Watch_History):
 		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# Read selected media "Comments.json" file to get media comments dictionary
-		self.media_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
+		self.media_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["comments"]["comments"])
+
+		# Read selected media "Comments.json" file to get media comments dictionary
+		self.media_type_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
 
 	def Write_Comment(self):
 		# Define comment as an empty string
@@ -183,10 +186,11 @@ class Comment_Writer(Watch_History):
 		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
 
 		# Add comment file name to file names list
+		self.media_type_comments["File names"].append(self.media_dictionary["media"]["comment"]["file_name"])
 		self.media_comments["File names"].append(self.media_dictionary["media"]["comment"]["file_name"])
 
 		# Add comment file name, times, and titles keys to comment dictionary
-		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
+		self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
 			"File name": self.media_dictionary["media"]["comment"]["file_name"],
 			"Times": {
 				"date": str(self.media_dictionary["media"]["comment"]["time"]["date"]),
@@ -197,7 +201,7 @@ class Comment_Writer(Watch_History):
 
 		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media_dictionary["media"]["states"]["video"] == True:
-			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
+			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
 				"YouTube ID": self.media_dictionary["media"]["episode"]["youtube_id"],
 			})
 
@@ -210,21 +214,24 @@ class Comment_Writer(Watch_History):
 					link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
 
 				if validators.url(link) == True:
-					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Link"] = link
+					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Link"] = link
 
 					link = urlparse(link)
 					query = link.query
 					parameters = parse_qs(query)
 
-					self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
+					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)
 
 		if dict_ != {}:
-			self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
+			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
 
-		# Update media type Comments.json file
-		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_comments)
+		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]
+
+		# Update media and media type Comments.json file
+		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)
+		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comments"], self.media_comments)
 
 		# --- #
 

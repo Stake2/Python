@@ -198,13 +198,11 @@ class Main():
 	def Get_Modules(self):
 		self.modules = self.File.Contents(self.apps_folders["modules"]["usage_modules"])["lines"]
 
-		self.test_modules = True
-
 		for module_name in self.modules:
 			module = {
 				"name": module_name,
 				"key": module_name.lower(),
-				"module": importlib.import_module(module_name),
+				"module": importlib.import_module(module_name)
 			}
 
 			module.update({

@@ -1,20 +1,16 @@
 # Years.py
 
-from Years.Verify_Current_Year import Verify_Current_Year as Verify_Current_Year
-from Years.Create_Year_Summary import Create_Year_Summary as Create_Year_Summary
-from Years.Show_Year_Information import Show_Year_Information as Show_Year_Information
-
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
-
 class Run():
 	def __init__(self):
 		# Global Switches dictionary
 		self.global_switches = {
 			"verbose": False,
 		}
+
+		from Language import Language as Language
+		from Input import Input as Input
+		from Folder import Folder as Folder
+		from JSON import JSON as JSON
 
 		self.Language = Language(self.global_switches)
 		self.Folder = Folder(self.global_switches)
@@ -25,6 +21,10 @@ class Run():
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		from Years.Verify_Current_Year import Verify_Current_Year as Verify_Current_Year
+		from Years.Create_Year_Summary import Create_Year_Summary as Create_Year_Summary
+		from Years.Show_Year_Information import Show_Year_Information as Show_Year_Information
 
 		self.classes = [
 			Verify_Current_Year,
