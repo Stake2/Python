@@ -356,11 +356,11 @@ class Register_Media(Watch_History):
 					if "_" not in key:
 						text_key += ", title()"
 
-					if key != "first_episode_in_year":
+					if key != "first_media_type_episode_in_year":
 						language_text = self.texts[text_key][language]
 
-					if key == "first_episode_in_year":
-						language_text = self.texts["first_{}_in_year"][language].format(self.media_dictionary["media"]["texts"]["container"][self.user_language].lower())
+					if key == "first_media_type_episode_in_year":
+						language_text = self.texts["first_{}_in_year"][language].format(self.media_dictionary["media"]["texts"]["container"][language].lower())
 
 					text += language_text
 
@@ -505,7 +505,7 @@ class Register_Media(Watch_History):
 			self.File.Edit(self.current_year["folders"][full_language][watched_media][media_type_folder][file_name], self.media_dictionary["register"]["episode_text"][language], "w")
 
 			# First episode in year file
-			if self.media_dictionary["media"]["states"]["first_episode_in_year"] == True:
+			if self.media_dictionary["media"]["states"]["first_media_type_episode_in_year"] == True:
 				firsts_of_the_year_text = self.texts["firsts_of_the_year"][language]
 				type_folder = self.texts["media, title()"][language]
 

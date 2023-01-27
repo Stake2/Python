@@ -192,6 +192,7 @@ class Comment_Writer(Watch_History):
 		# Add comment file name, times, and titles keys to comment dictionary
 		self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
 			"File name": self.media_dictionary["media"]["comment"]["file_name"],
+			"Media Type": self.media_dictionary["media_type"]["plural"]["en"],
 			"Times": {
 				"date": str(self.media_dictionary["media"]["comment"]["time"]["date"]),
 				"date_time_format": self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language]
@@ -202,11 +203,11 @@ class Comment_Writer(Watch_History):
 		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media_dictionary["media"]["states"]["video"] == True:
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
-				"YouTube ID": self.media_dictionary["media"]["episode"]["youtube_id"],
+				"Video ID": self.media_dictionary["media"]["episode"]["youtube_id"],
+				"Video link": self.media_dictionary["media"]["episode"]["remote"]["link"]
 			})
 
-			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and \
-				"remote" in self.media_dictionary["media"]["episode"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
+			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
 				link = ""
 
 				while validators.url(link) != True:
@@ -214,13 +215,14 @@ class Comment_Writer(Watch_History):
 					link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
 
 				if validators.url(link) == True:
-					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Link"] = link
-
 					link = urlparse(link)
 					query = link.query
-					parameters = parse_qs(query)
+					parameters = parse_qs(query)	
 
-					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["ID"] = parameters["lc"][0]
+					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
+						"ID": parameters["lc"][0],
+						"Link": link
+					})
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)
 

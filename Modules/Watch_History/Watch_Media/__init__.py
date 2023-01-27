@@ -395,66 +395,6 @@ class Watch_Media(Watch_History):
 			"webm"
 		]
 
-		# Define media texts to be used in the "Show_Media_Information" root method
-		self.media_dictionary["media"]["texts"] = {
-			"genders": self.media_dictionary["media_type"]["genders"]
-		}
-
-		# Define the container, item, and unit texts as the media type (for movies)
-		for item in ["container", "item", "unit"]:
-			self.media_dictionary["media"]["texts"][item] = self.media_dictionary["media_type"]["singular"]
-
-		# Define the container, item, and unit for series media
-		if self.media_dictionary["media"]["states"]["series_media"] == True:
-			# Define the unit text as the "episode" text per language
-			self.media_dictionary["media"]["texts"]["unit"] = {}
-
-			for language in self.small_languages:
-				self.media_dictionary["media"]["texts"]["unit"][language] = self.texts["episode"][language]
-
-			# Define the item text as the "season" text for media that have a media list
-			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
-				self.media_dictionary["media"]["texts"]["item"] = {}
-
-				for language in self.small_languages:
-					self.media_dictionary["media"]["texts"]["item"][language] = self.texts["season"][language]
-
-			# Define the container, item, and unit texts for video series media
-			if self.media_dictionary["media"]["states"]["video"] == True:
-				for language in self.small_languages:
-					self.media_dictionary["media"]["texts"]["container"][language] = self.texts["youtube_channel"][language]
-					self.media_dictionary["media"]["texts"]["item"][language] = self.texts["youtube_video_serie"][language]
-					self.media_dictionary["media"]["texts"]["unit"][language] = self.texts["video"][language]
-
-		dict_ = self.media_dictionary["media"]["texts"].copy()
-
-		for item in ["the", "this", "of"]:
-			for key in dict_:
-				if key != "genders":
-					if item + "_" + key not in self.media_dictionary["media"]["texts"]:
-						self.media_dictionary["media"]["texts"][item + "_" + key] = {}
-
-					for language in self.small_languages:
-						if self.media_dictionary["media"]["texts"][key][language] != self.texts["season"][language]:
-							item_text = self.media_dictionary["media_type"]["genders"][item]
-
-						if self.media_dictionary["media"]["texts"][key][language] == self.texts["season"][language]:
-							for gender_key in dict_["genders"]:
-
-								gender = dict_["genders"][gender_key]
-
-								if item == gender_key:
-									item_text = self.media_types["genders"]["feminine"][gender_key]
-
-						self.media_dictionary["media"]["texts"][item + "_" + key][language] = item_text + " " + self.media_dictionary["media"]["texts"][key][language]
-
-		# Add "Christmas special" text to unit text
-		if self.media_dictionary["media"]["states"]["video"] == False and self.Today_Is_Christmas == True:
-			self.media_dictionary["media"]["texts"]["unit"] = {}
-
-			for language in self.small_languages:
-				self.media_dictionary["media"]["texts"]["unit"][language] = self.texts["christmas_special_{}"][language].format(self.media_dictionary["media"]["texts"]["unit"][language])
-
 		container = self.media_dictionary["media"]["texts"]["container"][self.user_language]
 
 		if self.media_dictionary["media"]["states"]["video"] == False:

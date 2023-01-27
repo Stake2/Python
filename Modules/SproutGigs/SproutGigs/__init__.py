@@ -11,7 +11,7 @@ from JSON import JSON as JSON
 from Text import Text as Text
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
-import Block_Websites
+from Block_Websites.Unblock import Unblock as Unblock
 
 class SproutGigs():
 	def __init__(self, parameter_switches = None):
@@ -160,6 +160,7 @@ class SproutGigs():
 				self.categories[category]["data"][key] = value
 
 			self.categories[category]["info"]["number"] = self.categories[category]["data"]["number"]
+
 			del self.categories[category]["data"]["number"]
 
 	def Select_Category(self):
@@ -180,7 +181,7 @@ class SproutGigs():
 		self.Open_Category_Tab(self.category)
 
 		if self.category["name"] in self.Social_Networks.social_networks:
-			Block_Websites.Unblock(self.category["name"])
+			Unblock(self.category["name"])
 
 	def Open_Category_Tab(self, category, open = False):
 		text = self.language_texts["opening_{}_on_this_category_to_work"].format(self.website["name"])
