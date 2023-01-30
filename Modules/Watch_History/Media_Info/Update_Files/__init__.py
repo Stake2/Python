@@ -17,8 +17,8 @@ class Update_Files(Watch_History):
 
 			language_media_type = self.media_types["plural"][self.user_language][i]
 
-			media_list = self.media_types[plural_media_type]["media_list"]
-			comments_folder = self.folders["comments"][key]["root"]
+			# Get media with all "watching statuses", not just the "Watching" and "Re-Watching" ones
+			media_list = self.Get_Media_List(self.media_types[plural_media_type], self.texts["watching_statuses, type: list"]["en"])
 
 			print()
 			print("----------")
@@ -102,7 +102,11 @@ class Update_Files(Watch_History):
 
 						comment = self.File.Contents(file)["lines"]
 
-						comment[0] = self.language_texts["title, title()"] + ":"
+						if self.language_texts["title, title()"] + ":" not in comment[0]:
+							comment.insert(0, "")
+							comment.insert(0, "")
+							comment.insert(0, "")
+							comment[0] = self.language_texts["title, title()"] + ":"
 
 						if self.dictionary["media"]["title"] in comment[1]:
 							comment[1] = comment[1].replace(self.dictionary["media"]["title"], self.dictionary["media"]["titles"]["language"])
@@ -143,21 +147,10 @@ class Update_Files(Watch_History):
 							new_file_name = re.sub(self.texts["re_watched, type: regex"]["en"] + " - ", "", file_name)
 							new_file = folder + new_file_name + ".txt"
 
-							self.File.Move(file, new_file)
+							#self.File.Move(file, new_file)
 
-							file = new_file
-							file_name = new_file_name
-
-						# Update media type comment file with new comment
-						text = self.Text.From_List(comment)
-						self.File.Edit(file, text, "w")
-
-						if file_name not in comments_contents:
-							comments_contents[file_name] = comments_contents["root"] + file_name + ".txt"
-							self.File.Create(comments_contents[file_name])
-
-						# Update media comment file with new comment
-						self.File.Edit(comments_contents[file_name], text, "w")
+							#file = new_file
+							#file_name = new_file_name
 
 						self.dictionary["media"]["states"]["christmas"] = False
 
@@ -232,8 +225,8 @@ class Update_Files(Watch_History):
 						for language in self.small_languages:
 							full_language = self.full_languages[language]
 
-							file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
-							titles = self.File.Contents(file)["lines"]
+							titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
+							titles = self.File.Contents(titles_file)["lines"]
 
 							title = ""
 
@@ -250,6 +243,12 @@ class Update_Files(Watch_History):
 									title = self.dictionary["media"]["episode"]["separator"] + episode_number + " " + title
 
 							comments_json["Dictionary"][file_name]["Titles"][language] = title
+
+							if self.dictionary["media"]["item"]["title"] not in comment[1]:
+								comment[1] += self.dictionary["media"]["item"]["title"] + " "
+
+							if title not in comment[1]:
+								comment[1] += title
 
 						# Add YouTube ID, comment link, and comment ID
 						if self.dictionary["media"]["states"]["video"] == True:
@@ -269,14 +268,28 @@ class Update_Files(Watch_History):
 								"Comment link": comments_json["Dictionary"][file_name]["Video link"] + "&lc=" + youtube_comment_ids[0]
 							})
 
+							if youtube_id not in comment[2]:
+								comment.insert(2, youtube_id)
+
+						# Update media type comment file with new comment
+						text = self.Text.From_List(comment)
+						#self.File.Edit(file, text, "w")
+
+						if file_name not in comments_contents:
+							comments_contents[file_name] = comments_contents["root"] + file_name + ".txt"
+							#self.File.Create(comments_contents[file_name])
+
+						# Update media comment file with new comment
+						#self.File.Edit(comments_contents[file_name], text, "w")
+
 				# Update media type "Comments.json" file
-				self.JSON.Edit(comments_json_file, comments_json)
+				#self.JSON.Edit(comments_json_file, comments_json)
 
 				# Update media "Comments.json" file
-				self.JSON.Edit(comments_contents["comments"], comments_json)
+				#self.JSON.Edit(comments_contents["comments"], comments_json)
 
-				if "Times" in contents["dictionary"]:
-					self.Folder.Delete(contents["dictionary"]["Times"]["root"])
+				#if "Times" in contents["dictionary"]:
+				#	self.Folder.Delete(contents["dictionary"]["Times"]["root"])
 
-				if "YouTube IDs" in contents["dictionary"]:
-					self.Folder.Delete(contents["dictionary"]["YouTube IDs"]["root"])
+				#if "YouTube IDs" in contents["dictionary"]:
+				#	self.Folder.Delete(contents["dictionary"]["YouTube IDs"]["root"])

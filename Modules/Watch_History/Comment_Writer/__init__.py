@@ -146,7 +146,12 @@ class Comment_Writer(Watch_History):
 			# Define episode text (episode title)
 			episode_text = self.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
-			self.media_dictionary["media"]["comment"]["comment"] += episode_text + "\n"
+			self.media_dictionary["media"]["comment"]["comment"] += episode_text
+
+			if self.media_dictionary["media"]["states"]["video"] == True:
+				self.media_dictionary["media"]["comment"]["comment"] += self.media_dictionary["media"]["episode"]["youtube_id"] + "\n"
+
+			self.media_dictionary["media"]["comment"]["comment"] += "\n"
 
 			# Add the time text to the comment to be replaced by the commented time after finishing the comment
 			self.media_dictionary["media"]["comment"]["comment"] += self.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"

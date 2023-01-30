@@ -1310,6 +1310,10 @@
 		"pt": "Primeiros Do Ano",
 		"en": "Firsts Of The Year"
 	},
+	"first_episode_in_year": {
+		"en": "First episode in year",
+		"pt": "Primeiro episódio no ano"
+	},
 	"first_in_year": {
 		"en": "First in year",
 		"pt": "Primeiro no ano"
@@ -1503,5 +1507,9 @@
 	"states, title()": {
 		"en": "States",
 		"pt": "Estados"
+	},
+	"single_unit": {
+		"en": "Single unit",
+		"pt": "Única unidade"
 	}
 }

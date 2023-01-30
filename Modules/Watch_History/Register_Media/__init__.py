@@ -274,6 +274,12 @@ class Register_Media(Watch_History):
 		self.File.Edit(self.folders["watch_history"]["current_year"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"], "a")
 		self.File.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"], "a")
 
+		# ---------------------------- #
+
+		# To-Do: Add to media "Watched.json" file
+		# Create "[Episode number].txt" file on "Files" folder
+		# Or "Movie.txt" file on root "Watched" folder for Movies
+
 	def Create_Episode_File(self):
 		# Number: [Episode number]
 		# Media type number: [Media type number]
@@ -356,8 +362,11 @@ class Register_Media(Watch_History):
 					if "_" not in key:
 						text_key += ", title()"
 
-					if key != "first_media_type_episode_in_year":
+					if key not in ["first_episode_in_year", "first_media_type_episode_in_year"]:
 						language_text = self.texts[text_key][language]
+
+					if key == "first_episode_in_year":
+						language_text = self.texts["first_in_year"][language]
 
 					if key == "first_media_type_episode_in_year":
 						language_text = self.texts["first_{}_in_year"][language].format(self.media_dictionary["media"]["texts"]["container"][language].lower())
