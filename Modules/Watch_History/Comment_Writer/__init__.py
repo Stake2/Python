@@ -67,7 +67,8 @@ class Comment_Writer(Watch_History):
 
 	def Define_Files(self):
 		self.media_dictionary["media"]["comment"] = {
-			"file_name": ""
+			"file_name": "",
+			"file": ""
 		}
 
 		# Media type comment file name for non-movies
@@ -87,22 +88,33 @@ class Comment_Writer(Watch_History):
 				self.media_dictionary["media"]["comment"]["file_name"] += str(self.Text.Add_Leading_Zeros(self.media_dictionary["media"]["episode"]["number"]))
 
 		# Media type comment file name for movies
-		if self.media_dictionary["media"]["states"]["series_media"] == False:
+		if self.media_dictionary["media"]["states"]["series_media"] == False or self.language_texts["single_unit"] in self.media_dictionary["media"]["item"]["details"]:
 			self.media_dictionary["media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
 
 		# Media type comments folder comment file
 		self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
 		self.File.Create(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"])
 
-		# Media folder comment file
-		self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
-		self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"])
+		if self.media_dictionary["media"]["states"]["series_media"] == True and self.language_texts["single_unit"] not in self.media_dictionary["media"]["item"]["details"]:
+			# Media folder comment file
+			self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
+			self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"])
+
+			self.media_dictionary["media"]["comment"]["comments_folder"] = self.media_dictionary["media"]["item"]["folders"]["comments"]
+			self.media_dictionary["media"]["comment"]["file"] = self.media_dictionary["media"]["comment"]["comments_folder"]["comment"]
+
+		if self.media_dictionary["media"]["states"]["series_media"] == False or self.language_texts["single_unit"] in self.media_dictionary["media"]["item"]["details"]:
+			self.media_dictionary["media"]["item"]["folders"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
+			self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comment"])
+
+			self.media_dictionary["media"]["comment"]["comments_folder"] = self.media_dictionary["media"]["item"]["folders"]
+			self.media_dictionary["media"]["comment"]["file"] = self.media_dictionary["media"]["comment"]["comments_folder"]["comment"]
 
 		# Read Comments.json file to get comments dictionary
 		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# Read selected media "Comments.json" file to get media comments dictionary
-		self.media_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["comments"]["comments"])
+		self.media_comments = self.JSON.To_Python(self.media_dictionary["media"]["comment"]["comments_folder"]["comments"])
 
 		# Read selected media "Comments.json" file to get media comments dictionary
 		self.media_type_comments = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"])
@@ -135,7 +147,7 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["media"]["states"]["comment_writer"]["new"] == True:
 			key = "with_title"
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False:
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False and self.language_texts["single_unit"] not in self.media_dictionary["media"]["item"]["details"]:
 				key = "with_title_and_item"
 
 			title = self.media_dictionary["media"]["episode"][key][self.user_language]
@@ -188,7 +200,7 @@ class Comment_Writer(Watch_History):
 		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
 
 		# Media folder comment file
-		self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"], self.media_dictionary["media"]["comment"]["comment"], "w")
+		self.File.Edit(self.media_dictionary["media"]["comment"]["file"], self.media_dictionary["media"]["comment"]["comment"], "w")
 
 		# Add comment file name to file names list
 		self.media_type_comments["File names"].append(self.media_dictionary["media"]["comment"]["file_name"])
@@ -238,7 +250,7 @@ class Comment_Writer(Watch_History):
 
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)
-		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["comments"]["comments"], self.media_comments)
+		self.JSON.Edit(self.media_dictionary["media"]["comment"]["comments_folder"]["comments"], self.media_comments)
 
 		# --- #
 

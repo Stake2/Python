@@ -9,6 +9,7 @@ class Update_Files(Watch_History):
 		super().__init__()
 
 		self.Iterate()
+		#self.Create_Comment_Dictionary()
 
 	def Iterate(self):
 		i = 0
@@ -33,12 +34,12 @@ class Update_Files(Watch_History):
 					}
 				}
 
-				self.dictionary = self.Select_Media(self.dictionary)
-
 				print()
 				print("---")
 				print()
 				print(self.dictionary["media"]["title"] + ":")
+
+				self.dictionary = self.Select_Media(self.dictionary)
 
 				media_items = [self.dictionary["media"]["item"]["title"]]
 
@@ -50,7 +51,7 @@ class Update_Files(Watch_History):
 					self.dictionary = self.Define_Media_Item(self.dictionary, media_item = media_item)
 
 					self.Check_Status(self.dictionary)
-					self.Convert_Comments()
+					#self.Convert_Comments()
 
 			input()
 
@@ -283,7 +284,7 @@ class Update_Files(Watch_History):
 						#self.File.Edit(comments_contents[file_name], text, "w")
 
 				# Update media type "Comments.json" file
-				#self.JSON.Edit(comments_json_file, comments_json)
+				self.JSON.Edit(comments_json_file, comments_json)
 
 				# Update media "Comments.json" file
 				#self.JSON.Edit(comments_contents["comments"], comments_json)
@@ -293,3 +294,48 @@ class Update_Files(Watch_History):
 
 				#if "YouTube IDs" in contents["dictionary"]:
 				#	self.Folder.Delete(contents["dictionary"]["YouTube IDs"]["root"])
+
+	def Create_Comment_Dictionary(self):
+		self.dictionary = self.Select_Media_Type_And_Media()
+
+		comment = {
+			"File name": self.Input.Type(self.File.language_texts["file_name"]),
+			"Media Type": self.Input.Select(self.media_types["plural"]["en"])["option"],
+			"Times": {
+				"date": "",
+				"date_time_format": ""
+			},
+			"Titles": {}
+		}
+
+		date = self.Date.Now()
+		comment["Times"]["date_time_format"] = date["date_time_format"][self.user_language]
+		comment["Times"]["date"] = str(date["date"])
+
+		if comment["Media Type"] == "Videos":
+			comment.update({
+				"Video ID": "",
+				"Video link": self.remote_origins["YouTube"] + "watch?v={}",
+				"ID": "",
+				"Link": self.remote_origins["YouTube"] + "watch?v={}&lc={}"
+			})
+
+			comment["Video ID"] = self.Input.Type(self.language_texts["youtube_id, title()"])
+			comment["Video link"] = comment["Video link"].format(comment["Video ID"])
+
+			comment["ID"] = self.Input.Type(self.language_texts["youtube_comment_id, title()"])
+			comment["Link"] = comment["Link"].format(comment["Video ID"], comment["ID"])
+
+		print()
+		print(self.language_texts["titles, title()"] + ":")
+
+		for language in self.small_languages:
+			translated_language = self.translated_languages[language][self.user_language]
+
+			comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
+
+		dictionary = self.JSON.To_Python(file)
+		dictionary["File names"].append(comment["File name"])
+		dictionary["Dictionary"][comment["File name"]] = comment
+
+		self.JSON.Edit(file, dictionary)

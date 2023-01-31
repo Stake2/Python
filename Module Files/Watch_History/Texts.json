@@ -589,6 +589,10 @@
 		"en": "episodes",
 		"pt": "episódios"
 	},
+	"episodes, title()": {
+		"en": "Episodes",
+		"pt": "Episódios"
+	},
 	"episodes_with_subtitles": {
 		"en": "episodes with subtitles",
 		"pt": "episódios com legendas"
@@ -1079,6 +1083,10 @@
 	"youtube_id, title()": {
 		"pt": "ID do YouTube",
 		"en": "YouTube ID"
+	},
+	"youtube_comment_id, title()": {
+		"pt": "ID do Comentário do YouTube",
+		"en": "YouTube Comment ID"
 	},
 	"youtube_ids, title()": {
 		"pt": "IDs do YouTube",
