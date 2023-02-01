@@ -660,10 +660,7 @@ class Register_Media(Watch_History):
 		# If the media is completed, define its status as completed
 		if self.media_dictionary["media"]["states"]["completed"] == True:
 			# Update status key in media details
-			self.media_dictionary["media"]["details"][self.language_texts["status, title()"]] = self.language_texts["completed, title()"]
-
-			# Update media details file
-			self.File.Edit(self.media_dictionary["media"]["folders"]["details"], self.Text.From_Dictionary(self.media_dictionary["media"]["details"]), "w")
+			self.Change_Status(self.media_dictionary, self.language_texts["completed, title()"])
 
 	def Set_Media_As_Completed(self):
 		# Completed media and media item time and date part

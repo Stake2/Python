@@ -431,6 +431,9 @@ class Watch_Media(Watch_History):
 		dictionary.pop("select")
 		dictionary.pop("list")
 
+		if self.media_dictionary["media"]["states"]["media_list"] == False:
+			dictionary.pop("item")
+
 		# Write dictionary into media "Information.json" file
 		self.JSON.Edit(self.media_dictionary["media"]["folders"]["information"], dictionary)
 

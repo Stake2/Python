@@ -3,6 +3,8 @@
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 import re
+from urllib.parse import urlparse, parse_qs
+import validators
 
 class Update_Files(Watch_History):
 	def __init__(self):
@@ -51,7 +53,7 @@ class Update_Files(Watch_History):
 					self.dictionary = self.Define_Media_Item(self.dictionary, media_item = media_item)
 
 					self.Check_Status(self.dictionary)
-					#self.Convert_Comments()
+					self.Convert_Comments()
 
 			input()
 
@@ -298,9 +300,10 @@ class Update_Files(Watch_History):
 	def Create_Comment_Dictionary(self):
 		self.dictionary = self.Select_Media_Type_And_Media()
 
+		'''
 		comment = {
 			"File name": self.Input.Type(self.File.language_texts["file_name"]),
-			"Media Type": self.Input.Select(self.media_types["plural"]["en"])["option"],
+			"Media Type": self.dictionary["media_type"]["plural"]["en"],
 			"Times": {
 				"date": "",
 				"date_time_format": ""
@@ -320,10 +323,21 @@ class Update_Files(Watch_History):
 				"Link": self.remote_origins["YouTube"] + "watch?v={}&lc={}"
 			})
 
-			comment["Video ID"] = self.Input.Type(self.language_texts["youtube_id, title()"])
-			comment["Video link"] = comment["Video link"].format(comment["Video ID"])
+			link = ""
 
-			comment["ID"] = self.Input.Type(self.language_texts["youtube_comment_id, title()"])
+			while validators.url(link) != True:
+				# Ask for YouTube comment link
+				link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+
+			if validators.url(link) == True:
+				link = urlparse(link)
+				query = link.query
+				parameters = parse_qs(query)	
+
+				comment["Video ID"] = parameters["v"][0]
+				comment["ID"] = parameters["lc"][0]
+
+			comment["Video link"] = comment["Video link"].format(comment["Video ID"])
 			comment["Link"] = comment["Link"].format(comment["Video ID"], comment["ID"])
 
 		print()
@@ -334,8 +348,17 @@ class Update_Files(Watch_History):
 
 			comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
 
-		dictionary = self.JSON.To_Python(file)
-		dictionary["File names"].append(comment["File name"])
-		dictionary["Dictionary"][comment["File name"]] = comment
+		'''
 
-		self.JSON.Edit(file, dictionary)
+		#self.Text.Copy(str(self.Date.From_String(self.Input.Type())["date"]))
+
+		import collections
+
+		dictionary = self.JSON.To_Python(self.dictionary["media"]["item"]["folders"]["comments"]["comments"])
+		dictionary["File names"] = sorted(dictionary["File names"])
+		dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items()))
+
+		#dictionary["File names"].append(comment["File name"])
+		#dictionary["Dictionary"][comment["File name"]] = comment
+
+		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"] , dictionary)
