@@ -3,7 +3,7 @@
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
 class Write_On_Diary_Slim_Module(Diary_Slim):
-	def __init__(self, text, time = None, add_time = True, show_text = True, check_file_length = True):
+	def __init__(self, text, time = None, add_time = True, show_text = True, add_dot = True, check_file_length = True):
 		super().__init__()
 
 		self.current_diary_slim_file = self.File.Contents(self.current_diary_slim_file)["lines"][0]
@@ -14,7 +14,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		self.show_text = show_text
 		self.check_file_length = check_file_length
 
-		if self.text[-1] != ".":
+		if self.text[-1] != "." and add_dot == True:
 			self.text += "."
 
 		self.Write()

@@ -53,7 +53,7 @@ class Update_Files(Watch_History):
 					self.dictionary = self.Define_Media_Item(self.dictionary, media_item = media_item)
 
 					self.Check_Status(self.dictionary)
-					self.Convert_Comments()
+					#self.Convert_Comments()
 
 			input()
 

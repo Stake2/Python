@@ -1519,5 +1519,13 @@
 	"single_unit": {
 		"en": "Single unit",
 		"pt": "Única unidade"
+	},
+	"part, title()": {
+		"en": "Part",
+		"pt": "Parte"
+	},
+	"episodic, title()": {
+		"en": "Episodic",
+		"pt": "Episódica"
 	}
 }

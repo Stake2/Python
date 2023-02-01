@@ -11,27 +11,30 @@ class Comment_Writer(Watch_History):
 
 		self.media_dictionary = media_dictionary
 
-		self.media_dictionary["media"]["states"]["comment_writer"] = {
-			"backup": True,
-			"new": True,
-			"make": False
+		self.media_dictionary["comment_writer"] = {
+			"states": {
+				"backup": True,
+				"new": True,
+				"make": False,
+				"write": False
+			}
 		}
 
 		self.folders["comments"]["backups"]["backup"] = self.folders["comments"]["backups"]["root"] + "Backup.txt"
 
 		# If the backup file exists, it is not a new comment and the user is going to write the comment
 		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == True:
-			self.media_dictionary["media"]["states"]["comment_writer"]["new"] = False
+			self.media_dictionary["comment_writer"]["states"]["new"] = False
 
-			self.media_dictionary["media"]["states"]["comment_writer"]["write"] = True
+			self.media_dictionary["comment_writer"]["states"]["write"] = True
 
 		# If the backup file does not exist, ask the user if it wants to write a comment
 		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False:
-			self.media_dictionary["media"]["states"]["comment_writer"]["write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
+			self.media_dictionary["comment_writer"]["states"]["write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
 
-		if self.media_dictionary["media"]["states"]["comment_writer"]["write"] == True:
+		if self.media_dictionary["comment_writer"]["states"]["write"] == True:
 			# Create backup file
-			if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
+			if self.media_dictionary["comment_writer"]["states"]["backup"] == True:
 				self.File.Create(self.folders["comments"]["backups"]["backup"])
 
 			# Run methods
@@ -74,6 +77,7 @@ class Comment_Writer(Watch_History):
 		# Media type comment file name for non-movies
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			add = False
+
 			for alternative_episode_type in self.alternative_episode_types:
 				if alternative_episode_type in self.media_dictionary["media"]["episode"]["separator"]:
 					add = True
@@ -81,21 +85,24 @@ class Comment_Writer(Watch_History):
 			if add == True:
 				self.media_dictionary["media"]["comment"]["file_name"] += self.media_dictionary["media"]["episode"]["separator"] + " "
 
-			if "number_text" in self.media_dictionary["media"]["episode"]:
+			if "number_text" in self.media_dictionary["media"]["episode"] and self.media_dictionary["media"]["states"]["episodic"] == True:
 				self.media_dictionary["media"]["comment"]["file_name"] += self.media_dictionary["media"]["episode"]["number_text"]
+
+			if self.media_dictionary["media"]["states"]["video"] == True and self.media_dictionary["media"]["states"]["episodic"] == False:
+				self.media_dictionary["media"]["comment"]["file_name"] = self.media_dictionary["media"]["episode"]["title"]
 
 			else:
 				self.media_dictionary["media"]["comment"]["file_name"] += str(self.Text.Add_Leading_Zeros(self.media_dictionary["media"]["episode"]["number"]))
 
 		# Media type comment file name for movies
-		if self.media_dictionary["media"]["states"]["series_media"] == False or self.language_texts["single_unit"] in self.media_dictionary["media"]["item"]["details"]:
+		if self.media_dictionary["media"]["states"]["series_media"] == False or self.media_dictionary["media"]["states"]["single_unit"] == True:
 			self.media_dictionary["media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
 
 		# Media type comments folder comment file
 		self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
 		self.File.Create(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comment"])
 
-		if self.media_dictionary["media"]["states"]["series_media"] == True and self.language_texts["single_unit"] not in self.media_dictionary["media"]["item"]["details"]:
+		if self.media_dictionary["media"]["states"]["series_media"] == True and self.media_dictionary["media"]["states"]["single_unit"] == False:
 			# Media folder comment file
 			self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["comments"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
 			self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comments"]["comment"])
@@ -103,7 +110,7 @@ class Comment_Writer(Watch_History):
 			self.media_dictionary["media"]["comment"]["comments_folder"] = self.media_dictionary["media"]["item"]["folders"]["comments"]
 			self.media_dictionary["media"]["comment"]["file"] = self.media_dictionary["media"]["comment"]["comments_folder"]["comment"]
 
-		if self.media_dictionary["media"]["states"]["series_media"] == False or self.language_texts["single_unit"] in self.media_dictionary["media"]["item"]["details"]:
+		if self.media_dictionary["media"]["states"]["series_media"] == False or self.media_dictionary["media"]["states"]["single_unit"] == True:
 			self.media_dictionary["media"]["item"]["folders"]["comment"] = self.media_dictionary["media"]["item"]["folders"]["root"] + self.media_dictionary["media"]["comment"]["file_name"] + ".txt"
 			self.File.Create(self.media_dictionary["media"]["item"]["folders"]["comment"])
 
@@ -124,7 +131,7 @@ class Comment_Writer(Watch_History):
 		self.media_dictionary["media"]["comment"]["comment"] = ""
 
 		# If backup is true and the comment is not a new one, get the comment from the backup file
-		if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True and self.media_dictionary["media"]["states"]["comment_writer"]["new"] == False:
+		if self.media_dictionary["comment_writer"]["states"]["backup"] == True and self.media_dictionary["comment_writer"]["states"]["new"] == False:
 			self.media_dictionary["media"]["comment"]["comment"] += self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
 			print()
@@ -144,10 +151,10 @@ class Comment_Writer(Watch_History):
 		show_text += "\n\n" + "----------"
 
 		# If the comment is a new one, add episode text to comment
-		if self.media_dictionary["media"]["states"]["comment_writer"]["new"] == True:
+		if self.media_dictionary["comment_writer"]["states"]["new"] == True:
 			key = "with_title"
 
-			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False and self.language_texts["single_unit"] not in self.media_dictionary["media"]["item"]["details"]:
+			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"] and self.media_dictionary["media"]["states"]["video"] == False and self.media_dictionary["media"]["states"]["single_unit"] == False:
 				key = "with_title_and_item"
 
 			title = self.media_dictionary["media"]["episode"][key][self.user_language]
@@ -169,7 +176,7 @@ class Comment_Writer(Watch_History):
 			self.media_dictionary["media"]["comment"]["comment"] += self.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"
 
 			# If backup is true, backup comment to file
-			if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
+			if self.media_dictionary["comment_writer"]["states"]["backup"] == True:
 				self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media_dictionary["media"]["comment"]["comment"], "a", next_line = False)
 
 			# Add comment to show text
@@ -179,7 +186,7 @@ class Comment_Writer(Watch_History):
 			self.media_dictionary["media"]["comment"]["comment"] += "\n"
 
 		# If the comment is not a new one, load already written comment from backup file
-		if self.media_dictionary["media"]["states"]["comment_writer"]["new"] == False:
+		if self.media_dictionary["comment_writer"]["states"]["new"] == False:
 			show_text += "\n" + self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
 		# Ask for user to write comment
@@ -193,7 +200,7 @@ class Comment_Writer(Watch_History):
 
 	def Write_Comment_To_Files(self):
 		# Delete backup file
-		if self.media_dictionary["media"]["states"]["comment_writer"]["backup"] == True:
+		if self.media_dictionary["comment_writer"]["states"]["backup"] == True:
 			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
 		# Media type comment file
@@ -225,20 +232,20 @@ class Comment_Writer(Watch_History):
 			})
 
 			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
-				link = ""
+				original_link = ""
 
-				while validators.url(link) != True:
+				while validators.url(original_link) != True:
 					# Ask for YouTube comment link
-					link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
 
-				if validators.url(link) == True:
-					link = urlparse(link)
+				if validators.url(original_link) == True:
+					link = urlparse(original_link)
 					query = link.query
 					parameters = parse_qs(query)	
 
 					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
 						"ID": parameters["lc"][0],
-						"Link": link
+						"Link": self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video link"] + "&lc=" + parameters["lc"][0]
 					})
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)
@@ -247,6 +254,15 @@ class Comment_Writer(Watch_History):
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
 
 		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]
+
+		if self.media_dictionary["media"]["states"]["episodic"] == False:
+			import collections
+
+			self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"])
+			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items()))
+
+			self.media_comments["File names"] = sorted(self.media_comments["File names"])
+			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items()))
 
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)
