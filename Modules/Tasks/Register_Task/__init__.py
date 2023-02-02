@@ -21,16 +21,7 @@ class Register_Task(Tasks):
 			if "descriptions" not in self.task_dictionary:
 				self.task_dictionary["descriptions"] = self.task_dictionary["titles"]
 
-		self.task_dictionary["language_type"] = self.task_dictionary["type"]
-
-		i = 0
-		for task_type in self.task_types["en"]:
-			if task_type == self.task_dictionary["language_type"] and self.task_types[self.user_language][i] != self.task_dictionary["type"]:
-				self.task_dictionary["language_type"] = self.task_types[self.user_language][i]
-
-			i += 1
-
-		self.task_type = self.task_dictionary["type"]
+		self.task_type = self.task_dictionary["types"]["en"]
 
 		# Define "register" dictionary (key) inside task dictionary
 		self.task_dictionary.update({
@@ -133,25 +124,25 @@ class Register_Task(Tasks):
 			self.task_type_tasks[self.task_type]["Lists"]["Times"]["Language DateTime"][language].append(self.task_dictionary["register"]["Times"]["Language DateTime"][language])
 
 		# Define [Number. Task Type (Time)] and sanitized version for files
-		self.task_dictionary["register"]["Number. Task Type (Time)"] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["register"]["Times"]["Language DateTime"][self.user_language] + ")"
-		self.task_dictionary["register"]["Number. Task Type (Time) Sanitized"] = self.task_dictionary["register"]["Number. Task Type (Time)"].replace(":", ";").replace("/", "-")
+		self.task_dictionary["register"]["Number. Task Type (Time)"] = {
+			"normal": str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["register"]["Times"]["Language DateTime"][self.user_language] + ")",
+			"sanitized": {}
+		}
 
 		# Define [Number. Task Type (Time)] sanitized for files per language
-		self.task_dictionary["register"]["Number. Task Type (Time) Sanitized Languages"] = {}
-
 		for language in self.small_languages:
-			self.task_dictionary["register"]["Number. Task Type (Time) Sanitized Languages"][language] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
+			self.task_dictionary["register"]["Number. Task Type (Time)"]["sanitized"][language] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to [Number. Task Type (Time)] list
-		self.tasks["Number. Task Type (Time)"].append(self.task_dictionary["register"]["Number. Task Type (Time)"])
-		self.task_type_tasks[self.task_type]["Number. Task Type (Time)"].append(self.task_dictionary["register"]["Number. Task Type (Time)"])
+		self.tasks["Number. Task Type (Time)"].append(self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"])
+		self.task_type_tasks[self.task_type]["Number. Task Type (Time)"].append(self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"])
 
-		key = self.task_dictionary["register"]["Number. Task Type (Time)"]
+		key = self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"]
 
 		self.tasks["Dictionary"][key] = {
 			"Number": self.tasks["Number"],
 			"Task type number": self.task_type_tasks[self.task_type]["Number"],
-			"File name": self.task_dictionary["register"]["Number. Task Type (Time)"],
+			"File name": self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"],
 			"Titles": self.task_dictionary["titles"],
 			"Type": self.task_type,
 			"Times": self.task_dictionary["register"]["Times"]
@@ -159,7 +150,7 @@ class Register_Task(Tasks):
 
 		dict_ = self.Define_States_Dictionary(self.task_dictionary)
 
-		key = self.task_dictionary["register"]["Number. Task Type (Time)"]
+		key = self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"]
 
 		if dict_ != {}:
 			self.tasks["Dictionary"][key]["States"] = dict_
@@ -176,8 +167,8 @@ class Register_Task(Tasks):
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.task_type_tasks[self.task_type])
 
 		# Add to root and task type "File list.txt" file
-		self.File.Edit(self.folders["task_history"]["current_year"]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"], "a")
-		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"], "a")
+		self.File.Edit(self.folders["task_history"]["current_year"]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
+		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
 
 	def Create_File(self):
 		# Number: [Task number]
@@ -211,7 +202,7 @@ class Register_Task(Tasks):
 
 		# Define task file
 		folder = self.folders["task_history"]["current_year"]["per_task_type"][key]["files"]["root"]
-		file = folder + self.task_dictionary["register"]["Number. Task Type (Time) Sanitized"] + ".txt"
+		file = folder + self.task_dictionary["register"]["Number. Task Type (Time)"]["sanitized"][self.user_language] + ".txt"
 		self.File.Create(file)
 
 		self.task_dictionary["register"]["file_text"] = {}
@@ -252,12 +243,12 @@ class Register_Task(Tasks):
 		lines.extend([
 			self.Language.texts["type, title()"][language] + ": " + self.task_type + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.File.texts["file_name"][language] + ": " + self.task_dictionary["register"]["Number. Task Type (Time)"]
+			self.File.texts["file_name"][language] + ": " + self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"]
 		])
 
 		# Add states texts lines
-		if "States" in self.tasks["Dictionary"][self.task_dictionary["register"]["Number. Task Type (Time)"]]:
-			dict_ = self.tasks["Dictionary"][self.task_dictionary["register"]["Number. Task Type (Time)"]]["States"]
+		if "States" in self.tasks["Dictionary"][self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"]]:
+			dict_ = self.tasks["Dictionary"][self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"]]["States"]
 
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
@@ -270,7 +261,10 @@ class Register_Task(Tasks):
 					language_text = self.texts[text_key][language]
 
 				if key == "first_task_type_task_in_year":
-					task_type = self.texts["{}_task"][language].format(self.task_dictionary["types"][language])
+					task_type = self.task_types["items, type: dict"][language][self.task_type]
+
+					if self.task_type in ["Python", "PHP"]:
+						task_type = self.texts["{}_task"][language].format(self.task_types["items, type: dict"][language][self.task_type])
 
 					language_text = self.texts["first_{}_in_year"][language].format(task_type)
 
@@ -355,7 +349,7 @@ class Register_Task(Tasks):
 
 			# Folder names
 			root_folder = self.texts["done_tasks"][language]
-			type_folder = self.task_dictionary["language_type"]
+			type_folder = self.task_dictionary["types"][language]
 
 			# Done tasks folder
 			folder = self.current_year["folders"][full_language]["root"]
@@ -375,6 +369,15 @@ class Register_Task(Tasks):
 
 			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
 
+			# Done tasks file
+			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
+			file_name = self.task_dictionary["register"]["Number. Task Type (Time)"]["sanitized"][language]
+			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
+
+			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
+
+			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.task_dictionary["register"]["file_text"][language], "w")
+
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.task_types["sub_folders, type: dict"][self.task_type][language]
@@ -388,6 +391,8 @@ class Register_Task(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year media type folder
+			type_folder = self.task_types["type_folders, type: dict"][self.task_type]
+
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
 			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
@@ -395,15 +400,6 @@ class Register_Task(Tasks):
 			}
 
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
-
-			# Done tasks file
-			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
-			file_name = self.task_dictionary["register"]["Number. Task Type (Time) Sanitized Languages"][language]
-			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
-
-			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
-
-			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.task_dictionary["register"]["file_text"][language], "w")
 
 			# First task type task in year file
 			if self.task_dictionary["register"]["states"]["first_task_in_year"] == True:
@@ -430,15 +426,15 @@ class Register_Task(Tasks):
 
 		print(self.language_texts["type, title()"] + ":")
 
-		text = self.task_dictionary["type"]
+		text = self.task_dictionary["types"]["en"]
 
-		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
-			text = "\t" + self.task_dictionary["type"]
+		if self.task_dictionary["types"][self.user_language] != self.task_dictionary["types"]["en"]:
+			text = "\t" + text
 
 		print(text)
 
-		if self.task_dictionary["language_type"] != self.task_dictionary["type"]:
-			print("\t" + self.task_dictionary["language_type"])
+		if self.task_dictionary["types"][self.user_language] != self.task_dictionary["types"]["en"]:
+			print("\t" + self.task_dictionary["types"][self.user_language])
 
 		print()
 

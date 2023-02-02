@@ -214,18 +214,18 @@ class Register_Media(Watch_History):
 			self.watched["Lists"]["YouTube IDs"].append(youtube_id)
 
 		# Define [Number. Media Type (Time)] and sanitized version for files
-		self.media_dictionary["register"]["Number. Media Type (Time)"] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][self.user_language] + ")"
-		self.media_dictionary["register"]["Number. Media Type (Time) Sanitized"] = self.media_dictionary["register"]["Number. Media Type (Time)"].replace(":", ";").replace("/", "-")
+		self.media_dictionary["register"]["Number. Media Type (Time)"] = {
+			"normal": str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][self.user_language] + ")",
+			"sanitized": {}
+		}
 
 		# Define [Number. Media Type (Time)] sanitized for files per language
-		self.media_dictionary["register"]["Number. Media Type (Time) Sanitized Languages"] = {}
-
 		for language in self.small_languages:
-			self.media_dictionary["register"]["Number. Media Type (Time) Sanitized Languages"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
+			self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to [Number. Media Type (Time)] list
-		self.episodes["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"])
-		self.media_type_episodes[self.media_type]["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"])
+		self.episodes["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"])
+		self.media_type_episodes[self.media_type]["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"])
 
 		# Add episode dictionary to episodes dictionary
 		media_titles = self.media_dictionary["media"]["titles"].copy()
@@ -248,12 +248,12 @@ class Register_Media(Watch_History):
 			if "romanized" in dictionary and dictionary["language"] == dictionary["romanized"]:
 				dictionary.pop("romanized")
 
-		key = self.media_dictionary["register"]["Number. Media Type (Time)"]
+		key = self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"]
 
 		self.episodes["Dictionary"][key] = {
 			"Number": self.episodes["Number"],
 			"Media type number": self.media_type_episodes[self.media_type]["Number"],
-			"File name": self.media_dictionary["register"]["Number. Media Type (Time)"],
+			"File name": self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"],
 			"Media": media_titles,
 			"Item": item_titles,
 			"Episode titles": self.media_dictionary["register"]["Episode titles"],
@@ -272,7 +272,7 @@ class Register_Media(Watch_History):
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)
 
-		key = self.media_dictionary["register"]["Number. Media Type (Time)"]
+		key = self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"]
 
 		if dict_ != {}:
 			self.episodes["Dictionary"][key]["States"] = dict_
@@ -296,8 +296,8 @@ class Register_Media(Watch_History):
 		self.JSON.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["episodes"], self.media_type_episodes[self.media_type])
 
 		# Add to root and media type "File list.txt" file
-		self.File.Edit(self.folders["watch_history"]["current_year"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"], "a")
-		self.File.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"], "a")
+		self.File.Edit(self.folders["watch_history"]["current_year"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"], "a")
+		self.File.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["file_list"], self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"], "a")
 
 		# ---------------------------- #
 
@@ -354,7 +354,7 @@ class Register_Media(Watch_History):
 
 		# Define episode file
 		folder = self.media_dictionary["media_type"]["folders"]["per_media_type"]["files"]["root"]
-		file = folder + self.media_dictionary["register"]["Number. Media Type (Time) Sanitized"] + ".txt"
+		file = folder + self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][self.user_language] + ".txt"
 		self.File.Create(file)
 
 		self.media_dictionary["register"]["file_text"] = {}
@@ -419,12 +419,12 @@ class Register_Media(Watch_History):
 		lines.extend([
 			self.Language.texts["type, title()"][language] + ": " + self.media_dictionary["media_type"]["plural"]["en"] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.File.texts["file_name"][language] + ": " + self.media_dictionary["register"]["Number. Media Type (Time)"]
+			self.File.texts["file_name"][language] + ": " + self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"]
 		])
 
 		# Add states texts lines
-		if "States" in self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]]:
-			dict_ = self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]]["States"]
+		if "States" in self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"]]:
+			dict_ = self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"]]["States"]
 
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
@@ -588,7 +588,7 @@ class Register_Media(Watch_History):
 
 			# Watched media file
 			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
-			file_name = self.media_dictionary["register"]["Number. Media Type (Time) Sanitized Languages"][language]
+			file_name = self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][language]
 			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
 			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])

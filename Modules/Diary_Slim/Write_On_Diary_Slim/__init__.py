@@ -93,19 +93,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.option_info = option_info
 
 	def Define_Text_Variables(self):
-		self.text["key"] = self.option_info["option"]
-
 		self.text["keys"] = {}
 
-		i = 0
-		for key in self.slim_texts["en"]:
-			text = self.slim_texts[self.user_language][self.text["key"]]
+		for language in self.small_languages:
+			self.text["keys"][language] = list(self.slim_texts[self.user_language].keys())[self.option_info["number"]]
 
-			if text == list(self.slim_texts[self.user_language].values())[i]:
-				for language in self.small_languages:
-					self.text["keys"][language] = list(self.slim_texts[language].keys())[i]
-
-			i += 1
+		self.text["key"] = self.text["keys"]["en"]
 
 		# Define language texts to write
 		self.text["texts"] = {}
@@ -171,10 +164,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.task_dictionary = {
 			"titles": {},
 			"descriptions": {},
-			"type": self.text["key"],
 			"types": self.text["keys"],
 			"time": self.Date.Now(),
-			"files": {},
+			"files": {}
 		}
 
 		print()

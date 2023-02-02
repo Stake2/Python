@@ -599,9 +599,6 @@ class Stories(object):
 		print(self.large_bar)
 
 	def Register_Task(self, task_dictionary, register_task = True):
-		if "type" not in task_dictionary:
-			task_dictionary["type"] = "Stories"
-
 		if "types" not in task_dictionary:
 			task_dictionary["types"] = {
 				"en": "Stories",
