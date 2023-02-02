@@ -446,5 +446,45 @@
 	"{}_times": {
 		"en": "{} times",
 		"pt": "{} vezes"
+	},
+	"type, title()": {
+		"en": "Type",
+		"pt": "Tipo"
+	},
+	"firsts_of_the_year": {
+		"pt": "Primeiros Do Ano",
+		"en": "Firsts Of The Year"
+	},
+	"title, title()": {
+		"pt": "Título",
+		"en": "Title"
+	},
+	"titles, title()": {
+		"pt": "Títulos",
+		"en": "Titles"
+	},
+	"comment": {
+		"en": "comment",
+		"pt": "comentário"
+	},
+	"comments": {
+		"en": "comments",
+		"pt": "comentários"
+	},
+	"comment, title()": {
+		"pt": "Comentário",
+		"en": "Comment"
+	},
+	"comments, title()": {
+		"pt": "Comentários",
+		"en": "Comments"
+	},
+	"title_in_[language]": {
+		"pt": "Título em Português",
+		"en": "Title in English"
+	},
+	"states, title()": {
+		"pt": "Estados",
+		"en": "States"
 	}
 }

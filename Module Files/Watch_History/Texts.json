@@ -174,14 +174,6 @@
 		"en": "series",
 		"pt": "séries"
 	},
-	"comment": {
-		"en": "comment",
-		"pt": "comentário"
-	},
-	"comments": {
-		"en": "comments",
-		"pt": "comentários"
-	},
 	"comment_file": {
 		"en": "Comment file",
 		"pt": "Arquivo de comentário"
@@ -238,14 +230,6 @@
 			"Started watching in"
 		]
 	},
-	"titles, title(), en - pt": "Titles - Títulos",
-	"dates, title(), en - pt": "Dates - Datas",
-	"seasons, title(), en - pt": "Seasons - Temporadas",
-	"series, title(), en - pt": "Series - Séries",
-	"comment, title(), en - pt": "Comment - Comentário",
-	"comments, title(), en - pt": "Comments - Comentários",
-	"started_watching_in, title(), en - pt": "Started watching in - Comecei a assistir em",
-	"finished_watching_in, title(), en - pt": "Finished watching in - Terminei de assistir em",
 	"{}_details": {
 		"en": "{} details",
 		"pt": "Detalhes de {}"
@@ -848,18 +832,6 @@
 		"pt": "Assistido",
 		"en": "Watched"
 	},
-	"title, title()": {
-		"pt": "Título",
-		"en": "Title"
-	},
-	"titles, title()": {
-		"pt": "Títulos",
-		"en": "Titles"
-	},
-	"dates, title()": {
-		"pt": "Datas",
-		"en": "Dates"
-	},
 	"season, title()": {
 		"pt": "Temporada",
 		"en": "Season"
@@ -876,14 +848,7 @@
 		"pt": "Séries",
 		"en": "Series"
 	},
-	"comment, title()": {
-		"pt": "Comentário",
-		"en": "Comment"
-	},
-	"comments, title()": {
-		"pt": "Comentários",
-		"en": "Comments"
-	},
+	
 	"comment_file, title()": {
 		"pt": "Arquivo De Comentário",
 		"en": "Comment File"
@@ -1314,10 +1279,6 @@
 		"en": "Drink"
 	},
 	"drink, title(), en - pt": "Drink - Bebida",
-	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
-	},
 	"first_episode_in_year": {
 		"en": "First episode in year",
 		"pt": "Primeiro episódio no ano"
@@ -1511,10 +1472,6 @@
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
-	},
-	"states, title()": {
-		"en": "States",
-		"pt": "Estados"
 	},
 	"single_unit": {
 		"en": "Single unit",

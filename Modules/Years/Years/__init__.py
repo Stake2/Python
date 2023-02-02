@@ -169,13 +169,12 @@ class Years(object):
 						"root": self.years[year]["folders"]["root"] + full_language + "/"
 					}
 
-				for key in ["watched_media", "firsts_of_the_year"]:
-					text = self.texts[key][language]
+				text = self.texts["firsts_of_the_year"][language]
 
-					if text not in self.years[year]["folders"][full_language]:
-						self.years[year]["folders"][full_language][text] = {
-							"root": self.years[year]["folders"][full_language]["root"] + text + "/"
-						}
+				if text not in self.years[year]["folders"][full_language]:
+					self.years[year]["folders"][full_language][text] = {
+						"root": self.years[year]["folders"][full_language]["root"] + text + "/"
+					}
 
 		# Define "Year Texts" folders and files
 		self.years["year_texts"] = self.Folder.Contents(self.year_texts_folder)["dictionary"]

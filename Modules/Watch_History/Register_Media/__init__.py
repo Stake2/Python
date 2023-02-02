@@ -336,15 +336,19 @@ class Register_Media(Watch_History):
 		# Number: [Episode number]
 		# Media type number: [Media type number]
 		# 
-		# Media: [Media titles]
+		# Media:
+		# [Media titles]
 		# (
-		# Item: [Item titles]
-		# (
-		# [Episode/Video] titles: [Episode titles]
+		# Item:
+		# [Item titles]
+		# 
+		# [Episode/Video] titles:
+		# [Episode titles]
 		# )
 		# Type: [Media type]
 		#
-		# Times: [Episode times]
+		# Times:
+		# [Episode times]
 		# 
 		# File name: [Number. Media Type (Time)]
 
@@ -353,15 +357,15 @@ class Register_Media(Watch_History):
 		file = folder + self.media_dictionary["register"]["Number. Media Type (Time) Sanitized"] + ".txt"
 		self.File.Create(file)
 
-		self.media_dictionary["register"]["episode_text"] = {}
+		self.media_dictionary["register"]["file_text"] = {}
 
-		self.media_dictionary["register"]["episode_text"]["general"] = self.Define_Episode_Text("general")
+		self.media_dictionary["register"]["file_text"]["general"] = self.Define_File_Text("general")
 
 		for language in self.small_languages:
-			self.media_dictionary["register"]["episode_text"][language] = self.Define_Episode_Text(language)
+			self.media_dictionary["register"]["file_text"][language] = self.Define_File_Text(language)
 
 		# Write episode text into episode file
-		self.File.Edit(file, self.media_dictionary["register"]["episode_text"]["general"], "w")
+		self.File.Edit(file, self.media_dictionary["register"]["file_text"]["general"], "w")
 
 		# Write episode text into "Watched" episode file
 		folder = self.media_dictionary["media"]["item"]["folders"]["watched"]["root"]
@@ -377,10 +381,10 @@ class Register_Media(Watch_History):
 		file += ".txt"
 
 		self.File.Create(file)
-		self.File.Edit(file, self.media_dictionary["register"]["episode_text"][self.user_language], "w")
+		self.File.Edit(file, self.media_dictionary["register"]["file_text"][self.user_language], "w")
 
 	# Define episode text per language
-	def Define_Episode_Text(self, language_parameter = None):
+	def Define_File_Text(self, language_parameter = None):
 		if language_parameter != "general":
 			language = language_parameter
 
@@ -396,6 +400,7 @@ class Register_Media(Watch_History):
 			"\n" + self.texts["media, title()"][language] + ":" + "\n" + "{}",
 		]
 
+		# Add item and episode titles lines
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			if self.media_dictionary["media"]["states"]["media_list"] == True and self.media_dictionary["media"]["item"]["title"] != self.media_dictionary["media"]["title"]:
 				lines.append(self.texts["item, title()"][language] + ":" + "\n" + "{}")
@@ -412,15 +417,16 @@ class Register_Media(Watch_History):
 				lines.append(text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.texts["type, title()"][language] + ": " + self.media_dictionary["media_type"]["plural"]["en"] + "\n",
+			self.Language.texts["type, title()"][language] + ": " + self.media_dictionary["media_type"]["plural"]["en"] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.File.texts["file_name"][language] + ": " + self.media_dictionary["register"]["Number. Media Type (Time)"]
 		])
 
+		# Add states texts lines
 		if "States" in self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]]:
 			dict_ = self.episodes["Dictionary"][self.media_dictionary["register"]["Number. Media Type (Time)"]]["States"]
 
-			text = "\n" + self.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in dict_:
 				key = key.lower()
@@ -431,11 +437,8 @@ class Register_Media(Watch_History):
 					if "_" not in key:
 						text_key += ", title()"
 
-					if key not in ["first_episode_in_year", "first_media_type_episode_in_year"]:
+					if key != "first_media_type_episode_in_year":
 						language_text = self.texts[text_key][language]
-
-					if key == "first_episode_in_year":
-						language_text = self.texts["first_in_year"][language]
 
 					if key == "first_media_type_episode_in_year":
 						container = self.media_dictionary["media"]["texts"]["container"][language].lower()
@@ -456,7 +459,7 @@ class Register_Media(Watch_History):
 			lines.append(text)
 
 		# Define language episode text
-		episode_text = self.Text.From_List(lines)
+		file_text = self.Text.From_List(lines)
 
 		# Define items to be added to episode text
 		items = []
@@ -504,8 +507,6 @@ class Register_Media(Watch_History):
 					episode_titles = episode_title + "\n"
 
 				if language_parameter == "general":
-					line_break = True
-
 					for language in self.small_languages:
 						episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
 
@@ -516,6 +517,7 @@ class Register_Media(Watch_History):
 
 				items.append(episode_titles)
 
+		# Add times to items list
 		times = ""
 
 		for key in ["ISO8601", "Language DateTime"]:
@@ -534,72 +536,73 @@ class Register_Media(Watch_History):
 
 		items.append(times)
 
-		return episode_text.format(*items)
+		return file_text.format(*items)
 
 	def Add_File_To_Year_Folder(self):
 		# Create folders
 		for language in self.small_languages:
 			full_language = self.full_languages[language]
 
+			# Folder names
+			root_folder = self.texts["watched_media"][language]
+			type_folder = self.media_dictionary["media_type"]["singular"][language]
+
 			# Watched media folder
-			watched_media = self.texts["watched_media"][language]
-			media_type_folder = self.media_dictionary["media_type"]["singular"][language]
+			folder = self.current_year["folders"][full_language]["root"]
 
-			folder = self.current_year["folders"][full_language][watched_media]["root"]
-
-			# Media type folder
-			self.current_year["folders"][full_language][watched_media][media_type_folder] = {
-				"root": folder + media_type_folder + "/"
+			self.current_year["folders"][full_language][root_folder] = {
+				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][watched_media][media_type_folder]["root"])
+			self.Folder.Create(self.current_year["folders"][full_language][root_folder]["root"])
 
-			# Type folder
-			firsts_of_the_year_text = self.texts["firsts_of_the_year"][language]
-			type_folder = self.texts["media, title()"][language]
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
+			# Media type folder
+			folder = self.current_year["folders"][full_language][root_folder]["root"]
 
-			self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder] = {
+			self.current_year["folders"][full_language][root_folder][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder]["root"])
+			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
 
-			# Media type folder
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder]["root"]
-			
-			self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder] = {
-				"root": folder + media_type_folder + "/"
+			# Firsts Of The Year subfolder folder
+			firsts_of_the_year_text = self.Language.texts["firsts_of_the_year"][language]
+			subfolder_name = self.texts["media, title()"][language]
+
+			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
+
+			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
+				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder]["root"])
+			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+			# Firsts Of The Year media type folder
+			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
+			
+			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
+				"root": folder + type_folder + "/"
+			}
+
+			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
 
 			# Watched media file
-			watched_media = self.texts["watched_media"][language]
-			media_type_folder = self.media_dictionary["media_type"]["singular"][language]
-
-			folder = self.current_year["folders"][full_language][watched_media][media_type_folder]["root"]
+			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
 			file_name = self.media_dictionary["register"]["Number. Media Type (Time) Sanitized Languages"][language]
-			self.current_year["folders"][full_language][watched_media][media_type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["folders"][full_language][watched_media][media_type_folder][file_name])
+			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
 
-			self.File.Edit(self.current_year["folders"][full_language][watched_media][media_type_folder][file_name], self.media_dictionary["register"]["episode_text"][language], "w")
+			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.media_dictionary["register"]["file_text"][language], "w")
 
-			# First episode in year file
+			# First media type episode in year file
 			if self.media_dictionary["media"]["states"]["first_media_type_episode_in_year"] == True:
-				firsts_of_the_year_text = self.texts["firsts_of_the_year"][language]
-				type_folder = self.texts["media, title()"][language]
+				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
 
-				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder]["root"]
+				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
 
-				self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder][file_name])
-
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][type_folder][media_type_folder][file_name], self.media_dictionary["register"]["episode_text"][language], "w")
+				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.media_dictionary["register"]["file_text"][language], "w")
 
 	def Check_Media_Status(self):
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
@@ -697,6 +700,9 @@ class Register_Media(Watch_History):
 			# Define time spent watching using started watching time and finished watching time
 			self.media_dictionary["media"]["item"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["media"]["item"]["started_watching_item"], self.media_dictionary["media"]["finished_watching"])["difference_strings"][self.user_language]
 
+			if self.media_dictionary["media"]["item"]["time_spent_watching"][0] + self.media_dictionary["media"]["item"]["time_spent_watching"][1] == ", ":
+				self.media_dictionary["media"]["item"]["time_spent_watching"] = self.media_dictionary["media"]["item"]["time_spent_watching"][2:]
+
 			# Format the time template
 			self.media_dictionary["media"]["item"]["formatted_template"] = "\n\n" + template.format(self.media_dictionary["media"]["texts"]["the_item"][self.user_language], self.media_dictionary["media"]["item"]["time_spent_watching"])
 
@@ -720,6 +726,9 @@ class Register_Media(Watch_History):
 
 			# Define time spent watching using started watching time and finished watching time
 			self.media_dictionary["media"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["media"]["started_watching"], self.media_dictionary["media"]["finished_watching"])["difference_strings"][self.user_language]
+
+			if self.media_dictionary["media"]["time_spent_watching"][0] + self.media_dictionary["media"]["time_spent_watching"][1] == ", ":
+				self.media_dictionary["media"]["time_spent_watching"] = self.media_dictionary["media"]["time_spent_watching"][2:]
 
 			# Format the time template
 			self.media_dictionary["media"]["item"]["formatted_template"] = "\n\n" + template.format(self.media_dictionary["media"]["texts"]["container_text"]["the"], self.media_dictionary["media"]["time_spent_watching"])

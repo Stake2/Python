@@ -31,10 +31,6 @@
 		"en": "Number",
 		"pt": "Número"
 	},
-	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
-	},
 	"this_task_was_registered": {
 		"en": "This task was registered",
 		"pt": "Esta tarefa foi registrada"
@@ -82,5 +78,25 @@
 	"task_text_template": {
 		"en": "Number: {}\nTask type number: {}\nType: {}\nTime: {}\nFile name: {}",
 		"pt": "Número: {}\nNúmero de tipo de tarefa: {}\nTipo: {}\nTempo: {}\nNome de arquivo: {}"
+	},
+	"task_type_number": {
+		"en": "Task type number",
+		"pt": "Número de tipo de tarefa"
+	},
+	"done_tasks": {
+		"en": "Done tasks",
+		"pt": "Tarefas feitas"
+	},
+	"first_task_in_year": {
+		"en": "First task in year",
+		"pt": "Primeira tarefa no ano"
+	},
+	"first_{}_in_year": {
+		"en": "First {} in year",
+		"pt": "Primeiro {} no ano"
+	},
+	"{}_task": {
+		"en": "{} task",
+		"pt": "tarefa de {}"
 	}
 }

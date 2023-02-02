@@ -602,6 +602,12 @@ class Stories(object):
 		if "type" not in task_dictionary:
 			task_dictionary["type"] = "Stories"
 
+		if "types" not in task_dictionary:
+			task_dictionary["types"] = {
+				"en": "Stories",
+				"pt": "Histórias"
+			}
+
 		if "time" not in task_dictionary:
 			task_dictionary["time"] = self.Date.Now()
 

@@ -10,8 +10,8 @@ class Update_Files(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.Iterate()
-		#self.Create_Comment_Dictionary()
+		#self.Iterate()
+		self.Create_Comment_Dictionary()
 
 	def Iterate(self):
 		i = 0
@@ -76,7 +76,7 @@ class Update_Files(Watch_History):
 				print(self.dictionary["media"]["item"]["title"] + ":")
 
 			print()
-			print(self.language_texts["comments, title()"] + ":")
+			print(self.Language.language_texts["comments, title()"] + ":")
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
 			print(folder)
@@ -300,7 +300,6 @@ class Update_Files(Watch_History):
 	def Create_Comment_Dictionary(self):
 		self.dictionary = self.Select_Media_Type_And_Media()
 
-		'''
 		comment = {
 			"File name": self.Input.Type(self.File.language_texts["file_name"]),
 			"Media Type": self.dictionary["media_type"]["plural"]["en"],
@@ -341,24 +340,26 @@ class Update_Files(Watch_History):
 			comment["Link"] = comment["Link"].format(comment["Video ID"], comment["ID"])
 
 		print()
-		print(self.language_texts["titles, title()"] + ":")
+		print(self.Language.language_texts["titles, title()"] + ":")
+		print()
+
+		if self.dictionary["media"]["states"]["episodic"] == False:
+			comment["Titles"][self.user_language] = comment["File name"]
 
 		for language in self.small_languages:
-			translated_language = self.translated_languages[language][self.user_language]
+			if self.dictionary["media"]["states"]["episodic"] == True or self.dictionary["media"]["states"]["episodic"] == False and language != self.user_language:
+				translated_language = self.translated_languages[language][self.user_language]
 
-			comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
-
-		'''
-
-		#self.Text.Copy(str(self.Date.From_String(self.Input.Type())["date"]))
+				comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
 
 		import collections
 
 		dictionary = self.JSON.To_Python(self.dictionary["media"]["item"]["folders"]["comments"]["comments"])
+
+		dictionary["File names"].append(comment["File name"])
+		dictionary["Dictionary"][comment["File name"]] = comment
+
 		dictionary["File names"] = sorted(dictionary["File names"])
 		dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items()))
 
-		#dictionary["File names"].append(comment["File name"])
-		#dictionary["Dictionary"][comment["File name"]] = comment
-
-		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"] , dictionary)
+		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], dictionary)

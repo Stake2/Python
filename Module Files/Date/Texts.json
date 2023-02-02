@@ -270,5 +270,13 @@
 	"times, title()": {
 		"en": "Times",
 		"pt": "Tempos"
+	},
+	"date, title()": {
+		"pt": "Data",
+		"en": "Date"
+	},
+	"dates, title()": {
+		"pt": "Datas",
+		"en": "Dates"
 	}
 }
