@@ -163,7 +163,7 @@ class Comment_Writer(Watch_History):
 				title += self.media_dictionary["media"]["episode"]["re_watched"]["text"]
 
 			# Define episode text (episode title)
-			episode_text = self.language_texts["title, title()"] + ":" + "\n" + title + "\n"
+			episode_text = self.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
 			self.media_dictionary["media"]["comment"]["comment"] += episode_text
 
@@ -216,7 +216,7 @@ class Comment_Writer(Watch_History):
 		# Add comment file name, times, and titles keys to comment dictionary
 		self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
 			"File name": self.media_dictionary["media"]["comment"]["file_name"],
-			"Media Type": self.media_dictionary["media_type"]["plural"]["en"],
+			"Type": self.media_dictionary["media_type"]["plural"]["en"],
 			"Times": {
 				"date": str(self.media_dictionary["media"]["comment"]["time"]["date"]),
 				"date_time_format": self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language]

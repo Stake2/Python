@@ -56,16 +56,20 @@ class Watch_Media(Watch_History):
 		if self.language_texts["dubbing, title()"] in self.media_dictionary["media"]["details"]:
 			self.media_dictionary["media"]["states"]["has_dubbing"] = True
 
-			found = False
+			if self.media_dictionary["media_type"]["plural"]["en"] not in [self.texts["animes"]["en"], self.texts["movies"]["en"], self.texts["videos"]["en"]]:
+				self.media_dictionary["media"]["states"]["watch_dubbed"] = True
 
-			for details in [self.media_dictionary["media"]["details"], self.media_dictionary["media"]["item"]["details"]]:
-				if self.language_texts["watch_dubbed"] in details:
-					self.media_dictionary["media"]["states"]["watch_dubbed"] = self.Input.Define_Yes_Or_No(details[self.language_texts["watch_dubbed"]])
+			else:
+				found = False
 
-					found = True
+				for details in [self.media_dictionary["media"]["details"], self.media_dictionary["media"]["item"]["details"]]:
+					if self.language_texts["watch_dubbed"] in details:
+						self.media_dictionary["media"]["states"]["watch_dubbed"] = self.Input.Define_Yes_Or_No(details[self.language_texts["watch_dubbed"]])
 
-			if found == False and self.media_dictionary["media"]["states"]["open_media"] == True:
-				self.media_dictionary["media"]["states"]["watch_dubbed"] = self.Input.Yes_Or_No(self.language_texts["watch_the_dubbed_episode_in_your_language"])
+						found = True
+
+				if found == False and self.media_dictionary["media"]["states"]["open_media"] == True:
+					self.media_dictionary["media"]["states"]["watch_dubbed"] = self.Input.Yes_Or_No(self.language_texts["watch_the_dubbed_episode_in_your_language"])
 
 		# Re-Read of media details file
 		self.media_dictionary["media"]["details"] = self.File.Dictionary(self.media_dictionary["media"]["folders"]["details"])
@@ -190,39 +194,57 @@ class Watch_Media(Watch_History):
 			self.media_dictionary["media"]["episode"]["remote"]["link"] = self.remote_origins[self.media_dictionary["media"]["episode"]["remote"]["title"]]
 
 			# Define origin code
-			for item in ["code"]:
-				text = self.language_texts["origin_location, title()"]
+			for key in ["origin_location"]:
+				text = self.language_texts[key + ", title()"]
 
-				self.media_dictionary["media"]["episode"]["remote"][item] = ""
+				self.media_dictionary["media"]["episode"]["remote"][key] = ""
 
 				if text in self.media_dictionary["media"]["details"]:
-					self.media_dictionary["media"]["episode"]["remote"][item] = self.media_dictionary["media"]["details"][text]
+					self.media_dictionary["media"]["episode"]["remote"][key] = self.media_dictionary["media"]["details"][text]
 
 				if text in self.media_dictionary["media"]["item"]["details"]:
-					self.media_dictionary["media"]["episode"]["remote"][item] = self.media_dictionary["media"]["item"]["details"][text]
+					self.media_dictionary["media"]["episode"]["remote"][key] = self.media_dictionary["media"]["item"]["details"][text]
 
 			# Define link for video media
-			if self.media_dictionary["media"]["states"]["video"] == True:
-				if "v=" not in self.media_dictionary["media"]["episode"]["remote"]["code"]:
-					self.media_dictionary["media"]["episode"]["remote"]["link"] += "watch?v=" + self.media_dictionary["media"]["episode"]["youtube_id"] + "&list=" + self.media_dictionary["media"]["episode"]["remote"]["code"] + "&index=" + str(self.media_dictionary["media"]["episode"]["number"])
+			if self.media_dictionary["media"]["states"]["video"] == True or self.media_dictionary["media"]["episode"]["remote"]["title"] == "YouTube":
+				if "v=" not in self.media_dictionary["media"]["episode"]["remote"]["origin_location"]:
+					self.media_dictionary["media"]["episode"]["remote"]["link"] += "watch?v=" + self.media_dictionary["media"]["episode"]["youtube_id"] + "&list=" + self.media_dictionary["media"]["episode"]["remote"]["origin_location"] + "&index=" + str(self.media_dictionary["media"]["episode"]["number"])
 
-				if "v=" in self.media_dictionary["media"]["episode"]["remote"]["code"]:
-					self.media_dictionary["media"]["episode"]["remote"]["link"] += "watch?" + self.media_dictionary["media"]["episode"]["remote"]["code"]
+				if "v=" in self.media_dictionary["media"]["episode"]["remote"]["origin_location"]:
+					self.media_dictionary["media"]["episode"]["remote"]["link"] += "watch?" + self.media_dictionary["media"]["episode"]["remote"]["origin_location"]
 
 			# If origin location is empty, and media type is "Animes", then define it as the lower case original media title with spaces replaced by dashes
-			if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"] and self.media_dictionary["media"]["episode"]["remote"]["code"] == "":
-				self.media_dictionary["media"]["episode"]["remote"]["code"] = self.media_dictionary["media"]["titles"]["sanitized"].lower()
+			if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"] and self.media_dictionary["media"]["episode"]["remote"]["origin_location"] == "":
+				self.media_dictionary["media"]["episode"]["remote"]["origin_location"] = self.media_dictionary["media"]["titles"]["sanitized"].lower()
 
 				# Replace spaces by dashes
-				self.media_dictionary["media"]["episode"]["remote"]["code"] = self.media_dictionary["media"]["episode"]["remote"]["code"].replace(" ", "-")
+				self.media_dictionary["media"]["episode"]["remote"]["origin_location"] = self.media_dictionary["media"]["episode"]["remote"]["origin_location"].replace(" ", "-")
 
 				# Remove restricted characters for Animes URL
 				for item in ["!", ",", ".", "△"]:
-					self.media_dictionary["media"]["episode"]["remote"]["code"] = self.media_dictionary["media"]["episode"]["remote"]["code"].replace(item, "")
+					self.media_dictionary["media"]["episode"]["remote"]["origin_location"] = self.media_dictionary["media"]["episode"]["remote"]["origin_location"].replace(item, "")
 
+				# Media episode link definition for Animes Vision website
 				if self.media_dictionary["media"]["episode"]["remote"]["title"] == "Animes Vision":
 					# Add code to link
-					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.media_dictionary["media_type"]["plural"]["pt"].lower() + "/" + self.media_dictionary["media"]["episode"]["remote"]["code"] + "/"
+					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.media_dictionary["media_type"]["plural"]["pt"].lower() + "/" + self.media_dictionary["media"]["episode"]["remote"]["origin_location"] + "/"
+
+				# Add dubbed text
+				if self.media_dictionary["media"]["states"]["has_dubbing"] == True and self.media_dictionary["media"]["states"]["watch_dubbed"] == True:
+					self.media_dictionary["media"]["episode"]["remote"]["link"] = self.media_dictionary["media"]["episode"]["remote"]["link"].replace(self.media_dictionary["media"]["episode"]["remote"]["origin_location"], self.media_dictionary["media"]["episode"]["remote"]["origin_location"] + "-" + self.texts["dubbed"]["pt"].lower())
+
+				# Add episode number
+				self.media_dictionary["media"]["episode"]["remote"]["link"] += "episodio-" + str(self.Text.Add_Leading_Zeros(self.media_dictionary["media"]["episode"]["number"])) + "/"
+
+				# Add dubbed text to media link if the media has a dub in the user language and user wants to watch it dubbed
+				if self.media_dictionary["media"]["states"]["has_dubbing"] == True and self.media_dictionary["media"]["states"]["watch_dubbed"] == True:
+					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.texts["dubbed"]["pt"]
+
+				# Add subbed text to media link if there is no dub for the media or the user wants to watch it subbed
+				if self.media_dictionary["media"]["states"]["has_dubbing"] == False or self.media_dictionary["media"]["states"]["watch_dubbed"] == False:
+					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.texts["subbed"]["pt"]
+
+			self.media_dictionary["media"]["episode"]["unit"] = self.media_dictionary["media"]["episode"]["remote"]["link"]
 
 		# Media episode number text definition by episode title and episode separator
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
@@ -232,9 +254,9 @@ class Watch_Media(Watch_History):
 				media_episode = re.sub(self.texts["re_watched, type: regex, en - pt"], "", media_episode)
 
 			regex = {
-				"one": r"[0-9][0-9]",
-				"two": r"[0-9][0-9]\-[0-9][0-9]",
-				"episode_and_parenthesis": r"[0-9][0-9]\([0-9][0-9]\)"
+				"one": r"[0-9]{2,4}",
+				"two": r"[0-9]{2,4}\-[0-9]{2,4}",
+				"episode_and_parenthesis": r"[0-9]{2,4}\([0-9]{2,4}\)"
 			}
 
 			results = {}
@@ -438,27 +460,6 @@ class Watch_Media(Watch_History):
 		self.JSON.Edit(self.media_dictionary["media"]["folders"]["information"], dictionary)
 
 	def Define_Episode_Unit(self):
-		# Remote media episode link definition
-		if self.media_dictionary["media"]["states"]["remote"] == True or self.language_texts["remote_origin, title()"] in self.media_dictionary["media"]["details"]:
-			# Media episode link definition for Animes Vision website
-			if self.media_dictionary["media"]["episode"]["remote"]["title"] == "Animes Vision":
-				# Add dubbed text
-				if self.media_dictionary["media"]["states"]["has_dubbing"] == True and self.media_dictionary["media"]["states"]["watch_dubbed"] == True:
-					self.media_dictionary["media"]["episode"]["remote"]["link"] = self.media_dictionary["media"]["episode"]["remote"]["link"].replace(self.media_dictionary["media"]["episode"]["remote"]["code"], self.media_dictionary["media"]["episode"]["remote"]["code"] + "-" + self.texts["dubbed"]["pt"].lower())
-
-				# Add episode number
-				self.media_dictionary["media"]["episode"]["remote"]["link"] += "episodio-" + str(self.Text.Add_Leading_Zeros(self.media_dictionary["media"]["episode"]["number"])) + "/"
-
-				# Add dubbed text to media link if the media has a dub in the user language and user wants to watch it dubbed
-				if self.media_dictionary["media"]["states"]["has_dubbing"] == True and self.media_dictionary["media"]["states"]["watch_dubbed"] == True:
-					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.texts["dubbed"]["pt"]
-
-				# Add subbed text to media link if there is no dub for the media or the user wants to watch it subbed
-				if self.media_dictionary["media"]["states"]["has_dubbing"] == False or self.media_dictionary["media"]["states"]["watch_dubbed"] == False:
-					self.media_dictionary["media"]["episode"]["remote"]["link"] += self.texts["subbed"]["pt"]
-
-			self.media_dictionary["media"]["episode"]["unit"] = self.media_dictionary["media"]["episode"]["remote"]["link"]
-
 		# Local media episode file definition
 		if self.media_dictionary["media"]["states"]["local"] == True:
 			if self.media_dictionary["media"]["states"]["series_media"] == True and self.media_dictionary["media"]["states"]["video"] == False:

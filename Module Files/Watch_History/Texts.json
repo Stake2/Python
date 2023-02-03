@@ -1312,7 +1312,7 @@
 		"en": "{} is {} {} {} that you watched in {}"
 	},
 	"when_i_finished_watching": {
-		"pt": "Quando terminei de assistir",
+		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
 	},
 	"next_episode_to_watch": {
@@ -1379,12 +1379,10 @@
 		"pt": "Quando eu comecei a assistir",
 		"en": "When I started to watch"
 	},
-	"when_i_started_to_watch, en - pt": "When I started to watch - Quando eu comecei a assistir",
 	"when_i_finished_watching": {
 		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
 	},
-	"when_i_finished_watching, en - pt": "When I finished watching - Quando eu terminei de assistir",
 	"when_i_finished": {
 		"pt": "Quando eu terminei",
 		"en": "When I finished"

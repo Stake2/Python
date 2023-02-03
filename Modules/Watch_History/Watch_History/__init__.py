@@ -711,6 +711,10 @@ class Watch_History(object):
 			if self.language_texts["episodic, title()"] in media["details"]:
 				media["states"]["episodic"] = self.Input.Define_Yes_Or_No(media["details"][self.language_texts["episodic, title()"]])
 
+			# Define single unit state
+			if self.language_texts["single_unit"] in media["details"]:
+				media["states"]["single_unit"] = True
+
 			# Define non-series media state for movies
 			if dictionary["media_type"]["plural"]["en"] == self.texts["movies"]["en"]:
 				media["states"]["series_media"] = False
@@ -744,6 +748,10 @@ class Watch_History(object):
 					"link": "",
 					"code": ""
 				}
+
+			media["episodes"] = {
+				"number": 0
+			}
 
 		dictionary = self.Define_Media_Titles(dictionary, self.item)
 
@@ -834,18 +842,56 @@ class Watch_History(object):
 					"number": 0
 				}
 
+				dictionary["media"]["episodes"]["number"] = 0
+
 				i = 0
 				for name in dictionary["media"]["items"]["list"]:
 					if dictionary["media"]["item"]["title"] == name:
 						dictionary["media"]["item"]["number"] = i
 
+					# Get media item details file
+					folder = dictionary["media"]["items"]["folders"]["root"] + self.Sanitize_Title(name) + "/"
+					details_file = folder + self.language_texts["details, title()"] + ".txt"
+					details = self.File.Dictionary(details_file)
+
+					# If the item is not a single unit, add its episode number to the root episode number
+					if self.language_texts["single_unit"] not in details:
+						titles_folder = folder + self.Language.language_texts["titles, title()"] + "/"
+						titles_file = titles_folder + self.full_languages["en"] + ".txt"
+
+						dictionary["media"]["episodes"]["number"] += len(self.File.Contents(titles_file)["lines"])
+
+					# If the item is a single unit, add one to the root episode number
+					if self.language_texts["single_unit"] in details:
+						dictionary["media"]["episodes"]["number"] += 1
+
 					i += 1
+
+				# Add the episode number to the media details
+				keys = list(dictionary["media"]["details"].keys())
+				values = list(dictionary["media"]["details"].values())
+
+				i = 0
+				for key in keys.copy():
+					if self.language_texts["episodes, title()"] not in keys and key == self.language_texts["status, title()"]:
+						keys.insert(i + 1, self.language_texts["episodes, title()"])
+						values.insert(i + 1, dictionary["media"]["episodes"]["number"])
+
+					if self.language_texts["episodes, title()"] in keys and key == self.language_texts["episodes, title()"]:
+						values[i] = dictionary["media"]["episodes"]["number"]
+
+					i += 1
+
+				dictionary["media"]["details"] = dict(zip(keys, values))
+
+				# Update media item details file
+				self.File.Edit(dictionary["media"]["folders"]["details"], self.Text.From_Dictionary(dictionary["media"]["details"]), "w")
 
 				dictionary = self.Select_Media(dictionary, item = True)
 
 				# Define single unit state
 				if self.language_texts["single_unit"] in dictionary["media"]["item"]["details"]:
-					dictionary["media"]["states"]["single_unit"] = False
+					dictionary["media"]["states"]["single_unit"] = True
 
 				if dictionary["media"]["states"]["single_unit"] == True:
 					dictionary["media"]["item"]["folders"]["media"] = dictionary["media"]["folders"]["media"]
@@ -864,7 +910,7 @@ class Watch_History(object):
 		self.Folder.Create(dictionary["media"]["item"]["folders"]["watched"]["root"])
 
 		# Define media item folders
-		if dictionary["media"]["states"]["series_media"] == True:
+		if dictionary["media"]["states"]["series_media"] == True and dictionary["media"]["states"]["single_unit"] == False:
 			for name in ["Comments", "Titles"]:
 				key = name.lower().replace(" ", "_")
 				name = self.Language.language_texts[key + ", title()"]
@@ -1042,9 +1088,12 @@ class Watch_History(object):
 
 			i = 0
 			for key in keys.copy():
-				if key == self.language_texts["episode, title()"]:
+				if self.language_texts["episodes, title()"] not in keys and key == self.language_texts["status, title()"]:
 					keys.insert(i + 1, self.language_texts["episodes, title()"])
 					values.insert(i + 1, dictionary["media"]["item"]["episodes"]["number"])
+
+				if self.language_texts["episodes, title()"] in keys and key == self.language_texts["episodes, title()"]:
+					values[i] = dictionary["media"]["item"]["episodes"]["number"]
 
 				i += 1
 

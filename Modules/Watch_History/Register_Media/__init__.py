@@ -312,7 +312,7 @@ class Register_Media(Watch_History):
 		# Add episode number to "Episode number" list for series media
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			if self.media_dictionary["media"]["states"]["single_unit"] == False:
-				self.media_dictionary["register"]["file_name"] = self.media_dictionary["media"]["episode"]["number"]
+				self.media_dictionary["register"]["file_name"] = str(self.media_dictionary["media"]["episode"]["number"])
 
 				if self.media_dictionary["media"]["states"]["episodic"] == False:
 					self.media_dictionary["register"]["file_name"] = self.media_dictionary["media"]["episode"]["title"]
@@ -712,9 +712,13 @@ class Register_Media(Watch_History):
 			# Update item dates text file
 			self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["dates"], self.media_dictionary["media"]["item"]["finished_watching_text"], "w")
 
+			text = self.media_dictionary["media"]["item"]["finished_watching_text"]
+			text = text.replace(self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["media"]["texts"]["the_item"][self.user_language], self.language_texts["when_i_started_to_watch"])
+			text = text.replace(self.language_texts["when_i_finished_watching"] + " " + self.media_dictionary["media"]["texts"]["the_item"][self.user_language], self.language_texts["when_i_finished_watching"])
+
 			# Add the time template to the Diary Slim text if the media is not completed
 			if self.media_dictionary["media"]["states"]["completed"] == False and self.media_dictionary["media"]["states"]["single_unit"] == False:
-				self.media_dictionary["register"]["Diary Slim"]["text"] += "\n\n" + self.media_dictionary["media"]["item"]["finished_watching_text"]
+				self.media_dictionary["register"]["Diary Slim"]["text"] += "\n\n" + text
 
 		# Gets the date that the user started and finished watching the media and writes it to the media dates text file
 		if self.media_dictionary["media"]["states"]["completed"] == True:
@@ -739,8 +743,12 @@ class Register_Media(Watch_History):
 			# Update media dates text file
 			self.File.Edit(self.media_dictionary["media"]["folders"]["dates"], self.media_dictionary["media"]["finished_watching_text"], "w")
 
+			text = self.media_dictionary["media"]["finished_watching_text"]
+			text = text.replace(self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["media"]["texts"]["container_text"]["the"], self.language_texts["when_i_started_to_watch"])
+			text = text.replace(self.language_texts["when_i_finished_watching"] + " " + self.media_dictionary["media"]["texts"]["container_text"]["the"], self.language_texts["when_i_finished_watching"])
+
 			# Add the time template to the Diary Slim text
-			self.media_dictionary["register"]["Diary Slim"]["text"] += "\n\n" + self.media_dictionary["media"]["finished_watching_text"]
+			self.media_dictionary["register"]["Diary Slim"]["text"] += "\n\n" + text
 
 			# ---------------------------- #
 
