@@ -258,11 +258,11 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["media"]["states"]["episodic"] == False:
 			import collections
 
-			self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"])
-			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items()))
+			self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"], key=str.lower)
+			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items(), key=str.lower))
 
-			self.media_comments["File names"] = sorted(self.media_comments["File names"])
-			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items()))
+			self.media_comments["File names"] = sorted(self.media_comments["File names"], key=str.lower)
+			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items(), key=str.lower))
 
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)

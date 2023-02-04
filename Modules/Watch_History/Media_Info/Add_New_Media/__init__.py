@@ -415,7 +415,7 @@ class Add_New_Media(Watch_History):
 		if name not in self.watching_status_text:
 			self.watching_status_text.append(name)
 
-		self.watching_status_text = self.Text.From_List(sorted(self.watching_status_text))
+		self.watching_status_text = self.Text.From_List(sorted(self.watching_status_text, key=str.lower))
 
 		self.File.Edit(self.watching_status_file, self.watching_status_text, "w")
 
@@ -423,7 +423,7 @@ class Add_New_Media(Watch_History):
 		if name not in self.media_type_media_names:
 			self.media_type_media_names.append(name)
 
-			self.media_type_media_names = self.Text.From_List(sorted(self.media_type_media_names))
+			self.media_type_media_names = self.Text.From_List(sorted(self.media_type_media_names, key=str.lower))
 
 			# Edit media type names file
 			self.File.Edit(self.media_names_file, self.media_type_media_names, "w")

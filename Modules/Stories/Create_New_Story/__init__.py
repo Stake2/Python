@@ -91,7 +91,7 @@ class Create_New_Story(Stories):
 
 			i += 1
 
-		self.stories[self.story_titles["en"]]["Information"] = dict(sorted(self.stories[self.story_titles["en"]]["Information"].items()))
+		self.stories[self.story_titles["en"]]["Information"] = dict(sorted(self.stories[self.story_titles["en"]]["Information"].items(), key=str.lower))
 
 	def Create_Story_Folder_And_Files(self):
 		# Create root folder

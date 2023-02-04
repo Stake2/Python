@@ -125,7 +125,7 @@ class Start_Watching_Media(Watch_History):
 
 						self.file_to_write = watching_status_file
 
-				self.text_to_write = self.Text.From_List(sorted(watching_status_media))
+				self.text_to_write = self.Text.From_List(sorted(watching_status_media, key=str.lower))
 
 		self.File.Edit(self.file_to_write, text_to_write, "w")
 
@@ -133,7 +133,7 @@ class Start_Watching_Media(Watch_History):
 		if self.media_title not in self.watching_status_media[self.language_texts["watching, title()"]]:
 			self.watching_status_media[self.language_texts["watching, title()"]].append(self.media_title)
 
-		text_to_write = self.Text.From_List(sorted(self.watching_status_media[self.language_texts["watching, title()"]]))
+		text_to_write = self.Text.From_List(sorted(self.watching_status_media[self.language_texts["watching, title()"]], key=str.lower))
 		self.File.Edit(self.watching_status_files[self.language_texts["watching, title()"]], text_to_write, "w")
 
 	def Watch_The_Media(self):

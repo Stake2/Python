@@ -464,7 +464,7 @@ class Stories(object):
 
 			self.stories[story]["Information"]["Readers number"] = len(self.stories[story]["Information"]["Readers"])
 
-			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items()))
+			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items(), key=str.lower))
 
 		# Write stories dictionary to Stories.json
 		self.JSON.Edit(self.stories["folders"]["Database"]["Stories"], self.stories)

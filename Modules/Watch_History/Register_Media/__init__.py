@@ -750,32 +750,6 @@ class Register_Media(Watch_History):
 			# Add the time template to the Diary Slim text
 			self.media_dictionary["register"]["Diary Slim"]["text"] += "\n\n" + text
 
-			# ---------------------------- #
-
-			# Update media type "Info.json" file
-
-			# Read JSON file
-			self.media_type = self.JSON.To_Python(self.media_dictionary["media_type"]["folders"]["media_info"]["info"])
-
-			media_title = self.Get_Media_Title(self.media_dictionary)
-
-			# Remove completed media from the "Watching" media list
-			if media_title in self.media_type["Status"][self.texts["watching, title()"]["en"]]:
-				self.media_type["Status"][self.texts["watching, title()"]["en"]].remove(media_title)
-
-			# Add completed media to the "Completed" media list
-			if media_title not in self.media_type["Status"][self.texts["completed, title()"]["en"]]:
-				self.media_type["Status"][self.texts["completed, title()"]["en"]].append(media_title)
-
-			# Sort status media lists
-			for item in ["watching", "completed"]:
-				text = self.texts[item + ", title()"]["en"]
-
-				self.media_type["Status"][text] = sorted(self.media_type["Status"][text])
-
-			# Update media type json file
-			self.JSON.Edit(self.media_dictionary["media_type"]["folders"]["media_info"]["info"], self.media_type)
-
 	def Post_On_Social_Networks(self):
 		self.social_networks = [
 			"WhatsApp",

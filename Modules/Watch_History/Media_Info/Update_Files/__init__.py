@@ -23,7 +23,7 @@ class Update_Files(Watch_History):
 
 			# Get media with all "watching statuses", not just the "Watching" and "Re-Watching" ones
 			media_list = self.Get_Media_List(self.media_types[plural_media_type], self.texts["watching_statuses, type: list"]["en"])
-			media_list = sorted(media_list)
+			media_list = sorted(media_list, key=str.lower)
 
 			print()
 			print("----------")
@@ -60,12 +60,17 @@ class Update_Files(Watch_History):
 							print("\t" + self.dictionary["media"]["item"]["title"] + ":")
 
 						self.Check_Status(self.dictionary)
-						#self.Check_Titles()
 
+						# Media Information verification methods
+						#self.Check_Titles()
+						self.Add_Date()
+
+						# Conversion of old registry style (Files) to new (JSON)
 						#if media != "FAGames":
 						#	self.Convert_Comments()
 
-			input()
+			if self.global_switches["testing"] == True:
+				input()
 
 			i += 1
 
@@ -82,6 +87,57 @@ class Update_Files(Watch_History):
 					self.File.Open(titles_file)
 
 				input()
+
+	def Add_Date(self):
+		names = ["media"]
+
+		if self.dictionary["media"]["states"]["media_list"] == True:
+			names.append("item")
+
+		for key in names:
+			details = self.dictionary["media"]["details"]
+			file = self.dictionary["media"]["folders"]["details"]
+
+			if key == "item":
+				details = self.dictionary["media"]["item"]["details"]
+				file = self.dictionary["media"]["item"]["folders"]["details"]
+
+			if self.Date.language_texts["year, title()"] in details and self.Date.language_texts["date, title()"] not in details:
+				year = details[self.Date.language_texts["year, title()"]]
+
+				if self.dictionary["media"]["states"]["media_list"] == True:
+					if self.dictionary["media"]["title"] == self.dictionary["media"]["item"]["title"] and self.Date.language_texts["date, title()"] in self.dictionary["media"]["details"]:
+						date = self.dictionary["media"]["details"][self.Date.language_texts["date, title()"]]
+
+					if self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"] or self.Date.language_texts["date, title()"] not in self.dictionary["media"]["details"]:
+						if self.global_switches["verbose"] == True and self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"]:
+							print()
+							print(self.dictionary["media"]["item"]["title"] + ":")
+
+						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+
+				if self.dictionary["media"]["states"]["media_list"] == False:
+					date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+
+				# Add the date key to the media details
+				keys = list(details.keys())
+				values = list(details.values())
+
+				i = 0
+				for key in keys.copy():
+					if self.Date.language_texts["date, title()"] not in keys and key == self.Date.language_texts["year, title()"]:
+						keys.insert(i + 1, self.Date.language_texts["date, title()"])
+						values.insert(i + 1, date)
+
+					if self.Date.language_texts["date, title()"] in keys and key == self.Date.language_texts["date, title()"]:
+						values[i] = date
+
+					i += 1
+
+				details = dict(zip(keys, values))
+
+				# Update media or media item details file
+				self.File.Edit(file, self.Text.From_Dictionary(details), "w")
 
 	def Convert_Comments(self):
 		folder = self.dictionary["media"]["item"]["folders"]["media_type_comments"]["root"]
@@ -323,8 +379,8 @@ class Update_Files(Watch_History):
 						self.File.Edit(comments_contents[file_name], text, "w")
 
 				# Sort file names and dictionary keys
-				comments_json["File names"] = sorted(comments_json["File names"])
-				comments_json["Dictionary"] = collections.OrderedDict(sorted(comments_json["Dictionary"].items()))
+				comments_json["File names"] = sorted(comments_json["File names"], key=str.lower)
+				comments_json["Dictionary"] = collections.OrderedDict(sorted(comments_json["Dictionary"].items(), key=str.lower))
 
 				# Update media type "Comments.json" file
 				self.JSON.Edit(comments_json_file, comments_json)
@@ -398,7 +454,7 @@ class Update_Files(Watch_History):
 		dictionary["File names"].append(comment["File name"])
 		dictionary["Dictionary"][comment["File name"]] = comment
 
-		dictionary["File names"] = sorted(dictionary["File names"])
-		dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items()))
+		dictionary["File names"] = sorted(dictionary["File names"], key=str.lower)
+		dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items(), key=str.lower))
 
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], dictionary)

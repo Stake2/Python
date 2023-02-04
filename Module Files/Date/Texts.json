@@ -215,6 +215,14 @@
 		"en": "days",
 		"pt": "dias"
 	},
+	"day, title()": {
+		"en": "Day",
+		"pt": "Dia"
+	},
+	"days, title()": {
+		"en": "Days",
+		"pt": "Dias"
+	},
 	"month": {
 		"en": "month",
 		"pt": "mês"
@@ -222,6 +230,14 @@
 	"months": {
 		"en": "months",
 		"pt": "meses"
+	},
+	"month, title()": {
+		"en": "Month",
+		"pt": "Mês"
+	},
+	"months, title()": {
+		"en": "Months",
+		"pt": "Meses"
 	},
 	"year": {
 		"en": "year",
@@ -231,6 +247,14 @@
 		"en": "years",
 		"pt": "anos"
 	},
+	"year, title()": {
+		"en": "Year",
+		"pt": "Ano"
+	},
+	"years, title()": {
+		"en": "Years",
+		"pt": "Anos"
+	},
 	"hour": {
 		"en": "hour",
 		"pt": "hora"
@@ -238,6 +262,14 @@
 	"hours": {
 		"en": "hours",
 		"pt": "horas"
+	},
+	"hour, title()": {
+		"en": "Hour",
+		"pt": "Hora"
+	},
+	"hours, title()": {
+		"en": "Hours",
+		"pt": "Horas"
 	},
 	"minute": {
 		"en": "minute",
@@ -247,6 +279,14 @@
 		"en": "minutes",
 		"pt": "minutos"
 	},
+	"minute, title()": {
+		"en": "Minute",
+		"pt": "Minuto"
+	},
+	"minutes, title()": {
+		"en": "Minutes",
+		"pt": "Minutos"
+	},
 	"second": {
 		"en": "second",
 		"pt": "segundos"
@@ -254,6 +294,14 @@
 	"seconds": {
 		"en": "seconds",
 		"pt": "segundos"
+	},
+	"second, title()": {
+		"en": "Second",
+		"pt": "Segundos"
+	},
+	"seconds, title()": {
+		"en": "Seconds",
+		"pt": "Segundos"
 	},
 	"and": {
 		"en": "and",

@@ -486,5 +486,9 @@
 	"states, title()": {
 		"pt": "Estados",
 		"en": "States"
+	},
+	"and": {
+		"en": "and",
+		"pt": "e"
 	}
 }
