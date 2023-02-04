@@ -46,11 +46,17 @@ class Update_Files(Watch_History):
 
 					self.dictionary = self.Select_Media(self.dictionary)
 
+					# Verify if the media is inside the correct "watching status" list
+					self.Check_Status(self.dictionary)
+
+					# Define the media items as the media title
 					media_items = [self.dictionary["media"]["item"]["title"]]
 
+					# For media with media list, get the actual media items
 					if self.dictionary["media"]["states"]["media_list"] == True:
 						media_items = self.dictionary["media"]["items"]["list"]
 
+					# Iterate through media items list
 					for media_item in media_items:
 						# Define media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = media_item)
@@ -59,13 +65,13 @@ class Update_Files(Watch_History):
 							print()
 							print("\t" + self.dictionary["media"]["item"]["title"] + ":")
 
-						self.Check_Status(self.dictionary)
-
-						# Media Information verification methods
+						# Verify if empty episodes' titles files exist
 						#self.Check_Titles()
+
+						# Add exact media or media item creation or release to media or media item details
 						self.Add_Date()
 
-						# Conversion of old registry style (Files) to new (JSON)
+						# Convert comments with old registry style (Files) to the new one (JSON)
 						#if media != "FAGames":
 						#	self.Convert_Comments()
 
@@ -75,18 +81,26 @@ class Update_Files(Watch_History):
 			i += 1
 
 	def Check_Titles(self):
+		# If "titles" is present in the folders dictionary (not a single unit media item)
+		# And status is not "Plan to watch" or "Completed"
 		if "titles" in self.dictionary["media"]["item"]["folders"] and self.dictionary["media"]["details"]["status"] not in [self.language_texts["plan_to_watch, title()"], self.language_texts["completed, title()"]]:
+			# Get titles file to check its contents
 			titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + self.full_languages["en"] + ".txt"
 
+			# If file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
+				# Iterate through languages list
 				for language in self.small_languages:
 					full_language = self.full_languages[language]
 
+					# Define the language titles file
 					titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
 
+					# Open it for user to fill it with episode titles
 					self.File.Open(titles_file)
 
-				input()
+				# Wait for user input
+				self.Input.Type()
 
 	def Add_Date(self):
 		names = ["media"]
@@ -94,46 +108,61 @@ class Update_Files(Watch_History):
 		if self.dictionary["media"]["states"]["media_list"] == True:
 			names.append("item")
 
+		# Iterate through the names list
 		for key in names:
+			# Get the details file for media
 			details = self.dictionary["media"]["details"]
 			file = self.dictionary["media"]["folders"]["details"]
 
+			# Get the details file for media item
 			if key == "item":
 				details = self.dictionary["media"]["item"]["details"]
 				file = self.dictionary["media"]["item"]["folders"]["details"]
 
+			# If the "Year" key in details and "Date" key not in details
 			if self.Date.language_texts["year, title()"] in details and self.Date.language_texts["date, title()"] not in details:
 				year = details[self.Date.language_texts["year, title()"]]
 
+				# If the media has a media item list
 				if self.dictionary["media"]["states"]["media_list"] == True:
+					# If the media title is equal to the media item title and the date is already present in the media details
 					if self.dictionary["media"]["title"] == self.dictionary["media"]["item"]["title"] and self.Date.language_texts["date, title()"] in self.dictionary["media"]["details"]:
+						# Get the date from the media details
 						date = self.dictionary["media"]["details"][self.Date.language_texts["date, title()"]]
 
+					# If the media title is not equal to the media item title or the date is not present in the media details
 					if self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"] or self.Date.language_texts["date, title()"] not in self.dictionary["media"]["details"]:
+						# If verbose is true, show the media item title again because there is more text above that pushes above the media item title shown before
 						if self.global_switches["verbose"] == True and self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"]:
 							print()
 							print(self.dictionary["media"]["item"]["title"] + ":")
 
+						# Ask for the day and month separated by a slash, because the year is already inside the details
 						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
 
+				# If the media has no media item list
 				if self.dictionary["media"]["states"]["media_list"] == False:
+					# Ask for the day and month separated by a slash, because the year is already inside the details
 					date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
 
-				# Add the date key to the media details
+				# Add the date key to the details
 				keys = list(details.keys())
 				values = list(details.values())
 
 				i = 0
 				for key in keys.copy():
+					# If the "Date" is not present inside the details, add it after the "Year" key
 					if self.Date.language_texts["date, title()"] not in keys and key == self.Date.language_texts["year, title()"]:
 						keys.insert(i + 1, self.Date.language_texts["date, title()"])
 						values.insert(i + 1, date)
 
+					# If the "Date" is present, update its value
 					if self.Date.language_texts["date, title()"] in keys and key == self.Date.language_texts["date, title()"]:
 						values[i] = date
 
 					i += 1
 
+				# Remake details dictionary
 				details = dict(zip(keys, values))
 
 				# Update media or media item details file
