@@ -23,9 +23,21 @@
         "en": "created",
         "pt": "criada"
     },
+	"delete": {
+        "en": "delete",
+        "pt": "apagar"
+    },
     "deleted": {
         "en": "deleted",
         "pt": "apagada"
+    },
+	"move": {
+        "en": "move",
+        "pt": "mover"
+    },
+    "copy": {
+        "en": "copy",
+        "pt": "copiar"
     },
     "source": {
         "en": "source",
@@ -36,12 +48,12 @@
         "pt": "destino"
     },
     "source_folder": {
-        "en": "source folder",
-        "pt": "pasta fonte"
+        "en": "Source folder",
+        "pt": "Pasta fonte"
     },
     "destination_folder": {
-        "en": "destination folder",
-        "pt": "pasta destino"
+        "en": "Destination folder",
+        "pt": "Pasta destino"
     },
     "this_folder_already_exists": {
         "en": "This folder already exists",
@@ -62,5 +74,9 @@
 	"contents, title()": {
 		"en": "Contents",
 		"pt": "Conteúdo"
-	}
+	},
+	"it_was_not_possible_to_{}_the_folder_permission_not_granted": {
+        "en": "It was not possible to {} the folder, permission not granted",
+        "pt": "Não foi possível {} a pasta, permissão não concedida"
+    }
 }

@@ -490,5 +490,17 @@
 	"and": {
 		"en": "and",
 		"pt": "e"
+	},
+	"iterate, title()": {
+		"en": "Iterate",
+		"pt": "Iterar"
+	},
+	"continue, title()": {
+		"en": "Continue",
+		"pt": "Continuar"
+	},
+	"link, title()": {
+		"en": "Link",
+		"pt": "Link"
 	}
 }

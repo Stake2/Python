@@ -82,6 +82,8 @@ class Food_Time():
 
 		for item in ["module_files", "modules"]:
 			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):

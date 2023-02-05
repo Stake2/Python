@@ -1482,5 +1482,9 @@
 	"episodic, title()": {
 		"en": "Episodic",
 		"pt": "Episódica"
+	},
+	"add_to_comments_dictionary": {
+		"en": "Add to comments dictionary",
+		"pt": "Adicionar ao dicionário de comentários"
 	}
 }

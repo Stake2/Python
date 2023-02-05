@@ -24,8 +24,8 @@ class Folder():
 				"create": True,
 				"delete": True,
 				"copy": True,
-				"move": True,
-			},
+				"move": True
+			}
 		})
 
 		if parameter_switches != None:
@@ -401,8 +401,8 @@ class Folder():
 	def Split(self, path):
 		return os.path.split(path)
 
-	def Verbose(self, text, item):
-		if self.global_switches["verbose"] == True:
+	def Verbose(self, text, item, verbose = False):
+		if self.global_switches["verbose"] == True or verbose == True:
 			import inspect
 
 			print()
@@ -486,6 +486,8 @@ class Folder():
 			return True
 
 		else:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["delete"]), folder, verbose = True)
+
 			return False
 
 	def Copy(self, source_folder = None, destination_folder = None):
@@ -506,11 +508,13 @@ class Folder():
 		if self.global_switches["folder"]["copy"] == True and self.Exist(source_folder) == True:
 			copy_tree(source_folder, destination_folder)
 
-			self.Verbose(self.language_texts["source_folder"] + ":\n" + source_folder + "\n\n" + self.language_texts["destination_folder"], destination_folder)
+			self.Verbose(self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder)
 
 			return True
 
 		else:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder, verbose = True)
+
 			return False
 
 	def Move(self, source_folder = None, destination_folder = None):
@@ -540,6 +544,8 @@ class Folder():
 			return True
 
 		else:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder, verbose = True)
+
 			return False
 
 	def List(self, folder, contents_parameter = None):

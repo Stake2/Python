@@ -162,13 +162,29 @@ class JSON():
 
 			return False
 
-	def From_Python(self, item):
-		return json.dumps(item, indent = 4, ensure_ascii = False)
+	def From_Python(self, items):
+		if type(items) != str:
+			import types as Types
 
-	def To_Python(self, file):
-		file = self.Sanitize(file)
+			for key in items:
+				value = items[key]
 
-		dictionary = json.load(open(file, encoding = "utf8"))
+				if type(value) not in [str, int, list, dict, bool, None]:
+					items[key] = str(value)
+
+		if type(items) == str:
+			items = self.To_Python(items)
+
+		return json.dumps(items, indent = 4, ensure_ascii = False)
+
+	def To_Python(self, item):
+		if os.path.isfile(item) == True:
+			item = self.Sanitize(item)
+
+			dictionary = json.load(open(item, encoding = "utf8"))
+
+		if os.path.isfile(item) == False:
+			dictionary = json.loads(item)
 
 		return dictionary
 

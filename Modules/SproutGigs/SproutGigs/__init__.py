@@ -72,16 +72,10 @@ class SproutGigs():
 
 		self.module["key"] = self.module["name"].lower()
 
-		self.apps_folders["modules"][self.module["key"]] = {
-			"root": self.apps_folders["modules"]["root"] + self.module["name"] + "/",
-		}
-
-		self.apps_folders["module_files"][self.module["key"]] = {
-			"root": self.apps_folders["module_files"]["root"] + self.module["name"] + "/",
-		}
-
 		for item in ["module_files", "modules"]:
 			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+
 			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):

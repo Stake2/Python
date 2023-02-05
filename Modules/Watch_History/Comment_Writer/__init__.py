@@ -227,9 +227,16 @@ class Comment_Writer(Watch_History):
 		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media_dictionary["media"]["states"]["video"] == True:
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
-				"Video ID": self.media_dictionary["media"]["episode"]["youtube_id"],
-				"Video link": self.media_dictionary["media"]["episode"]["remote"]["link"]
+				"Video": {
+					"ID": self.media_dictionary["media"]["episode"]["youtube_id"],
+					"Link": self.media_dictionary["media"]["episode"]["remote"]["link"]
+				}
 			})
+
+			video_information = self.Get_YouTube_Video_Info(self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video"]["Link"])
+
+			# Add Times dictionary to Video dictionary
+			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video"]["Times"] = video_information["Times"]
 
 			if self.media_dictionary["media_type"]["plural"]["en"] in self.media_types["comment_posting"] and self.media_dictionary["media"]["episode"]["remote"]["link"] != "":
 				original_link = ""
@@ -241,11 +248,13 @@ class Comment_Writer(Watch_History):
 				if validators.url(original_link) == True:
 					link = urlparse(original_link)
 					query = link.query
-					parameters = parse_qs(query)	
+					parameters = parse_qs(query)
 
 					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
-						"ID": parameters["lc"][0],
-						"Link": self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video link"] + "&lc=" + parameters["lc"][0]
+						"Comment": {
+							"ID": parameters["lc"][0],
+							"Link": self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video"]["Link"] + "&lc=" + parameters["lc"][0]
+						}
 					})
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)
@@ -253,18 +262,31 @@ class Comment_Writer(Watch_History):
 		if dict_ != {}:
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
 
+		# Update media type comments number
+		if "Number" in self.media_type_comments:
+			self.media_type_comments["Number"] = len(self.media_type_comments["File names"])
+
+		if "Number" not in self.media_type_comments:
+			self.media_type_comments = {
+				"Number": len(self.media_type_comments["File names"]),
+				"File names": self.media_type_comments["File names"],
+				"Dictionary": self.media_type_comments["Dictionary"]
+			}
+
 		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]
 
 		if self.media_dictionary["media"]["states"]["episodic"] == False:
-			import collections
-
 			self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"], key=str.lower)
-			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items(), key=str.lower))
+
+			# Sort dictionary keys
+			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items()))
 
 			self.media_comments["File names"] = sorted(self.media_comments["File names"], key=str.lower)
-			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items(), key=str.lower))
 
-		# Update media and media type Comments.json file
+			# Sort dictionary keys
+			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items()))
+
+		# Update media type and media "Comments.json" file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)
 		self.JSON.Edit(self.media_dictionary["media"]["comment"]["comments_folder"]["comments"], self.media_comments)
 

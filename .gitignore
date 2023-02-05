@@ -13,6 +13,7 @@ Texts
 Module Files/Block_Websites/Log.txt
 Module Files/Code/Last Setting Data
 Module Files/SproutGigs/Categories
+Module Files/API
 
 # Root files
 desktop.ini
@@ -20,6 +21,7 @@ Chat_Bot.py
 Rename Episode Files.py
 Sync.lnk
 Test.py
+Test.json
 Time Travel.bat
 
 # rar and zip

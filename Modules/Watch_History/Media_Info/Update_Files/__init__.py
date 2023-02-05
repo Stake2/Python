@@ -11,8 +11,23 @@ class Update_Files(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.Iterate()
-		#self.Create_Comment_Dictionary()
+		methods = {
+			"Iterate": self.Language.language_texts["iterate, title()"],
+			"Add_To_Comments_Dictionary": self.language_texts["add_to_comments_dictionary"]
+		}
+
+		# Get keys and values
+		for name in ["keys", "values"]:
+			methods[name] = list(getattr(methods, name)())
+
+		# Add methods to method keys
+		for method in methods.copy():
+			if method not in ["keys", "values"]:
+				methods[method] = getattr(self, method)
+
+		# Select method
+		method = methods[self.Input.Select(methods["keys"], language_options = methods["values"])["option"]]
+		method()
 
 	def Iterate(self):
 		i = 0
@@ -30,7 +45,7 @@ class Update_Files(Watch_History):
 			print()
 			print(language_media_type + ":")
 
-			if plural_media_type != "Movies":
+			if plural_media_type not in ["Animes", "Cartoons", "Series", "Movies"]:
 				for media in media_list:
 					self.dictionary = {
 						"media_type": self.media_types[plural_media_type],
@@ -46,7 +61,8 @@ class Update_Files(Watch_History):
 
 					self.dictionary = self.Select_Media(self.dictionary)
 
-					# Verify if the media is inside the correct "watching status" list
+					# Add the media inside the correct "watching status" list if it is not there already
+					# Remove the media from the wrong "watching status" list if it is there
 					self.Check_Status(self.dictionary)
 
 					# Define the media items as the media title
@@ -57,9 +73,9 @@ class Update_Files(Watch_History):
 						media_items = self.dictionary["media"]["items"]["list"]
 
 					# Iterate through media items list
-					for media_item in media_items:
+					for list_item in media_items:
 						# Define media item
-						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = media_item)
+						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = list_item)
 
 						if self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"]:
 							print()
@@ -69,21 +85,25 @@ class Update_Files(Watch_History):
 						#self.Check_Titles()
 
 						# Add exact media or media item creation or release to media or media item details
-						self.Add_Date()
+						#self.Add_Date()
 
 						# Convert comments with old registry style (Files) to the new one (JSON)
-						#if media != "FAGames":
-						#	self.Convert_Comments()
+						#if media not in ["Ciência Todo Dia", "Egernético", "FAGames", "Lives do Cellbit", "lunar clips", "MW Informática"]:
+						#	self.Convert_Old_Comments()
+
+						# Add pubslihed dates to video channels, playlists, and comments
+						if media in ["Ciência Todo Dia", "Egernético", "FAGames", "Lives do Cellbit", "lunar clips", "MW Informática"]:
+							self.Add_Time_To_Comment_JSON()
 
 			if self.global_switches["testing"] == True:
-				input()
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
 
 	def Check_Titles(self):
 		# If "titles" is present in the folders dictionary (not a single unit media item)
 		# And status is not "Plan to watch" or "Completed"
-		if "titles" in self.dictionary["media"]["item"]["folders"] and self.dictionary["media"]["details"]["status"] not in [self.language_texts["plan_to_watch, title()"], self.language_texts["completed, title()"]]:
+		if "titles" in self.dictionary["media"]["item"]["folders"] and self.dictionary["media"]["details"][self.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.language_texts["completed, title()"]]:
 			# Get titles file to check its contents
 			titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + self.full_languages["en"] + ".txt"
 
@@ -100,28 +120,34 @@ class Update_Files(Watch_History):
 					self.File.Open(titles_file)
 
 				# Wait for user input
-				self.Input.Type()
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 	def Add_Date(self):
-		names = ["media"]
+		item_types = ["media"]
 
 		if self.dictionary["media"]["states"]["media_list"] == True:
-			names.append("item")
+			item_types.append("item")
 
-		# Iterate through the names list
-		for key in names:
+		# Iterate through the item_types list
+		for item_type in item_types:
 			# Get the details file for media
-			details = self.dictionary["media"]["details"]
-			file = self.dictionary["media"]["folders"]["details"]
+			self.date_dictionary = {
+				"file": self.dictionary["media"]["folders"]["details"],
+				"details": self.File.Dictionary(self.dictionary["media"]["folders"]["details"])
+			}
 
 			# Get the details file for media item
-			if key == "item":
-				details = self.dictionary["media"]["item"]["details"]
-				file = self.dictionary["media"]["item"]["folders"]["details"]
+			if item_type == "item":
+				self.date_dictionary.update({
+					"file": self.dictionary["media"]["item"]["folders"]["details"],
+					"details": self.File.Dictionary(self.dictionary["media"]["item"]["folders"]["details"])
+				})
+
+			ask = False
 
 			# If the "Year" key in details and "Date" key not in details
-			if self.Date.language_texts["year, title()"] in details and self.Date.language_texts["date, title()"] not in details:
-				year = details[self.Date.language_texts["year, title()"]]
+			if self.Date.language_texts["year, title()"] in self.date_dictionary["details"] and self.date_dictionary["details"][self.Date.language_texts["year, title()"]] != "?" and self.Date.language_texts["date, title()"] not in self.date_dictionary["details"]:
+				year = self.date_dictionary["details"][self.Date.language_texts["year, title()"]]
 
 				# If the media has a media item list
 				if self.dictionary["media"]["states"]["media_list"] == True:
@@ -130,24 +156,32 @@ class Update_Files(Watch_History):
 						# Get the date from the media details
 						date = self.dictionary["media"]["details"][self.Date.language_texts["date, title()"]]
 
-					# If the media title is not equal to the media item title or the date is not present in the media details
-					if self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"] or self.Date.language_texts["date, title()"] not in self.dictionary["media"]["details"]:
-						# If verbose is true, show the media item title again because there is more text above that pushes above the media item title shown before
-						if self.global_switches["verbose"] == True and self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"]:
-							print()
-							print(self.dictionary["media"]["item"]["title"] + ":")
+						ask = False
 
-						# Ask for the day and month separated by a slash, because the year is already inside the details
-						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+					# If the media title is not equal to the media item title or the date is not present in the media details
+					if item_type == "item" and self.dictionary["media"]["title"] != self.dictionary["media"]["item"]["title"] or self.Date.language_texts["date, title()"] not in self.dictionary["media"]["details"]:
+						ask = True
 
 				# If the media has no media item list
 				if self.dictionary["media"]["states"]["media_list"] == False:
+					ask = True
+
+				if ask == True:
+					if self.dictionary["media"]["item"]["title"] != self.dictionary["media"]["title"]:
+						print()
+						print(self.dictionary["media"]["item"]["title"] + ":")
+
+					print(self.Date.language_texts["year, title()"] + ": " + year)
+
 					# Ask for the day and month separated by a slash, because the year is already inside the details
-					date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+					date = ""
+
+					while re.search(r"[0-9]{2,2}/[0-9]{2,2}", date) == None:
+						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
 
 				# Add the date key to the details
-				keys = list(details.keys())
-				values = list(details.values())
+				keys = list(self.date_dictionary["details"].keys())
+				values = list(self.date_dictionary["details"].values())
 
 				i = 0
 				for key in keys.copy():
@@ -163,17 +197,26 @@ class Update_Files(Watch_History):
 					i += 1
 
 				# Remake details dictionary
-				details = dict(zip(keys, values))
+				self.date_dictionary["details"] = dict(zip(keys, values))
 
 				# Update media or media item details file
-				self.File.Edit(file, self.Text.From_Dictionary(details), "w")
+				self.File.Edit(self.date_dictionary["file"], self.Text.From_Dictionary(self.date_dictionary["details"]), "w")
 
-	def Convert_Comments(self):
+			if self.Date.language_texts["year, title()"] not in self.date_dictionary["details"]:
+				print(self.date_dictionary["file"])
+				self.File.Open(self.date_dictionary["file"], open = True)
+				quit()
+
+	def Convert_Old_Comments(self):
 		folder = self.dictionary["media"]["item"]["folders"]["media_type_comments"]["root"]
 
 		contents = self.Folder.Contents(folder)
 
-		media_comments_folder = self.dictionary["media"]["item"]["folders"]["comments"]["root"]
+		if "comments" in self.dictionary["media"]["item"]["folders"] and "root" in self.dictionary["media"]["item"]["folders"]["comments"]:
+			media_comments_folder = self.dictionary["media"]["item"]["folders"]["comments"]["root"]
+
+		else:
+			media_comments_folder = self.dictionary["media"]["item"]["folders"]["root"]
 
 		comments_contents = self.Folder.Contents(media_comments_folder, lower_key = True)["dictionary"]
 
@@ -384,13 +427,23 @@ class Update_Files(Watch_History):
 							youtube_comment_ids = self.File.Contents(youtube_comment_id_file)["lines"]
 
 							comments_json["Dictionary"][file_name].update({
-								"Video ID": youtube_id,
-								"Video link": self.remote_origins["YouTube"] + "watch?v=" + youtube_id + "&list=" + self.dictionary["media"]["item"]["details"][self.language_texts["origin_location"]] + "&index=" + str(int(episode_number)),
+								"Video": {
+									"ID": youtube_id,
+									"Link": self.remote_origins["YouTube"] + "watch?v=" + youtube_id + "&list=" + self.dictionary["media"]["item"]["details"][self.language_texts["origin_location"]] + "&index=" + str(int(episode_number)),
+								}
 							})
 
+
+							video_information = self.Get_YouTube_Video_Info(comments_json["Dictionary"][file_name]["link"])
+
+							# Add Times dictionary to Video dictionary
+							comments_json["Dictionary"]["Video"]["Times"] = video_information["Times"]
+
 							comments_json["Dictionary"][file_name].update({
-								"Comment ID": youtube_comment_ids[0],
-								"Comment link": comments_json["Dictionary"][file_name]["Video link"] + "&lc=" + youtube_comment_ids[0]
+								"Comment": {
+									"ID": youtube_comment_ids[0],
+									"Link": comments_json["Dictionary"][file_name]["Video link"] + "&lc=" + youtube_comment_ids[0]
+								}
 							})
 
 							if youtube_id not in comment[2]:
@@ -409,7 +462,14 @@ class Update_Files(Watch_History):
 
 				# Sort file names and dictionary keys
 				comments_json["File names"] = sorted(comments_json["File names"], key=str.lower)
-				comments_json["Dictionary"] = collections.OrderedDict(sorted(comments_json["Dictionary"].items(), key=str.lower))
+				comments_json["Dictionary"] = collections.OrderedDict(sorted(comments_json["Dictionary"].items()))
+
+				# Update media comments number
+				comments_json.update({
+					"Number": len(comments_json["File names"]),
+					"File names": comments_json["File names"],
+					"Dictionary": comments_json["Dictionary"]
+				})
 
 				# Update media type "Comments.json" file
 				self.JSON.Edit(comments_json_file, comments_json)
@@ -423,7 +483,25 @@ class Update_Files(Watch_History):
 				if "YouTube IDs" in contents["dictionary"]:
 					self.Folder.Delete(contents["dictionary"]["YouTube IDs"]["root"])
 
-	def Create_Comment_Dictionary(self):
+	def Add_Time_To_Comment_JSON(self):
+		media_comments = self.JSON.To_Python(self.dictionary["media"]["item"]["folders"]["comments"]["comments"])
+
+		for key in media_comments["Dictionary"]:
+			dictionary = media_comments["Dictionary"][key]
+
+			if "Times" not in dictionary["Video"]:
+				dictionary["Video"]["Times"] = self.Get_YouTube_Information("video", dictionary["Video"]["Link"])["Times"]
+
+			dictionary["Times2"] = dictionary["Times"].copy()
+			dictionary["Times"] = self.Get_YouTube_Information("comment", dictionary["Comment"]["Link"])["Times"]
+
+		# Update media and media type Comments.json file
+		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], media_comments)
+		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], media_comments)
+
+		input()
+
+	def Add_To_Comments_Dictionary(self):
 		self.dictionary = self.Select_Media_Type_And_Media()
 
 		comment = {
@@ -436,18 +514,16 @@ class Update_Files(Watch_History):
 			"Titles": {}
 		}
 
-		date = self.Date.Now()
-		comment["Times"]["date_time_format"] = date["date_time_format"][self.user_language]
-		comment["Times"]["date"] = str(date["date"])
+		if comment["Media Type"] != "Videos":
+			date = self.Input.Type(self.Date.language_texts["date, title()"])
+
+			if date != "":
+				date = self.Date.From_String(date)
+
+			if date == "":
+				date = self.Date.Now()
 
 		if comment["Media Type"] == "Videos":
-			comment.update({
-				"Video ID": "",
-				"Video link": self.remote_origins["YouTube"] + "watch?v={}",
-				"ID": "",
-				"Link": self.remote_origins["YouTube"] + "watch?v={}&lc={}"
-			})
-
 			link = ""
 
 			while validators.url(link) != True:
@@ -459,11 +535,33 @@ class Update_Files(Watch_History):
 				query = link.query
 				parameters = parse_qs(query)	
 
-				comment["Video ID"] = parameters["v"][0]
-				comment["ID"] = parameters["lc"][0]
+			channel = {
+				"item": "channels",
+				"id": self.dictionary["media"]["details"][self.Language.language_texts["link, title()"]].split("/")[-1]
+			}
 
-			comment["Video link"] = comment["Video link"].format(comment["Video ID"])
-			comment["Link"] = comment["Link"].format(comment["Video ID"], comment["ID"])
+			comment["Channel"] = self.API.Call("YouTube", channel)["Dictionary"][channel["id"]]
+
+			video = {
+				"item": "videos",
+				"id": parameters["v"][0]
+			}
+
+			comment["Video"] = self.API.Call("YouTube", video)["Dictionary"][video["id"]]
+
+			comment_dictionary = {
+				"item": "comments",
+				"id": parameters["lc"][0]
+			}
+
+			comment["Comment"] = self.API.Call("YouTube", comment_dictionary)["Dictionary"][comment_dictionary["id"]]
+			comment["Comment"]["Link"] = comment["Video"]["Link"] + "&lc=" + comment["Comment"]["ID"]
+
+			comment["Times"] = comment["Comment"]["Times"]
+
+		if comment["Media Type"] != "Videos":
+			comment["Times"]["date_time_format"] = date["date_time_format"][self.user_language]
+			comment["Times"]["date"] = str(date["date"])
 
 		print()
 		print(self.Language.language_texts["titles, title()"] + ":")
@@ -480,10 +578,18 @@ class Update_Files(Watch_History):
 
 		dictionary = self.JSON.To_Python(self.dictionary["media"]["item"]["folders"]["comments"]["comments"])
 
-		dictionary["File names"].append(comment["File name"])
+		if comment["File name"] not in dictionary["File names"]:
+			dictionary["File names"].append(comment["File name"])
+
 		dictionary["Dictionary"][comment["File name"]] = comment
 
 		dictionary["File names"] = sorted(dictionary["File names"], key=str.lower)
-		dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items(), key=str.lower))
+		#dictionary["Dictionary"] = collections.OrderedDict(sorted(dictionary["Dictionary"].items()))
 
+		# Edit "Comments.json" file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], dictionary)
+
+		# Copy all comments contents to the media type comments folder of the media
+		source_folder = self.dictionary["media"]["item"]["folders"]["comments"]["root"]
+		destination_folder = self.dictionary["media"]["item"]["folders"]["media_type_comments"]["root"]
+		self.Folder.Copy(source_folder, destination_folder)

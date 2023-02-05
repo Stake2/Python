@@ -10,6 +10,7 @@ import os
 import win32com.client
 import time
 from datetime import datetime, timedelta
+import pytz
 
 class Date():
 	def __init__(self, parameter_switches = None):
@@ -18,11 +19,11 @@ class Date():
 
 		self.global_switches.update({
 			"folder": {
-				"create": True,
+				"create": True
 			},
 			"file": {
-				"create": True,
-			},
+				"create": True
+			}
 		})
 
 		if parameter_switches != None:
@@ -92,9 +93,11 @@ class Date():
 
 		if date_parameter == None:
 			date["date"] = datetime.now()
+			date["utc_date"] = datetime.utcnow()
 
 		if date_parameter != None:
 			date["date"] = date_parameter
+			date["utc_date"] = date["date"].astimezone(pytz.UTC)
 
 		# Day
 		date["day"] = date["date"].day
@@ -143,7 +146,9 @@ class Date():
 			date["date_time_format"][language] = date["date"].strftime(self.texts["date_time_format"][language])
 
 		date["ISO8601"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
-		date["%Y-%m-%dT%H:%M:%S"] = date["ISO8601"]
+		date["%Y-%m-%dT%H:%M:%S"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
+		date["%Y-%m-%dT%H:%M:%SZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
+		date["YYYY-MM-DDTHH:MM:SSZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
 		date["%Y-%m-%d %H:%M:%S"] = date["date"].strftime("%Y-%m-%d %H:%M:%S")
 		date["%H:%M %d/%m/%Y"] = date["date"].strftime("%H:%M %d/%m/%Y")
 

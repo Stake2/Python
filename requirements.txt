@@ -1,6 +1,7 @@
 pip>22
 wheel
 winshell
+requests
 nptime
 setuptools
 pathlib
@@ -13,3 +14,5 @@ pyperclip
 pyautogui
 beautifultable
 validators
+googleapiclient
+google_auth_oauthlib

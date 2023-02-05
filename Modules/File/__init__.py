@@ -23,8 +23,8 @@ class File():
 				"delete": True,
 				"copy": True,
 				"move": True,
-				"edit": True,
-			},
+				"edit": True
+			}
 		})
 
 		if parameter_switches != None:
@@ -44,7 +44,7 @@ class File():
 		self.app_text_files_folder = self.Language.app_text_files_folder
 
 		self.module = {
-			"name": self.__module__,
+			"name": self.__module__
 		}
 
 		if "." in self.module["name"]:
@@ -369,13 +369,13 @@ class File():
 
 		return dictionary
 
-	def Open(self, item):
+	def Open(self, item, open = False):
 		if "https" not in item:
 			item = self.Sanitize(item)
 
 		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
 
-		if self.global_switches["testing"] == False:
+		if self.global_switches["testing"] == False or open == True:
 			os.startfile(item)
 
 	def Close(self, program):
