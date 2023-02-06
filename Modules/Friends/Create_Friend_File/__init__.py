@@ -160,7 +160,7 @@ class Create_Friend_File(Friends):
 		# Copy contents of text folder into image folder
 		self.File.Copy(self.friend_folders[self.friend]["Text"]["root"], self.friend_folders[self.friend]["Image"]["root"])
 
-		if self.global_switches["verbose"] == True:
+		if self.switches["global"]["verbose"] == True:
 			print()
 			print("Folders: " + self.JSON.From_Python(self.friend_folders[self.friend]))
 			print()

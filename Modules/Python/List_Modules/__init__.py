@@ -11,16 +11,12 @@ class List_Modules(Python):
 		print()
 		print(self.language_texts["these_are_the_modules_that_exist_in_the_modules_folder"] + ":")
 
-		for module_type in self.module_files:
-			file = self.module_files[module_type]
-
-			lines = self.File.Contents(file)["lines"]
-
-			if lines != []:
+		for key in ["utility", "usage"]:
+			if self.modules[key]["list"] != []:
 				print()
-				print(module_type + ":")
+				print(self.language_texts[key + "_modules"] + ":")
 
-				for module in lines:
+				for module in self.modules[key]["list"]:
 					print(module)
 
 		print()

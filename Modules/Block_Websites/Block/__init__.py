@@ -111,12 +111,12 @@ class Block(Block_Websites):
 		print(self.language_texts["the_websites_are_{}_because_you_are{}_in_working_time"].format(self.language_texts[self.key], self.not_text) + ".")
 
 	def Update_Python_File(self):
-		self.block_python_code = self.File.Contents(self.apps_folders["modules"][self.module["key"]]["block"]["__init__"])["string"]
+		self.block_python_code = self.File.Contents(self.folders["apps"]["modules"][self.module["key"]]["block"]["__init__"])["string"]
 
 		text = self.block_python_code + "\n\n" + 'if __name__ == "__main__":' + "\n\t" + "Block()"
 
-		self.File.Edit(self.apps_folders["modules"][self.module["key"]]["block"]["block"], text, "w")
+		self.File.Edit(self.folders["apps"]["modules"][self.module["key"]]["block"]["block"], text, "w")
 
 		self.texts["task_name"] = "Block Websites"
 
-		self.Date.Schedule_Task(self.texts["task_name"], self.apps_folders["modules"][self.module["key"]]["block"]["block"], time_from_now = self.time)
+		self.Date.Schedule_Task(self.texts["task_name"], self.folders["apps"]["modules"][self.module["key"]]["block"]["block"], time_from_now = self.time)

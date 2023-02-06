@@ -57,8 +57,8 @@ class Fill_Episode_Titles(Watch_History):
 		print()
 		print(self.language_texts["filling_the_episode_titles_files"] + "...")
 
-		for language in self.small_languages:
-			translated_language = self.translated_languages[language][self.user_language]
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			print()
 			print(self.language_texts["episode_titles_file_in_{}"].format(translated_language) + ":")
@@ -111,8 +111,8 @@ class Fill_Episode_Titles(Watch_History):
 	def Fill_Files(self):
 		i = 1
 		while i <= self.episode_number:
-			for language in self.small_languages:
-				translated_language = self.translated_languages[language][self.user_language]
+			for language in self.languages["small"]:
+				translated_language = self.languages["full_translated"][language][self.user_language]
 
 				self.episode_titles_file = self.episode_titles_files[language]
 

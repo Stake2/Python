@@ -96,7 +96,7 @@ class Watch_Media(Watch_History):
 		# Definition of episode to watch if the media is series media
 		if self.media_dictionary["media"]["states"]["series_media"] == True:
 			if self.media_dictionary["media"]["states"]["single_unit"] == True:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language not in self.media_dictionary["media"]["episode"]["titles"]:
 						self.media_dictionary["media"]["episode"]["titles"][language] = self.Get_Media_Title(self.media_dictionary, item = True)
 
@@ -148,7 +148,7 @@ class Watch_Media(Watch_History):
 					i += 1
 
 			# Define episode titles per language
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				episode_titles = self.media_dictionary["media"]["item"]["episodes"]["titles"][language]
 
 				episode_title = ""
@@ -312,7 +312,7 @@ class Watch_Media(Watch_History):
 
 				number = self.media_dictionary["media"]["episode"]["re_watched"]["times"]
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					text = self.Text.By_Number(number, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
 
 					self.media_dictionary["media"]["episode"]["re_watched"]["time_text"][language] = text.format(self.Date.texts["number_names_feminine, type: list"][language][number])
@@ -373,7 +373,7 @@ class Watch_Media(Watch_History):
 				self.media_dictionary["media"]["episode"]["with_title_and_item"]["original"] += self.media_dictionary["media"]["episode"]["title"]
 
 				# Define episode with item and episode with title and item texts per language
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					# Define the media item title as the original one
 					item_title = self.Get_Media_Title(self.media_dictionary, item = True)
 
@@ -389,7 +389,7 @@ class Watch_Media(Watch_History):
 			self.media_dictionary["media"]["episode"]["with_title"]["original"] = media_title + self.media_dictionary["media"]["separators"]["title"] + self.media_dictionary["media"]["episode"]["title"]
 
 			# Define the episode with title texts per language
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				# Define media title as the original
 				media_title = self.media_dictionary["media"]["titles"]["original"]
 
@@ -510,9 +510,9 @@ class Watch_Media(Watch_History):
 		if self.media_dictionary["media"]["states"]["remote"] == True:
 			self.File.Open(self.media_dictionary["media"]["episode"]["unit"])
 
-		if self.media_dictionary["media"]["states"]["local"] == True and self.global_switches["testing"] == False:
+		if self.media_dictionary["media"]["states"]["local"] == True and self.switches["global"]["testing"] == False:
 			import subprocess
-			subprocess.Popen('"' + self.root_folders["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
+			subprocess.Popen('"' + self.folders["root"]["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
 
 	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
 	def Create_Discord_Status(self):
@@ -548,9 +548,9 @@ class Watch_Media(Watch_History):
 
 	def Find_Media_file(self, file_name):
 		self.frequently_used_folders = [
-			self.user_folders["downloads"]["root"],
-			self.user_folders["downloads"]["videos"],
-			self.user_folders["downloads"]["mega"],
+			self.folders["user"]["downloads"]["root"],
+			self.folders["user"]["downloads"]["videos"],
+			self.folders["user"]["downloads"]["mega"],
 		]
 
 		old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)

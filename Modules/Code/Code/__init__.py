@@ -1,60 +1,19 @@
 # Code.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 class Code(object):
-	def __init__(self, parameter_switches = None):
-		self.parameter_switches = parameter_switches
-
-		self.Define_Basic_Variables()
+	def __init__(self):
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
 		self.Define_Folders()
 		self.Define_Lists_And_Dictioinaries()
 
-	def Define_Basic_Variables(self):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def Import_Modules(self):
+		from Utility.Modules import Modules as Modules
 
-		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
-
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
-		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
-
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
-
-		self.Sanitize = self.File.Sanitize
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
+		# Get modules dictionary
+		self.modules = Modules().Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -67,13 +26,13 @@ class Code(object):
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -83,7 +42,7 @@ class Code(object):
 		self.code_footer = "\n" + self.large_bar + "\n"
 
 	def Define_Folders(self):
-		self.programming_network_folder = self.notepad_folders["effort"]["networks"]["root"] + "Programming Network/"
+		self.programming_network_folder = self.folders["notepad"]["effort"]["networks"]["root"] + "Programming Network/"
 		self.Folder.Create(self.programming_network_folder)
 
 		self.programming_network_file_names = [

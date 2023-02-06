@@ -1,23 +1,11 @@
 # Food_Time.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 class Food_Time():
-	def __init__(self, parameter_switches = None, show_text = True, register_time = True):
-		self.parameter_switches = parameter_switches
-
+	def __init__(self, show_text = True, register_time = True):
 		self.show_text = show_text
 		self.register_time = register_time
 
-		self.Define_Basic_Variables()
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
@@ -30,40 +18,11 @@ class Food_Time():
 
 			self.Show_Times()
 
-	def Define_Basic_Variables(self):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def Import_Modules(self):
+		from Utility.Modules import Modules as Modules
 
-		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
-
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
-		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
-
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
-
-		self.Sanitize = self.File.Sanitize
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
+		# Get modules dictionary
+		self.modules = Modules().Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = self.__module__
@@ -81,13 +40,13 @@ class Food_Time():
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -96,7 +55,7 @@ class Food_Time():
 
 	def Define_Lists_And_Dictionaries(self):
 		# Read Times.json file
-		self.times = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["times"])
+		self.times = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["times"])
 
 		# Iterate through time types
 		for time_type in self.times["types"]:
@@ -120,7 +79,7 @@ class Food_Time():
 				# Format "this_is_the_time_that_you" text with the time type text per language
 				self.times[time_type]["texts"] = {}
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					prefix = self.texts["this_is_the_time_that_you"][language] + " "
 
 					self.times[time_type]["texts"][language] = prefix + self.texts[time_type][language]
@@ -149,7 +108,7 @@ class Food_Time():
 			self.times[time_type]["date"] = str(self.times[time_type]["date"])
 
 		# Write the new time type dictionaries with the stringfied datetimes
-		self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["times"], self.times)
+		self.JSON.Edit(self.folders["apps"]["module_files"][self.module["key"]]["times"], self.times)
 
 	def Set_Timer(self):
 		# Define website timer to countdown to "will_be_hungry" time
@@ -192,7 +151,7 @@ class Food_Time():
 				self.timer_url += "&"
 
 			# Add the attribute name, an equals sign, and the attribute (from date)
-			date = self.Date.From_String(self.times["will_be_hungry"]["date"], "%Y-%m-%d %H:%M:%S.%f")
+			date = self.Date.From_String(self.times["will_be_hungry"]["date"])
 
 			self.timer_url += self.time_parameters[attribute]["parameter"] + "=" + str(date[attribute])
 
@@ -206,7 +165,7 @@ class Food_Time():
 		# Define scheduled task to play alarm sound when the "will_be_hungry" time is reached
 		self.parameters = {
 			"task_title": self.language_texts["play_alarm_sound_when_you_are_hungry"],
-			"path": self.apps_folders["modules"][self.module["key"]]["play_alarm"]["__init__"],
+			"path": self.folders["apps"]["modules"][self.module["key"]]["play_alarm"]["__init__"],
 			"start_time": self.times["will_be_hungry"]["date"],
 		}
 

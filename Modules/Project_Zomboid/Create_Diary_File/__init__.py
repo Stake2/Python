@@ -90,7 +90,7 @@ class Create_Diary_File(Project_Zomboid):
 
 		self.file_name_template = "Dia {}, {}, {}"
 
-		self.date = self.Date.From_String(str(self.dates["Day"]) + "/" + str(self.dates["Month"]) + "/" + str(self.dates["Year"]), "%d/%m/%Y")
+		self.date = self.Date.From_String(str(self.dates["Day"]) + "/" + str(self.dates["Month"]) + "/" + str(self.dates["Year"]))
 
 		self.survival_diary_file_name = self.file_name_template.format(str(self.dates["Survival day"]), self.date["day_name"], self.date["%d-%m-%Y"])
 

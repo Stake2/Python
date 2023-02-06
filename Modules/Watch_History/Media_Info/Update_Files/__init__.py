@@ -95,7 +95,7 @@ class Update_Files(Watch_History):
 						if media in ["Ciência Todo Dia", "Egernético", "FAGames", "Lives do Cellbit", "lunar clips", "MW Informática"]:
 							self.Add_Time_To_Comment_JSON()
 
-			if self.global_switches["testing"] == True:
+			if self.switches["global"]["testing"] == True:
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
@@ -110,8 +110,8 @@ class Update_Files(Watch_History):
 			# If file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
 				# Iterate through languages list
-				for language in self.small_languages:
-					full_language = self.full_languages[language]
+				for language in self.languages["small"]:
+					full_language = self.languages["full"][language]
 
 					# Define the language titles file
 					titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
@@ -385,8 +385,8 @@ class Update_Files(Watch_History):
 								comment[1] += " "
 
 						# Get media or episode titles
-						for language in self.small_languages:
-							full_language = self.full_languages[language]
+						for language in self.languages["small"]:
+							full_language = self.languages["full"][language]
 
 							titles_file = self.dictionary["media"]["item"]["folders"]["titles"]["root"] + full_language + ".txt"
 							titles = self.File.Contents(titles_file)["lines"]
@@ -489,11 +489,16 @@ class Update_Files(Watch_History):
 		for key in media_comments["Dictionary"]:
 			dictionary = media_comments["Dictionary"][key]
 
-			if "Times" not in dictionary["Video"]:
-				dictionary["Video"]["Times"] = self.Get_YouTube_Information("video", dictionary["Video"]["Link"])["Times"]
+			dictionary["Video"]["Times"] = self.Get_YouTube_Information("video", dictionary["Video"]["Link"])["Times"]
+			# Todo: Add user timezone to "Get_YouTube_Information"
 
-			dictionary["Times2"] = dictionary["Times"].copy()
+			date = self.Date.From_String(dictionary["Video"]["Times"]["UTC"])
+
+			dictionary["Video"]["Times"]["BRT"] = self.Date.To_String(date["date"].astimezone(date["timezone"]))
+
+			timezone = dictionary["Times"]
 			dictionary["Times"] = self.Get_YouTube_Information("comment", dictionary["Comment"]["Link"])["Times"]
+			dictionary["Times"]["Timezone"] = timezone
 
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], media_comments)
@@ -570,9 +575,9 @@ class Update_Files(Watch_History):
 		if self.dictionary["media"]["states"]["episodic"] == False:
 			comment["Titles"][self.user_language] = comment["File name"]
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			if self.dictionary["media"]["states"]["episodic"] == True or self.dictionary["media"]["states"]["episodic"] == False and language != self.user_language:
-				translated_language = self.translated_languages[language][self.user_language]
+				translated_language = self.languages["full_translated"][language][self.user_language]
 
 				comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
 

@@ -1,20 +1,8 @@
 # Social_Networks.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 class Social_Networks(object):
-	def __init__(self, parameter_switches = None):
-		self.parameter_switches = parameter_switches
-
-		self.Define_Basic_Variables()
+	def __init__(self):
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
@@ -22,40 +10,11 @@ class Social_Networks(object):
 		self.Define_Lists_And_Dictionaries()
 		self.Define_Social_Network_Dictionaries()
 
-	def Define_Basic_Variables(self):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def Import_Modules(self):
+		from Utility.Modules import Modules as Modules
 
-		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
-
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
-		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
-
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
-
-		self.Sanitize = self.File.Sanitize
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
+		# Get modules dictionary
+		self.modules = Modules().Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -68,13 +27,13 @@ class Social_Networks(object):
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -83,13 +42,13 @@ class Social_Networks(object):
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.social_networks_text_folder = self.notepad_folders["effort"]["root"] + self.texts["social_networks"]["en"] + "/"
+		self.social_networks_text_folder = self.folders["notepad"]["effort"]["root"] + self.texts["social_networks"]["en"] + "/"
 		self.Folder.Create(self.social_networks_text_folder)
 
 		self.social_networks_database_folder = self.social_networks_text_folder + "Database/"
 		self.Folder.Create(self.social_networks_database_folder)
 
-		self.social_networks_image_folder = self.mega_folders["image"]["root"] + self.texts["social_networks"]["en"] + "/"
+		self.social_networks_image_folder = self.folders["mega"]["image"]["root"] + self.texts["social_networks"]["en"] + "/"
 		self.Folder.Create(self.social_networks_image_folder)
 
 		self.digital_identities_folder = self.social_networks_image_folder + "Digital identities/"
@@ -110,7 +69,7 @@ class Social_Networks(object):
 			"Information items": {},
 		}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.social_networks["Information items"][language] = []
 
 		self.file_names = {}
@@ -275,7 +234,7 @@ class Social_Networks(object):
 		self.texts.update(dict_)
 
 		# Add information items to texts JSON file
-		self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["texts"], self.texts)
+		self.JSON.Edit(self.folders["apps"]["module_files"][self.module["key"]]["texts"], self.texts)
 
 		# Update Social Networks links file
 		self.File.Edit(self.social_networks_links_file, self.Text.From_List(self.social_networks["Links"]), "w")
@@ -300,7 +259,7 @@ class Social_Networks(object):
 		# Create link types per language, home and profile
 		self.link_types = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.link_types[language] = []
 			self.link_types[language].append(self.texts["home, title()"][language])
 			self.link_types[language].append(self.texts["profile, title()"][language])

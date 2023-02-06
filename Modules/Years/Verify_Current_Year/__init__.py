@@ -27,8 +27,8 @@ class Verify_Current_Year(Years):
 			self.current_year["folders"] = self.Folder.Contents(self.current_year["folder"])["dictionary"]
 
 			# This Year I (post) file
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				self.this_year_i_post_file = self.current_year["folders"][full_language][self.texts["this_year_i_post"][language]]
 

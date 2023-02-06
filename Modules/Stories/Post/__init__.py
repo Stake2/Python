@@ -94,7 +94,7 @@ class Post(Stories):
 			print(self.language_texts["you_skipped_the"] + " " + self.post_steps_texts[item] + ".")
 
 	def Define_Chapter(self):
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			self.File.Open(self.story["folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
@@ -115,8 +115,8 @@ class Post(Stories):
 		# Make chapter titles
 		self.story["chapter_titles"] = {}
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			self.story["chapter_titles"][language] = ""
 			self.story["chapter_titles"][language] += str(self.Text.Add_Leading_Zeros(self.story["Information"]["Chapter status"]["Post"])) + " - "
@@ -127,7 +127,7 @@ class Post(Stories):
 
 		self.story["chapter_number_names"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.story["chapter_number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.story["chapter_number"])]
 
 		text_to_write = self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True)
@@ -183,13 +183,13 @@ class Post(Stories):
 				print(text.format(self.cover_type["title"], self.cover_type["title"], self.cover_type["extension"].upper()))
 
 				# Open Sony Vegas file
-				if self.global_switches["testing"] == False:
+				if self.switches["global"]["testing"] == False:
 					self.File.Open(self.cover_type["sony_vegas_file"])
 
 				# Copy language titles and move language covers
 				if self.run_as_module == False:
-					for language in self.small_languages:
-						full_language = self.full_languages[language]
+					for language in self.languages["small"]:
+						full_language = self.languages["full"][language]
 
 						print()
 
@@ -205,11 +205,11 @@ class Post(Stories):
 				if self.run_as_module == True:
 					self.Input.Type(self.language_texts["press_enter_when_you_finish_rendering_the_covers"])
 
-					for language in self.small_languages:
-						full_language = self.full_languages[language]
-						translated_language = self.translated_languages[language][self.user_language]
+					for language in self.languages["small"]:
+						full_language = self.languages["full"][language]
+						translated_language = self.languages["full_translated"][language][self.user_language]
 
-						if language != self.small_languages[0]:
+						if language != self.languages["small"][0]:
 							print(self.large_bar)
 							print()
 
@@ -219,7 +219,7 @@ class Post(Stories):
 
 						self.story["chapter_number"] = 1
 
-						if language != self.small_languages[0]:
+						if language != self.languages["small"][0]:
 							print()
 
 						print(self.large_bar)
@@ -237,7 +237,7 @@ class Post(Stories):
 						print()
 
 				# Close Sony Vegas after updating the chapter cover in the specified cover type
-				if self.global_switches["testing"] == False:
+				if self.switches["global"]["testing"] == False:
 					self.File.Close("vegas110")
 
 	def Copy_Title(self, language, post_chapter = False):
@@ -247,7 +247,7 @@ class Post(Stories):
 			type_text = self.language_texts["press_enter_to_copy_the_chapter_title"]
 
 		# Show chapter title
-		print(self.translated_languages[language][self.user_language] + ":")
+		print(self.languages["full_translated"][language][self.user_language] + ":")
 		print(self.story["chapter_titles"][language])
 
 		self.Input.Type(type_text)
@@ -279,8 +279,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.root_folders["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.root_folders["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
@@ -315,7 +315,7 @@ class Post(Stories):
 		self.File.Delete(source_file)
 
 	def Update_Websites(self):
-		Update_Websites(self.global_switches, module_website = self.story["title"])
+		Update_Websites(module_website = self.story["title"])
 
 	def Copy_Chapter_Text(self, language, full_language):
 		# Get chapter file
@@ -337,9 +337,9 @@ class Post(Stories):
 		print(self.large_bar)
 		print()
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
-			translated_language = self.translated_languages[language][self.user_language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
+			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			# Open Wattpad on story page
 			wattpad_link = self.story["Information"]["Wattpad"]["links"][language]
@@ -355,7 +355,7 @@ class Post(Stories):
 			print()
 			print("---")
 
-			if language == self.small_languages[0]:
+			if language == self.languages["small"][0]:
 				print()
 
 	def Post_On_Social_Networks(self):
@@ -445,7 +445,7 @@ class Post(Stories):
 		}
 
 		# Add task titles
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.task_dictionary["titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
 			self.task_dictionary["titles"][language] = self.task_dictionary["titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
 

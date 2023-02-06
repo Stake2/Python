@@ -40,8 +40,8 @@ class Play(GamePlayer):
 				"Time spent": self.game_dictionary["time_list"]["en"] + " - " + self.game_dictionary["time_list"]["pt"],
 			}
 
-			for language in self.small_languages:
-				translated_language = self.translated_languages[language]["en"]
+			for language in self.languages["small"]:
+				translated_language = self.languages["full_translated"][language]["en"]
 				text = self.texts["i_played_the_{}_game_called_{}_for_{}_current_time_{}"][language]
 
 				self.game_dictionary["texts"][translated_language + " played time"] = text.format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
@@ -70,7 +70,7 @@ class Play(GamePlayer):
 
 		self.game["category"]["names"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.game["category"]["names"][language] = self.games["Folder names"][language][self.option_info["number"] - 1]
 
 		self.game["category"]["folder"] = self.option_info["option"]
@@ -105,8 +105,8 @@ class Play(GamePlayer):
 
 		self.game["file"] = self.game["category"]["file"]["list"][self.option_info["number"]]
 
-		if self.File.Exist(self.apps_folders["shortcuts"]["root"] + self.game["name"] + ".lnk") == True:
-			self.game["python_module_link"] = self.apps_folders["shortcuts"]["root"] + self.game["name"] + ".lnk"
+		if self.File.Exist(self.folders["apps"]["shortcuts"]["root"] + self.game["name"] + ".lnk") == True:
+			self.game["python_module_link"] = self.folders["apps"]["shortcuts"]["root"] + self.game["name"] + ".lnk"
 
 	def Define_Game_Dictionary(self):
 		self.game_dictionary = {}
@@ -114,7 +114,7 @@ class Play(GamePlayer):
 		self.game_dictionary["show_text"] = self.language_texts["opening_this_game"]
 
 	def Open_Game(self):
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			if "python_module_link" in self.game:
 				self.File.Open(self.game["python_module_link"])
 
@@ -137,7 +137,7 @@ class Play(GamePlayer):
 
 		self.game_dictionary["played_texts"] = {}
 
-		if self.global_switches["testing"] == True:
+		if self.switches["global"]["testing"] == True:
 			self.time_to_wait = 0.1
 
 		while self.hours <= 54000:
@@ -155,13 +155,13 @@ class Play(GamePlayer):
 
 			self.time_text = {}
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				self.time_text[language] = self.Date.Time_Text(self.hours_text + ":" + self.minutes_text, language, add_original_time = False)
 
 			self.has_minutes = False
 
 			if self.hours > 0:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.hour_texts[language] = self.time_text[language]
 
 				self.game_dictionary["time_list"] = self.hour_texts
@@ -172,7 +172,7 @@ class Play(GamePlayer):
 			if self.hours == 0 and self.minutes != 0:
 				self.minute_texts = {}
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.minute_texts[language] = self.time_text[language]
 
 				self.game_dictionary["time_list"] = self.minute_texts
@@ -180,7 +180,7 @@ class Play(GamePlayer):
 				self.has_minutes = True
 
 			if self.has_minutes == True:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.game_dictionary["played_texts"][language] = self.texts["i_am_playing_the_{}_game_called_{}_for_{}_current_time_{}"][language].format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
 
 				print()
@@ -193,28 +193,28 @@ class Play(GamePlayer):
 			if self.has_minutes == True:
 				text_to_write = self.game_dictionary["played_texts"][self.user_language] + "\n"
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language != self.user_language:
 						text_to_write += self.game_dictionary["played_texts"][language]
 
-						if language != self.small_languages[-1]:
+						if language != self.languages["small"][-1]:
 							text_to_write += "\n"
 
 				text_to_write += "\n\n"
 
 				if self.has_hours == True:
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						text_to_write += str(self.hour_texts[language])
 
-						if language != self.small_languages[-1]:
+						if language != self.languages["small"][-1]:
 							text_to_write += "\n"
 
 					text_to_write += "\n\n"
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					text_to_write += str(self.minute_texts[language])
 
-					if language != self.small_languages[-1]:
+					if language != self.languages["small"][-1]:
 						text_to_write += "\n"
 
 				self.File.Edit(self.played_time_backup_file, text_to_write, "w")

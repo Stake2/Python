@@ -72,14 +72,14 @@ class Register_Task(Tasks):
 		i = 0
 		for task_type in self.task_types["en"]:
 			if self.task_dictionary["type"] == self.task_types["en"][i]:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.task_dictionary["types"][language] = self.task_types[language][i]
 
 			i += 1
 
 	def Type_Task_Information(self):
-		for language in self.small_languages:
-			translated_language = self.translated_languages[language][self.user_language]
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
@@ -99,7 +99,7 @@ class Register_Task(Tasks):
 			self.task_dictionary["register"]["states"]["first_task_type_task_in_year"] = True
 
 		# Add to titles list
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.tasks["Lists"]["Titles"][language].append(self.task_dictionary["titles"][language])
 			self.task_type_tasks[self.task_type]["Lists"]["Titles"][language].append(self.task_dictionary["titles"][language])
 
@@ -112,14 +112,14 @@ class Register_Task(Tasks):
 			"Language DateTime": {}
 		}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.task_dictionary["register"]["Times"]["Language DateTime"][language] = self.task_dictionary["time"]["date_time_format"][language]
 
 		# Add to taskss and task type times
 		self.tasks["Lists"]["Times"]["ISO8601"].append(self.task_dictionary["register"]["Times"]["ISO8601"])
 		self.task_type_tasks[self.task_type]["Lists"]["Times"]["ISO8601"].append(self.task_dictionary["register"]["Times"]["ISO8601"])
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.tasks["Lists"]["Times"]["Language DateTime"][language].append(self.task_dictionary["register"]["Times"]["Language DateTime"][language])
 			self.task_type_tasks[self.task_type]["Lists"]["Times"]["Language DateTime"][language].append(self.task_dictionary["register"]["Times"]["Language DateTime"][language])
 
@@ -130,7 +130,7 @@ class Register_Task(Tasks):
 		}
 
 		# Define [Number. Task Type (Time)] sanitized for files per language
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.task_dictionary["register"]["Number. Task Type (Time)"]["sanitized"][language] = str(self.tasks["Number"]) + ". " + self.task_type + " (" + self.task_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to [Number. Task Type (Time)] list
@@ -209,7 +209,7 @@ class Register_Task(Tasks):
 
 		self.task_dictionary["register"]["file_text"]["general"] = self.Define_File_Text("general")
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.task_dictionary["register"]["file_text"][language] = self.Define_File_Text(language)
 
 		# Write task text into task file
@@ -223,7 +223,7 @@ class Register_Task(Tasks):
 		if language_parameter == "general":
 			language = "en"
 
-		full_language = self.full_languages[language]
+		full_language = self.languages["full"][language]
 
 		# Define task text lines
 		lines = [
@@ -296,7 +296,7 @@ class Register_Task(Tasks):
 			titles = self.task_dictionary["titles"][language] + "\n"
 
 		if language_parameter == "general":
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				titles += self.task_dictionary["titles"][language] + "\n"
 
 		items.append(titles)
@@ -315,7 +315,7 @@ class Register_Task(Tasks):
 					times += time[language] + "\n"
 
 				if language_parameter == "general":
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						times += time[language] + "\n"
 
 		items.append(times)
@@ -327,12 +327,12 @@ class Register_Task(Tasks):
 			descriptions = self.task_dictionary["descriptions"][language]
 
 		if language_parameter == "general":
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				descriptions += full_language + ":" + "\n" + self.task_dictionary["descriptions"][language]
 
-				if language != self.small_languages[-1]:
+				if language != self.languages["small"][-1]:
 					descriptions += "\n\n"
 
 		items.append(descriptions)
@@ -344,8 +344,8 @@ class Register_Task(Tasks):
 
 	def Add_File_To_Year_Folder(self):
 		# Create folders
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			# Folder names
 			root_folder = self.texts["done_tasks"][language]
@@ -417,8 +417,8 @@ class Register_Task(Tasks):
 
 		print(self.language_texts["this_task_was_registered"] + ":")
 
-		for language in self.small_languages:
-			translated_language = self.translated_languages[language][self.user_language]
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			print("\t" + translated_language + ":")
 			print("\t" + self.task_dictionary["titles"][language])

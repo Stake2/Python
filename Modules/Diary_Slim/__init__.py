@@ -4,20 +4,10 @@
 
 class Run():
 	def __init__(self):
-		# Global Switches dictionary
-		self.global_switches = {
-			"verbose": False,
-		}
+		from Utility.Modules import Modules as Modules
 
-		from Language import Language as Language
-		from Input import Input as Input
-		from Folder import Folder as Folder
-		from JSON import JSON as JSON
-
-		self.Language = Language(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
+		# Get modules dictionary
+		self.modules = Modules().Set(self, ["Folder", "Input", "JSON", "Language"])
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 

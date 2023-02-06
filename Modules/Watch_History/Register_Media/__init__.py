@@ -41,7 +41,7 @@ class Register_Media(Watch_History):
 
 		self.Write_On_Diary_Slim()
 
-		if self.global_switches["verbose"] == True:
+		if self.switches["global"]["verbose"] == True:
 			print()
 			print(self.large_bar)
 			print()
@@ -162,7 +162,7 @@ class Register_Media(Watch_History):
 			"Episode titles": {}
 		})
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			# Get media episode
 			self.media_dictionary["register"]["Episode titles"][language] = ""
 
@@ -188,7 +188,7 @@ class Register_Media(Watch_History):
 			"Language DateTime": {}
 		}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.media_dictionary["register"]["Times"]["Language DateTime"][language] = self.media_dictionary["media"]["finished_watching"]["date_time_format"][language]
 
 		# Add to episode times, media type episode times, and media "Watched" episode times
@@ -196,7 +196,7 @@ class Register_Media(Watch_History):
 		self.media_type_episodes[self.media_type]["Lists"]["Times"]["ISO8601"].append(self.media_dictionary["register"]["Times"]["ISO8601"])
 		self.watched["Lists"]["Times"]["ISO8601"].append(self.media_dictionary["register"]["Times"]["ISO8601"])
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.episodes["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
 			self.media_type_episodes[self.media_type]["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
 			self.watched["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
@@ -220,7 +220,7 @@ class Register_Media(Watch_History):
 		}
 
 		# Define [Number. Media Type (Time)] sanitized for files per language
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to [Number. Media Type (Time)] list
@@ -361,7 +361,7 @@ class Register_Media(Watch_History):
 
 		self.media_dictionary["register"]["file_text"]["general"] = self.Define_File_Text("general")
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.media_dictionary["register"]["file_text"][language] = self.Define_File_Text(language)
 
 		# Write episode text into episode file
@@ -391,7 +391,7 @@ class Register_Media(Watch_History):
 		if language_parameter == "general":
 			language = "en"
 
-		full_language = self.full_languages[language]
+		full_language = self.languages["full"][language]
 
 		# Define episode text lines
 		lines = [
@@ -507,7 +507,7 @@ class Register_Media(Watch_History):
 					episode_titles = episode_title + "\n"
 
 				if language_parameter == "general":
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
 
 						if episode_title == "":
@@ -531,7 +531,7 @@ class Register_Media(Watch_History):
 					times += time[language] + "\n"
 
 				if language_parameter == "general":
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						times += time[language] + "\n"
 
 		items.append(times)
@@ -540,8 +540,8 @@ class Register_Media(Watch_History):
 
 	def Add_File_To_Year_Folder(self):
 		# Create folders
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			# Folder names
 			root_folder = self.texts["watched_media"][language]

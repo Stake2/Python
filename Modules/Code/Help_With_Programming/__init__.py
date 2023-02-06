@@ -3,7 +3,7 @@
 from Code.Code import Code as Code
 
 class Help_With_Programming(Code):
-	def __init__(self, parameter_switches = None, custom_options = None):
+	def __init__(self, custom_options = None):
 		super().__init__(parameter_switches)
 
 		self.custom_options = custom_options
@@ -107,7 +107,7 @@ class Help_With_Programming(Code):
 		self.mode_names = []
 		self.language_mode_names = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.language_mode_names[language] = []
 
 		self.mode_settings = {}
@@ -139,7 +139,7 @@ class Help_With_Programming(Code):
 
 			self.language_mode_names[mode_name] = {}
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				self.language_mode_names[language].append(self.mode["Language names"][language])
@@ -202,7 +202,7 @@ class Help_With_Programming(Code):
 		self.function_code_file = self.function_folder + "Function_Code." + self.function_data["Extension"]
 
 		if self.programming_language_settings["Modes"] == True:
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				if language_name not in self.function_data:
@@ -290,7 +290,7 @@ class Help_With_Programming(Code):
 
 		i = 0
 		for setting_file_name in self.settings_files_data[self.language_texts["file_names"]]:
-			self.last_setting_data_folder = self.apps_folders["module_files"][self.module["key"]]["root"] + "Last setting data/"
+			self.last_setting_data_folder = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Last setting data/"
 
 			self.last_data_file = self.last_setting_data_folder + setting_file_name
 			self.File.Create(self.last_data_file)
@@ -330,7 +330,7 @@ class Help_With_Programming(Code):
 
 			tool_data[self.language_texts["original_name"]] = tool_name
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				if language_name in tool_info:
@@ -389,7 +389,7 @@ class Help_With_Programming(Code):
 
 			language_tool_name = tool_name
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				if language_name in tool_data:
@@ -409,11 +409,11 @@ class Help_With_Programming(Code):
 				print(self.language_texts["path, title()"] + ":")
 				print(tool_path)
 
-			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.global_switches["testing"] == False:
+			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.switches["global"]["testing"] == False:
 				for program in programs_to_close:
 					self.File.Close(program)
 
-			if mode == "open" and self.global_switches["testing"] == False:
+			if mode == "open" and self.switches["global"]["testing"] == False:
 				Open(tool_path)
 
 				self.Date.Sleep(2)
@@ -430,7 +430,7 @@ class Help_With_Programming(Code):
 		if self.programming_language == "PHP" and self.programming_mode == "Udemy course":
 			self.programming_language = "Udemy course"
 
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			Write_On_Diary_Slim(self.programming_language)
 
 		if self.programming_language == "Udemy course":

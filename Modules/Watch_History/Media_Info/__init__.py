@@ -5,22 +5,22 @@ from Watch_History.Media_Info.Open_Details_File import Open_Details_File as Open
 from Watch_History.Media_Info.Fill_Episode_Titles import Fill_Episode_Titles as Fill_Episode_Titles
 from Watch_History.Media_Info.Update_Files import Update_Files as Update_Files
 
-from Language import Language as Language
-from Input import Input as Input
-from Folder import Folder as Folder
-from JSON import JSON as JSON
+from Utility.Language import Language as Language
+from Utility.Input import Input as Input
+from Utility.Folder import Folder as Folder
+from Utility.JSON import JSON as JSON
 
 class Media_Info():
 	def __init__(self):
 		# Global Switches dictionary
-		self.global_switches = {
+		self.switches["global"] = {
 			"verbose": False
 		}
 
-		self.Language = Language(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
+		self.Language = Language()
+		self.Folder = Folder()
+		self.Input = Input()
+		self.JSON = JSON()
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 

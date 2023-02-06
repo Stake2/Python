@@ -63,15 +63,15 @@ class Create_Year_Summary(Years):
 	def Define_Language_Folders_And_Files(self):
 		self.language_folders = {}
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			self.language_folders[language] = self.year["folders"][full_language]["root"]
 
 		self.language_files = {}
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			summary_text = self.texts["summary, title()"][language]
 
@@ -98,8 +98,8 @@ class Create_Year_Summary(Years):
 		from Friends.Friends import Friends as Friends
 
 		# GamePlayer instantiate
-		self.Tasks = Tasks(self.global_switches)
-		self.GamePlayer = GamePlayer(self.global_switches)
+		self.Tasks = Tasks()
+		self.GamePlayer = GamePlayer()
 
 		self.year_numbers["things_done_in_{year}"] = 0
 
@@ -114,7 +114,7 @@ class Create_Year_Summary(Years):
 		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
 		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
 		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
-		self.year_numbers["known_people"] = Friends(self.global_switches, select_social_network = False).current_year_friends_number
+		self.year_numbers["known_people"] = Friends(select_social_network = False).current_year_friends_number
 
 		for data in self.year_numbers:
 			self.year_numbers["things_done_in_{year}"] += int(self.year_numbers[data])
@@ -122,7 +122,7 @@ class Create_Year_Summary(Years):
 		self.year_data["detailed"] = {}
 		self.year_data["detailed"]["productive_things"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.year_data["detailed"]["productive_things"][language] = self.tasks[language]
 
 			while len(self.year_data["detailed"]["productive_things"][language]) != 10:
@@ -132,7 +132,7 @@ class Create_Year_Summary(Years):
 
 		self.year_data["detailed"]["watched_things"] = self.watch_history_data
 
-		self.plural_media_types = self.JSON.To_Python(self.apps_folders["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
+		self.plural_media_types = self.JSON.To_Python(self.folders["apps"]["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
 
 		for key in self.year_data["detailed"]["watched_things"]:
 			if key in self.plural_media_types["en"]:
@@ -145,7 +145,7 @@ class Create_Year_Summary(Years):
 
 		self.year_data["detailed"]["game_matches_played"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.year_data["detailed"]["game_matches_played"][language] = self.GamePlayer.current_year_played_time_language[language]
 
 			while len(self.year_data["detailed"]["game_matches_played"][language]) != self.itens_per_type:
@@ -155,7 +155,7 @@ class Create_Year_Summary(Years):
 		self.summary_text = {}
 
 		i = 0
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.summary_text[language] = ""
 
 			self.summary_texts = self.texts["year_summary_texts, type: list"][language]
@@ -259,7 +259,7 @@ class Create_Year_Summary(Years):
 			i += 1
 
 	def Write_Summary_To_Files(self):
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			text_to_write = self.summary_text[language]
 
 			self.File.Edit(self.language_files[language], text_to_write, "w")

@@ -27,9 +27,9 @@
 		"en": "and",
 		"pt": "e"
 	},
-	"{}_lines_in_thar_order": {
+	"{}_lines_in_this_order": {
 		"pt": "{} linhas, nesta ordem",
-		"en": "{} lines, in that order"
+		"en": "{} lines, in this order"
 	},
 	"separated_by_lines": {
 		"pt": "separadas por linhas",

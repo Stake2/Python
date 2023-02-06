@@ -1,0 +1,38 @@
+{
+    "utility": {
+        "list": [
+            "API",
+            "Date",
+            "Define_Folders",
+            "File",
+            "Folder",
+            "Global_Switches",
+            "Input",
+            "JSON",
+            "Language",
+            "Modules",
+            "Text"
+        ]
+    },
+    "usage": {
+        "list": [
+            "Block_Websites",
+            "Christmas",
+            "Code",
+            "Diary",
+            "Diary_Slim",
+            "Food_Time",
+            "Friends",
+            "GamePlayer",
+            "Project_Zomboid",
+            "Python",
+            "Social_Networks",
+            "SproutGigs",
+            "Stories",
+            "Tasks",
+            "Text_Generator",
+            "Watch_History",
+            "Years"
+        ]
+    }
+}

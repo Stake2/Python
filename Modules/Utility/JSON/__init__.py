@@ -1,59 +1,42 @@
 # JSON.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
+from Utility.Language import Language as Language
 
 import os
-import locale
-import re
 import pathlib
 import json
-import platform
+import datetime
+from copy import deepcopy
 
 class JSON():
-	def __init__(self, parameter_switches = None, show_global_switches = False):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def __init__(self):
+		from Utility.Modules import Modules as Modules
 
-		self.global_switches.update({
+		# Get modules dictionary
+		self.modules = Modules().Set(self, ["Language"])
+
+		self.switches["global"].update({
 			"file": {
 				"create": True,
 				"edit": True
 			}
 		})
 
-		if parameter_switches != None:
-			self.global_switches.update(parameter_switches)
+		if self.switches["global"]["testing"] == True:
+			for switch in self.switches["global"]["file"]:
+				self.switches["global"]["file"][switch] = False
 
-			if "testing" in self.global_switches and self.global_switches["testing"] == True:
-				for switch in self.global_switches["file"]:
-					self.global_switches["file"][switch] = False
+		self.Define_Folders(self)
 
-		self.Language = Language(self.global_switches)
-
-		self.Define_Folders()
-		self.Define_Texts()
-
-	def Define_Folders(self):
-		self.app_text_files_folder = self.Language.app_text_files_folder
-
-		self.module = {
-			"name": self.__module__,
+		self.folders["apps"]["module_files"]["utility"]["date"] = {
+			"texts": self.folders["apps"]["module_files"]["utility"]["root"] + "Date/Texts.json"
 		}
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		if self.module["name"] == "__main__":
-			self.module["name"] = "Input"
-
-		self.module_text_files_folder = self.app_text_files_folder + self.module["name"] + "/"
-
-		self.texts_file = self.module_text_files_folder + "Texts.json"
+		self.Define_Texts()		
 
 	def Define_Texts(self):
-		self.texts = self.To_Python(self.texts_file)
+		self.texts = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		self.date_texts = self.To_Python(self.folders["apps"]["module_files"]["utility"]["date"]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -66,7 +49,7 @@ class JSON():
 		return path
 
 	def Verbose(self, text, item, verbose = False):
-		if self.global_switches["verbose"] == True or verbose == True:
+		if self.switches["global"]["verbose"] == True or verbose == True:
 			import inspect
 
 			print()
@@ -82,20 +65,6 @@ class JSON():
 
 		if os.path.isfile(file) == False:
 			return False
-
-	def Create(self, file):
-		file = self.Sanitize(file)
-
-		if self.Exist(file) == True:
-			return False
-
-		if self.global_switches["file"]["create"] == True and self.Exist(file) == False:
-			create = open(file, "w", encoding = "utf8")
-			create.close()
-
-			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["created, masculine"], file)
-
-			return True
 
 	def Contents(self, file):
 		file = self.Sanitize(file)
@@ -138,23 +107,23 @@ class JSON():
 		file_text = file + "\n\n\t" + self.language_texts["text, title()"] + ":\n[" + text + "]"
 
 		if self.Exist(file) == True:
-			if self.global_switches["file"]["edit"] == True and contents["string"] != text:
+			if self.switches["global"]["file"]["edit"] == True and contents["string"] != text:
 				edit = open(file, "w", encoding = "UTF8")
 				edit.write(text)
 				edit.close()
 
 				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
-			if self.global_switches["file"]["edit"] == False:
+			if self.switches["global"]["file"]["edit"] == False:
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
 				self.Verbose(show_text, file_text)
 
-			if self.global_switches["file"]["edit"] == True:
+			if self.switches["global"]["file"]["edit"] == True:
 				return True
 
-			if self.global_switches["file"]["edit"] == False:
+			if self.switches["global"]["file"]["edit"] == False:
 				return False
 
 		if self.Exist(file) == False:
@@ -162,7 +131,9 @@ class JSON():
 
 			return False
 
-	def From_Python(self, items):
+	def From_Python(self, items_parameter):
+		items = deepcopy(items_parameter)
+
 		if type(items) != str:
 			import types as Types
 
@@ -170,12 +141,40 @@ class JSON():
 				value = items[key]
 
 				if type(value) not in [str, int, list, dict, bool, None]:
-					items[key] = str(value)
+					if isinstance(value, datetime.datetime) == False:
+						items[key] = str(value)
+
+					if isinstance(value, datetime.datetime) == True:
+						items[key] = self.Date_To_String(items[key])
+
+				if type(value) == dict:
+					for sub_key in value:
+						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None, datetime]:
+							if isinstance(value, datetime.datetime) == False:
+								items[key][sub_key] = str(items[key][sub_key])
+
+							if isinstance(value, datetime.datetime) == True:
+								items[key][sub_key] = self.Date_To_String(items[key][sub_key])
 
 		if type(items) == str:
 			items = self.To_Python(items)
 
 		return json.dumps(items, indent = 4, ensure_ascii = False)
+
+	def Date_To_String(self, date, format = ""):
+		if format == "":
+			format = self.date_texts["default_format"]
+
+			if date.strftime("%Z") == "UTC":
+				format += "Z"
+
+			else:
+				format += "%z"
+
+		if isinstance(date, datetime.datetime) == False:
+			date = date["date"]
+
+		return date.strftime(format)
 
 	def To_Python(self, item):
 		if os.path.isfile(item) == True:

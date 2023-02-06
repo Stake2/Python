@@ -1,23 +1,11 @@
 # Stories.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 class Stories(object):
-	def __init__(self, parameter_switches = None, select_story = True):
-		self.parameter_switches = parameter_switches
-
-		self.Define_Basic_Variables()
+	def __init__(self, select_story = True):
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
@@ -29,26 +17,26 @@ class Stories(object):
 		if select_story == True:
 			self.Select_Story()
 
-	def Define_Basic_Variables(self):
+	def Import_Modules(self):
 		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+		self.switches["global"] = Global_Switches().global_switches
 
 		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
+			self.switches["global"].update(self.parameter_switches)
 
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
 		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
+		self.languages["small"] = self.languages["small"]
 		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
+		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
@@ -56,11 +44,11 @@ class Stories(object):
 		self.Sanitize = self.File.Sanitize
 
 		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
+		self.folders["root"] = self.folders["root"]
+		self.folders["user"] = self.folders["user"]
+		self.folders["apps"] = self.folders["apps"]
+		self.folders["mega"]= self.folders["mega"]
+		self.folders["notepad"] = self.folders["notepad"]
 		self.links = self.Folder.links
 
 		self.date = self.Date.date
@@ -76,13 +64,13 @@ class Stories(object):
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -96,7 +84,7 @@ class Stories(object):
 		self.dash_space = "-"
 
 	def Define_Social_Network_Variables(self):
-		self.Social_Networks = Social_Networks(self.global_switches)
+		self.Social_Networks = Social_Networks()
 		self.social_networks = self.Social_Networks.social_networks
 
 		self.social_networks["Wattpad"]["profile"]["conversations"] = self.social_networks["Wattpad"]["profile"]["profile"] + "/conversations"
@@ -106,7 +94,7 @@ class Stories(object):
 		# Folders
 		self.stories = {
 			"folders": {
-				"root": self.mega_folders["stories"]["root"],
+				"root": self.folders["mega"]["stories"]["root"],
 			},
 		}
 
@@ -169,7 +157,7 @@ class Stories(object):
 		]
 
 		# List stories on stories folder
-		self.stories["list"] = self.Folder.Contents(self.mega_folders["stories"]["root"])["folder"]["names"]
+		self.stories["list"] = self.Folder.Contents(self.folders["mega"]["stories"]["root"])["folder"]["names"]
 		self.stories["list"] = self.Folder.Remove_Folders(self.stories["list"], to_remove)
 
 		# Update stories list file with new story names
@@ -246,18 +234,18 @@ class Stories(object):
 						self.File.Create(item)
 
 			# Add Stake2 Website covers folder
-			if self.Folder.Exist(self.mega_folders["websites"]["images"]["story_covers"] + story + "/") == True:
-				self.stories[story]["folders"]["Websites Story Covers"] = self.mega_folders["websites"]["images"]["story_covers"] + story + "/"
+			if self.Folder.Exist(self.folders["mega"]["websites"]["images"]["story_covers"] + story + "/") == True:
+				self.stories[story]["folders"]["Websites Story Covers"] = self.folders["mega"]["websites"]["images"]["story_covers"] + story + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Websites Story Covers"])
 
 			# Add Sony Vegas Files covers folder
-			if self.Folder.Exist(self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
-				self.stories[story]["folders"]["Sony Vegas Covers"] = self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/"
+			if self.Folder.Exist(self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
+				self.stories[story]["folders"]["Sony Vegas Covers"] = self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Sony Vegas Covers"])
 
 			# Add Obsidian's Vaults folder
 			self.stories[story]["folders"]["Obsidian's Vaults"] = {
-				"root": self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + story + "/",
+				"root": self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + story + "/",
 			}
 
 			self.Folder.Create(self.stories[story]["folders"]["Obsidian's Vaults"]["root"])
@@ -268,8 +256,8 @@ class Stories(object):
 
 			self.Folder.Create(self.stories[story]["folders"]["Obsidian's Vaults"]["Chapters"]["root"])
 
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				self.stories[story]["folders"]["Obsidian's Vaults"]["Chapters"][full_language] = self.stories[story]["folders"]["Obsidian's Vaults"]["Chapters"]["root"] + full_language + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Obsidian's Vaults"]["Chapters"][full_language])	
@@ -332,8 +320,8 @@ class Stories(object):
 							self.stories["titles"][titles_key].append(self.stories[story]["Information"][key][titles_key])
 
 			# Add chapter titles files to Chapters dictionary
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				titles_text = self.texts["titles, title()"][language]
 
@@ -359,8 +347,8 @@ class Stories(object):
 			self.stories[story]["Information"]["Chapter titles"] = {}
 
 			# Read chapter titles
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				titles_text = self.texts["titles, title()"][language]
 
@@ -395,8 +383,8 @@ class Stories(object):
 			self.stories[story]["Information"]["Synopsis"] = {}
 
 			# Add synopsis to information dictionary
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				self.stories[story]["Information"]["Synopsis"][language] = self.File.Contents(self.stories[story]["folders"]["Information"]["Synopsis"][full_language])["string"]
 
@@ -486,7 +474,7 @@ class Stories(object):
 				post = story["Information"]["Chapter status"]["Post"]
 
 				if int(post) == len(story["Information"]["Chapter titles"][self.user_language]):
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						stories["titles"][language].remove(story["Information"]["Titles"][language])
 
 		self.option = self.Input.Select(stories["titles"]["en"], language_options = stories["titles"][self.user_language], show_text = show_text, select_text = select_text)["option"]
@@ -525,8 +513,8 @@ class Stories(object):
 			print(self.language_texts["story_title"] + ":")
 
 			# Show language titles
-			for language in self.small_languages:
-				translated_language = self.translated_languages[language][self.user_language]
+			for language in self.languages["small"]:
+				translated_language = self.languages["full_translated"][language][self.user_language]
 
 				print("\t" + translated_language + ":")
 				print("\t" + story["Information"]["Titles"][language])
@@ -544,16 +532,16 @@ class Stories(object):
 						print(story["Information"][english_information_item])
 
 					if information_item == self.language_texts["synopsis, title()"]:
-						for language in self.small_languages:
-							full_language = self.full_languages[language]
-							translated_language = self.translated_languages[language][self.user_language]
+						for language in self.languages["small"]:
+							full_language = self.languages["full"][language]
+							translated_language = self.languages["full_translated"][language][self.user_language]
 
 							print("\t" + translated_language + ":")
 
 							for line in story["Information"][english_information_item][full_language].splitlines():
 								print("\t" + line)
 							
-							if language != self.small_languages[-1]:
+							if language != self.languages["small"][-1]:
 								print()
 
 					print()
@@ -574,7 +562,7 @@ class Stories(object):
 				print("\t" + self.language_texts[key.lower() + ", title()"] + ":")
 
 				for language in story["Information"]["Wattpad"][key]:
-					translated_language = self.translated_languages[language][self.user_language]
+					translated_language = self.languages["full_translated"][language][self.user_language]
 
 					item = story["Information"]["Wattpad"][key][language]
 

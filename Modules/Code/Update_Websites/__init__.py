@@ -3,7 +3,7 @@
 from Code.Code import Code as Code
 
 class Update_Websites(Code):
-	def __init__(self, parameter_switches = None, update_one_website = False, module_website = None):
+	def __init__(self, update_one_website = False, module_website = None):
 		super().__init__(parameter_switches)
 
 		self.update_one_website = update_one_website
@@ -61,20 +61,20 @@ class Update_Websites(Code):
 		print(text + ".")
 
 	def Define_Variables(self):
-		self.small_languages_backup = self.small_languages.copy()
+		self.small_languages_backup = self.languages["small"].copy()
 
 		self.languages = [
 			"general",
-			self.translated_languages["en"]["en"],
-			self.translated_languages["pt"]["en"],
+			self.languages["full_translated"]["en"]["en"],
+			self.languages["full_translated"]["pt"]["en"],
 		]
 
-		self.translated_languages["general"] = {}
+		self.languages["full_translated"]["general"] = {}
 
-		for language in self.small_languages:
-			self.translated_languages["general"][language] = self.texts["general, title()"][language]
+		for language in self.languages["small"]:
+			self.languages["full_translated"]["general"][language] = self.texts["general, title()"][language]
 
-		self.small_languages.insert(0, "general")
+		self.languages["small"].insert(0, "general")
 		self.full_languages["general"] = "General"
 
 		self.xampp_programs = [
@@ -84,17 +84,17 @@ class Update_Websites(Code):
 		]
 
 		self.websites = {
-			"list": self.JSON.To_Python(self.mega_folders["php"]["json"]["websites"]),
+			"list": self.JSON.To_Python(self.folders["mega"]["php"]["json"]["websites"]),
 			"update": {},
 		}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			if language != "general":
 				self.websites[language] = self.websites["list"][language]
 
 		self.websites["general"] = self.websites["en"]
 
-		self.websites["url"] = self.JSON.To_Python(self.mega_folders["php"]["json"]["url"])
+		self.websites["url"] = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["url"])
 
 	def Select_Website(self):
 		self.websites["numbers"] = []
@@ -144,14 +144,14 @@ class Update_Websites(Code):
 			}
 
 			# Add website titles per language
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				self.websites["update"][website][language] = self.websites[language][number]
 
 			# Add website links per language
 			self.websites["update"][website]["links"] = {}
 
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				self.websites["update"][website]["links"][language] = self.websites["url"]["generate_template"].format(full_language, self.websites["update"][website]["en"])
 
@@ -206,13 +206,13 @@ class Update_Websites(Code):
 
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
-			if self.global_switches["testing"] == False:
-				self.File.Open(self.root_folders["xampp"]["xampp-control"])
+			if self.switches["global"]["testing"] == False:
+				self.File.Open(self.folders["root"]["xampp"]["xampp-control"])
 
 				self.Date.Sleep(4)
 
 		if close == True:
-			if self.global_switches["testing"] == False:
+			if self.switches["global"]["testing"] == False:
 				for program in self.xampp_programs:
 					self.File.Close(program)
 
@@ -252,8 +252,8 @@ class Update_Websites(Code):
 				print(self.language_texts["updating_this_website"] + ":")
 				print(website[self.user_language])
 
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				link = website["links"][language]
 
@@ -264,9 +264,9 @@ class Update_Websites(Code):
 				print(link)
 				print()
 				print(self.Language.language_texts["language, title()"] + ":")
-				print(self.translated_languages[language][self.user_language])
+				print(self.languages["full_translated"][language][self.user_language])
 
-				if self.global_switches["testing"] == False:
+				if self.switches["global"]["testing"] == False:
 					self.File.Open(link)
 
 					self.Date.Sleep(5)
@@ -277,11 +277,11 @@ class Update_Websites(Code):
 		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
 
 	def Open_Git_Console_Window(self):
-		files = self.Folder.Contents(self.apps_folders["shortcuts"]["white_shortcuts"])["file"]["list"]
+		files = self.Folder.Contents(self.folders["apps"]["shortcuts"]["white_shortcuts"])["file"]["list"]
 
 		for file in files:
 			if "GitHub" in file:
 				git_bat_file = file
 
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			self.Text.Open_Link(git_bat_file)

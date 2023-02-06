@@ -1,103 +1,49 @@
 # Date.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from JSON import JSON as JSON
-from Text import Text as Text
-
 import os
+import pathlib
 import win32com.client
 import time
-from datetime import datetime, timedelta
+import datetime
+from datetime import datetime, timedelta, timezone
 import pytz
+from dateutil import parser
 
 class Date():
-	def __init__(self, parameter_switches = None):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def __init__(self):
+		from Utility.Modules import Modules as Modules
 
-		self.global_switches.update({
-			"folder": {
-				"create": True
-			},
-			"file": {
-				"create": True
-			}
-		})
+		# Get modules dictionary
+		self.modules = Modules().Set(self, ["JSON", "Language", "Text"])
 
-		if parameter_switches != None:
-			self.global_switches.update(parameter_switches)
+		self.Define_Folders(self)
 
-		self.Language = Language(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.small_languages = self.Language.languages["small"]
-		self.user_language = self.Language.user_language
-
-		self.Define_Folders()
 		self.Define_Texts()
 		self.Number_Name_Generator()
 
 		self.date = self.Now()
 
-	def Define_Folders(self):
-		self.app_text_files_folder = self.Language.app_text_files_folder
-
-		self.module = {
-			"name": self.__module__,
-		}
-
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		if __name__ == "__main__":
-			self.module["name"] = "Date"
-
-		self.module["key"] = self.module["name"].lower()
-
-		self.module_text_files_folder = self.app_text_files_folder + self.module["name"] + "/"
-
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-
-	def Sanitize(self, path):
-		path = os.path.normpath(path).replace("\\", "/")
-
-		if "/" not in path[-1] and os.path.splitext(path)[-1] == "":
-			path += "/"
-
-		return path
-
-	def Create(self, item = None, text = None):
-		item = self.Sanitize(item)
-
-		if os.path.splitext(item)[-1] == "":
-			if self.global_switches["folder"]["create"] == True and os.path.isdir(item) == False:
-				os.mkdir(item)
-
-		if os.path.splitext(item)[-1] != "":
-			if self.global_switches["file"]["create"] == True and os.path.isfile(item) == False:
-				create = open(item, "w", encoding = "utf8")
-				create.close()
-
-		return item
+		self.export = [
+			self.date
+		]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
-		date = {}
+		date = {
+			"timezone": self.user_timezone
+		}
 
 		if date_parameter == None:
-			date["date"] = datetime.now()
-			date["utc_date"] = datetime.utcnow()
+			date["utc"] = datetime.now(pytz.UTC).replace(microsecond=0)
+			date["date"] = datetime.now().replace(microsecond=0)
 
 		if date_parameter != None:
-			date["date"] = date_parameter
-			date["utc_date"] = date["date"].astimezone(pytz.UTC)
+			date["utc"] = date_parameter.astimezone(pytz.UTC).replace(microsecond=0)
+			date["date"] = date_parameter.replace(microsecond=0)
 
 		# Day
 		date["day"] = date["date"].day
@@ -106,7 +52,7 @@ class Date():
 
 		date["day_names"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			date["day_names"][language] = self.texts["day_names, type: list"][language][date["weekday"]]
 
 		# Month
@@ -115,7 +61,7 @@ class Date():
 
 		date["month_names"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			date["month_names"][language] = self.texts["month_names, type: list"][language][date["month"]]
 
 		# Year
@@ -133,7 +79,7 @@ class Date():
 
 		date["date_format"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			date["date_format"][language] = date["date"].strftime(self.texts["date_format"][language])
 
 		# Time formats
@@ -142,45 +88,76 @@ class Date():
 		# Date time formats
 		date["date_time_format"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			date["date_time_format"][language] = date["date"].strftime(self.texts["date_time_format"][language])
 
-		date["ISO8601"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
 		date["%Y-%m-%dT%H:%M:%S"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
 		date["%Y-%m-%dT%H:%M:%SZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
 		date["YYYY-MM-DDTHH:MM:SSZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
+		date["YYYY-MM-DDThh:mm:ssZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
+		date["ISO8601"] = date["date"].isoformat()
+		date["ISO 8601"] = date["date"].isoformat()
 		date["%Y-%m-%d %H:%M:%S"] = date["date"].strftime("%Y-%m-%d %H:%M:%S")
 		date["%H:%M %d/%m/%Y"] = date["date"].strftime("%H:%M %d/%m/%Y")
+
+		return date
+
+	def Check(self, date):
+		if isinstance(date, datetime) == False:
+			date = date["date"]
+
+		return date
+
+	def To_String(self, date, format = ""):
+		if format == "":
+			format = self.texts["default_format"]
+
+			if date.strftime("%Z") == "UTC":
+				format += "Z"
+
+			else:
+				format += "%z"
+
+		date = self.Check(date)
+
+		return date.strftime(format)
+
+	def From_String(self, string):
+		date = parser.parse(string)
+
+		date = self.Now(date)
 
 		return date
 
 	def Timedelta(self, **arguments):
 		return timedelta(**arguments)
 
-	def Strftime(self, date, format = "%H:%M %d/%m/%Y"):
-		date = date.strftime(format)
+	def To_UTC(self, date):
+		date = self.Check(date)
+
+		date = self.Now(date.astimezone(pytz.UTC))
 
 		return date
 
-	def From_String(self, string, format = "%H:%M %d/%m/%Y"):
-		date = datetime.strptime(string, format)
+	def To_Timezone(self, date):
+		date = self.Check(date)
 
-		date = self.Now(date)
+		date = self.Now(date.astimezone())
 
 		return date
 
-	def Difference(self, before, after, format = "%H:%M %d/%m/%Y"):
+	def Difference(self, before, after):
 		date = {}
 
-		date["before"] = before
+		date["before"] = self.Check(before)
 
-		if type(date["before"]) == str:
-			date["before"] = self.From_String(before, format)
+		if isinstance(date, datetime) == False:
+			date["before"] = self.From_String(before)
 
 		date["after"] = after
 
-		if type(date["after"]) == str:
-			date["after"] = self.From_String(after, format)
+		if isinstance(date, datetime) == False:
+			date["after"] = self.From_String(after)
 
 		string = date["after"]["date"] - date["before"]["date"]
 
@@ -229,7 +206,7 @@ class Date():
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			if attribute in date["difference"] and date["difference"][attribute] != 0:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language not in singular:
 						singular[language] = []
 
@@ -276,7 +253,7 @@ class Date():
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			if attribute in date["difference"]:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language not in date["difference_strings"]:
 						date["difference_strings"][language] = ""
 
@@ -310,12 +287,12 @@ class Date():
 		self.numbers["list_feminine"] = {}
 		self.numbers["string"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.numbers["list"][language] = ["zero"]
 			self.numbers["list_feminine"][language] = []
 			self.numbers["string"][language] = "zero\n"
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			numbers = self.numbers["list"][language]
 
 			i = 1
@@ -398,7 +375,7 @@ class Date():
 
 					i += 1
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.numbers["list_feminine"][language].extend(self.numbers["list"][language])
 
 		i = 0

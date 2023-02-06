@@ -27,7 +27,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Get today task done text using weekday
 		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["weekday"]]
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			# Iterate through state names
 			for state in self.states["names"]:
 				state = self.states[state]
@@ -95,7 +95,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def Define_Text_Variables(self):
 		self.text["keys"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.text["keys"][language] = list(self.slim_texts[self.user_language].keys())[self.option_info["number"]]
 
 		self.text["key"] = self.text["keys"]["en"]
@@ -103,7 +103,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define language texts to write
 		self.text["texts"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.text["texts"][language] = self.slim_texts[language][self.text["key"]].replace("...", "")
 
 		# If key in slim texts, ask for description of text
@@ -120,13 +120,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 					self.user_language: self.Input.Type(self.language_texts[self.text_dictionary["type_text"]]),
 				}
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language not in self.text["data"]:
 						self.text["data"][language] = self.text["data"][self.user_language]
 
 				# Split text data items, add commas between them, and add "and" text before the last item
 				if ", " in self.text["data"][self.user_language]:
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						split = self.text["data"][language].split(", ")
 
 						self.text["data"][language] = ""
@@ -149,11 +149,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Add quotes to text data
 				else:
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						self.text["data"][language] = '"' + self.text["data"][language] + '"'
 
 				# Add text data to text
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.text["texts"][language] += " " + self.text["data"][language]
 
 			# Type task descriptions for the task
@@ -175,10 +175,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 		print(self.language_texts[self.text_dictionary["explain_text"]].format(self.language_texts[self.text_dictionary["item"]]) + ".")
 
 		# Add files to dictionary, create and open them
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
-			self.task_dictionary["files"][language] = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
+			self.task_dictionary["files"][language] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
 			self.File.Create(self.task_dictionary["files"][language])
 
 			if self.File.Exist(self.task_dictionary["files"][language]) == True:
@@ -187,29 +187,29 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Create text with all languages translated to user language
 		languages_text = ""
 
-		for language in self.small_languages:
-			translated_language = self.translated_languages[language][self.user_language]
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			if len(self.small_languages) == 2 and language != self.small_languages[0]:
+			if len(self.languages["small"]) == 2 and language != self.languages["small"][0]:
 				languages_text += " "
 
-			if language == self.small_languages[-1]:
+			if language == self.languages["small"][-1]:
 				languages_text += self.language_texts["and"] + " "
 
 			languages_text += translated_language
 
-			if len(self.small_languages) != 2 and language != self.small_languages[-1]:
+			if len(self.languages["small"]) != 2 and language != self.languages["small"][-1]:
 				languages_text += ", "
 
 		# Wait for user to finish writing task descriptions
 		self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(languages_text))
 
 		# Create backup file
-		self.backup_file = self.mega_folders["notepad"]["effort"]["diary_slim"]["root"] + "Descriptions backup.txt"
+		self.backup_file = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "Descriptions backup.txt"
 		self.File.Create(self.backup_file)
 
 		# Define task descriptions and make a backup of them
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.task_dictionary["titles"][language] = self.text["texts"][language] + "."
 
 			self.task_dictionary["descriptions"][language] = self.task_dictionary["titles"][language] + "\n\n"
@@ -217,7 +217,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			text = self.task_dictionary["descriptions"][language]
 
-			if language != self.small_languages[-1]:
+			if language != self.languages["small"][-1]:
 				text += "\n\n"
 
 			# Make backup
@@ -234,7 +234,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			Register_Task(self.task_dictionary)
 
-			if self.global_switches["verbose"] == True:
+			if self.switches["global"]["verbose"] == True:
 				self.task_dictionary["time"] = str(self.task_dictionary["time"])
 
 				self.JSON.Show(self.task_dictionary)

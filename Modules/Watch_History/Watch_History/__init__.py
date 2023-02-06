@@ -1,16 +1,5 @@
 # Watch History.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from API import API as API
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 from Years.Years import Years as Years
 from Christmas.Christmas import Christmas as Christmas
 
@@ -21,18 +10,16 @@ import validators
 
 # Main class Watch_History that provides variables to the classes that implement it
 class Watch_History(object):
-	def __init__(self, parameter_switches = None, custom_year = None):
-		self.parameter_switches = parameter_switches
-
-		self.Define_Basic_Variables()
+	def __init__(self, custom_year = None):
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
 		# Load Years module
-		self.Years = Years(self.global_switches, select_year = False)
+		self.Years = Years(select_year = False)
 
 		# Load Christmas module
-		self.Christmas = Christmas(self.global_switches)
+		self.Christmas = Christmas()
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
 
 		self.Define_Folders_And_Files()
@@ -40,41 +27,11 @@ class Watch_History(object):
 		self.Define_Media_Types()
 		self.Define_Episodes_Files()
 
-	def Define_Basic_Variables(self):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def Import_Modules(self):
+		from Utility.Modules import Modules as Modules
 
-		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
-
-		self.Language = Language(self.global_switches)
-		self.API = API(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
-		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
-
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
-
-		self.Sanitize = self.File.Sanitize
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
+		# Get modules dictionary
+		self.modules = Modules().Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -87,13 +44,13 @@ class Watch_History(object):
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -104,7 +61,7 @@ class Watch_History(object):
 		self.current_year = self.Years.current_year
 
 		# Folders dictionary
-		self.folders = self.Folder.Contents(self.notepad_folders["networks"]["audiovisual_media_network"]["root"], lower_key = True)["dictionary"]
+		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"], lower_key = True)["dictionary"]
 
 		# Audiovisual Media Network root files
 		self.folders["audiovisual_media_network"]["watch_list"] = self.folders["audiovisual_media_network"]["root"] + "Watch List.txt"
@@ -255,7 +212,7 @@ class Watch_History(object):
 			}
 
 			# Define singular and plural media types
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				for item in ["singular", "plural"]:
 					self.media_types[plural_media_type][item][language] = self.media_types[item][language][i]
 
@@ -380,7 +337,7 @@ class Watch_History(object):
 			self.media_types[plural_media_type].pop("json")
 
 			# Add media list length numbers to media types list to show on select media type
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				for item in ["singular", "plural"]:
 					self.media_types[plural_media_type][item]["show"] = self.media_types[plural_media_type][item][self.user_language] + " (" + str(len(self.media_types[plural_media_type]["media_list"])) + ")"
 
@@ -419,7 +376,7 @@ class Watch_History(object):
 		self.episodes = self.template.copy()
 
 		# Add language lists to media and episode titles and episode Language DateTime dictionaries
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.episodes["Lists"]["Episode titles"][language] = []
 			self.episodes["Lists"]["Times"]["Language DateTime"][language] = []
 
@@ -443,7 +400,7 @@ class Watch_History(object):
 			self.media_type_episodes[plural_media_type]["Lists"].pop("Media Types")
 
 			# Add language lists to media and episode titles and episode Language DateTime dictionaries
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				self.media_type_episodes[plural_media_type]["Lists"]["Episode titles"][language] = []
 				self.media_type_episodes[plural_media_type]["Lists"]["Times"]["Language DateTime"][language] = []
 
@@ -481,7 +438,7 @@ class Watch_History(object):
 
 		media_types = self.media_types.copy()
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			for item in media_types_list:
 				if item in media_types["plural"][language]:
 					media_types["plural"][language].remove(item)
@@ -528,7 +485,7 @@ class Watch_History(object):
 
 		i = 0
 		for plural_media_type in self.media_types["plural"]["en"]:
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				dictionary["list"][language][i] = dictionary["list"][language][i] + " (" + str(numbers[plural_media_type]) + ")"
 
 			i += 1
@@ -611,7 +568,7 @@ class Watch_History(object):
 		if "folders" not in media:
 			media["folders"] = {
 				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
-				"media": self.root_folders["media"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
+				"media": self.Folder.folders["root"]["media"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
 				"media_type_comments": {
 					"root": self.folders["comments"][dictionary["media_type"]["plural"]["en"].lower()]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
@@ -1076,8 +1033,8 @@ class Watch_History(object):
 				dictionary["media"]["episode"]["separator"] = ""
 
 			# Define episode titles files and lists
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
 
 				if dictionary["media"]["states"]["single_unit"] == False:
 					# Define episode titles file
@@ -1112,7 +1069,7 @@ class Watch_History(object):
 				dictionary["media"]["episode"]["title"] = dictionary["media"]["item"]["title"]
 				dictionary["media"]["episode"]["titles"] = dictionary["media"]["item"]["titles"]
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					if language not in dictionary["media"]["episode"]["titles"]:
 						dictionary["media"]["episode"]["titles"][language] = self.Get_Media_Title(dictionary, item = True)
 
@@ -1164,14 +1121,14 @@ class Watch_History(object):
 			# Define the unit text as the "episode" text per language
 			dictionary["media"]["texts"]["unit"] = {}
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				dictionary["media"]["texts"]["unit"][language] = self.texts["episode"][language]
 
 			# Define the item text as the "season" text for media that have a media list
 			if dictionary["media"]["states"]["media_list"] == True and dictionary["media"]["item"]["title"] != dictionary["media"]["title"]:
 				dictionary["media"]["texts"]["item"] = {}
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					dictionary["media"]["texts"]["item"][language] = self.texts["season"][language]
 
 					if dictionary["media"]["states"]["single_unit"] == True:
@@ -1179,7 +1136,7 @@ class Watch_History(object):
 
 			# Define the container, item, and unit texts for video series media
 			if dictionary["media"]["states"]["video"] == True:
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					dictionary["media"]["texts"]["container"][language] = self.texts["youtube_channel"][language]
 					dictionary["media"]["texts"]["item"][language] = self.texts["youtube_video_serie"][language]
 					dictionary["media"]["texts"]["unit"][language] = self.texts["video"][language]
@@ -1192,7 +1149,7 @@ class Watch_History(object):
 					if item + "_" + key not in dictionary["media"]["texts"]:
 						dictionary["media"]["texts"][item + "_" + key] = {}
 
-					for language in self.small_languages:
+					for language in self.languages["small"]:
 						if dictionary["media"]["texts"][key][language] not in [self.texts["season"][language], self.texts["youtube_video_serie"][language]]:
 							item_text = dictionary["media_type"]["genders"][item]
 
@@ -1210,7 +1167,7 @@ class Watch_History(object):
 		if dictionary["media"]["states"]["video"] == False and self.Today_Is_Christmas == True:
 			dictionary["media"]["texts"]["unit"] = {}
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				dictionary["media"]["texts"]["unit"][language] = self.texts["christmas_special_{}"][language].format(dictionary["media"]["texts"]["unit"][language])
 
 		if dictionary["media"]["details"][self.language_texts["status, title()"]] == self.language_texts["completed, title()"]:
@@ -1294,7 +1251,7 @@ class Watch_History(object):
 					media["titles"][self.user_language] = media["titles"][self.user_language] + " (" + media["titles"]["original"].split(" (")[-1]
 
 			# Define media titles per language
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				for key in media["details"]:
@@ -1367,7 +1324,7 @@ class Watch_History(object):
 			print("\t" + media["titles"]["original"])
 			print("\t" + media["titles"]["language"])
 
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				language_name = self.texts["language_name"][language][self.user_language]
 
 				if language in media["titles"] and media["titles"][language] != media["titles"]["original"]:

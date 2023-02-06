@@ -147,5 +147,5 @@ class Open_Social_Network(Social_Networks):
 				print("\t" + key + ":")
 				print("\t\t" + self.user_information[key])
 
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			self.File.Open(self.social_network_link)

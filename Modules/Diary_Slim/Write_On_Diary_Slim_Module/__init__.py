@@ -35,12 +35,12 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 		self.File.Edit(self.current_diary_slim_file, text_to_append, "a", next_line = False)
 
-		if self.global_switches["verbose"] == True:
+		if self.switches["global"]["verbose"] == True:
 			print()
 
 		self.text_to_show = self.language_texts["this_text_was_written_to_the_current_diary_slim"] + ":"
 
-		if self.global_switches["testing"] == True:
+		if self.switches["global"]["testing"] == True:
 			self.text_to_show = self.text_to_show.replace(self.language_texts["was"], self.language_texts["was_not"])
 			self.text_to_show = self.text_to_show.replace(":", " (" + self.language_texts["testing_is_true"] + "):")
 

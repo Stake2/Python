@@ -46,10 +46,10 @@ class Register_Playing_Time(GamePlayer):
 		}
 
 		i = 0
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
-			self.firsts_of_the_year_folders["root"][language] = self.notepad_folders["years"]["current_year"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
+			self.firsts_of_the_year_folders["root"][language] = self.folders["notepad"]["years"]["current_year"]["root"] + full_language + "/" + self.texts["firsts_of_the_year"][language] + "/"
 			self.Folder.Create(self.firsts_of_the_year_folders["root"][language])
 
 			self.firsts_of_the_year_folders["media"][language] = self.firsts_of_the_year_folders["root"][language] + self.texts["media"][language] + "/" + self.texts["game, title()"][language] + "/"
@@ -86,7 +86,7 @@ class Register_Playing_Time(GamePlayer):
 		self.texts_to_use["full_played_text"] += "\n" + self.texts_to_use["Times"] + "\n\n" + self.texts_to_use["Time spent"]
 
 		if self.first_game_played_in_year == True:
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				media_type_folder = self.firsts_of_the_year_folders["media_type"][language]
 
 				self.first_game_played_in_year_file = media_type_folder + self.file_name["full"] + ".txt"
@@ -122,19 +122,19 @@ class Register_Playing_Time(GamePlayer):
 		self.File.Create(self.game_files_file)
 
 		# Split
-		text_to_append = self.texts_to_use[self.translated_languages[self.user_language]["en"] + " played time"]
+		text_to_append = self.texts_to_use[self.languages["full_translated"][self.user_language]["en"] + " played time"]
 
 		text_to_append = text_to_append.replace(" " + self.language_texts["the_{}_game_called_{}"].format(self.game["category"]["names"][self.user_language], self.game["name"]), "")
 
 		self.File.Edit(self.game_files_file, text_to_append, "a")
 
 	def Register_On_Played_Texts_Folder(self):
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			file = self.folders["play_history"]["played"]["current_year"]["played_texts"] + full_language + ".txt"
 
-			text = self.texts_to_use[self.translated_languages[language]["en"] + " played time"]
+			text = self.texts_to_use[self.languages["full_translated"][language]["en"] + " played time"]
 
 			self.File.Edit(file, text, "a")
 
@@ -151,13 +151,13 @@ class Register_Playing_Time(GamePlayer):
 		self.game_media_type_folder = self.game["category"]["media_type_folders_folder"] + self.game["sanitized_name"] + "/"
 		self.Folder.Create(self.game_media_type_folder)
 
-		self.apps_folders["module_files"][self.module["key"]]["folders"] = self.game_media_type_folder + self.file_name["time"] + ".txt"
-		self.File.Create(self.apps_folders["module_files"][self.module["key"]]["folders"])
+		self.folders["apps"]["module_files"][self.module["key"]]["folders"] = self.game_media_type_folder + self.file_name["time"] + ".txt"
+		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["folders"])
 
-		self.File.Edit(self.apps_folders["module_files"][self.module["key"]]["folders"], self.texts_to_use["full_played_text"], "w")
+		self.File.Edit(self.folders["apps"]["module_files"][self.module["key"]]["folders"], self.texts_to_use["full_played_text"], "w")
 
 		# Copy the "media type folders folder" to the "experienced media type folder" on current year text folder
-		self.experienced_media_folder = self.notepad_folders["years"]["current_year"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"
+		self.experienced_media_folder = self.folders["notepad"]["years"]["current_year"]["experienced_media"] + self.texts["games, title()"]["en"] + "/"
 		self.Folder.Create(self.experienced_media_folder)
 
 		self.experienced_media_type_folder = self.experienced_media_folder + self.game["category"]["name"] + "/"
@@ -168,7 +168,7 @@ class Register_Playing_Time(GamePlayer):
 	def Register_On_Diary_Slim(self):
 		self.posted_on_social_networks_text = "Postei a print do jogo no status do WhatsApp, Instagram, Facebook, e tweet no Twitter."
 
-		self.played_game_text = self.texts_to_use[self.translated_languages[self.user_language]["en"] + " played time"] + "."
+		self.played_game_text = self.texts_to_use[self.languages["full_translated"][self.user_language]["en"] + " played time"] + "."
 
 		text_to_write = self.played_game_text + "\n\n" + self.posted_on_social_networks_text
 		self.game_dictionary["diary_slim_text"] = Write_On_Diary_Slim_Module(text_to_write, self.texts_to_use["Times"], show_text = False)

@@ -1,4 +1,5 @@
 {
+	"default_format": "%Y-%m-%dT%H:%M:%S",
 	"date_attributes, type: list": {
 		"en": [
 			"year",

@@ -26,7 +26,7 @@ class Write(Stories):
 		self.Define_Files()
 		self.Open_Obsidian()
 
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			self.File.Open("https://app.grammarly.com/")
 			self.File.Open("https://translate.google.com/")
 
@@ -86,7 +86,7 @@ class Write(Stories):
 			},
 		}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			for item in ["action", "present_action", "past_action", "past"]:
 				self.chapter["writing_mode"][item][language] = self.texts["writing_modes_" + item + ", type: list"][language][self.option_info["number"]].lower()
 
@@ -103,7 +103,7 @@ class Write(Stories):
 		self.chapter["number"] = self.story["Information"]["Chapter status"][self.writing_mode]
 		self.chapter["number_names"] = {}
 
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.chapter["number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.chapter["number"])]
 
 		# Update Chapter status file
@@ -111,8 +111,8 @@ class Write(Stories):
 
 		self.chapter["titles"] = {}
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			self.chapter["titles"][full_language] = self.Text.Add_Leading_Zeros(self.chapter["number"])
 
@@ -128,8 +128,8 @@ class Write(Stories):
 		self.chapter["files"]["story"] = {}
 		self.chapter["files"]["obsidian"] = {}
 
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			if self.writing_mode in ["Write", "Revise"] and language == "en" or self.writing_mode == "Translate":
 				self.chapter["language"] = full_language
@@ -214,7 +214,7 @@ class Write(Stories):
 		# Create shortcut file
 		self.obsidian["lnk"] = self.story["folders"]["Obsidian's Vaults"]["root"] + "Obsidian.lnk"
 		self.obsidian["target"] = self.chapter["obsidian_link"]
-		self.obsidian["icon"] = self.user_folders["appdata"]["local"] + "/Obsidian/Obsidian.exe"
+		self.obsidian["icon"] = self.folders["user"]["appdata"]["local"] + "/Obsidian/Obsidian.exe"
 
 		# Create shortcut
 		shell = win32com.client.Dispatch("WScript.Shell")
@@ -236,7 +236,7 @@ class Write(Stories):
 		print(self.chapter["obsidian_link_show"])
 
 		# Open Obsidian bat
-		if self.global_switches["testing"] == False:
+		if self.switches["global"]["testing"] == False:
 			self.File.Open(self.obsidian["bat"])
 
 	def Finish_Writing(self):
@@ -325,9 +325,9 @@ class Write(Stories):
 	def Rename_Chapter_Files(self):
 		# Ask for the new chapter titles
 		if self.writing_mode == "Write":
-			for language in self.small_languages:
-				full_language = self.full_languages[language]
-				translated_language = self.translated_languages[language][self.user_language]
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
+				translated_language = self.languages["full_translated"][language][self.user_language]
 
 				# Ask for chapter title
 				self.chapter["titles"][full_language] += " - " + self.Input.Type(self.language_texts["type_or_paste_the_chapter_title_in_{}"].format(translated_language))
@@ -377,9 +377,9 @@ class Write(Stories):
 			i_text = self.texts["i_{}_the_chapter_{}_of_my_story_{}"]
 
 		# Create task titles and descriptions
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
-			translated_user_language = self.translated_languages[self.user_language][language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
+			translated_user_language = self.languages["full_translated"][self.user_language][language]
 
 			parameters = self.chapter["writing_mode"]["action"][language], self.chapter["number_names"][language], self.story["Information"]["Titles"][language]
 

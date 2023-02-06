@@ -415,18 +415,6 @@
 		"en": "Type or paste the folder where you want to create the settings file",
 		"pt": "Digite ou cole a pasta onde você quer criar o arquivo de configurações"
 	},
-	"testing": {
-		"en": "Testing: Yes",
-		"pt": "Testando: Sim"
-	},
-	"verbose": {
-		"en": "Verbose on.",
-		"pt": "Verbose ativado."
-	},
-	"user_information": {
-		"en": "User information:\nShown",
-		"pt": "Informações do usuário:\nMostradas"
-	},
 	"the_user_information": {
 		"en": "user information",
 		"pt": "informações do usuário"
@@ -502,5 +490,13 @@
 	"link, title()": {
 		"en": "Link",
 		"pt": "Link"
+	},
+	"time_zone": {
+		"en": "Time zone",
+		"pt": "Fuso horário"
+	},
+	"username, title()": {
+		"en": "Username",
+		"pt": "Nome de usuário"
 	}
 }

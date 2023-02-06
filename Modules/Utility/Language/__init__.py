@@ -1,34 +1,39 @@
 # Language.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
 import os
 import locale
 import re
 import pathlib
 import json
 import platform
+from tzlocal import get_localzone
 
 class Language():
-	def __init__(self, parameter_switches = None, show_global_switches = False):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def __init__(self):
+		from Utility.Modules import Modules as Modules
 
-		self.global_switches.update({
+		# Get modules dictionary
+		self.modules = Modules().Set(self, [])
+
+		self.switches["global"].update({
 			"folder": {
 				"create": True,
 			},
 			"file": {
 				"create": True,
-				"edit": True,
-			},
+				"edit": True
+			}
 		})
 
-		if parameter_switches != None:
-			self.global_switches.update(parameter_switches)
+		if self.switches["global"]["testing"] == True:
+			for item in ["folder", "file"]:
+				for switch in self.switches["global"][item]:
+					self.switches["global"][item][switch] = False
 
 		self.Define_Lists_And_Dictionaries()
-		self.Define_Folders()
+
+		self.Define_Folders(self, ["Languages"])
+
 		self.Define_Languages()
 		self.Get_System_Information()
 		self.Define_App_Settings()
@@ -36,11 +41,13 @@ class Language():
 		self.Define_Language_Texts()
 		self.Read_Settings_File()
 
-		if show_global_switches == True:
-			self.Show_Global_Switches(self.global_switches)
-
-			if self.global_switches["user_information"] == True:
-				self.Show_User_Information()
+		self.export = [
+			self.app_settings,
+			self.languages,
+			self.user_language,
+			self.full_user_language,
+			self.user_timezone
+		]
 
 	def Define_Lists_And_Dictionaries(self):
 		self.dictionary_separators = ["=", " = ", ":", ": "]
@@ -63,35 +70,8 @@ class Language():
 			},
 		}
 
-	def Define_Folders(self):
-		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
-
-		self.apps_folder = self.hard_drive_letter + "Apps/"
-		self.app_text_files_folder = self.apps_folder + "Module Files/"
-
-		self.module = {
-			"name": self.__module__,
-		}
-
-		if __name__ == "__main__":
-			self.module["name"] = "Language"
-
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		if self.module["name"] == "__main__":
-			self.module["name"] = "File"
-
-		self.module_text_files_folder = self.app_text_files_folder + self.module["name"] + "/"
-
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-		self.Create(self.texts_file)
-
-		self.languages_file = self.module_text_files_folder + "Languages.json"
-		self.Create(self.languages_file)
-
 	def Define_Languages(self):
-		self.languages = self.To_Python(self.languages_file)
+		self.languages = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["languages"])
 
 	def Get_System_Information(self):
 		self.system_information = {}
@@ -116,7 +96,7 @@ class Language():
 		return path
 
 	def Verbose(self, text, item):
-		if self.global_switches["verbose"] == True:
+		if self.switches["global"]["verbose"] == True:
 			import inspect
 
 			print()
@@ -131,11 +111,11 @@ class Language():
 		item = self.Sanitize(item)
 
 		if os.path.splitext(item)[-1] == "":
-			if self.global_switches["folder"]["create"] == True and os.path.isdir(item) == False:
+			if self.switches["global"]["folder"]["create"] == True and os.path.isdir(item) == False:
 				os.mkdir(item)
 
 		if os.path.splitext(item)[-1] != "":
-			if self.global_switches["file"]["create"] == True and os.path.isfile(item) == False:
+			if self.switches["global"]["file"]["create"] == True and os.path.isfile(item) == False:
 				create = open(item, "w", encoding = "utf8")
 				create.close()
 
@@ -254,7 +234,7 @@ class Language():
 	def Edit(self, file, text, mode):
 		file = self.Sanitize(file)
 
-		if self.global_switches["file"]["edit"] == True and os.path.isfile(file) == True:
+		if self.switches["global"]["file"]["edit"] == True and os.path.isfile(file) == True:
 			edit = open(file, mode, encoding = "UTF8")
 			edit.write(text)
 			edit.close()
@@ -478,8 +458,11 @@ class Language():
 		self.app_settings = {}
 
 		self.app_settings["language"] = self.system_information["language"]
+		self.username = pathlib.Path.home().name
 		self.user_language = self.app_settings["language"]
 		self.full_user_language = self.languages["full"][self.user_language]
+
+		self.user_timezone = get_localzone()
 
 	def Item(self, texts, user_language = None):
 		if user_language == None:
@@ -705,7 +688,7 @@ class Language():
 		return text.split(separator)[language_number]
 
 	def Define_Texts(self):
-		self.texts = self.To_Python(self.texts_file)
+		self.texts = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
 	def Define_Language_Texts(self):
 		self.texts = self.Title(self.texts)
@@ -715,7 +698,7 @@ class Language():
 		for language_type in self.languages["types"]:
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
-		self.settings_file = os.path.join(self.apps_folder, self.language_texts["settings"].capitalize() + ".json")
+		self.settings_file = os.path.join(self.folders["apps"]["root"], self.language_texts["settings"].capitalize() + ".json")
 
 		if os.path.isfile(self.settings_file) == False:
 			self.Create(self.settings_file)
@@ -841,32 +824,14 @@ class Language():
 
 		return text
 
-	def Show_Global_Switches(self, local_switches, show_ending = False):
-		has_true_variables = False
-
-		for key in local_switches:
-			if local_switches[key] == True:
-				has_true_variables = True
-
-		if has_true_variables == True:
-			print()
-			print("-----")
-			print()
-
-		for key in local_switches:
-			if local_switches[key] == True:
-				if key == "user_information":
-					print()
-
-				print(self.language_texts[key])
-
-		if has_true_variables == True and local_switches["user_information"] == False or show_ending == True:
-			print()
-			print("-----")
-
 	def Show_User_Information(self):
+		import getpass
 		print()
 		print(self.language_texts["class, title()"] + ' "' + self.module["name"] + '", ' + self.language_texts["the_user_information"] + ":")
+
+		print("\t" + self.language_texts["username, title()"] + ":")
+		print("\t\t" + self.username)
+		print()
 
 		for language_type in self.languages["types"]:
 			print("\t" + self.language_texts[language_type].capitalize() + ":")
@@ -879,6 +844,10 @@ class Language():
 			print()
 			print("\t" + self.language_texts["your_{}_is"].format(self.language_texts["custom_language"]) + ":")
 			print("\t\t" + self.user_language + ", " + self.full_languages[self.user_language])
+
+		print()
+		print("\t" + self.language_texts["time_zone"] + ":")
+		print("\t\t" + str(self.user_timezone))
 
 		print()
 		print("-----")

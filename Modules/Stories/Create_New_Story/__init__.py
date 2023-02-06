@@ -23,8 +23,8 @@ class Create_New_Story(Stories):
 			english_information_item = self.texts["information_items, type: list"]["en"][i]
 
 			if information_item == self.language_texts["title, title()"]:
-				for language in self.small_languages:
-					translated_language = self.translated_languages[language][self.user_language]
+				for language in self.languages["small"]:
+					translated_language = self.languages["full_translated"][language][self.user_language]
 
 					type_text = self.language_texts["story_title_in_{}"].format(translated_language)
 
@@ -52,16 +52,16 @@ class Create_New_Story(Stories):
 					"ID": {},
 				}
 
-				for language in self.small_languages:
+				for language in self.languages["small"]:
 					self.stories[self.story_titles["en"]]["Information"]["Wattpad"]["ID"][language] = "None"
 
 				synopses = {}
 
 				self.stories[self.story_titles["en"]]["Information"][english_information_item] = {}
 
-				for language in self.small_languages:
-					full_language = self.full_languages[language]
-					translated_language = self.translated_languages[language][self.user_language]
+				for language in self.languages["small"]:
+					full_language = self.languages["full"][language]
+					translated_language = self.languages["full_translated"][language][self.user_language]
 
 					type_text = self.language_texts["story_synopsis_in_{}"].format(translated_language)
 
@@ -147,8 +147,8 @@ class Create_New_Story(Stories):
 		}
 
 		# Create Chapters subfolders and Synopsis files
-		for language in self.small_languages:
-			full_language = self.full_languages[language]
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
 
 			# Create Chapters subfolder
 			self.stories[self.story_titles["en"]]["folders"]["Chapters"][full_language] = self.stories[self.story_titles["en"]]["folders"]["Chapters"]["root"] + full_language + "/"
@@ -167,7 +167,7 @@ class Create_New_Story(Stories):
 			self.File.Edit(self.stories[self.story_titles["en"]]["folders"]["Information"]["Synopsis"][full_language], text_to_write, "w")
 
 		# Create Obsidian's Vaults folder
-		self.stories[self.story_titles["en"]]["folders"]["Obsidian's Vaults"] = self.mega_folders["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + self.story_titles["en"] + "/"
+		self.stories[self.story_titles["en"]]["folders"]["Obsidian's Vaults"] = self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + self.story_titles["en"] + "/"
 		self.Folder.Create(self.stories[self.story_titles["en"]]["folders"]["Obsidian's Vaults"])
 
 		self.story = self.stories[self.story_titles["en"]]

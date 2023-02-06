@@ -1,67 +1,26 @@
 # Tasks.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 from Years.Years import Years as Years
 
 from copy import deepcopy
 
 class Tasks(object):
-	def __init__(self, parameter_switches = None):
-		self.parameter_switches = parameter_switches
-
-		self.Define_Basic_Variables()
+	def __init__(self):
+		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
 		# Load Years module
-		self.Years = Years(self.global_switches, select_year = False)
+		self.Years = Years(select_year = False)
 
 		self.Define_Folders_And_Files()
 		self.Define_Tasks_Files()
 
-	def Define_Basic_Variables(self):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def Import_Modules(self):
+		from Utility.Modules import Modules as Modules
 
-		if self.parameter_switches != None:
-			self.global_switches.update(self.parameter_switches)
-
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
-		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
-
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
-
-		self.Sanitize = self.File.Sanitize
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
+		# Get modules dictionary
+		self.modules = Modules().Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -74,13 +33,13 @@ class Tasks(object):
 		self.module["key"] = self.module["name"].lower()
 
 		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
+			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
+			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
 
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
+			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -91,7 +50,7 @@ class Tasks(object):
 		self.current_year = self.Years.current_year
 
 		# Folders dictionary
-		self.folders = self.Folder.Contents(self.notepad_folders["networks"]["productive_network"]["root"], lower_key = True)["dictionary"]
+		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["productive_network"]["root"], lower_key = True)["dictionary"]
 
 		self.folders["task_history"]["current_year"] = self.folders["task_history"][str(self.date["year"])]
 
@@ -116,7 +75,7 @@ class Tasks(object):
 		self.tasks = self.template.copy()
 
 		# Add language lists to task titles and task Language DateTime dictionaries
-		for language in self.small_languages:
+		for language in self.languages["small"]:
 			self.tasks["Lists"]["Titles"][language] = []
 			self.tasks["Lists"]["Times"]["Language DateTime"][language] = []
 
@@ -159,7 +118,7 @@ class Tasks(object):
 			self.task_type_tasks[task_type]["Lists"].pop("Types")
 
 			# Add language lists to titles and task Language DateTime dictionaries
-			for language in self.small_languages:
+			for language in self.languages["small"]:
 				self.task_type_tasks[task_type]["Lists"]["Titles"][language] = []
 				self.task_type_tasks[task_type]["Lists"]["Times"]["Language DateTime"][language] = []
 

@@ -27,6 +27,22 @@
 		"pt": "Prolixo",
 		"en": "Verbose"
 	},
+	"verbose, title()": {
+		"pt": "Prolixo",
+		"en": "Verbose"
+	},
+	"testing": {
+		"en": "Testing: Yes",
+		"pt": "Testando: Sim"
+	},
+	"verbose": {
+		"en": "Verbose mode on.",
+		"pt": "Modo prolixo ativado."
+	},
+	"user_information": {
+		"en": "User information:\nShown",
+		"pt": "Informações do usuário:\nMostradas"
+	},
 	"user_information": {
 		"pt": "Informação do usuário",
 		"en": "User information"

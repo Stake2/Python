@@ -1,47 +1,22 @@
 # Input.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from JSON import JSON as JSON
-
+import os
+import pathlib
 import re
 
 class Input():
-	def __init__(self, parameter_switches = None):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def __init__(self):
+		from Utility.Modules import Modules as Modules
 
-		if parameter_switches != None:
-			self.global_switches.update(parameter_switches)
+		# Get modules dictionary
+		self.modules = Modules().Set(self, ["File", "JSON", "Language"])
 
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.JSON = JSON(self.global_switches)
+		self.Define_Folders(self)
 
-		self.Define_Folders()
 		self.Define_Texts()
 
-	def Define_Folders(self):
-		self.app_text_files_folder = self.Language.app_text_files_folder
-
-		self.module = {
-			"name": self.__module__,
-		}
-
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		if self.module["name"] == "__main__":
-			self.module["name"] = "Input"
-
-		self.module_text_files_folder = self.app_text_files_folder + self.module["name"] + "/"
-
-		self.texts_file = self.module_text_files_folder + "Texts.json"
-
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.texts_file)
+		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
 		self.language_texts = self.Language.Item(self.texts)
 
@@ -348,7 +323,10 @@ class Input():
 
 		i = 0
 		while line not in finish_keywords and contents["length"] != length:
-			if line_options["next_line"] == True:
+			if line_options["next_line"] == True or line_options["enumerate"] == True:
+				if line_options["enumerate"] == True and i == 0:
+					print(show_text)
+
 				type_text = ""
 
 				if line_options["enumerate"] == True:
@@ -363,7 +341,7 @@ class Input():
 				if line_texts != []:
 					type_text += " " + line_texts[i] + ": "
 
-			if line_options["next_line"] == False:
+			if line_options["next_line"] == False and line_options["enumerate"] == False:
 				if line_options["print"] == False:
 					if line == "":
 						type_text = show_text

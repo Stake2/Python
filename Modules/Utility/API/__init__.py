@@ -1,96 +1,17 @@
 # API.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from JSON import JSON as JSON
-from Text import Text as Text
-
+import os
 import requests
 import urllib.parse
 
 class API():
-	def __init__(self, parameter_switches = None):
-		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+	def __init__(self):
+		from Utility.Modules import Modules as Modules
 
-		self.global_switches.update({
-			"testing": False,
-			"folder": {
-				"create": True,
-				"delete": True,
-				"copy": True,
-				"move": True
-			},
-			"file": {
-				"create": True,
-				"delete": True,
-				"copy": True,
-				"move": True,
-				"edit": True
-			}
-		})
+		# Get modules dictionary
+		self.modules = Modules().Set(self, ["Date", "File", "JSON"])
 
-		if parameter_switches != None:
-			self.global_switches.update(parameter_switches)
-
-			if "testing" in self.global_switches and self.global_switches["testing"] == True:
-				for item in ["folder", "file"]:
-					for switch in self.global_switches[item]:
-						self.global_switches[item][switch] = False
-
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
-
-		self.app_settings = self.Language.app_settings
-		self.small_languages = self.Language.languages["small"]
-		self.full_languages = self.Language.languages["full"]
-		self.user_language = self.Language.user_language
-
-		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
-
-		self.date = self.Date.date
-
-		self.Define_Folders()
-
-	def Define_Folders(self):
-		self.app_text_files_folder = self.Language.app_text_files_folder
-
-		self.module = {
-			"name": self.__module__,
-		}
-
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		if self.module["name"] == "__main__":
-			self.module["name"] = "API"
-
-		self.module["key"] = self.module["name"].lower()
-
-		for item in ["module_files", "modules"]:
-			self.apps_folders[item][self.module["key"]] = self.apps_folders[item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.apps_folders[item][self.module["key"]])
-
-			self.apps_folders[item][self.module["key"]] = self.Folder.Contents(self.apps_folders[item][self.module["key"]], lower_key = True)["dictionary"]
-
-		# Define Secrets file
-		self.apps_folders["module_files"][self.module["key"]]["secrets"] = self.apps_folders["module_files"][self.module["key"]]["root"] + "Secrets.json"
-		self.File.Create(self.apps_folders["module_files"][self.module["key"]]["secrets"])
-
-		self.secrets = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["secrets"])
+		self.Define_Folders(self, ["Secrets"])
 
 	def YouTube(self, api):
 		from google.auth.transport.requests import Request
@@ -98,9 +19,9 @@ class API():
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
-		self.apps_folders["module_files"][self.module["key"]]["token"] = self.apps_folders["module_files"][self.module["key"]]["root"] + "Token.json"
+		self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"] = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
 
-		self.client_secrets = self.JSON.To_Python(self.apps_folders["module_files"][self.module["key"]]["client_secrets"])
+		self.client_secrets = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["client_secrets"])
 
 		api["scopes"] = [
 			"https://www.googleapis.com/auth/youtube",
@@ -111,8 +32,8 @@ class API():
 
 		api["credentials"] = None
 
-		if self.File.Exist(self.apps_folders["module_files"][self.module["key"]]["token"]) == True:
-			api["credentials"] = Credentials.from_authorized_user_file(self.apps_folders["module_files"][self.module["key"]]["token"], api["scopes"])
+		if self.File.Exist(self.folders["apps"]["module_files"][self.module["key"]]["token"]) == True:
+			api["credentials"] = Credentials.from_authorized_user_file(self.folders["apps"]["module_files"][self.module["key"]]["token"], api["scopes"])
 
 		# If there are no (valid) credentials available, let the user log in
 		if not api["credentials"] or not api["credentials"].valid:
@@ -121,12 +42,12 @@ class API():
 
 			else:
 				print()
-				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.apps_folders["module_files"][self.module["key"]]["client_secrets"], api["scopes"])
+				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"][self.module["key"]]["client_secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			# Save the credentials for the next run
-			self.File.Create(self.apps_folders["module_files"][self.module["key"]]["token"])
-			self.JSON.Edit(self.apps_folders["module_files"][self.module["key"]]["token"], api["credentials"].to_json())
+			self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["token"])
+			self.JSON.Edit(self.folders["apps"]["module_files"][self.module["key"]]["token"], api["credentials"].to_json())
 
 		# Define API dictionary
 		api.update({
@@ -257,8 +178,7 @@ class API():
 					"Description": "",
 					"Text": {},
 					"Times": {
-						"date": str(date["date"]),
-						"date_time_format": date["date_time_format"][self.user_language]
+						"UTC": date["YYYY-MM-DDThh:mm:ssZ"]
 					}
 				}
 
@@ -280,7 +200,7 @@ class API():
 						"Display": snippet["textDisplay"]
 					})
 
-			if self.global_switches["verbose"] == True:
+			if self.switches["global"]["verbose"] == True:
 				print("Progress: " + str(api["Dictionary"]["Number"]) + "/" + str(api["Dictionary"]["Total Number"]))
 
 		return api
@@ -293,7 +213,7 @@ class API():
 			format = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 		# Get Date object from date string
-		return self.Date.From_String(string, format = format)
+		return self.Date.From_String(string)
 
 	def Call(self, service = None, dictionary = {}):
 		# Define service and dictionary

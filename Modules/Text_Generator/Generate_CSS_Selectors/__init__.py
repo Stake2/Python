@@ -1,20 +1,10 @@
 # Generate CSS Selectors.py
 
-from Global_Switches import Global_Switches as Global_Switches
-
-from Language import Language as Language
-from File import File as File
-from Folder import Folder as Folder
-from Date import Date as Date
-from Input import Input as Input
-from JSON import JSON as JSON
-from Text import Text as Text
-
 class Generate_CSS_Selectors():
 	def __init__(self):
-		self.Define_Basic_Variables()
+		self.Import_Modules()
 
-		self.json = self.JSON.To_Python(self.mega_folders["php"]["json"]["colors"])
+		self.json = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["colors"])
 		self.colors = self.json["names"]
 		self.hex = self.json["hex"]
 
@@ -47,23 +37,23 @@ class Generate_CSS_Selectors():
 		self.Create_Box_Shadow()
 		self.Generate_And_Copy()
 
-	def Define_Basic_Variables(self):
+	def Import_Modules(self):
 		# Global Switches dictionary
-		self.global_switches = Global_Switches().global_switches
+		self.switches["global"] = Global_Switches().global_switches
 
-		self.Language = Language(self.global_switches)
-		self.File = File(self.global_switches)
-		self.Folder = Folder(self.global_switches)
-		self.Date = Date(self.global_switches)
-		self.Input = Input(self.global_switches)
-		self.JSON = JSON(self.global_switches)
-		self.Text = Text(self.global_switches)
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
 		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
-		self.small_languages = self.languages["small"]
+		self.languages["small"] = self.languages["small"]
 		self.full_languages = self.languages["full"]
-		self.translated_languages = self.languages["full_translated"]
+		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
@@ -71,11 +61,11 @@ class Generate_CSS_Selectors():
 		self.Sanitize = self.File.Sanitize
 
 		self.folders = self.Folder.folders
-		self.root_folders = self.folders["root"]
-		self.user_folders = self.folders["user"]
-		self.apps_folders = self.folders["apps"]
-		self.mega_folders = self.folders["mega"]
-		self.notepad_folders = self.folders["notepad"]
+		self.folders["root"] = self.folders["root"]
+		self.folders["user"] = self.folders["user"]
+		self.folders["apps"] = self.folders["apps"]
+		self.folders["mega"]= self.folders["mega"]
+		self.folders["notepad"] = self.folders["notepad"]
 
 		self.date = self.Date.date
 
