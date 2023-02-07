@@ -2,10 +2,11 @@
 
 class Food_Time():
 	def __init__(self, show_text = True, register_time = True):
+		self.Import_Modules()
+
 		self.show_text = show_text
 		self.register_time = register_time
 
-		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
 
@@ -19,10 +20,7 @@ class Food_Time():
 			self.Show_Times()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = self.__module__

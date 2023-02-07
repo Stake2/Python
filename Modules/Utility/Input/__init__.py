@@ -6,10 +6,8 @@ import re
 
 class Input():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["File", "JSON", "Language"])
+		self.modules = self.Modules.Set(self, ["File", "JSON", "Language"])
 
 		self.Define_Folders(self)
 
@@ -20,7 +18,7 @@ class Input():
 
 		self.language_texts = self.Language.Item(self.texts)
 
-	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = False, first_space = True):
+	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, first_space = True):
 		if show_text != None and add_colon == True and show_text[-1] + show_text[-2] != ": ":
 			show_text += ": "
 
@@ -173,9 +171,6 @@ class Input():
 
 			if language_options == None or str(option) == dictionary["language_option"]:
 				print(str(option))
-
-			if function == True and type(option) in [function, type]:
-				option()
 
 		return dictionary
 

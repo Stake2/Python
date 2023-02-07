@@ -1053,10 +1053,6 @@
 		"pt": "ID do Comentário do YouTube",
 		"en": "YouTube Comment ID"
 	},
-	"youtube_ids, title()": {
-		"pt": "IDs do YouTube",
-		"en": "YouTube IDs"
-	},
 	"opening_{}_to_watch, title()": {
 		"pt": "Abrindo {} Para Assistir",
 		"en": "Opening {} To Watch"

@@ -4,7 +4,7 @@ from Code.Code import Code as Code
 
 class Help_With_Programming(Code):
 	def __init__(self, custom_options = None):
-		super().__init__(parameter_switches)
+		super().__init__()
 
 		self.custom_options = custom_options
 

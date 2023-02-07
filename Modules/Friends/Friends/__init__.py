@@ -43,10 +43,7 @@ class Friends(object):
 		self.Select_Social_Network(self.social_networks_with_friends, select_social_network = select_social_network)
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {

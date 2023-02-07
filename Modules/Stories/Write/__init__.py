@@ -149,7 +149,7 @@ class Write(Stories):
 			self.chapter["language"] = self.full_user_language
 
 			# Copy English chapter text into user language chapter file
-			text = self.File.Contents(self.chapter["files"]["story"][self.full_languages["en"]])["string"]
+			text = self.File.Contents(self.chapter["files"]["story"][self.languages["full"]["en"]])["string"]
 
 			self.File.Edit(self.chapter["files"]["obsidian"][self.full_user_language], text, "w")
 

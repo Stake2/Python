@@ -10,10 +10,8 @@ from copy import deepcopy
 
 class JSON():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["Language"])
+		self.modules = self.Modules.Set(self, ["Language"])
 
 		self.switches["global"].update({
 			"file": {

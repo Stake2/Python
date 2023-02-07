@@ -22,7 +22,7 @@ class Create_Year_Summary(Years):
 		years_list = self.years["list"].copy()
 
 		for year in self.years:
-			english_files = self.years[year]["folders"][self.full_languages["en"]]
+			english_files = self.years[year]["folders"][self.languages["full"]["en"]]
 
 			if self.texts["summary, title()"]["en"] in english_files and \
 			self.File.Contents(english_files[self.texts["summary, title()"]["en"]])["lines"] != []:
@@ -114,7 +114,7 @@ class Create_Year_Summary(Years):
 		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
 		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
 		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
-		self.year_numbers["known_people"] = Friends(select_social_network = False).current_year_friends_number
+		self.year_numbers["known_people"] = Friends(self.Modules, select_social_network = False).current_year_friends_number
 
 		for data in self.year_numbers:
 			self.year_numbers["things_done_in_{year}"] += int(self.year_numbers[data])
@@ -271,7 +271,7 @@ class Create_Year_Summary(Years):
 		print(self.year["number"])
 		print()
 
-		print(self.language_texts["summary_in"] + " " + self.full_languages[self.user_language] + ":")
+		print(self.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
 		print("____________________")
 		print(self.summary_text[self.user_language])
 		print("____________________")

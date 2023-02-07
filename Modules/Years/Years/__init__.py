@@ -3,11 +3,11 @@
 from copy import deepcopy
 
 class Years(object):
-	def __init__(self, select_year = True):
-		self.select_year = select_year
-
+	def __init__(self):
 		self.Import_Modules()
 		self.Define_Module_Folder()
+
+		self.select_year = False
 
 		self.Define_Texts()
 		self.Define_Folders_And_Files()
@@ -17,10 +17,7 @@ class Years(object):
 			self.Select_Year()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {

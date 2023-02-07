@@ -11,10 +11,8 @@ from dateutil import parser
 
 class Date():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["JSON", "Language", "Text"])
+		self.modules = self.Modules.Set(self, ["Language", "JSON"])
 
 		self.Define_Folders(self)
 
@@ -109,6 +107,8 @@ class Date():
 		return date
 
 	def To_String(self, date, format = ""):
+		date = self.Check(date)
+
 		if format == "":
 			format = self.texts["default_format"]
 
@@ -117,8 +117,6 @@ class Date():
 
 			else:
 				format += "%z"
-
-		date = self.Check(date)
 
 		return date.strftime(format)
 

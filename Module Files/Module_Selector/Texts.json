@@ -27,19 +27,15 @@
 		"pt": "Prolixo",
 		"en": "Verbose"
 	},
-	"verbose, title()": {
-		"pt": "Prolixo",
-		"en": "Verbose"
-	},
-	"testing": {
+	"testing, type: explanation": {
 		"en": "Testing: Yes",
 		"pt": "Testando: Sim"
 	},
-	"verbose": {
+	"verbose, type: explanation": {
 		"en": "Verbose mode on.",
 		"pt": "Modo prolixo ativado."
 	},
-	"user_information": {
+	"user_information, type: explanation": {
 		"en": "User information:\nShown",
 		"pt": "Informações do usuário:\nMostradas"
 	},
@@ -62,5 +58,13 @@
 	"select_a_module_from_the_list": {
 		"en": "Select a module from the list to execute it",
 		"pt": "Selecione um módulo da lista para executá-lo"
+	},
+	"food_time.set": {
+		"en": "Defines the time a meal was eaten using the {module} module",
+		"pt": "Define a hora em que uma refeição foi consumida usando o módulo {module}"
+	},
+	"food_time.check": {
+		"en": "Shows the time a meal was eaten using the {module} module",
+		"pt": "Mostra a hora em que uma refeição foi consumida usando o módulo {module}"
 	}
 }

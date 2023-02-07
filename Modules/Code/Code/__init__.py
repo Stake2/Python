@@ -10,10 +10,7 @@ class Code(object):
 		self.Define_Lists_And_Dictioinaries()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self, utility_modules = ["Diary_Slim"])
 
 	def Define_Module_Folder(self):
 		self.module = {

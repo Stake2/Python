@@ -52,7 +52,7 @@ class Generate_CSS_Selectors():
 		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
 		self.languages["small"] = self.languages["small"]
-		self.full_languages = self.languages["full"]
+		self.languages["full"] = self.languages["full"]
 		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language

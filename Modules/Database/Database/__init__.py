@@ -1,7 +1,7 @@
 # Database.py
 
 class Database(object):
-	def __init__(self, custom_year = None):
+	def __init__(self):
 		from Utility.Modules import Modules as Modules
 
 		Modules().Set(self)

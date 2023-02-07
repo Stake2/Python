@@ -10,10 +10,8 @@ from tzlocal import get_localzone
 
 class Language():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, [])
+		self.modules = self.Modules.Set(self, [])
 
 		self.switches["global"].update({
 			"folder": {
@@ -843,7 +841,7 @@ class Language():
 		if "language" in self.app_settings and self.user_language != self.system_information["language"]:
 			print()
 			print("\t" + self.language_texts["your_{}_is"].format(self.language_texts["custom_language"]) + ":")
-			print("\t\t" + self.user_language + ", " + self.full_languages[self.user_language])
+			print("\t\t" + self.user_language + ", " + self.languages["full"][self.user_language])
 
 		print()
 		print("\t" + self.language_texts["time_zone"] + ":")

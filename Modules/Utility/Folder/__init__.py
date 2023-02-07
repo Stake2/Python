@@ -1,7 +1,5 @@
 # Folder.py
 
-from Utility.Modules import Modules as Modules
-
 import os
 import platform
 import pathlib
@@ -12,7 +10,12 @@ from distutils.dir_util import copy_tree
 class Folder():
 	def __init__(self):
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["Language", "Date", "File", "JSON"])
+		from Utility.Modules.Set import Set as Modules
+
+		self.Modules = Modules()
+
+		# Get modules dictionary
+		self.modules = self.Modules.Set(self, ["Language", "Date", "File", "JSON"])
 
 		self.switches["global"].update({
 			"folder": {

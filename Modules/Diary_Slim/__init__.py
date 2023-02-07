@@ -4,10 +4,7 @@
 
 class Run():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self, ["Folder", "Input", "JSON", "Language"])
+		self.modules = self.Modules.Set(self, ["Folder", "Input", "JSON", "Language"])
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
@@ -31,7 +28,16 @@ class Run():
 
 		self.language_texts = self.Language.Item(self.descriptions)
 
-		self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"], function = True)
+		option = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"])["option"]
+
+		import importlib
+		self.sub_class = getattr(importlib.import_module("." + option, self.__module__), option)
+
+		# Add Modules module to sub class
+		setattr(self.sub_class, "Modules", self.Modules)
+
+		# Run selected sub_class
+		self.sub_class()
 
 arguments = ["slim"]
 

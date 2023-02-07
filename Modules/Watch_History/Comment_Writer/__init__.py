@@ -196,7 +196,7 @@ class Comment_Writer(Watch_History):
 		self.media_dictionary["media"]["comment"]["time"] = self.Date.Now()
 
 		# Replace time text in comment with comment time
-		self.media_dictionary["media"]["comment"]["comment"] = self.media_dictionary["media"]["comment"]["comment"].replace("[Time]", self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language])
+		self.media_dictionary["media"]["comment"]["comment"] = self.media_dictionary["media"]["comment"]["comment"].replace("[Time]", self.Date.To_String(self.media_dictionary["media"]["comment"]["time"]["date"].astimezone(), self.Date.language_texts["date_time_format"]))
 
 	def Write_Comment_To_Files(self):
 		# Delete backup file
@@ -217,16 +217,15 @@ class Comment_Writer(Watch_History):
 		self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = {
 			"File name": self.media_dictionary["media"]["comment"]["file_name"],
 			"Type": self.media_dictionary["media_type"]["plural"]["en"],
-			"Times": {
-				"date": str(self.media_dictionary["media"]["comment"]["time"]["date"]),
-				"date_time_format": self.media_dictionary["media"]["comment"]["time"]["date_time_format"][self.user_language]
-			},
+			"Time": self.Date.To_String(self.media_dictionary["media"]["comment"]["time"]),
 			"Titles": self.media_dictionary["media"]["episode"]["titles"]
 		}
 
 		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media_dictionary["media"]["states"]["video"] == True:
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
+				"ID": "",
+				"Link": "",
 				"Video": {
 					"ID": self.media_dictionary["media"]["episode"]["youtube_id"],
 					"Link": self.media_dictionary["media"]["episode"]["remote"]["link"]
@@ -251,10 +250,8 @@ class Comment_Writer(Watch_History):
 					parameters = parse_qs(query)
 
 					self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]].update({
-						"Comment": {
-							"ID": parameters["lc"][0],
-							"Link": self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video"]["Link"] + "&lc=" + parameters["lc"][0]
-						}
+						"ID": parameters["lc"][0],
+						"Link": self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["Video"]["Link"] + "&lc=" + parameters["lc"][0]
 					})
 
 		dict_ = self.Define_States_Dictionary(self.media_dictionary)

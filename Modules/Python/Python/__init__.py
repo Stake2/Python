@@ -10,10 +10,7 @@ class Python(object):
 		self.Define_Lists()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {

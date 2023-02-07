@@ -2,9 +2,6 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Register_Media import Register_Media as Register_Media
-from Watch_History.Comment_Writer import Comment_Writer as Comment_Writer
-
 import re
 from copy import deepcopy
 
@@ -12,6 +9,18 @@ from copy import deepcopy
 class Watch_Media(Watch_History):
 	def __init__(self, media_dictionary = {}, run_as_module = False, open_media = True):
 		super().__init__()
+
+		import importlib
+
+		classes = [
+			"Comment_Writer",
+			"Register_Media"
+		]
+
+		for title in classes:
+			class_ = getattr(importlib.import_module("."  + title, "Watch_History"), title)
+			setattr(self, title, class_)
+			setattr(class_, "Modules", self.Modules)
 
 		self.media_dictionary = media_dictionary
 		self.run_as_module = run_as_module
@@ -26,7 +35,7 @@ class Watch_Media(Watch_History):
 			self.Open_Episode_Unit()
 			self.Create_Discord_Status()
 			self.Comment_On_Media()
-			self.Register_Media()
+			self.Register_The_Media()
 
 	def Define_Media_Dictionary(self):
 		# Select media type and media if media dictionary is empty
@@ -113,9 +122,6 @@ class Watch_Media(Watch_History):
 
 				# Update media item details file
 				self.File.Edit(self.media_dictionary["media"]["item"]["folders"]["details"], self.Text.From_Dictionary(self.media_dictionary["media"]["item"]["details"]), "w")
-
-				# Update media item "Information.json" file
-				self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["information"], self.media_dictionary["media"]["item"])
 
 			# Define media episode dictionary
 			self.media_dictionary["media"]["episode"].update({
@@ -448,17 +454,6 @@ class Watch_Media(Watch_History):
 		if self.media_dictionary["media"]["states"]["re_watching"] == True:
 			self.media_dictionary["header_text"] = self.media_dictionary["header_text"].replace(self.language_texts["watch"], self.language_texts["re_watch"])
 
-		dictionary = self.media_dictionary["media"].copy()
-		dictionary.pop("select")
-		dictionary.pop("list")
-		dictionary.pop("states")
-
-		if self.media_dictionary["media"]["states"]["media_list"] == False:
-			dictionary.pop("item")
-
-		# Write dictionary into media "Information.json" file
-		self.JSON.Edit(self.media_dictionary["media"]["folders"]["information"], dictionary)
-
 	def Define_Episode_Unit(self):
 		# Local media episode file definition
 		if self.media_dictionary["media"]["states"]["local"] == True:
@@ -529,9 +524,9 @@ class Watch_Media(Watch_History):
 
 	def Comment_On_Media(self):
 		# Ask to comment on media (using Comment_Writer class)
-		Comment_Writer(self.media_dictionary)
+		self.Comment_Writer(self.media_dictionary)
 
-	def Register_Media(self):
+	def Register_The_Media(self):
 		template = self.language_texts["press_enter_when_you_finish_watching_{}"]
 
 		# Text to show in the input when the user finishes watching the media (pressing Enter)
@@ -544,7 +539,7 @@ class Watch_Media(Watch_History):
 		self.media_dictionary["media"]["finished_watching"] = self.Date.Now()
 
 		# Use the "Register_Media" class to register the watched media, running it as a module, and giving the media_dictionary to it
-		Register_Media(run_as_module = True, media_dictionary = self.media_dictionary)
+		self.Register_Media(run_as_module = True, media_dictionary = self.media_dictionary)
 
 	def Find_Media_file(self, file_name):
 		self.frequently_used_folders = [

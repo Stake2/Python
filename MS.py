@@ -1,6 +1,5 @@
 # Module_Selector.py
 
-import importlib
 import argparse
 import inspect
 
@@ -25,23 +24,11 @@ class Main():
 		self.Reset_Switch()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
+		from Utility.Modules.Set import Set as Modules
 
 		self.Modules = Modules()
 
-		self.Modules.Set(self, [])
-
-		# Get modules dictionary
-		self.modules = self.Modules.Get()
-
-		for title in self.modules["utility"]["list"]:
-			if title != "Modules":
-				module = self.modules["utility"][title]["module"]
-				class_ = getattr(module, title)()
-
-				setattr(self, title, class_)
-
-				self.Modules.Import_Variables(self, class_)
+		self.modules = self.Modules.Set(self, utility_modules = ["Folder", "Language", "JSON"])
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -177,33 +164,32 @@ class Main():
 
 	def Get_Modules(self):
 		# Iterate through usage modules list
-		for module in self.modules["usage"]:
-			if module != "list":
-				module = self.modules["usage"][module]
+		for module in self.modules["usage"]["list"]:
+			module = self.modules["usage"][module]
 
-				# Add custom argument names from module
-				if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == list:
-					arguments = module["module"].arguments
+			# Add custom argument names from module
+			if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == list:
+				arguments = module["module"].arguments
 
-					for argument in arguments:
-						module["list"].append(argument)
+				for argument in arguments:
+					module["list"].append(argument)
 
-				self.Add_Argument(module, self.argparse["default_options"])
+			self.Add_Argument(module, self.argparse["default_options"])
 
-				# Add additional arguments from module
-				if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == dict:
-					arguments = module["module"].arguments
+			# Add separate arguments from module
+			if hasattr(module["module"], "separate_arguments") == True:
+				separate_arguments = module["module"].separate_arguments
 
-					for key in arguments:
-						dictionary = {
-							"list": [key],
-							"text": arguments[key]["text"]
-						}
+				for key in separate_arguments:
+					dictionary = {
+						"list": [key],
+						"text": self.language_texts[module["key"] + "." + key]
+					}
 
-						if "{module}" in dictionary["text"]:
-							dictionary["text"] = dictionary["text"].replace("{module}", '"' + module["title"] + '"')
+					if "{module}" in dictionary["text"]:
+						dictionary["text"] = dictionary["text"].replace("{module}", '"' + module["title"] + '"')
 
-						self.Add_Argument(dictionary, self.argparse["default_options"])
+					self.Add_Argument(dictionary, self.argparse["default_options"])
 
 		# Add "Language" module argument
 		dictionary = {
@@ -237,20 +223,21 @@ class Main():
 
 		option = self.Input.Select(self.modules["usage"]["list"], show_text = show_text, select_text = select_text)["option"]
 
-		self.module = {
-			"title": option,
-			"key": option.lower()
-		}
+		self.Define_Module(option)
 
 	def Check_Arguments(self):
 		for module in self.modules["usage"]["list"]:
 			module_lower = module.lower()
 
 			if hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True:
-				self.module = {
-					"title": module,
-					"key": module.lower(),
-				}
+				self.Define_Module(module)
+
+	def Define_Module(self, option):
+		self.module = {
+			"title": option,
+			"key": option.lower(),
+			"module": self.modules["usage"][option]["module"]
+		}
 
 	def Switch(self):
 		# Update Switches file if there are Switch arguments
@@ -284,7 +271,7 @@ class Main():
 
 		for switch in self.switches["global"].keys():
 			if switch in self.switches["edited"] and self.switches["edited"][switch] == True and switch != "user_information":
-				print(self.language_texts[switch])
+				print(self.language_texts[switch + ", type: explanation"])
 
 		if has_true_variables == True and self.switches["edited"]["user_information"] == False:
 			print()
@@ -292,13 +279,13 @@ class Main():
 
 	def Run_Module(self, module):
 		if module["title"] != "Module_Selector":
-			self.module = importlib.import_module(module["title"])
+			setattr(self.module["module"].Run, "Modules", self.Modules)
 
-			if getattr(self.arguments, "check") == False and getattr(self.arguments, "set") == False or getattr(self.arguments, "set") == True:
-				self.module.Run()
+			if getattr(self.arguments, "check") == False:
+				self.module["module"].Run()
 
 			if getattr(self.arguments, "check") == True:
-				self.module.Run(register_time = False)
+				self.module["module"].Run(register_time = False)
 
 		if getattr(self.arguments, "language") == True:
 			self.Language.Create_Language_Text()

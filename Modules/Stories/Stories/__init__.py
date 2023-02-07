@@ -35,7 +35,7 @@ class Stories(object):
 		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
 		self.languages["small"] = self.languages["small"]
-		self.full_languages = self.languages["full"]
+		self.languages["full"] = self.languages["full"]
 		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language
@@ -376,7 +376,7 @@ class Stories(object):
 			self.Folder.Create(self.stories[story]["folders"]["Information"]["Synopsis"]["root"])
 
 			# Create synopsis files
-			for full_language in list(self.full_languages.values()):
+			for full_language in list(self.languages["full"].values()):
 				self.stories[story]["folders"]["Information"]["Synopsis"][full_language] = self.stories[story]["folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"	
 				self.File.Create(self.stories[story]["folders"]["Information"]["Synopsis"][full_language])
 

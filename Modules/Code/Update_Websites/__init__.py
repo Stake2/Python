@@ -4,7 +4,7 @@ from Code.Code import Code as Code
 
 class Update_Websites(Code):
 	def __init__(self, update_one_website = False, module_website = None):
-		super().__init__(parameter_switches)
+		super().__init__()
 
 		self.update_one_website = update_one_website
 		self.module_website = module_website
@@ -75,7 +75,7 @@ class Update_Websites(Code):
 			self.languages["full_translated"]["general"][language] = self.texts["general, title()"][language]
 
 		self.languages["small"].insert(0, "general")
-		self.full_languages["general"] = "General"
+		self.languages["full"]["general"] = "General"
 
 		self.xampp_programs = [
 			"xampp-control",

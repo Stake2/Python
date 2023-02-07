@@ -8,10 +8,8 @@ import win32clipboard
 
 class Text():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["JSON", "Language"])
+		self.modules = self.Modules.Set(self, ["JSON", "Language"])
 
 		self.switches["global"].update({
 			"verbose": True

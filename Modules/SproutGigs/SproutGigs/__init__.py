@@ -16,10 +16,7 @@ class SproutGigs():
 		self.Social_Networks = Social_Networks()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self)
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -134,7 +131,7 @@ class SproutGigs():
 		self.Open_Category_Tab(self.category)
 
 		if self.category["name"] in self.Social_Networks.social_networks:
-			Unblock(self.category["name"])
+			Unblock(websites = self.category["name"])
 
 	def Open_Category_Tab(self, category, open = False):
 		text = self.language_texts["opening_{}_on_this_category_to_work"].format(self.website["name"])

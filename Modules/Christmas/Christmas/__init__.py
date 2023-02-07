@@ -1,10 +1,5 @@
 # Christmas.py
 
-import Block_Websites
-from Social_Networks.Social_Networks import Social_Networks as Social_Networks
-from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
-from Years.Years import Years as Years
-
 class Christmas():
 	def __init__(self):
 		self.Import_Modules()
@@ -12,17 +7,12 @@ class Christmas():
 		self.Define_Texts()
 		self.Today_Is_Christmas()
 
-		self.Years = Years(select_year = False)
-
 		self.Define_Folders()
 		self.Define_Files()
 		self.Define_Lists()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self, utility_modules = ["Block_Websites", "Social_Networks", "Years"])
 
 	def Define_Module_Folder(self):
 		self.module = {
@@ -128,11 +118,10 @@ class Christmas():
 		social_networks = [""]
 		self.option_info = None
 
-		self.Social_Networks = Social_Networks()
-
 		if social_network == self.twitter_scheduled_text:
 			# Unblock Social Networks
-			Block_Websites.Unblock(self.Social_Networks.social_networks["Names"], 60)
+			import Block_Websites
+			Block_Websites.Unblock(websites = self.Social_Networks.social_networks["Names"], time = 60)
 
 			social_network_link = self.twitter_scheduled_link
 			social_networks = ["Twitter"]
@@ -155,7 +144,9 @@ class Christmas():
 				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
 				print()
 
-			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
+			import Social_Networks
+
+			Social_Networks.Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
 
 			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
 

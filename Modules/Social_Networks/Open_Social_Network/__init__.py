@@ -80,7 +80,7 @@ class Open_Social_Network(Social_Networks):
 			self.social_network_list = [self.social_network["Name"]]
 
 	def Unlock_Social_Network(self):
-		Unblock(options = self.social_network_list)
+		Unblock(websites = self.social_network_list)
 
 	def Define_Link_Type(self):
 		if self.option_info != None:

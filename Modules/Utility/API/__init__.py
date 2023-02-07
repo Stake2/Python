@@ -6,12 +6,12 @@ import urllib.parse
 
 class API():
 	def __init__(self):
-		from Utility.Modules import Modules as Modules
-
 		# Get modules dictionary
-		self.modules = Modules().Set(self, ["Date", "File", "JSON"])
+		self.modules = self.Modules.Set(self, ["Date", "File", "JSON"])
 
-		self.Define_Folders(self, ["Secrets"])
+		self.Define_Folders(self, ["Secrets", "client_secrets"])
+
+		self.secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["secrets"])
 
 	def YouTube(self, api):
 		from google.auth.transport.requests import Request
@@ -20,8 +20,6 @@ class API():
 		from googleapiclient.discovery import build
 
 		self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"] = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
-
-		self.client_secrets = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["client_secrets"])
 
 		api["scopes"] = [
 			"https://www.googleapis.com/auth/youtube",
@@ -32,8 +30,8 @@ class API():
 
 		api["credentials"] = None
 
-		if self.File.Exist(self.folders["apps"]["module_files"][self.module["key"]]["token"]) == True:
-			api["credentials"] = Credentials.from_authorized_user_file(self.folders["apps"]["module_files"][self.module["key"]]["token"], api["scopes"])
+		if self.File.Exist(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"]) == True:
+			api["credentials"] = Credentials.from_authorized_user_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["scopes"])
 
 		# If there are no (valid) credentials available, let the user log in
 		if not api["credentials"] or not api["credentials"].valid:
@@ -42,12 +40,12 @@ class API():
 
 			else:
 				print()
-				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"][self.module["key"]]["client_secrets"], api["scopes"])
+				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			# Save the credentials for the next run
-			self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["token"])
-			self.JSON.Edit(self.folders["apps"]["module_files"][self.module["key"]]["token"], api["credentials"].to_json())
+			self.File.Create(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"])
+			self.JSON.Edit(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["credentials"].to_json())
 
 		# Define API dictionary
 		api.update({
@@ -60,7 +58,7 @@ class API():
 		api["object"] = build(api["name"], api["version"], developerKey = api["key"], credentials = api["credentials"])
 
 		if "parameters" not in api:
-			if "playlist" in api["item"]:
+			if api["item"] == "playlist":
 				method = "playlistItems"
 
 			else:
@@ -68,7 +66,7 @@ class API():
 
 			key = "id"
 
-			if "playlist" in api["item"]:
+			if api["item"] == "playlist":
 				key = api["item"] + "Id"
 
 			api.update({
@@ -138,7 +136,6 @@ class API():
 						}
 
 						api["Dictionary"][key] = self.Call("YouTube", item)["Dictionary"][snippet[name]]
-						api["Dictionary"][key].pop("Number")
 
 				if "resourceId" in snippet:
 					id = snippet["resourceId"]["videoId"]
@@ -148,8 +145,6 @@ class API():
 
 				elif "id" in api["parameters"]:
 					id = api["parameters"]["id"]
-
-				date = self.Get_Date(snippet["publishedAt"])
 
 				link = api["link"]
 
@@ -171,15 +166,12 @@ class API():
 					items = items["Videos"]
 
 				items[id] = {
-					"Number": api["Dictionary"]["Number"],
 					"Title": "",
 					"ID": id,
 					"Link": link + id,
 					"Description": "",
 					"Text": {},
-					"Times": {
-						"UTC": date["YYYY-MM-DDThh:mm:ssZ"]
-					}
+					"Time": self.Get_Date(snippet["publishedAt"])["YYYY-MM-DDThh:mm:ssZ"]
 				}
 
 				for name in ["title", "description"]:
@@ -202,6 +194,8 @@ class API():
 
 			if self.switches["global"]["verbose"] == True:
 				print("Progress: " + str(api["Dictionary"]["Number"]) + "/" + str(api["Dictionary"]["Total Number"]))
+
+		api["Dictionary"].pop("Number")
 
 		return api
 

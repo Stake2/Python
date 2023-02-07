@@ -4,10 +4,9 @@ from Food_Time.Food_Time import Food_Time as Food_Time
 
 class Run(Food_Time):
 	def __init__(self, run = True, register_time = True):
-		from Utility.Modules import Modules as Modules
+		self.Modules = Modules
 
-		# Get modules dictionary
-		self.modules = Modules().Set(self, ["Folder", "Input", "JSON", "Language"])
+		self.modules = self.Modules.Set(self, ["Folder", "Input", "JSON", "Language"])
 
 		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
 
@@ -19,13 +18,7 @@ class Run(Food_Time):
 		if run == True:
 			super().__init__(register_time = register_time)
 
-run = Run(run = False)
-
-arguments = {
-	"set": {
-		"text": run.language_texts["set"]
-	},
-	"check": {
-		"text": run.language_texts["check"]
-	}
-}
+separate_arguments = [
+	"set",
+	"check"
+]

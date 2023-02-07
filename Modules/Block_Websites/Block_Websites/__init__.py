@@ -5,18 +5,11 @@ class Block_Websites(object):
 		self.Import_Modules()
 		self.Define_Module_Folder()
 		self.Define_Texts()
-
-		from Social_Networks.Social_Networks import Social_Networks as Social_Networks
-		self.Social_Networks = Social_Networks()
-
 		self.Define_Files()
 		self.Define_Lists()
 
 	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
-
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		self.modules = self.Modules.Set(self, utility_modules = ["Social_Networks"])
 
 	def Define_Module_Folder(self):
 		self.module = {
