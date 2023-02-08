@@ -1,12 +1,17 @@
 # Module_Selector.py
 
+import importlib
 import argparse
 import inspect
 
-class Main():
+class Module_Selector():
 	def __init__(self):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Texts()
 
 		self.Define_Parser()
@@ -23,37 +28,27 @@ class Main():
 		self.Run_Module(self.module)
 		self.Reset_Switch()
 
-	def Import_Modules(self):
-		from Utility.Modules.Set import Set as Modules
+	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-		self.Modules = Modules()
+		self.Global_Switches = Global_Switches()
+		self.switches = self.Global_Switches.switches
 
-		self.modules = self.Modules.Set(self, utility_modules = ["Folder", "Language", "JSON"])
-
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
+		self.reset_switches = {
+			"testing": False,
+			"verbose": False,
+			"user_information": False,
 		}
 
-		if __name__ == "__main__":
-			self.module["name"] = "Module_Selector"
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Language = self.JSON.Language
 
-		self.module["key"] = self.module["name"].lower()
-
-		self.folders["apps"]["modules"][self.module["key"]] = {
-			"root": self.folders["apps"]["modules"]["root"] + self.module["name"] + "/",
-		}
-
-		self.folders["apps"]["module_files"][self.module["key"]] = {
-			"root": self.folders["apps"]["module_files"]["root"] + self.module["name"] + "/",
-		}
-
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.languages = self.Language.languages
+		self.user_language = self.Language.user_language
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
@@ -163,31 +158,39 @@ class Main():
 		self.parser.add_argument(*tuple_, **options)
 
 	def Get_Modules(self):
+		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+
 		# Iterate through usage modules list
-		for module in self.modules["usage"]["list"]:
-			module = self.modules["usage"][module]
+		for title in self.modules["usage"]["list"]:
+			self.modules["usage"][title] = {
+				"title": title,
+				"key": title.lower(),
+				"list": [title.lower()],
+				"text_key": "executes_the_{}_module",
+				"module": importlib.import_module(title)
+			}
 
 			# Add custom argument names from module
-			if hasattr(module["module"], "arguments") == True and type(module["module"].arguments) == list:
-				arguments = module["module"].arguments
+			if hasattr(self.modules["usage"][title]["module"], "arguments") == True and type(self.modules["usage"][title]["module"].arguments) == list:
+				arguments = self.modules["usage"][title]["module"].arguments
 
 				for argument in arguments:
-					module["list"].append(argument)
+					self.modules["usage"][title]["list"].append(argument)
 
-			self.Add_Argument(module, self.argparse["default_options"])
+			self.Add_Argument(self.modules["usage"][title], self.argparse["default_options"])
 
 			# Add separate arguments from module
-			if hasattr(module["module"], "separate_arguments") == True:
-				separate_arguments = module["module"].separate_arguments
+			if hasattr(self.modules["usage"][title]["module"], "separate_arguments") == True:
+				separate_arguments = self.modules["usage"][title]["module"].separate_arguments
 
 				for key in separate_arguments:
 					dictionary = {
 						"list": [key],
-						"text": self.language_texts[module["key"] + "." + key]
+						"text": self.language_texts[self.modules["usage"][title]["key"] + "." + key]
 					}
 
 					if "{module}" in dictionary["text"]:
-						dictionary["text"] = dictionary["text"].replace("{module}", '"' + module["title"] + '"')
+						dictionary["text"] = dictionary["text"].replace("{module}", '"' + self.modules["usage"][title]["title"] + '"')
 
 					self.Add_Argument(dictionary, self.argparse["default_options"])
 
@@ -279,13 +282,10 @@ class Main():
 
 	def Run_Module(self, module):
 		if module["title"] != "Module_Selector":
-			setattr(self.module["module"].Run, "Modules", self.Modules)
-
-			if getattr(self.arguments, "check") == False:
-				self.module["module"].Run()
-
 			if getattr(self.arguments, "check") == True:
-				self.module["module"].Run(register_time = False)
+				setattr(self.module["module"].Run, "register_time", False)
+
+			self.module["module"].Run()
 
 		if getattr(self.arguments, "language") == True:
 			self.Language.Create_Language_Text()
@@ -294,4 +294,4 @@ class Main():
 		self.Global_Switches.Reset()
 
 if __name__ == "__main__":
-	Main()
+	Module_Selector()

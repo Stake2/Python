@@ -39,5 +39,13 @@
 	"play_alarm_sound_when_you_are_hungry": {
 		"en": "Play alarm sound when you are hungry",
 		"pt": "Tocar som de alarme quando você estiver com fome"
+	},
+	"times_taken_from_the_times_file": {
+		"en": "Times taken from the times file",
+		"pt": "Horários retirados do arquivo de horários"
+	},
+	"times_registered_into_the_times_file": {
+		"en": "Times registered into the times file",
+		"pt": "Horários registrados no arquivo de horários"
 	}
 }

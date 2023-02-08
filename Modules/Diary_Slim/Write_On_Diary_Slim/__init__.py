@@ -234,7 +234,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			Register_Task(self.task_dictionary)
 
-			if self.switches["global"]["verbose"] == True:
+			if self.switches["verbose"] == True:
 				self.task_dictionary["time"] = str(self.task_dictionary["time"])
 
 				self.JSON.Show(self.task_dictionary)

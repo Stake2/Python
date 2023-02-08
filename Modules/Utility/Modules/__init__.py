@@ -5,6 +5,7 @@ import importlib
 
 class Modules(object):
 	def __init__(self):
+		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
@@ -12,12 +13,6 @@ class Modules(object):
 		self.Get()
 
 	def Get(self):
-		import inspect
-		#print()
-		#print(inspect.stack()[1])
-		#print(inspect.stack()[2])
-		#print(inspect.stack()[1][2])
-		#print("Get")
 		self.modules = self.JSON_To_Python(self.folders["apps"]["modules"]["modules"])
 
 		for key in ["utility", "usage"]:

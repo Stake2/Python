@@ -1,22 +1,15 @@
 # Food_Time.py
 
-from Food_Time.Food_Time import Food_Time as Food_Time
+class Run():
+	def __init__(self):
+		if hasattr(self, "register_time") == False:
+			self.register_time = True
 
-class Run(Food_Time):
-	def __init__(self, run = True, register_time = True):
-		self.Modules = Modules
+		from Food_Time.Food_Time import Food_Time as Food_Time
 
-		self.modules = self.Modules.Set(self, ["Folder", "Input", "JSON", "Language"])
+		setattr(Food_Time, "register_time", self.register_time)
 
-		self.current_folder = self.Folder.Sanitize(self.Folder.Split(__file__)[0])
-
-		self.descriptions_file = self.current_folder + "Descriptions.json"
-		self.descriptions = self.JSON.To_Python(self.descriptions_file)
-
-		self.language_texts = self.Language.Item(self.descriptions)
-
-		if run == True:
-			super().__init__(register_time = register_time)
+		self.Food_Time = Food_Time()
 
 separate_arguments = [
 	"set",

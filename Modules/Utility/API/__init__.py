@@ -1,15 +1,45 @@
 # API.py
 
-import os
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.File import File as File
+from Utility.Date import Date as Date
+from Utility.JSON import JSON as JSON
+from Utility.Language import Language as Language
+
 import requests
 import urllib.parse
 
 class API():
 	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["Date", "File", "JSON"])
+		# Global Switches dictionary
+		self.switches = Global_Switches().switches["global"]
 
-		self.Define_Folders(self, ["Secrets", "client_secrets"])
+		self.switches.update({
+			"file": {
+				"create": True,
+				"delete": True,
+				"copy": True,
+				"move": True,
+				"edit": True
+			}
+		})
+
+		if self.switches["testing"] == True:
+			for switch in self.switches["file"]:
+				self.switches["file"][switch] = False
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self, ["Secrets", "client_secrets"])
+
+		self.File = File()
+		self.Date = Date()
+		self.JSON = JSON()
+		self.Language = Language()
+
+		self.user_language = self.Language.user_language
 
 		self.secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["secrets"])
 
@@ -20,6 +50,8 @@ class API():
 		from googleapiclient.discovery import build
 
 		self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"] = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
+
+		self.client_secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"])
 
 		api["scopes"] = [
 			"https://www.googleapis.com/auth/youtube",
@@ -58,15 +90,14 @@ class API():
 		api["object"] = build(api["name"], api["version"], developerKey = api["key"], credentials = api["credentials"])
 
 		if "parameters" not in api:
-			if api["item"] == "playlist":
-				method = "playlistItems"
+			method = api["item"]
 
-			else:
-				method = api["item"]
+			if api["item"] == "playlistItems":
+				method = "playlistItems"
 
 			key = "id"
 
-			if api["item"] == "playlist":
+			if api["item"] == "playlistItems":
 				key = api["item"] + "Id"
 
 			api.update({
@@ -78,10 +109,7 @@ class API():
 			})
 
 		if "part" not in api["parameters"]:
-			api["parameters"]["part"] = ["id", "snippet"]
-
-			if api["method"] == "comments":
-				api["parameters"]["part"].remove("id")
+			api["parameters"]["part"] = ["snippet"]
 
 		if "maxResults" not in api["parameters"] and api["method"] != "comments":
 			api["parameters"]["maxResults"] = 1
@@ -99,7 +127,7 @@ class API():
 
 		api["Dictionary"] = {
 			"Number": 0,
-			"Total Number": 0
+			"Total Number": 1
 		}
 
 		# Treat response
@@ -171,7 +199,7 @@ class API():
 					"Link": link + id,
 					"Description": "",
 					"Text": {},
-					"Time": self.Get_Date(snippet["publishedAt"])["YYYY-MM-DDThh:mm:ssZ"]
+					"Time": self.Date.To_String(self.Get_Date(snippet["publishedAt"]))
 				}
 
 				for name in ["title", "description"]:
@@ -192,20 +220,12 @@ class API():
 						"Display": snippet["textDisplay"]
 					})
 
-			if self.switches["global"]["verbose"] == True:
+			if self.switches["verbose"] == True:
 				print("Progress: " + str(api["Dictionary"]["Number"]) + "/" + str(api["Dictionary"]["Total Number"]))
-
-		api["Dictionary"].pop("Number")
 
 		return api
 
 	def Get_Date(self, string):
-		# Define format for date
-		format = "%Y-%m-%dT%H:%M:%SZ"
-
-		if "." in string:
-			format = "%Y-%m-%dT%H:%M:%S.%fZ"
-
 		# Get Date object from date string
 		return self.Date.From_String(string)
 

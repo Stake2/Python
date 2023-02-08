@@ -1,15 +1,21 @@
 # Input.py
 
-import os
-import pathlib
+from Utility.Language import Language as Language
+from Utility.File import File as File
+from Utility.JSON import JSON as JSON
+
 import re
 
 class Input():
 	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["File", "JSON", "Language"])
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
 
-		self.Define_Folders(self)
+		Define_Folders(self)
+
+		self.Language = Language()
+		self.File = File()
+		self.JSON = JSON()
 
 		self.Define_Texts()
 
@@ -18,7 +24,7 @@ class Input():
 
 		self.language_texts = self.Language.Item(self.texts)
 
-	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, first_space = True):
+	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = True, first_space = True):
 		if show_text != None and add_colon == True and show_text[-1] + show_text[-2] != ": ":
 			show_text += ": "
 
@@ -171,6 +177,9 @@ class Input():
 
 			if language_options == None or str(option) == dictionary["language_option"]:
 				print(str(option))
+
+			if function == True and type(option) in [function, type]:
+				option()
 
 		return dictionary
 

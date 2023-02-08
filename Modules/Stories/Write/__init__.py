@@ -26,7 +26,7 @@ class Write(Stories):
 		self.Define_Files()
 		self.Open_Obsidian()
 
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			self.File.Open("https://app.grammarly.com/")
 			self.File.Open("https://translate.google.com/")
 
@@ -214,7 +214,7 @@ class Write(Stories):
 		# Create shortcut file
 		self.obsidian["lnk"] = self.story["folders"]["Obsidian's Vaults"]["root"] + "Obsidian.lnk"
 		self.obsidian["target"] = self.chapter["obsidian_link"]
-		self.obsidian["icon"] = self.folders["user"]["appdata"]["local"] + "/Obsidian/Obsidian.exe"
+		self.obsidian["icon"] = self.user_folders["appdata"]["local"] + "/Obsidian/Obsidian.exe"
 
 		# Create shortcut
 		shell = win32com.client.Dispatch("WScript.Shell")
@@ -236,7 +236,7 @@ class Write(Stories):
 		print(self.chapter["obsidian_link_show"])
 
 		# Open Obsidian bat
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			self.File.Open(self.obsidian["bat"])
 
 	def Finish_Writing(self):

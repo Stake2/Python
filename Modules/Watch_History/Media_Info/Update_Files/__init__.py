@@ -1,7 +1,5 @@
 # Update_Files.py
 
-from Watch_History.Watch_History import Watch_History as Watch_History
-
 import re
 from urllib.parse import urlparse, parse_qs
 import validators
@@ -82,10 +80,10 @@ class Update_Files(Watch_History):
 							print("\t" + self.dictionary["media"]["item"]["title"] + ":")
 
 						# Verify if empty episodes' titles files exist
-						#self.Check_Titles()
+						#self.Check_Episodes_Titles()
 
 						# Add exact media or media item creation or release to media or media item details
-						#self.Add_Date()
+						self.Add_Date()
 
 						# Convert comments with old registry style (Files) to the new one (JSON)
 						#if media not in ["Ciência Todo Dia", "Egernético", "FAGames", "Lives do Cellbit", "lunar clips", "MW Informática"]:
@@ -95,12 +93,12 @@ class Update_Files(Watch_History):
 						if media in ["Ciência Todo Dia", "Egernético", "FAGames", "Lives do Cellbit", "lunar clips", "MW Informática"]:
 							self.Add_Time_To_Comment_JSON()
 
-			if self.switches["global"]["testing"] == True:
+			if self.switches["testing"] == True:
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
 
-	def Check_Titles(self):
+	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary (not a single unit media item)
 		# And status is not "Plan to watch" or "Completed"
 		if "titles" in self.dictionary["media"]["item"]["folders"] and self.dictionary["media"]["details"][self.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.language_texts["completed, title()"]]:
@@ -460,7 +458,7 @@ class Update_Files(Watch_History):
 
 				# Sort file names and dictionary keys
 				comments_json["File names"] = sorted(comments_json["File names"], key=str.lower)
-				comments_json["Dictionary"] = collections.OrderedDict(sorted(comments_json["Dictionary"].items()))
+				comments_json["Dictionary"] = dict(collections.OrderedDict(sorted(comments_json["Dictionary"].items())))
 
 				# Update media comments number
 				comments_json.update({
@@ -514,6 +512,8 @@ class Update_Files(Watch_History):
 					"Time": self.Get_YouTube_Information("video", video["Link"])["Time"]
 				}
 
+		media_comments["Number"] = len(media_comments["File names"])
+
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], media_comments)
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], media_comments)
@@ -525,12 +525,12 @@ class Update_Files(Watch_History):
 
 		comment = {
 			"File name": self.Input.Type(self.File.language_texts["file_name"]),
-			"Media Type": self.dictionary["media_type"]["plural"]["en"],
+			"Type": self.dictionary["media_type"]["plural"]["en"],
 			"Time": "",
 			"Titles": {}
 		}
 
-		if comment["Media Type"] != "Videos":
+		if comment["Type"] != "Videos":
 			date = self.Input.Type(self.Date.language_texts["date, title()"])
 
 			if date != "":
@@ -539,7 +539,7 @@ class Update_Files(Watch_History):
 			if date == "":
 				date = self.Date.Now()
 
-		if comment["Media Type"] == "Videos":
+		if comment["Type"] == "Videos":
 			link = ""
 
 			while validators.url(link) != True:
@@ -551,31 +551,28 @@ class Update_Files(Watch_History):
 				query = link.query
 				parameters = parse_qs(query)	
 
-			channel = {
-				"item": "channels",
-				"id": self.dictionary["media"]["details"][self.Language.language_texts["link, title()"]].split("/")[-1]
+			comment_dictionary = {
+				"item": "comments",
+				"id": parameters["lc"][0]
 			}
-
-			comment["Channel"] = self.API.Call("YouTube", channel)["Dictionary"][channel["id"]]
 
 			video = {
 				"item": "videos",
 				"id": parameters["v"][0]
 			}
 
-			comment["Video"] = self.API.Call("YouTube", video)["Dictionary"][video["id"]]
+			video = self.API.Call("YouTube", video)["Dictionary"][video["id"]]
+			video.pop("Title")
+			video.pop("Description")
 
-			comment_dictionary = {
-				"item": "comments",
-				"id": parameters["lc"][0]
-			}
+			comment_dictionary = self.API.Call("YouTube", comment_dictionary)["Dictionary"][comment_dictionary["id"]]
+			comment["ID"] = comment_dictionary["ID"]
+			comment["Link"] = video["Link"] + "&lc=" + comment_dictionary["ID"]
+			comment["Time"] = comment_dictionary["Time"]
 
-			comment["Comment"] = self.API.Call("YouTube", comment_dictionary)["Dictionary"][comment_dictionary["id"]]
-			comment["Comment"]["Link"] = comment["Video"]["Link"] + "&lc=" + comment["Comment"]["ID"]
+			comment["Video"] = video
 
-			comment["Time"] = comment["Comment"]["Time"]
-
-		if comment["Media Type"] != "Videos":
+		if comment["Type"] != "Videos":
 			comment["Time"] = self.Date.To_String(date)
 
 		print()
@@ -598,7 +595,9 @@ class Update_Files(Watch_History):
 
 		dictionary["Dictionary"][comment["File name"]] = comment
 
+		dictionary["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Dictionary"].items())))
 		dictionary["File names"] = sorted(dictionary["File names"], key=str.lower)
+		dictionary["Number"] = len(dictionary["File names"])
 
 		# Edit "Comments.json" file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], dictionary)

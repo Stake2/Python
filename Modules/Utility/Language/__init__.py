@@ -1,5 +1,7 @@
 # Language.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
 import os
 import locale
 import re
@@ -10,10 +12,10 @@ from tzlocal import get_localzone
 
 class Language():
 	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, [])
+		# Global Switches dictionary
+		self.switches = Global_Switches().switches["global"]
 
-		self.switches["global"].update({
+		self.switches.update({
 			"folder": {
 				"create": True,
 			},
@@ -23,14 +25,17 @@ class Language():
 			}
 		})
 
-		if self.switches["global"]["testing"] == True:
+		if self.switches["testing"] == True:
 			for item in ["folder", "file"]:
-				for switch in self.switches["global"][item]:
-					self.switches["global"][item][switch] = False
+				for switch in self.switches[item]:
+					self.switches[item][switch] = False
 
 		self.Define_Lists_And_Dictionaries()
 
-		self.Define_Folders(self, ["Languages"])
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self, ["Languages"])
 
 		self.Define_Languages()
 		self.Get_System_Information()
@@ -38,14 +43,6 @@ class Language():
 		self.Define_Texts()
 		self.Define_Language_Texts()
 		self.Read_Settings_File()
-
-		self.export = [
-			self.app_settings,
-			self.languages,
-			self.user_language,
-			self.full_user_language,
-			self.user_timezone
-		]
 
 	def Define_Lists_And_Dictionaries(self):
 		self.dictionary_separators = ["=", " = ", ":", ": "]
@@ -94,7 +91,7 @@ class Language():
 		return path
 
 	def Verbose(self, text, item):
-		if self.switches["global"]["verbose"] == True:
+		if self.switches["verbose"] == True:
 			import inspect
 
 			print()
@@ -109,11 +106,11 @@ class Language():
 		item = self.Sanitize(item)
 
 		if os.path.splitext(item)[-1] == "":
-			if self.switches["global"]["folder"]["create"] == True and os.path.isdir(item) == False:
+			if self.switches["folder"]["create"] == True and os.path.isdir(item) == False:
 				os.mkdir(item)
 
 		if os.path.splitext(item)[-1] != "":
-			if self.switches["global"]["file"]["create"] == True and os.path.isfile(item) == False:
+			if self.switches["file"]["create"] == True and os.path.isfile(item) == False:
 				create = open(item, "w", encoding = "utf8")
 				create.close()
 
@@ -232,7 +229,7 @@ class Language():
 	def Edit(self, file, text, mode):
 		file = self.Sanitize(file)
 
-		if self.switches["global"]["file"]["edit"] == True and os.path.isfile(file) == True:
+		if self.switches["file"]["edit"] == True and os.path.isfile(file) == True:
 			edit = open(file, mode, encoding = "UTF8")
 			edit.write(text)
 			edit.close()
@@ -849,7 +846,3 @@ class Language():
 
 		print()
 		print("-----")
-
-if __name__ == "__main__":
-	Language = Language()
-	Language.Create_Language_Text()

@@ -1,12 +1,27 @@
 # Stories.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.Language import Language as Language
+from Utility.File import File as File
+from Utility.Folder import Folder as Folder
+from Utility.Date import Date as Date
+from Utility.Input import Input as Input
+from Utility.JSON import JSON as JSON
+from Utility.Text import Text as Text
+
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 class Stories(object):
 	def __init__(self, select_story = True):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Texts()
 
 		self.Define_Social_Network_Variables()
@@ -17,12 +32,8 @@ class Stories(object):
 		if select_story == True:
 			self.Select_Story()
 
-	def Import_Modules(self):
-		# Global Switches dictionary
-		self.switches["global"] = Global_Switches().global_switches
-
-		if self.parameter_switches != None:
-			self.switches["global"].update(self.parameter_switches)
+	def Define_Basic_Variables(self):
+		self.switches = Global_Switches().switches["global"]
 
 		self.Language = Language()
 		self.File = File()
@@ -32,11 +43,7 @@ class Stories(object):
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
-		self.languages["small"] = self.languages["small"]
-		self.languages["full"] = self.languages["full"]
-		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
@@ -44,30 +51,9 @@ class Stories(object):
 		self.Sanitize = self.File.Sanitize
 
 		self.folders = self.Folder.folders
-		self.folders["root"] = self.folders["root"]
-		self.folders["user"] = self.folders["user"]
-		self.folders["apps"] = self.folders["apps"]
-		self.folders["mega"]= self.folders["mega"]
-		self.folders["notepad"] = self.folders["notepad"]
 		self.links = self.Folder.links
 
 		self.date = self.Date.date
-
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
-		}
-
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
-
-		self.module["key"] = self.module["name"].lower()
-
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
-
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
@@ -239,8 +225,8 @@ class Stories(object):
 				self.Folder.Create(self.stories[story]["folders"]["Websites Story Covers"])
 
 			# Add Sony Vegas Files covers folder
-			if self.Folder.Exist(self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
-				self.stories[story]["folders"]["Sony Vegas Covers"] = self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/"
+			if self.Folder.Exist(self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
+				self.stories[story]["folders"]["Sony Vegas Covers"] = self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Sony Vegas Covers"])
 
 			# Add Obsidian's Vaults folder

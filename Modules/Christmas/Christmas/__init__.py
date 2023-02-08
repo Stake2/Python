@@ -2,33 +2,62 @@
 
 class Christmas():
 	def __init__(self):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
+		# Import "Social_Networks" classes
+		from Social_Networks.Social_Networks import Social_Networks
+		from Social_Networks.Open_Social_Network import Open_Social_Network
+
+		self.Social_Networks = Social_Networks()
+		self.Social_Networks.Open_Social_Network = Open_Social_Network
+
 		self.Define_Texts()
 		self.Today_Is_Christmas()
+
+		from Years.Years import Years as Years
+
+		self.Years = Years()
 
 		self.Define_Folders()
 		self.Define_Files()
 		self.Define_Lists()
 
-	def Import_Modules(self):
-		self.modules = self.Modules.Set(self, utility_modules = ["Block_Websites", "Social_Networks", "Years"])
+	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
-		}
+		from Utility.Language import Language as Language
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		self.switches = Global_Switches().switches["global"]
 
-		self.module["key"] = self.module["name"].lower()
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
+		self.languages = self.Language.languages
 
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
+
+		self.Sanitize = self.File.Sanitize
+
+		self.folders = self.Folder.folders
+
+		self.date = self.Date.date
 
 	def Define_Texts(self):
 		self.large_bar = "-----"
@@ -79,7 +108,7 @@ class Christmas():
 
 		self.functions = {
 			"Open_File": self.Open_File,
-			"Open_Social_Network": self.Open_Social_Network,
+			"Open_Social_Network": self.Social_Networks.Open_Social_Network,
 			"Run_Script": self.Run_Script,
 		}
 
@@ -99,7 +128,7 @@ class Christmas():
 		file = files[key]
 		text = texts[key]
 
-		if self.switches["global"]["testing"] == False or self.switches["global"]["testing"] == True and key not in ["Foobar2000", "Theme"]:
+		if self.switches["testing"] == False or self.switches["testing"] == True and key not in ["Foobar2000", "Theme"]:
 			self.File.Open(file)
 
 		if key != self.language_texts["texts, title(), en - pt"]:
@@ -119,8 +148,9 @@ class Christmas():
 		self.option_info = None
 
 		if social_network == self.twitter_scheduled_text:
-			# Unblock Social Networks
+			# Unblock Twitter
 			import Block_Websites
+
 			Block_Websites.Unblock(websites = self.Social_Networks.social_networks["Names"], time = 60)
 
 			social_network_link = self.twitter_scheduled_link
@@ -144,9 +174,7 @@ class Christmas():
 				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
 				print()
 
-			import Social_Networks
-
-			Social_Networks.Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
+			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
 
 			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
 
@@ -173,7 +201,7 @@ class Christmas():
 				print(self.language_texts["opening_{}"].format(social_network) + ":")
 				print("\t" + link)
 
-				if self.switches["global"]["testing"] == False:
+				if self.switches["testing"] == False:
 					self.File.Open(link)
 
 				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
@@ -201,7 +229,7 @@ class Christmas():
 			if "1 Apps.lnk" in file:
 				self.script_file = file
 
-		if self.switches["global"]["testing"] == False and script_name != "GamePlayer":
+		if self.switches["testing"] == False and script_name != "GamePlayer":
 			self.File.Open(self.script_file)
 
 		if script_name == "Watch_History":

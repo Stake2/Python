@@ -1482,5 +1482,9 @@
 	"add_to_comments_dictionary": {
 		"en": "Add to comments dictionary",
 		"pt": "Adicionar ao dicionário de comentários"
+	},
+	"handle, title()": {
+		"en": "Handle",
+		"pt": "Arroba"
 	}
 }

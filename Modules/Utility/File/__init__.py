@@ -1,5 +1,10 @@
 # File.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.Language import Language as Language
+from Utility.JSON import JSON as JSON
+
 import os
 import pathlib
 import re
@@ -8,11 +13,11 @@ import shutil
 import psutil
 
 class File():
-	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["JSON", "Language"])
+	def __init__(self, show_global_switches = False):
+		# Global Switches dictionary
+		self.switches = Global_Switches().switches["global"]
 
-		self.switches["global"].update({
+		self.switches.update({
 			"file": {
 				"create": True,
 				"delete": True,
@@ -22,17 +27,19 @@ class File():
 			}
 		})
 
-		if self.switches["global"]["testing"] == True:
-			for switch in self.switches["global"]["file"]:
-				self.switches["global"]["file"][switch] = False
+		if self.switches["testing"] == True:
+			for switch in self.switches["file"]:
+				self.switches["file"][switch] = False
 
-		self.Define_Folders(self)
+		self.Language = Language()
+		self.JSON = JSON()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
 
 		self.Define_Texts()
-
-		self.export = [
-			self.Sanitize
-		]
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
@@ -58,7 +65,7 @@ class File():
 		return os.path.splitext(os.path.basename(file))[0]
 
 	def Verbose(self, text, item, verbose = False):
-		if self.switches["global"]["verbose"] == True or verbose == True:
+		if self.switches["verbose"] == True or verbose == True:
 			import inspect
 
 			print()
@@ -89,7 +96,7 @@ class File():
 		if self.Exist(file) == True:
 			return False
 
-		if self.switches["global"]["file"]["create"] == True and self.Exist(file) == False:
+		if self.switches["file"]["create"] == True and self.Exist(file) == False:
 			create = open(file, "w", encoding = "utf8")
 			create.close()
 
@@ -105,7 +112,7 @@ class File():
 
 			return False
 
-		if self.switches["global"]["file"]["delete"] == True and self.Exist(file) == True:
+		if self.switches["file"]["delete"] == True and self.Exist(file) == True:
 			os.remove(file)
 
 			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["deleted, masculine"], file)
@@ -130,7 +137,7 @@ class File():
 
 			return False
 
-		if self.switches["global"]["file"]["copy"] == True and self.Exist(source_file) == True:
+		if self.switches["file"]["copy"] == True and self.Exist(source_file) == True:
 			shutil.copy(source_file, destination_file)
 
 			self.Verbose(self.language_texts["source_file"] + ":\n" + source_folder + "\n\n" + self.language_texts["destination_file"], destination_folder)
@@ -157,7 +164,7 @@ class File():
 
 			return False
 
-		if self.switches["global"]["file"]["move"] == True and self.Exist(source_file) == True:
+		if self.switches["file"]["move"] == True and self.Exist(source_file) == True:
 			shutil.move(source_file, destination_file)
 
 			self.Verbose(self.language_texts["source_file"] + ":\n" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
@@ -169,10 +176,7 @@ class File():
 
 			return False
 
-	def Edit(self, file, text, mode, next_line = True, parameter_switches = None):
-		if parameter_switches != None:
-			self.__init__(parameter_switches)
-
+	def Edit(self, file, text, mode, next_line = True):
 		file = self.Sanitize(file)
 
 		contents = self.Contents(file)
@@ -188,23 +192,23 @@ class File():
 		file_text = file + "\n\n\t" + self.language_texts["text, title()"] + ":\n[" + text + "]"
 
 		if self.Exist(file) == True:
-			if self.switches["global"]["file"]["edit"] == True and contents["string"] != text:
+			if self.switches["file"]["edit"] == True and contents["string"] != text:
 				edit = open(file, mode, encoding = "UTF8")
 				edit.write(text)
 				edit.close()
 
 				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
-			if self.switches["global"]["file"]["edit"] == False:
+			if self.switches["file"]["edit"] == False:
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
 				self.Verbose(show_text, file_text)
 
-			if self.switches["global"]["file"]["edit"] == True:
+			if self.switches["file"]["edit"] == True:
 				return True
 
-			if self.switches["global"]["file"]["edit"] == False:
+			if self.switches["file"]["edit"] == False:
 				return False
 
 		if self.Exist(file) == False:
@@ -352,7 +356,7 @@ class File():
 
 		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
 
-		if self.switches["global"]["testing"] == False or open == True:
+		if self.switches["testing"] == False or open == True:
 			os.startfile(item)
 
 	def Close(self, program):

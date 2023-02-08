@@ -1,5 +1,12 @@
 # Folder.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.Language import Language as Language
+from Utility.Date import Date as Date
+from Utility.File import File as File
+from Utility.JSON import JSON as JSON
+
 import os
 import platform
 import pathlib
@@ -9,15 +16,10 @@ from distutils.dir_util import copy_tree
 
 class Folder():
 	def __init__(self):
-		# Get modules dictionary
-		from Utility.Modules.Set import Set as Modules
+		# Global Switches dictionary
+		self.switches = Global_Switches().switches["global"]
 
-		self.Modules = Modules()
-
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["Language", "Date", "File", "JSON"])
-
-		self.switches["global"].update({
+		self.switches.update({
 			"folder": {
 				"create": True,
 				"delete": True,
@@ -26,17 +28,22 @@ class Folder():
 			}
 		})
 
-		if self.switches["global"]["testing"] == True:
-			for switch in self.switches["global"]["folder"]:
-				self.switches["global"]["folder"][switch] = False
+		if self.switches["testing"] == True:
+			for switch in self.switches["folder"]:
+				self.switches["folder"][switch] = False
+
+		self.Language = Language()
+		self.Date = Date()
+		self.File = File()
+		self.JSON = JSON()
+
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
+		self.date = self.Date.date
 
 		self.Define_Folders()
 		self.Define_Texts()
 		self.Create_Folders()
-
-		self.export = [
-			self.folders
-		]
 
 	def Define_Folders(self):
 		self.module = {
@@ -47,37 +54,39 @@ class Folder():
 		if self.module["name"] == "__main__":
 			self.module["name"] = "Folder"
 
-		self.folders = {}
-
 		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
-		if platform.release() == "10":
-			self.hard_drive_letter = "D:/"
-
 		# Root folders
-		self.folders["root"] = {
-			"hard_drive_letter": self.hard_drive_letter,
-			"users": self.Sanitize(pathlib.Path.home().parent),
-			"program_files": os.path.join(self.hard_drive_letter, "Program Files/"),
-			"program_files_86": os.path.join(self.hard_drive_letter, "Program Files (x86)/"),
-			"system32": {
-				"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
-			},
-			"apps": {
-				"root": os.path.join(self.hard_drive_letter, "Apps/")
-			},
-			"mega": os.path.join(self.hard_drive_letter, "Mega/"),
-			"media": os.path.join(self.hard_drive_letter, "Mídias/"),
-			"sony_vegas_files": {
-				"root": os.path.join(self.hard_drive_letter, "Sony Vegas Files/")
-			},
-			"xampp": {
-				"root": os.path.join(self.hard_drive_letter, "XAMPP/")
-			},
+		self.folders = {
+			"root": {
+				"root": self.hard_drive_letter,
+				"hard_drive_letter": self.hard_drive_letter,
+				"users": self.Sanitize(pathlib.Path.home().parent),
+				"system32": {
+					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
+				}
+			}
 		}
 
+		folder_names = [
+			"Program Files",
+			"Program Files (x86)",
+			"Apps",
+			"Mega",
+			"Mídias",
+			"Sony Vegas Files",
+			"XAMPP"
+		]
+
+		for name in folder_names:
+			key = name.lower().replace(" ", "_")
+
+			self.folders["root"][key] = {
+				"root": self.folders["root"]["root"] + name + "/"
+			}
+
 		if "media_folder" in self.app_settings:
-			self.folders["root"]["media"] = self.app_settings["media_folder"]
+			self.folders["root"]["mídias"]["root"] = self.app_settings["media_folder"]
 
 		# Apps folders
 		self.folders["apps"] = self.folders["root"]["apps"]
@@ -145,8 +154,8 @@ class Folder():
 		self.folders["root"]["xampp"]["xampp-control"] = self.folders["root"]["xampp"]["root"] + "xampp-control.exe"
 
 		# Mega folders
-		self.folders["mega"]= {
-			"root": self.folders["root"]["mega"],
+		self.folders["mega"] = {
+			"root": self.folders["root"]["mega"]["root"]
 		}
 
 		# Mega subfolders
@@ -188,7 +197,6 @@ class Folder():
 			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"][key] = {
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["root"], item + "/"),
 			}
-
 
 		# Audiovisual Media Network/Comments folders
 		for item in ["Backups"]:
@@ -357,12 +365,6 @@ class Folder():
 			"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
 		}
 
-		self.folders["root"] = self.folders["root"]
-		self.folders["user"] = self.folders["user"]
-		self.folders["apps"] = self.folders["apps"]
-		self.folders["mega"] = self.folders["mega"]
-		self.folders["notepad"] = self.folders["notepad"]
-
 		# Define module folder
 		self.folders["apps"]["module_files"]["utility"][self.module["key"]] = {
 			"root": self.folders["apps"]["module_files"]["utility"]["root"] + self.module["name"] + "/"
@@ -397,7 +399,7 @@ class Folder():
 		return os.path.split(path)
 
 	def Verbose(self, text, item, verbose = False):
-		if self.switches["global"]["verbose"] == True or verbose == True:
+		if self.switches["verbose"] == True or verbose == True:
 			import inspect
 
 			print()
@@ -431,7 +433,7 @@ class Folder():
 		if self.Exist(folder) == True:
 			return False
 
-		if self.switches["global"]["folder"]["create"] == True and self.Exist(folder) == False:
+		if self.switches["folder"]["create"] == True and self.Exist(folder) == False:
 			os.mkdir(folder)
 
 			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["created"], folder)
@@ -467,7 +469,7 @@ class Folder():
 
 			return False
 
-		if self.switches["global"]["folder"]["delete"] == True and self.Exist(folder) == True:
+		if self.switches["folder"]["delete"] == True and self.Exist(folder) == True:
 			try:
 				# Folder is empty
 				os.rmdir(folder)
@@ -500,7 +502,7 @@ class Folder():
 
 			return False
 
-		if self.switches["global"]["folder"]["copy"] == True and self.Exist(source_folder) == True:
+		if self.switches["folder"]["copy"] == True and self.Exist(source_folder) == True:
 			copy_tree(source_folder, destination_folder)
 
 			self.Verbose(self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder)
@@ -527,7 +529,7 @@ class Folder():
 
 			return False
 
-		if self.switches["global"]["folder"]["move"] == True and self.Exist(source_folder) == True:
+		if self.switches["folder"]["move"] == True and self.Exist(source_folder) == True:
 			for file_name in os.listdir(source_folder):
 				source = os.path.join(source_folder, file_name)
 				destination = os.path.join(destination_folder, file_name)

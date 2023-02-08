@@ -20,7 +20,6 @@ class Watch_Media(Watch_History):
 		for title in classes:
 			class_ = getattr(importlib.import_module("."  + title, "Watch_History"), title)
 			setattr(self, title, class_)
-			setattr(class_, "Modules", self.Modules)
 
 		self.media_dictionary = media_dictionary
 		self.run_as_module = run_as_module
@@ -460,12 +459,12 @@ class Watch_Media(Watch_History):
 			if self.media_dictionary["media"]["states"]["series_media"] == True and self.media_dictionary["media"]["states"]["video"] == False:
 				# Add "Português" text to media item folder if media has dubbing and watch dubbed is true
 				if self.media_dictionary["media"]["states"]["has_dubbing"] == True and self.media_dictionary["media"]["states"]["watch_dubbed"] == True:
-					self.media_dictionary["media"]["item"]["folders"]["media"] += self.full_user_language + "/"
+					self.media_dictionary["media"]["item"]["folders"]["media"]["root"] += self.full_user_language + "/"
 
-			self.Folder.Create(self.media_dictionary["media"]["item"]["folders"]["media"])
+			self.Folder.Create(self.media_dictionary["media"]["item"]["folders"]["media"]["root"])
 
 			# Add media episode to local media folder
-			self.media_dictionary["media"]["episode"]["unit"] = "file:///" + self.media_dictionary["media"]["item"]["folders"]["media"] + self.media_dictionary["media"]["episode"]["sanitized"]
+			self.media_dictionary["media"]["episode"]["unit"] = "file:///" + self.media_dictionary["media"]["item"]["folders"]["media"]["root"] + self.media_dictionary["media"]["episode"]["sanitized"]
 
 			file_exists = False
 
@@ -505,7 +504,7 @@ class Watch_Media(Watch_History):
 		if self.media_dictionary["media"]["states"]["remote"] == True:
 			self.File.Open(self.media_dictionary["media"]["episode"]["unit"])
 
-		if self.media_dictionary["media"]["states"]["local"] == True and self.switches["global"]["testing"] == False:
+		if self.media_dictionary["media"]["states"]["local"] == True and self.switches["testing"] == False:
 			import subprocess
 			subprocess.Popen('"' + self.folders["root"]["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media_dictionary["media"]["episode"]["unit"] + '"')
 
@@ -550,7 +549,7 @@ class Watch_Media(Watch_History):
 
 		old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
 
-		new_file = self.media_dictionary["media"]["item"]["folders"]["media"] + self.Sanitize(file_name, restricted_characters = True) + "."
+		new_file = self.media_dictionary["media"]["item"]["folders"]["media"]["root"] + self.Sanitize(file_name, restricted_characters = True) + "."
 
 		if old_file.split(".")[1] not in self.media_dictionary["file_extensions"]:
 			while old_file.split(".")[1] not in self.media_dictionary["file_extensions"]:
@@ -559,7 +558,7 @@ class Watch_Media(Watch_History):
 
 				old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
 
-				new_file = self.media_dictionary["media"]["item"]["folders"]["media"] + file_name + "."
+				new_file = self.media_dictionary["media"]["item"]["folders"]["media"]["root"] + file_name + "."
 
 		self.moved_succesfully = False
 

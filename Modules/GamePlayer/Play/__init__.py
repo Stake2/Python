@@ -114,7 +114,7 @@ class Play(GamePlayer):
 		self.game_dictionary["show_text"] = self.language_texts["opening_this_game"]
 
 	def Open_Game(self):
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			if "python_module_link" in self.game:
 				self.File.Open(self.game["python_module_link"])
 
@@ -137,7 +137,7 @@ class Play(GamePlayer):
 
 		self.game_dictionary["played_texts"] = {}
 
-		if self.switches["global"]["testing"] == True:
+		if self.switches["testing"] == True:
 			self.time_to_wait = 0.1
 
 		while self.hours <= 54000:

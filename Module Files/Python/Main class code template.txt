@@ -2,31 +2,48 @@
 
 class [](object):
 	def __init__(self):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Texts()
 
-	def Import_Modules(self):
-		from Utility.Modules import Modules as Modules
+	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-		# Get modules dictionary
-		self.modules = Modules().Set(self)
+		from Utility.Language import Language as Language
+		from Utility.API import API as API
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
 
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
-		}
+		self.switches = Global_Switches().switches["global"]
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		self.Language = Language()
+		self.API = API()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		self.module["key"] = self.module["name"].lower()
+		self.languages = self.Language.languages
 
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.Sanitize = self.File.Sanitize
+
+		self.folders = self.Folder.folders
+
+		self.date = self.Date.date
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])

@@ -1,12 +1,27 @@
 # SproutGigs.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.Language import Language as Language
+from Utility.File import File as File
+from Utility.Folder import Folder as Folder
+from Utility.Date import Date as Date
+from Utility.Input import Input as Input
+from Utility.JSON import JSON as JSON
+from Utility.Text import Text as Text
+
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Block_Websites.Unblock import Unblock as Unblock
 
 class SproutGigs():
 	def __init__(self):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Texts()
 
 		self.Define_Folders_And_Files()
@@ -15,24 +30,27 @@ class SproutGigs():
 
 		self.Social_Networks = Social_Networks()
 
-	def Import_Modules(self):
-		self.modules = self.Modules.Set(self)
+	def Define_Basic_Variables(self):
+		self.switches = Global_Switches().switches["global"]
 
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
-		}
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		self.languages = self.Language.languages
 
-		self.module["key"] = self.module["name"].lower()
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
+		self.Sanitize = self.File.Sanitize
 
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.folders = self.Folder.folders
+
+		self.date = self.Date.date
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
@@ -161,5 +179,5 @@ class SproutGigs():
 			print(self.language_texts["link, title()"] + ":")
 			print(self.category["info"]["link"])
 
-			if self.switches["global"]["testing"] == False:
+			if self.switches["testing"] == False:
 				self.File.Open(self.category["info"]["link"])

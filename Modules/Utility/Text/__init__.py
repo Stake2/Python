@@ -1,5 +1,8 @@
 # Text.py
 
+from Utility.Language import Language as Language
+from Utility.JSON import JSON as JSON
+
 import os
 import pathlib
 import pyperclip
@@ -8,19 +11,22 @@ import win32clipboard
 
 class Text():
 	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["JSON", "Language"])
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
 
-		self.switches["global"].update({
+		self.switches = {
 			"verbose": True
-		})
+		}
 
-		self.Define_Folders(self)
+		Define_Folders(self)
+
+		self.Language = Language()
+		self.JSON = JSON()
 
 		self.Define_Texts()
 
 	def Verbose(self, text, item, verbose = True):
-		if self.switches["global"]["verbose"] == True and verbose == True:
+		if self.switches["verbose"] == True and verbose == True:
 			import inspect
 
 			print()

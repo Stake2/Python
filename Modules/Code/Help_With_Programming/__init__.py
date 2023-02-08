@@ -409,11 +409,11 @@ class Help_With_Programming(Code):
 				print(self.language_texts["path, title()"] + ":")
 				print(tool_path)
 
-			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.switches["global"]["testing"] == False:
+			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.switches["testing"] == False:
 				for program in programs_to_close:
 					self.File.Close(program)
 
-			if mode == "open" and self.switches["global"]["testing"] == False:
+			if mode == "open" and self.switches["testing"] == False:
 				Open(tool_path)
 
 				self.Date.Sleep(2)
@@ -430,7 +430,7 @@ class Help_With_Programming(Code):
 		if self.programming_language == "PHP" and self.programming_mode == "Udemy course":
 			self.programming_language = "Udemy course"
 
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			Write_On_Diary_Slim(self.programming_language)
 
 		if self.programming_language == "Udemy course":

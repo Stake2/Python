@@ -1,47 +1,61 @@
 # Food_Time.py
 
 class Food_Time():
-	def __init__(self, show_text = True, register_time = True):
-		self.Import_Modules()
+	def __init__(self):
+		self.Define_Basic_Variables()
 
-		self.show_text = show_text
-		self.register_time = register_time
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
 
-		self.Define_Module_Folder()
+		Define_Folders(self, ["Times"])
+
+		self.folders["apps"]["modules"][self.module["key"]] = self.Folder.Contents(self.folders["apps"]["modules"][self.module["key"]]["root"], lower_key = True)["dictionary"]
+
 		self.Define_Texts()
 
 		self.Define_Lists_And_Dictionaries()
 
-		if self.show_text == True:
-			if self.register_time == True:
-				self.Get_Time()
-				self.Set_Timer()
+		self.registered_text = self.language_texts["times_taken_from_the_times_file"]
 
-			self.Show_Times()
+		if self.register_time == True:
+			self.registered_text = self.language_texts["times_registered_into_the_times_file"]
 
-	def Import_Modules(self):
-		self.modules = self.Modules.Set(self)
+			self.Get_Time()
+			self.Set_Timer()
 
-	def Define_Module_Folder(self):
-		self.module = self.__module__
+		self.Show_Times()
 
-		self.module = {
-			"name": self.__module__,
-		}
+	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		from Utility.Language import Language as Language
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
 
-		if self.module["name"] == "__main__":
-			self.module["name"] = "Food_Time"
+		self.switches = Global_Switches().switches["global"]
 
-		self.module["key"] = self.module["name"].lower()
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
+		self.languages = self.Language.languages
 
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
+
+		self.Sanitize = self.File.Sanitize
+
+		self.folders = self.Folder.folders
+
+		self.date = self.Date.date
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
@@ -172,6 +186,7 @@ class Food_Time():
 	def Show_Times(self):
 		print()
 		print(self.language_texts["showing_the_meal_times_below"] + ":")
+		print("(" + self.registered_text + ")")
 
 		# Iterate through time types
 		for time_type in self.times["types"]:

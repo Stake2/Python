@@ -22,6 +22,10 @@ class Register_Media(Watch_History):
 		self.media_dictionary["register"] = {
 			"Diary Slim": {
 				"text": ""
+			},
+			"Times": {
+				"UTC": self.media_dictionary["media"]["finished_watching"]["utc"],
+				"date_time_format": self.media_dictionary["media"]["finished_watching"]["date_time_format"]
 			}
 		}
 
@@ -41,7 +45,7 @@ class Register_Media(Watch_History):
 
 		self.Write_On_Diary_Slim()
 
-		if self.switches["global"]["verbose"] == True:
+		if self.switches["verbose"] == True:
 			print()
 			print(self.large_bar)
 			print()
@@ -182,25 +186,6 @@ class Register_Media(Watch_History):
 		# Add to media types list
 		self.episodes["Lists"]["Media Types"].append(self.media_type)
 
-		# Define media episode times
-		self.media_dictionary["register"]["Times"] = {
-			"ISO8601": self.media_dictionary["media"]["finished_watching"]["%Y-%m-%d %H:%M:%S"],
-			"Language DateTime": {}
-		}
-
-		for language in self.languages["small"]:
-			self.media_dictionary["register"]["Times"]["Language DateTime"][language] = self.media_dictionary["media"]["finished_watching"]["date_time_format"][language]
-
-		# Add to episode times, media type episode times, and media "Watched" episode times
-		self.episodes["Lists"]["Times"]["ISO8601"].append(self.media_dictionary["register"]["Times"]["ISO8601"])
-		self.media_type_episodes[self.media_type]["Lists"]["Times"]["ISO8601"].append(self.media_dictionary["register"]["Times"]["ISO8601"])
-		self.watched["Lists"]["Times"]["ISO8601"].append(self.media_dictionary["register"]["Times"]["ISO8601"])
-
-		for language in self.languages["small"]:
-			self.episodes["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
-			self.media_type_episodes[self.media_type]["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
-			self.watched["Lists"]["Times"]["Language DateTime"][language].append(self.media_dictionary["register"]["Times"]["Language DateTime"][language])
-
 		youtube_id = ""
 
 		if self.media_dictionary["media"]["states"]["video"] == True:
@@ -215,13 +200,13 @@ class Register_Media(Watch_History):
 
 		# Define [Number. Media Type (Time)] and sanitized version for files
 		self.media_dictionary["register"]["Number. Media Type (Time)"] = {
-			"normal": str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][self.user_language] + ")",
+			"normal": str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["date_time_format"][self.user_language] + ")",
 			"sanitized": {}
 		}
 
 		# Define [Number. Media Type (Time)] sanitized for files per language
 		for language in self.languages["small"]:
-			self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["Language DateTime"][language].replace(":", ";").replace("/", "-") + ")"
+			self.media_dictionary["register"]["Number. Media Type (Time)"]["sanitized"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["register"]["Times"]["date_time_format"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to [Number. Media Type (Time)] list
 		self.episodes["Number. Media Type (Time)"].append(self.media_dictionary["register"]["Number. Media Type (Time)"]["normal"])
@@ -258,7 +243,7 @@ class Register_Media(Watch_History):
 			"Item": item_titles,
 			"Episode titles": self.media_dictionary["register"]["Episode titles"],
 			"Type": self.media_type,
-			"Times": self.media_dictionary["register"]["Times"]
+			"Time": self.media_dictionary["register"]["Times"]["UTC"]
 		}
 
 		if self.media_dictionary["media"]["states"]["media_list"] == False or self.media_dictionary["media"]["item"]["title"] == self.media_dictionary["media"]["title"] or self.media_dictionary["media"]["states"]["series_media"] == False:
@@ -520,13 +505,13 @@ class Register_Media(Watch_History):
 		# Add times to items list
 		times = ""
 
-		for key in ["ISO8601", "Language DateTime"]:
+		for key in ["UTC", "date_time_format"]:
 			time = self.media_dictionary["register"]["Times"][key]
 
-			if key == "ISO8601":
+			if key == "UTC":
 				times += time + "\n"
 
-			if key == "Language DateTime":
+			if key == "date_time_format":
 				if language_parameter != "general":
 					times += time[language] + "\n"
 
@@ -625,7 +610,7 @@ class Register_Media(Watch_History):
 							"titles": {},
 							"folders": {
 								"root": self.media_dictionary["media"]["items"]["folders"]["root"] + self.Sanitize_Title(title) + "/",
-								"media": self.media_dictionary["media"]["folders"]["media"] + self.Sanitize_Title(title) + "/",
+								"media": self.media_dictionary["media"]["folders"]["media"]["root"] + self.Sanitize_Title(title) + "/",
 								"media_type_comments": {
 									"root": self.media_dictionary["media"]["folders"]["media_type_comments"]["root"] + self.Sanitize_Title(title) + "/"
 								}

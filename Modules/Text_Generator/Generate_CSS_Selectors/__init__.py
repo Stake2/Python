@@ -1,8 +1,18 @@
 # Generate CSS Selectors.py
 
+from Utility.Global_Switches import Global_Switches as Global_Switches
+
+from Utility.Language import Language as Language
+from Utility.File import File as File
+from Utility.Folder import Folder as Folder
+from Utility.Date import Date as Date
+from Utility.Input import Input as Input
+from Utility.JSON import JSON as JSON
+from Utility.Text import Text as Text
+
 class Generate_CSS_Selectors():
 	def __init__(self):
-		self.Import_Modules()
+		self.Define_Basic_Variables()
 
 		self.json = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["colors"])
 		self.colors = self.json["names"]
@@ -37,9 +47,9 @@ class Generate_CSS_Selectors():
 		self.Create_Box_Shadow()
 		self.Generate_And_Copy()
 
-	def Import_Modules(self):
+	def Define_Basic_Variables(self):
 		# Global Switches dictionary
-		self.switches["global"] = Global_Switches().global_switches
+		self.switches = Global_Switches().global_switches
 
 		self.Language = Language()
 		self.File = File()
@@ -49,11 +59,7 @@ class Generate_CSS_Selectors():
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.app_settings = self.Language.app_settings
 		self.languages = self.Language.languages
-		self.languages["small"] = self.languages["small"]
-		self.languages["full"] = self.languages["full"]
-		self.languages["full_translated"] = self.languages["full_translated"]
 
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
@@ -61,11 +67,6 @@ class Generate_CSS_Selectors():
 		self.Sanitize = self.File.Sanitize
 
 		self.folders = self.Folder.folders
-		self.folders["root"] = self.folders["root"]
-		self.folders["user"] = self.folders["user"]
-		self.folders["apps"] = self.folders["apps"]
-		self.folders["mega"]= self.folders["mega"]
-		self.folders["notepad"] = self.folders["notepad"]
 
 		self.date = self.Date.date
 

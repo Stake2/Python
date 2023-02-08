@@ -9,6 +9,10 @@ from copy import deepcopy
 
 class Global_Switches():
 	def __init__(self):
+		# Global Switches dictionary
+		self.switches = {}
+
+		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self, ["Switches"])
@@ -31,10 +35,6 @@ class Global_Switches():
 				"edit": True
 			}
 		})
-
-		self.export = [
-			self.switches
-		]
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")

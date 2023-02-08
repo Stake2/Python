@@ -94,7 +94,7 @@ class Post(Stories):
 			print(self.language_texts["you_skipped_the"] + " " + self.post_steps_texts[item] + ".")
 
 	def Define_Chapter(self):
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			self.File.Open(self.story["folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
@@ -183,7 +183,7 @@ class Post(Stories):
 				print(text.format(self.cover_type["title"], self.cover_type["title"], self.cover_type["extension"].upper()))
 
 				# Open Sony Vegas file
-				if self.switches["global"]["testing"] == False:
+				if self.switches["testing"] == False:
 					self.File.Open(self.cover_type["sony_vegas_file"])
 
 				# Copy language titles and move language covers
@@ -237,7 +237,7 @@ class Post(Stories):
 						print()
 
 				# Close Sony Vegas after updating the chapter cover in the specified cover type
-				if self.switches["global"]["testing"] == False:
+				if self.switches["testing"] == False:
 					self.File.Close("vegas110")
 
 	def Copy_Title(self, language, post_chapter = False):
@@ -279,8 +279,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.root_folders["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.root_folders["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
@@ -315,7 +315,7 @@ class Post(Stories):
 		self.File.Delete(source_file)
 
 	def Update_Websites(self):
-		Update_Websites(module_website = self.story["title"])
+		Update_Websites(self.switches, module_website = self.story["title"])
 
 	def Copy_Chapter_Text(self, language, full_language):
 		# Get chapter file

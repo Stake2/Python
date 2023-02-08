@@ -66,7 +66,7 @@ class Update_Websites(Code):
 		self.languages = [
 			"general",
 			self.languages["full_translated"]["en"]["en"],
-			self.languages["full_translated"]["pt"]["en"],
+			self.languages["full_translated"]["pt"]["en"]
 		]
 
 		self.languages["full_translated"]["general"] = {}
@@ -206,13 +206,13 @@ class Update_Websites(Code):
 
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
-			if self.switches["global"]["testing"] == False:
-				self.File.Open(self.folders["root"]["xampp"]["xampp-control"])
+			if self.switches["testing"] == False:
+				self.File.Open(self.root_folders["xampp"]["xampp-control"])
 
 				self.Date.Sleep(4)
 
 		if close == True:
-			if self.switches["global"]["testing"] == False:
+			if self.switches["testing"] == False:
 				for program in self.xampp_programs:
 					self.File.Close(program)
 
@@ -266,7 +266,7 @@ class Update_Websites(Code):
 				print(self.Language.language_texts["language, title()"] + ":")
 				print(self.languages["full_translated"][language][self.user_language])
 
-				if self.switches["global"]["testing"] == False:
+				if self.switches["testing"] == False:
 					self.File.Open(link)
 
 					self.Date.Sleep(5)
@@ -283,5 +283,5 @@ class Update_Websites(Code):
 			if "GitHub" in file:
 				git_bat_file = file
 
-		if self.switches["global"]["testing"] == False:
+		if self.switches["testing"] == False:
 			self.Text.Open_Link(git_bat_file)

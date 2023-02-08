@@ -114,7 +114,7 @@ class Create_Year_Summary(Years):
 		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
 		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
 		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
-		self.year_numbers["known_people"] = Friends(self.Modules, select_social_network = False).current_year_friends_number
+		self.year_numbers["known_people"] = Friends(self.switches, select_social_network = False).current_year_friends_number
 
 		for data in self.year_numbers:
 			self.year_numbers["things_done_in_{year}"] += int(self.year_numbers[data])

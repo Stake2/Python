@@ -2,37 +2,54 @@
 
 class Block_Websites(object):
 	def __init__(self):
-		self.Import_Modules()
-		self.Define_Module_Folder()
+		self.Define_Basic_Variables()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
+		self.folders["apps"]["modules"][self.module["key"]] = self.Folder.Contents(self.folders["apps"]["modules"][self.module["key"]]["root"], lower_key = True)["dictionary"]
+
 		self.Define_Texts()
+
+		from Social_Networks.Social_Networks import Social_Networks as Social_Networks
+		self.Social_Networks = Social_Networks()
+
 		self.Define_Files()
 		self.Define_Lists()
 
-	def Import_Modules(self):
-		self.modules = self.Modules.Set(self, utility_modules = ["Social_Networks"])
+	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-	def Define_Module_Folder(self):
-		self.module = {
-			"name": self.__module__,
-		}
+		from Utility.Language import Language as Language
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
 
-		if "." in self.module["name"]:
-			self.module["name"] = self.module["name"].split(".")[0]
+		self.switches = Global_Switches().switches["global"]
 
-		if self.module["name"] == "__main__":
-			self.module["name"] = "Block_Websites"
+		self.Language = Language()
+		self.File = File()
+		self.Folder = Folder()
+		self.Date = Date()
+		self.Input = Input()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		self.module["key"] = self.module["name"].lower()
+		self.languages = self.Language.languages
 
-		self.folders["apps"]["module_files"][self.module["key"]] = {
-			"root": self.folders["apps"]["module_files"]["root"] + self.module["name"] + "/",
-		}
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
-		for item in ["module_files", "modules"]:
-			self.folders["apps"][item][self.module["key"]] = self.folders["apps"][item]["root"] + self.module["name"] + "/"
-			self.Folder.Create(self.folders["apps"][item][self.module["key"]])
+		self.Sanitize = self.File.Sanitize
 
-			self.folders["apps"][item][self.module["key"]] = self.Folder.Contents(self.folders["apps"][item][self.module["key"]], lower_key = True)["dictionary"]
+		self.folders = self.Folder.folders
+
+		self.date = self.Date.date
 
 	def Define_Texts(self):
 		self.large_bar = "-----"

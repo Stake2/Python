@@ -1,5 +1,9 @@
 # Date.py
 
+from Utility.Language import Language as Language
+from Utility.JSON import JSON as JSON
+from Utility.Text import Text as Text
+
 import os
 import pathlib
 import win32com.client
@@ -11,19 +15,23 @@ from dateutil import parser
 
 class Date():
 	def __init__(self):
-		# Get modules dictionary
-		self.modules = self.Modules.Set(self, ["Language", "JSON"])
+		self.Language = Language()
+		self.JSON = JSON()
+		self.Text = Text()
 
-		self.Define_Folders(self)
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
+		self.languages = self.Language.languages
+		self.user_language = self.Language.user_language
+		self.user_timezone = self.Language.user_timezone
 
 		self.Define_Texts()
 		self.Number_Name_Generator()
 
 		self.date = self.Now()
-
-		self.export = [
-			self.date
-		]
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])

@@ -33,17 +33,17 @@ class Create_New_Module(Python):
 			if language != self.languages["small"][-1]:
 				translated_language += "\n"
 
-		self.translated_languages = []
+		self.translated_languages_language = []
 
 		for language in self.languages["small"]:
-			self.translated_languages.append(self.languages["full_translated"][language][self.user_language])
+			self.translated_languages_language.append(self.languages["full_translated"][language][self.user_language])
 
-		self.lines_text = self.language_texts["{}_lines_in_this_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["small"])])
+		self.lines_text = self.language_texts["{}_lines_in_thar_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["small"])])
 
 		# Module descriptions
-		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ":"
+		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
-		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages)["lines"]
+		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
 
 		self.module_descriptions = {}
 
@@ -132,7 +132,6 @@ class Create_New_Module(Python):
 		self.class_files = {}
 
 		self.classes_string = ""
-		self.import_classes_string = ""
 
 		i = 0
 		for class_ in self.classes:
@@ -145,25 +144,16 @@ class Create_New_Module(Python):
 			self.class_folders[class_] = class_folder
 			self.class_files[class_] = init_file
 
-			self.classes_string += class_ + ","
-
-			text = ""
-
-			if i != 0:
-				text += "\t\t"
-
-			self.import_classes_string += "from {}.{} import {} as {}".format(self.module_name, class_, class_, class_)
+			self.classes_string += '"' + class_ + '"'
 
 			if class_ != list(self.classes)[-1]:
-				self.classes_string += "\n"
-				self.import_classes_string += "\n"
+				self.classes_string += ",\n"
 
 			i += 1
 
 	def Write_To_Files(self):
 		# Root code
 		self.root_code = self.root_code_template.replace("[module_name]", self.module_name)
-		self.root_code = self.root_code.replace("[modules_import]", self.import_classes_string)
 		self.root_code = self.root_code.replace("[classes]", self.classes_string)
 
 		self.File.Edit(self.root_python_file, self.root_code, "w")
@@ -234,25 +224,23 @@ class Create_New_Module(Python):
 		self.File.Edit(self.conemu_xml_file, self.conemu_xml_text, "w")
 
 	def Add_To_Modules_List(self):
-		for key in self.modules:
-			for sub_key in self.modules[key].copy():
-				if sub_key != "list":
-					self.modules[key].pop(sub_key)
+		lines = self.File.Contents(self.usage_modules_file)["lines"]
 
-		if self.module_name not in self.modules["usage"]["list"]:
-			self.modules["usage"]["list"].append(self.module_name)
+		if self.module_name not in lines:
+			lines.append(self.module_name)
 
-		self.JSON.Edit(self.folders["apps"]["modules"]["modules"], self.modules)
+		lines = sorted(lines, key=str.lower)
+
+		self.File.Edit(self.usage_modules_file, self.Text.From_List(lines), "w")
 
 	def Change_Global_Switches(self):
-		self.switches["edited"] = self.JSON.To_Python(self.switches["file"])
+		self.switches_file = self.Global_Switches.switches_file
 
-		self.switches["edited"].update({
-			"testing": True,
-			"verbose": True
-		})
+		self.switches = self.JSON.To_Python(self.switches_file)
+		self.switches["testing"] = True
+		self.switches["versbose"] = True
 
-		self.Global_Switches.Switch(self.switches["edited"])
+		self.File.Edit(self.switches_file, sself.JSON.From_Python(self.switches), "w")
 
 	def Show_Module_Info(self):
 		print(self.large_bar)
@@ -266,19 +254,14 @@ class Create_New_Module(Python):
 		for language in self.languages["small"]:
 			translated_language = '"' + self.languages["full_translated"][language][self.user_language] + '": '
 
-			text = "\t" + translated_language + '"' + self.module_descriptions[language] + '"'
-
-			if language != self.languages["small"][-1]:
-				text += ","
-
-			print(text)
+			print("\t" + translated_language + '"' + self.module_descriptions[language] + '",')
 
 		print("}")
 		print()
 
 		print(self.language_texts["classes_and_their_descriptions"] + ":")
 
-		format = "{}" + '"{}"'
+		format = "{}" + '"{}",'
 
 		i = 0
 		for class_ in self.classes:
@@ -289,13 +272,8 @@ class Create_New_Module(Python):
 
 				if class_ != self.classes[0]:
 					print()
-
-				text = "\t\t" + format.format(translated_language, self.class_descriptions[class_][language])
-
-				if language != self.languages["small"][-1]:
-					text += ","
-
-				print(text)
+	
+				print("\t\t" + format.format(translated_language, self.class_descriptions[class_][language]))
 
 			print("\t" + "}")
 

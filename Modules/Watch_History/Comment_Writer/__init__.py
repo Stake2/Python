@@ -259,9 +259,9 @@ class Comment_Writer(Watch_History):
 		if dict_ != {}:
 			self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]["States"] = dict_
 
-		# Update media type comments number
-		if "Number" in self.media_type_comments:
-			self.media_type_comments["Number"] = len(self.media_type_comments["File names"])
+		# Update media and media type comments number
+		self.media_type_comments["Number"] = len(self.media_type_comments["File names"])
+		self.media_comments["Number"] = len(self.media_comments["File names"])
 
 		if "Number" not in self.media_type_comments:
 			self.media_type_comments = {
@@ -272,16 +272,13 @@ class Comment_Writer(Watch_History):
 
 		self.media_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]] = self.media_type_comments["Dictionary"][self.media_dictionary["media"]["comment"]["file_name"]]
 
-		if self.media_dictionary["media"]["states"]["episodic"] == False:
-			self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"], key=str.lower)
+		# Sort media type comments file names list and dictionary
+		self.media_type_comments["File names"] = sorted(self.media_type_comments["File names"], key=str.lower)
+		self.media_type_comments["Dictionary"] = dict(collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items())))
 
-			# Sort dictionary keys
-			self.media_type_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_type_comments["Dictionary"].items()))
-
-			self.media_comments["File names"] = sorted(self.media_comments["File names"], key=str.lower)
-
-			# Sort dictionary keys
-			self.media_comments["Dictionary"] = collections.OrderedDict(sorted(self.media_comments["Dictionary"].items()))
+		# Sort media comments file names list and dictionary
+		self.media_comments["File names"] = sorted(self.media_comments["File names"], key=str.lower)
+		self.media_comments["Dictionary"] = dict(collections.OrderedDict(sorted(self.media_comments["Dictionary"].items())))
 
 		# Update media type and media "Comments.json" file
 		self.JSON.Edit(self.media_dictionary["media"]["item"]["folders"]["media_type_comments"]["comments"], self.media_type_comments)

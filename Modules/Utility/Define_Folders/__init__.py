@@ -4,42 +4,82 @@ import os
 import pathlib
 
 class Define_Folders():
-	def __init__(self, object = None, folder_names = []):
-		if object != None:
-			name = type(object).__name__
+	def __init__(self, object_to_define = None, folder_names = []):
+		if object_to_define != None:
+			name = type(object_to_define).__name__
+
+			if "." in object_to_define.__module__:
+				if object_to_define.__module__.split(".")[0] == "Utility":
+					name = object_to_define.__module__.split(".")[1]
+
+				else:
+					name = object_to_define.__module__.split(".")[0]
+
+			if name == "Run":
+				name = object_to_define.__module__.split(".")[0]
 
 			self.module = {
 				"name": name,
 				"key": name.lower().replace(" ", "_")
 			}
 
-			self.folders = {
-				"hard_drive_letter": os.path.normpath(pathlib.Path.home().drive) + "/",
-			}
+			if hasattr(object_to_define, "folders") == False:
+				self.folders = {
+					"hard_drive_letter": os.path.normpath(pathlib.Path.home().drive) + "/",
+				}
 
-			self.folders["apps"] = {
-				"root": self.folders["hard_drive_letter"] + "Apps/"
-			}
+				self.folders["apps"] = {
+					"root": self.folders["hard_drive_letter"] + "Apps/"
+				}
 
-			self.folders["apps"]["module_files"] = {
-				"root": self.folders["apps"]["root"] + "Module Files/"
-			}
+				self.folders["apps"]["module_files"] = {
+					"root": self.folders["apps"]["root"] + "Module Files/"
+				}
 
-			self.folders["apps"]["module_files"]["utility"] = {
-				"root": self.folders["apps"]["module_files"]["root"] + "Utility/"
-			}
+				self.folders["apps"]["module_files"]["utility"] = {
+					"root": self.folders["apps"]["module_files"]["root"] + "Utility/"
+				}
+
+				self.folders["apps"]["modules"] = {
+					"root": self.folders["apps"]["root"] + "Modules/"
+				}
+
+			if hasattr(object_to_define, "folders") == True:
+				self.folders = getattr(object_to_define, "folders")
 
 			self.folders["apps"]["module_files"]["utility"][self.module["key"]] = {
 				"root": self.folders["apps"]["module_files"]["utility"]["root"] + self.module["name"] + "/"
 			}
 
-			folder = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"]
+			folder_key = ""
 
-			self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"] = folder + "Texts.json"
+			if os.path.isdir(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"]) == True:
+				folder_key = "utility"
 
-			self.folders["apps"]["modules"] = {
-				"root": self.folders["apps"]["root"] + "Modules/"
-			}
+				self.folders["apps"]["modules"][folder_key] = {
+					"root": self.folders["apps"]["modules"]["root"] + folder_key.title() + "/"
+				}
+
+				self.folders["apps"]["modules"][folder_key][self.module["key"]] = {
+					"root": self.folders["apps"]["modules"][folder_key]["root"] + self.module["name"] + "/"
+				}
+
+				self.folders["apps"]["module_files"][folder_key][self.module["key"]] = {
+					"root": self.folders["apps"]["module_files"][folder_key]["root"] + self.module["name"] + "/"
+				}
+
+				folder = self.folders["apps"]["module_files"][folder_key][self.module["key"]]["root"]
+
+			else:
+				self.folders["apps"]["module_files"].pop("utility")
+
+				self.folders["apps"]["modules"][self.module["key"]] = {
+					"root": self.folders["apps"]["modules"]["root"] + self.module["name"] + "/"
+				}
+
+				self.folders["apps"]["module_files"][self.module["key"]] = {
+					"root": self.folders["apps"]["module_files"]["root"] + self.module["name"] + "/"
+				}
 
 			self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
 
@@ -48,9 +88,15 @@ class Define_Folders():
 			for item in folder_names:
 				key = item.lower().replace(" ", "_")
 
-				self.folders["apps"]["module_files"]["utility"][self.module["key"]][key] = folder + item + ".json"
+				if self.module["key"] in self.folders["apps"]["module_files"]:
+					folder = self.folders["apps"]["module_files"][self.module["key"]]
+
+				else:
+					folder = self.folders["apps"]["module_files"][folder_key][self.module["key"]]
+
+				folder[key] = folder["root"] + item + ".json"
 
 			for key in ["module", "folders"]:
 				value = getattr(self, key)
 
-				setattr(object, key, value)
+				setattr(object_to_define, key, value)
