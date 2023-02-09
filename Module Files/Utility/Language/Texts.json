@@ -76,6 +76,10 @@
 		"pt": "Opções",
 		"en": "Options"
 	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
 	"select_an_item_from_the_list": {
 		"en": "Select an item from the list",
 		"pt": "Selecione um item da lista"
@@ -498,5 +502,61 @@
 	"username, title()": {
 		"en": "Username",
 		"pt": "Nome de usuário"
-	}
+	},
+	"genders, type: list": {
+		"en": {
+			"masculine": [
+				"the",
+				"these",
+				"this",
+				"a",
+				"of",
+				"of the",
+				"first",
+				"last"
+			],
+			"feminine": {
+				"the",
+				"these",
+				"this",
+				"a",
+				"of",
+				"of the",
+				"first",
+				"last"
+			}
+		},
+		"pt": {
+			"masculine": [
+				"o",
+				"esses",
+				"este",
+				"um",
+				"do",
+				"do",
+				"primeiro",
+				"último"
+			],
+			"feminine": {
+				"a",
+				"essas",
+				"esta",
+				"uma",
+				"da",
+				"da",
+				"primeira",
+				"última"
+			}
+		}
+    },
+	"gender_items": [
+        "the",
+        "these",
+        "this",
+        "a",
+        "of",
+        "of_the",
+        "first",
+        "last"
+    ]
 }

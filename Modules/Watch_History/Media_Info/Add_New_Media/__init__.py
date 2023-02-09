@@ -42,12 +42,12 @@ class Add_New_Media(Watch_History):
 		self.media_names_file = self.media_info_name_files[self.plural_media_types["en"]]
 		self.media_type_number_file = self.media_info_number_files[self.plural_media_types["en"]]
 
-		self.media_dictionary["media"]["states"]["series_media"] = True
+		self.media_dictionary["media"]["States"]["series_media"] = True
 		self.option_info["is_video_series_media"] = False
 
 		# Series media, video series media, and re-watching variables definition
 		if self.plural_media_types["en"] == self.texts["movies"]["en"]:
-			self.media_dictionary["media"]["states"]["series_media"] = False
+			self.media_dictionary["media"]["States"]["series_media"] = False
 
 		if self.plural_media_types["en"] == self.texts["videos"]["en"]:
 			self.option_info["is_video_series_media"] = True
@@ -65,13 +65,13 @@ class Add_New_Media(Watch_History):
 
 		self.add_media_items = False
 
-		if self.media_dictionary["media"]["states"]["series_media"] == True:
+		if self.media_dictionary["media"]["States"]["series_media"] == True:
 			self.add_media_items = self.Input.Yes_Or_No(self.language_texts["add_media_items_to_media"])
 
 		if self.add_media_items == False:
 			self.Type_Media_Details()
 
-			if self.media_dictionary["media"]["states"]["series_media"] == False:
+			if self.media_dictionary["media"]["States"]["series_media"] == False:
 				self.Type_Movie_Details()
 
 		self.media_list_text = self.media_types["subfolders"][self.plural_media_types["en"]]["media_list"]
@@ -84,7 +84,7 @@ class Add_New_Media(Watch_History):
 			self.option_info["media_folder"] = self.option_info["media_folder"]
 			self.Folder.Create(self.option_info["media_folder"])
 
-			if self.media_dictionary["media"]["states"]["series_media"] == True:
+			if self.media_dictionary["media"]["States"]["series_media"] == True:
 				self.media_dictionary["media"]["item"]["folders"]["root"] = self.option_info["media_folder"] + self.media_list_text + "/"
 				self.Folder.Create(self.media_dictionary["media"]["item"]["folders"]["root"]) 
 
@@ -99,7 +99,7 @@ class Add_New_Media(Watch_History):
 		if self.option_info["media_details"][self.language_texts["original_name"]] in self.media_type_media_names:
 			self.is_new_media = False
 
-		if self.media_dictionary["media"]["states"]["series_media"] == True:
+		if self.media_dictionary["media"]["States"]["series_media"] == True:
 			if self.option_info["media_details"][self.language_texts["origin_type"]] in [self.language_texts["remote, title()"], self.texts["hybrid, title()"]["en"]]:
 				self.media_item_details_parameters["Remote origin"] = {
 					"mode": "choice_dict",
@@ -314,14 +314,14 @@ class Add_New_Media(Watch_History):
 		self.option_info["media_details_file"] = self.option_info["media_folder"] + "Media details.txt"
 		self.File.Create(self.option_info["media_details_file"])
 
-		if self.media_dictionary["media"]["states"]["series_media"] == False:
+		if self.media_dictionary["media"]["States"]["series_media"] == False:
 			self.movie_details_file = self.option_info["media_folder"] + "Movie details.txt"
 			self.File.Create(self.movie_details_file)	
 
 		if self.is_new_media == False:
 			self.option_info["media_details"] = self.File.Dictionary(self.option_info["media_details_file"])
 
-		if self.media_dictionary["media"]["states"]["series_media"] == True:
+		if self.media_dictionary["media"]["States"]["series_media"] == True:
 			if self.has_media_list == True:
 				self.media_dictionary["media"]["item"]["folders"]["root"] = self.option_info["media_folder"] + self.media_list_text + "/"
 				self.Folder.Create(self.media_dictionary["media"]["item"]["folders"]["root"])
@@ -365,7 +365,7 @@ class Add_New_Media(Watch_History):
 			if self.has_media_list == False:
 				self.media_list_names = []
 
-		if self.media_dictionary["media"]["states"]["series_media"] == False:
+		if self.media_dictionary["media"]["States"]["series_media"] == False:
 			self.files_to_create = [
 				self.texts["comment, title(), en - pt"],
 			]
@@ -388,10 +388,10 @@ class Add_New_Media(Watch_History):
 	def Write_To_Files(self):
 		self.File.Edit(self.option_info["media_details_file"], self.Text.From_Dictionary(self.option_info["media_details"]), "w")
 
-		if self.media_dictionary["media"]["states"]["series_media"] == False:
+		if self.media_dictionary["media"]["States"]["series_media"] == False:
 			self.File.Edit(self.movie_details_file, self.Text.From_Dictionary(self.movie_details, next_line_value = True), "w")
 
-		if self.media_dictionary["media"]["states"]["series_media"] == True and self.has_media_list == True:
+		if self.media_dictionary["media"]["States"]["series_media"] == True and self.has_media_list == True:
 			self.File.Edit(self.media_list_file, self.Text.From_List(self.media_list_names), "w")
 
 			self.File.Edit(self.current_media_item_file, self.media_list_names[0], "w")

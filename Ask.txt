@@ -1,4 +1,4 @@
-# How to write this without having to import the class at the top?
+# How can I write this code without having to import the class at the first line?
 
 from Module.Sub_Module import Parent_Class as Parent_Class
 

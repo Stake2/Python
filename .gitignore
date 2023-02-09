@@ -13,7 +13,9 @@ Texts
 Module Files/Block_Websites/Log.txt
 Module Files/Code/Last Setting Data
 Module Files/SproutGigs/Categories
-Module Files/Utility/API
+Module Files/Utility/API/client_secrets.json
+Module Files/Utility/API/Secrets.json
+Module Files/Utility/API/Token.json
 
 # Root files
 desktop.ini

@@ -67,7 +67,7 @@ class Update_Files(Watch_History):
 					media_items = [self.dictionary["media"]["item"]["title"]]
 
 					# For media with media list, get the actual media items
-					if self.dictionary["media"]["states"]["media_list"] == True:
+					if self.dictionary["media"]["States"]["media_list"] == True:
 						media_items = self.dictionary["media"]["items"]["list"]
 
 					# Iterate through media items list
@@ -123,7 +123,7 @@ class Update_Files(Watch_History):
 	def Add_Date(self):
 		item_types = ["media"]
 
-		if self.dictionary["media"]["states"]["media_list"] == True:
+		if self.dictionary["media"]["States"]["media_list"] == True:
 			item_types.append("item")
 
 		# Iterate through the item_types list
@@ -148,7 +148,7 @@ class Update_Files(Watch_History):
 				year = self.date_dictionary["details"][self.Date.language_texts["year, title()"]]
 
 				# If the media has a media item list
-				if self.dictionary["media"]["states"]["media_list"] == True:
+				if self.dictionary["media"]["States"]["media_list"] == True:
 					# If the media title is equal to the media item title and the date is already present in the media details
 					if self.dictionary["media"]["title"] == self.dictionary["media"]["item"]["title"] and self.Date.language_texts["date, title()"] in self.dictionary["media"]["details"]:
 						# Get the date from the media details
@@ -161,7 +161,7 @@ class Update_Files(Watch_History):
 						ask = True
 
 				# If the media has no media item list
-				if self.dictionary["media"]["states"]["media_list"] == False:
+				if self.dictionary["media"]["States"]["media_list"] == False:
 					ask = True
 
 				if ask == True:
@@ -227,7 +227,7 @@ class Update_Files(Watch_History):
 			print(media_comments_folder)
 			print()
 
-			if self.dictionary["media"]["states"]["series_media"] == True:
+			if self.dictionary["media"]["States"]["series_media"] == True:
 				comments_json_file = contents["dictionary"]["Comments"]
 				comments_json = self.JSON.To_Python(comments_json_file)
 
@@ -239,7 +239,7 @@ class Update_Files(Watch_History):
 						if re.search(r"[0-9]{2,4}\([0-9]{2,4}\)", episode_number) != None:
 							episode_number = re.sub("\([0-9]{2,4}\)", "", episode_number)
 
-						self.dictionary["media"]["states"]["re_watching"] = False
+						self.dictionary["media"]["States"]["re_watching"] = False
 
 						if re.search(" " + self.texts["re_watched, type: regex, en - pt"], file_name) != None:
 							times = int(file_name.split(self.texts["re_watched, title()"]["en"] + " ")[1].split("x")[0])
@@ -248,7 +248,7 @@ class Update_Files(Watch_History):
 								"times": times
 							}
 
-							self.dictionary["media"]["states"]["re_watching"] = True
+							self.dictionary["media"]["States"]["re_watching"] = True
 
 						comment = self.File.Contents(file)["lines"]
 
@@ -267,10 +267,10 @@ class Update_Files(Watch_History):
 						if self.dictionary["media"]["title"] == "Yuru Camp△":
 							comment[1] = comment[1].replace(self.dictionary["media"]["title"][:-1], self.dictionary["media"]["title"])
 
-						self.dictionary["media"]["states"]["watch_dubbed"] = False
+						self.dictionary["media"]["States"]["watch_dubbed"] = False
 
 						if '"[' + self.language_texts["dubbed, title()"] + ']"' in self.Text.From_List(comment):
-							self.dictionary["media"]["states"]["watch_dubbed"] = True
+							self.dictionary["media"]["States"]["watch_dubbed"] = True
 							comment = self.Text.From_List(comment)
 							comment = comment.replace('"[' + self.language_texts["dubbed, title()"] + ']"', "")
 							comment = comment.splitlines()
@@ -305,13 +305,13 @@ class Update_Files(Watch_History):
 							file = new_file
 							file_name = new_file_name
 
-						self.dictionary["media"]["states"]["christmas"] = False
+						self.dictionary["media"]["States"]["christmas"] = False
 
 						if "25/12" in time:
-							self.dictionary["media"]["states"]["christmas"] = True
+							self.dictionary["media"]["States"]["christmas"] = True
 
-						self.dictionary["media"]["states"]["first_episode_in_year"] = False
-						self.dictionary["media"]["states"]["first_media_type_episode_in_year"] = False
+						self.dictionary["media"]["States"]["first_episode_in_year"] = False
+						self.dictionary["media"]["States"]["first_media_type_episode_in_year"] = False
 
 						# First watched in year state
 						key = self.dictionary["media_type"]["plural"]["en"]
@@ -344,14 +344,14 @@ class Update_Files(Watch_History):
 							media_type_episodes = self.File.Contents(folders["episodes"])["lines"]
 
 							if comment[1] in episodes and comment[1] == episodes[0]:
-								self.dictionary["media"]["states"]["first_episode_in_year"] = True
+								self.dictionary["media"]["States"]["first_episode_in_year"] = True
 
 							if comment[1] in media_type_episodes and comment[1] == media_type_episodes[0]:
-								self.dictionary["media"]["states"]["first_media_type_episode_in_year"] = True
+								self.dictionary["media"]["States"]["first_media_type_episode_in_year"] = True
 
 						# Add file name to file names list
-						if file_name not in comments_json["File names"]:
-							comments_json["File names"].append(file_name)
+						if file_name not in comments_json["Entries"]:
+							comments_json["Entries"].append(file_name)
 
 						# Add to Comments.json dictionary
 						string_time = time
@@ -366,7 +366,7 @@ class Update_Files(Watch_History):
 							"Titles": {}
 						}
 
-						if self.dictionary["media"]["states"]["video"] == True:
+						if self.dictionary["media"]["States"]["video"] == True:
 							comments_json["Dictionary"][file_name].update({
 								"ID": "",
 								"Link": ""
@@ -377,7 +377,7 @@ class Update_Files(Watch_History):
 						if dict_ != {}:
 							comments_json["Dictionary"][file_name]["States"] = dict_
 
-						if self.dictionary["media"]["item"]["title"] not in comment[1] and self.dictionary["media"]["states"]["video"] == False:
+						if self.dictionary["media"]["item"]["title"] not in comment[1] and self.dictionary["media"]["States"]["video"] == False:
 							title = self.dictionary["media"]["item"]["title"]
 
 							comment[1] += title
@@ -395,7 +395,7 @@ class Update_Files(Watch_History):
 							title = ""
 
 							if titles != []:
-								if self.dictionary["media"]["states"]["episodic"] == False:
+								if self.dictionary["media"]["States"]["episodic"] == False:
 									i = 0
 									for title in titles:
 										if file_name.replace("  ", " / ") == title:
@@ -420,7 +420,7 @@ class Update_Files(Watch_History):
 								comment[1] += title
 
 						# Add YouTube ID, comment link, and comment ID
-						if self.dictionary["media"]["states"]["video"] == True:
+						if self.dictionary["media"]["States"]["video"] == True:
 							youtube_ids_file = self.dictionary["media"]["item"]["folders"]["youtube_ids"]
 							youtube_id = self.File.Contents(youtube_ids_file)["lines"][int(episode_number) - 1]
 
@@ -457,13 +457,13 @@ class Update_Files(Watch_History):
 						self.File.Edit(comments_contents[file_name], text, "w")
 
 				# Sort file names and dictionary keys
-				comments_json["File names"] = sorted(comments_json["File names"], key=str.lower)
+				comments_json["Entries"] = sorted(comments_json["Entries"], key=str.lower)
 				comments_json["Dictionary"] = dict(collections.OrderedDict(sorted(comments_json["Dictionary"].items())))
 
 				# Update media comments number
 				comments_json.update({
-					"Number": len(comments_json["File names"]),
-					"File names": comments_json["File names"],
+					"Number": len(comments_json["Entries"]),
+					"Entries": comments_json["Entries"],
 					"Dictionary": comments_json["Dictionary"]
 				})
 
@@ -485,7 +485,7 @@ class Update_Files(Watch_History):
 		if media_comments["Channel"] == {}:
 			media_comments["Channel"] = self.dictionary["media"]["channel"]
 
-		if self.dictionary["media"]["states"]["media_list"] == True and media_comments["Playlist"] == {}:
+		if self.dictionary["media"]["States"]["media_list"] == True and media_comments["Playlist"] == {}:
 			media_comments["Playlist"] = self.dictionary["media"]["item"]["playlist"]
 
 		for key in media_comments["Dictionary"]:
@@ -512,7 +512,7 @@ class Update_Files(Watch_History):
 					"Time": self.Get_YouTube_Information("video", video["Link"])["Time"]
 				}
 
-		media_comments["Number"] = len(media_comments["File names"])
+		media_comments["Number"] = len(media_comments["Entries"])
 
 		# Update media and media type Comments.json file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], media_comments)
@@ -579,25 +579,25 @@ class Update_Files(Watch_History):
 		print(self.Language.language_texts["titles, title()"] + ":")
 		print()
 
-		if self.dictionary["media"]["states"]["episodic"] == False:
+		if self.dictionary["media"]["States"]["episodic"] == False:
 			comment["Titles"][self.user_language] = comment["File name"]
 
 		for language in self.languages["small"]:
-			if self.dictionary["media"]["states"]["episodic"] == True or self.dictionary["media"]["states"]["episodic"] == False and language != self.user_language:
+			if self.dictionary["media"]["States"]["episodic"] == True or self.dictionary["media"]["States"]["episodic"] == False and language != self.user_language:
 				translated_language = self.languages["full_translated"][language][self.user_language]
 
 				comment["Titles"][language] = self.Input.Type(translated_language, first_space = False)
 
 		dictionary = self.JSON.To_Python(self.dictionary["media"]["item"]["folders"]["comments"]["comments"])
 
-		if comment["File name"] not in dictionary["File names"]:
-			dictionary["File names"].append(comment["File name"])
+		if comment["File name"] not in dictionary["Entries"]:
+			dictionary["Entries"].append(comment["File name"])
 
 		dictionary["Dictionary"][comment["File name"]] = comment
 
 		dictionary["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Dictionary"].items())))
-		dictionary["File names"] = sorted(dictionary["File names"], key=str.lower)
-		dictionary["Number"] = len(dictionary["File names"])
+		dictionary["Entries"] = sorted(dictionary["Entries"], key=str.lower)
+		dictionary["Number"] = len(dictionary["Entries"])
 
 		# Edit "Comments.json" file
 		self.JSON.Edit(self.dictionary["media"]["item"]["folders"]["comments"]["comments"], dictionary)

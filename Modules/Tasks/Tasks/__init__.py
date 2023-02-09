@@ -145,10 +145,10 @@ class Tasks(object):
 			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["lines"] == []:
 				self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.task_type_tasks[task_type])
 
-			# Create "File list.txt" file in "Per Task Type" task type folder
-			self.folders["task_history"]["current_year"]["per_task_type"][key]["file_list"] = self.folders["task_history"]["current_year"]["per_task_type"][key]["root"] + "File list.txt"
+			# Create "Entry list.txt" file in "Per Task Type" task type folder
+			self.folders["task_history"]["current_year"]["per_task_type"][key]["entry_list"] = self.folders["task_history"]["current_year"]["per_task_type"][key]["root"] + "Entry list.txt"
 
-			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["file_list"])
+			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["entry_list"])
 
 	def Define_States_Dictionary(self, dictionary):
 		dict_ = {}

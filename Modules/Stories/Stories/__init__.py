@@ -511,7 +511,7 @@ class Stories(object):
 			for information_item in self.language_texts["information_items, type: list"]:
 				english_information_item = self.texts["information_items, type: list"]["en"][i]
 
-				if information_item != self.language_texts["title, title()"]:
+				if information_item != self.Language.language_texts["title, title()"]:
 					print(information_item + ":")
 
 					if information_item != self.language_texts["synopsis, title()"]:

@@ -1,0 +1,14 @@
+{
+	"entry, title()": {
+		"en": "Entry",
+		"pt": "Entrada"
+	},
+	"entries, title()": {
+		"en": "Entries",
+		"pt": "Entradas"
+	},
+	"added_entries": {
+		"en": "Added entries",
+		"pt": "Entradas adicionadas"
+	}
+}

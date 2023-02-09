@@ -166,9 +166,9 @@ class Register_Task(Tasks):
 		# Update task type "Tasks.json" file
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.task_type_tasks[self.task_type])
 
-		# Add to root and task type "File list.txt" file
-		self.File.Edit(self.folders["task_history"]["current_year"]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
-		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["file_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
+		# Add to root and task type "Entry list.txt" file
+		self.File.Edit(self.folders["task_history"]["current_year"]["entry_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
+		self.File.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["entry_list"], self.task_dictionary["register"]["Number. Task Type (Time)"]["normal"], "a")
 
 	def Create_File(self):
 		# Number: [Task number]
