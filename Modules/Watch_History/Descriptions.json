@@ -18,5 +18,9 @@
 	"Media_Info": {
 		"en": "Manage Media Info Database",
 		"pt": "Gerenciar Banco de Dados de Informações de Mídia"
+	},
+	"View": {
+		"en": "View database",
+		"pt": "Visualizar banco de dados"
 	}
 }

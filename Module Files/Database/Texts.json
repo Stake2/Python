@@ -10,5 +10,9 @@
 	"added_entries": {
 		"en": "Added entries",
 		"pt": "Entradas adicionadas"
+	},
+	"type_the_entry_title": {
+		"en": "Type the entry title in",
+		"pt": "Digite o título da entrada em"
 	}
 }

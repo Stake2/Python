@@ -1,9 +1,5 @@
 # Input.py
 
-from Utility.Language import Language as Language
-from Utility.File import File as File
-from Utility.JSON import JSON as JSON
-
 import re
 
 class Input():
@@ -13,16 +9,20 @@ class Input():
 
 		Define_Folders(self)
 
-		self.Language = Language()
+		from Utility.File import File as File
+		from Utility.JSON import JSON as JSON
+
 		self.File = File()
 		self.JSON = JSON()
+
+		self.user_language = self.JSON.Language.user_language
 
 		self.Define_Texts()
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = True, first_space = True):
 		if show_text != None and add_colon == True and show_text[-1] + show_text[-2] != ": ":
@@ -197,7 +197,7 @@ class Input():
 		]
 
 		if type(question) == dict:
-			question = self.Language.Item(question)
+			question = self.JSON.Language.Item(question)
 
 		if "?" not in question:
 			question += "?"
@@ -223,7 +223,7 @@ class Input():
 			text += ": "
 
 		if type(text) == dict:
-			text = self.Language.Item(text)
+			text = self.JSON.Language.Item(text)
 
 		if first_space == True:
 			print()
@@ -295,12 +295,7 @@ class Input():
 			if item not in line_options:
 				line_options[item] = False
 
-		finish_keywords = {
-			"en": ["f", "finish", "stop"],
-			"pt": ["f", "finish", "stop", "parar", "terminar", "completar", "acabar"],
-		}
-
-		finish_keywords = self.Language.Item(finish_keywords)
+		finish_keywords = self.language_texts["finish_keywords, type: list"]
 
 		last_text_items = ["?", "!", ":", ";", "."]
 

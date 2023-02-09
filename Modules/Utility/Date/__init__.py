@@ -1,32 +1,24 @@
 # Date.py
 
-from Utility.Language import Language as Language
-from Utility.JSON import JSON as JSON
-from Utility.Text import Text as Text
-
-import os
-import pathlib
-import win32com.client
-import time
-import datetime
 from datetime import datetime, timedelta, timezone
 import pytz
-from dateutil import parser
 
 class Date():
 	def __init__(self):
-		self.Language = Language()
-		self.JSON = JSON()
-		self.Text = Text()
-
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
 
-		self.languages = self.Language.languages
-		self.user_language = self.Language.user_language
-		self.user_timezone = self.Language.user_timezone
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
+
+		self.JSON = JSON()
+		self.Text = Text()
+
+		self.languages = self.JSON.Language.languages
+		self.user_language = self.JSON.Language.user_language
+		self.user_timezone = self.JSON.Language.user_timezone
 
 		self.Define_Texts()
 		self.Number_Name_Generator()
@@ -36,7 +28,7 @@ class Date():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
 		date = {
@@ -129,6 +121,8 @@ class Date():
 		return date.strftime(format)
 
 	def From_String(self, string):
+		from dateutil import parser
+
 		date = parser.parse(string)
 
 		date = self.Now(date)
@@ -234,7 +228,7 @@ class Date():
 
 		texts["plural_date_attributes, type: list"] = plural
 
-		language_texts = self.Language.Item(texts)
+		language_texts = self.JSON.Language.Item(texts)
 
 		date["difference_strings"] = {}
 		date["difference_string"] = ""
@@ -394,8 +388,8 @@ class Date():
 		self.texts["number_names, type: list"] = self.numbers["list"]
 		self.texts["number_names_feminine, type: list"] = self.numbers["list_feminine"]
 
-		self.language_texts["number_names, type: list"] = self.Language.Item(self.numbers["list"])
-		self.language_texts["number_names_feminine, type: list"] = self.Language.Item(self.numbers["list_feminine"])
+		self.language_texts["number_names, type: list"] = self.JSON.Language.Item(self.numbers["list"])
+		self.language_texts["number_names_feminine, type: list"] = self.JSON.Language.Item(self.numbers["list_feminine"])
 
 	def Create_Years_List(self, mode = "list", start = 2018, plus = 0, function = str, string_format = None):
 		if mode == "list":
@@ -427,12 +421,13 @@ class Date():
 			return dict_
 
 	def Sleep(self, ms):
+		import time
 		time.sleep(ms)
 
-	def Time_Text(self, time, language, add_original_time = False):
-		language_texts = self.Language.Item(self.texts, language)
+	def Time_Text(self, time_string, language, add_original_time = False):
+		language_texts = self.JSON.Language.Item(self.texts, language)
 
-		time = time.split(":")
+		time = time_string.split(":")
 		hour = time[0]
 		minute = time[1]
 
@@ -495,7 +490,9 @@ class Date():
 		return text
 
 	def Schedule_Task(self, task_title, path = "", start_time = "", time_from_now = 5):
-		# Initiate 
+		import win32com.client
+
+		# Initiate
 		scheduler = win32com.client.Dispatch("Schedule.Service")
 		scheduler.Connect()
 		root_folder = scheduler.GetFolder("\\Stake2")

@@ -82,5 +82,21 @@
 	"example": {
         "pt": "Exemplo",
         "en": "Example"
-    }
+    },
+	"finish_keywords, type: list": {
+		"en": [
+			"f",
+			"finish",
+			"stop"
+		],
+		"pt": [
+			"f",
+			"finish",
+			"stop",
+			"parar",
+			"terminar",
+			"completar",
+			"acabar"
+		]
+	}
 }

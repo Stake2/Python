@@ -1,19 +1,11 @@
 # File.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.JSON import JSON as JSON
-
 import os
-import pathlib
-import re
-import subprocess
-import shutil
-import psutil
 
 class File():
 	def __init__(self, show_global_switches = False):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().switches["global"]
 
@@ -31,20 +23,21 @@ class File():
 			for switch in self.switches["file"]:
 				self.switches["file"][switch] = False
 
-		self.Language = Language()
-		self.JSON = JSON()
-
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
+
+		from Utility.JSON import JSON as JSON
+
+		self.JSON = JSON()
 
 		self.Define_Texts()
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
@@ -138,6 +131,7 @@ class File():
 			return False
 
 		if self.switches["file"]["copy"] == True and self.Exist(source_file) == True:
+			import shutil
 			shutil.copy(source_file, destination_file)
 
 			self.Verbose(self.language_texts["source_file"] + ":\n" + source_folder + "\n\n" + self.language_texts["destination_file"], destination_folder)
@@ -165,6 +159,7 @@ class File():
 			return False
 
 		if self.switches["file"]["move"] == True and self.Exist(source_file) == True:
+			import shutil
 			shutil.move(source_file, destination_file)
 
 			self.Verbose(self.language_texts["source_file"] + ":\n" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
@@ -316,6 +311,8 @@ class File():
 
 		if self.Exist(file) == True:
 			if next_line == False:
+				import re
+
 				for line in lines:
 					for dictionary_separator in dictionary_separators:
 						if re.findall(r"\b" + dictionary_separator + r"\b", line, re.IGNORECASE):

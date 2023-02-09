@@ -45,7 +45,7 @@ class Write(Stories):
 		self.Register_Task(self.task_dictionary, self.register_task)
 
 		if self.chapter["finished_writing"] == False:
-			print(self.task_dictionary["descriptions"][self.user_language])
+			print(self.task_dictionary["Descriptions"][self.user_language])
 			print()
 			print(self.large_bar)
 
@@ -366,8 +366,8 @@ class Write(Stories):
 	def Define_Task_Dictionary(self):
 		# Define task dictionary, to use it on Tasks class
 		self.task_dictionary = {
-			"titles": {},
-			"descriptions": {},
+			"Titles": {},
+			"Descriptions": {},
 		}
 
 		# Define I text based on finished writing or not
@@ -390,33 +390,33 @@ class Write(Stories):
 				parameters = tuple(parameters)
 
 			# Create task titles
-			self.task_dictionary["titles"][language] = i_text[language]
-			self.task_dictionary["titles"][language] = self.task_dictionary["titles"][language].format(*parameters)
+			self.task_dictionary["Titles"][language] = i_text[language]
+			self.task_dictionary["Titles"][language] = self.task_dictionary["Titles"][language].format(*parameters)
 
 			# Add translated user language to task name if writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
+				self.task_dictionary["Titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
 
-			self.task_dictionary["titles"][language] += "."
+			self.task_dictionary["Titles"][language] += "."
 
 			# Create task descriptions
-			self.task_dictionary["descriptions"][language] = self.task_dictionary["titles"][language]
+			self.task_dictionary["Descriptions"][language] = self.task_dictionary["Titles"][language]
 
 			# Add writing time
-			self.task_dictionary["descriptions"][language] += "\n\n"
+			self.task_dictionary["Descriptions"][language] += "\n\n"
 
 			text = self.chapter["writing_mode"]["past_action"][language]
 
 			if self.texts["{}_time"][language][0] == "{":
 				text = text.capitalize()
 
-			self.task_dictionary["descriptions"][language] += self.texts["{}_time"][language].format(text) + ":" + "\n"
-			self.task_dictionary["descriptions"][language] += self.chapter["time_difference"]["difference_strings"][language]
+			self.task_dictionary["Descriptions"][language] += self.texts["{}_time"][language].format(text) + ":" + "\n"
+			self.task_dictionary["Descriptions"][language] += self.chapter["time_difference"]["difference_strings"][language]
 
 			# Add "still did not finished writing" text to task description if did not finished writing
 			if self.chapter["finished_writing"] == False:
-				self.task_dictionary["descriptions"][language] += "\n\n"
-				self.task_dictionary["descriptions"][language] += self.texts["i_still_did_not_finished_{}_the_chapter"][language].format(self.chapter["writing_mode"]["action"][language]) + "."
+				self.task_dictionary["Descriptions"][language] += "\n\n"
+				self.task_dictionary["Descriptions"][language] += self.texts["i_still_did_not_finished_{}_the_chapter"][language].format(self.chapter["writing_mode"]["action"][language]) + "."
 
 	def Close_Obsidian(self):
 		# Close Obsidian

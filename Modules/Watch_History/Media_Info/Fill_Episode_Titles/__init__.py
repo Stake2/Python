@@ -15,7 +15,7 @@ class Fill_Episode_Titles(Watch_History):
 		if self.option_info == None:
 			self.lists_dict = {}
 			self.lists_dict["media_type_list"] = texts["plural_media_types, type: list"]["en"]
-			self.lists_dict["language_media_type_list"] = self.Language.Item(texts["plural_media_types, type: list"])
+			self.lists_dict["language_media_type_list"] = self.JSON.Language.Item(texts["plural_media_types, type: list"])
 			self.lists_dict["media_type_show_text"] = self.language_texts["media_types_that_contain_episode_titles_files"]
 			self.lists_dict["media_type_select_text"] = self.language_texts["select_a_media_type_to_list_their_media"]
 

@@ -163,7 +163,7 @@ class Comment_Writer(Watch_History):
 				title += self.media_dictionary["media"]["episode"]["re_watched"]["text"]
 
 			# Define episode text (episode title)
-			episode_text = self.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
+			episode_text = self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
 			self.media_dictionary["media"]["comment"]["comment"] += episode_text
 

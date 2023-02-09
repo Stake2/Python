@@ -1,17 +1,9 @@
 # API.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.File import File as File
-from Utility.Date import Date as Date
-from Utility.JSON import JSON as JSON
-from Utility.Language import Language as Language
-
-import requests
-import urllib.parse
-
 class API():
 	def __init__(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().switches["global"]
 
@@ -34,12 +26,13 @@ class API():
 
 		Define_Folders(self, ["Secrets", "client_secrets"])
 
+		from Utility.File import File as File
+		from Utility.Date import Date as Date
+		from Utility.JSON import JSON as JSON
+
 		self.File = File()
 		self.Date = Date()
 		self.JSON = JSON()
-		self.Language = Language()
-
-		self.user_language = self.Language.user_language
 
 		self.secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["secrets"])
 

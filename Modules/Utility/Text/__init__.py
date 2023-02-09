@@ -1,13 +1,6 @@
 # Text.py
 
-from Utility.Language import Language as Language
-from Utility.JSON import JSON as JSON
-
 import os
-import pathlib
-import pyperclip
-import webbrowser
-import win32clipboard
 
 class Text():
 	def __init__(self):
@@ -20,7 +13,8 @@ class Text():
 
 		Define_Folders(self)
 
-		self.Language = Language()
+		from Utility.JSON import JSON as JSON
+
 		self.JSON = JSON()
 
 		self.Define_Texts()
@@ -37,7 +31,7 @@ class Text():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Add_Leading_Zeros(self, number):
 		if int(number) <= 9:
@@ -92,6 +86,8 @@ class Text():
 		if type(text) == dict:
 			text = self.From_Dictionary(text)
 
+		import pyperclip
+
 		pyperclip.copy(text)
 
 		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
@@ -142,6 +138,8 @@ class Text():
 		return string
 
 	def Get_Clipboard(self): 
+		import win32clipboard
+
 		win32clipboard.OpenClipboard()
 		data = win32clipboard.GetClipboardData()
 		win32clipboard.CloseClipboard()
@@ -149,4 +147,6 @@ class Text():
 		return data
 
 	def Open_Link(self, link):
+		import webbrowser
+
 		webbrowser.open(link)

@@ -1,17 +1,11 @@
 # JSON.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-
 import os
-import pathlib
-import json
-import datetime
-from copy import deepcopy
 
 class JSON():
 	def __init__(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().switches["global"]
 
@@ -34,6 +28,8 @@ class JSON():
 		self.folders["apps"]["module_files"]["utility"]["date"] = {
 			"texts": self.folders["apps"]["module_files"]["utility"]["root"] + "Date/Texts.json"
 		}
+
+		from Utility.Language import Language as Language
 
 		self.Language = Language()
 
@@ -137,10 +133,14 @@ class JSON():
 			return False
 
 	def From_Python(self, items_parameter):
+		import json
+		from copy import deepcopy
+
 		items = deepcopy(items_parameter)
 
 		if type(items) == dict:
 			import types as Types
+			import datetime
 
 			for key in items:
 				value = items[key]
@@ -174,6 +174,8 @@ class JSON():
 		return json.dumps(items, indent = 4, ensure_ascii = False)
 
 	def Date_To_String(self, date, format = ""):
+		import datetime
+
 		if isinstance(date, datetime.datetime) == False:
 			date = date["date"]
 
@@ -189,6 +191,8 @@ class JSON():
 		return date.strftime(format)
 
 	def To_Python(self, item):
+		import json
+
 		if os.path.isfile(item) == True:
 			item = self.Sanitize(item)
 

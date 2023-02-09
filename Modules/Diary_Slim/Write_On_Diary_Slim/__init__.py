@@ -162,10 +162,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def Type_Task_Descriptions(self):
 		# Define task dictionary with titles, descriptions, type, time, and files
 		self.task_dictionary = {
-			"titles": {},
-			"descriptions": {},
-			"types": self.text["keys"],
-			"time": self.Date.Now(),
+			"Titles": {},
+			"Tescriptions": {},
+			"Types": self.text["key"],
+			"Time": self.Date.Now(),
 			"files": {}
 		}
 
@@ -230,9 +230,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Register task and delete backup file if text key is in slim texts
 		if self.text["key"] in self.slim_texts:
-			from Tasks.Register_Task import Register_Task as Register_Task
+			import Tasks
 
-			Register_Task(self.task_dictionary)
+			self.Tasks = Tasks()
+
+			self.Tasks.Register(self.task_dictionary)
 
 			if self.switches["verbose"] == True:
 				self.task_dictionary["time"] = str(self.task_dictionary["time"])

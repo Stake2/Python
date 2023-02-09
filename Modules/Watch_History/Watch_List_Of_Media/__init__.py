@@ -8,7 +8,7 @@ class Watch_List_Of_Media(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.finish_selection_text = "[" + self.Language.language_texts["finish_selection"] + "]"
+		self.finish_selection_text = "[" + self.JSON.Language.language_texts["finish_selection"] + "]"
 
 		self.Define_Media_List_Dict()
 

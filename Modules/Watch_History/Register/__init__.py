@@ -1,4 +1,4 @@
-# Register_Media.py
+# Register.py
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
@@ -8,7 +8,7 @@ from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as 
 
 import re
 
-class Register_Media(Watch_History):
+class Register(Watch_History):
 	def __init__(self, run_as_module = False, media_dictionary = None):
 		super().__init__()
 
@@ -49,7 +49,7 @@ class Register_Media(Watch_History):
 			print()
 			print(self.large_bar)
 			print()
-			print("Register_Media:")
+			print("Register:")
 
 		self.Show_Information()
 
@@ -151,9 +151,9 @@ class Register_Media(Watch_History):
 		self.watched = self.JSON.To_Python(self.media_dictionary["media"]["item"]["folders"]["watched"]["watched"])
 
 		# Add to watched episode, root episode and media type episode numbers
-		self.episodes["Number"] += 1
-		self.watched["Number"] += 1
-		self.media_type_episodes[self.media_type]["Number"] += 1
+		self.episodes["Numbers"]["Total"] += 1
+		self.watched["Numbers"]["Total"] += 1
+		self.media_type_episodes[self.media_type]["Numbers"]["Total"] += 1
 
 		self.media_dictionary["Register"].update({
 			"Episode titles": {}
@@ -161,13 +161,13 @@ class Register_Media(Watch_History):
 
 		# Define sanitized version of entry name for files
 		self.media_dictionary["Register"]["Entries"] = {
-			"normal": str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["Register"]["Times"]["date_time_format"][self.user_language] + ")",
+			"normal": str(self.episodes["Numbers"]["Total"]) + ". " + self.media_type + " (" + self.media_dictionary["Register"]["Times"]["date_time_format"][self.user_language] + ")",
 			"sanitized": {}
 		}
 
 		# Define sanitized version of entry name for files (per language)
 		for language in self.languages["small"]:
-			self.media_dictionary["Register"]["Entries"]["sanitized"][language] = str(self.episodes["Number"]) + ". " + self.media_type + " (" + self.media_dictionary["Register"]["Times"]["date_time_format"][language].replace(":", ";").replace("/", "-") + ")"
+			self.media_dictionary["Register"]["Entries"]["sanitized"][language] = str(self.episodes["Numbers"]["Total"]) + ". " + self.media_type + " (" + self.media_dictionary["Register"]["Times"]["date_time_format"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to "Entries" list
 		self.episodes["Entries"].append(self.media_dictionary["Register"]["Entries"]["normal"])
@@ -198,8 +198,8 @@ class Register_Media(Watch_History):
 		key = self.media_dictionary["Register"]["Entries"]["normal"]
 
 		self.episodes["Dictionary"][key] = {
-			"Number": self.episodes["Number"],
-			"Type number": self.media_type_episodes[self.media_type]["Number"],
+			"Number": self.episodes["Numbers"]["Total"],
+			"Type number": self.media_type_episodes[self.media_type]["Numbers"]["Total"],
 			"Entry": self.media_dictionary["Register"]["Entries"]["normal"],
 			"Media": media_titles,
 			"Item": item_titles,
@@ -239,13 +239,13 @@ class Register_Media(Watch_History):
 		self.comments = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# Get year comment number from "Comments.json" file
-		self.episodes["Comments"] = self.comments["Year numbers"][str(self.date["year"])]
+		self.episodes["Numbers"]["Comments"] = self.comments["Numbers"]["Years"][str(self.date["year"])]
 
 		# Update "Episodes.json" file
 		self.JSON.Edit(self.folders["watch_history"]["current_year"]["episodes"], self.episodes)
 
 		# Get year media type comment number from "Comments.json" file
-		self.media_type_episodes[self.media_type]["Comments"] = self.comments["Media type year numbers"][str(self.date["year"])][self.media_type]
+		self.media_type_episodes[self.media_type]["Numbers"]["Comments"] = self.comments["Numbers"]["Type"][self.media_type]["Years"][[str(self.date["year"])]]
 
 		# Update media type "Episodes.json" file
 		self.JSON.Edit(self.media_dictionary["media_type"]["folders"]["per_media_type"]["episodes"], self.media_type_episodes[self.media_type])
@@ -345,7 +345,7 @@ class Register_Media(Watch_History):
 
 		# Define episode text lines
 		lines = [
-			self.Language.texts["number, title()"][language] + ": " + str(self.episodes["Number"]),
+			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.episodes["Numbers"]["Total"]),
 			self.texts["media_type_number"][language] + ": " + str(self.media_type_episodes[self.media_type]["Number"]),
 			"\n" + self.texts["media, title()"][language] + ":" + "\n" + "{}"
 		]
@@ -367,7 +367,7 @@ class Register_Media(Watch_History):
 				lines.append(text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.Language.texts["type, title()"][language] + ": " + self.media_dictionary["media_type"]["plural"]["en"] + "\n",
+			self.JSON.Language.texts["type, title()"][language] + ": " + self.media_dictionary["media_type"]["plural"]["en"] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.File.texts["file_name"][language] + ": " + self.media_dictionary["Register"]["Entries"]["normal"]
 		])
@@ -376,7 +376,7 @@ class Register_Media(Watch_History):
 		if "States" in self.episodes["Dictionary"][self.media_dictionary["Register"]["Entries"]["normal"]]:
 			dict_ = self.episodes["Dictionary"][self.media_dictionary["Register"]["Entries"]["normal"]]["States"]
 
-			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in dict_:
 				key = key.lower()
@@ -452,7 +452,7 @@ class Register_Media(Watch_History):
 					episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
 
 					if episode_title == "":
-						episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
+						episode_title = "[" + self.JSON.Language.texts["empty, title()"][language] + "]"
 
 					episode_titles = episode_title + "\n"
 
@@ -461,7 +461,7 @@ class Register_Media(Watch_History):
 						episode_title = self.media_dictionary["media"]["episode"]["titles"][language]
 
 						if episode_title == "":
-							episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
+							episode_title = "[" + self.JSON.Language.texts["empty, title()"][language] + "]"
 
 						episode_titles += episode_title + "\n"
 
@@ -516,7 +516,7 @@ class Register_Media(Watch_History):
 			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
 
 			# Firsts Of The Year subfolder folder
-			firsts_of_the_year_text = self.Language.texts["firsts_of_the_year"][language]
+			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.texts["media, title()"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]

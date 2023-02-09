@@ -1,11 +1,11 @@
 # Define_Folders.py
 
-import os
-import pathlib
-
 class Define_Folders():
 	def __init__(self, object_to_define = None, folder_names = []):
 		if object_to_define != None:
+			import os
+			import pathlib
+
 			name = type(object_to_define).__name__
 
 			if "." in object_to_define.__module__:

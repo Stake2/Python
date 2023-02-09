@@ -112,7 +112,7 @@ class Unblock(Block_Websites):
 		while dictionary["option"] != "[" + self.language_texts["finish_selection"] + "]":
 			if website_to_unlock != []:
 				print()
-				print(self.Language.language_texts["list, title()"] + ":")
+				print(self.JSON.Language.language_texts["list, title()"] + ":")
 				self.JSON.Show(website_to_unlock)
 
 			# Select website from the list

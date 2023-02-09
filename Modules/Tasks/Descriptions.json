@@ -3,12 +3,16 @@
 		"en": "Manage Productive Network",
 		"pt": "Gerenciar Rede de Produtividade (Productive Network)"
 	},
-	"Register_Task": {
+	"Register": {
 		"en": "Register a task",
 		"pt": "Registrar uma tarefa"
 	},
 	"Show_Tasks": {
 		"en": "Show all tasks",
 		"pt": "Mostrar todas as tarefas"
+	},
+	"View": {
+		"en": "View database",
+		"pt": "Visualizar banco de dados"
 	}
 }

@@ -1,21 +1,11 @@
 # Folder.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.Date import Date as Date
-from Utility.File import File as File
-from Utility.JSON import JSON as JSON
-
 import os
-import platform
-import pathlib
-import shutil
-import re
-from distutils.dir_util import copy_tree
 
 class Folder():
 	def __init__(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().switches["global"]
 
@@ -32,13 +22,16 @@ class Folder():
 			for switch in self.switches["folder"]:
 				self.switches["folder"][switch] = False
 
-		self.Language = Language()
+		from Utility.Date import Date as Date
+		from Utility.File import File as File
+		from Utility.JSON import JSON as JSON
+
 		self.Date = Date()
 		self.File = File()
 		self.JSON = JSON()
 
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
+		self.app_settings = self.JSON.Language.app_settings
+		self.languages = self.JSON.Language.languages
 		self.date = self.Date.date
 
 		self.Define_Folders()
@@ -46,6 +39,9 @@ class Folder():
 		self.Create_Folders()
 
 	def Define_Folders(self):
+		import platform
+		import pathlib
+
 		self.module = {
 			"name": self.__module__.split(".")[-1],
 			"key": self.__module__.split(".")[-1].lower().replace(" ", "_")
@@ -267,6 +263,12 @@ class Folder():
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["root"], item + "/"),
 			}
 
+		# Productive Network/Data files
+		for item in ["Types.json"]:
+			key = item.lower().replace(" ", "_").replace(".json", "")
+
+			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["data"]["root"], item)
+
 		# Networks/Productive Network/Task History folders
 		for item in [self.date["year"]]:
 			key = str(item).lower().replace(" ", "_")
@@ -391,7 +393,7 @@ class Folder():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
@@ -489,6 +491,8 @@ class Folder():
 				os.rmdir(folder)
 
 			except OSError:
+				import shutil
+
 				# Folder is not empty
 				shutil.rmtree(folder)
 
@@ -517,6 +521,7 @@ class Folder():
 			return False
 
 		if self.switches["folder"]["copy"] == True and self.Exist(source_folder) == True:
+			from distutils.dir_util import copy_tree
 			copy_tree(source_folder, destination_folder)
 
 			self.Verbose(self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder)
@@ -544,6 +549,8 @@ class Folder():
 			return False
 
 		if self.switches["folder"]["move"] == True and self.Exist(source_folder) == True:
+			import shutil
+
 			for file_name in os.listdir(source_folder):
 				source = os.path.join(source_folder, file_name)
 				destination = os.path.join(destination_folder, file_name)

@@ -443,6 +443,18 @@
 		"en": "Type",
 		"pt": "Tipo"
 	},
+	"types, title()": {
+		"en": "Types",
+		"pt": "Tipos"
+	},
+	"select_a_type": {
+		"en": "Select a type",
+		"pt": "Selecione um tipo"
+	},
+	"type_number": {
+		"en": "Type number",
+		"pt": "Número de tipo"
+	},
 	"firsts_of_the_year": {
 		"pt": "Primeiros Do Ano",
 		"en": "Firsts Of The Year"
@@ -503,49 +515,49 @@
 		"en": "Username",
 		"pt": "Nome de usuário"
 	},
-	"genders, type: list": {
+	"genders, type: dict": {
 		"en": {
-			"masculine": [
-				"the",
-				"these",
-				"this",
-				"a",
-				"of",
-				"of the",
-				"first",
-				"last"
-			],
+			"masculine": {
+				"the": "the",
+				"these": "these",
+				"this": "this",
+				"a": "a",
+				"of": "of",
+				"of_the": "of the",
+				"first": "first",
+				"last": "last"
+			},
 			"feminine": {
-				"the",
-				"these",
-				"this",
-				"a",
-				"of",
-				"of the",
-				"first",
-				"last"
+				"the": "the",
+				"these": "these",
+				"this": "this",
+				"a": "a",
+				"of": "of",
+				"of_the": "of the",
+				"first": "first",
+				"last": "last"
 			}
 		},
 		"pt": {
-			"masculine": [
-				"o",
-				"esses",
-				"este",
-				"um",
-				"do",
-				"do",
-				"primeiro",
-				"último"
-			],
+			"masculine": {
+				"the": "o",
+				"these": "esses",
+				"this": "este",
+				"a": "um",
+				"of": "do",
+				"of_the": "do",
+				"first": "primeiro",
+				"last": "último"
+			},
 			"feminine": {
-				"a",
-				"essas",
-				"esta",
-				"uma",
-				"da",
-				"da",
-				"primeira",
-				"última"
+				"the": "a",
+				"these": "essas",
+				"this": "esta",
+				"a": "uma",
+				"of": "da",
+				"of_the": "da",
+				"first": "primeira",
+				"last": "última"
 			}
 		}
     },

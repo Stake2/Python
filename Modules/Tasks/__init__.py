@@ -17,8 +17,9 @@ class Run():
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
 		self.classes = [
-			"Register_Task",
-			"Show_Tasks"
+			"Register",
+			"Show_Tasks",
+			"View"
 		]
 
 		self.class_descriptions = []

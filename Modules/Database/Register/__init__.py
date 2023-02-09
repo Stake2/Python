@@ -3,19 +3,20 @@
 from Database.Database import Database as Database
 
 class Register(Database):
-	def __init__(self):
+	def __init__(self, entry = {}):
 		super().__init__()
 
-		self.Ask_For_Entry_Info()
+		self.entry = entry
 
-		self.entry = {
-			"Title": "Entry One",
+		if self.entry == {}:
+			self.Select_Type()
+			self.Type_Entry_Information()
+
+		self.entry["Register"] = {
 			"Times": {
-				"UTC": "2023-02-09T06:54:00Z",
-				"date_time_format": "03:54 09/02/2023",
-			},
-			"Type": self.types["Type One"],
-			"States": {}
+				"UTC": self.Date.To_String(self.entry["Time"]["utc"]),
+				"date_time_format": self.entry["Time"]["date_time_format"]
+			}
 		}
 
 		self.Register_In_JSON()
@@ -25,29 +26,48 @@ class Register(Database):
 
 		self.Show_Information()
 
-	def Ask_For_Media_Info(self):
-		# To-Do: Make this method
-		pass
+	def Select_Type(self):
+		options = self.types["plural"]["en"]
+		language_options = self.types["plural"][self.user_language]
+
+		show_text = self.JSON.Language.language_texts["types"]
+		select_text = self.JSON.Language.language_texts["select_a_type"]
+
+		option_info = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
+
+		self.entry = {
+			"Titles": {}, # Type title
+			"Type": option_info["option"],
+			"Time": self.Date.Now()
+		}
+
+	def Type_Entry_Information(self):
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
+
+			type_text = self.language_texts["type_the_entry_title_in"] + " " + translated_language
+
+			self.entry["Titles"][language] = self.Input.Type(type_text)
 
 	def Register_In_JSON(self):
 		self.type = self.entry["Type"]["plural"]["en"]
 
 		# Add to entry number
-		self.entries["Number"] += 1
-		self.type_entries[self.type]["Number"] += 1
+		self.entries["Numbers"]["Total"] += 1
+		self.type_entries[self.type]["Numbers"]["Total"] += 1
 
-		if self.entries["Number"] == 0:
+		if self.entries["Numbers"]["Total"] == 0:
 			self.entry["States"]["first_entry_in_year"] = True
 
 		# Define sanitized version of entry name for files
 		self.entry["Register"]["Entries"] = {
-			"normal": str(self.entries["Number"]) + ". " + self.type + " (" + self.entry["Times"]["date_time_format"][self.user_language] + ")",
+			"normal": str(self.entries["Numbers"]["Total"]) + ". " + self.type + " (" + self.entry["Times"]["date_time_format"][self.user_language] + ")",
 			"sanitized": {}
 		}
 
 		# Define sanitized version of entry name for files (per language)
 		for language in self.languages["small"]:
-			self.entry["Register"]["Entries"]["sanitized"][language] = str(self.entries["Number"]) + ". " + self.type + " (" + self.entry["Times"]["date_time_format"][language].replace(":", ";").replace("/", "-") + ")"
+			self.entry["Register"]["Entries"]["sanitized"][language] = str(self.entries["Numbers"]["Total"]) + ". " + self.type + " (" + self.entry["Times"]["date_time_format"][language].replace(":", ";").replace("/", "-") + ")"
 
 		# Add to "Entries" list
 		self.entries["Entries"].append(self.entry["Register"]["Entries"]["normal"])
@@ -56,8 +76,8 @@ class Register(Database):
 		key = self.entry["Register"]["Entries"]["normal"]
 
 		self.entries["Dictionary"][key] = {
-			"Number": self.entries["Number"],
-			"Type number": self.type_entries[self.type]["Number"],
+			"Number": self.entries["Numbers"]["Total"],
+			"Type number": self.type_entries[self.type]["Numbers"]["Total"],
 			"Entry": self.entry["Register"]["Entries"]["normal"],
 			"Title": self.entry["Title"],
 			"Type": self.type,
@@ -71,11 +91,11 @@ class Register(Database):
 		self.JSON.Edit(self.folders["history"]["current_year"]["entries"], self.entries)
 
 		# Update type "Entries.json" file
-		self.JSON.Edit(self.entry["type"]["folders"]["per_media_type"]["entries"], self.type_entries[self.type])
+		self.JSON.Edit(self.entry["type"]["folders"]["per_type"]["entries"], self.type_entries[self.type])
 
 		# Add to root and type "Entry list.txt" file
 		self.File.Edit(self.folders["history"]["current_year"]["entry_list"], self.entry["Register"]["Entries"]["normal"], "a")
-		self.File.Edit(self.entry["Type"]["folders"]["per_media_type"]["entry_list"], self.entry["Register"]["Entries"]["normal"], "a")
+		self.File.Edit(self.entry["Type"]["folders"]["per_type"]["entry_list"], self.entry["Register"]["Entries"]["normal"], "a")
 
 	def Create_File(self):
 		# Number: [entry number]
@@ -117,10 +137,21 @@ class Register(Database):
 
 		# Define entry text lines
 		lines = [
-			self.Language.texts["number, title()"][language] + ": " + str(self.entries["Number"]),
-			self.texts["type_number"][language] + ": " + str(self.type_entries[self.type]["Number"]),
-			"\n" + self.Language.texts["title, title()"][language] + ":" + "\n" + "{}",
-			self.Language.texts["type, title()"][language] + ": " + self.entry["Type"]["plural"]["en"] + "\n",
+			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.entries["Numbers"]["Total"]),
+			self.JSON.Language.texts["type_number"][language] + ": " + str(self.type_entries[self.type]["Numbers"]["Total"])
+		]
+
+		# Add entry title lines
+		if language_parameter != "general":
+			text = self.JSON.Language.texts["title, title()"][language]
+
+		if language_parameter == "general":
+			text = self.JSON.Language.texts["titles, title()"][language]
+
+		lines.append("\n" + text + ":" + "\n" + "{}")
+
+		lines.extend([
+			self.JSON.Language.texts["type, title()"][language] + ": " + self.entry["Type"]["plural"]["en"] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.texts["entry, title()"][language] + ": " + self.entry["Register"]["Entries"]["normal"]
 		])
@@ -128,10 +159,17 @@ class Register(Database):
 		# Define language entry text
 		file_text = self.Text.From_List(lines)
 
-		# Define items to be added to entry text
-		items = [
-			self.entry["Title"]
-		]
+		# Add entry titles to items list
+		titles = ""
+
+		if language_parameter != "general":
+			titles = self.entry["Titles"][language] + "\n"
+
+		if language_parameter == "general":
+			for language in self.languages["small"]:
+				titles += self.entry["Titles"][language] + "\n"
+
+		items.append(titles)
 
 		# Add times to items list
 		times = ""
@@ -182,7 +220,7 @@ class Register(Database):
 			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
 
 			# Firsts Of The Year subfolder folder
-			firsts_of_the_year_text = self.Language.texts["firsts_of_the_year"][language]
+			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.texts["entry, title()"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]

@@ -1,17 +1,12 @@
 # Language.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
 import os
-import locale
 import re
-import pathlib
-import json
-import platform
-from tzlocal import get_localzone
 
 class Language():
 	def __init__(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().switches["global"]
 
@@ -69,6 +64,8 @@ class Language():
 		self.languages = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["languages"])
 
 	def Get_System_Information(self):
+		import locale
+
 		self.system_information = {}
 		self.system_information["locale"] = locale.getdefaultlocale()
 		self.system_information["encoding"] = self.system_information["locale"][1]
@@ -450,12 +447,16 @@ class Language():
 		return typed
 
 	def Define_App_Settings(self):
+		import pathlib
+
 		self.app_settings = {}
 
 		self.app_settings["language"] = self.system_information["language"]
 		self.username = pathlib.Path.home().name
 		self.user_language = self.app_settings["language"]
 		self.full_user_language = self.languages["full"][self.user_language]
+
+		from tzlocal import get_localzone
 
 		self.user_timezone = get_localzone()
 
@@ -538,7 +539,10 @@ class Language():
 							if "feminine" in texts[text][language]:
 								local_texts[text + ", title(), feminine"][language] = local_texts[text][language]["feminine"]
 
-							if "masculine" in texts[text][language]:
+							if text in local_texts and "masculine" in texts[text][language]:
+								local_texts[text][language] = local_texts[text][language]["masculine"]
+
+							elif text + ", title()" in local_texts and "masculine" in texts[text][language]:
 								local_texts[text + ", title()"][language] = local_texts[text][language]["masculine"]
 
 		return local_texts
@@ -686,8 +690,6 @@ class Language():
 		self.texts = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
 	def Define_Language_Texts(self):
-		self.texts = self.Title(self.texts)
-
 		self.language_texts = self.Item(self.texts)
 
 		for language_type in self.languages["types"]:
@@ -758,9 +760,13 @@ class Language():
 		self.Read_Settings_File()
 
 	def From_Python(self, item):
+		import json
+
 		return json.dumps(item, indent = 4, ensure_ascii = False)
 
 	def To_Python(self, file):
+		import json
+
 		file = self.Sanitize(file)
 
 		dictionary = json.load(open(file, encoding = "utf8"))

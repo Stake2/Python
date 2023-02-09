@@ -20,7 +20,8 @@ class Run():
 			"Watch_Media",
 			"Watch_List_Of_Media",
 			"Start_Watching_Media",
-			"Media_Info"
+			"Media_Info",
+			"View"
 		]
 
 		self.class_descriptions = []

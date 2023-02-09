@@ -566,24 +566,23 @@ class Stories(object):
 		print()
 		print(self.large_bar)
 
-	def Register_Task(self, task_dictionary, register_task = True):
-		if "types" not in task_dictionary:
-			task_dictionary["types"] = {
-				"en": "Stories",
-				"pt": "Histórias"
-			}
+	def Register(self, task_dictionary, register_task = True):
+		if "Type" not in task_dictionary:
+			task_dictionary["Type"] = "Stories"
 
-		if "time" not in task_dictionary:
-			task_dictionary["time"] = self.Date.Now()
+		if "Time" not in task_dictionary:
+			task_dictionary["Time"] = self.Date.Now()
 
-		# Register task with Tasks module, Register_Task class
+		# Register task with Tasks module, Register class
 		if register_task == True:
-			from Tasks.Register_Task import Register_Task as Register_Task
+			import Tasks
 
-			Register_Task(task_dictionary)
+			self.Tasks = Tasks()
+
+			sef.Tasks.Register(task_dictionary)
 
 		# Register task on Diary Slim if Tasks did not register the task on Diary Slim
 		if register_task == False:
 			print()
 
-			Write_On_Diary_Slim_Module(task_dictionary["descriptions"][self.user_language], task_dictionary["time"], show_text = False)
+			Write_On_Diary_Slim_Module(task_dictionary["descriptions"][self.user_language], self.task_dictionary["Time"]["date_time_format"][self.user_language], show_text = False)

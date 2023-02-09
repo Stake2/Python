@@ -3,7 +3,6 @@
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 import re
-from copy import deepcopy
 
 # A class to Watch media that has the "Watching" or "Re-Watching" Watching Status
 class Watch_Media(Watch_History):
@@ -14,7 +13,7 @@ class Watch_Media(Watch_History):
 
 		classes = [
 			"Comment_Writer",
-			"Register_Media"
+			"Register"
 		]
 
 		for title in classes:
@@ -93,6 +92,8 @@ class Watch_Media(Watch_History):
 			self.media_dictionary["media"]["details"][self.language_texts["remote_origin, title()"]] = remote_origin
 
 	def Define_Episode_Variables(self):
+		from copy import deepcopy
+
 		# Definition of episode to watch if the media is not series media
 		self.media_dictionary["media"]["episode"].update({
 			"title": self.media_dictionary["media"]["titles"]["original"],
@@ -318,7 +319,7 @@ class Watch_Media(Watch_History):
 				number = self.media_dictionary["media"]["episode"]["re_watched"]["times"]
 
 				for language in self.languages["small"]:
-					text = self.Text.By_Number(number, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
+					text = self.Text.By_Number(number, self.JSON.Language.texts["{}_time"][language], self.JSON.Language.texts["{}_times"][language])
 
 					self.media_dictionary["media"]["episode"]["re_watched"]["time_text"][language] = text.format(self.Date.texts["number_names_feminine, type: list"][language][number])
 
@@ -537,8 +538,8 @@ class Watch_Media(Watch_History):
 		# Register finished watching time
 		self.media_dictionary["media"]["finished_watching"] = self.Date.Now()
 
-		# Use the "Register_Media" class to register the watched media, running it as a module, and giving the media_dictionary to it
-		self.Register_Media(run_as_module = True, media_dictionary = self.media_dictionary)
+		# Use the "Register" class to register the watched media, running it as a module, and giving the media_dictionary to it
+		self.Register(run_as_module = True, media_dictionary = self.media_dictionary)
 
 	def Find_Media_file(self, file_name):
 		self.frequently_used_folders = [

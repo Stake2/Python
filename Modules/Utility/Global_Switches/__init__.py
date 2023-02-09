@@ -1,11 +1,6 @@
 # Global_Switches.py
 
 import os
-import pathlib
-import platform
-import re
-import json
-from copy import deepcopy
 
 class Global_Switches():
 	def __init__(self):
@@ -42,6 +37,8 @@ class Global_Switches():
 		return path
 
 	def JSON_To_Python(self, file):
+		import json
+
 		file = self.Sanitize(file)
 
 		dictionary = json.load(open(file, encoding = "utf8"))
@@ -49,6 +46,9 @@ class Global_Switches():
 		return dictionary
 
 	def JSON_From_Python(self, items):
+		import json
+		from copy import deepcopy
+
 		items = deepcopy(items)
 
 		return json.dumps(items, indent = 4, ensure_ascii = False)

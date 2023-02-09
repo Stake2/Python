@@ -350,7 +350,7 @@ class Add_New_Media(Watch_History):
 					self.titles_folder = self.current_media_list_folder + self.texts["titles, title(), en - pt"] + "/"
 					self.Folder.Create(self.titles_folder)
 
-					for full_language in list(self.Language.languages["full"].values()):
+					for full_language in list(self.JSON.Language.languages["full"].values()):
 						self.titles_file = self.titles_folder + full_language + ".txt"
 						self.File.Create(self.titles_file)
 
@@ -450,7 +450,7 @@ class Add_New_Media(Watch_History):
 		if self.option_info["is_video_series_media"] == True:
 			self.singular_media_types["language"] = self.language_texts["channel"]
 
-		self.text_to_show = self.Language.Item(self.this_media_text)
+		self.text_to_show = self.JSON.Language.Item(self.this_media_text)
 
 		if self.is_new_media == True:
 			self.text_to_show += " " + self.this_text + " " + self.singular_media_types["language"].lower()
@@ -468,7 +468,7 @@ class Add_New_Media(Watch_History):
 				"pt": "{} {} de mídia a ".format(this, item) + this,
 			}
 
-			media_item_text = self.Language.Item(texts)
+			media_item_text = self.JSON.Language.Item(texts)
 			self.text_to_show += " " + media_item_text
 
 			if self.option_info["is_video_series_media"] == True:
@@ -477,7 +477,7 @@ class Add_New_Media(Watch_History):
 					"pt": this + " {} de vídeos do YouTube".format(serie, s),
 				}
 
-				this_text = self.Language.Item(texts)
+				this_text = self.JSON.Language.Item(texts)
 				self.text_to_show = self.text_to_show.replace(media_item_text, this_text)
 
 			if self.option_info["is_video_series_media"] == False:
@@ -489,7 +489,7 @@ class Add_New_Media(Watch_History):
 				"pt": "n{}".format(self.this_text) + " {} abaixo".format(self.singular_media_types["language"].lower()),
 			}
 
-			self.text_to_show += " " + self.Language.Item(texts)
+			self.text_to_show += " " + self.JSON.Language.Item(texts)
 
 		print()
 		print(self.large_bar)
@@ -549,7 +549,7 @@ class Add_New_Media(Watch_History):
 				"pt": item.capitalize() + " de mídia",
 			}
 
-			media_item_texts = self.Language.Item(media_item_texts)
+			media_item_texts = self.JSON.Language.Item(media_item_texts)
 
 			print(media_item_texts + ":")
 			print()
@@ -583,4 +583,4 @@ class Add_New_Media(Watch_History):
 		print()
 		print(self.large_bar)
 
-		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

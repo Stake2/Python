@@ -1,8 +1,8 @@
 # Update_Files.py
 
+from Watch_History.Watch_History import Watch_History as Watch_History
+
 import re
-from urllib.parse import urlparse, parse_qs
-import validators
 import collections
 
 class Update_Files(Watch_History):
@@ -10,7 +10,7 @@ class Update_Files(Watch_History):
 		super().__init__()
 
 		methods = {
-			"Iterate": self.Language.language_texts["iterate, title()"],
+			"Iterate": self.JSON.Language.language_texts["iterate, title()"],
 			"Add_To_Comments_Dictionary": self.language_texts["add_to_comments_dictionary"]
 		}
 
@@ -94,7 +94,7 @@ class Update_Files(Watch_History):
 							self.Add_Time_To_Comment_JSON()
 
 			if self.switches["testing"] == True:
-				self.Input.Type(self.Language.language_texts["continue, title()"])
+				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 			i += 1
 
@@ -118,7 +118,7 @@ class Update_Files(Watch_History):
 					self.File.Open(titles_file)
 
 				# Wait for user input
-				self.Input.Type(self.Language.language_texts["continue, title()"])
+				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 	def Add_Date(self):
 		item_types = ["media"]
@@ -175,7 +175,7 @@ class Update_Files(Watch_History):
 					date = ""
 
 					while re.search(r"[0-9]{2,2}/[0-9]{2,2}", date) == None:
-						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.JSON.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
 
 				# Add the date key to the details
 				keys = list(self.date_dictionary["details"].keys())
@@ -220,7 +220,7 @@ class Update_Files(Watch_History):
 
 		if len(contents["file"]["list"]) != 1:
 			print()
-			print(self.Language.language_texts["comments, title()"] + ":")
+			print(self.JSON.Language.language_texts["comments, title()"] + ":")
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
 			print(folder)
@@ -252,11 +252,11 @@ class Update_Files(Watch_History):
 
 						comment = self.File.Contents(file)["lines"]
 
-						if self.Language.language_texts["title, title()"] + ":" not in comment[0]:
+						if self.JSON.Language.language_texts["title, title()"] + ":" not in comment[0]:
 							comment.insert(0, "")
 							comment.insert(0, "")
 							comment.insert(0, "")
-							comment[0] = self.Language.language_texts["title, title()"] + ":"
+							comment[0] = self.JSON.Language.language_texts["title, title()"] + ":"
 
 						if self.dictionary["media"]["title"] in comment[1] and self.dictionary["media"]["title"] not in self.dictionary["media"]["item"]["title"]:
 							comment[1] = comment[1].replace(self.dictionary["media"]["title"], self.dictionary["media"]["titles"]["language"])
@@ -542,6 +542,9 @@ class Update_Files(Watch_History):
 		if comment["Type"] == "Videos":
 			link = ""
 
+			import validators
+			from urllib.parse import urlparse, parse_qs
+
 			while validators.url(link) != True:
 				# Ask for YouTube comment link
 				link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
@@ -576,7 +579,7 @@ class Update_Files(Watch_History):
 			comment["Time"] = self.Date.To_String(date)
 
 		print()
-		print(self.Language.language_texts["titles, title()"] + ":")
+		print(self.JSON.Language.language_texts["titles, title()"] + ":")
 		print()
 
 		if self.dictionary["media"]["States"]["episodic"] == False:
