@@ -1,15 +1,5 @@
 # GamePlayer.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.File import File as File
-from Utility.Folder import Folder as Folder
-from Utility.Date import Date as Date
-from Utility.Input import Input as Input
-from Utility.JSON import JSON as JSON
-from Utility.Text import Text as Text
-
 class GamePlayer(object):
 	def __init__(self):
 		self.Define_Basic_Variables()
@@ -26,9 +16,17 @@ class GamePlayer(object):
 		self.Create_Games_List()
 
 	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
+
 		self.switches = Global_Switches().switches["global"]
 
-		self.Language = Language()
 		self.File = File()
 		self.Folder = Folder()
 		self.Date = Date()
@@ -36,10 +34,10 @@ class GamePlayer(object):
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.languages = self.Language.languages
+		self.languages = self.JSON.Language.languages
 
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		self.user_language = self.JSON.Language.user_language
+		self.full_user_language = self.JSON.Language.full_user_language
 
 		self.Sanitize = self.File.Sanitize
 
@@ -50,7 +48,7 @@ class GamePlayer(object):
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 		self.large_bar = "-----"
 		self.dash_space = "-"
@@ -279,4 +277,4 @@ class GamePlayer(object):
 		print(self.large_bar)
 
 		if "texts" in game_dictionary:
-			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

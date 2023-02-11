@@ -1,18 +1,5 @@
 # Stories.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.File import File as File
-from Utility.Folder import Folder as Folder
-from Utility.Date import Date as Date
-from Utility.Input import Input as Input
-from Utility.JSON import JSON as JSON
-from Utility.Text import Text as Text
-
-from Social_Networks.Social_Networks import Social_Networks as Social_Networks
-from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
-
 class Stories(object):
 	def __init__(self, select_story = True):
 		self.Define_Basic_Variables()
@@ -33,9 +20,17 @@ class Stories(object):
 			self.Select_Story()
 
 	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
+
 		self.switches = Global_Switches().switches["global"]
 
-		self.Language = Language()
 		self.File = File()
 		self.Folder = Folder()
 		self.Date = Date()
@@ -43,10 +38,10 @@ class Stories(object):
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.languages = self.Language.languages
+		self.languages = self.JSON.Language.languages
 
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		self.user_language = self.JSON.Language.user_language
+		self.full_user_language = self.JSON.Language.full_user_language
 
 		self.Sanitize = self.File.Sanitize
 
@@ -58,7 +53,7 @@ class Stories(object):
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 		i = 0
 		for item in self.language_texts["copy_actions, type: list"]:
@@ -70,6 +65,8 @@ class Stories(object):
 		self.dash_space = "-"
 
 	def Define_Social_Network_Variables(self):
+		from Social_Networks.Social_Networks import Social_Networks as Social_Networks
+
 		self.Social_Networks = Social_Networks()
 		self.social_networks = self.Social_Networks.social_networks
 
@@ -511,7 +508,7 @@ class Stories(object):
 			for information_item in self.language_texts["information_items, type: list"]:
 				english_information_item = self.texts["information_items, type: list"]["en"][i]
 
-				if information_item != self.Language.language_texts["title, title()"]:
+				if information_item != self.JSON.Language.language_texts["title, title()"]:
 					print(information_item + ":")
 
 					if information_item != self.language_texts["synopsis, title()"]:
@@ -584,5 +581,7 @@ class Stories(object):
 		# Register task on Diary Slim if Tasks did not register the task on Diary Slim
 		if register_task == False:
 			print()
+
+			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 			Write_On_Diary_Slim_Module(task_dictionary["descriptions"][self.user_language], self.task_dictionary["Time"]["date_time_format"][self.user_language], show_text = False)

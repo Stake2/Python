@@ -97,6 +97,11 @@ class File():
 
 			return True
 
+		if self.switches["file"]["create"] == False:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file, verbose = True)
+
+			return False
+
 	def Delete(self, file):
 		file = self.Sanitize(file)
 
@@ -112,7 +117,9 @@ class File():
 
 			return True
 
-		else:
+		if self.switches["file"]["delete"] == False:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["delete"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file, verbose = True)
+
 			return False
 
 	def Copy(self, source_file = None, destination_file = None):
@@ -138,7 +145,7 @@ class File():
 
 			return True
 
-		else:
+		if self.switches["file"]["copy"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
 
 			return False
@@ -166,7 +173,7 @@ class File():
 
 			return True
 
-		else:
+		if self.switches["file"]["move"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
 
 			return False

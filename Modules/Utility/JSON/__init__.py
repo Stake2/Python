@@ -154,7 +154,7 @@ class JSON():
 
 				if type(value) == dict:
 					for sub_key in value:
-						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None, datetime]:
+						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None]:
 							if isinstance(value, datetime.datetime) == False:
 								items[key][sub_key] = str(items[key][sub_key])
 
@@ -171,7 +171,7 @@ class JSON():
 		if type(items) == str:
 			items = self.To_Python(items)
 
-		return json.dumps(items, indent = 4, ensure_ascii = False)
+		return json.dumps(items, indent = "\t", ensure_ascii = False)
 
 	def Date_To_String(self, date, format = ""):
 		import datetime

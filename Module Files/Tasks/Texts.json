@@ -35,14 +35,6 @@
 		"en": "This task was registered",
 		"pt": "Esta tarefa foi registrada"
 	},
-	"type, title()": {
-		"en": "Type",
-		"pt": "Tipo"
-	},
-	"when, title()": {
-		"en": "When",
-		"pt": "Quando"
-	},
 	"show_task_description": {
 		"en": "Show task description",
 		"pt": "Mostrar descrição da tarefa"

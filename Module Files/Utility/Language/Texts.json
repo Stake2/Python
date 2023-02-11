@@ -459,6 +459,18 @@
 		"pt": "Primeiros Do Ano",
 		"en": "Firsts Of The Year"
 	},
+	"when, title()": {
+		"en": "When",
+		"pt": "Quando"
+	},
+	"entry, title()": {
+		"en": "Entry",
+		"pt": "Entrada"
+	},
+	"entries, title()": {
+		"en": "Entries",
+		"pt": "Entradas"
+	},
 	"title, title()": {
 		"pt": "Título",
 		"en": "Title"
@@ -466,6 +478,14 @@
 	"titles, title()": {
 		"pt": "Títulos",
 		"en": "Titles"
+	},
+	"id, upper()": {
+		"en": "ID",
+		"pt": "ID"
+	},
+	"ids, title()": {
+		"en": "IDs",
+		"pt": "IDs"
 	},
 	"comment": {
 		"en": "comment",
@@ -482,6 +502,10 @@
 	"comments, title()": {
 		"pt": "Comentários",
 		"en": "Comments"
+	},
+	"commented, title()": {
+		"en": "Commented",
+		"pt": "Comentou"
 	},
 	"title_in_[language]": {
 		"pt": "Título em Português",
@@ -514,6 +538,18 @@
 	"username, title()": {
 		"en": "Username",
 		"pt": "Nome de usuário"
+	},
+	"art, title()": {
+		"en": "Art",
+		"pt": "Arte"
+	},
+	"programming, title()": {
+		"en": "Programming",
+		"pt": "Programação"
+	},
+	"of, neutral": {
+		"en": "of",
+		"pt": "de"
 	},
 	"genders, type: dict": {
 		"en": {

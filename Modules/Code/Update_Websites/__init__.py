@@ -178,7 +178,7 @@ class Update_Websites(Code):
 
 		while dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
 			print()
-			print(self.Language.language_texts["list, title()"] + ":")
+			print(self.JSON.Language.language_texts["list, title()"] + ":")
 			self.JSON.Show(websites["select_list"])
 
 			# Select website from the list and return its number
@@ -263,7 +263,7 @@ class Update_Websites(Code):
 				print(self.language_texts["website_link"] + ":")
 				print(link)
 				print()
-				print(self.Language.language_texts["language, title()"] + ":")
+				print(self.JSON.Language.language_texts["language, title()"] + ":")
 				print(self.languages["full_translated"][language][self.user_language])
 
 				if self.switches["testing"] == False:

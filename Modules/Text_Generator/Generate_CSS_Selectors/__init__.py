@@ -1,15 +1,5 @@
 # Generate CSS Selectors.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.File import File as File
-from Utility.Folder import Folder as Folder
-from Utility.Date import Date as Date
-from Utility.Input import Input as Input
-from Utility.JSON import JSON as JSON
-from Utility.Text import Text as Text
-
 class Generate_CSS_Selectors():
 	def __init__(self):
 		self.Define_Basic_Variables()
@@ -48,10 +38,18 @@ class Generate_CSS_Selectors():
 		self.Generate_And_Copy()
 
 	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
+
 		# Global Switches dictionary
 		self.switches = Global_Switches().global_switches
 
-		self.Language = Language()
 		self.File = File()
 		self.Folder = Folder()
 		self.Date = Date()
@@ -59,10 +57,10 @@ class Generate_CSS_Selectors():
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.languages = self.Language.languages
+		self.languages = self.JSON.Language.languages
 
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		self.user_language = self.JSON.Language.user_language
+		self.full_user_language = self.JSON.Language.full_user_language
 
 		self.Sanitize = self.File.Sanitize
 

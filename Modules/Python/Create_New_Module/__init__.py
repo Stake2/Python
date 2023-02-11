@@ -284,4 +284,4 @@ class Create_New_Module(Python):
 		print(self.large_bar)
 		print()
 
-		input(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"] + ": ")
+		input(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"] + ": ")

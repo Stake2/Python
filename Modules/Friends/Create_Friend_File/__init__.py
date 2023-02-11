@@ -218,4 +218,4 @@ class Create_Friend_File(Friends):
 
 		print(self.large_bar)
 
-		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

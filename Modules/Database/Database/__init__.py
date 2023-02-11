@@ -22,7 +22,6 @@ class Database(object):
 	def Define_Basic_Variables(self):
 		from Utility.Global_Switches import Global_Switches as Global_Switches
 
-		from Utility.API import API as API
 		from Utility.File import File as File
 		from Utility.Folder import Folder as Folder
 		from Utility.Date import Date as Date
@@ -32,7 +31,6 @@ class Database(object):
 
 		self.switches = Global_Switches().switches["global"]
 
-		self.API = API()
 		self.File = File()
 		self.Folder = Folder()
 		self.Date = Date()
@@ -87,7 +85,9 @@ class Database(object):
 			self.types[plural_type] = {
 				"singular": {},
 				"plural": {},
-				"genders": {}
+				"genders": {},
+				"folders": {},
+				"subfolders": {}
 			}
 
 			# Define singular and plural types
@@ -103,6 +103,13 @@ class Database(object):
 
 			for language in self.languages["small"]:
 				self.types[plural_type]["genders"][language] = self.types["genders"][language][gender]
+
+			# Define type subfolders
+			for language in self.languages["small"]:
+				self.types[plural_type]["subfolders"][language] = {}
+
+				for item in ["singular", "plural"]:
+					self.types[plural_type]["subfolders"][language][item] = self.types[plural_type][item][language]
 
 			# Create "Per Type" type folder
 			self.folders["history"]["current_year"]["per_type"][key] = {
@@ -137,6 +144,8 @@ class Database(object):
 		self.JSON.Edit(self.folders["data"]["types"], self.types)
 
 	def Define_Registry_Format(self):
+		from copy import deepcopy
+
 		# Define default Entries dictionary template
 		self.template = {
 			"Numbers": {
@@ -146,29 +155,48 @@ class Database(object):
 			"Dictionary": {}
 		}
 
-		self.entries = self.template.copy()
+		self.dictionaries = {
+			"Entries": deepcopy(self.template),
+			"Entry": {},
+			"Type": {}
+		}
 
 		# If Entries.json is not empty and has entries, get Entries dictionary from it
 		if self.File.Contents(self.folders["history"]["current_year"]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])["Entries"] != []:
-			self.entries = self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])
+			self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])
 
-		self.JSON.Edit(self.folders["history"]["current_year"]["entries"], self.entries)
-
-		# Define root Entries dictionary
-		self.type_entries = {}
+		self.JSON.Edit(self.folders["history"]["current_year"]["entries"], self.dictionaries["Entries"])
 
 		# Iterate through English types list
 		for plural_type in self.types["plural"]["en"]:
 			key = plural_type.lower().replace(" ", "_")
 
 			# Define default type dictionary
-			self.type_entries[plural_type] = deepcopy(self.template)
+			self.dictionaries["Entry Type"][plural_type] = deepcopy(self.template)
 
 			# If type "Entries.json" is not empty, get type Entries dictionary from it
 			if self.File.Contents(self.folders["history"]["current_year"]["per_type"][key]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])["Entries"] != []:
 				self.type_entries[plural_type] = self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])
 
-			self.JSON.Edit(self.folders["history"]["current_year"]["per_type"][key]["entries"], self.type_entries[plural_type])
+			self.JSON.Edit(self.folders["history"]["current_year"]["per_type"][key]["entries"], self.dictionaries["Entry Type"][plural_type])
+
+	def Define_States_Dictionary(self, dictionary):
+		dict_ = {}
+
+		keys = [
+			"First Entry In Year",
+			"First Type Entry In Year"
+		]
+
+		for key in keys:
+			if dictionary["Register"]["States"][key] == True:
+				state = True
+
+				key = key.title()
+
+				dict_[key] = state
+
+		return dict_
 
 if __name__ == "__main__":
 	Database()

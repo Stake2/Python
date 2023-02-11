@@ -13,7 +13,7 @@ class Create_New_Story(Stories):
 
 		self.Show_Story_Information([self.story["title"]])
 
-		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
 
 	def Type_Story_Information(self):
 		self.story_titles = {}
@@ -22,7 +22,7 @@ class Create_New_Story(Stories):
 		for information_item in self.language_texts["information_items, type: list"]:
 			english_information_item = self.texts["information_items, type: list"]["en"][i]
 
-			if information_item == self.Language.language_texts["title, title()"]:
+			if information_item == self.JSON.Language.language_texts["title, title()"]:
 				for language in self.languages["small"]:
 					translated_language = self.languages["full_translated"][language][self.user_language]
 
@@ -71,7 +71,7 @@ class Create_New_Story(Stories):
 
 				self.stories[self.story_titles["en"]]["Information"]["Website"] = self.links["Stake2 Website"] + self.story_titles["en"] + "/"
 
-			if information_item not in [self.Language.language_texts["title, title()"], self.language_texts["synopsis, title()"]]:
+			if information_item not in [self.JSON.Language.language_texts["title, title()"], self.language_texts["synopsis, title()"]]:
 				if information_item in [self.language_texts["creation_date"], self.language_texts["author, title()"]]:
 					information = self.Input.Type(information_item, next_line = True)
 

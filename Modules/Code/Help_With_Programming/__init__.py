@@ -74,10 +74,10 @@ class Help_With_Programming(Code):
 			if self.Folder.Exist(item_folder) == False:
 				value = False
 
-			if value == self.Language.language_texts["yes, title()"]:
+			if value == self.JSON.Language.language_texts["yes, title()"]:
 				value = True
 
-			if value == self.Language.language_texts["no, title()"]:
+			if value == self.JSON.Language.language_texts["no, title()"]:
 				value = False
 
 			self.programming_language_settings[item_name] = value
@@ -156,16 +156,16 @@ class Help_With_Programming(Code):
 				if item_name in self.mode_settings_read:
 					value = self.mode_settings_read[item_name]
 
-				if value == self.Language.language_texts["yes, title()"]:
+				if value == self.JSON.Language.language_texts["yes, title()"]:
 					value = True
 
-				if value == self.Language.language_texts["no, title()"]:
+				if value == self.JSON.Language.language_texts["no, title()"]:
 					value = False
 
 				self.mode_settings[mode_name][item_name] = value
 
 		self.options = self.mode_names
-		self.language_options = self.Language.Item(self.language_mode_names)
+		self.language_options = self.JSON.Language.Item(self.language_mode_names)
 
 		self.show_text = self.language_texts["programming_modes"]
 		self.select_text = self.language_texts["select_the_programming_mode"]
@@ -208,7 +208,7 @@ class Help_With_Programming(Code):
 				if language_name not in self.function_data:
 					self.function_data[language] = self.language_mode_names[self.programming_mode][language]
 
-		self.code_title = self.Language.Item(self.function_data)
+		self.code_title = self.JSON.Language.Item(self.function_data)
 
 		self.ellipsis_in_title = False
 
@@ -342,10 +342,10 @@ class Help_With_Programming(Code):
 				if tool_sub_name in tool_info:
 					value = tool_info[tool_sub_name]
 
-					if value == self.Language.language_texts["yes, title()"]:
+					if value == self.JSON.Language.language_texts["yes, title()"]:
 						value = True
 
-					if value == self.Language.language_texts["no, title()"]:
+					if value == self.JSON.Language.language_texts["no, title()"]:
 						value = False
 
 					tool_data[tool_sub_name] = value

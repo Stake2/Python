@@ -24,7 +24,7 @@ class Select_Story(Stories):
 			self.class_descriptions.append(class_description)
 
 		# Select class
-		class_ = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["select_one_story_class_to_execute"], select_text = self.Language.language_texts["select_one_class_to_execute"])["option"]
+		class_ = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["select_one_story_class_to_execute"], select_text = self.JSON.Language.language_texts["select_one_class_to_execute"])["option"]
 
 		# Execute class
 		class_(story = self.story)

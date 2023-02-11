@@ -97,6 +97,7 @@ class Date():
 		date["ISO 8601"] = date["date"].isoformat()
 		date["%Y-%m-%d %H:%M:%S"] = date["date"].strftime("%Y-%m-%d %H:%M:%S")
 		date["%H:%M %d/%m/%Y"] = date["date"].strftime("%H:%M %d/%m/%Y")
+		date["hh:mm DD/MM/YYYY"] = date["date"].strftime("%H:%M %d/%m/%Y")
 
 		return date
 
@@ -120,10 +121,14 @@ class Date():
 
 		return date.strftime(format)
 
-	def From_String(self, string):
+	def From_String(self, string, format = ""):
 		from dateutil import parser
 
-		date = parser.parse(string)
+		if format == "":
+			date = parser.parse(string)
+
+		if format != "":
+			date = datetime.strptime(string, format)
 
 		date = self.Now(date)
 

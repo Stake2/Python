@@ -1,17 +1,5 @@
 # Years.py
 
-from Utility.Global_Switches import Global_Switches as Global_Switches
-
-from Utility.Language import Language as Language
-from Utility.File import File as File
-from Utility.Folder import Folder as Folder
-from Utility.Date import Date as Date
-from Utility.Input import Input as Input
-from Utility.JSON import JSON as JSON
-from Utility.Text import Text as Text
-
-from copy import deepcopy
-
 class Years(object):
 	def __init__(self, select_year = False):
 		self.select_year = select_year
@@ -31,9 +19,17 @@ class Years(object):
 			self.Select_Year()
 
 	def Define_Basic_Variables(self):
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
+		from Utility.File import File as File
+		from Utility.Folder import Folder as Folder
+		from Utility.Date import Date as Date
+		from Utility.Input import Input as Input
+		from Utility.JSON import JSON as JSON
+		from Utility.Text import Text as Text
+
 		self.switches = Global_Switches().switches["global"]
 
-		self.Language = Language()
 		self.File = File()
 		self.Folder = Folder()
 		self.Date = Date()
@@ -41,10 +37,10 @@ class Years(object):
 		self.JSON = JSON()
 		self.Text = Text()
 
-		self.languages = self.Language.languages
+		self.languages = self.JSON.Language.languages
 
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		self.user_language = self.JSON.Language.user_language
+		self.full_user_language = self.JSON.Language.full_user_language
 
 		self.Sanitize = self.File.Sanitize
 
@@ -58,14 +54,14 @@ class Years(object):
 
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.texts = self.Language.Mix(self.texts, "years, title()", ["en", "pt"], item = True)
-		self.texts = self.Language.Mix(self.texts, "new_year", ["en", "pt"], item = True)
-		self.texts = self.Language.Mix(self.texts, "christmas, title()", ["en", "pt"], item = True)
-		self.texts = self.Language.Mix(self.texts, "texts, title()", ["en", "pt"], item = True)
-		self.texts = self.Language.Mix(self.texts, "watch, title()", ["en", "pt"], item = True)
-		self.texts = self.Language.Mix(self.texts, "year_summary_texts, type: list", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "years, title()", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "new_year", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "christmas, title()", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "texts, title()", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "watch, title()", ["en", "pt"], item = True)
+		self.texts = self.JSON.Language.Mix(self.texts, "year_summary_texts, type: list", ["en", "pt"], item = True)
 
-		self.language_texts = self.Language.Item(self.texts)
+		self.language_texts = self.JSON.Language.Item(self.texts)
 
 		self.language_texts["month_names, type: list"] = self.Date.language_texts["month_names, type: list"]
 
@@ -75,13 +71,10 @@ class Years(object):
 		self.watch_history_folder = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + "Watch History/"
 		self.Folder.Create(self.watch_history_folder)
 
-		self.watched_folder = self.watch_history_folder + "Watched/"
-		self.Folder.Create(self.watched_folder)
+		self.current_year_watched_folder = self.watch_history_folder + str(self.date["year"]) + "/"
+		self.Folder.Create(self.current_year_watched_folder)
 
-		self.current_year_watched_media_folder = self.watched_folder + str(self.date["year"]) + "/"
-		self.Folder.Create(self.current_year_watched_media_folder)
-
-		self.episodes_file = self.current_year_watched_media_folder + "Episodes.json"
+		self.episodes_file = self.current_year_watched_folder + "Entries.json"
 		self.File.Create(self.episodes_file)
 
 		# Year text folders
@@ -148,6 +141,8 @@ class Years(object):
 
 		# Current Year dictionary definition
 		self.current_year = self.years[str(self.date["year"])]
+
+		from copy import deepcopy
 
 		# Write Years dictionary converted to JSON on "Years.json" file
 		dictionary = deepcopy(self.years)

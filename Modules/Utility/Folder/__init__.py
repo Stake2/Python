@@ -235,8 +235,8 @@ class Folder():
 					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"], str(item) + "/"),
 				}
 
-			# Episodes.json file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["episodes"] = self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Episodes.json"
+			# Entries.json file
+			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["entries"] = self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Entries.json"
 
 			# Entry list.txt file
 			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Entry list.txt"
