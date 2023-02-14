@@ -2,8 +2,6 @@
 
 from Tasks.Tasks import Tasks as Tasks
 
-from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
-
 class Register(Tasks):
 	def __init__(self, task = {}, show_text = True):
 		super().__init__()
@@ -21,6 +19,9 @@ class Register(Tasks):
 			if "Descriptions" not in self.dictionaries["Task"]:
 				self.dictionaries["Task"]["Descriptions"] = self.dictionaries["Task"]["Titles"]
 
+		if type(self.dictionaries["Task"]["Type"]) == str:
+			self.dictionaries["Task"]["Type"] = self.task_types[self.dictionaries["Task"]["Type"]]
+
 		self.dictionaries["Task"].update({
 			"Times": {
 				"UTC": self.Date.To_String(self.dictionaries["Task"]["Time"]["utc"]),
@@ -36,6 +37,8 @@ class Register(Tasks):
 		self.Register_In_JSON()
 		self.Create_Entry_File()
 		self.Add_Entry_File_To_Year_Folder()
+
+		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 		# Write on Diary Slim
 		Write_On_Diary_Slim_Module(self.dictionaries["Task"]["Descriptions"][self.user_language], self.dictionaries["Task"]["Times"]["Timezone"], show_text = False)
@@ -114,6 +117,7 @@ class Register(Tasks):
 			"Entry": self.dictionaries["Task"]["Name"]["Normal"],
 			"Titles": self.dictionaries["Task"]["Titles"],
 			"Type": self.task_type,
+			"Lines": len(self.dictionaries["Task"]["Descriptions"]["en"].splitlines()),
 			"Time": self.dictionaries["Task"]["Times"]["UTC"]
 		}
 
@@ -219,18 +223,22 @@ class Register(Tasks):
 			for key in dict_:
 				key = key.lower()
 
-				text_key = key
+				text_key = key.replace(" ", "_")
 
-				if key != "First Task Type Task In Year":
-					language_text = self.texts[text_key][language]
+				if key != "first task type task in year":
+					if text_key in self.JSON.Language.texts:
+						language_text = self.JSON.Language.texts[text_key][language]
 
-				if key == "First Task Type Task In Year":
-					task_type = self.task_types["items, type: dict"][language][self.task_type]
+					else:
+						language_text = self.texts[text_key][language]
+
+				if key == "first task type task in year":
+					task_item = self.task_types["items, type: dict"][language][self.task_type].lower()
 
 					if self.task_type in ["Python", "PHP"]:
-						task_type = self.texts["{}_task"][language].format(self.task_types["items, type: dict"][language][self.task_type])
+						task_item = self.texts["{}_task"][language].format(self.task_types["items, type: dict"][language][self.task_type])
 
-					language_text = self.texts["first_{}_in_year"][language].format(task_type)
+					language_text = self.JSON.Language.texts["first_{}_in_year"][language].format(task_type)
 
 				text += language_text
 
@@ -250,7 +258,7 @@ class Register(Tasks):
 
 		lines.append("\n" + text + ":" + line_break + "{}")
 
-		# Define items to be added to task text format
+		# Define items to be added to file text format
 		items = []
 
 		# Add task titles to items list
@@ -335,7 +343,6 @@ class Register(Tasks):
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
-			type_folder = self.task_types["items, type: dict"][language][self.task_type]
 			subfolder_name = self.dictionaries["Task"]["Type"]["subfolders"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
@@ -346,25 +353,25 @@ class Register(Tasks):
 
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
-			# Firsts Of The Year media type folder
-			type_folder = self.task_types["type_folders, type: dict"][self.task_type]
+			# Firsts Of The Year task type folder
+			item_folder = self.dictionaries["Task"]["Type"]["item_folders"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
-			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
-				"root": folder + type_folder + "/"
+			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder] = {
+				"root": folder + item_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
+			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"])
 
 			# First task type task in year file
-			if self.dictionaries["Task"]["States"]["First Task In Year"] == True:
-				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
+			if self.dictionaries["Task"]["States"]["First Task Type Task In Year"] == True:
+				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"]
 
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
+				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name])
 
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionaries["Task"]["Text"][language], "w")
+				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name], self.dictionaries["Task"]["Text"][language], "w")
 
 	def Show_Information(self):
 		print()

@@ -238,11 +238,11 @@ class Watch_History(object):
 				self.media_types[plural_media_type]["genders"][language] = self.media_types["genders"][language][gender]
 
 			# Create folders
-			for root_folder in ["Comments", "Media Info", "Watch History"]:
+			for root_folder in ["Media Info", "Watch History"]:
 				root_key = root_folder.lower().replace(" ", "_")
 				key = plural_media_type.lower().replace(" ", "_")
 
-				if root_folder != "Watch History":
+				if root_folder == "Media Info":
 					self.folders[root_key][key] = {
 						"root": self.folders[root_key]["root"] + language_media_type + "/",
 					}
@@ -276,7 +276,6 @@ class Watch_History(object):
 			key = self.media_types[plural_media_type]["plural"]["en"].lower().replace(" ", "_")
 
 			self.media_types[plural_media_type]["folders"] = {
-				"comments": self.folders["comments"][key],
 				"media_info": self.folders["media_info"][key],
 				"per_media_type": self.folders["watch_history"]["current_year"]["per_media_type"][key]
 			}
@@ -386,6 +385,7 @@ class Watch_History(object):
 			"Root Comments": {
 				"Numbers": {
 					"Total": 0,
+					"No time": 0,
 					"Years": {},
 					"Type": {}
 				}
@@ -418,6 +418,9 @@ class Watch_History(object):
 			if self.File.Contents(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])["Entries"] != []:
 				self.dictionaries["Media Type"][plural_media_type] = self.JSON.To_Python(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])
 
+			# Get media type comment number per year
+			self.dictionaries["Media Type"][plural_media_type]["Numbers"]["Comments"] = self.dictionaries["Root Comments"]["Numbers"]["Type"][plural_media_type]["Years"][str(self.date["year"])]
+
 			self.JSON.Edit(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"], self.dictionaries["Media Type"][plural_media_type])
 
 			if plural_media_type not in self.dictionaries["Root Comments"]["Numbers"]["Type"]:
@@ -429,15 +432,6 @@ class Watch_History(object):
 			# If the current year is not inside the media type year comment number dictionary, add it
 			if str(self.date["year"]) not in self.dictionaries["Root Comments"]["Numbers"]["Type"][plural_media_type]["Years"]:
 				self.dictionaries["Root Comments"]["Numbers"]["Type"][plural_media_type]["Years"][self.date["year"]] = 0
-
-		# Define total comment number as zero
-		self.dictionaries["Root Comments"]["Numbers"]["Total"] = 0
-
-		# Count comment numbers of all years to get total comment number
-		for year in self.dictionaries["Root Comments"]["Numbers"]["Years"]:
-			number = self.dictionaries["Root Comments"]["Numbers"]["Years"][year]
-
-			self.dictionaries["Root Comments"]["Numbers"]["Total"] += number
 
 		# Update "Comments.json" file with updated Comments dictionary
 		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root Comments"])
@@ -559,9 +553,6 @@ class Watch_History(object):
 			media["folders"].update({
 				"media": {
 					"root": dictionary["Media"]["folders"]["media"]["root"]
-				},
-				"media_type_comments": {
-					"root": dictionary["Media"]["folders"]["media_type_comments"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
 			})
 
@@ -582,9 +573,6 @@ class Watch_History(object):
 				"root": dictionary["media_type"]["folders"]["media_info"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
 				"media": {
 					"root": self.Folder.folders["root"]["mídias"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
-				},
-				"media_type_comments": {
-					"root": self.folders["comments"][dictionary["media_type"]["plural"]["en"].lower()]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
 				}
 			}
 
@@ -747,6 +735,8 @@ class Watch_History(object):
 		return dictionary
 
 	def Define_Media_Item(self, dictionary, watch = False, media_item = None):
+		from copy import deepcopy
+
 		if dictionary["Media"]["States"]["series_media"] == True:
 			dictionary["Media"]["items"] = {
 				"folders": {
@@ -989,11 +979,9 @@ class Watch_History(object):
 					# Get playlist from JSON file
 					dictionary["Media"]["item"]["playlist"] = self.JSON.To_Python(dictionary["Media"]["item"]["folders"]["playlist"])
 
-		# Define media type comments folder comments file for media with media list
-		dictionary["Media"]["item"]["folders"]["media_type_comments"]["comments"] = dictionary["Media"]["item"]["folders"]["media_type_comments"]["root"] + self.JSON.Language.texts["comments, title()"]["en"] + ".json"
-		self.File.Create(dictionary["Media"]["item"]["folders"]["media_type_comments"]["comments"])
-
 		folder = dictionary["Media"]["item"]["folders"]["comments"]
+
+		self.dictionaries["Comments"] = deepcopy(self.template)
 
 		if "Comments" in self.dictionaries["Comments"]["Numbers"]:
 			self.dictionaries["Comments"]["Numbers"].pop("Comments")
@@ -1076,7 +1064,6 @@ class Watch_History(object):
 		self.dictionaries["Comments"]["Numbers"]["Total"] = len(self.dictionaries["Comments"]["Entries"])
 
 		self.JSON.Edit(folder["comments"], self.dictionaries["Comments"])
-		self.JSON.Edit(dictionary["Media"]["item"]["folders"]["media_type_comments"]["comments"], self.dictionaries["Comments"])
 
 		# Create "Files" folder file inside "Watched" folder
 		dictionary["Media"]["item"]["folders"]["watched"]["files"] = {
@@ -1088,6 +1075,8 @@ class Watch_History(object):
 		# Create "Entries.json" file inside "Watched" folder
 		dictionary["Media"]["item"]["folders"]["watched"]["entries"] = dictionary["Media"]["item"]["folders"]["watched"]["root"] + "Entries.json"
 		self.File.Create(dictionary["Media"]["item"]["folders"]["watched"]["entries"])
+
+		self.dictionaries["Watched"] = deepcopy(self.template)
 
 		if (
 			self.File.Contents(dictionary["Media"]["item"]["folders"]["watched"]["entries"])["lines"] != [] and 

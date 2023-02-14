@@ -270,7 +270,7 @@ class Register(Watch_History):
 							container = self.media_dictionary["Media"]["texts"]["unit"][language] + " " + self.JSON.Language.texts["of, neutral"][language] + " " + self.media_dictionary["Media"]["texts"]["container"][language]
 
 					if key in ["first entry in year", "first media type entry in year"]:
-						language_text = self.texts["first_{}_in_year"][language].format(container)
+						language_text = self.JSON.Language.texts["first_{}_in_year"][language].format(container)
 
 					text += language_text
 
@@ -392,7 +392,6 @@ class Register(Watch_History):
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.texts["media, title()"][language]
-			type_folder = self.media_dictionary["media_type"]["singular"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
 
@@ -404,14 +403,15 @@ class Register(Watch_History):
 
 			# Firsts Of The Year media type folder
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
-			
+			type_folder = self.media_dictionary["media_type"]["singular"][language]
+
 			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
 
-			# First media type episode in year file
+			# First media type entry in year file
 			if self.media_dictionary["Media"]["States"]["First Media Type Entry In Year"] == True:
 				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
 

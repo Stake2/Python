@@ -83,10 +83,6 @@
 		"en": "First task in year",
 		"pt": "Primeira tarefa no ano"
 	},
-	"first_{}_in_year": {
-		"en": "First {} in year",
-		"pt": "Primeiro {} no ano"
-	},
 	"{}_task": {
 		"en": "{} task",
 		"pt": "tarefa de {}"

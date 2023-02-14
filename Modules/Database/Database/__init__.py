@@ -18,6 +18,7 @@ class Database(object):
 		self.Define_Folders_And_Files()
 
 		self.Define_Types()
+		self.Define_Registry_Format()
 
 	def Define_Basic_Variables(self):
 		from Utility.Global_Switches import Global_Switches as Global_Switches
@@ -69,13 +70,6 @@ class Database(object):
 	def Define_Types(self):
 		self.types = self.JSON.To_Python(self.folders["data"]["types"])
 
-		self.types = {
-			"singular": self.types["singular"],
-			"plural": self.types["plural"],
-			"genders": self.JSON.Language.texts["genders, type: dict"],
-			"gender_items": self.JSON.Language.texts["gender_items"]
-		}
-
 		# Iterate through English plural types list
 		i = 0
 		for plural_type in self.types["plural"]["en"]:
@@ -85,7 +79,6 @@ class Database(object):
 			self.types[plural_type] = {
 				"singular": {},
 				"plural": {},
-				"genders": {},
 				"folders": {},
 				"subfolders": {}
 			}
@@ -94,15 +87,6 @@ class Database(object):
 			for language in self.languages["small"]:
 				for item in ["singular", "plural"]:
 					self.types[plural_type][item][language] = self.types[item][language][i]
-
-			# Define genders
-			gender = "masculine"
-
-			if plural_type == self.texts["series, title()"]["en"]:
-				gender = "feminine"
-
-			for language in self.languages["small"]:
-				self.types[plural_type]["genders"][language] = self.types["genders"][language][gender]
 
 			# Define type subfolders
 			for language in self.languages["small"]:
@@ -158,7 +142,7 @@ class Database(object):
 		self.dictionaries = {
 			"Entries": deepcopy(self.template),
 			"Entry": {},
-			"Type": {}
+			"Entry Type": {}
 		}
 
 		# If Entries.json is not empty and has entries, get Entries dictionary from it
@@ -189,7 +173,7 @@ class Database(object):
 		]
 
 		for key in keys:
-			if dictionary["Register"]["States"][key] == True:
+			if dictionary["States"][key] == True:
 				state = True
 
 				key = key.title()

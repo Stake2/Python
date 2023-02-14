@@ -255,6 +255,25 @@ class Folder():
 
 			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["data"]["root"], item)
 
+		# Networks/Database Network/History folders
+		for item in [self.date["year"]]:
+			key = str(item).lower().replace(" ", "_")
+
+			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key] = {
+				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"]["root"], str(item) + "/"),
+			}
+
+			for item in ["Per Type"]:
+				self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key][item] = {
+					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"], str(item) + "/"),
+				}
+
+			# Entries.json file
+			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["entries"] = self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"] + "Entries.json"
+
+			# Entry list.txt file
+			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"] + "Entry list.txt"
+
 		# Mega Notepad/Effort/Networks/Productive Network folders
 		for item in ["Data", "Task History"]:
 			key = item.lower().replace(" ", "_")
@@ -285,7 +304,7 @@ class Folder():
 			# Tasks.json file
 			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["tasks"] = self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Tasks.json"
 
-			# Task list.txt file
+			# Entry list.txt file
 			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Entry list.txt"
 
 		# Years folders

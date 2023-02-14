@@ -6,19 +6,19 @@ class Show_Tasks(Tasks):
 	def __init__(self):
 		super().__init__()
 
-		self.tasks = self.JSON.From_Python(self.tasks)
-		self.tasks = self.tasks.replace("{", "[")
-		self.tasks = self.tasks.replace("}", "]")
-		self.tasks = self.tasks.replace("],", "]\n")
-		self.tasks = self.tasks.replace(",\n    ", "\n\n    ")
-		self.tasks = self.tasks.replace(",", "")
-		self.tasks = self.tasks.replace('    \"', '"')
-		self.tasks = self.tasks.replace("    ]", "]")
-		self.tasks = self.tasks[1:]
-		self.tasks = self.tasks[:-2]
+		self.dictionaries["Tasks"] = self.JSON.From_Python(self.dictionaries["Tasks"])
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace("{", "[")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace("}", "]")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace("],", "]\n")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace(",\n    ", "\n\n    ")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace(",", "")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace('    \"', '"')
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"].replace("    ]", "]")
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"][1:]
+		self.dictionaries["Tasks"] = self.dictionaries["Tasks"][:-2]
 
 		print()
 		print(self.large_bar)
-		print(self.tasks)
+		print(self.dictionaries["Tasks"])
 		print()
 		print(self.large_bar)

@@ -15,7 +15,7 @@ class Register(Database):
 		self.dictionaries["Entry"].update({
 			"Times": {
 				"UTC": self.Date.To_String(self.dictionaries["Entry"]["Time"]["utc"]),
-				"User Format": self.dictionaries["Entry"]["Time"]["hh:mm DD/MM/YYYY"]
+				"Timezone": self.dictionaries["Entry"]["Time"]["hh:mm DD/MM/YYYY"]
 			},
 			"States": {
 				"First Entry In Year": False,
@@ -28,6 +28,8 @@ class Register(Database):
 		self.Create_Entry_File()
 		self.Add_Entry_File_To_Year_Folder()
 
+		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
+
 		# Write on Diary Slim
 		Write_On_Diary_Slim_Module(self.dictionaries["Entry"]["Titles"][self.user_language], self.dictionaries["Entry"]["Times"]["Timezone"], show_text = False)
 
@@ -37,7 +39,7 @@ class Register(Database):
 		options = self.types["plural"]["en"]
 		language_options = self.types["plural"][self.user_language]
 
-		show_text = self.JSON.Language.language_texts["types"]
+		show_text = self.JSON.Language.language_texts["types, title()"]
 		select_text = self.JSON.Language.language_texts["select_a_type"]
 
 		dictionary = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
@@ -67,7 +69,7 @@ class Register(Database):
 		if self.dictionaries["Entries"]["Numbers"]["Total"] == 1:
 			self.dictionaries["Entry"]["States"]["First Entry In Year"] = True
 
-		if self.dictionaries["Entry Type"]["Numbers"]["Total"] == 1:
+		if self.dictionaries["Entry Type"][self.type]["Numbers"]["Total"] == 1:
 			self.dictionaries["Entry"]["States"]["First Type Entry In Year"] = True
 
 		# Define sanitized version of entry name for files
@@ -80,7 +82,7 @@ class Register(Database):
 
 		# Add to "Entries" list
 		self.dictionaries["Entries"]["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
-		self.dictionaries["Entry Type"]["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
+		self.dictionaries["Entry Type"][self.type]["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
 
 		self.key = self.dictionaries["Entry"]["Name"]["Normal"]
 
@@ -88,7 +90,7 @@ class Register(Database):
 			"Number": self.dictionaries["Entries"]["Numbers"]["Total"],
 			"Type number": self.dictionaries["Entry Type"][self.type]["Numbers"]["Total"],
 			"Entry": self.dictionaries["Entry"]["Name"]["Normal"],
-			"Title": self.dictionaries["Entry"]["Name"],
+			"Titles": self.dictionaries["Entry"]["Titles"],
 			"Type": self.type,
 			"Time": self.dictionaries["Entry"]["Times"]["UTC"]
 		}
@@ -127,7 +129,7 @@ class Register(Database):
 		# File name: [Number. Type (Time)]
 
 		# Define entry file
-		folder = self.dictionaries["Entry"]["Type"]["folders"]["per_media_type"]["files"]["root"]
+		folder = self.dictionaries["Entry"]["Type"]["folders"]["per_type"]["files"]["root"]
 		file = folder + self.dictionaries["Entry"]["Name"]["Sanitized"] + ".txt"
 		self.File.Create(file)
 
@@ -171,8 +173,38 @@ class Register(Database):
 			self.JSON.Language.texts["entry, title()"][language] + ": " + self.dictionaries["Entry"]["Name"]["Normal"]
 		])
 
-		# Define language entry text
-		file_text = self.Text.From_List(lines)
+		# Add states texts lines
+		if "States" in self.dictionaries["Entries"]["Dictionary"][self.dictionaries["Entry"]["Name"]["Normal"]]:
+			dict_ = self.dictionaries["Entries"]["Dictionary"][self.dictionaries["Entry"]["Name"]["Normal"]]["States"]
+
+			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
+
+			for key in dict_:
+				key = key.lower()
+
+				text_key = key.replace(" ", "_")
+
+				if key != "first type entry in year":
+					if text_key in self.JSON.Language.texts:
+						language_text = self.JSON.Language.texts[text_key][language]
+
+					else:
+						language_text = self.texts[text_key][language]
+
+				if key == "first type entry in year":
+					entry_item = self.types["items, type: dict"][language][self.type]
+
+					language_text = self.JSON.Language.texts["first_{}_in_year"][language].format(entry_item)
+
+				text += language_text
+
+				if key != list(dict_.keys())[-1].lower():
+					text += "\n"
+
+			lines.append(text)
+
+		# Define items to be added to file text format
+		items = []
 
 		# Add entry titles to items list
 		titles = ""
@@ -195,6 +227,9 @@ class Register(Database):
 			times += time + "\n"
 
 		items.append(times)
+
+		# Define language entry text
+		file_text = self.Text.From_List(lines)
 
 		return file_text.format(*items)
 
@@ -236,8 +271,7 @@ class Register(Database):
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
-			type_folder = self.dictionaries["Entry"]["Type"]["singular"][language]
-			subfolder_name = self.JSON.Language.texts["entry, title()"][language]
+			subfolder_name = self.JSON.Language.texts["entries, title()"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
 
@@ -249,7 +283,8 @@ class Register(Database):
 
 			# Firsts Of The Year type folder
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
-			
+			type_folder = self.dictionaries["Entry"]["Type"]["singular"][language]
+
 			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
@@ -257,7 +292,7 @@ class Register(Database):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
 
 			# First type entry in year file
-			if self.dictionaries["Entry"]["states"]["first_entry_in_year"] == True:
+			if self.dictionaries["Entry"]["States"]["First Type Entry In Year"] == True:
 				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
 
 				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
@@ -281,11 +316,11 @@ class Register(Database):
 
 		print(self.JSON.Language.language_texts["type, title()"] + ":")
 
-		text = self.dictionaries["Entry"]["Type"]
+		text = self.dictionaries["Entry"]["Type"]["plural"]["en"]
 
 		if self.dictionaries["Entry"]["Type"]["plural"][self.user_language] != self.dictionaries["Entry"]["Type"]["plural"]["en"]:
 			text = "\t" + text + "\n"
-			text += "\t" + self.dictionaries["Entry"]["Types"][self.user_language]
+			text += "\t" + self.dictionaries["Entry"]["Type"]["plural"][self.user_language]
 
 		print(text)
 		print()

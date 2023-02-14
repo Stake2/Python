@@ -163,10 +163,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define task dictionary with titles, descriptions, type, time, and files
 		self.task_dictionary = {
 			"Titles": {},
-			"Tescriptions": {},
-			"Types": self.text["key"],
+			"Descriptions": {},
+			"Type": self.text["key"],
 			"Time": self.Date.Now(),
-			"files": {}
+			"Files": {}
 		}
 
 		print()
@@ -178,11 +178,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
-			self.task_dictionary["files"][language] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
-			self.File.Create(self.task_dictionary["files"][language])
+			self.task_dictionary["Files"][language] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
+			self.File.Create(self.task_dictionary["Files"][language])
 
-			if self.File.Exist(self.task_dictionary["files"][language]) == True:
-				self.File.Open(self.task_dictionary["files"][language])
+			if self.File.Exist(self.task_dictionary["Files"][language]) == True:
+				self.File.Open(self.task_dictionary["Files"][language])
 
 		# Create text with all languages translated to user language
 		languages_text = ""
@@ -210,12 +210,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Define task descriptions and make a backup of them
 		for language in self.languages["small"]:
-			self.task_dictionary["titles"][language] = self.text["texts"][language] + "."
+			self.task_dictionary["Titles"][language] = self.text["texts"][language] + "."
 
-			self.task_dictionary["descriptions"][language] = self.task_dictionary["titles"][language] + "\n\n"
-			self.task_dictionary["descriptions"][language] += self.File.Contents(self.task_dictionary["files"][language])["string"]
+			self.task_dictionary["Descriptions"][language] = self.task_dictionary["Titles"][language] + "\n\n"
+			self.task_dictionary["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
 
-			text = self.task_dictionary["descriptions"][language]
+			text = self.task_dictionary["Descriptions"][language]
 
 			if language != self.languages["small"][-1]:
 				text += "\n\n"
@@ -223,21 +223,23 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Make backup
 			self.File.Edit(self.backup_file, text, "a", next_line = False)
 
-			self.File.Delete(self.task_dictionary["files"][language])
+			self.File.Delete(self.task_dictionary["Files"][language])
 
 	def Write(self):
 		text_to_write = self.text["texts"][self.user_language]
 
 		# Register task and delete backup file if text key is in slim texts
 		if self.text["key"] in self.slim_texts:
-			import Tasks
+			self.Tasks = self
 
-			self.Tasks = Tasks()
+			from Tasks.Register import Register as Register
+
+			self.Tasks.Register = Register
 
 			self.Tasks.Register(self.task_dictionary)
 
 			if self.switches["verbose"] == True:
-				self.task_dictionary["time"] = str(self.task_dictionary["time"])
+				self.task_dictionary["Time"] = str(self.task_dictionary["Time"])
 
 				self.JSON.Show(self.task_dictionary)
 

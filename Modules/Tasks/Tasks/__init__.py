@@ -80,7 +80,9 @@ class Tasks(object):
 				"singular": {},
 				"plural": {},
 				"folders": {},
-				"subfolders": {}
+				"subfolders": {},
+				"item_folders": {},
+				"items": {}
 			}
 
 			# Define singular and plural types
@@ -120,6 +122,9 @@ class Tasks(object):
 				for item in ["Art", "Programming"]:
 					if plural_task_type in self.task_types["subfolders, type: dict"][item]:
 						self.task_types[plural_task_type]["subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
+
+				# Define task item folders
+				self.task_types[plural_task_type]["item_folders"][language] = self.task_types["items, type: dict"][language][plural_task_type]
 
 			i += 1
 

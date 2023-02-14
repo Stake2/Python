@@ -551,6 +551,14 @@
 		"en": "of",
 		"pt": "de"
 	},
+	"first_{}_in_year": {
+		"en": "First {} in year",
+		"pt": "Primeiro {} no ano"
+	},
+	"first_entry_in_year": {
+		"en": "First entry in year",
+		"pt": "Primeira entrada no ano"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {
