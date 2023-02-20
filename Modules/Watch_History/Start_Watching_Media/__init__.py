@@ -39,7 +39,7 @@ class Start_Watching_Media(Watch_History):
 		self.media_details = self.File.Dictionary(self.media_details_file)
 
 		# Media title and Portuguese media title variables
-		self.media_title = self.media_details[self.language_texts["original_name"]]
+		self.media_title = self.media_details[self.JSON.Language.language_texts["original_name"]]
 
 		# Watching Status files and media
 		self.watching_status_files = self.option_info["watching_status_files"]

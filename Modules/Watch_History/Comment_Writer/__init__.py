@@ -88,21 +88,22 @@ class Comment_Writer(Watch_History):
 			if add == True:
 				self.media_dictionary["Media"]["comment"]["file_name"] += self.media_dictionary["Media"]["episode"]["separator"] + " "
 
-			if "number_text" in self.media_dictionary["Media"]["episode"] and self.media_dictionary["Media"]["States"]["episodic"] == True:
-				self.media_dictionary["Media"]["comment"]["file_name"] += self.media_dictionary["Media"]["episode"]["number_text"]
+			if self.media_dictionary["Media"]["States"]["episodic"] == True:
+				if "number_text" in self.media_dictionary["Media"]["episode"]:
+					self.media_dictionary["Media"]["comment"]["file_name"] += self.media_dictionary["Media"]["episode"]["number_text"]
 
-			if self.media_dictionary["Media"]["States"]["video"] == True and self.media_dictionary["Media"]["States"]["episodic"] == False:
+				else:
+					self.media_dictionary["Media"]["comment"]["file_name"] += str(self.Text.Add_Leading_Zeros(self.media_dictionary["Media"]["episode"]["number"]))
+
+			if self.media_dictionary["Media"]["States"]["episodic"] == False:
 				self.media_dictionary["Media"]["comment"]["file_name"] = self.media_dictionary["Media"]["episode"]["title"]
-
-			else:
-				self.media_dictionary["Media"]["comment"]["file_name"] += str(self.Text.Add_Leading_Zeros(self.media_dictionary["Media"]["episode"]["number"]))
 
 		# Comment file name for movies
 		if self.media_dictionary["Media"]["States"]["series_media"] == False or self.media_dictionary["Media"]["States"]["single_unit"] == True:
 			self.media_dictionary["Media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
 
 		# Media folder comment file
-		self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["Media"]["item"]["folders"]["comments"]["root"] + self.media_dictionary["Media"]["comment"]["file_name"] + ".txt"
+		self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["Media"]["item"]["folders"]["comments"]["root"] + self.Sanitize(self.media_dictionary["Media"]["comment"]["file_name"], restricted_characters = True) + ".txt"
 		self.File.Create(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"])
 
 		# Read Comments.json file to get comments dictionary

@@ -442,14 +442,14 @@ class Register(Watch_History):
 
 			if self.media_dictionary["Media"]["States"]["single_unit"] == False:
 				# Replace "this" text with "the first" if the episode is the first one
-				if self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language][0]:
+				if self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]][0]:
 					self.watched_item_text = self.watched_item_text.replace(self.language_texts["this, masculine"], self.language_texts["the_first, masculine"])
 
 				# Replace "this" text with "the last" if the episode is the last one
-				if self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language][-1] or len(self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language]) == 1:
+				if self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]][-1] or len(self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]]) == 1:
 					self.watched_item_text = self.watched_item_text.replace(self.language_texts["this, masculine"], self.language_texts["the_last, masculine"])
 
-			if "Movie" in self.media_dictionary["Media"]["episode"]["titles"][self.user_language]:
+			if "Movie" in self.media_dictionary["Media"]["episode"]["titles"][self.media_dictionary["Media"]["Language"]]:
 				self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.language_texts["movie"])
 
 			self.of_the_text = self.language_texts["of_the_{}"]
@@ -494,10 +494,10 @@ class Register(Watch_History):
 
 		# Add language media episode (or movie title)
 		if self.media_dictionary["Media"]["States"]["single_unit"] == False:
-			self.media_dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media_dictionary["Media"]["episode"]["titles"][self.user_language]
+			self.media_dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media_dictionary["Media"]["episode"]["titles"][self.media_dictionary["Media"]["Language"]]
 
 		if self.media_dictionary["Media"]["States"]["single_unit"] == True:
-			self.media_dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media_dictionary["Media"]["episode"]["with_title"][self.user_language]
+			self.media_dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media_dictionary["Media"]["episode"]["with_title"][self.media_dictionary["Media"]["Language"]]
 
 		if self.media_dictionary["Media"]["States"]["re_watching"] == True:
 			self.media_dictionary["Entry"]["Diary Slim"]["Text"] += self.media_dictionary["Media"]["episode"]["re_watched"]["text"]
@@ -511,7 +511,7 @@ class Register(Watch_History):
 	def Check_Media_Status(self):
 		if self.media_dictionary["Media"]["States"]["series_media"] == True:
 			# If the media has a media list and the episode title is the last one
-			if self.media_dictionary["Media"]["States"]["media_list"] == True and self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language][-1]:
+			if self.media_dictionary["Media"]["States"]["media_list"] == True and self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]][-1]:
 				# And the episode is not a video
 				if self.media_dictionary["Media"]["States"]["video"] == False:
 					# If the media item is the last media item, define the media as completed
@@ -555,7 +555,7 @@ class Register(Watch_History):
 				self.media_dictionary["Media"]["States"]["completed_item"] = True
 
 			# If the media has no media list and the episode title is the last one, define the media as completed
-			if self.media_dictionary["Media"]["States"]["media_list"] == False and self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language][-1]:
+			if self.media_dictionary["Media"]["States"]["media_list"] == False and self.media_dictionary["Media"]["episode"]["title"] == self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]][-1]:
 				self.media_dictionary["Media"]["States"]["completed"] = True
 
 		# If the media is a movie, define it as completed
@@ -565,7 +565,7 @@ class Register(Watch_History):
 		# If the media and media item are not completed, get next episode number
 		if self.media_dictionary["Media"]["States"]["completed"] == False and self.media_dictionary["Media"]["States"]["completed_item"] == False:
 			# Get next episode language title
-			self.media_dictionary["Media"]["episode"]["next"] = self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.user_language][self.media_dictionary["Media"]["episode"]["number"]]
+			self.media_dictionary["Media"]["episode"]["next"] = self.media_dictionary["Media"]["item"]["episodes"]["titles"][self.media_dictionary["Media"]["Language"]][self.media_dictionary["Media"]["episode"]["number"]]
 
 			# Add hybrid origin type to episode title
 			if self.media_dictionary["Media"]["States"]["hybrid"] == True:
@@ -579,13 +579,19 @@ class Register(Watch_History):
 
 		# If the media is completed, define its status as completed
 		if self.media_dictionary["Media"]["States"]["completed"] == True:
+			if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"] and self.media_dictionary["Media"]["details"][self.language_texts["remote_origin, title()"]] == "Animes Vision":
+				self.media_dictionary["Media"]["details"].pop(self.language_texts["remote_origin, title()"])
+
+			if self.media_dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"] and self.media_dictionary["Media"]["details"][self.language_texts["remote_origin, title()"]] == "YouTube":
+				self.media_dictionary["Media"]["details"].pop(self.language_texts["remote_origin, title()"])
+
 			# Update status key in media details
-			self.Change_Status(self.media_dictionary, self.language_texts["completed, title()"])
+			self.Change_Status(self.media_dictionary)
 
 	def Set_Media_As_Completed(self):
 		# Completed media and media item time and date part
 		template = self.language_texts["when_i_finished_watching"] + " {}:" + "\n" + \
-		self.media_dictionary["Entry"]["Timezone"] + "\n" + \
+		self.media_dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
 		"\n" + \
 		self.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -596,13 +602,13 @@ class Register(Watch_History):
 			self.media_dictionary["Media"]["item"]["dates"] = self.File.Dictionary(self.media_dictionary["Media"]["item"]["folders"]["dates"], next_line = True)
 
 			if self.media_dictionary["Media"]["States"]["single_unit"] == True:
-				self.media_dictionary["Media"]["item"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["Media"]["texts"]["the_item"][self.user_language]] = self.media_dictionary["Entry"]["Timezone"]
+				self.media_dictionary["Media"]["item"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["Media"]["texts"]["the_item"][self.user_language]] = self.media_dictionary["Entry"]["Times"]["Timezone"]
 
 			# Get started watching time
 			self.media_dictionary["Media"]["item"]["started_watching_item"] = self.media_dictionary["Media"]["item"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["Media"]["texts"]["the_item"][self.user_language]]
 
 			# Define time spent watching using started watching time and finished watching time
-			self.media_dictionary["Media"]["item"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["Media"]["item"]["started_watching_item"], self.media_dictionary["Entry"])["difference_strings"][self.user_language]
+			self.media_dictionary["Media"]["item"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["Media"]["item"]["started_watching_item"], self.media_dictionary["Entry"]["Time"])["difference_strings"][self.user_language]
 
 			if self.media_dictionary["Media"]["item"]["time_spent_watching"][0] + self.media_dictionary["Media"]["item"]["time_spent_watching"][1] == ", ":
 				self.media_dictionary["Media"]["item"]["time_spent_watching"] = self.media_dictionary["Media"]["item"]["time_spent_watching"][2:]
@@ -633,7 +639,7 @@ class Register(Watch_History):
 			self.media_dictionary["Media"]["started_watching"] = self.Date.From_String(self.media_dictionary["Media"]["dates"][self.language_texts["when_i_started_to_watch"] + " " + self.media_dictionary["Media"]["texts"]["container_text"]["the"]])
 
 			# Define time spent watching using started watching time and finished watching time
-			self.media_dictionary["Media"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["Media"]["started_watching"], self.media_dictionary["Entry"])["difference_strings"][self.user_language]
+			self.media_dictionary["Media"]["time_spent_watching"] = self.Date.Difference(self.media_dictionary["Media"]["started_watching"], self.media_dictionary["Entry"]["Time"])["difference_strings"][self.user_language]
 
 			if self.media_dictionary["Media"]["time_spent_watching"][0] + self.media_dictionary["Media"]["time_spent_watching"][1] == ", ":
 				self.media_dictionary["Media"]["time_spent_watching"] = self.media_dictionary["Media"]["time_spent_watching"][2:]

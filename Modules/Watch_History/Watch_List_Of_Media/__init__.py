@@ -53,8 +53,6 @@ class Watch_List_Of_Media(Watch_History):
 		for media_title in self.media_list_dict.copy():
 			self.option_info = self.media_list_dict[media_title]
 
-			self.singular_media_type = self.option_info["singular_media_type"]["language"]
-
 			if self.i != 1:
 				print()
 				print("---")
@@ -88,16 +86,21 @@ class Watch_List_Of_Media(Watch_History):
 		self.media_list_dict = {}
 
 	def Select_Media_To_Watch(self, media = None):
-		self.status_text = [self.language_texts["watching, title()"], self.language_texts["re_watching, title()"]]
+		self.status_text = [
+			self.language_texts["watching, title()"],
+			self.language_texts["re_watching, title()"]
+		]
 
 		if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
-			option_infos = [self.Select_Media_Type()]
+			option_infos = [
+				self.Select_Media_Type()
+			]
 
 		if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True:
 			option_infos = []
 
 			i = 0
-			for media_type in self.media_types["plural"]["en"]:
+			for plural_media_type in self.media_types["plural"]["en"]:
 				option_infos.append(self.Select_Media_Type(options = {"number": i}))
 
 				i += 1
@@ -106,42 +109,44 @@ class Watch_List_Of_Media(Watch_History):
 
 		i = 0
 		for option_info in option_infos:
-			# Media Type variables definition
-			self.plural_media_types = option_info["plural_media_type"]
-			self.singular_media_types = option_info["singular_media_type"]
-			self.mixed_plural_media_type = option_info["mixed_plural_media_type"]
-
-			self.media_info_media_type_folder = option_info["media_info_media_type_folder"]
-
-			media_list = self.Create_Media_List(self.status_text)[self.plural_media_types["en"]]
+			media_list = self.Get_Media_List(option_info)
 
 			if self.media_list_dict != {}:
 				media_list.append(self.finish_selection_text)
 
+			option_info = {
+				"media_type": option_info,
+				"Media": {
+					"select": True,
+					"list": {}
+				}
+			}
+
 			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
-				option_info.update(self.Select_Media(self.plural_media_types, self.singular_media_types, self.mixed_plural_media_type, media_list, self.media_info_media_type_folder))
+				option_info["media_type"]["media_list"] = media_list
+
+				option_info.update(self.Select_Media(option_info))
 
 			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True:
 				if self.media_title in media_list:
-					option_info.update(self.Select_Media(self.plural_media_types, self.singular_media_types, self.mixed_plural_media_type, media_list, self.media_info_media_type_folder, option_info_parameter = {"Media": self.media_title}))
+					option_info.update(self.Select_Media(option_info))
 
-					option_info["Media"] = self.media_title
+					option_info["Media"]["title"] = self.media_title
 
 				if self.media_title not in media_list:
-					option_info["Media"] = ""
+					option_info["Media"]["title"] = ""
 
-			self.selected_option = option_info["Media"]
+			self.selected_option = option_info["Media"]["title"]
 
 			if self.selected_option != self.finish_selection_text and self.selected_option != "":
-				self.Watch_Media = Watch_Media(run_as_module = True, open_media = False, option_info_parameter = option_info)
+				self.Watch_Media = Watch_Media(option_info, run_as_module = True, open_media = False)
 
 				option_info.update(self.Watch_Media.media_dictionary)
 
-				self.media_details = self.Watch_Media.media_details
-				self.media_dictionary["Media"]["item"]["details"] = self.Watch_Media.media_item_details
+				self.media_dictionary = self.Watch_Media.media_dictionary
 
 				print()
-				print("[" + self.singular_media_types["language"] + ":")
+				print("[" + option_info["media_type"]["singular"][self.user_language] + ":")
 
 				self.Show_Media_Title(option_info)
 
@@ -151,22 +156,21 @@ class Watch_List_Of_Media(Watch_History):
 					print(self.media_dictionary["Media"]["item"]["details"][self.language_texts["episode, title()"]] + "]")
 					print()
 
-				if option_info["Media"] not in self.media_list_dict:
+				key = option_info["Media"]["title"]
+
+				if option_info["Media"]["title"] not in self.media_list_dict:
 					self.i = 2
 
-				if option_info["Media"] in self.media_list_dict:
-					if option_info["Media"] + " (2x)" in list(self.media_list_dict.keys()):
+				if option_info["Media"]["title"] in self.media_list_dict:
+					if option_info["Media"]["title"] + " (2x)" in list(self.media_list_dict.keys()):
 						self.i += 1
 
-					option_info["Media"] += " (" + str(self.i) + "x)"
+					key = option_info["Media"]["title"] + " (" + str(self.i) + "x)"
 
-				self.media_list_dict[option_info["Media"]] = option_info
+				self.media_list_dict[key] = option_info
 
 				self.option_info = option_info
 				media_is_defined = True
-
-				if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
-					self.media_titles[-1] = self.media_title
 
 		if media_is_defined == True:
 			return self.option_info
@@ -189,4 +193,4 @@ class Watch_List_Of_Media(Watch_History):
 			number += 1
 
 	def Start_Watching_Media(self, option_info):
-		self.Watch_Media = Watch_Media(option_info_parameter = option_info)
+		self.Watch_Media = Watch_Media(option_info)

@@ -393,12 +393,16 @@ class Folder():
 		self.folders["mega"]["websites"]["images"]["story_covers"] = self.folders["mega"]["websites"]["images"]["root"] + "Story Covers/"
 
 		# Get website subdomain
-		self.website = self.JSON.To_Python(self.folders["mega"]["websites"]["website"])
+		self.website = {}
+		self.links = {}
 
-		# Create links dictionary with Stake2 Website link
-		self.links = {
-			"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
-		}
+		if self.Exist(self.folders["mega"]["websites"]["website"]) == True:
+			self.website = self.JSON.To_Python(self.folders["mega"]["websites"]["website"])
+
+			# Create links dictionary with Stake2 Website link
+			self.links = {
+				"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
+			}
 
 		# Define module folder
 		self.folders["apps"]["module_files"]["utility"][self.module["key"]] = {

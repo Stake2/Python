@@ -102,8 +102,11 @@ class Date():
 		return date
 
 	def Check(self, date):
-		if isinstance(date, datetime) == False:
+		if type(date) == dict and "date" in date:
 			date = date["date"]
+
+		if type(date) == str:
+			date = self.From_String(date)
 
 		return date
 
@@ -154,15 +157,15 @@ class Date():
 	def Difference(self, before, after):
 		date = {}
 
-		date["before"] = self.Check(before)
+		date["before"] = before
 
-		if isinstance(date, datetime) == False:
-			date["before"] = self.From_String(before)
+		if type(date["before"]) == str:
+			date["before"] = self.Check(date["before"])
 
 		date["after"] = after
 
-		if isinstance(date, datetime) == False:
-			date["after"] = self.From_String(after)
+		if type(date["after"]) == str:
+			date["after"] = self.Check(date["after"])
 
 		string = date["after"]["date"] - date["before"]["date"]
 

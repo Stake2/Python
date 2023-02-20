@@ -373,32 +373,6 @@
 		"en": "no",
 		"pt": "não"
 	},
-	"original_name": {
-		"en": "Original name",
-		"pt": "Nome original"
-	},
-	"[language]_name": {
-		"en": "English name",
-		"pt": "Nome Português",
-		"es": "Nombre español"
-	},
-	"language_name": {
-		"en": {
-			"en": "English name",
-			"pt": "Nome Inglês",
-			"es": "Nombre Inglés"
-		},
-		"pt": {
-			"en": "Portuguese name",
-			"pt": "Nome Português",
-			"es": "Nombre Portugués"
-		},
-		"es": {
-			"en": "Spanish name",
-			"pt": "Nome Espanhol",
-			"es": "Nombre Español"
-		}
-	},
 	"romanized_name": {
 		"en": "Romanized name",
 		"pt": "Nome romanizado",
@@ -1482,5 +1456,9 @@
 	"handle, title()": {
 		"en": "Handle",
 		"pt": "Arroba"
+	},
+	"replace_title": {
+		"en": "Replace title",
+		"pt": "Substituir título"
 	}
 }
