@@ -1242,10 +1242,6 @@
 		"pt": "Tempo que você passou assistindo",
 		"en": "Time that you spent watching"
 	},
-	"duration, title()": {
-		"en": "Duration",
-		"pt": "Duração"
-	},
 	"filling_the_episode_titles_files": {
 		"en": "Filling the episode titles files",
 		"pt": "Preenchendo os arquivos de títulos de episódios"
@@ -1305,5 +1301,9 @@
 	"replace_title": {
 		"en": "Replace title",
 		"pt": "Substituir título"
+	},
+	"episodes_duration": {
+		"en": "Episodes duration",
+		"pt": "Duração dos episódios"
 	}
 }

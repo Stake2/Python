@@ -327,5 +327,17 @@
 	"dates, title()": {
 		"pt": "Datas",
 		"en": "Dates"
+	},
+	"start_date": {
+		"en": "Start date",
+		"pt": "Data de início"
+	},
+	"end_date": {
+		"en": "End date",
+		"pt": "Data final"
+	},
+	"duration, title()": {
+		"en": "Duration",
+		"pt": "Duração"
 	}
 }

@@ -4,6 +4,14 @@ class Block_Websites(object):
 	def __init__(self):
 		self.Define_Basic_Variables()
 
+		self.module = {
+			"name": self.__module__.split(".")[-1],
+			"key": self.__module__.split(".")[-1].lower().replace(" ", "_")
+		}
+
+		if self.module["name"] == "__main__":
+			self.module["name"] = "Block_Websites"
+
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 

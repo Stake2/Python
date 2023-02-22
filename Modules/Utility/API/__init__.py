@@ -218,6 +218,28 @@ class API():
 
 		return api
 
+	def MyAnimeList(self, api):
+		import requests
+		import urllib
+
+		api.update({
+			"url": "https://api.myanimelist.net/v2/anime/" + api["id"] + "?",
+			"parameters": {
+				"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
+			},
+			"headers": {
+				"X-MAL-CLIENT-ID": api["key"]
+			}
+		})
+
+		api["response"] = requests.get(
+			api["url"],
+			params = api["parameters"],
+			headers = api["headers"]
+		).json()
+
+		return api
+
 	def Get_Date(self, string):
 		# Get Date object from date string
 		return self.Date.From_String(string)
@@ -231,13 +253,14 @@ class API():
 		}
 
 		if service != None:
-			api.update(dictionary.copy())
-
 			api.update({
 				"name": service.lower(),
 				"key": self.secrets[service]["key"],
 				"service": getattr(self, service)
 			})
+
+			# Get items from provided dictionary
+			api.update(dictionary)
 
 			# Run service
 			api = api["service"](api)

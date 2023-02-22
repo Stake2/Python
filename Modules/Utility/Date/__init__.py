@@ -74,6 +74,7 @@ class Date():
 		# Date formats
 		date["%d/%m/%Y"] = date["date"].strftime("%d/%m/%Y")
 		date["%d-%m-%Y"] = date["date"].strftime("%d-%m-%Y")
+		date["DD/MM/YYYY"] = date["date"].strftime("%d/%m/%Y")
 
 		date["date_format"] = {}
 
@@ -476,7 +477,7 @@ class Date():
 			text += self.Text.Remove_Leading_Zeros(minute) + " " + texts["minutes"]
 
 		if texts["minutes"] != "" and texts["seconds"] != "":
-			text += language_texts["and"] + ", "
+			text += " " + language_texts["and"] + " "
 
 		if texts["seconds"] != "":
 			text += self.Text.Remove_Leading_Zeros(second) + " " + texts["seconds"]

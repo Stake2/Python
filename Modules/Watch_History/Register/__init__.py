@@ -567,7 +567,7 @@ class Register(Watch_History):
 		template = self.language_texts["when_i_finished_watching"] + " {}:" + "\n" + \
 		self.media_dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
 		"\n" + \
-		self.language_texts["duration, title()"] + ":" + "\n" + \
+		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
 
 		# Gets the date that the user started and finished watching the media item and writes it into the media item dates file

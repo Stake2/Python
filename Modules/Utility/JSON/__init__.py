@@ -205,3 +205,22 @@ class JSON():
 
 	def Show(self, json):
 		print(self.From_Python(json))
+
+	def Add_Key_After_Key(self, dictionary, key_value, after_key, number_to_add = 1):
+		keys = list(dictionary.keys())
+		values = list(dictionary.values())
+
+		i = 0
+		for key in keys.copy():
+			if key_value["key"] not in keys and key == after_key:
+				keys.insert(i + number_to_add, key_value["key"])
+				values.insert(i + number_to_add, key_value["value"])
+
+			if key_value["key"] in keys and key == key_value["key"]:
+				values[i] = key_value["value"]
+
+			i += 1
+
+		dictionary = dict(zip(keys, values))
+
+		return dictionary

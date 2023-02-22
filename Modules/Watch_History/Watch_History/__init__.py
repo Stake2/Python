@@ -623,7 +623,7 @@ class Watch_History(object):
 					"series_media": True,
 					"episodic": False,
 					"single_unit": False,
-					"Replace Title": False
+					"Replace Title": False,
 					"media_list": False,
 					"Has Dubbing": False,
 					"dubbed_to_title": False,
@@ -686,7 +686,7 @@ class Watch_History(object):
 						channel_date = self.Date.From_String(dictionary["Media"]["channel"]["Time"])
 
 						# Update "Date" key of media details
-						dictionary["Media"]["details"][self.Date.language_texts["date, title()"]] = self.Date.To_String(channel_date["date"].astimezone(), self.Date.language_texts["date_time_format"])
+						dictionary["Media"]["details"][self.Date.language_texts["start_date"]] = self.Date.To_String(channel_date["date"].astimezone(), self.Date.language_texts["date_time_format"])
 
 						# Update "Year" key of media details
 						dictionary["Media"]["details"][self.Date.language_texts["year, title()"]] = channel_date["year"]
@@ -857,35 +857,21 @@ class Watch_History(object):
 
 					i += 1
 
-				# Add the episode number to the media details
-				keys = list(dictionary["Media"]["details"].keys())
-				values = list(dictionary["Media"]["details"].values())
+				# Add the episode number after the "Status" key or update it
+				key_value = {
+					"key": self.language_texts["episodes, title()"],
+					"value": dictionary["Media"]["episodes"]["number"]
+				}
 
-				# Add episodes key or update it if it already exists
-				i = 0
-				for key in keys.copy():
-					if self.language_texts["episodes, title()"] not in keys and key == self.language_texts["status, title()"]:
-						keys.insert(i + 1, self.language_texts["episodes, title()"])
-						values.insert(i + 1, dictionary["Media"]["episodes"]["number"])
+				dictionary["Media"]["details"] = self.JSON.Add_Key_After_Key(dictionary["Media"]["details"], key_value, self.language_texts["status, title()"])
 
-					if self.language_texts["episodes, title()"] in keys and key == self.language_texts["episodes, title()"]:
-						values[i] = dictionary["Media"]["episodes"]["number"]
+				# Add the media subfolders plural text after the "Episodes" key or update it
+				key_value = {
+					"key": dictionary["media_type"]["subfolders"]["plural"],
+					"value": dictionary["Media"]["items"]["number"]
+				}
 
-					i += 1
-
-				# Add media items number key or update it if it already exists
-				i = 0
-				for key in keys.copy():
-					if dictionary["media_type"]["subfolders"]["plural"] not in keys and key == self.language_texts["episodes, title()"]:
-						keys.insert(i, dictionary["media_type"]["subfolders"]["plural"])
-						values.insert(i, dictionary["Media"]["items"]["number"])
-
-					if dictionary["media_type"]["subfolders"]["plural"] in keys and key == dictionary["media_type"]["subfolders"]["plural"]:
-						values[i] = dictionary["Media"]["items"]["number"]
-
-					i += 1
-
-				dictionary["Media"]["details"] = dict(zip(keys, values))
+				dictionary["Media"]["details"] = self.JSON.Add_Key_After_Key(dictionary["Media"]["details"], key_value, self.language_texts["episodes, title()"], number_to_add = 0)
 
 				# Update media item details file
 				self.File.Edit(dictionary["Media"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Media"]["details"]), "w")
@@ -948,6 +934,7 @@ class Watch_History(object):
 
 			# Update "Playlist.json" file for video media type
 			if dictionary["Media"]["States"]["video"] == True and dictionary["Media"]["States"]["media_list"] == True:
+				# Get ID (origin location) from link
 				if self.language_texts["origin_location"] in dictionary["Media"]["item"]["details"] and dictionary["Media"]["item"]["details"][self.language_texts["origin_location"]] == "?":
 					dictionary["Media"]["item"]["details"][self.language_texts["origin_location"]] = dictionary["Media"]["item"]["details"][self.JSON.Language.language_texts["link, title()"]].split("list=")[-1]
 
@@ -972,7 +959,7 @@ class Watch_History(object):
 						dictionary["Media"]["item"]["playlist"]["Time"] = video_date
 
 					# Update "Date" key of media item details
-					dictionary["Media"]["item"]["details"][self.Date.language_texts["date, title()"]] = self.Date.To_String(dictionary["Media"]["item"]["playlist"]["Time"]["date"].astimezone(), self.Date.language_texts["date_time_format"])
+					dictionary["Media"]["item"]["details"][self.Date.language_texts["start_date"]] = self.Date.To_String(dictionary["Media"]["item"]["playlist"]["Time"]["date"].astimezone(), self.Date.language_texts["date_time_format"])
 
 					# Update "Year" key of media item details
 					dictionary["Media"]["item"]["details"][self.Date.language_texts["year, title()"]] = dictionary["Media"]["item"]["playlist"]["Time"]["year"]
@@ -1188,22 +1175,13 @@ class Watch_History(object):
 				# Add the episode number to the episode "number" key
 				dictionary["Media"]["item"]["episodes"]["number"] = len(dictionary["Media"]["item"]["episodes"]["titles"]["en"])
 
-			# Add the episode number to the media item details
-			keys = list(dictionary["Media"]["item"]["details"].keys())
-			values = list(dictionary["Media"]["item"]["details"].values())
+			# Add the episode number after the "Status" key
+			key_value = {
+				"key": self.language_texts["episodes, title()"],
+				"value": dictionary["Media"]["item"]["episodes"]["number"]
+			}
 
-			i = 0
-			for key in keys.copy():
-				if self.language_texts["episodes, title()"] not in keys and key == self.language_texts["status, title()"]:
-					keys.insert(i + 1, self.language_texts["episodes, title()"])
-					values.insert(i + 1, dictionary["Media"]["item"]["episodes"]["number"])
-
-				if self.language_texts["episodes, title()"] in keys and key == self.language_texts["episodes, title()"]:
-					values[i] = dictionary["Media"]["item"]["episodes"]["number"]
-
-				i += 1
-
-			dictionary["Media"]["item"]["details"] = dict(zip(keys, values))
+			dictionary["Media"]["item"]["details"] = self.JSON.Add_Key_After_Key(dictionary["Media"]["item"]["details"], key_value, self.language_texts["status, title()"])
 
 			# Update media item details file
 			self.File.Edit(dictionary["Media"]["item"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Media"]["item"]["details"]), "w")

@@ -14,6 +14,6 @@ pyperclip
 pyautogui
 beautifultable
 validators
-google_auth_oauthlib
 tzlocal
 python-dateutil
+google_auth_oauthlib

@@ -625,6 +625,14 @@
 		"pt": "Completou",
 		"en": "Completed"
 	},
+	"studio, title()": {
+		"en": "Studio",
+		"pt": "Estúdio"
+	},
+	"studios, title()": {
+		"en": "Studios",
+		"pt": "Estúdios"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {
