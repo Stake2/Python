@@ -69,7 +69,7 @@ class Open_Friend_File(Friends):
 		self.language_file_type = self.file_names["language"][self.option_info["number"]].lower()
 		self.singular_file_type = self.file_names["language_singular"][self.option_info["number"]]
 
-		if self.file_type == self.texts["information, title()"]["en"]:
+		if self.file_type == self.JSON.Language.texts["information, title()"]["en"]:
 			self.singular_file_type = self.singular_file_type.lower()
 
 		if self.file_type == self.Social_Networks.texts["social_networks"]["en"]:

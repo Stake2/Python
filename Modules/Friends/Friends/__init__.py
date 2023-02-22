@@ -112,7 +112,7 @@ class Friends(object):
 		self.information_items_file = self.friends_database_folder + self.texts["information_items"]["en"] + ".json"
 		self.File.Create(self.information_items_file)
 
-		self.information_file = self.friends_information_folder + self.texts["information, title()"]["en"] + ".json"
+		self.information_file = self.friends_information_folder + self.JSON.Language.texts["information, title()"]["en"] + ".json"
 		self.File.Create(self.information_file)
 
 	def Define_Lists_And_Dictionaries(self):

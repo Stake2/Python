@@ -589,6 +589,42 @@
 		"en": "First entry in year",
 		"pt": "Primeira entrada no ano"
 	},
+	"details, title()": {
+		"en": "Details",
+		"pt": "Detalhes"
+	},
+	"information, title()": {
+		"en": "Information",
+		"pt": "Informação"
+	},
+	"producer, title()": {
+		"en": "Producer",
+		"pt": "Produtor"
+	},
+	"distributor, title()": {
+		"en": "distributor",
+		"pt": "Distribuidor"
+	},
+	"director, title()": {
+		"en": "Director",
+		"pt": "Diretor"
+	},
+	"handle, title()": {
+		"en": "Handle",
+		"pt": "Arroba"
+	},
+	"completed": {
+		"en": "completed",
+		"pt": "completo"
+	},
+	"completed, title()": {
+		"pt": "Completo",
+		"en": "Completed"
+	},
+	"completed, past_perfect, title()": {
+		"pt": "Completou",
+		"en": "Completed"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

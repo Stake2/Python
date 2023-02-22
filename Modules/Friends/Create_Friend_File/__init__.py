@@ -138,7 +138,7 @@ class Create_Friend_File(Friends):
 			key = file_name
 			file = self.friend_files[self.friend][key]
 
-			if file_name == self.texts["information, title()"]["en"]:
+			if file_name == self.JSON.Language.texts["information, title()"]["en"]:
 				self.File.Edit(file, self.Text.From_Dictionary(self.friend_information, next_line = True), "w")
 
 			if file_name == self.Social_Networks.texts["social_networks"]["en"]:

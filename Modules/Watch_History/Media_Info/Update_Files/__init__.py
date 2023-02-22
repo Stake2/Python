@@ -56,7 +56,7 @@ class Update_Files(Watch_History):
 
 			language_media_type = self.media_types["plural"][self.user_language][i]
 
-			# Get media with all "watching statuses", not just the "Watching" and "Re-Watching" ones
+			# Get media with all "watching statuses", not just the "Watching" and "Re-watching" ones
 			media_list = self.Get_Media_List(self.media_types[plural_media_type], self.texts["watching_statuses, type: list"]["en"])
 			media_list = sorted(media_list, key=str.lower)
 
@@ -145,7 +145,7 @@ class Update_Files(Watch_History):
 	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary (not a single unit media item)
 		# And status is not "Plan to watch" or "Completed"
-		if "titles" in self.dictionary["Media"]["item"]["folders"] and self.dictionary["Media"]["details"][self.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.language_texts["completed, title()"]]:
+		if "titles" in self.dictionary["Media"]["item"]["folders"] and self.dictionary["Media"]["details"][self.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.JSON.Language.language_texts["completed, title()"]]:
 			# Get titles file to check its contents
 			titles_file = self.dictionary["Media"]["item"]["folders"]["titles"]["root"] + self.languages["full"]["en"] + ".txt"
 
@@ -270,16 +270,16 @@ class Update_Files(Watch_History):
 					if re.search(r"[0-9]{2,4}\([0-9]{2,4}\)", episode_number) != None:
 						episode_number = re.sub("\([0-9]{2,4}\)", "", episode_number)
 
-					self.dictionary["Media"]["States"]["re_watching"] = False
+					self.dictionary["Media"]["States"]["Re-watching"] = False
 
 					if re.search(" " + self.texts["re_watched, type: regex, en - pt"], file_name) != None:
-						times = int(file_name.split(self.texts["re_watched, title()"]["en"] + " ")[1].split("x")[0])
+						times = int(file_name.split(self.texts["re_watched, capitalize()"]["en"] + " ")[1].split("x")[0])
 
 						self.dictionary["Media"]["episode"]["re_watched"] = {
 							"times": times
 						}
 
-						self.dictionary["Media"]["States"]["re_watching"] = True
+						self.dictionary["Media"]["States"]["Re-watching"] = True
 
 					comment = self.File.Contents(file)["lines"]
 
@@ -314,10 +314,10 @@ class Update_Files(Watch_History):
 					if "△△" in comment[1]:
 						comment[1] = comment[1].replace("△△", "△")
 
-					self.dictionary["Media"]["States"]["watch_dubbed"] = False
+					self.dictionary["Media"]["States"]["Watch dubbed"] = False
 
 					if '"[' + self.language_texts["dubbed, title()"] + ']"' in self.Text.From_List(comment):
-						self.dictionary["Media"]["States"]["watch_dubbed"] = True
+						self.dictionary["Media"]["States"]["Watch dubbed"] = True
 						comment = self.Text.From_List(comment)
 						comment = comment.replace('"[' + self.language_texts["dubbed, title()"] + ']"', "")
 						comment = comment.splitlines()
@@ -352,13 +352,13 @@ class Update_Files(Watch_History):
 						file = new_file
 						file_name = new_file_name
 
-					self.dictionary["Media"]["States"]["christmas"] = False
+					self.dictionary["Media"]["States"]["Christmas"] = False
 
 					if "25/12" in time:
-						self.dictionary["Media"]["States"]["christmas"] = True
+						self.dictionary["Media"]["States"]["Christmas"] = True
 
-					self.dictionary["Media"]["States"]["First Entry In Year"] = False
-					self.dictionary["Media"]["States"]["First Media Type Entry In Year"] = False
+					self.dictionary["Media"]["States"]["First entry in year"] = False
+					self.dictionary["Media"]["States"]["First media type entry in year"] = False
 
 					# First watched in year state
 					key = self.dictionary["media_type"]["plural"]["en"]
@@ -391,10 +391,10 @@ class Update_Files(Watch_History):
 						media_type_episodes = self.File.Contents(folders["episodes"])["lines"]
 
 						if comment[1] in episodes and comment[1] == episodes[0]:
-							self.dictionary["Media"]["States"]["First Entry In Year"] = True
+							self.dictionary["Media"]["States"]["First entry in year"] = True
 
 						if comment[1] in media_type_episodes and comment[1] == media_type_episodes[0]:
-							self.dictionary["Media"]["States"]["First Media Type Entry In Year"] = True
+							self.dictionary["Media"]["States"]["First media type entry in year"] = True
 
 					# Add file name to file names list
 					if file_name not in dictionary_of_contents["comments_json"]["Entries"]:

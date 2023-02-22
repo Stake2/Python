@@ -1,50 +1,4 @@
 {
-	"media_types, type: list": {
-		"en": [
-			"Anime",
-			"Cartoon",
-			"Series",
-			"Movie",
-			"Video"
-		],
-		"pt": [
-			"Anime",
-			"Desenho",
-			"Série",
-			"Filme",
-			"Vídeo"
-		]
-	},
-	"media_types, type: list, en - pt": [
-		"Anime",
-		"Cartoon - Desenho",
-		"Series - Série",
-		"Movie - Filme",
-		"Video - Vídeo"
-	],
-	"plural_media_types, type: list": {
-		"en": [
-			"Animes",
-			"Cartoons",
-			"Series",
-			"Movies",
-			"Videos"
-		],
-		"pt": [
-			"Animes",
-			"Desenhos",
-			"Séries",
-			"Filmes",
-			"Vídeos"
-		]
-	},
-	"plural_media_types, type: list, en - pt": [
-		"Animes",
-		"Cartoons - Desenhos",
-		"Series - Séries",
-		"Movies - Filmes",
-		"Videos - Vídeos"
-	],
 	"animes": {
 		"en": "Animes",
 		"pt": "Animes"
@@ -93,11 +47,6 @@
 		"en": "video",
 		"pt": "vídeo"
 	},
-	"anime, en - pt": "Anime",
-	"cartoon, en - pt": "Cartoon - Desenho",
-	"series, en - pt": "Series - Série",
-	"movie, en - pt": "Movies - Filmes",
-	"video, en - pt": "Video - Vídeo",
 	"media_type": {
 		"en": "Media type",
 		"pt": "Tipo de mídia"
@@ -117,10 +66,6 @@
 	"media_types, title()": {
 		"pt": "Tipos De Mídia",
 		"en": "Media Types"
-	},
-	"mixed_media_type, title()": {
-		"pt": "Tipo De Mídia Misturado",
-		"en": "Mixed Media Type"
 	},
 	"media_type_number": {
 		"en": "Media type number",
@@ -406,6 +351,10 @@
 		"en": "Dubbed {}",
 		"pt": "{} dublado"
 	},
+	"watched_dubbed": {
+		"en": "Watched dubbed",
+		"pt": "Assistiu dublado"
+	},
 	"remote": {
 		"en": "remote",
 		"pt": "remoto"
@@ -454,10 +403,6 @@
 		"en": "re-watching",
 		"pt": "re-assistir"
 	},
-	"completed": {
-		"en": "completed",
-		"pt": "completo"
-	},
 	"re_watch": {
 		"en": "re-watch",
 		"pt": "re-assistir"
@@ -500,14 +445,14 @@
 			"Plan to watch",
 			"Watching",
 			"Completed",
-			"Re-Watching",
+			"Re-watching",
 			"On hold"
 		],
 		"pt": [
 			"Planejo assistir",
 			"Assistindo",
 			"Completo",
-			"Re-Assistindo",
+			"Re-assistindo",
 			"Em pausa"
 		]
 	},
@@ -779,24 +724,14 @@
 		"pt": "Digite o número de vezes que você re-assistiu",
 		"en": "Type the number of times that you re-watched"
 	},
-	"when_commented, en - pt": "When commented - Quando comentou",
-	"re_watched, type: format, en - pt": "(Re-Watched {}x - Re-Assistido {}x)",
 	"re_watched, type: regex, en - pt": "\\(Re-Watched [0-9]{1,}x - Re-Assistido [0-9]{1,}x\\)",
 	"re_watched, type: regex": {
 		"pt": "(Re-Assistido [0-9]{1,}x)",
 		"en": "(Re-Watched [0-9]{1,}x)"
 	},
-	"re_watched, type: format": {
-		"pt": "(Re-Assistido {}x)",
-		"en": "(Re-Watched {}x)"
-	},
-	"re_watched, type: format, title()": {
-		"pt": "(Re-Assistido {}x)",
-		"en": "(Re-Watched {}x)"
-	},
-	"re_watched, title()": {
-		"pt": "Re-Assistido",
-		"en": "Re-Watched"
+	"re_watched, capitalize()": {
+		"pt": "Re-assistido",
+		"en": "Re-watched"
 	},
 	"watched, title()": {
 		"pt": "Assistido",
@@ -999,13 +934,9 @@
 		"pt": "Assistindo",
 		"en": "Watching"
 	},
-	"completed, title()": {
-		"pt": "Completo",
-		"en": "Completed"
-	},
 	"re_watching, title()": {
-		"pt": "Re-Assistindo",
-		"en": "Re-Watching"
+		"pt": "Re-assistindo",
+		"en": "Re-watching"
 	},
 	"on_hold, title()": {
 		"pt": "Em pausa",
@@ -1195,64 +1126,6 @@
 		"pt": "da última {}",
 		"en": "of the final {}"
 	},
-	"i_watched_the_{}_from": {
-		"pt": "Eu assisti {} de",
-		"en": "I watched {} from"
-	},
-	"did_you_watched_while_you_ate": {
-		"pt": "Você assistiu enquanto comia",
-		"en": "Did you watched while eating"
-	},
-	"type_what_you_ate": {
-		"pt": "Digite o que você comeu",
-		"en": "Type what you ate"
-	},
-	"did_you_watched_while_drinking": {
-		"pt": "Você assistiu enquanto bebia",
-		"en": "Did you watched while drinking"
-	},
-	"type_what_you_drank": {
-		"pt": "Digite o que você bebeu",
-		"en": "Type what you drank"
-	},
-	"while": {
-		"pt": "enquanto",
-		"en": "while"
-	},
-	"eating": {
-		"pt": "comia",
-		"en": "eating"
-	},
-	"drinking": {
-		"pt": "bebia",
-		"en": "drinking"
-	},
-	"food": {
-		"pt": "comida",
-		"en": "food"
-	},
-	"food, title()": {
-		"pt": "Comida",
-		"en": "Food"
-	},
-	"food, title(), en - pt": "Food - Comida",
-	"drink": {
-		"pt": "bebida",
-		"en": "drink"
-	},
-	"drink, title()": {
-		"pt": "Bebida",
-		"en": "Drink"
-	},
-	"drink, title(), en - pt": "Drink - Bebida",
-	"first_episode_in_year": {
-		"en": "First episode in year",
-		"pt": "Primeiro episódio no ano"
-	},
-	"first_in_year": {
-		"en": "First in year",
-		"pt": "Primeiro no ano"
-	},
 	"first_{}_in_year": {
 		"en": "First {} in year",
 		"pt": "Primeiro {} no ano"
@@ -1417,33 +1290,9 @@
 		"en": "Add one to the Re-Watched times number",
 		"pt": "Adicionar um ao número de vezes Re-Assistidas"
 	},
-	"details, title()": {
-		"en": "Details",
-		"pt": "Detalhes"
-	},
-	"information, title()": {
-		"en": "Information",
-		"pt": "Informação"
-	},
-	"productor, title()": {
-		"en": "Productor",
-		"pt": "Produtor"
-	},
-	"distributor, title()": {
-		"en": "distributor",
-		"pt": "Distribuidor"
-	},
-	"director, title()": {
-		"en": "Director",
-		"pt": "Diretor"
-	},
 	"single_unit": {
 		"en": "Single unit",
 		"pt": "Única unidade"
-	},
-	"part, title()": {
-		"en": "Part",
-		"pt": "Parte"
 	},
 	"episodic, title()": {
 		"en": "Episodic",
@@ -1452,10 +1301,6 @@
 	"add_to_comments_dictionary": {
 		"en": "Add to comments dictionary",
 		"pt": "Adicionar ao dicionário de comentários"
-	},
-	"handle, title()": {
-		"en": "Handle",
-		"pt": "Arroba"
 	},
 	"replace_title": {
 		"en": "Replace title",

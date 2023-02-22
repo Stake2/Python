@@ -35,6 +35,12 @@ class Folder():
 		self.date = self.Date.date
 
 		self.Define_Folders()
+
+		# Define module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Texts()
 		self.Create_Folders()
 
@@ -403,15 +409,6 @@ class Folder():
 			self.links = {
 				"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
 			}
-
-		# Define module folder
-		self.folders["apps"]["module_files"]["utility"][self.module["key"]] = {
-			"root": self.folders["apps"]["module_files"]["utility"]["root"] + self.module["name"] + "/"
-		}
-
-		folder = self.folders["root"]["apps"]["module_files"]["utility"][self.module["key"]]["root"]
-
-		self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"] = folder + "Texts.json"
 
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])

@@ -3,7 +3,7 @@
 import os
 
 class File():
-	def __init__(self, show_global_switches = False):
+	def __init__(self):
 		from Utility.Global_Switches import Global_Switches as Global_Switches
 
 		# Global Switches dictionary

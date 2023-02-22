@@ -102,6 +102,9 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["Media"]["States"]["series_media"] == False or self.media_dictionary["Media"]["States"]["single_unit"] == True:
 			self.media_dictionary["Media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
 
+		if self.media_dictionary["Media"]["States"]["Re-watching"] == True:
+			self.media_dictionary["Media"]["comment"]["file_name"] += self.media_dictionary["Media"]["episode"]["re_watched"]["text"]
+
 		# Media folder comment file
 		self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"] = self.media_dictionary["Media"]["item"]["folders"]["comments"]["root"] + self.Sanitize(self.media_dictionary["Media"]["comment"]["file_name"], restricted_characters = True) + ".txt"
 		self.File.Create(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"])
@@ -145,7 +148,10 @@ class Comment_Writer(Watch_History):
 
 			title = self.media_dictionary["Media"]["episode"][key][self.user_language]
 
-			if self.media_dictionary["Media"]["States"]["re_watching"] == True:
+			if self.media_dictionary["Media"]["States"]["series_media"] == False:
+				title += " (" + self.media_dictionary["Media"]["details"][self.Date.language_texts["year, title()"]] + ", " + self.media_dictionary["Media"]["details"][self.JSON.Language.language_texts["producer, title()"]] + ")"
+
+			if self.media_dictionary["Media"]["States"]["Re-watching"] == True:
 				title += self.media_dictionary["Media"]["episode"]["re_watched"]["text"]
 
 			# Define episode text (episode title)
@@ -276,13 +282,13 @@ class Comment_Writer(Watch_History):
 		self.File.Edit(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"], self.media_dictionary["Media"]["comment"]["comment"], "w")
 
 		if self.only_comment == False:
-			dict_ = self.Define_States_Dictionary(self.media_dictionary)
+			states_dictionary = self.Define_States_Dictionary(self.media_dictionary)["states"]
 
-			if "Commented" in dict_:
-				dict_.pop("Commented")
+			if "Commented" in states_dictionary:
+				states_dictionary.pop("Commented")
 
-			if dict_ != {}:
-				self.dictionaries["Comments"]["Dictionary"][self.media_dictionary["Media"]["comment"]["file_name"]]["States"] = dict_
+			if states_dictionary != {}:
+				self.dictionaries["Comments"]["Dictionary"][self.media_dictionary["Media"]["comment"]["file_name"]]["States"] = states_dictionary
 
 		# Re-numerate entry numbers inside entry dictionaries
 		# (Numbers can be wrong if the media is non-episodic and uses the episode title as the dictionary key)
@@ -299,4 +305,4 @@ class Comment_Writer(Watch_History):
 		self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
 
 		# Update "Comments.json" file
-		self.JSON.Edit(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comment"], self.dictionaries["Comments"])
+		self.JSON.Edit(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comments"], self.dictionaries["Comments"])

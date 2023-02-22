@@ -18,10 +18,14 @@ class Define_Folders():
 			if name == "Run":
 				name = object_to_define.__module__.split(".")[0]
 
-			self.module = {
-				"name": name,
-				"key": name.lower().replace(" ", "_")
-			}
+			if hasattr(object_to_define, "module") == False:
+				self.module = {
+					"name": name,
+					"key": name.lower().replace(" ", "_")
+				}
+
+			if hasattr(object_to_define, "module") == True:
+				self.module = getattr(object_to_define, "module")
 
 			if hasattr(object_to_define, "folders") == False:
 				self.folders = {

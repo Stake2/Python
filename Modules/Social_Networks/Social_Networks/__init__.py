@@ -163,7 +163,7 @@ class Social_Networks(object):
 				# If file name in dictionary and file exists
 				if file_name in self.social_networks[social_network]["files"] and self.File.Exist(self.social_networks[social_network]["files"][file_name]) == True:
 					# If file uses dictionary format
-					if file_name in [self.texts["information, title()"]["en"], self.texts["profile, title()"]["en"], self.texts["settings, title()"]["en"]]:
+					if file_name in [self.JSON.Language.texts["information, title()"]["en"], self.texts["profile, title()"]["en"], self.texts["settings, title()"]["en"]]:
 						self.social_networks[social_network]["data"][file_name] = self.File.Dictionary(self.social_networks[social_network]["files"][file_name], next_line = True)
 
 					# If file uses list format
