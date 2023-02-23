@@ -1,20 +1,33 @@
 {
 	"small": [
 		"pt",
+		"en",
+		"ja"
+	],
+	"supported": [
+		"pt",
 		"en"
 	],
 	"full": {
 		"pt": "Português",
-		"en": "English"
+		"en": "English",
+		"ja": "日本語"
 	},
 	"full_translated": {
 		"pt": {
 			"pt": "Português",
-			"en": "Portuguese"
+			"en": "Portuguese",
+			"ja": "ポルトガル語"
 		},
 		"en": {
 			"pt": "Inglês",
-			"en": "English"
+			"en": "English",
+			"ja": "英語"
+		},
+		"ja": {
+			"pt": "Japonês",
+			"en": "Japanese",
+			"ja": "日本語"
 		}
 	},
 	"ISO_639-1": {

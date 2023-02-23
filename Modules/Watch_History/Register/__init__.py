@@ -77,7 +77,7 @@ class Register(Watch_History):
 		media_titles = self.media_dictionary["Media"]["titles"].copy()
 		item_titles = self.media_dictionary["Media"]["item"]["titles"].copy()
 
-		for key in ["jp", "sanitized"]:
+		for key in ["ja", "sanitized"]:
 			if key in media_titles:
 				media_titles.pop(key)
 

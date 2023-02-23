@@ -500,6 +500,10 @@
 		"en": "episode {}",
 		"pt": "Episódio d{}"
 	},
+	"episode_list": {
+		"en": "Episode list",
+		"pt": "Lista de episódio"
+	},
 	"a_screenshot_of_the_episode": {
 		"en": "a screenshot of the episode",
 		"pt": "uma print do episódio"

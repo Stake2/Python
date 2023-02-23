@@ -63,6 +63,10 @@ class Language():
 	def Define_Languages(self):
 		self.languages = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["languages"])
 
+		for language in self.languages["small"]:
+			if language not in self.languages["supported"]:
+				self.languages["small"].remove(language)
+
 	def Get_System_Information(self):
 		import locale
 

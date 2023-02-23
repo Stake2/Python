@@ -134,7 +134,11 @@ class Module_Selector():
 					text = self.texts[argument + ", title()"]
 
 				if type(text) == dict:
-					text = text[language].lower()
+					if language in text:
+						text = text[language].lower()
+
+					else:
+						text = text[self.user_language].lower()
 
 				if text not in options["list"]:
 					options["list"].append(text.replace(" ", ""))

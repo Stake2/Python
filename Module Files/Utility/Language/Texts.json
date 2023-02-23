@@ -633,6 +633,18 @@
 		"en": "Studios",
 		"pt": "Estúdios"
 	},
+	"website, title()": {
+		"en": "Website",
+		"pt": "Website"
+	},
+	"{}_website_link": {
+		"en": "{} website link",
+		"pt": "Link do site {}"
+	},
+	"official_website": {
+		"en": "Official website",
+		"pt": "Site official"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {
@@ -643,7 +655,8 @@
 				"of": "of",
 				"of_the": "of the",
 				"first": "first",
-				"last": "last"
+				"last": "last",
+				"in": "in"
 			},
 			"feminine": {
 				"the": "the",
@@ -653,7 +666,8 @@
 				"of": "of",
 				"of_the": "of the",
 				"first": "first",
-				"last": "last"
+				"last": "last",
+				"in": "in"
 			}
 		},
 		"pt": {
@@ -665,7 +679,8 @@
 				"of": "do",
 				"of_the": "do",
 				"first": "primeiro",
-				"last": "último"
+				"last": "último",
+				"in": "em"
 			},
 			"feminine": {
 				"the": "a",
@@ -675,7 +690,8 @@
 				"of": "da",
 				"of_the": "da",
 				"first": "primeira",
-				"last": "última"
+				"last": "última",
+				"in": "em"
 			}
 		}
     },
@@ -687,6 +703,7 @@
         "of",
         "of_the",
         "first",
-        "last"
+        "last",
+		"in"
     ]
 }

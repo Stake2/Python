@@ -51,7 +51,8 @@ class Date():
 		date["day_names"] = {}
 
 		for language in self.languages["small"]:
-			date["day_names"][language] = self.texts["day_names, type: list"][language][date["weekday"]]
+			if language in self.texts["day_names, type: list"]:
+				date["day_names"][language] = self.texts["day_names, type: list"][language][date["weekday"]]
 
 		# Month
 		date["month"] = date["date"].month
@@ -302,90 +303,92 @@ class Date():
 			self.numbers["string"][language] = "zero\n"
 
 		for language in self.languages["small"]:
-			numbers = self.numbers["list"][language]
+			if language in self.numbers["list"] and language in self.texts["first_numbers"]:
+				numbers = self.numbers["list"][language]
 
-			i = 1
-			while i <= 100:
-				if i <= 10:
-					numbers.append(self.texts["first_numbers"][language][i])
-
-				if language == "pt":
-					if i == 11:
-						numbers.append("onze")
-
-					if i == 12:
-						number = self.texts["first_numbers"][language][2][:-2]
-						numbers.append(number + "ze")
-
-					if i == 13:
-						number = self.texts["first_numbers"][language][3][:-1].replace("ê", "e")
-						numbers.append(number + "ze")
-
-					if i == 14:
-						number = self.texts["first_numbers"][language][4].replace("ro", "or")
-						numbers.append(number + "ze")
-
-					if i == 15:
-						numbers.append("quinze")
-
-					if i >= 16 and i <= 17:
-						number = str(i).replace("1", "")
-						number = self.texts["first_numbers"][language][10] + "es" + self.texts["first_numbers"][language][int(number)]
-
-						numbers.append(number)
-
-					if i >= 18 and i <= 19:
-						number = str(i).replace("1", "")
-						number = self.texts["first_numbers"][language][10] + self.texts["first_numbers"][language][int(number)]
-
-						if i == 19:
-							number = number.replace(self.texts["first_numbers"][language][10], self.texts["first_numbers"][language][10] + "e")
-
-						numbers.append(number)
-
-					if i > 19 and i < 100:
-						number = str(i)[:-1]
-
-						if int(str(i)[1]) != 0:
-							number = self.texts["ten_names"][language][int(number)] + self.texts["number_separator"][language] + self.texts["first_numbers"][language][int(str(i)[1])]
-
-						else:
-							number = self.texts["ten_names"][language][int(number)]
-
-						numbers.append(number)
-
-					if i == 100:
-						numbers.append(self.texts["ten_names"][language][10])
-
-				if language == "en":
-					if i >= 11 and i <= 19:
+				i = 1
+				while i <= 100:
+					if i <= 10:
 						numbers.append(self.texts["first_numbers"][language][i])
 
-					if i >= 20 and "0" in str(i)[1]:
-						first_number = int(str(i)[:-1])
+					if language == "pt":
+						if i == 11:
+							numbers.append("onze")
 
-						numbers.append(self.texts["ten_names"][language][first_number])
+						if i == 12:
+							number = self.texts["first_numbers"][language][2][:-2]
+							numbers.append(number + "ze")
 
-					if i >= 20 and "0" not in str(i)[1]:
-						first_number = int(str(i)[:-1])
-						second_number = int(str(i)[1:])
+						if i == 13:
+							number = self.texts["first_numbers"][language][3][:-1].replace("ê", "e")
+							numbers.append(number + "ze")
 
-						numbers.append(self.texts["ten_names"][language][first_number] + self.texts["number_separator"][language] + self.texts["first_numbers"][language][second_number])
+						if i == 14:
+							number = self.texts["first_numbers"][language][4].replace("ro", "or")
+							numbers.append(number + "ze")
 
-				i += 1
+						if i == 15:
+							numbers.append("quinze")
 
-			i = 1
-			for number_name in self.numbers["list"][language]:
-				if number_name != None:
-					self.numbers["string"][language] += number_name
+						if i >= 16 and i <= 17:
+							number = str(i).replace("1", "")
+							number = self.texts["first_numbers"][language][10] + "es" + self.texts["first_numbers"][language][int(number)]
 
-					if number_name != self.numbers["list"][language][-1]:
-						self.numbers["string"][language] += "\n"
+							numbers.append(number)
+
+						if i >= 18 and i <= 19:
+							number = str(i).replace("1", "")
+							number = self.texts["first_numbers"][language][10] + self.texts["first_numbers"][language][int(number)]
+
+							if i == 19:
+								number = number.replace(self.texts["first_numbers"][language][10], self.texts["first_numbers"][language][10] + "e")
+
+							numbers.append(number)
+
+						if i > 19 and i < 100:
+							number = str(i)[:-1]
+
+							if int(str(i)[1]) != 0:
+								number = self.texts["ten_names"][language][int(number)] + self.texts["number_separator"][language] + self.texts["first_numbers"][language][int(str(i)[1])]
+
+							else:
+								number = self.texts["ten_names"][language][int(number)]
+
+							numbers.append(number)
+
+						if i == 100:
+							numbers.append(self.texts["ten_names"][language][10])
+
+					if language == "en":
+						if i >= 11 and i <= 19:
+							numbers.append(self.texts["first_numbers"][language][i])
+
+						if i >= 20 and "0" in str(i)[1]:
+							first_number = int(str(i)[:-1])
+
+							numbers.append(self.texts["ten_names"][language][first_number])
+
+						if i >= 20 and "0" not in str(i)[1]:
+							first_number = int(str(i)[:-1])
+							second_number = int(str(i)[1:])
+
+							numbers.append(self.texts["ten_names"][language][first_number] + self.texts["number_separator"][language] + self.texts["first_numbers"][language][second_number])
 
 					i += 1
 
+				i = 1
+				for number_name in self.numbers["list"][language]:
+					if number_name != None:
+						self.numbers["string"][language] += number_name
+
+						if number_name != self.numbers["list"][language][-1]:
+							self.numbers["string"][language] += "\n"
+
+						i += 1
+
 		for language in self.languages["small"]:
-			self.numbers["list_feminine"][language].extend(self.numbers["list"][language])
+			if language in self.numbers["list_feminine"]:
+				self.numbers["list_feminine"][language].extend(self.numbers["list"][language])
 
 		i = 0
 		for number in self.language_texts["first_numbers_feminine"]:
@@ -451,15 +454,15 @@ class Date():
 			texts[item] = ""
 
 		# Hours
-		if hour != "0":
+		if hour not in ["0", "00"]:
 			texts["hours"] = self.Text.By_Number(int(hour), language_texts["hour"], language_texts["hours"])
 
 		# Minutes
-		if minute != "00":
+		if minute not in ["0", "00"]:
 			texts["minutes"] = self.Text.By_Number(int(minute), language_texts["minute"], language_texts["minutes"])
 
 		# Seconds
-		if len(time) > 2 and second != "00":
+		if len(time) > 2 and second not in ["0", "00"]:
 			texts["seconds"] = self.Text.By_Number(int(second), language_texts["second"], language_texts["seconds"])
 
 		text = ""
@@ -470,7 +473,7 @@ class Date():
 			if texts["minutes"] != "" and texts["seconds"] == "":
 				text += " " + language_texts["and"] + " "
 
-		if texts["hours"] != "" and texts["minutes"] != "" and texts["seconds"] != "":
+		if texts["hours"] != "" and texts["minutes"] != "" and texts["seconds"] != "" and texts["seconds"] != "00":
 			text += ", "
 
 		if texts["minutes"] != "":
@@ -479,7 +482,7 @@ class Date():
 		if texts["minutes"] != "" and texts["seconds"] != "":
 			text += " " + language_texts["and"] + " "
 
-		if texts["seconds"] != "":
+		if texts["seconds"] != "" and texts["seconds"] != "00":
 			text += self.Text.Remove_Leading_Zeros(second) + " " + texts["seconds"]
 
 		if add_original_time == True:

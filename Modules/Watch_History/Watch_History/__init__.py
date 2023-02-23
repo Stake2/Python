@@ -581,9 +581,32 @@ class Watch_History(object):
 
 					self.Folder.Create(folder)
 
+			file_names = [
+				"Details",
+				"Dates"
+			]
+
+			# Define "[Singular media type].json" or "Season.json" file (media information file) for non-video media
+			if dictionary["media_type"]["plural"]["en"] != self.texts["videos"]["en"]:
+				media["Information file name"] = dictionary["media_type"]["singular"]["en"]
+
+				if item == True and media["title"] != dictionary["Media"]["title"] and dictionary["media_type"]["plural"]["en"] != self.texts["movies"]["en"]:
+					media["Information file name"] = "Season"
+
+				file_names.append(media["Information file name"] + ".json")
+
+			# Define "Channel.json" or "Playlist.json" file for video media
+			if dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
+				media["Information file name"] = "Channel"
+
+				if item == True:
+					media["Information file name"] = "Playlist"
+
+				file_names.append(media["Information file name"] + ".json")
+
 			# Define media text files
-			for file_name in ["Details", "Dates"]:
-				key = file_name.lower().replace(" ", "_")
+			for file_name in file_names:
+				key = file_name.lower().replace(" ", "_").replace(".json", "")
 
 				if key == "details":
 					texts_list = self.JSON.Language.language_texts
@@ -591,10 +614,14 @@ class Watch_History(object):
 				if key == "dates":
 					texts_list = self.Date.language_texts
 
-				file_name = texts_list[key + ", title()"]
+				if ".json" not in file_name:
+					file_name = texts_list[key + ", title()"] + ".txt"
 
-				media["folders"][key] = media["folders"]["root"] + file_name + ".txt"
+				media["folders"][key] = media["folders"]["root"] + file_name
 				self.File.Create(media["folders"][key])
+
+			if self.File.Contents(media["folders"][media["Information file name"].lower()])["lines"] != []:
+				media["Information"] = self.JSON.To_Python(media["folders"][media["Information file name"].lower()])
 
 			# Define media details
 			media["details"] = self.File.Dictionary(media["folders"]["details"])
@@ -1310,7 +1337,7 @@ class Watch_History(object):
 
 			media["titles"]["language"] = media["titles"]["original"]
 
-			# If media type is "Animes", define romanized name and jp name
+			# If media type is "Animes", define romanized name and ja name
 			if dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
 				if self.language_texts["romanized_name"] in media["details"]:
 					media["titles"]["romanized"] = media["details"][self.language_texts["romanized_name"]]
@@ -1319,7 +1346,7 @@ class Watch_History(object):
 				if "romanized" in media["titles"]:
 					media["titles"]["sanitized"] = media["titles"]["romanized"]
 
-				media["titles"]["jp"] = media["details"][self.JSON.Language.language_texts["original_name"]]
+				media["titles"]["ja"] = media["details"][self.JSON.Language.language_texts["original_name"]]
 
 			if " (" in media["titles"]["original"] and " (" not in media["titles"]["language"]:
 				media["titles"]["language"] = media["titles"]["language"] + " (" + media["titles"]["original"].split(" (")[-1]

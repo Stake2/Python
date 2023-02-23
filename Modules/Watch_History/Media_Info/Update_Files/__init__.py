@@ -93,9 +93,8 @@ class Update_Files(Watch_History):
 						# Define media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = list_item)
 
-						if self.dictionary["Media"]["title"] != self.dictionary["Media"]["item"]["title"]:
-							print()
-							print("\t" + self.dictionary["Media"]["item"]["title"] + ":")
+						print()
+						print("\t" + self.dictionary["Media"]["item"]["title"] + ":")
 
 						# Verify if empty episodes' titles files exist
 						#self.Check_Episodes_Titles()
@@ -110,8 +109,11 @@ class Update_Files(Watch_History):
 						self.Count_Comments_Number()
 
 						# Add anime information to anime details
-						if plural_media_type == "Animes":
+						if self.dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
 							self.Add_Anime_Information()
+
+						if self.dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
+							self.Convert_Video_Information()
 
 					if self.switches["testing"] == True and media_list_title != media_list[-1]:
 						input()
@@ -601,17 +603,51 @@ class Update_Files(Watch_History):
 				# Remove special characters from media (item) title
 				title = media_dictionary["title"]
 
+				# Remove non-url items from title
 				for item in [",", ":", "(", ")", ".", "!", "?"]:
 					title = title.replace(item, "")
 
-				# Open MyAnimeList search page with media (item) title parameter
-				self.File.Open("https://myanimelist.net/search/all?q={}&cat=anime".format(title), open = True)
+				# Add media title to media item title to use on search
+				if self.dictionary["Media"]["item"]["title"] != self.dictionary["Media"]["title"]:
+					title = self.dictionary["Media"]["title"] + " " + title
 
-				# Ask for media (item) link
-				link = self.Input.Type("Link")
+				if (
+					# If media has media list and the media item is not the same as the the root media
+					self.dictionary["Media"]["States"]["media_list"] == True and
+					self.dictionary["Media"]["item"]["title"] != self.dictionary["Media"]["title"] or
 
-				# Get ID from link
-				id = link.split("/")[-2]
+					# Or the media does not have a media list and the media item is the same as the root media and the "ID" key is not present inside the media details
+					self.dictionary["Media"]["States"]["media_list"] == False or
+					self.dictionary["Media"]["item"]["title"] == self.dictionary["Media"]["title"] and
+					"ID" not in self.dictionary["Media"]["details"]
+				):
+					# Open MyAnimeList search page with media (item) title parameter
+					self.File.Open("https://myanimelist.net/search/all?q={}&cat=anime".format(title))
+
+					# Ask for media (item) link
+					link = self.Input.Type(self.JSON.Language.language_texts["{}_website_link"].format("MyAnimeList"))
+
+					# Get ID from link
+					id = link.split("/")[-2]
+
+					# Get information from MyAnimeList using anime ID
+					get_information_from_mal = True
+
+				# If the media has a media list and the media item is the same as the media and the "ID" key is present inside the media details
+				if (
+					self.dictionary["Media"]["States"]["media_list"] == True and
+					self.dictionary["Media"]["item"]["title"] == self.dictionary["Media"]["title"] and
+					"ID" in self.dictionary["Media"]["details"]
+				):
+					# Get link and ID from media details
+					link = self.dictionary["Media"]["details"]["Link"]
+					id = self.dictionary["Media"]["details"]["ID"]
+
+					# Get anime information from "Anime.json" file
+					media_dictionary["Information"] = self.JSON.To_Python(self.dictionary["Media"]["folders"]["anime"])
+
+					# Do not get information from MyAnimeList
+					get_information_from_mal = False
 
 				# Add the MyAnimeList ID after the "Episodes" key
 				key_value = {
@@ -619,7 +655,12 @@ class Update_Files(Watch_History):
 					"value": id
 				}
 
-				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = self.language_texts["episodes, title()"])
+				after_key = self.language_texts["episodes, title()"]
+
+				if self.dictionary["Media"]["States"]["single_unit"] == True:
+					after_key = self.language_texts["single_unit"]
+
+				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = after_key)
 
 				# Add the MyAnimeList Link after the "ID" key
 				key_value = {
@@ -629,58 +670,79 @@ class Update_Files(Watch_History):
 
 				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = "ID")
 
-				# Get anime details
-				anime_details = self.API.Call("MyAnimeList", {"id": media_dictionary["details"]["ID"]})["response"]
+				if get_information_from_mal == True:
+					# Get anime details
+					media_dictionary["Information"] = self.API.Call("MyAnimeList", {"id": media_dictionary["details"]["ID"]})["response"]
 
-				# Format anime details dictionary
-				anime_details = self.Format_Anime_Details(media_dictionary, anime_details)
+					# Define links dictionary
+					media_dictionary["Information"]["Links"] = {
+						"Official": {},
+						"MyAnimeList": {
+							"Link": link,
+							"en": link,
+							"ID": id
+						}
+					}
+
+				self.Paste_Links(media_dictionary)
+
+				if get_information_from_mal == True:
+					# Format anime details dictionary
+					media_dictionary["Information"] = self.Format_Anime_Information(media_dictionary, media_dictionary["Information"])
 
 				# Add time to date
-				if "Broadcast" in anime_details and len(media_dictionary["details"][self.Date.language_texts["start_date"]]) == 10 and len(anime_details["Broadcast"]["Time"]) == 5:
-					media_dictionary["details"][self.Date.language_texts["start_date"]] = anime_details["Broadcast"]["Time"] + " " + media_dictionary["details"][self.Date.language_texts["start_date"]]
+				if "Broadcast" in media_dictionary["Information"] and media_dictionary["Information"]["Broadcast"]:
+					if len(media_dictionary["details"][self.Date.language_texts["start_date"]]) <= 10 and len(media_dictionary["Information"]["Broadcast"]["Time"]) == 5:
+						media_dictionary["details"][self.Date.language_texts["start_date"]] = media_dictionary["Information"]["Broadcast"]["Time"] + " " + media_dictionary["details"][self.Date.language_texts["start_date"]]
 
 				# Remove the "date" key of media (anime) details
-				if self.Date.language_texts["start_date"] in media_dictionary["details"]:
-					media_dictionary["details"].pop(self.Date.language_texts["start_date"])
+				if self.Date.language_texts["date, title()"] in media_dictionary["details"]:
+					media_dictionary["details"].pop(self.Date.language_texts["date, title()"])
 
-				# Add "Start date" key to media (item) details after the "Year" key
-				key_value = {
-					"key": self.Date.language_texts["start_date"],
-					"value": anime_details["Dates"]["Start"]["Date"]["DD/MM/YYYY"]
-				}
+				# Add start and end date to media (item) details
+				for key in ["Start", "End"]:
+					text_key = "start_date"
+					after_key = self.Date.language_texts["year, title()"]
 
-				if anime_details["Dates"]["Start"]["Date Time"] != {}:
-					key_value["value"] = anime_details["Dates"]["Start"]["Date Time"]["HH:MM DD/MM/YYYY"]
+					if key == "End":
+						text_key = "end_date"
+						after_key = self.Date.language_texts["start_date"]
 
-				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = self.Date.language_texts["year, title()"])
+					# Add date key to media (item) details after the "Year" key
+					key_value = {
+						"key": self.Date.language_texts[text_key],
+						"value": "??/??/????"
+					}
 
-				# Add end date to media (item) details after the "Date" key
-				key_value = {
-					"key": self.Date.language_texts["end_date"],
-					"value": anime_details["Dates"]["End"]["Date"]["DD/MM/YYYY"]
-				}
+					if media_dictionary["Information"]["Dates"][key] != {}:
+						key_value["value"] = media_dictionary["Information"]["Dates"][key]["Date"]["DD/MM/YYYY"]
 
-				if anime_details["Dates"]["End"]["Date Time"] != {}:
-					key_value["value"] = anime_details["Dates"]["End"]["Date Time"]["HH:MM DD/MM/YYYY"]
+						if media_dictionary["Information"]["Dates"][key]["Date Time"] != {}:
+							key_value["value"] = media_dictionary["Information"]["Dates"][key]["Date Time"]["HH:MM DD/MM/YYYY"]
+
+					media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = after_key)
 
 				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = self.Date.language_texts["start_date"])
 
 				# Add the episode duration after the "Episodes" key
 				key_value = {
 					"key": self.Date.language_texts["duration, title()"],
-					"value": anime_details["Duration"]["Text"][self.user_language]
+					"value": media_dictionary["Information"]["Duration"]["Text"][self.user_language]
 				}
 
+				if key_value["value"] == "":
+					key_value["value"] = 0
+
 				# Change duration key if episodes are more than one
-				if anime_details["Episodes"] > 1:
+				if media_dictionary["Information"]["Episodes"] > 1:
 					key_value["key"] = self.language_texts["episodes_duration"]
 
 				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = self.language_texts["episodes, title()"])
 
 				# Add "Studio(s)" key to media (item) details after the "Episodes duration" key
 				key_value = {
-					"key": self.Text.By_Number(anime_details["Studios"], self.JSON.Language.language_texts["studio, title()"], self.JSON.Language.language_texts["studios, title()"]),
-					"value": self.Text.From_List(anime_details["Studios"], break_line = False, separator = ", ")
+					"key": self.Text.By_Number(media_dictionary["Information"]["Studios"], self.JSON.Language.language_texts["studio, title()"], self.JSON.Language.language_texts["studios, title()"]),
+					"value": self.Text.From_List(media_dictionary["Information"]["Studios"], break_line = False, separator = ", ")
 				}
 
 				media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = self.language_texts["episodes_duration"])
@@ -688,143 +750,273 @@ class Update_Files(Watch_History):
 				# Update media (item) details file
 				self.File.Edit(media_dictionary["folders"]["details"], self.Text.From_Dictionary(media_dictionary["details"]), "w")
 
-				# Define and create media "Animes.json" file
-				media_dictionary["folders"]["anime"] = media_dictionary["folders"]["root"] + "Anime.json"
-				self.File.Create(media_dictionary["folders"]["anime"])
+				if media_dictionary["Information"]["Links"]["Wikipedia"]["Episode list"] == {}:
+					media_dictionary["Information"]["Links"]["Wikipedia"].pop("Episode list")
 
-				# Write anime details into media "Animes.json" file
-				self.JSON.Edit(media_dictionary["folders"]["anime"], anime_details)
+				# Write anime details into media "[Anime]/[Season].json" file
+				self.JSON.Edit(media_dictionary["folders"][media_dictionary["Information file name"].lower()], media_dictionary["Information"])
 
-	def Format_Anime_Details(self, media_dictionary, details):
-		new_details = {
-			"ID": details["id"],
-			"Link": media_dictionary["details"]["Link"],
-			"Title": details["title"],
-			"Titles": {
-				**media_dictionary["titles"],
-				**details["alternative_titles"]
+	def Paste_Links(self, media_dictionary):
+		links = {
+			"Official": {
+				"Link": self.JSON.Language.language_texts["official_website"],
+				"Twitter": "Twitter"
 			},
-			"Format": details["media_type"],
-			"Source": details["source"].replace("4_koma", "4-koma").replace("_", " ").capitalize(),
-			"Rating": details["rating"].upper().replace("_", " "),
-			"Pictures": [],
-			"Genres": [],
-			"Episodes": details["num_episodes"],
-			"Duration": details["average_episode_duration"],
-			"Dates": {
-				"Start": {
-					"Date": {
-						"YYYY-MM-DD": details["start_date"],
-						"DD/MM/YYYY": self.Date.From_String(details["start_date"])["DD/MM/YYYY"]
-					},
-					"Time": {},
-					"Date Time": {}
-				},
-				"End": {
-					"Date": {
-						"YYYY-MM-DD": details["end_date"],
-						"DD/MM/YYYY": self.Date.From_String(details["end_date"])["DD/MM/YYYY"]
-					},
-					"Time": {},
-					"Date Time": {}
-				}
+			"Wikipedia": {
+				"Languages": [
+					"ja",
+					"en",
+					"pt"
+				],
+				"Gender": "feminine"
 			},
-			"Start season": {
-				"Year": details["start_season"]["year"],
-				"Season": details["start_season"]["season"].title()
+			"Fandom": {
+				"Languages": [
+					"en"
+				],
+				"Gender": "masculine"
 			},
-			"Broadcast": {
-				"Time": ""
-			},
-			"Synopsis": details["synopsis"],
-			"Background": details["background"],
-			"Related": {},
-			"Studios": []
+			"IMDB": {
+				"Languages": [
+					"en"
+				],
+				"Gender": "masculine"
+			}
 		}
 
+		# Add "CrunchyRoll" website to links dictionary
+		if self.dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
+			links["CrunchyRoll"] = {
+				"Languages": [
+					"en"
+				],
+				"Gender": "feminine"
+			}
+
+		# Remove Japanese Wikipedia language if media type is not "Animes"
+		if self.dictionary["media_type"]["plural"]["en"] != self.texts["animes"]["en"]:
+			links["Wikipedia"]["Languages"].pop("ja")
+
+		# Iterate through links dictionary
+		for link_key in links:
+			link = links[link_key]
+
+			# If the link key is not inside media information links, add it
+			if link_key not in media_dictionary["Information"]["Links"]:
+				media_dictionary["Information"]["Links"][link_key] = {}
+
+			# if the link key is inside the root media information links, get the links dictionary from it
+			if link_key in self.dictionary["Media"]["Information"]["Links"]:
+				media_dictionary["Information"]["Links"][link_key] = self.dictionary["Media"]["Information"]["Links"][link_key]
+
+			if "Languages" in link:
+				for language in link["Languages"]:
+					if language in self.languages["full_translated"][language]:
+						# Get transtaled language
+						translated_full_language = self.languages["full_translated"][language][self.user_language]
+
+					else:
+						translated_full_language = language
+
+					# Define of and in texts
+					of_text = self.JSON.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["of"]
+					in_text = self.JSON.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["in"]
+
+					# Define text to show when asking for user to paste the website link
+					text = self.JSON.Language.language_texts["{}_website_link"].format(in_text + " " + translated_full_language + " " + of_text + " " + link_key)
+
+					# If the language is not inside the links dictionary, ask for the website link
+					if language not in media_dictionary["Information"]["Links"][link_key]:
+						typed_link = self.Input.Type(text)
+
+						# If the typed link is not empty, define the language link as the typed link
+						if typed_link != "":
+							media_dictionary["Information"]["Links"][link_key][language] = typed_link
+
+					# If the link key is "Wikipedia" and the language is not "Japanese"
+					if link_key == "Wikipedia" and language != "ja":
+						# Define empty dictionary for "episode list" links
+						episode_list_links = {}
+
+						# Define text to show when asking for user to paste the episode list website link
+						text = self.JSON.Language.language_texts["{}_website_link"].format(of_text + " " + self.language_texts["episode_list"].lower() + " " + in_text + " " + translated_full_language + " " + of_text + " " + link_key)
+
+						# If the language is not inside the episode list links dictionary, ask for the episode list website link
+						if (
+							"Episode list" in media_dictionary["Information"]["Links"][link_key] and language not in media_dictionary["Information"]["Links"][link_key]["Episode list"] or
+							"Episode list" not in media_dictionary["Information"]["Links"][link_key]
+						):
+							typed_link = self.Input.Type(text)
+
+							# If the typed link is not empty, define the episode list language link as the typed link
+							if typed_link != "":
+								episode_list_links[language] = typed_link
+
+			# If the link key is "Wikipedia"
+			if link_key == "Wikipedia":
+				# If the "Episode list" key is not inside the links dictionary
+				if "Episode list" not in media_dictionary["Information"]["Links"][link_key]:
+					# Define the "Episode list" dictionary as the episode list links dictionary
+					media_dictionary["Information"]["Links"][link_key]["Episode list"] = episode_list_links
+
+			# If the link dictionary does not contain a "Languages" list
+			if "Languages" not in link:
+				# Get the type text to show from the English language (default link language)
+				text = link["Link"]
+
+				if "Link" not in media_dictionary["Information"]["Links"][link_key]:
+					typed_link = self.Input.Type(text)
+
+					media_dictionary["Information"]["Links"][link_key]["Link"] = typed_link
+
+				if "Twitter" not in media_dictionary["Information"]["Links"][link_key]:
+					typed_link = self.Input.Type("Twitter")
+
+					media_dictionary["Information"]["Links"][link_key]["Twitter"] = typed_link
+
+	def Format_Anime_Information(self, media_dictionary, information):
+		new_information = {
+			"Title": information["title"],
+			"Titles": {
+				**media_dictionary["titles"],
+				**information["alternative_titles"]
+			},
+			"ID": information["id"],
+			"Link": media_dictionary["details"]["Link"],
+			"Links": {},
+			"Format": information["media_type"],
+			"Source": information["source"].replace("4_koma", "4-koma").replace("_", " ").capitalize(),
+			"Rating": information["rating"].upper().replace("_", " "),
+			"Pictures": [],
+			"Genres": [],
+			"Episodes": information["num_episodes"],
+			"Episode titles": {},
+			"Duration": information["average_episode_duration"],
+			"Dates": {
+				"Start": {},
+				"End": {}
+			},
+			"Start season": {},
+			"Broadcast": {},
+			"Synopsis": information["synopsis"],
+			"Background": information["background"],
+			"Related": {},
+			"Studios": [],
+			"Original language": "Japanese",
+			"Country of origin": "Japan"
+		}
+
+		# Add link to links dictionary
+		for key in information["Links"]:
+			new_information["Links"][key] = information["Links"][key]
+
 		# Change format of anime to title if it is not "TV", "OVA", or "ONA"
-		if new_details["Format"] in ["movie", "special", "music"]:
-			new_details["Format"] = new_details["Format"].title()
+		if new_information["Format"] in ["movie", "special", "music"]:
+			new_information["Format"] = new_information["Format"].title()
 
 		# Change format of anime to uppercase if it is "TV", "OVA", or "ONA"
 		else:
-			new_details["Format"] = new_details["Format"].upper()
+			new_information["Format"] = new_information["Format"].upper()
 
 		# Add pictures
-		for dict_ in details["pictures"]:
-			new_details["Pictures"].append(dict_["large"])
+		for dict_ in information["pictures"]:
+			new_information["Pictures"].append(dict_["large"])
 
 		# Add genres
-		for dict_ in details["genres"]:
-			new_details["Genres"].append(dict_["name"])
+		for dict_ in information["genres"]:
+			new_information["Genres"].append(dict_["name"])
+
+		# Get episode titles
+		new_information["Episode titles"] = self.dictionary["Media"]["item"]["episodes"]["titles"]
+		new_information["Episode titles"].pop("files")
 
 		# Define duration dictionary
-		new_details["Duration"] = {
+		new_information["Duration"] = {
 			"Hours": 0,
-			"Minutes": divmod(new_details["Duration"], 60)[0],
-			"Seconds": divmod(new_details["Duration"], 60)[1],
+			"Minutes": divmod(new_information["Duration"], 60)[0],
+			"Seconds": divmod(new_information["Duration"], 60)[1],
 			"Time": "",
 			"Text": {}
 		}
 
 		# Define duration text
-		new_details["Duration"]["Time"] = str(new_details["Duration"]["Minutes"]) + ":" + str(new_details["Duration"]["Seconds"])
+		new_information["Duration"]["Time"] = str(new_information["Duration"]["Minutes"]) + ":" + str(new_information["Duration"]["Seconds"])
 
 		# Define duration time text
 		for language in self.languages["small"]:
 			# Define duration time text using "Time_Text" method of "Date" class
-			new_details["Duration"]["Text"][language] = self.Date.Time_Text("0:" + new_details["Duration"]["Time"], language)
+			new_information["Duration"]["Text"][language] = self.Date.Time_Text("0:" + new_information["Duration"]["Time"], language)
 
-		if new_details["Duration"]["Minutes"] > 60:
+		if new_information["Duration"]["Minutes"] > 60:
 			# Define add leading zeroes to hours
-			new_details["Duration"]["Hours"] = self.Text.Add_Leading_Zeros(divmod(new_details["Duration"]["Minutes"], 60)[0])
+			new_information["Duration"]["Hours"] = self.Text.Add_Leading_Zeros(divmod(new_information["Duration"]["Minutes"], 60)[0])
 
 			# Define add leading zeroes to minutes
-			new_details["Duration"]["Minutes"] = self.Text.Add_Leading_Zeros(divmod(new_details["Duration"]["Minutes"], 60)[1])
+			new_information["Duration"]["Minutes"] = self.Text.Add_Leading_Zeros(divmod(new_information["Duration"]["Minutes"], 60)[1])
 
 			# Define add leading zeroes to seconds
-			new_details["Duration"]["Seconds"] = self.Text.Add_Leading_Zeros(new_details["Duration"]["Seconds"])
+			new_information["Duration"]["Seconds"] = self.Text.Add_Leading_Zeros(new_information["Duration"]["Seconds"])
 
 			# Define duration time
-			new_details["Duration"]["Time"] = str(new_details["Duration"]["Hours"]) + ":" + str(new_details["Duration"]["Minutes"]) + ":" + str(new_details["Duration"]["Seconds"])
+			new_information["Duration"]["Time"] = str(new_information["Duration"]["Hours"]) + ":" + str(new_information["Duration"]["Minutes"]) + ":" + str(new_information["Duration"]["Seconds"])
 
 			# Define duration time text using "Time_Text" method of "Date" class
 			for language in self.languages["small"]:
-				new_details["Duration"]["Text"][language] = self.Date.Time_Text(new_details["Duration"]["Time"], language)
+				new_information["Duration"]["Text"][language] = self.Date.Time_Text(new_information["Duration"]["Time"], language)
 
 			# Convert times to integer
-			for key in new_details["Duration"]:
+			for key in new_information["Duration"]:
 				if key not in ["Time", "Text"]:
-					new_details["Duration"][key] = int(new_details["Duration"][key])
+					new_information["Duration"][key] = int(new_information["Duration"][key])
 
-		# Add broadcast time to anime dates
-		if "broadcast" in details:
-			new_details["Broadcast"]["Time"] = details["broadcast"]["start_time"]
-
-			for key in ["Start", "End"]:
-				date = details["start_date"]
+		for key in ["Start", "End"]:
+			if "start_date" in information:
+				date = information["start_date"]
 
 				if key == "End":
-					date = details["end_date"]
+					date = information["end_date"]
+
+				new_information["Dates"][key] = {
+					"Date": {
+						"YYYY-MM-DD": date,
+						"DD/MM/YYYY": self.Date.From_String(date)["DD/MM/YYYY"]
+					},
+					"Time": {},
+					"Date Time": {},
+					"Year": self.Date.From_String(date)["year"]
+				}
+
+		if "start_season" in information:
+			new_information["Start season"] = {
+				"Year": information["start_season"]["year"],
+				"Season": information["start_season"]["season"].title()
+			}
+
+		# Add broadcast time to anime dates
+		if "broadcast" in information:
+			new_information["Broadcast"]["Time"] = information["broadcast"]["start_time"]
+
+			for key in ["Start", "End"]:
+				date = information["start_date"]
+
+				if key == "End":
+					date = information["end_date"]
 
 				# And hours and minutes
-				new_details["Dates"][key]["Time"]["HH:MM"] = details["broadcast"]["start_time"]
+				new_information["Dates"][key]["Time"]["HH:MM"] = information["broadcast"]["start_time"]
 
 				# Add ISO-8601 date time and European date time
-				new_details["Dates"][key]["Date Time"].update({
-					"YYYY-MM-DDTHH:MM:SSZ": new_details["Dates"][key]["Date"]["YYYY-MM-DD"] + "T" + details["broadcast"]["start_time"] + ":00Z",
-					"HH:MM DD/MM/YYYY": details["broadcast"]["start_time"] + " " + self.Date.From_String(date)["DD/MM/YYYY"]
+				new_information["Dates"][key]["Date Time"].update({
+					"YYYY-MM-DDTHH:MM:SSZ": new_information["Dates"][key]["Date"]["YYYY-MM-DD"] + "T" + information["broadcast"]["start_time"] + ":00Z",
+					"HH:MM DD/MM/YYYY": information["broadcast"]["start_time"] + " " + self.Date.From_String(date)["DD/MM/YYYY"]
 				})
 
-		else:
-			new_details.pop("Broadcast")
-
 		# Add related manga
-		if details["related_manga"] != []:
-			new_details["Related"]["Manga"] = {}
+		if information["related_manga"] != []:
+			new_information["Related"]["Manga"] = {}
 
 			# Iterate through manga dictionaries
-			for dict_ in details["related_manga"]:
+			for dict_ in information["related_manga"]:
 				dict_ = {
 					"ID": dict_["node"]["id"],
 					"Title": dict_["node"]["title"],
@@ -835,14 +1027,14 @@ class Update_Files(Watch_History):
 					}
 				}
 
-				new_details["Related"]["Manga"][dict_["Title"]] = dict_
+				new_information["Related"]["Manga"][dict_["Title"]] = dict_
 
 		# Add related anime
-		if details["related_anime"] != []:
-			new_details["Related"]["Anime"] = {}
+		if information["related_anime"] != []:
+			new_information["Related"]["Anime"] = {}
 
 			# Iterate through anime dictionaries
-			for dict_ in details["related_anime"]:
+			for dict_ in information["related_anime"]:
 				dict_ = {
 					"ID": dict_["node"]["id"],
 					"Title": dict_["node"]["title"],
@@ -853,17 +1045,23 @@ class Update_Files(Watch_History):
 					}
 				}
 
-				new_details["Related"]["Anime"][dict_["Title"]] = dict_
+				new_information["Related"]["Anime"][dict_["Title"]] = dict_
 
 		# Add studios
-		for dict_ in details["studios"]:
-			new_details["Studios"].append(dict_["name"])
+		for dict_ in information["studios"]:
+			new_information["Studios"].append(dict_["name"])
 
 		# If background is empty, remove the key
-		if new_details["Background"] == "":
-			new_details.pop("Background")
+		if new_information["Background"] == "":
+			new_information.pop("Background")
 
-		return new_details
+		return new_information
+
+	def Convert_Video_Information(self):
+		# To-Do: Add title and titles to "Channel.json" and "Playlist.json"
+		# Add links and dates dictionaries
+		# Add episodes and episode titles, pictures, (series, series list), and original language
+		pass
 
 	def Add_To_Comments_Dictionary(self):
 		self.dictionary = self.Select_Media_Type_And_Media()
