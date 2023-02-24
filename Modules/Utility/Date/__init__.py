@@ -118,7 +118,7 @@ class Date():
 		if format == "":
 			format = self.texts["default_format"]
 
-			if date.strftime("%Z") == "UTC":
+			if date.strftime("%Z") in ["UTC", ""]:
 				format += "Z"
 
 			else:

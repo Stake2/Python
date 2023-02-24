@@ -5,12 +5,13 @@ class Block_Websites(object):
 		self.Define_Basic_Variables()
 
 		self.module = {
-			"name": self.__module__.split(".")[-1],
-			"key": self.__module__.split(".")[-1].lower().replace(" ", "_")
+			"name": self.__module__.split(".")[0],
+			"key": self.__module__.split(".")[0].lower().replace(" ", "_")
 		}
 
 		if self.module["name"] == "__main__":
 			self.module["name"] = "Block_Websites"
+			self.module["key"] = self.module["name"].lower().replace(" ", "_")
 
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders

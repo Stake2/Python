@@ -195,22 +195,20 @@ class Comment_Writer(Watch_History):
 		if self.media_dictionary["Comment Writer"]["States"]["backup"] == True:
 			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
-		# Update comments dictionary to add to comment numbers
-		if self.only_comment == False:
-			# Add to total comment number
-			self.dictionaries["Root Comments"]["Numbers"]["Total"] += 1
+		# Add to total comment number
+		self.dictionaries["Root Comments"]["Numbers"]["Total"] += 1
 
-			# Add to year comment number
-			self.dictionaries["Root Comments"]["Numbers"]["Years"][str(self.date["year"])] += 1
+		# Add to year comment number
+		self.dictionaries["Root Comments"]["Numbers"]["Years"][str(self.date["year"])] += 1
 
-			# Add to media type comment number
-			self.dictionaries["Root Comments"]["Numbers"]["Type"][self.media_dictionary["media_type"]["plural"]["en"]]["Total"] += 1
+		# Add to media type comment number
+		self.dictionaries["Root Comments"]["Numbers"]["Type"][self.media_dictionary["media_type"]["plural"]["en"]]["Total"] += 1
 
-			# Add to media type comment number per year
-			self.dictionaries["Root Comments"]["Numbers"]["Type"][self.media_dictionary["media_type"]["plural"]["en"]]["Years"][str(self.date["year"])] += 1
+		# Add to media type comment number per year
+		self.dictionaries["Root Comments"]["Numbers"]["Type"][self.media_dictionary["media_type"]["plural"]["en"]]["Years"][str(self.date["year"])] += 1
 
-			# Update root Comments.json file to update numbers
-			self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root Comments"])
+		# Update root Comments.json file to update numbers
+		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root Comments"])
 
 		# Add comment file name to file names list
 		self.dictionaries["Comments"]["Entries"].append(self.media_dictionary["Media"]["comment"]["file_name"])
@@ -237,7 +235,7 @@ class Comment_Writer(Watch_History):
 				"Time": "",
 				"Video": {
 					"ID": self.media_dictionary["Media"]["episode"]["id"],
-					"Link": self.media_dictionary["Media"]["episode"]["remote"]["link"],
+					"Link": self.remote_origins["YouTube"] + "watch?v=" + self.media_dictionary["Media"]["episode"]["id"],
 					"Time": ""
 				}
 			})
@@ -290,6 +288,12 @@ class Comment_Writer(Watch_History):
 			if states_dictionary != {}:
 				self.dictionaries["Comments"]["Dictionary"][self.media_dictionary["Media"]["comment"]["file_name"]]["States"] = states_dictionary
 
+		import collections
+
+		# Sort media entries list and dictionary
+		self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key=str.lower)
+		self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
+
 		# Re-numerate entry numbers inside entry dictionaries
 		# (Numbers can be wrong if the media is non-episodic and uses the episode title as the dictionary key)
 		number = 1
@@ -297,12 +301,6 @@ class Comment_Writer(Watch_History):
 			self.dictionaries["Comments"]["Dictionary"][entry_name]["Number"] = number
 
 			number += 1
-
-		import collections
-
-		# Sort media entries list and dictionary
-		self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key=str.lower)
-		self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
 
 		# Update "Comments.json" file
 		self.JSON.Edit(self.media_dictionary["Media"]["item"]["folders"]["comments"]["comments"], self.dictionaries["Comments"])

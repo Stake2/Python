@@ -586,23 +586,31 @@ class Watch_History(object):
 				"Dates"
 			]
 
+			media["Information"] = {
+				"File name": "",
+				"Key": "",
+				"Dictionary": {}
+			}
+
 			# Define "[Singular media type].json" or "Season.json" file (media information file) for non-video media
 			if dictionary["media_type"]["plural"]["en"] != self.texts["videos"]["en"]:
-				media["Information file name"] = dictionary["media_type"]["singular"]["en"]
+				media["Information"]["File name"] = dictionary["media_type"]["singular"]["en"]
 
 				if item == True and media["title"] != dictionary["Media"]["title"] and dictionary["media_type"]["plural"]["en"] != self.texts["movies"]["en"]:
-					media["Information file name"] = "Season"
+					media["Information"]["File name"] = "Season"
 
-				file_names.append(media["Information file name"] + ".json")
+				file_names.append(media["Information"]["File name"] + ".json")
 
 			# Define "Channel.json" or "Playlist.json" file for video media
 			if dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
-				media["Information file name"] = "Channel"
+				media["Information"]["File name"] = "Channel"
 
 				if item == True:
-					media["Information file name"] = "Playlist"
+					media["Information"]["File name"] = "Playlist"
 
-				file_names.append(media["Information file name"] + ".json")
+				file_names.append(media["Information"]["File name"] + ".json")
+
+			media["Information"]["Key"] = media["Information"]["File name"].lower().replace(" ", "_")
 
 			# Define media text files
 			for file_name in file_names:
@@ -620,8 +628,8 @@ class Watch_History(object):
 				media["folders"][key] = media["folders"]["root"] + file_name
 				self.File.Create(media["folders"][key])
 
-			if self.File.Contents(media["folders"][media["Information file name"].lower()])["lines"] != []:
-				media["Information"] = self.JSON.To_Python(media["folders"][media["Information file name"].lower()])
+			if self.File.Contents(media["folders"][media["Information"]["File name"].lower()])["lines"] != []:
+				media["Information"]["Dictionary"] = self.JSON.To_Python(media["folders"][media["Information"]["File name"].lower()])
 
 			# Define media details
 			media["details"] = self.File.Dictionary(media["folders"]["details"])
@@ -779,7 +787,7 @@ class Watch_History(object):
 				"folders": {
 					"root": dictionary["Media"]["folders"]["root"] + dictionary["media_type"]["subfolders"]["plural"] + "/",
 				},
-				"number": 0
+				"number": 1
 			}
 
 			if self.Folder.Exist(dictionary["Media"]["items"]["folders"]["root"]) == True:
@@ -916,6 +924,8 @@ class Watch_History(object):
 
 			if self.Folder.Exist(dictionary["Media"]["items"]["folders"]["root"]) == False:
 				dictionary["Media"]["States"]["media_list"] = False
+
+				dictionary["Media"]["items"]["list"] = [dictionary["Media"]["title"]]
 
 		# Define media item as the media for media that has no media list
 		if dictionary["Media"]["States"]["series_media"] == False or dictionary["Media"]["States"]["media_list"] == False:
