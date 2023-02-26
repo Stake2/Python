@@ -26,7 +26,7 @@ Read [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUC
 
 - To list all modules avaliable to run (MS = Module Selector)
 ```
-> py MS.py --help
+> py MS.py -help
 ```
 
 - To run a specific module
