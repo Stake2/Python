@@ -20,18 +20,47 @@ Read [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUC
 ## Installing
 - Install the requirements in the [Requirements file](https://github.com/Stake2/Python/blob/main/requirements.txt)
 ```
-pip install -r requiriments.txt
+> pip install -r requiriments.txt
 ```
 - Add the [Modules folder](https://github.com/Stake2/Python/tree/main/Modules) to your PATH or copy its contents into your Python modules folder
 
 - To list all modules avaliable to run (MS = Module Selector)
 ```
-py MS.py --help
+> py MS.py --help
 ```
 
 - To run a specific module
 ```
-py MS.py --[module command line argument]
+> py MS.py --[module command line argument]
+```
+
+- You can also run the MS script without any arguments and it will list the available modules for you to select one
+```
+> MS.py
+
+# Output example:
+
+Modules:
+[1] - Block_Websites
+[2] - Christmas
+[3] - Code
+[4] - Database
+[5] - Diary
+[6] - Diary_Slim
+[7] - Food_Time
+[8] - Friends
+[9] - GamePlayer
+[10] - Project_Zomboid
+[11] - Python
+[12] - Social_Networks
+[13] - SproutGigs
+[14] - Stories
+[15] - Tasks
+[16] - Text_Generator
+[17] - Watch_History
+[18] - Years
+
+Select a module from the list to execute it: |
 ```
 
 ## Translating
