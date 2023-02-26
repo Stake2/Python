@@ -31,7 +31,9 @@ Read [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUC
 
 - To run a specific module
 ```
-> py MS.py --[module command line argument]
+> py MS.py -[Lowercased module name]
+> py MS.py -m [Module name typed in any case, with spaces or underlines]
+> py MS.py -module [Module name typed in any case, with spaces or underlines]
 ```
 
 - You can also run the MS script without any arguments and it will list the available modules for you to select one
