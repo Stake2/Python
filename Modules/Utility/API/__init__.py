@@ -70,7 +70,7 @@ class API():
 
 			# Save the credentials for the next run
 			self.File.Create(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"])
-			self.JSON.Edit(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["credentials"].to_json())
+			self.JSON.Edit(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["credentials"].to_json(), verbose = False)
 
 		# Define API dictionary
 		api.update({
@@ -91,7 +91,7 @@ class API():
 			key = "id"
 
 			if api["item"] == "playlistItems":
-				key = api["item"] + "Id"
+				key = "playlistId"
 
 			api.update({
 				"method": method,

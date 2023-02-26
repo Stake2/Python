@@ -49,8 +49,8 @@ class JSON():
 
 		return path
 
-	def Verbose(self, text, item, verbose = False):
-		if self.switches["verbose"] == True or verbose == True:
+	def Verbose(self, text, item, verbose = None):
+		if self.switches["verbose"] == True and verbose == None or verbose == True:
 			import inspect
 
 			print()
@@ -95,10 +95,7 @@ class JSON():
 
 		return contents
 
-	def Edit(self, file, text, next_line = True, parameter_switches = None):
-		if parameter_switches != None:
-			self.__init__(parameter_switches)
-
+	def Edit(self, file, text, next_line = True, verbose = None):
 		file = self.Sanitize(file)
 
 		contents = self.Contents(file)
@@ -119,7 +116,7 @@ class JSON():
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
-				self.Verbose(show_text, file_text)
+				self.Verbose(show_text, file_text, verbose = verbose)
 
 			if self.switches["file"]["edit"] == True:
 				return True
@@ -128,7 +125,7 @@ class JSON():
 				return False
 
 		if self.Exist(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text)
+			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text, verbose = verbose)
 
 			return False
 

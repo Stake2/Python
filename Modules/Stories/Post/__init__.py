@@ -119,7 +119,7 @@ class Post(Stories):
 			full_language = self.languages["full"][language]
 
 			self.story["chapter_titles"][language] = ""
-			self.story["chapter_titles"][language] += str(self.Text.Add_Leading_Zeros(self.story["Information"]["Chapter status"]["Post"])) + " - "
+			self.story["chapter_titles"][language] += str(self.Text.Add_Leading_Zeroes(self.story["Information"]["Chapter status"]["Post"])) + " - "
 			self.story["chapter_titles"][language] += self.story["Information"]["Chapter titles"][language][int(self.story["Information"]["Chapter status"]["Post"]) - 1]
 
 		# Define chapter number name
@@ -273,7 +273,7 @@ class Post(Stories):
 
 		# Add chapter number for module execution
 		if self.run_as_module == True:
-			source_file_name += "_0000" + str(self.Text.Add_Leading_Zeros(self.story["chapter_number"]))
+			source_file_name += "_0000" + str(self.Text.Add_Leading_Zeroes(self.story["chapter_number"]))
 
 		# Add last two zeroes for non-module execution
 		if self.run_as_module == False:

@@ -33,13 +33,13 @@ class Text():
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-	def Add_Leading_Zeros(self, number):
+	def Add_Leading_Zeroes(self, number):
 		if int(number) <= 9:
 			number = str("0" + str(number))
 
 		return number
 
-	def Remove_Leading_Zeros(self, number):
+	def Remove_Leading_Zeroes(self, number):
 		if int(number) <= 9 and "0" in str(number):
 			number = str(number)[1:]
 

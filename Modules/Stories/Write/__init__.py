@@ -114,7 +114,7 @@ class Write(Stories):
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
-			self.chapter["titles"][full_language] = self.Text.Add_Leading_Zeros(self.chapter["number"])
+			self.chapter["titles"][full_language] = self.Text.Add_Leading_Zeroes(self.chapter["number"])
 
 			if self.writing_mode in ["Revise", "Translate"]:
 				self.chapter["titles"][full_language] += " - "

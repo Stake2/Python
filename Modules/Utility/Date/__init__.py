@@ -468,7 +468,7 @@ class Date():
 		text = ""
 
 		if texts["hours"] != "":
-			text += self.Text.Remove_Leading_Zeros(hour) + " " + texts["hours"]
+			text += self.Text.Remove_Leading_Zeroes(hour) + " " + texts["hours"]
 
 			if texts["minutes"] != "" and texts["seconds"] == "":
 				text += " " + language_texts["and"] + " "
@@ -477,25 +477,25 @@ class Date():
 			text += ", "
 
 		if texts["minutes"] != "":
-			text += self.Text.Remove_Leading_Zeros(minute) + " " + texts["minutes"]
+			text += self.Text.Remove_Leading_Zeroes(minute) + " " + texts["minutes"]
 
 		if texts["minutes"] != "" and texts["seconds"] != "":
 			text += " " + language_texts["and"] + " "
 
 		if texts["seconds"] != "" and texts["seconds"] != "00":
-			text += self.Text.Remove_Leading_Zeros(second) + " " + texts["seconds"]
+			text += self.Text.Remove_Leading_Zeroes(second) + " " + texts["seconds"]
 
 		if add_original_time == True:
 			text += " " + "("
 
 			if texts["hours"] != "":
-				text += str(self.Text.Add_Leading_Zeros(hour)) + ":"
+				text += str(self.Text.Add_Leading_Zeroes(hour)) + ":"
 
 			if texts["minutes"] != "":
-				text += str(self.Text.Add_Leading_Zeros(minute)) + ":"
+				text += str(self.Text.Add_Leading_Zeroes(minute)) + ":"
 
 			if texts["seconds"] != "":
-				text += str(self.Text.Add_Leading_Zeros(second))
+				text += str(self.Text.Add_Leading_Zeroes(second))
 
 			text += ")"
 

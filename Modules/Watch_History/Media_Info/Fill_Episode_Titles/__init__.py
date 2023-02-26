@@ -39,7 +39,7 @@ class Fill_Episode_Titles(Watch_History):
 		self.episode_titles_files = self.Watch_Media.episode_titles_files
 
 		self.media_dictionary["Media"]["States"]["video"] = self.Watch_Media.is_video_series_media
-		self.media_dictionary["Media"]["States"]["media_list"] = self.Watch_Media.no_media_list
+		self.media_dictionary["Media"]["States"]["Media item list"] = self.Watch_Media.no_media_list
 
 		print()
 		print("-----")
@@ -74,7 +74,7 @@ class Fill_Episode_Titles(Watch_History):
 		except ValueError:
 			self.episode_number = 1
 
-		if self.media_dictionary["Media"]["States"]["media_list"] == False:
+		if self.media_dictionary["Media"]["States"]["Media item list"] == False:
 			try:
 				self.all_episode_number = self.Input.Type(self.language_texts["type_the_number_of_all_media_episodes"], first_space = False)
 
@@ -122,14 +122,14 @@ class Fill_Episode_Titles(Watch_History):
 
 				episode_title = '"' + self.Replace_Text(episode_title) + '"'
 
-				if self.media_dictionary["Media"]["States"]["media_list"] == False and self.all_episode_number != "":
-					all_episodes_number_text = "(" + str(self.Text.Add_Leading_Zeros(self.all_episode_number)) + ")"
+				if self.media_dictionary["Media"]["States"]["Media item list"] == False and self.all_episode_number != "":
+					all_episodes_number_text = "(" + str(self.Text.Add_Leading_Zeroes(self.all_episode_number)) + ")"
 
-				current_episode_number = str(self.Text.Add_Leading_Zeros(i))
+				current_episode_number = str(self.Text.Add_Leading_Zeroes(i))
 
 				full_episode_title = "EP" + current_episode_number
 
-				if self.media_dictionary["Media"]["States"]["media_list"] == False and self.all_episode_number != "":
+				if self.media_dictionary["Media"]["States"]["Media item list"] == False and self.all_episode_number != "":
 					full_episode_title += str(all_episodes_number_text)
 
 				full_episode_title += " " + episode_title
@@ -144,7 +144,7 @@ class Fill_Episode_Titles(Watch_History):
 				print("---")
 				print()
 
-				if self.media_dictionary["Media"]["States"]["media_list"] == False and self.all_episode_number != "":
+				if self.media_dictionary["Media"]["States"]["Media item list"] == False and self.all_episode_number != "":
 					self.all_episode_number += 1
 
 			i += 1

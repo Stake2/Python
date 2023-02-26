@@ -228,6 +228,9 @@ class Folder():
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], item + "/"),
 			}
 
+		# Audiovisual Media Network/Watch History "History" file
+		self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["history"] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], "History.json")
+
 		# Audiovisual Media Network/Watch History year folders
 		for item in [self.date["year"]]:
 			key = str(item).lower().replace(" ", "_")

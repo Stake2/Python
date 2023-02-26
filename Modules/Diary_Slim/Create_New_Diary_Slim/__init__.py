@@ -44,7 +44,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 	def Define_Times(self):
 		self.date = self.Date.Now()
 
-		self.file_name_string = "{} {}, {}".format(self.Text.Add_Leading_Zeros(self.date["day"]), self.date["day_name"], self.date["%d-%m-%Y"])
+		self.file_name_string = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["day"]), self.date["day_name"], self.date["%d-%m-%Y"])
 
 	def Make_Header(self):
 		self.today_is = self.today_is_text_header_prototype.format(self.date["day_name"], self.date["day"], self.date["month_name"], self.date["year"])

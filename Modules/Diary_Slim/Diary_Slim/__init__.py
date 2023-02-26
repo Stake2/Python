@@ -81,7 +81,7 @@ class Diary_Slim():
 		self.Folder.Create(self.current_year_folder)
 
 		# Current month folder
-		self.month_folder_name = str(self.Text.Add_Leading_Zeros(self.date["month"])) + " - " + self.date["month_name"]
+		self.month_folder_name = str(self.Text.Add_Leading_Zeroes(self.date["month"])) + " - " + self.date["month_name"]
 
 		self.current_month_folder = self.current_year_folder + self.month_folder_name + "/"
 		self.Folder.Create(self.current_month_folder)

@@ -75,7 +75,7 @@ class Create_Diary_File(Project_Zomboid):
 				number = self.dates[item]
 
 				if item == "Month":
-					number = self.Text.Add_Leading_Zeros(number) + " - " + self.Date.language_texts["month_names, type: list"][int(number)]
+					number = self.Text.Add_Leading_Zeroes(number) + " - " + self.Date.language_texts["month_names, type: list"][int(number)]
 
 				self.dates["folders"][item] = self.survivor_folder
 
