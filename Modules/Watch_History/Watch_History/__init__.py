@@ -68,7 +68,8 @@ class Watch_History(object):
 		self.dash_space = "-"
 
 	def Define_Folders_And_Files(self):
-		self.current_year = self.Years.current_year
+		if hasattr(self, "current_year") == False:
+			self.current_year = self.Years.current_year
 
 		# Folders dictionary
 		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"], lower_key = True)["dictionary"]
@@ -76,7 +77,7 @@ class Watch_History(object):
 		# Audiovisual Media Network root files
 		self.folders["audiovisual_media_network"]["watch_list"] = self.folders["audiovisual_media_network"]["root"] + "Watch List.txt"
 
-		self.folders["watch_history"]["current_year"] = self.folders["watch_history"][str(self.date["year"])]
+		self.folders["watch_history"]["current_year"] = self.folders["watch_history"][self.current_year["Number"]]
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
@@ -346,8 +347,9 @@ class Watch_History(object):
 
 			i += 1
 
-		# Write media types dictionary into "Media Types.json" file
-		self.JSON.Edit(self.folders["data"]["types"], self.media_types)
+		if self.current_year["Number"] == str(self.date["year"]):
+			# Write media types dictionary into "Media Types.json" file
+			self.JSON.Edit(self.folders["data"]["types"], self.media_types)
 
 		# Update "Info.json" file on "Media Info" folder
 		dictionary = self.JSON.To_Python(self.folders["media_info"]["info"])
@@ -357,6 +359,7 @@ class Watch_History(object):
 
 	def Define_Registry_Format(self):
 		from copy import deepcopy
+		import collections
 
 		# Define default Entries dictionary template
 		self.template = {
@@ -385,8 +388,8 @@ class Watch_History(object):
 		}
 
 		# If current year is not inside the "History" years list, add it to the list
-		if str(self.date["year"]) not in self.dictionaries["History"]["Years"]:
-			self.dictionaries["History"]["Years"].append(str(self.date["year"]))
+		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
+			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
 
 		# Update the number of years with the length of the years list
 		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
@@ -406,11 +409,14 @@ class Watch_History(object):
 			self.dictionaries["Root comments"] = self.JSON.To_Python(self.folders["comments"]["comments"])
 
 		# If current year is not inside the "year comment numbers" dictionary, add it to the dictionary as zero
-		if str(self.date["year"]) not in self.dictionaries["Root comments"]["Numbers"]["Years"]:
-			self.dictionaries["Root comments"]["Numbers"]["Years"][str(self.date["year"])] = 0
+		if self.current_year["Number"] not in self.dictionaries["Root comments"]["Numbers"]["Years"]:
+			self.dictionaries["Root comments"]["Numbers"]["Years"][self.current_year["Number"]] = 0
+
+		# Sort years list
+		self.dictionaries["Root comments"]["Numbers"]["Years"] = dict(collections.OrderedDict(sorted(self.dictionaries["Root comments"]["Numbers"]["Years"].items())))
 
 		# Update the current year comments number with the number from the comments dictionary
-		self.dictionaries["Entries"]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Years"][str(self.date["year"])]
+		self.dictionaries["Entries"]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Years"][self.current_year["Number"]]
 
 		# Update the "Entries.json" file with Entries dictionary
 		self.JSON.Edit(self.folders["watch_history"]["current_year"]["entries"], self.dictionaries["Entries"])
@@ -426,8 +432,11 @@ class Watch_History(object):
 			if self.File.Contents(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])["Entries"] != []:
 				self.dictionaries["Media Type"][plural_media_type] = self.JSON.To_Python(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"])
 
+			if self.current_year["Number"] not in self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"]:
+				self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"][self.current_year["Number"]] = 0
+
 			# Get media type comment number per year
-			self.dictionaries["Media Type"][plural_media_type]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"][str(self.date["year"])]
+			self.dictionaries["Media Type"][plural_media_type]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"][self.current_year["Number"]]
 
 			self.JSON.Edit(self.folders["watch_history"]["current_year"]["per_media_type"][key]["entries"], self.dictionaries["Media Type"][plural_media_type])
 
@@ -438,27 +447,14 @@ class Watch_History(object):
 				}
 
 			# If the current year is not inside the media type year comment number dictionary, add it
-			if str(self.date["year"]) not in self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"]:
+			if self.current_year["Number"] not in self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"]:
 				self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"][self.date["year"]] = 0
+
+			# Sort media type years list
+			self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"] = dict(collections.OrderedDict(sorted(self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"].items())))
 
 		# Update "Comments.json" file with updated Comments dictionary
 		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root comments"])
-
-	def Remove_Media_Type(self, media_types_list):
-		if type(media_types_list) == str:
-			media_types_list = [media_types_list]
-
-		media_types = self.media_types.copy()
-
-		for language in self.languages["small"]:
-			for item in media_types_list:
-				if item in media_types["plural"][language]:
-					media_types["plural"][language].remove(item)
-
-				if item in self.folders["media_info"]:
-					self.folders["media_info"].pop(item)
-
-		return texts
 
 	def Define_Options(self, dictionary, options):
 		for key in options:
@@ -468,11 +464,51 @@ class Watch_History(object):
 						if sub_key in options[key]:
 							dictionary[key][sub_key] = options[key][sub_key]
 
+					for sub_key in options[key]:
+						if sub_key not in dictionary[key]:
+							dictionary[key][sub_key] = options[key][sub_key]
+
 				if key not in dictionary or dictionary[key] == {}:
 					dictionary[key] = options[key]
 
 			if type(options[key]) in [str, list]:
 				dictionary[key] = options[key]
+
+		return dictionary
+
+	def Remove_Media_Type(self, to_remove):
+		from copy import deepcopy
+
+		if type(to_remove) == str:
+			to_remove = [to_remove]
+
+		media_types = deepcopy(self.media_types)
+
+		for item in to_remove:
+			if item in media_types:
+				media_types.pop(item)
+
+		dictionary = {
+			"to_remove": to_remove,
+			"media_types": media_types,
+			"list": {}
+		}
+
+		# Iterate through English plural media types list
+		for plural_media_type in self.media_types["plural"]["en"]:
+			# If the plural media type is inside the local media types dictionary
+			if plural_media_type in dictionary["media_types"]:
+				# Get the media type dictionary
+				media_type = dictionary["media_types"][plural_media_type]
+
+				# Iterate through small languages list
+				for language in self.languages["small"]:
+					# Create empty language list if it does not exist
+					if language not in dictionary["list"]:
+						dictionary["list"][language] = []
+
+					# Add to the plural media types list
+					dictionary["list"][language].append(media_type["plural"][language])
 
 		return dictionary
 
@@ -492,18 +528,19 @@ class Watch_History(object):
 			]
 		}
 
-		# Define media type media numbers
+		if options != None:
+			dictionary = self.Define_Options(dictionary, options)
+
+		# Get the media type media numbers
 		numbers = self.JSON.To_Python(self.folders["media_info"]["info"])["Numbers"]
 
 		i = 0
 		for plural_media_type in self.media_types["plural"]["en"]:
-			for language in self.languages["small"]:
-				dictionary["list"][language][i] = dictionary["list"][language][i] + " (" + str(numbers[plural_media_type]) + ")"
+			if plural_media_type in dictionary["list"]["en"]:
+				for language in self.languages["small"]:
+					dictionary["list"][language][i] = dictionary["list"][language][i] + " (" + str(numbers[plural_media_type]) + ")"
 
-			i += 1
-
-		if options != None:
-			dictionary = self.Define_Options(dictionary, options)
+				i += 1
 
 		# Select the media type
 		if "option" not in dictionary and "number" not in dictionary:
@@ -651,19 +688,32 @@ class Watch_History(object):
 			media["details"] = self.File.Dictionary(media["folders"]["details"])
 
 			if self.item == False:
+				# Define the default media language as the user language
 				media["Language"] = self.user_language
+
+				# Define the media language as "日本語" (Nihongo, Japanese) for anime media
+				if dictionary["media_type"]["plural"]["en"] == self.texts["animes"]["en"]:
+					media["Language"] = "日本語"
+
+				# Define the default media language as "English" for non-anime media
+				if dictionary["media_type"]["plural"]["en"] != self.texts["animes"]["en"]:
+					media["Language"] = "English"
+
+				# Define the default media language as "Português" (Portuguese) for video media
+				if dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
+					media["Language"] = "Português"
 
 				# Change user language to original media language if the key exists inside the media details
 				if self.JSON.Language.language_texts["original_language"] in media["details"]:
 					media["Language"] = media["details"][self.JSON.Language.language_texts["original_language"]]
 
-					if media["Language"] in list(self.languages["full"].values()):
-						# Iterate through full languages list to find small language from the full language that comes from the media details
-						for small_language in self.languages["full"]:
-							full_language = self.languages["full"][small_language]
+				if media["Language"] in list(self.languages["full"].values()):
+					# Iterate through full languages list to find small language from the full language
+					for small_language in self.languages["full"]:
+						full_language = self.languages["full"][small_language]
 
-							if full_language == media["Language"]:
-								media["Language"] = small_language
+						if full_language == media["Language"]:
+							media["Language"] = small_language
 
 				# Define media states dictionary
 				states = {
@@ -674,7 +724,7 @@ class Watch_History(object):
 					"series_media": True,
 					"episodic": False,
 					"single_unit": False,
-					"Replace Title": False,
+					"Replace title": False,
 					"Media item list": False,
 					"Has Dubbing": False,
 					"dubbed_to_title": False,
@@ -762,7 +812,8 @@ class Watch_History(object):
 					if dictionary["media_type"]["plural"]["en"] == self.texts["videos"]["en"]:
 						remote_origin = "YouTube"
 
-					dictionary["Media"]["details"][self.language_texts["remote_origin, title()"]] = remote_origin
+					if remote_origin != "None":
+						dictionary["Media"]["details"][self.language_texts["remote_origin, title()"]] = remote_origin
 
 				# Define Re-watching state for Re-watching status
 				if self.language_texts["status, title()"] in media["details"] and media["details"][self.language_texts["status, title()"]] == self.language_texts["re_watching, title()"]:
@@ -1292,7 +1343,12 @@ class Watch_History(object):
 								if item == gender_key:
 									item_text = self.media_types["genders"][language]["feminine"][gender_key]
 
-						dictionary["Media"]["texts"][item + "_" + key][language] = item_text + " " + dictionary["Media"]["texts"][key][language]
+						text = dictionary["Media"]["texts"][key][language].lower()
+
+						if "youtube" in text:
+							text = text.replace("youtube", "YouTube")
+
+						dictionary["Media"]["texts"][item + "_" + key][language] = item_text + " " + text
 
 		# Add "Christmas special" text to unit text
 		if dictionary["Media"]["States"]["video"] == False and self.Today_Is_Christmas == True:
@@ -1302,7 +1358,7 @@ class Watch_History(object):
 				dictionary["Media"]["texts"]["unit"][language] = self.texts["christmas_special_{}"][language].format(dictionary["Media"]["texts"]["unit"][language])
 
 		if self.language_texts["replace_title"] in dictionary["Media"]["item"]["details"]:
-			dictionary["Media"]["States"]["Replace Title"] = True
+			dictionary["Media"]["States"]["Replace title"] = True
 
 		return dictionary
 
@@ -1449,7 +1505,7 @@ class Watch_History(object):
 			for language in self.languages["small"]:
 				language_name = self.JSON.Language.texts["language_name"][language][self.user_language]
 
-				if language in media["titles"] and media["titles"][language] != media["titles"]["original"]:
+				if language in media["titles"] and media["titles"][language] != media["titles"]["original"] and media["titles"][language] != media["titles"]["language"]:
 					print("\t" + media["titles"][language])
 
 	def Define_States_Dictionary(self, dictionary):
@@ -1665,12 +1721,20 @@ class Watch_History(object):
 
 		return media_list
 
-	def Get_YouTube_Information(self, name, link):
+	def Get_YouTube_Information(self, name, link = None):
 		ids = {
 			"video": "v",
 			"playlist": "list",
+			"playlistItem": "list",
 			"comment": "lc"
 		}
+
+		if type(name) == dict:
+			for key in ["id", "link"]:
+				if key in name:
+					link = name[key]
+
+			name = name["item"]
 
 		id = link
 
@@ -1683,11 +1747,20 @@ class Watch_History(object):
 			id = parameters[ids[name]][0]
 
 		youtube = {
-			"item": name + "s",
+			"item": name,
 			"id": id
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"][youtube["id"]]
+		if "s" not in youtube["item"][-1]:
+			youtube["item"] += "s"
+
+		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+
+		if youtube["id"] in dict_:
+			dict_ = dict_[youtube["id"]]
+
+		if youtube["item"] == "playlistItems":
+			dict_ = dict_["Videos"]
 
 		return dict_
 
@@ -1720,8 +1793,9 @@ class Watch_History(object):
 			print(dictionary["Media"]["details"][self.language_texts["status, title()"]])
 			print()
 
-			print(self.media_dictionary["Media"]["finished_watching_text"])
-			print()
+			if "finished_watching_text" in dictionary["Media"]:
+				print(dictionary["Media"]["finished_watching_text"])
+				print()
 
 		# Show media episode if the media is series media (not a movie)
 		if dictionary["Media"]["States"]["series_media"] == True:
@@ -1765,8 +1839,8 @@ class Watch_History(object):
 				dictionary["Media"]["States"]["Media item list"] == True and
 				dictionary["Media"]["States"]["video"] == False and
 				dictionary["Media"]["item"]["title"] != dictionary["Media"]["title"] and
-				self.language_texts["single_unit"] not in self.media_dictionary["Media"]["item"]["details"] and
-				dictionary["Media"]["States"]["Replace Title"] == False
+				self.language_texts["single_unit"] not in dictionary["Media"]["item"]["details"] and
+				dictionary["Media"]["States"]["Replace title"] == False
 			):
 				media_episode_text = self.Text.Capitalize(dictionary["Media"]["texts"]["unit"][self.user_language]) + " " + self.language_texts["with_{}"].format(dictionary["Media"]["texts"]["item"][self.user_language])
 
@@ -1789,8 +1863,8 @@ class Watch_History(object):
 				dictionary["Media"]["States"]["Media item list"] == False or
 				dictionary["Media"]["States"]["video"] == True or
 				dictionary["Media"]["item"]["title"] == dictionary["Media"]["title"] or
-				self.language_texts["single_unit"] in self.media_dictionary["Media"]["item"]["details"] or
-				dictionary["Media"]["States"]["Replace Title"] == True
+				self.language_texts["single_unit"] in dictionary["Media"]["item"]["details"] or
+				dictionary["Media"]["States"]["Replace title"] == True
 			):
 				key = "with_title"
 
@@ -1849,7 +1923,14 @@ class Watch_History(object):
 
 			print()
 			print(text + ":")
-			print(dictionary["Entry"]["Time"]["hh:mm DD/MM/YYYY"])
+
+			if dictionary["Entry"]["Time"] != {}:
+				time = self.Date.To_Timezone(dictionary["Entry"]["Time"])["hh:mm DD/MM/YYYY"]
+
+			else:
+				time = "[" + self.language_texts["unknown_watched_time"] + "]"
+
+			print(time)
 
 		if dictionary["Media"]["States"]["finished_watching"] == True:
 			print()
@@ -1892,7 +1973,7 @@ class Watch_History(object):
 				dictionary["media_type"]["genders"][self.user_language]["the"],
 				dictionary["media_type"]["genders"][self.user_language]["first"],
 				dictionary["Media"]["texts"]["unit"][self.user_language] + " " + self.JSON.Language.language_texts["of, neutral"] + " " + container,
-				str(self.date["year"])
+				self.current_year["Number"]
 			]
 
 			print(self.language_texts["{}_is_{}_{}_{}_that_you_watched_in_{}"].format(*items) + ".")

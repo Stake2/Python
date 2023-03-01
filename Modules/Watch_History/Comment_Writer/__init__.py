@@ -98,10 +98,11 @@ class Comment_Writer(Watch_History):
 			if self.media_dictionary["Media"]["States"]["episodic"] == False:
 				self.media_dictionary["Media"]["comment"]["file_name"] = self.media_dictionary["Media"]["episode"]["title"]
 
-		# Comment file name for movies
+		# Comment file name for movies or single unit media items
 		if self.media_dictionary["Media"]["States"]["series_media"] == False or self.media_dictionary["Media"]["States"]["single_unit"] == True:
-			self.media_dictionary["Media"]["comment"]["file_name"] = self.language_texts["comment, title()"]
+			self.media_dictionary["Media"]["comment"]["file_name"] = self.JSON.Language.language_texts["comment, title()"]
 
+		# Add Re-watching text to comment file name if it exists
 		if self.media_dictionary["Media"]["States"]["Re-watching"] == True:
 			self.media_dictionary["Media"]["comment"]["file_name"] += self.media_dictionary["Media"]["episode"]["re_watched"]["text"]
 

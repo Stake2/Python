@@ -17,6 +17,7 @@ class Module_Selector():
 		self.Define_Parser()
 		self.Get_Modules()
 		self.Check_Arguments_And_Switches()
+		self.Reset_Switch()
 
 		if self.has_arguments == False:
 			self.Select_Module()
@@ -80,6 +81,15 @@ class Module_Selector():
 				"user_information": {
 					"list": ["user_information", "userinfo", "user"],
 					"text_key": "activates_the_displaying_of_user_information_on_the_language_class"
+				},
+				"module": {
+					"list": ["module"],
+					"text_key": "stores_the_module_to_be_executed",
+					"options": {
+						"action": "store",
+						"help": self.language_texts["stores_the_module_to_be_executed"]
+					},
+					"language_text": False
 				}
 			},
 			"default_options": {
@@ -91,7 +101,12 @@ class Module_Selector():
 		self.parser = argparse.ArgumentParser(**self.argparse["ArgumentParser"])
 
 		for argument in self.argparse["default_arguments"].values():
-			self.Add_Argument(argument, self.argparse["default_options"])
+			options = self.argparse["default_options"]
+
+			if "options" in argument:
+				options = argument["options"]
+
+			self.Add_Argument(argument, options)
 
 	def Add_Argument(self, argument, options):
 		options = options.copy()
@@ -119,6 +134,9 @@ class Module_Selector():
 			if "{}" in options["help"]:
 				options["help"] = options["help"].format(argument["title"])
 
+			if "language_text" in argument:
+				options["language_text"] = argument["language_text"]
+
 		if type(argument) == dict:
 			argument = argument["list"][0]
 
@@ -140,7 +158,7 @@ class Module_Selector():
 					else:
 						text = text[self.user_language].lower()
 
-				if text not in options["list"]:
+				if text not in options["list"] and "language_text" not in options:
 					options["list"].append(text.replace(" ", ""))
 
 					if text.split(" ")[0] != text:
@@ -158,6 +176,9 @@ class Module_Selector():
 
 		# Remove list from options dictionary
 		options.pop("list")
+
+		if "language_text" in options:
+			options.pop("language_text")
 
 		self.parser.add_argument(*tuple_, **options)
 
@@ -215,8 +236,9 @@ class Module_Selector():
 		self.has_arguments = False
 
 		for argument, state in inspect.getmembers(self.arguments):
-			if argument not in list(self.switches["reset"].keys()) and state == True:
-				self.has_arguments = True
+			if argument not in list(self.switches["reset"].keys()):
+				if state == True or argument == "module" and state != None:
+					self.has_arguments = True
 
 		self.has_switches = False
 
@@ -236,7 +258,22 @@ class Module_Selector():
 		for module in self.modules["usage"]["list"]:
 			module_lower = module.lower()
 
-			if hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True:
+			possible_options = [
+				module,
+				module.lower(),
+				module.upper(),
+				module.title(),
+				module.capitalize(),
+				module.replace("_", " ").lower(),
+				module.replace("_", " ").upper(),
+				module.replace("_", " ").title(),
+				module.replace("_", " ").capitalize()
+			]
+
+			if (
+				hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True or
+				hasattr(self.arguments, "module") and getattr(self.arguments, "module") in possible_options
+			):
 				self.Define_Module(module)
 
 	def Define_Module(self, option):
@@ -285,8 +322,8 @@ class Module_Selector():
 			print("-----")
 
 	def Run_Module(self, module):
-		if module["title"] != "Module_Selector":
-			if getattr(self.arguments, "check") == True:
+		if "title" in module and module["title"] != "Module_Selector":
+			if module["title"] == "Food_Time" and getattr(self.arguments, "check") == True:
 				setattr(self.module["module"].Run, "register_time", False)
 
 			self.module["module"].Run()

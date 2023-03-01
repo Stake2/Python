@@ -19,7 +19,7 @@ class Media_Info():
 		self.classes = [
 			"Add_New_Media",
 			"Open_Details_File",
-			"Fill_Episode_Titles",
+			"Fill_Media_Files",
 			"Manage"
 		]
 

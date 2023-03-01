@@ -97,29 +97,33 @@ class Years(object):
 
 		# Dictionaries
 		self.years = {
-			"list": [],
+			"Numbers": {
+				"Total": 0
+			},
+			"List": []
 		}
 
 		# Add Years to Years list
 		for year in range(2018, int(self.date["year"]) + 1):
-			self.years["list"].append(str(year))
+			self.years["List"].append(str(year))
+			self.years["Numbers"]["Total"] += 1
 
 		# Dictionaries filling
-		for year in self.years["list"]:
+		for year in self.years["List"]:
 			self.years[year] = {}
 
-			self.years[year]["number"] = year
+			self.years[year]["Number"] = year
 
 			# Define root folder
-			self.years[year]["folder"] = self.folders["notepad"]["effort"]["years"]["root"] + year + "/"
-			self.Folder.Create(self.years[year]["folder"])
+			self.years[year]["Folder"] = self.folders["notepad"]["effort"]["years"]["root"] + year + "/"
+			self.Folder.Create(self.years[year]["Folder"])
 
 			# Define image folder
 			self.years[year]["image_folder"] = self.years_image_folder + year + "/"
 			self.Folder.Create(self.years[year]["image_folder"])
 
 			# Define folders
-			self.years[year]["folders"] = self.Folder.Contents(self.years[year]["folder"])["dictionary"]
+			self.years[year]["folders"] = self.Folder.Contents(self.years[year]["Folder"])["dictionary"]
 
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
@@ -148,14 +152,14 @@ class Years(object):
 		dictionary = deepcopy(self.years)
 
 		for key in dictionary:
-			if key not in ["list", "year_texts"]:
+			if key not in ["Numbers", "List", "year_texts"]:
 				dictionary[key].pop("folders")
 
 		self.JSON.Edit(self.years_file, dictionary)
 
 	def Select_Year(self, years = None, select_text = None):
 		if years == None:
-			years = self.years["list"]
+			years = self.years["List"]
 
 		show_text = self.language_texts["years, title()"]
 

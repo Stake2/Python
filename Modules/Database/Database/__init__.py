@@ -165,22 +165,49 @@ class Database(object):
 			self.JSON.Edit(self.folders["history"]["current_year"]["per_type"][key]["entries"], self.dictionaries["Entry Type"][plural_type])
 
 	def Define_States_Dictionary(self, dictionary):
-		dict_ = {}
+		states_dictionary = {
+			"States": {},
+			"Texts": {}
+		}
 
+		# Define keys for the states
 		keys = [
-			"First Entry In Year",
-			"First Type Entry In Year"
+			"First entry in year",
+			"First type entry in year"
 		]
 
+		# Iterate through states keys
 		for key in keys:
+			# If the state is true
 			if dictionary["States"][key] == True:
 				state = True
 
-				key = key.title()
+				# Define the state dictionary
+				states_dictionary["States"][key] = state
 
-				dict_[key] = state
+				# Define the state texts of the current state dictionary
+				states_dictionary["Texts"][key] = {}
 
-		return dict_
+				for language in self.languages["small"]:
+					text = ""
+
+					if key != "First type entry in year":
+						text_key = key.lower().replace(" ", "_")
+
+						if text_key in self.JSON.Language.texts:
+							text = self.JSON.Language.texts[text_key][language]
+
+						else:
+							text = self.texts[text_key][language]
+
+					if key == "First type entry in year":
+						entry_item = self.types["items, type: dict"][language][self.type]
+
+						text = self.JSON.Language.texts["first_{}_in_year"][language].format(entry_item.lower())
+
+					states_dictionary["Texts"][key][language] = text
+
+		return states_dictionary
 
 if __name__ == "__main__":
 	Database()

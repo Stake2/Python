@@ -601,13 +601,25 @@
 		"en": "Producer",
 		"pt": "Produtor"
 	},
+	"producers, title()": {
+		"en": "Producers",
+		"pt": "Produtores"
+	},
 	"distributor, title()": {
-		"en": "distributor",
+		"en": "Distributor",
 		"pt": "Distribuidor"
+	},
+	"distributors, title()": {
+		"en": "Distributors",
+		"pt": "Distribuidores"
 	},
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
+	},
+	"directors, title()": {
+		"en": "Directors",
+		"pt": "Diretores"
 	},
 	"handle, title()": {
 		"en": "Handle",

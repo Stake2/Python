@@ -28,7 +28,7 @@ class Show_Year_Information(Years):
 		print("-----")
 		print()
 
-		print(self.language_texts["{}_information"].format(self.year["number"]) + ":")
+		print(self.language_texts["{}_information"].format(self.year["Number"]) + ":")
 		print()
 		print("-----")
 		print()

@@ -660,17 +660,45 @@
 		"en": "Add more media",
 		"pt": "Adicionar mais mídias"
 	},
-	"please_paste_the_youtube_video_links_below_separated_by_lines": {
-		"en": "Please paste the YouTube video links below, separated by lines",
-		"pt": "Por favor cole os links dos vídeos do YouTube abaixo, separados em linhas"
+	"filling_the_episode_titles_files": {
+		"en": "Filling the episode titles files",
+		"pt": "Preenchendo os arquivos de títulos de episódios"
 	},
-	"finished_filling_the_youtube_ids_file": {
-		"en": "Finished filling the YouTube IDs file",
-		"pt": "Terminou de preencher o arquivo de IDs do YouTube"
+	"filling_the_files_of_episode_titles_and_youtube_ids": {
+		"en": "Filling the files of episode titles and YouTube IDs",
+		"pt": "Preenchendo os arquivos de títulos de episódios e IDs do YouTube"
+	},
+	"finished_filling_the_files_of_episode_titles_and_youtube_ids": {
+		"en": "Finished filling the files of episode titles and YouTube IDs",
+		"pt": "Terminou de preencher os arquivos de títulos de episódios e IDs do YouTube"
+	},
+	"finished_filling_episode_titles_files": {
+		"pt": "Terminou de preencher os arquivos de títulos de episódio",
+		"en": "Finished filling episode titles files"
+	},
+	"episode_titles_in_{}": {
+		"pt": "Títulos de episódio em {}",
+		"en": "Episode titles in {}"
+	},
+	"video_titles_in_{}": {
+		"pt": "Títulos de vídeo em {}",
+		"en": "Video titles in {}"
+	},
+	"episode_titles_file_in_{}": {
+		"pt": "Arquivo de títulos de episódio em {}",
+		"en": "Episode titles file in {}"
+	},
+	"video_titles_file_in_{}": {
+		"pt": "Arquivo de títulos de vídeo em {}",
+		"en": "Video titles file in {}"
 	},
 	"starting_to_watch_the_list_of_media": {
 		"en": "Starting to watch the list of media",
 		"pt": "Começando a assistir a lista de mídia"
+	},
+	"please_translate_this_title_to_{}": {
+		"en": "Please, translate this title to {}",
+		"pt": "Por favor, traduza este título para {}"
 	},
 	"current_media_list": {
 		"en": "Current media list",
@@ -707,14 +735,6 @@
 	"video_titles": {
 		"en": "Video titles",
 		"pt": "Títulos de vídeo"
-	},
-	"episode_titles_file_in_{}": {
-		"pt": "Arquivo de títulos de episódio em {}",
-		"en": "Episode titles file in {}"
-	},
-	"finished_filling_episode_titles_files": {
-		"pt": "Terminou de preencher os arquivos de títulos de episódio",
-		"en": "Finished filling episode titles files"
 	},
 	"watch_the_dubbed_episode_in_your_language": {
 		"pt": "Assistir o episódio dublado no seu idioma",
@@ -1246,10 +1266,6 @@
 		"pt": "Tempo que você passou assistindo",
 		"en": "Time that you spent watching"
 	},
-	"filling_the_episode_titles_files": {
-		"en": "Filling the episode titles files",
-		"pt": "Preenchendo os arquivos de títulos de episódios"
-	},
 	"title_separator": {
 		"en": "Title separator",
 		"pt": "Separador de título"
@@ -1321,5 +1337,9 @@
 	"the_media_is_not_inside_the_media_info_database": {
 		"en": "The media is not inside the Media Info Database",
 		"pt": "A mídia não está dentro do Banco de Dados de Informações de Mídia"
+	},
+	"unknown_watched_time": {
+		"en": "Unknown watched time",
+		"pt": "Tempo de assistido desconhecido"
 	}
 }

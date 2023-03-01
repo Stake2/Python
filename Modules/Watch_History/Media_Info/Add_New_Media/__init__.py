@@ -2,7 +2,7 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Media_Info.Fill_Episode_Titles import Fill_Episode_Titles as Fill_Episode_Titles
+from Watch_History.Media_Info.Fill_Media_Files import Fill_Media_Files as Fill_Media_Files
 
 class Add_New_Media(Watch_History):
 	def __init__(self, run_as_module = False):
@@ -20,7 +20,7 @@ class Add_New_Media(Watch_History):
 			self.Define_Media_Variables()
 			self.Write_To_Files()
 			self.Show_Information()
-			Fill_Episode_Titles(self.option_info)
+			Fill_Media_Files(self.option_info)
 
 	def Define_Media_Type_Variables(self):
 		dictionary = {}
