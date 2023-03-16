@@ -62,9 +62,14 @@ class Register(Database):
 	def Register_In_JSON(self):
 		self.type = self.dictionaries["Entry"]["Type"]["plural"]["en"]
 
-		# Add to entry number
-		self.dictionaries["Entries"]["Numbers"]["Total"] += 1
-		self.dictionaries["Entry Type"][self.type]["Numbers"]["Total"] += 1
+		dicts = [
+			self.dictionaries["Entries"],
+			self.dictionaries["Entry Type"][self.type]
+		]
+
+		# Add to entry and type entry numbers
+		for dict_ in dicts:
+			dict_["Numbers"]["Total"] += 1
 
 		if self.dictionaries["Entries"]["Numbers"]["Total"] == 1:
 			self.dictionaries["Entry"]["States"]["First entry in year"] = True
@@ -80,9 +85,10 @@ class Register(Database):
 
 		self.dictionaries["Entry"]["Name"]["Sanitized"] = self.dictionaries["Entry"]["Name"]["Normal"].replace(":", ";").replace("/", "-")
 
-		# Add to "Entries" list
-		self.dictionaries["Entries"]["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
-		self.dictionaries["Entry Type"][self.type]["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
+		# Add to the "Entries" lists
+		for dict_ in dicts:
+			if self.dictionaries["Entry"]["Name"]["Normal"] not in dict_["Entries"]:
+				dict_["Entries"].append(self.dictionaries["Entry"]["Name"]["Normal"])
 
 		self.key = self.dictionaries["Entry"]["Name"]["Normal"]
 
@@ -98,7 +104,7 @@ class Register(Database):
 		# Get States dictionary
 		self.states_dictionary = self.Define_States_Dictionary(self.dictionaries["Entry"])
 
-		if self.states_dictionary != {}:
+		if self.states_dictionary["States"] != {}:
 			self.dictionaries["Entries"]["Dictionary"][self.key]["States"] = self.states_dictionary["States"]
 
 		# Add entry dictionary to type entries dictionary
@@ -148,7 +154,7 @@ class Register(Database):
 			language = language_parameter
 
 		if language_parameter == "General":
-			language = "en"
+			language = self.user_language
 
 		full_language = self.languages["full"][language]
 
@@ -168,13 +174,13 @@ class Register(Database):
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ": " + self.dictionaries["Entry"]["Type"]["plural"]["en"] + "\n",
+			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionaries["Entry"]["Type"]["plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.JSON.Language.texts["entry, title()"][language] + ": " + self.dictionaries["Entry"]["Name"]["Normal"]
+			self.JSON.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionaries["Entry"]["Name"]["Normal"]
 		])
 
 		# Add states texts lines
-		if self.states_dictionary != {}:
+		if self.states_dictionary["Texts"] != {}:
 			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in self.states_dictionary["Texts"]:

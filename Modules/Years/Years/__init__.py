@@ -133,7 +133,7 @@ class Years(object):
 						"root": self.years[year]["folders"]["root"] + full_language + "/"
 					}
 
-				text = self.texts["firsts_of_the_year"][language]
+				text = self.JSON.Language.texts["firsts_of_the_year"][language]
 
 				if text not in self.years[year]["folders"][full_language]:
 					self.years[year]["folders"][full_language][text] = {

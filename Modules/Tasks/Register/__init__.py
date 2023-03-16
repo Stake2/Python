@@ -189,7 +189,7 @@ class Register(Tasks):
 			language = language_parameter
 
 		if language_parameter == "General":
-			language = "en"
+			language = self.user_language
 
 		full_language = self.languages["full"][language]
 
@@ -209,9 +209,9 @@ class Register(Tasks):
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ": " + self.task_type + "\n",
+			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionaries["Task"]["Type"]["plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.File.texts["file_name"][language] + ": " + self.dictionaries["Task"]["Name"]["Normal"]
+			self.File.texts["file_name"][language] + ":" + "\n" + self.dictionaries["Task"]["Name"]["Normal"]
 		])
 
 		# Add states texts lines

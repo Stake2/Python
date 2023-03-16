@@ -316,6 +316,10 @@
 		"en": "%H:%M %m/%d/%Y",
 		"pt": "%H:%M %d/%m/%Y"
 	},
+	"time, title()": {
+		"en": "Time",
+		"pt": "Tempo"
+	},
 	"times, title()": {
 		"en": "Times",
 		"pt": "Tempos"

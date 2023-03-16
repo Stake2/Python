@@ -39,6 +39,7 @@ class API():
 	def YouTube(self, api):
 		from google.auth.transport.requests import Request
 		from google.oauth2.credentials import Credentials
+		from google.auth.exceptions import RefreshError
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
@@ -61,10 +62,18 @@ class API():
 		# If there are no (valid) credentials available, let the user log in
 		if not api["credentials"] or not api["credentials"].valid:
 			if api["credentials"] and api["credentials"].expired and api["credentials"].refresh_token:
-				api["credentials"].refresh(Request())
+				try:
+					api["credentials"].refresh(Request())
+
+				except RefreshError:
+					print()
+
+					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
+					api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			else:
 				print()
+
 				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 

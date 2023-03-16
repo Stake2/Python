@@ -1,23 +1,19 @@
 {
-	"animes": {
+	"animes, title()": {
 		"en": "Animes",
 		"pt": "Animes"
 	},
-	"cartoons": {
+	"cartoons, title()": {
 		"en": "Cartoons",
 		"pt": "Desenhos"
-	},
-	"movies": {
-		"en": "Movies",
-		"pt": "Filmes"
 	},
 	"movies, title()": {
 		"en": "Movies",
 		"pt": "Filmes"
 	},
-	"videos": {
-		"en": "Videos",
-		"pt": "Vídeos"
+	"series, title()": {
+		"en": "Series",
+		"pt": "Séries"
 	},
 	"videos, title()": {
 		"en": "Videos",
@@ -35,13 +31,13 @@
 		"en": "series",
 		"pt": "série"
 	},
-	"series, title()": {
-		"en": "Series",
-		"pt": "Séries"
-	},
 	"movie": {
 		"en": "movie",
 		"pt": "filme"
+	},
+	"movies": {
+		"en": "movies",
+		"pt": "filmes"
 	},
 	"video": {
 		"en": "video",
@@ -75,29 +71,9 @@
 		"en": "Type",
 		"pt": "Tipo"
 	},
-	"media": {
-		"en": "media",
-		"pt": "mídia"
-	},
-	"media, title()": {
-		"en": "Media",
-		"pt": "Mídia"
-	},
 	"media_unit": {
 		"en": "Media unit",
 		"pt": "Unidade de mídia"
-	},
-	"title": {
-		"en": "title",
-		"pt": "título"
-	},
-	"titles": {
-		"en": "titles",
-		"pt": "títulos"
-	},
-	"dates": {
-		"en": "dates",
-		"pt": "datas"
 	},
 	"season": {
 		"en": "season",
@@ -275,14 +251,6 @@
 			"masculine": "esses",
 			"feminine": "essas"
 		}
-	},
-	"item": {
-		"en": "item",
-		"pt": "item"
-	},
-	"items": {
-		"en": "items",
-		"pt": "itens"
 	},
 	"a": {
 		"en": "a",
@@ -596,6 +564,10 @@
 		"pt": "Tudo bem",
 		"en": "Alright"
 	},
+	"select_a_season": {
+		"pt": "Selecione uma temporada",
+		"en": "Select a season"
+	},
 	"select_a_youtube_video_series": {
 		"pt": "Selecione uma série de vídeos do YouTube",
 		"en": "Select a YouTube video series"
@@ -720,9 +692,9 @@
 		"pt": "Digite o número de todos os episódios da mídia",
 		"en": "Type the number of all media episodes"
 	},
-	"type_or_paste_the_episode_title_in_{}": {
-		"pt": "Digite ou cole o título de episódio em {}",
-		"en": "Type or paste the episode title in {}"
+	"paste_the_episode_title_in_{}": {
+		"pt": "Cole o título de episódio em {}",
+		"en": "Paste the episode title in {}"
 	},
 	"episode_title": {
 		"en": "Episode title",
@@ -731,6 +703,10 @@
 	"episode_titles": {
 		"en": "Episode titles",
 		"pt": "Títulos de episódio"
+	},
+	"video_title": {
+		"en": "Video title",
+		"pt": "Título de vídeo"
 	},
 	"video_titles": {
 		"en": "Video titles",
@@ -1169,6 +1145,10 @@
 	"watched_media_info": {
 		"pt": "Informações da mídia assistida",
 		"en": "Watched media info"
+	},
+	"{}_is_{}_that_you_watched_{}": {
+		"pt": "{} é {} que você assistiu {}",
+		"en": "{} is {} that you watched {}"
 	},
 	"{}_is_{}_{}_{}_that_you_watched_in_{}": {
 		"pt": "{} é {} {} {} que você assistiu em {}",

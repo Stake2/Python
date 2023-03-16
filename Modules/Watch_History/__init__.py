@@ -40,3 +40,24 @@ class Run():
 
 if __name__ == "__main__":
 	Run()
+
+class Me():
+	def __init__(self):
+		self.born = False
+		self.care = True
+		self.life = True
+		self.love = True
+		self.uned = True
+		self.will = True
+		self.aware = True
+		self.pride = True
+		self.trust = True
+		self.worth = True
+		self.belief = True
+		self.esteem = True
+		self.confidence = True
+
+		self.harm = False
+		self.envy = False
+		self.doubt = False
+		self.hatred = false

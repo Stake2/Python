@@ -110,6 +110,14 @@
 		"en": "Number",
 		"pt": "Número"
 	},
+	"item": {
+		"en": "item",
+		"pt": "item"
+	},
+	"items": {
+		"en": "items",
+		"pt": "itens"
+	},
 	"select_an_item_from_the_list": {
 		"en": "Select an item from the list",
 		"pt": "Selecione um item da lista"
@@ -486,12 +494,16 @@
 		"pt": "Número de tipo"
 	},
 	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
+		"pt": "Primeiros do Ano",
+		"en": "Firsts of the Year"
 	},
 	"when, title()": {
 		"en": "When",
 		"pt": "Quando"
+	},
+	"entry": {
+		"en": "entry",
+		"pt": "entrada"
 	},
 	"entry, title()": {
 		"en": "Entry",
@@ -516,6 +528,10 @@
 	"ids, title()": {
 		"en": "IDs",
 		"pt": "IDs"
+	},
+	"ids_file": {
+		"en": "IDs file",
+		"pt": "Arquivo de IDs"
 	},
 	"comment": {
 		"en": "comment",
@@ -656,6 +672,37 @@
 	"official_website": {
 		"en": "Official website",
 		"pt": "Site oficial"
+	},
+	"special": {
+		"en": "special",
+		"pt": "especial"
+	},
+	"specials": {
+		"en": "specials",
+		"pt": "especiais"
+	},
+	"pilot": {
+		"en": "pilot",
+		"pt": "piloto"
+	},
+	"next": {
+		"en": "next",
+		"pt": {
+			"masculine": "próximo",
+			"feminine": "próxima"
+		}
+	},
+	"media": {
+		"en": "media",
+		"pt": "mídia"
+	},
+	"media, title()": {
+		"en": "Media",
+		"pt": "Mídia"
+	},
+	"and_also": {
+		"en": "and also",
+		"pt": "e também"
 	},
 	"genders, type: dict": {
 		"en": {

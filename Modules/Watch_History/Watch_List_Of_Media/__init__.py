@@ -177,16 +177,16 @@ class Watch_List_Of_Media(Watch_History):
 
 	def Show_Media_List(self, media_title = None):
 		number = 1
-		for item in self.media_list_dict:
+		for media_list_item in self.media_list_dict:
 			text = str(number)
 
-			if item == media_title:
+			if media_list_item == media_title:
 				text += " (" + self.language_texts["watching, title()"] + ")"
 
-			if media_title != None and self.i > number and item != media_title:
+			if media_title != None and self.i > number and media_list_item != media_title:
 				text += " (" + self.language_texts["watched, title()"] + ")"
 
-			text += ": " + item
+			text += ": " + media_list_item
 
 			print(text)
 
