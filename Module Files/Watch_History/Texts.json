@@ -412,15 +412,15 @@
 		"en": [
 			"Plan to watch",
 			"Watching",
-			"Completed",
 			"Re-watching",
+			"Completed",
 			"On hold"
 		],
 		"pt": [
 			"Planejo assistir",
 			"Assistindo",
-			"Completo",
 			"Re-assistindo",
+			"Completo",
 			"Em pausa"
 		]
 	},
@@ -632,37 +632,41 @@
 		"en": "Add more media",
 		"pt": "Adicionar mais mídias"
 	},
-	"filling_the_episode_titles_files": {
-		"en": "Filling the episode titles files",
-		"pt": "Preenchendo os arquivos de títulos de episódios"
+	"fill_titles_files": {
+		"en": "Fill titles files",
+		"pt": "Preencher arquivos de títulos"
 	},
-	"filling_the_files_of_episode_titles_and_youtube_ids": {
-		"en": "Filling the files of episode titles and YouTube IDs",
-		"pt": "Preenchendo os arquivos de títulos de episódios e IDs do YouTube"
+	"add_to_videos_list": {
+		"en": "Add to videos list",
+		"pt": "Adicionar à lista de vídeos"
 	},
-	"finished_filling_the_files_of_episode_titles_and_youtube_ids": {
-		"en": "Finished filling the files of episode titles and YouTube IDs",
-		"pt": "Terminou de preencher os arquivos de títulos de episódios e IDs do YouTube"
+	"filling_the_titles_files": {
+		"en": "Filling the titles files",
+		"pt": "Preenchendo os arquivos de títulos"
 	},
-	"finished_filling_episode_titles_files": {
-		"pt": "Terminou de preencher os arquivos de títulos de episódio",
-		"en": "Finished filling episode titles files"
+	"filling_the_files_of_titles_and_youtube_ids": {
+		"en": "Filling the files of titles and YouTube IDs",
+		"pt": "Preenchendo os arquivos de títulos e IDs do YouTube"
 	},
-	"episode_titles_in_{}": {
-		"pt": "Títulos de episódio em {}",
-		"en": "Episode titles in {}"
+	"finished_filling_the_files_of_titles": {
+		"en": "Finished filling the files of titles",
+		"pt": "Terminou de preencher os arquivos de títulos"
 	},
-	"video_titles_in_{}": {
-		"pt": "Títulos de vídeo em {}",
-		"en": "Video titles in {}"
+	"finished_filling_the_files_of_titles_and_youtube_ids": {
+		"en": "Finished filling the files of titles and YouTube IDs",
+		"pt": "Terminou de preencher os arquivos de títulos e IDs do YouTube"
 	},
-	"episode_titles_file_in_{}": {
-		"pt": "Arquivo de títulos de episódio em {}",
-		"en": "Episode titles file in {}"
+	"title_in_{}": {
+		"pt": "Título em {}",
+		"en": "Title in {}"
 	},
-	"video_titles_file_in_{}": {
-		"pt": "Arquivo de títulos de vídeo em {}",
-		"en": "Video titles file in {}"
+	"titles_in_{}": {
+		"pt": "Títulos em {}",
+		"en": "Titles in {}"
+	},
+	"titles_file_in_{}": {
+		"pt": "Arquivo de títulos em {}",
+		"en": "Titles file in {}"
 	},
 	"starting_to_watch_the_list_of_media": {
 		"en": "Starting to watch the list of media",

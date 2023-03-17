@@ -193,7 +193,7 @@ class Watch_History(object):
 			}
 		}
 
-		# Iterate through English plural media types list
+		# Iterate through the English plural media types list
 		i = 0
 		for plural_media_type in self.media_types["plural"]["en"]:
 			language_media_type = self.media_types["plural"][self.user_language][i]
@@ -1109,14 +1109,14 @@ class Watch_History(object):
 					elif dict_[self.language_texts["remote_origin, title()"]] == "YouTube":
 						dict_.pop(self.language_texts["remote_origin, title()"])
 
-				# Update media item details file
+				# Update the media details file
 				self.File.Edit(dictionary["Media"]["folders"]["details"], self.Text.From_Dictionary(dict_), "w")
 
 				dictionary = self.Select_Media(dictionary, item = True)
 
 				dictionary["Media"]["States"]["single_unit"] = False
 
-				# Define single unit state
+				# Define the single unit state
 				if self.language_texts["single_unit"] in dictionary["Media"]["item"]["details"]:
 					dictionary["Media"]["States"]["single_unit"] = self.Input.Define_Yes_Or_No(dictionary["Media"]["item"]["details"][self.language_texts["single_unit"]])
 
@@ -1365,6 +1365,10 @@ class Watch_History(object):
 			if dictionary["Media"]["States"]["video"] == True:
 				dictionary["Media"]["episode"]["separator"] = ""
 
+			if dictionary["Media"]["States"]["video"] == True:
+				dictionary["Media"]["item"]["episodes"]["titles"]["files"]["ids"] = dictionary["Media"]["item"]["folders"]["titles"]["ids"]
+				dictionary["Media"]["item"]["episodes"]["titles"]["ids"] = self.File.Contents(dictionary["Media"]["item"]["episodes"]["titles"]["files"]["ids"])["lines"]
+
 			# Define episode titles files and lists
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
@@ -1443,7 +1447,7 @@ class Watch_History(object):
 		for item_type in ["container", "item", "unit"]:
 			dictionary["Media"]["texts"][item_type] = dictionary["media_type"]["singular"].copy()
 
-		dictionary["Media"]["item"]["Type"] = ""
+		dictionary["Media"]["item"]["Type"] = {}
 
 		# Define the item type
 		if self.JSON.Language.language_texts["type, title()"] in dictionary["Media"]["item"]["details"]:
@@ -1460,7 +1464,7 @@ class Watch_History(object):
 			if dictionary["Media"]["States"]["Media item list"] == True and dictionary["Media"]["item"]["title"] != dictionary["Media"]["title"]:
 				dictionary["Media"]["texts"]["item"] = {}
 
-			if dictionary["Media"]["item"]["Type"] != "":
+			if dictionary["Media"]["item"]["Type"] != {}:
 				for key in self.secondary_types:
 					# If the key is inside the "language_texts" dictionary of the Language class, use it as the list
 					if key in self.JSON.Language.language_texts:
@@ -1482,9 +1486,17 @@ class Watch_History(object):
 						plural_type = texts_list.language_texts[key + "s"].title()
 
 					if dictionary["Media"]["item"]["Type"] == singular_type:
+						dictionary["Media"]["item"]["Type"] = {}
+
 						for language in self.languages["small"]:
-							dictionary["Media"]["texts"]["item"][language] = texts_list.texts[key][language]
-							dictionary["Media"]["texts"]["unit"][language] = texts_list.texts[key][language]
+							text = singular_type
+
+							if key in texts_list.texts:
+								text = texts_list.texts[key][language]
+
+							dictionary["Media"]["texts"]["item"][language] = text
+							dictionary["Media"]["texts"]["unit"][language] = text
+							dictionary["Media"]["item"]["Type"][language] = text
 
 			# Define the item text as the "season" text for media that have a media item list
 			if dictionary["Media"]["States"]["Media item list"] == True and dictionary["Media"]["item"]["title"] != dictionary["Media"]["title"] and dictionary["Media"]["texts"]["item"] == {}:
@@ -1501,7 +1513,7 @@ class Watch_History(object):
 					dictionary["Media"]["texts"]["item"][language] = self.texts["youtube_video_serie"][language]
 					dictionary["Media"]["texts"]["unit"][language] = self.texts["video"][language]
 
-			if dictionary["Media"]["item"]["Type"] == "":
+			if dictionary["Media"]["item"]["Type"] == {}:
 				dictionary["Media"]["item"]["Type"] = dictionary["Media"]["texts"]["item"]
 
 		dict_ = deepcopy(dictionary["Media"]["texts"])
@@ -1940,7 +1952,7 @@ class Watch_History(object):
 
 		return media_list
 
-	def Get_YouTube_Information(self, name, link = None):
+	def Get_YouTube_Information(self, name, link = None, remove_unused_keys = True):
 		ids = {
 			"video": "v",
 			"playlist": "list",
@@ -1980,6 +1992,16 @@ class Watch_History(object):
 
 		if youtube["item"] == "playlistItems":
 			dict_ = dict_["Videos"]
+
+			if remove_unused_keys == True:
+				for id in dict_["Videos"]:
+					video = dict_["Videos"][id]
+
+					if "Images" in video:
+						video.pop("Images")
+
+					if "Language" in video:
+						video.pop("Language")
 
 		return dict_
 
@@ -2125,10 +2147,7 @@ class Watch_History(object):
 			self.Show_Media_Title(dictionary, media_item = True)
 
 			if dictionary["Media"]["States"]["Completed media"] == False and dictionary["Media"]["States"]["video"] == False:
-				item_type = dictionary["Media"]["item"]["next"]["Type"]
-
-				if type(item_type) == dict:
-					item_type = item_type[self.user_language]
+				item_type = dictionary["Media"]["item"]["next"]["Type"][self.user_language]
 
 				text = self.language_texts["next_{}_to_watch, feminine"]
 

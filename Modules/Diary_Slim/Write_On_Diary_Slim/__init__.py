@@ -232,17 +232,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if self.text["key"] in self.slim_texts:
 			self.Tasks = self
 
+			# Import the "Regsiter" class of the "Tasks" module
 			from Tasks.Register import Register as Register
 
 			self.Tasks.Register = Register
 
+			# Run the "Register" class
 			self.Tasks.Register(self.task_dictionary)
 
-			if self.switches["verbose"] == True:
-				self.task_dictionary["Time"] = str(self.task_dictionary["Time"])
-
-				self.JSON.Show(self.task_dictionary)
-
+			# Delete the backup file
 			self.File.Delete(self.backup_file)
 
 		# Update state and define text to write if text key is in state names list

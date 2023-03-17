@@ -203,14 +203,14 @@ class JSON():
 	def Show(self, json):
 		print(self.From_Python(json))
 
-	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_last = False):
+	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False):
 		keys = list(dictionary.keys())
 		values = list(dictionary.values())
 
 		i = 0
 		for key in keys.copy():
-			if key_value["key"] not in keys and key == after_key or add_to_last == True:
-				if add_to_last == True:
+			if key_value["key"] not in keys and key == after_key or add_to_end == True:
+				if add_to_end == True:
 					number = len(keys)
 
 				else:

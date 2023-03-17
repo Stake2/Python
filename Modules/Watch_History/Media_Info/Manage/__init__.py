@@ -15,16 +15,16 @@ class Manage(Watch_History):
 			"Add_To_Comments_Dictionary": self.language_texts["add_to_comments_dictionary"]
 		}
 
-		# Get keys and values
+		# Get the keys and values
 		for name in ["keys", "values"]:
 			methods[name] = list(getattr(methods, name)())
 
-		# Add methods to method keys
+		# Add the methods to method keys list
 		for method in methods.copy():
 			if method not in ["keys", "values"]:
 				methods[method] = getattr(self, method)
 
-		# Select method
+		# Select the method
 		method = methods[self.Input.Select(methods["keys"], language_options = methods["values"])["option"]]
 		method()
 
@@ -39,25 +39,27 @@ class Manage(Watch_History):
 			}
 		}
 
-		# If the current year is not inside the year comment numbers dictionary, add it
-		if str(self.date["year"]) not in self.comments_number["Numbers"]["Years"]:
-			self.comments_number["Numbers"]["Years"][str(self.date["year"])] = 0
+		# Add missing year numbers
+		for year in range(2018, self.date["year"] + 1):
+			if str(year) not in self.comments_number["Numbers"]["Years"]:
+				# If the year of the entry is not inside the comment numbers per year, add it
+				self.comments_number["Numbers"]["Years"][str(year)] = 0
+
+				for plural_media_type in self.media_types["plural"]["en"]:
+					if plural_media_type not in self.comments_number["Numbers"]["Type"]:
+						self.comments_number["Numbers"]["Type"][plural_media_type] = {
+							"Total": 0,
+							"No time": 0,
+							"Years": {}
+						}
+
+					# If the year of the entry is not inside the comment numbers per type per year, add it
+					if str(year) not in self.comments_number["Numbers"]["Type"][plural_media_type]["Years"]:
+						self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][str(year)] = 0
 
 		# Iterate through English plural media types list
 		i = 0
 		for plural_media_type in self.media_types["plural"]["en"]:
-			# If the plural media type is not inside the comment numbers per type, add it
-			if plural_media_type not in self.comments_number["Numbers"]["Type"]:
-				self.comments_number["Numbers"]["Type"][plural_media_type] = {
-					"Total": 0,
-					"No time": 0,
-					"Years": {}
-				}
-
-			# If the current year is not inside the comment numbers per type per year, add it
-			if str(self.date["year"]) not in self.comments_number["Numbers"]["Type"][plural_media_type]["Years"]:
-				self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][str(self.date["year"])] = 0
-
 			# Define the key of the media type for getting media type folders
 			key = plural_media_type.lower().replace(" ", "_")
 
@@ -77,10 +79,10 @@ class Manage(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				#self.texts["animes, title()"]["en"],
-				#self.texts["cartoons, title()"]["en"],
-				#self.texts["series, title()"]["en"],
-				#self.texts["movies, title()"]["en"],
+				self.texts["animes, title()"]["en"],
+				self.texts["cartoons, title()"]["en"],
+				self.texts["series, title()"]["en"],
+				self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 
@@ -137,28 +139,16 @@ class Manage(Watch_History):
 						# Add media information to media details and media information file
 						#self.Add_Media_Information()
 
+						if self.dictionary["media_type"]["plural"]["en"] == self.texts["videos, title()"]["en"]:
+							self.Add_Last_Playlist_Date()
+
 					if self.switches["testing"] == True and self.media_title != media_list[-1]:
 						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
-			if self.switches["testing"] == True and plural_media_type != self.media_types["plural"]["en"][-1]:
+			if self.switches["testing"] == True and plural_media_type != self.media_types["plural"]["en"][-1] and plural_media_type not in media_types_to_remove:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 			i += 1
-
-		for plural_media_type in self.media_types["plural"]["en"]:
-			for key in self.comments_number["Numbers"]["Type"][plural_media_type]["Years"]:
-				if key not in self.comments_number["Numbers"]["Years"]:
-					self.comments_number["Numbers"]["Years"][key] = 0
-
-				# Add to root years numbers
-				self.comments_number["Numbers"]["Years"][key] += self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][key]
-
-				# Add to total comment number per media type
-				self.comments_number["Numbers"]["Type"][plural_media_type]["Total"] += self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][key]
-
-		# Add to total number from media type total numbers
-		for plural_media_type in self.media_types["plural"]["en"]:
-			self.comments_number["Numbers"]["Total"] += self.comments_number["Numbers"]["Type"][plural_media_type]["Total"]
 
 		# Sort year comment number keys
 		self.comments_number["Numbers"]["Years"] = dict(collections.OrderedDict(sorted(self.comments_number["Numbers"]["Years"].items())))
@@ -169,9 +159,9 @@ class Manage(Watch_History):
 
 		# Only edit the root Comments file if the program iterated through all of the media types
 		# (If a media type was removed from the list, the comments number will be wrong)
-		#if media_types_to_remove == []:
-			# Update comments file
-			#self.JSON.Edit(self.folders["comments"]["comments"], self.comments_number)
+		if media_types_to_remove == []:
+			# Update the root "Comments.json" file
+			self.JSON.Edit(self.folders["comments"]["comments"], self.comments_number)
 
 	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary and is not a single unit media item
@@ -300,26 +290,54 @@ class Manage(Watch_History):
 				if "Time" in entry:
 					# If the time is not empty
 					if entry["Time"] != "":
-						# Get the year from the time by converting the time into a date dictionary
-						year = self.Date.From_String(entry["Time"])["year"]
+						# If the time has more than the year
+						if len(entry["Time"]) != 4:
+							# Get the year from the time by converting the time into a date dictionary
+							year = self.Date.From_String(entry["Time"])["year"]
 
-						# If the year of the entry is not inside the comment numbers per type per year, add it
-						if str(year) not in self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["Years"]:
-							self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["Years"][str(year)] = 0
+						# If the time contains only the year
+						if len(entry["Time"]) == 4:
+							year = entry["Time"]
+
+						# Add one to the comments number per year
+						self.comments_number["Numbers"]["Years"][str(year)] += 1
 
 						# Add one to the comments number per type per year
 						self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["Years"][str(year)] += 1
 
-					# If the time is empty
+					# If the time is empty or the time contains only the year
 					if entry["Time"] == "" or len(entry["Time"]) == 4:
-						# Add one to the total comments number per type
-						self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["Total"] += 1
+						# Add one to the comments without time
+						self.comments_number["Numbers"]["No time"] += 1
 
-						# To the comments without time per type
+						# Add one to the comments without time per type
 						self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["No time"] += 1
 
-						# And the total comments number without time
-						self.comments_number["Numbers"]["No time"] += 1
+					# Add one to the total comments number per type
+					self.comments_number["Numbers"]["Total"] += 1
+
+					# Add one to the total comments number per type
+					self.comments_number["Numbers"]["Type"][self.dictionary["media_type"]["plural"]["en"]]["Total"] += 1
+
+	def Add_Last_Playlist_Date(self):
+		if len(self.dictionary["Media"]["item"]["episodes"]["titles"]["ids"]) >= 1:
+			id = self.dictionary["Media"]["item"]["episodes"]["titles"]["ids"][-1]
+
+			dict_ = self.Get_YouTube_Information("video", id)
+
+			video_title = self.dictionary["Media"]["item"]["episodes"]["titles"][self.dictionary["Media"]["Language"]][-1]
+			video_title_from_api = dict_["Title"]
+
+			video_title_from_api = video_title_from_api.replace("  ", " ")
+
+			if video_title_from_api != video_title:
+				print()
+				print(video_title)
+				print(video_title_from_api)
+				print(id)
+
+		else:
+			print("IDs file empty.")
 
 	def Add_Anime_Information(self):
 		item_types = ["Media"]

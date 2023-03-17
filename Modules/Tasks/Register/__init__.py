@@ -117,8 +117,8 @@ class Register(Tasks):
 			"Entry": self.dictionaries["Task"]["Name"]["Normal"],
 			"Titles": self.dictionaries["Task"]["Titles"],
 			"Type": self.task_type,
-			"Lines": len(self.dictionaries["Task"]["Descriptions"]["en"].splitlines()),
-			"Time": self.dictionaries["Task"]["Times"]["UTC"]
+			"Time": self.dictionaries["Task"]["Times"]["UTC"],
+			"Lines": len(self.dictionaries["Task"]["Descriptions"]["en"].splitlines())
 		}
 
 		# Get States dictionary

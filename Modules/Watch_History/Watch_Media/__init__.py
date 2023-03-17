@@ -214,10 +214,7 @@ class Watch_Media(Watch_History):
 
 			# Get YouTube ID for video series media
 			if self.media["States"]["video"] == True:
-				file = self.media["item"]["folders"]["titles"]["ids"]
-				ids = self.File.Contents(file)["lines"]
-
-				self.media["episode"]["id"] = ids[self.media["episode"]["number"] - 1]
+				self.media["episode"]["id"] = self.media["item"]["episodes"]["titles"]["ids"][self.media["episode"]["number"] - 1]
 
 		# Remote media origin, code, and link
 		if self.media["States"]["remote"] == True or self.language_texts["remote_origin, title()"] in self.media["details"]:
@@ -343,14 +340,13 @@ class Watch_Media(Watch_History):
 					print(self.media["Titles"]["Language"] + " " + self.media["episode"]["title"])
 
 				while not isinstance(watched_times, int):
-					watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_watched"], accept_enter = False)
+					watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_watched"])
 
 					try:
 						watched_times = int(watched_times)
-						break
 
 					except ValueError:
-						continue
+						watched_times = 0
 
 			if self.run_as_module == True:
 				watched_times = 1
@@ -535,10 +531,10 @@ class Watch_Media(Watch_History):
 			# Add media episode to local media folder
 			self.media["episode"]["unit"] = "file:///" + self.media["item"]["folders"]["media"]["root"] + self.media["episode"]["Sanitized"]
 
+			file_exists = self.File_Exists(self.media["episode"]["unit"])
+
 			# If the media has dubbing and no "Watch dubbed" setting was found
 			if self.language_texts["dubbing, title()"] in self.media["details"] and self.found_watch_dubbed_setting == False:
-				file_exists = self.File_Exists(self.media["episode"]["unit"])
-
 				# If the user language episode file exists, ask for the user if it wants to watch the episode dubbed
 				if file_exists == True:
 					self.media["States"]["Watch dubbed"] = True

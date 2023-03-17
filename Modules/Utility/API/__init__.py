@@ -201,7 +201,9 @@ class API():
 					"Link": link + id,
 					"Description": "",
 					"Text": {},
-					"Time": self.Date.To_String(self.Get_Date(snippet["publishedAt"]))
+					"Time": self.Date.To_String(self.Get_Date(snippet["publishedAt"])),
+					"Images": [],
+					"Language": ""
 				}
 
 				for name in ["title", "description"]:
@@ -222,8 +224,22 @@ class API():
 						"Display": snippet["textDisplay"]
 					})
 
-			if self.switches["verbose"] == True:
-				print("Progress: " + str(api["Dictionary"]["Number"]) + "/" + str(api["Dictionary"]["Total Number"]))
+				if "thumbnails" in snippet:
+					for key in snippet["thumbnails"]:
+						image = snippet["thumbnails"][key]
+						items[id]["Images"].append(image["url"])
+
+				else:
+					items[id].pop("Images")
+
+				if "defaultAudioLanguage" in snippet:
+					items[id]["Language"] = snippet["defaultAudioLanguage"]
+
+				else:
+					items[id].pop("Language")
+
+				if items[id]["Title"] == "Private video":
+					items.pop(id)
 
 		return api
 

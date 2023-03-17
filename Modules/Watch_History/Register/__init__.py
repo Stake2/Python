@@ -57,7 +57,7 @@ class Register(Watch_History):
 
 		if self.media["States"]["Re-watching"] == False:
 			if self.media["States"]["Completed media"] == True or self.media["States"]["Completed media item"] == True:
-				self.Set_Media_As_Completed()
+				self.Check_Media_Dates()
 
 		# Database related methods
 		self.Register_In_JSON()
@@ -622,7 +622,7 @@ class Register(Watch_History):
 
 						sanitized_title = self.Sanitize_Title(item_title)
 
-						# Define next media item
+						# Define the next media item prototype dictionary
 						self.media["item"]["next"] = {
 							"title": item_title,
 							"Titles": {},
@@ -638,26 +638,26 @@ class Register(Watch_History):
 
 						from copy import deepcopy
 
-						# Get the media item dictionary
+						# Define other variables for the next media item
 						self.media["item"]["next"] = self.Define_Media_Item(deepcopy(self.dictionary), media_item = item_title)["Media"]["item"]
 
 						if "Old history" not in self.dictionary:
 							# Update current media item file
 							self.File.Edit(self.media["items"]["folders"]["current"], self.media["item"]["next"]["title"], "w")
 
-				# Add the "Status" key and value "Completed" after the "Link" key
+				# Add the "Status" key and value "Completed" to the end of the details
 				key_value = {
 					"key": self.language_texts["status, title()"],
 					"value": self.JSON.Language.language_texts["completed, title()"]
 				}
 
-				self.media["item"]["details"] = self.JSON.Add_Key_After_Key(self.media["item"]["details"], key_value, add_to_last = True)
+				self.media["item"]["details"] = self.JSON.Add_Key_After_Key(self.media["item"]["details"], key_value, add_to_end = True)
 
 				if self.language_texts["episode, title()"] in self.media["item"]["details"] and self.media["States"]["single_unit"] == True:
 					self.media["item"]["details"].pop(self.language_texts["episode, title()"])
 
 				if "Old history" not in self.dictionary:
-					# Update media item details file
+					# Update the media item details file
 					self.File.Edit(self.media["item"]["folders"]["details"], self.Text.From_Dictionary(self.media["item"]["details"]), "w")
 
 				self.media["States"]["Completed media item"] = True
@@ -695,25 +695,104 @@ class Register(Watch_History):
 				# Update status key in media details
 				self.Change_Status(self.dictionary)
 
-		self.movies = self.Get_Media_List(self.media_types[self.texts["movies, title()"]["en"]], self.texts["watching_statuses, type: list"]["en"])
+		# Check if media item has a correspondent movie inside the movies folder
+		if self.media["item"]["Type"][self.user_language] == self.language_texts["movie"]:
+			self.movies = self.Get_Media_List(self.media_types[self.texts["movies, title()"]["en"]], self.texts["plan_to_watch, title()"]["en"])
 
-		# If the media item title is inside the movies list and the media type is not "Movies"
-		if self.media["item"]["title"] in self.movies and self.dictionary["media_type"]["plural"]["en"] != self.texts["movies, title()"]["en"]:
-			# Define its prototype dictionary
-			self.movie_dictionary = {
-				"media_type": self.media_types[self.texts["movies, title()"]["en"]],
-				"Media": {
-					"title": self.media["item"]["title"]
+			# If the media item title is inside the movies list and the media type is not "Movies"
+			if self.media["item"]["title"] in self.movies:
+				# Define the movie prototype dictionary
+				self.movie_dictionary = {
+					"media_type": self.media_types[self.texts["movies, title()"]["en"]],
+					"Media": {
+						"title": self.media["item"]["title"]
+					}
 				}
-			}
 
-			# Define the movie dictionary
-			self.movie_dictionary = self.Select_Media(self.movie_dictionary)
+				# Define other variables for the movie
+				self.movie_dictionary = self.Select_Media(self.movie_dictionary)
 
-			# Change the status of the movie to "Completed"
-			self.Change_Status(self.movie_dictionary)
+				# Copy the contents of the media comments folder to the movie comments folder
+				self.Folder.Copy(self.media["item"]["folders"]["comments"]["root"], self.movie_dictionary["Media"]["item"]["folders"]["comments"]["root"])
 
-	def Set_Media_As_Completed(self):
+				# Change the status of the movie to "Completed"
+				self.Change_Status(self.movie_dictionary)
+
+		# If media is non-series media
+		if self.media["States"]["series_media"] == False:
+			# Define the empty series media list
+			self.series_media_list = {}
+
+			# Define the list of media types to not get a media list
+			remove_list = [
+				self.texts["movies, title()"]["en"],
+				self.texts["videos, title()"]["en"]
+			]
+
+			# Define the status list to use to get the media with the statuses on the list
+			status_list = [
+				self.texts["watching, title()"]["en"],
+				self.texts["re_watching, title()"]["en"],
+				self.texts["on_hold, title()"]["en"]
+			]
+
+			# Iterate through the English plural media types list
+			for plural_media_type in self.media_types["plural"]["en"]:
+				if plural_media_type not in remove_list:
+					media_list = self.Get_Media_List(self.media_types[plural_media_type], status_list)
+
+					# Extend the series media list with the current media list
+					self.series_media_list[plural_media_type] = media_list
+
+			# Iterate through the English plural media types list
+			for plural_media_type in self.media_types["plural"]["en"]:
+				if plural_media_type in self.series_media_list:
+					# Get the media list of the current media type
+					media_list = self.series_media_list[plural_media_type]
+
+					# Iterate through the media list
+					for media_title in media_list:
+						media_folder = self.media_types[plural_media_type]["folders"]["media_info"]["root"] + self.Sanitize_Title(media_title) + "/"
+
+						media_items_folder = media_folder + self.media_types[plural_media_type]["subfolders"]["plural"] + "/"
+
+						# If the media items folder exists
+						if self.Folder.Exist(media_items_folder) == True:
+							media_items_file = media_items_folder + self.media_types[plural_media_type]["subfolders"]["plural"] + ".txt"
+
+							# Get the media items list
+							media_items = self.File.Contents(media_items_file)["lines"]
+
+							# Iterate through the media items list
+							for item_title in media_items:
+								# If the media item title is equal to the root media item title (the one that was watched)
+								if item_title == self.media["item"]["title"]:
+									# Define the media prototype dictionary
+									media_dictionary = {
+										"media_type": self.media_types[plural_media_type],
+										"Media": {
+											"title": media_title
+										}
+									}
+
+									# Define other variables for the media
+									media_dictionary = self.Select_Media(media_dictionary)
+
+									# Define the media item as the current media item
+									media_dictionary["Media"]["item"] = self.Define_Media_Item(deepcopy(media_dictionary), media_item = item_title)["Media"]["item"]
+
+									# Add the "Status" key and value "Completed" to the end of the details
+									key_value = {
+										"key": self.language_texts["status, title()"],
+										"value": self.JSON.Language.language_texts["completed, title()"]
+									}
+
+									media_dictionary["Media"]["item"]["details"] = self.JSON.Add_Key_After_Key(media_dictionary["Media"]["item"]["details"], key_value, add_to_end = True)
+
+									# Update the media item details file
+									self.File.Edit(media_dictionary["Media"]["item"]["folders"]["details"], self.Text.From_Dictionary(media_dictionary["Media"]["item"]["details"]), "w")
+
+	def Check_Media_Dates(self):
 		# Completed media and media item time and date part
 		template = self.language_texts["when_i_finished_watching"] + ":" + "\n" + \
 		"[Timezone]" + "\n" + \
