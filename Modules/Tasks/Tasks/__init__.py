@@ -81,7 +81,6 @@ class Tasks(object):
 				"plural": {},
 				"folders": {},
 				"subfolders": {},
-				"item_folders": {},
 				"items": {}
 			}
 
@@ -117,16 +116,19 @@ class Tasks(object):
 				"per_task_type": self.folders["task_history"]["current_year"]["per_task_type"][key]
 			}
 
-			# Define task type subfolders
+			# Define task type subfolders and item
 			for language in self.languages["small"]:
 				for item in ["Art", "Programming"]:
 					if plural_task_type in self.task_types["subfolders, type: dict"][item]:
 						self.task_types[plural_task_type]["subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
 
-				# Define task item folders
-				self.task_types[plural_task_type]["item_folders"][language] = self.task_types["items, type: dict"][language][plural_task_type]
+				# Define task item
+				self.task_types[plural_task_type]["items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
 
 			i += 1
+
+		# Write the types dictionary into "Types.json" file
+		self.JSON.Edit(self.folders["data"]["types"], self.task_types)
 
 	def Define_Registry_Format(self):
 		from copy import deepcopy
@@ -166,19 +168,52 @@ class Tasks(object):
 			self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.dictionaries["Task Type"][plural_task_type])
 
 	def Define_States_Dictionary(self, dictionary):
-		dict_ = {}
+		states_dictionary = {
+			"States": {},
+			"Texts": {}
+		}
 
+		# Define keys for the states
 		keys = [
-			"First Task In Year",
-			"First Task Type Task In Year"
+			"First task in year",
+			"First task type task in year"
 		]
 
+		# Iterate through the states keys
 		for key in keys:
+			# If the state is True
 			if dictionary["States"][key] == True:
 				state = True
 
-				key = key.title()
+				# Define the state dictionary
+				states_dictionary["States"][key] = state
 
-				dict_[key] = state
+				# Define the state texts of the current state dictionary
+				states_dictionary["Texts"][key] = {}
 
-		return dict_
+				for language in self.languages["small"]:
+					text = ""
+
+					if key != "First task type task in year":
+						text_key = key.lower().replace(" ", "_")
+
+						if text_key in self.JSON.Language.texts:
+							text = self.JSON.Language.texts[text_key][language]
+
+						else:
+							text = self.texts[text_key][language]
+
+					if key == "First task type task in year":
+						task_item = dictionary["Type"]["items"][language]
+
+						if self.task_type not in ["Python", "PHP"]:
+							task_item = task_item.lower()
+
+						if self.task_type in ["Python", "PHP"]:
+							task_item = self.texts["{}_task"][language].format(task_item)
+
+						text = self.JSON.Language.texts["first_{}_in_year"][language].format(task_item)
+
+					states_dictionary["Texts"][key][language] = text
+
+		return states_dictionary

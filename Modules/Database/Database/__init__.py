@@ -80,20 +80,13 @@ class Database(object):
 				"singular": {},
 				"plural": {},
 				"folders": {},
-				"subfolders": {}
+				"items": {}
 			}
 
 			# Define singular and plural types
 			for language in self.languages["small"]:
 				for item in ["singular", "plural"]:
 					self.types[plural_type][item][language] = self.types[item][language][i]
-
-			# Define type subfolders
-			for language in self.languages["small"]:
-				self.types[plural_type]["subfolders"][language] = {}
-
-				for item in ["singular", "plural"]:
-					self.types[plural_type]["subfolders"][language][item] = self.types[plural_type][item][language]
 
 			# Create "Per Type" type folder
 			self.folders["history"]["current_year"]["per_type"][key] = {
@@ -122,9 +115,13 @@ class Database(object):
 				"per_type": self.folders["history"]["current_year"]["per_type"][key]
 			}
 
+			# Define entry item
+			for language in self.languages["small"]:
+				self.types[plural_type]["items"][language] = self.types["items, type: dict"][plural_type][language]
+
 			i += 1
 
-		# Write types dictionary into "Types.json" file
+		# Write the types dictionary into "Types.json" file
 		self.JSON.Edit(self.folders["data"]["types"], self.types)
 
 	def Define_Registry_Format(self):
@@ -176,9 +173,9 @@ class Database(object):
 			"First type entry in year"
 		]
 
-		# Iterate through states keys
+		# Iterate through the states keys
 		for key in keys:
-			# If the state is true
+			# If the state is True
 			if dictionary["States"][key] == True:
 				state = True
 
@@ -201,9 +198,9 @@ class Database(object):
 							text = self.texts[text_key][language]
 
 					if key == "First type entry in year":
-						entry_item = self.types["items, type: dict"][language][self.type]
+						entry_item = self.types["items, type: dict"][dictionary["Type"]["plural"]["en"]][language].lower()
 
-						text = self.JSON.Language.texts["first_{}_in_year"][language].format(entry_item.lower())
+						text = self.JSON.Language.texts["first_{}_in_year"][language].format(entry_item)
 
 					states_dictionary["Texts"][key][language] = text
 

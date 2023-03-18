@@ -229,7 +229,7 @@ class Create_New_Module(Python):
 		if self.module_name not in lines:
 			lines.append(self.module_name)
 
-		lines = sorted(lines, key=str.lower)
+		lines = sorted(lines, key = str.lower)
 
 		self.File.Edit(self.usage_modules_file, self.Text.From_List(lines), "w")
 

@@ -101,7 +101,7 @@ class Register(Database):
 			"Time": self.dictionaries["Entry"]["Times"]["UTC"]
 		}
 
-		# Get States dictionary
+		# Get the States dictionary
 		self.states_dictionary = self.Define_States_Dictionary(self.dictionaries["Entry"])
 
 		if self.states_dictionary["States"] != {}:
@@ -127,12 +127,14 @@ class Register(Database):
 		# Title:
 		# [Title]
 		# 
-		# Type: [Type]
+		# Type:
+		# [Type]
 		#
 		# Times:
 		# [Entry times]
 		# 
-		# File name: [Number. Type (Time)]
+		# File name:
+		# [Number. Type (Time)]
 
 		# Define entry file
 		folder = self.dictionaries["Entry"]["Type"]["folders"]["per_type"]["files"]["root"]
@@ -306,13 +308,9 @@ class Register(Database):
 
 		print(self.JSON.Language.language_texts["type, title()"] + ":")
 
-		text = self.dictionaries["Entry"]["Type"]["plural"]["en"]
+		for plural_type in self.dictionaries["Entry"]["Type"]["plural"].values():
+			print("\t" + plural_type)
 
-		if self.dictionaries["Entry"]["Type"]["plural"][self.user_language] != self.dictionaries["Entry"]["Type"]["plural"]["en"]:
-			text = "\t" + text + "\n"
-			text += "\t" + self.dictionaries["Entry"]["Type"]["plural"][self.user_language]
-
-		print(text)
 		print()
 
 		print(self.JSON.Language.language_texts["when, title()"] + ":")

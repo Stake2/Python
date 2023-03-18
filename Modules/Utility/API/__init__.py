@@ -238,7 +238,7 @@ class API():
 				else:
 					items[id].pop("Language")
 
-				if items[id]["Title"] == "Private video":
+				if "Title" in items[id] and items[id]["Title"] == "Private video":
 					items.pop(id)
 
 		return api

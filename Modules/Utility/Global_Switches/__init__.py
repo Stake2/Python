@@ -22,6 +22,10 @@ class Global_Switches():
 			"file": self.folders["apps"]["module_files"]["utility"][self.module["key"]]["switches"]
 		}
 
+		# Write into "Switches.json" file if it is empty
+		if self.Contents(self.switches["file"])["lines"] == []:
+			self.Reset()
+
 		self.switches["global"] = self.JSON_To_Python(self.switches["file"])
 
 		self.switches["global"].update({
@@ -35,6 +39,15 @@ class Global_Switches():
 		path = os.path.normpath(path).replace("\\", "/")
 
 		return path
+
+	def Exist(self, file):
+		file = self.Sanitize(file)
+
+		if os.path.isfile(file) == True:
+			return True
+
+		if os.path.isfile(file) == False:
+			return False
 
 	def JSON_To_Python(self, file):
 		import json
@@ -53,12 +66,37 @@ class Global_Switches():
 
 		return json.dumps(items, indent = 4, ensure_ascii = False)
 
+	def Contents(self, file):
+		file = self.Sanitize(file)
+
+		contents = {
+			"lines": [],
+			"lines_none": [None],
+			"string": "",
+			"size": 0,
+			"length": 0,
+		}
+
+		if self.Exist(file) == True:
+			contents["string"] = open(file, "r", encoding = "utf8").read()
+			contents["size"] += os.path.getsize(file)
+
+			for line in open(file, "r", encoding = "utf8").readlines():
+				line = line.replace("\n", "")
+
+				contents["lines"].append(line)
+				contents["lines_none"].append(line)
+
+			contents["length"] = len(contents["lines"])
+
+		return contents
+
 	def Edit(self, file, text):
 		file = self.Sanitize(file)
 
 		text = self.JSON_From_Python(text)
 
-		if os.path.isfile(file) == True:
+		if self.Exist(file) == True:
 			edit = open(file, "w", encoding = "UTF8")
 			edit.write(text)
 			edit.close()

@@ -164,7 +164,7 @@ class Comment_Writer(Watch_History):
 			if self.media["States"]["Re-watching"] == True:
 				title += self.media["episode"]["re_watched"]["text"]
 
-			# Define episode text (episode title)
+			# Define episode text (title)
 			episode_text = self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
 			self.media["comment"]["comment"]["Text"] += episode_text
@@ -339,7 +339,7 @@ class Comment_Writer(Watch_History):
 		import collections
 
 		# Sort media entries list and dictionary
-		self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key=str.lower)
+		self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key = str.lower)
 		self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
 
 		if self.media["States"]["episodic"] == False:

@@ -395,6 +395,31 @@ class Watch_History(object):
 		# Update the number of years with the length of the years list
 		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
 
+		entries = 0
+
+		# Update the number of entries of all years
+		for year in range(2018, self.date["year"] + 1):
+			year = str(year)
+
+			# Get the year folder and the entries file
+			year_folder = self.folders["watch_history"]["root"] + year + "/"
+			entries_file = year_folder + "Entries.json"
+
+			# If the file exists and it is not empty
+			if self.File.Exist(entries_file) == True and self.File.Contents(entries_file)["lines"] != []:
+				# Add the number of lines of the file to the local number of entries
+				entries += self.JSON.To_Python(entries_file)["Numbers"]["Total"]
+
+			# Add the year to the Years list if it is not inside it
+			if year not in self.dictionaries["History"]["Years"]:
+				self.dictionaries["History"]["Years"].append(year)
+
+		# Sort Years list
+		self.dictionaries["History"]["Years"] = sorted(self.dictionaries["History"]["Years"], key = str.lower)
+
+		# Define the number of Entries of all years as the local number of entries
+		self.dictionaries["History"]["Numbers"]["Entries"] = entries
+
 		# Define the total number of comments as the number gotten from the root comments file
 		self.dictionaries["History"]["Numbers"]["Comments"] = self.JSON.To_Python(self.folders["comments"]["comments"])["Numbers"]["Total"]
 
@@ -749,6 +774,8 @@ class Watch_History(object):
 				if "States" not in media:
 					media["States"] = states
 
+				media["States"]["Christmas"] = False
+
 				if self.Today_Is_Christmas == True:
 					media["States"]["Christmas"] = True
 
@@ -757,6 +784,8 @@ class Watch_History(object):
 					if self.language_texts["origin_type"] in media["details"]:
 						if media["details"][self.language_texts["origin_type"]] == self.language_texts[key + ", title()"]:
 							media["States"][key] = True
+
+				media["States"]["remote"] = False
 
 				if self.language_texts["origin_type"] not in media["details"]:
 					media["States"]["remote"] = True
@@ -913,7 +942,7 @@ class Watch_History(object):
 
 				# Define show and select text for video media
 				if dictionary["Media"]["States"]["video"] == True:
-					show_text = self.Text.Capitalize(self.language_texts["youtube_video_series"])
+					show_text = self.Text.Capitalize(self.language_texts["video_series"])
 					select_text = self.language_texts["select_a_youtube_video_series"]
 
 				# Iterate through media items list
@@ -987,7 +1016,7 @@ class Watch_History(object):
 					if self.language_texts["status, title()"] in details and details[self.language_texts["status, title()"]] == self.JSON.Language.language_texts["completed, title()"]:
 						items_list.remove(media_list_item)
 
-					if self.caller == "Fill_Media_Files" and self.language_texts["single_unit"] not in details:
+					if self.caller == "Fill_Media_Files" and self.language_texts["single_unit"] not in details and dictionary["Media"]["States"]["video"] == False:
 						# Define titles folder
 						folders["titles"] = {
 							"root": folders["root"] + self.JSON.Language.language_texts["titles, title()"] + "/"
@@ -1510,7 +1539,7 @@ class Watch_History(object):
 			if dictionary["Media"]["States"]["video"] == True:
 				for language in self.languages["small"]:
 					dictionary["Media"]["texts"]["container"][language] = self.texts["youtube_channel"][language]
-					dictionary["Media"]["texts"]["item"][language] = self.texts["youtube_video_serie"][language]
+					dictionary["Media"]["texts"]["item"][language] = self.texts["video_serie"][language]
 					dictionary["Media"]["texts"]["unit"][language] = self.texts["video"][language]
 
 			if dictionary["Media"]["item"]["Type"] == {}:
@@ -1526,10 +1555,10 @@ class Watch_History(object):
 						dictionary["Media"]["texts"][text_type + "_" + key] = {}
 
 					for language in self.languages["small"]:
-						if dictionary["Media"]["texts"][key][language] not in [self.texts["season"][language], self.texts["youtube_video_serie"][language]]:
+						if dictionary["Media"]["texts"][key][language] not in [self.texts["season"][language], self.texts["video_serie"][language]]:
 							item_text = dictionary["media_type"]["genders"][language][text_type]
 
-						if dictionary["Media"]["texts"][key][language] in [self.texts["season"][language], self.texts["youtube_video_serie"][language]]:
+						if dictionary["Media"]["texts"][key][language] in [self.texts["season"][language], self.texts["video_serie"][language]]:
 							for gender_key in dict_["genders"][language]:
 
 								gender = dict_["genders"][language][gender_key]
@@ -1552,6 +1581,8 @@ class Watch_History(object):
 				dict_[language] = self.texts["christmas_special_{}"][language].format(dictionary["Media"]["texts"]["unit"][language])
 
 			dictionary["Media"]["texts"]["unit"] = dict_
+
+		dictionary["Media"]["States"]["Replace title"] = False
 
 		if self.language_texts["replace_title"] in dictionary["Media"]["item"]["details"]:
 			dictionary["Media"]["States"]["Replace title"] = True
@@ -1873,7 +1904,7 @@ class Watch_History(object):
 		dictionary["json"]["Number"] = len(dictionary["json"]["Titles"])
 
 		# Sort titles list
-		dictionary["json"]["Titles"] = sorted(dictionary["json"]["Titles"], key=str.lower)
+		dictionary["json"]["Titles"] = sorted(dictionary["json"]["Titles"], key = str.lower)
 
 		titles = []
 
@@ -1907,7 +1938,7 @@ class Watch_History(object):
 					dictionary["json"]["Status"][self.watching_status].remove(media_title)
 
 			# Sort media item list
-			dictionary["json"]["Status"][self.watching_status] = sorted(dictionary["json"]["Status"][self.watching_status], key=str.lower)
+			dictionary["json"]["Status"][self.watching_status] = sorted(dictionary["json"]["Status"][self.watching_status], key = str.lower)
 
 		# Update media type "Info.json" file
 		self.JSON.Edit(media_type["folders"]["media_info"]["info"], dictionary["json"])
@@ -1948,7 +1979,7 @@ class Watch_History(object):
 			media_list.extend(dictionary["json"]["Status"][status])
 
 		# Sort the media list
-		media_list = sorted(media_list, key=str.lower)
+		media_list = sorted(media_list, key = str.lower)
 
 		return media_list
 

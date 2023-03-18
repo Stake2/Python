@@ -155,7 +155,7 @@ class Christmas():
 			social_networks = ["Twitter"]
 
 		if social_network_backup != self.twitter_scheduled_text:
-			social_networks = sorted(self.Social_Networks.social_networks["Names"], key=str.lower)
+			social_networks = sorted(self.Social_Networks.social_networks["Names"], key = str.lower)
 			social_networks.remove("Habitica")
 
 			self.option_info = {"type": "profile"}

@@ -47,9 +47,6 @@ class Register(Watch_History):
 				"Timezone": self.current_year["Number"]
 			}
 
-		if self.current_year["Number"] == "2018" and self.dictionary["Entry"]["Times"]["Timezone"] != "2018" and self.dictionary["Old history"]["Episode title"] != "Vingadores: Guerra Infinita":
-			self.dictionary["Entry"]["Times"]["Timezone"] = self.Date.Now(self.Date.From_String(self.dictionary["Entry"]["Times"]["Timezone"], "%H:%M %d/%m/%Y")["date"] + self.Date.Timedelta(hours=1))["hh:mm DD/MM/YYYY"]
-
 		# Define the media variable to make typing the media dictionary easier
 		self.media = self.dictionary["Media"]
 
@@ -62,7 +59,9 @@ class Register(Watch_History):
 		# Database related methods
 		self.Register_In_JSON()
 		self.Create_Entry_File()
-		self.Add_Entry_File_To_Year_Folder()
+
+		if "Old history" not in self.dictionary or "Old history" in self.dictionary and self.switches["testing"] == False:
+			self.Add_Entry_File_To_Year_Folder()
 
 		self.Define_Diary_Slim_Text()
 
@@ -77,6 +76,9 @@ class Register(Watch_History):
 			print()
 			print("Register:")
 
+		if "Old history" in self.dictionary and self.switches["testing"] == True:
+			self.Text.Copy(self.JSON.From_Python(self.dictionaries["Entries"]), verbose = False)
+
 		self.Show_Information()
 
 	def Type_Entry_Information(self):
@@ -89,17 +91,14 @@ class Register(Watch_History):
 		# Re-read the "Watched" file to get the most updated data
 		self.dictionaries["Watched"] = self.JSON.To_Python(self.media["item"]["folders"]["watched"]["entries"])
 
-		if "Old history" in self.dictionary:
+		# Import dictionaries from "Old history" dictionary
+		if "Old history" in self.dictionary and "Entries" in self.dictionary["Old history"] and self.switches["testing"] == True:
 			for dictionary_name in ["Entries", "Media Type"]:
-				if dictionary_name in self.dictionary["Old history"]:
-					self.dictionaries[dictionary_name] = self.dictionary["Old history"][dictionary_name]
+				self.dictionaries[dictionary_name] = self.dictionary["Old history"][dictionary_name]
 
-		#if "Old history" not in self.dictionary or "Old history" in self.dictionary and self.dictionary["Old history"]["Change year"] == True:
+		if "Old history" not in self.dictionary or "Old history" in self.dictionary and self.switches["testing"] == False:
 			# Re-read the "Entries" file to get the most updated data
-			#self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["watch_history"]["current_year"]["entries"])
-
-		# Re-read the "Entries" file to get the most updated data
-		self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["watch_history"]["current_year"]["entries"])
+			self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["watch_history"]["current_year"]["entries"])
 
 		dicts = [
 			self.dictionaries["Entries"],
@@ -215,21 +214,23 @@ class Register(Watch_History):
 		# Update the "Entries.json" file
 		self.JSON.Edit(self.folders["watch_history"]["current_year"]["entries"], self.dictionaries["Entries"])
 
-		# Update the media type "Entries.json" file
-		self.JSON.Edit(self.dictionary["media_type"]["folders"]["per_media_type"]["entries"], self.dictionaries["Media Type"][self.media_type])
+		if "Old history" not in self.dictionary or "Old history" in self.dictionary and self.switches["testing"] == False:
+			# Update the media type "Entries.json" file
+			self.JSON.Edit(self.dictionary["media_type"]["folders"]["per_media_type"]["entries"], self.dictionaries["Media Type"][self.media_type])
 
 		# Update the media "Watched.json" file
 		self.JSON.Edit(self.media["item"]["folders"]["watched"]["entries"], self.dictionaries["Watched"])
 
-		# Add to "Entry list.txt" files
-		if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.folders["watch_history"]["current_year"]["entry_list"])["lines"]:
-			self.File.Edit(self.folders["watch_history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		if "Old history" not in self.dictionary or "Old history" in self.dictionary and self.switches["testing"] == False:
+			# Add to "Entry list.txt" files
+			if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.folders["watch_history"]["current_year"]["entry_list"])["lines"]:
+				self.File.Edit(self.folders["watch_history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
-		if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.dictionary["media_type"]["folders"]["per_media_type"]["entry_list"])["lines"]:
-			self.File.Edit(self.dictionary["media_type"]["folders"]["per_media_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+			if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.dictionary["media_type"]["folders"]["per_media_type"]["entry_list"])["lines"]:
+				self.File.Edit(self.dictionary["media_type"]["folders"]["per_media_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
-		if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.media["item"]["folders"]["watched"]["entry_list"])["lines"]:
-			self.File.Edit(self.media["item"]["folders"]["watched"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+			if self.dictionary["Entry"]["Name"]["Normal"] not in self.File.Contents(self.media["item"]["folders"]["watched"]["entry_list"])["lines"]:
+				self.File.Edit(self.media["item"]["folders"]["watched"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [Episode number]
@@ -241,15 +242,17 @@ class Register(Watch_History):
 		# Item:
 		# [Item titles]
 		# 
-		# [Episode/Video] titles:
+		# Titles:
 		# [Episode titles]
 		# )
-		# Type: [Media type]
+		# Type:
+		# [Media type]
 		#
 		# Times:
 		# [Episode times]
 		# 
-		# File name: [Number. Type (Time)]
+		# File name:
+		# [Number. Type (Time)]
 
 		# Define entry file
 		folder = self.dictionary["media_type"]["folders"]["per_media_type"]["files"]["root"]
@@ -294,16 +297,19 @@ class Register(Watch_History):
 				lines.append(self.texts["item, title()"][language] + ":" + "\n" + "{}")
 
 			if self.media["States"]["single_unit"] == False:
-				text = self.texts["episode_titles"][language]
+				text = self.JSON.Language.texts["titles, title()"][language]
 
 				if language_parameter != "General":
-					text = self.texts["episode_title"][language]
+					text = self.JSON.Language.texts["title, title()"][language]
 
-				if self.media["States"]["video"] == True:
-					text = self.texts["video_titles"][language]
+				list_ = []
 
-					if language_parameter != "General":
-						text = self.texts["video_title"][language]
+				for title in list(self.media["episode"]["titles"].values()):
+					if title not in list_:
+						list_.append(title)
+
+				if len(list_) == 1:
+					text = self.JSON.Language.texts["title, title()"][language]
 
 				lines.append(text + ":" + "\n" + "{}")
 
@@ -699,24 +705,25 @@ class Register(Watch_History):
 		if self.media["item"]["Type"][self.user_language] == self.language_texts["movie"]:
 			self.movies = self.Get_Media_List(self.media_types[self.texts["movies, title()"]["en"]], self.texts["plan_to_watch, title()"]["en"])
 
-			# If the media item title is inside the movies list and the media type is not "Movies"
-			if self.media["item"]["title"] in self.movies:
-				# Define the movie prototype dictionary
-				self.movie_dictionary = {
-					"media_type": self.media_types[self.texts["movies, title()"]["en"]],
-					"Media": {
-						"title": self.media["item"]["title"]
+			for movie_title in self.movies:
+				# If the media item title is inside the movies list and the media type is not "Movies"
+				if self.media["item"]["title"] in movie_title:
+					# Define the movie prototype dictionary
+					self.movie_dictionary = {
+						"media_type": self.media_types[self.texts["movies, title()"]["en"]],
+						"Media": {
+							"title": movie_title
+						}
 					}
-				}
 
-				# Define other variables for the movie
-				self.movie_dictionary = self.Select_Media(self.movie_dictionary)
+					# Define other variables for the movie
+					self.movie_dictionary = self.Select_Media(self.movie_dictionary)
 
-				# Copy the contents of the media comments folder to the movie comments folder
-				self.Folder.Copy(self.media["item"]["folders"]["comments"]["root"], self.movie_dictionary["Media"]["item"]["folders"]["comments"]["root"])
+					# Copy the contents of the media comments folder to the movie comments folder
+					self.Folder.Copy(self.media["item"]["folders"]["comments"]["root"], self.movie_dictionary["Media"]["item"]["folders"]["comments"]["root"])
 
-				# Change the status of the movie to "Completed"
-				self.Change_Status(self.movie_dictionary)
+					# Change the status of the movie to "Completed"
+					self.Change_Status(self.movie_dictionary)
 
 		# If media is non-series media
 		if self.media["States"]["series_media"] == False:
@@ -766,7 +773,7 @@ class Register(Watch_History):
 							# Iterate through the media items list
 							for item_title in media_items:
 								# If the media item title is equal to the root media item title (the one that was watched)
-								if item_title == self.media["item"]["title"]:
+								if item_title == self.media["item"]["title"] or self.media["item"]["title"].split(" (")[0] in item_title:
 									# Define the media prototype dictionary
 									media_dictionary = {
 										"media_type": self.media_types[plural_media_type],

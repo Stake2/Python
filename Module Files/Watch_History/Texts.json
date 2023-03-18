@@ -520,21 +520,17 @@
 		"en": "Select {} to watch",
 		"pt": "Selecione {} para assistir"
 	},
-	"video_serie": {
-		"pt": "série de vídeos",
-		"en": "video series"
-	},
 	"youtube_video": {
 		"pt": "vídeo do YouTube",
 		"en": "YouTube video"
 	},
-	"youtube_video_serie": {
-		"pt": "série de vídeos do YouTube",
-		"en": "YouTube video series"
+	"video_serie": {
+		"pt": "série de vídeos",
+		"en": "video series"
 	},
-	"youtube_video_series": {
-		"pt": "séries de vídeos do YouTube",
-		"en": "YouTube video series"
+	"video_series": {
+		"pt": "séries de vídeos",
+		"en": "video series"
 	},
 	"of_the_youtube_video_series": {
 		"pt": "da série de vídeos do YouTube",

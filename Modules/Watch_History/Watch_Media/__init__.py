@@ -399,10 +399,6 @@ class Watch_Media(Watch_History):
 
 			media_title = self.Get_Media_Title(self.media_dictionary)
 
-			# Replace media title with media item title if "replace title" setting exists inside media details
-			if self.media["States"]["Replace title"] == True:
-				media_title = self.media["item"]["title"]
-
 			self.media["episode"].update({
 				"with_title_default": "",
 				"with_title": {}
@@ -434,10 +430,6 @@ class Watch_Media(Watch_History):
 				for language in self.languages["small"]:
 					media_title = self.Get_Media_Title(self.media_dictionary, language = language)
 
-					# Replace media title with media item title if "replace title" setting exists inside media details
-					if self.media["States"]["Replace title"] == True:
-						media_title = self.media["item"]["Titles"][language]
-
 					# Define the media item title as the original one
 					item_title = self.Get_Media_Title(self.media_dictionary, language = language, item = True)
 
@@ -447,18 +439,17 @@ class Watch_Media(Watch_History):
 					self.media["episode"]["with_title_and_item"][language] = media_title + self.media["separators"]["title"]
 
 					if self.media["States"]["Replace title"] == False:
-						# Add item title to text if "replace title" is false
+						# Add item title to text if "replace title" is False
 						self.media["episode"]["with_title_and_item"][language] += item_title + self.media["separators"]["episode"]
+
+					if self.media["States"]["Replace title"] == True:
+						self.media["episode"]["with_title_and_item"][language] = item_title + self.media["separators"]["episode"]
 
 					self.media["episode"]["with_title_and_item"][language] += self.media["episode"]["titles"][language]
 
 				self.media["episode"]["with_title_default"] = self.media["episode"]["with_title_and_item"][self.user_language]
 
-			self.media["episode"]["with_title"]["Original"] = media_title
-
-			if self.media["States"]["Replace title"] == False:
-				# Add episode title
-				self.media["episode"]["with_title"]["Original"] += self.media["separators"]["title"] + self.media["episode"]["title"]
+			self.media["episode"]["with_title"]["Original"] = media_title + self.media["separators"]["title"] + self.media["episode"]["title"]
 
 			# Define the episode with title texts per language
 			for language in self.languages["small"]:
@@ -466,12 +457,13 @@ class Watch_Media(Watch_History):
 
 				# Replace media title with media item title if "replace title" setting exists inside media details
 				if self.media["States"]["Replace title"] == True:
-					media_title = self.media["item"]["Titles"][language]
+					if language in self.media["item"]["Titles"]:
+						media_title = self.media["item"]["Titles"][language]
 
-				self.media["episode"]["with_title"][language] = media_title
-				
-				if self.media["States"]["Replace title"] == False:
-					self.media["episode"]["with_title"][language] += self.media["separators"]["title"] + self.media["episode"]["titles"][language]
+					else:
+						media_title = self.media["item"]["Titles"]["Original"]
+
+				self.media["episode"]["with_title"][language] = media_title + self.media["separators"]["title"] + self.media["episode"]["titles"][language]
 
 			if self.media["States"]["Media item list"] == False or self.media["item"]["title"] == self.media["title"] or self.media["States"]["single_unit"] == True:
 				self.media["episode"]["with_title_default"] = self.media["episode"]["with_title"][self.user_language]

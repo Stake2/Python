@@ -28,8 +28,8 @@ class Register(Tasks):
 				"Timezone": self.dictionaries["Task"]["Time"]["hh:mm DD/MM/YYYY"]
 			},
 			"States": {
-				"First Task In Year": False,
-				"First Task Type Task In Year": False
+				"First task in year": False,
+				"First task type task in year": False
 			}
 		})
 
@@ -77,25 +77,39 @@ class Register(Tasks):
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
-			self.dictionaries["Task"]["Titles"][language] = self.task_types["task_texts, type: dict"][language][self.dictionaries["Task"]["Type"]["plural"]["en"]] + "."
+			self.dictionaries["Task"]["Titles"][language] = self.task_types["task_texts, type: dict"][self.dictionaries["Task"]["Type"]["plural"]["en"]][language] + "."
+
+			# Ask for the task item if it is present in the task text
+			if "{" in self.dictionaries["Task"]["Titles"][language]:
+				task_item_text = self.dictionaries["Task"]["Titles"][language].split("{")[1].split("}")[0]
+
+				replace = "{" + task_item_text + "}"
+
+				task_item = self.Input.Type(task_item_text)
+
+				self.dictionaries["Task"]["Titles"][language] = self.dictionaries["Task"]["Titles"][language].replace(replace, task_item)
 
 			self.dictionaries["Task"]["Descriptions"][language] = self.dictionaries["Task"]["Titles"][language] + "\n\n"
 
 			self.dictionaries["Task"]["Descriptions"][language] += self.Input.Lines(type_text)["string"]
-			print(self.dictionaries["Task"]["Descriptions"][language])
 
 	def Register_In_JSON(self):
 		self.task_type = self.dictionaries["Task"]["Type"]["plural"]["en"]
 
-		# Add to task and task type task number
-		self.dictionaries["Tasks"]["Numbers"]["Total"] += 1
-		self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"] += 1
+		dicts = [
+			self.dictionaries["Tasks"],
+			self.dictionaries["Task Type"][self.task_type]
+		]
+
+		# Add to task and task type task numbers
+		for dict_ in dicts:
+			dict_["Numbers"]["Total"] += 1
 
 		if self.dictionaries["Tasks"]["Numbers"]["Total"] == 1:
-			self.dictionaries["Task"]["States"]["First Task In Year"] = True
+			self.dictionaries["Task"]["States"]["First task in year"] = True
 
 		if self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"] == 1:
-			self.dictionaries["Task"]["States"]["First Task Type Task In Year"] = True
+			self.dictionaries["Task"]["States"]["First task type task in year"] = True
 
 		# Define sanitized version of entry name for files
 		self.dictionaries["Task"]["Name"] = {
@@ -105,9 +119,10 @@ class Register(Tasks):
 
 		self.dictionaries["Task"]["Name"]["Sanitized"] = self.dictionaries["Task"]["Name"]["Normal"].replace(":", ";").replace("/", "-")
 
-		# Add to [Entries] list
-		self.dictionaries["Tasks"]["Entries"].append(self.dictionaries["Task"]["Name"]["Normal"])
-		self.dictionaries["Task Type"][self.task_type]["Entries"].append(self.dictionaries["Task"]["Name"]["Normal"])
+		# Add to the "Tasks" lists
+		for dict_ in dicts:
+			if self.dictionaries["Task"]["Name"]["Normal"] not in dict_["Entries"]:
+				dict_["Entries"].append(self.dictionaries["Task"]["Name"]["Normal"])
 
 		self.key = self.dictionaries["Task"]["Name"]["Normal"]
 
@@ -121,11 +136,11 @@ class Register(Tasks):
 			"Lines": len(self.dictionaries["Task"]["Descriptions"]["en"].splitlines())
 		}
 
-		# Get States dictionary
-		dict_ = self.Define_States_Dictionary(self.dictionaries["Task"])
+		# Get the States dictionary
+		self.states_dictionary = self.Define_States_Dictionary(self.dictionaries["Task"])
 
-		if dict_ != {}:
-			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = dict_
+		if self.states_dictionary["States"] != {}:
+			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = self.states_dictionary["States"]
 
 		# Add task dictionary to task type tasks dictionary
 		self.dictionaries["Task Type"][self.task_type]["Dictionary"][self.key] = self.dictionaries["Tasks"]["Dictionary"][self.key].copy()
@@ -145,28 +160,30 @@ class Register(Tasks):
 		# Task type number: [Task type number]
 		# 
 		# Titles:
-		# [English title]
 		# [Portuguese title]
+		# [English title]
 		# 
-		# Type: [Task type]
+		# Type:
+		# [Task type]
 		# 
 		# Times:
 		# [Task times]
 		# 
-		# File name: [Entries]
+		# File name:
+		# [Number. Type (Time)]
 		# (
 		# States:
 		# [Task states]
 		# )
 		# Task descriptions:
 		# 
-		# English:
-		# [English task description]
+		# Português:
+		# [Portuguese task description]
 		# 
 		# -
 		# 
-		# Português:
-		# [Portuguese task description]
+		# English:
+		# [English task description]
 
 		# Define task file
 		folder = self.folders["task_history"]["current_year"]["per_task_type"][self.task_type.lower()]["files"]["root"]
@@ -215,34 +232,15 @@ class Register(Tasks):
 		])
 
 		# Add states texts lines
-		if "States" in self.dictionaries["Tasks"]["Dictionary"][self.dictionaries["Task"]["Name"]["Normal"]]:
-			dict_ = self.dictionaries["Tasks"]["Dictionary"][self.dictionaries["Task"]["Name"]["Normal"]]["States"]
-
+		if self.states_dictionary["Texts"] != {}:
 			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
 
-			for key in dict_:
-				key = key.lower()
-
-				text_key = key.replace(" ", "_")
-
-				if key != "first task type task in year":
-					if text_key in self.JSON.Language.texts:
-						language_text = self.JSON.Language.texts[text_key][language]
-
-					else:
-						language_text = self.texts[text_key][language]
-
-				if key == "first task type task in year":
-					task_item = self.task_types["items, type: dict"][language][self.task_type].lower()
-
-					if self.task_type in ["Python", "PHP"]:
-						task_item = self.texts["{}_task"][language].format(self.task_types["items, type: dict"][language][self.task_type])
-
-					language_text = self.JSON.Language.texts["first_{}_in_year"][language].format(task_type)
+			for key in self.states_dictionary["Texts"]:
+				language_text = self.states_dictionary["Texts"][key][language]
 
 				text += language_text
 
-				if key != list(dict_.keys())[-1].lower():
+				if key != list(self.states_dictionary["Texts"].keys())[-1]:
 					text += "\n"
 
 			lines.append(text)
@@ -354,7 +352,7 @@ class Register(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year task type folder
-			item_folder = self.dictionaries["Task"]["Type"]["item_folders"][language]
+			item_folder = self.dictionaries["Task"]["Type"]["items"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
@@ -365,7 +363,7 @@ class Register(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"])
 
 			# First task type task in year file
-			if self.dictionaries["Task"]["States"]["First Task Type Task In Year"] == True:
+			if self.dictionaries["Task"]["States"]["First task type task in year"] == True:
 				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"]
 
 				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name] = folder + file_name + ".txt"
@@ -389,13 +387,9 @@ class Register(Tasks):
 
 		print(self.JSON.Language.language_texts["type, title()"] + ":")
 
-		text = self.dictionaries["Task"]["Type"]["plural"]["en"]
+		for plural_task_type in self.dictionaries["Task"]["Type"]["plural"].values():
+			print("\t" + plural_task_type)
 
-		if self.dictionaries["Task"]["Type"]["plural"][self.user_language] != self.dictionaries["Task"]["Type"]["plural"]["en"]:
-			text = "\t" + text + "\n"
-			text += "\t" + self.dictionaries["Task"]["Types"][self.user_language]
-
-		print(text)
 		print()
 
 		print(self.JSON.Language.language_texts["when, title()"] + ":")

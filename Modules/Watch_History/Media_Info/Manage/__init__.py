@@ -70,7 +70,7 @@ class Manage(Watch_History):
 			media_list = self.Get_Media_List(self.media_types[plural_media_type], self.texts["watching_statuses, type: list"]["en"])
 
 			# Sort the media item list as case insensitive
-			media_list = sorted(media_list, key=str.lower)
+			media_list = sorted(media_list, key = str.lower)
 
 			# Show language media type
 			print()
@@ -79,10 +79,10 @@ class Manage(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				self.texts["animes, title()"]["en"],
-				self.texts["cartoons, title()"]["en"],
-				self.texts["series, title()"]["en"],
-				self.texts["movies, title()"]["en"],
+				#self.texts["animes, title()"]["en"],
+				#self.texts["cartoons, title()"]["en"],
+				#self.texts["series, title()"]["en"],
+				#self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 
@@ -139,8 +139,8 @@ class Manage(Watch_History):
 						# Add media information to media details and media information file
 						#self.Add_Media_Information()
 
-						if self.dictionary["media_type"]["plural"]["en"] == self.texts["videos, title()"]["en"]:
-							self.Add_Last_Playlist_Date()
+						#if self.dictionary["media_type"]["plural"]["en"] == self.texts["videos, title()"]["en"]:
+						#	self.Add_Last_Playlist_Date()
 
 					if self.switches["testing"] == True and self.media_title != media_list[-1]:
 						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
@@ -1147,8 +1147,10 @@ class Manage(Watch_History):
 		# Get the History dictionary to update the entries number
 		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
 
+		self.years_list = range(2018, self.date["year"] + 1)
+
 		# Iterate through years list (of years that contain a "Watch_History" folder)
-		for self.year in range(2018, self.date["year"] + 1):
+		for self.year in self.years_list:
 			# Convert the year number into a string
 			self.year = str(self.year)
 
@@ -1400,10 +1402,10 @@ class Manage(Watch_History):
 								if self.media["item"]["title"] != self.media["title"]:
 									tab = "\t\t"
 
-									text = tab + self.media["item"]["title"] + ":"
+									text = tab + "[" + self.media["item"]["title"] + "]"
 
 									progress_text += "\n" + self.JSON.Language.language_texts["item"].title() + ":" + "\n" + \
-									"[" + self.media["item"]["title"] + "]" + "\n"
+									text.replace(tab, "") + "\n"
 
 									print()
 									print(text)
@@ -1454,6 +1456,7 @@ class Manage(Watch_History):
 								states_dictionary["Completed media"] = False
 								states_dictionary["Completed media item"] = False
 								states_dictionary["Watch dubbed"] = False
+								states_dictionary["Replace title"] = False
 
 								# If the language "Dubbed" text is inside the episode title, set the "Watch dubbed" state as True
 								if self.language_texts["dubbed, title()"] in entry["Episode title"]:
@@ -1619,6 +1622,8 @@ class Manage(Watch_History):
 
 								self.media["States"]["finished_watching"] = True
 
+								self.media["States"]["Replace title"] = False
+
 								# Run the "Register" class to register the media unit
 								register_dictionaries = self.Register(self.dictionary).dictionaries
 
@@ -1657,14 +1662,24 @@ class Manage(Watch_History):
 					folder = self.year["folders"]["per_media_type"]["root"] + folder_name + "/"
 					self.Folder.Delete(folder)
 
-			if self.year["Number"] != list(range(2018, self.date["year"] + 1))[-1]:
+			if "Episodes" in self.year["Lists"] and self.year["Number"] != list(self.years_list)[-1]:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
 		# Update the "History.json" file with the new History dictionary
 		self.JSON.Edit(self.folders["watch_history"]["history"], self.dictionaries["History"])
 
 	def Add_To_Comments_Dictionary(self):
-		self.dictionary = self.Select_Media_Type_And_Media(watch = True)
+		options = {
+			"media_type": {
+				"status": self.texts["watching_statuses, type: list"]["en"],
+				"list": {}
+			}
+		}
+
+		# Remove the "Movies" media type from the media type dictionary, returning a local media types dictionary
+		options["media_type"]["list"] = self.Remove_Media_Type(self.texts["movies, title()"]["en"])["list"]
+
+		self.dictionary = self.Select_Media_Type_And_Media(options, watch = True)
 
 		import importlib
 
