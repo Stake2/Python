@@ -159,7 +159,7 @@ class Comment_Writer(Watch_History):
 			title = self.media["episode"][key][self.user_language]
 
 			if self.media["States"]["series_media"] == False:
-				title += " (" + self.media["details"][self.Date.language_texts["year, title()"]] + ", " + self.media["details"][self.JSON.Language.language_texts["producer, title()"]] + ")"
+				title += " (" + self.media["details"][self.JSON.Language.language_texts["original_name"]].split(" (")[-1]
 
 			if self.media["States"]["Re-watching"] == True:
 				title += self.media["episode"]["re_watched"]["text"]
@@ -358,7 +358,8 @@ class Comment_Writer(Watch_History):
 		keys_to_remove = [
 			"Type",
 			"Titles",
-			"States"
+			"States",
+			"Lines"
 		]
 
 		if self.media["States"]["episodic"] == False:

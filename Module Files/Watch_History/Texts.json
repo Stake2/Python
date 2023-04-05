@@ -343,14 +343,6 @@
 		"en": "Origin type",
 		"pt": "Tipo de origem"
 	},
-	"status": {
-		"en": "status",
-		"pt": "status"
-	},
-	"status, title()": {
-		"en": "Status",
-		"pt": "Status"
-	},
 	"plan_to_watch": {
 		"en": "plan to watch",
 		"pt": "planejo assistir"
@@ -921,10 +913,6 @@
 	"origin_type, title()": {
 		"pt": "Tipo de origem",
 		"en": "Origin type"
-	},
-	"status, title()": {
-		"pt": "Status",
-		"en": "Status"
 	},
 	"plan_to_watch, title()": {
 		"pt": "Planejo assistir",

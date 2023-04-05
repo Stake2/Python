@@ -26,17 +26,19 @@ class Unblock(Block_Websites):
 		if self.time == None:
 			self.time = self.hour_config["Update time"]
 
-		if first_space == True:
-			print()
-
 		self.in_working_hours = Block(show_text = False, block = False).in_working_hours
+
+		if first_space == True and self.in_working_hours == True:
+			print()
 
 		if self.in_working_hours == True:
 			self.Choose_Website()
 			self.Unblock()
 
 		if self.in_working_hours == False:
-			print(self.language_texts["you_are_not_in_working_time_all_websites_are_unlocked"] + ".")
+			Block()
+
+			#print(self.language_texts["you_are_not_in_working_time_all_websites_are_unlocked"] + ".")
 
 		if second_space == True:
 			print()

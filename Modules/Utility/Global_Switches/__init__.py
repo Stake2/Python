@@ -105,4 +105,9 @@ class Global_Switches():
 		self.Edit(self.switches["file"], self.switches["reset"])
 
 	def Switch(self, switches):
+
+		for switch in switches.copy():
+			if switch not in list(self.switches["reset"].keys()):
+				switches.pop(switch)
+
 		self.Edit(self.switches["file"], switches)

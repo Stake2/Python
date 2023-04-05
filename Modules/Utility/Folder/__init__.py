@@ -405,7 +405,7 @@ class Folder():
 		self.website = {}
 		self.links = {}
 
-		if self.Exist(self.folders["mega"]["websites"]["website"]) == True:
+		if self.File.Exist(self.folders["mega"]["websites"]["website"]) == True:
 			self.website = self.JSON.To_Python(self.folders["mega"]["websites"]["website"])
 
 			# Create links dictionary with Stake2 Website link
@@ -889,7 +889,7 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if type(contents["dictionary"]) != str and type(contents["dictionary"][root_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
+					if type(contents["dictionary"]) != str and root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:

@@ -19,7 +19,6 @@ class Run():
 		self.classes = [
 			"Watch_Media",
 			"Watch_List_Of_Media",
-			"Start_Watching_Media",
 			"Media_Info",
 			"View"
 		]

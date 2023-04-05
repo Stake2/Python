@@ -38,32 +38,75 @@ class Watch_Media(Watch_History):
 	def Define_Media_Dictionary(self):
 		# Select media type and media if media dictionary is empty
 		if self.media_dictionary == {}:
+			# Define options dictionary, with the media type dictionary containing the status list of the media
 			options = {
 				"media_type": {
 					"status": [
+						self.texts["plan_to_watch, title()"]["en"],
 						self.texts["watching, title()"]["en"],
-						self.texts["re_watching, title()"]["en"]
+						self.texts["re_watching, title()"]["en"],
+						self.texts["on_hold, title()"]
 					]
 				}
 			}
 
-			# Define options
+			# Define the options for the media dictionary
 			self.media_dictionary = self.Define_Options(self.media_dictionary, options)
 
-			# Ask user to select media type and media
+			# Ask the user to select a media type and media
 			self.media_dictionary = self.Select_Media_Type_And_Media(options, watch = True)
 
 		self.media = self.media_dictionary["Media"]
 
 		self.media["States"]["open_media"] = self.open_media
 
-		# Define dubbing
+		# Define the status list for "Plan to watch" related media
+		status_list = [
+			self.texts["plan_to_watch, title()"][self.user_language],
+			self.texts["on_hold, title()"][self.user_language]
+		]
+
+		# If the media watching status is inside the status list
+		if self.media["details"][self.JSON.Language.language_texts["status, title()"]] in status_list and "Old history" not in self.media_dictionary:
+			# If the media "Dates.txt" file is empty
+			if self.File.Contents(self.media["folders"]["dates"])["lines"] == "":
+				# Gets the first watching time where the user started watching the media
+				self.media["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+
+				# Create the Dates text
+				self.media["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
+				self.media["Dates"] += self.media["Started watching time"]
+
+				self.File.Edit(self.media["folders"]["dates"], self.media["Dates"], "w")
+
+			# If the media has a media item list
+			if self.media["States"]["Media item list"] == True:
+				# And the media item "Dates.txt" file is empty
+				if self.File.Contents(self.media["item"]["folders"]["dates"])["lines"] == "":
+					# Gets the first watching time where the user started watching the media
+					self.media["item"]["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+
+					# Create the Dates text
+					self.media["item"]["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
+					self.media["item"]["Dates"] += self.media["item"]["Started watching time"]
+
+					self.File.Edit(self.media["item"]["folders"]["dates"], self.media["item"]["Dates"], "w")
+
+			# Change the watching status to "Watching"
+			self.Change_Status(self.media_dictionary, self.language_texts["watching, title()"])
+
+		# Define dubbing for the media
 		if self.language_texts["dubbing, title()"] in self.media["details"]:
 			self.media["States"]["Has Dubbing"] = True
 
 			self.found_watch_dubbed_setting = False
 
-			for details in [self.media["details"], self.media["item"]["details"]]:
+			details_list = [
+				self.media["details"],
+				self.media["item"]["details"]
+			]
+
+			for details in details_list:
 				if self.language_texts["watch_dubbed"] in details:
 					self.media["States"]["Watch dubbed"] = self.Input.Define_Yes_Or_No(details[self.language_texts["watch_dubbed"]])
 
@@ -239,7 +282,10 @@ class Watch_Media(Watch_History):
 			# Define remote link for the "YouTube" remote
 			if self.media["episode"]["remote"]["title"] == "YouTube":
 				if "v=" not in self.media["episode"]["remote"]["origin_location"]:
-					self.media["episode"]["remote"]["link"] += "watch?v=" + self.media["episode"]["id"] + "&list=" + self.media["episode"]["remote"]["origin_location"] + "&index=" + str(self.media["episode"]["number"])
+					self.media["episode"]["remote"]["link"] += "watch?v=" + self.media["episode"]["id"]
+
+					if self.media["States"]["Media item list"] == True:
+						self.media["episode"]["remote"]["link"] += "&list=" + self.media["episode"]["remote"]["origin_location"] + "&index=" + str(self.media["episode"]["number"])
 
 				if "v=" in self.media["episode"]["remote"]["origin_location"]:
 					self.media["episode"]["remote"]["link"] += "watch?" + self.media["episode"]["remote"]["origin_location"]

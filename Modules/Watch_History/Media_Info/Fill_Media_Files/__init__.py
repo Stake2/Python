@@ -182,7 +182,7 @@ class Fill_Media_Files(Watch_History):
 
 			# Add total episode number of all media items
 			if self.dictionary["Media"]["States"]["Media item list"] == True and self.dictionary["Media"]["item"]["title"] != self.dictionary["Media"]["items"]["list"][0]:
-				progress += " (" + str(self.Text.Add_Leading_Zeroes(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"]))
+				progress += " (" + str(self.Text.Remove_Leading_Zeroes(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"]))
 
 				progress += "/" + total_number_text + ")"
 
@@ -344,6 +344,9 @@ class Fill_Media_Files(Watch_History):
 	def Add_To_Videos_List(self):
 		video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
 
+		while video_id == "":
+			video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
+
 		print()
 
 		if "youtube" in video_id:
@@ -391,6 +394,13 @@ class Fill_Media_Files(Watch_History):
 		# Update the media item details file
 		self.File.Edit(self.dictionary["Media"]["item"]["folders"]["details"], self.Text.From_Dictionary(self.dictionary["Media"]["item"]["details"]), "w")
 
+		print()
+		print("-----")
+		print()
+		print(self.Text.Capitalize(self.language_texts["video_serie"]) + ":")
+		print("\t" + self.dictionary["Media"]["item"]["title"])
+		print()
+
 		# Show titles
 		for language in self.languages["small"]:
 			# Define the translated language
@@ -408,6 +418,9 @@ class Fill_Media_Files(Watch_History):
 		# Show Date
 		print(self.Date.language_texts["date, title()"] + ":")
 		print("\t" + video["Date"])
+
+		print()
+		print("-----")
 
 	def Add_Missing_Titles(self, language, titles, title):
 		# Define the translated language

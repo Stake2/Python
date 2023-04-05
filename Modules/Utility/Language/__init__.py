@@ -40,14 +40,19 @@ class Language():
 		self.Read_Settings_File()
 
 	def Define_Lists_And_Dictionaries(self):
-		self.dictionary_separators = ["=", " = ", ":", ": "]
+		self.dictionary_separators = [
+			"=",
+			" = ",
+			":",
+			": "
+		]
 
 		self.setting_names = {
 			"language": {
 				"key": "language",
 				"name": {
 					"en": "language",
-					"pt": "idioma",
+					"pt": "idioma"
 				},
 				"list": [
 					"language",
@@ -55,9 +60,9 @@ class Language():
 					"idioma",
 					"Idioma",
 					"linguagem",
-					"Linguagem",
-				],
-			},
+					"Linguagem"
+				]
+			}
 		}
 
 	def Define_Languages(self):

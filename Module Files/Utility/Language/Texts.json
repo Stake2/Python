@@ -673,6 +673,14 @@
 		"en": "Official website",
 		"pt": "Site oficial"
 	},
+	"short": {
+		"en": "short",
+		"pt": "curta"
+	},
+	"shorts": {
+		"en": "shorts",
+		"pt": "curtas"
+	},
 	"special": {
 		"en": "special",
 		"pt": "especial"
@@ -684,6 +692,14 @@
 	"pilot": {
 		"en": "pilot",
 		"pt": "piloto"
+	},
+	"music": {
+		"en": "music",
+		"pt": "música"
+	},
+	"musics": {
+		"en": "musics",
+		"pt": "músicas"
 	},
 	"next": {
 		"en": "next",
@@ -703,6 +719,14 @@
 	"and_also": {
 		"en": "and also",
 		"pt": "e também"
+	},
+	"status": {
+		"en": "status",
+		"pt": "status"
+	},
+	"status, title()": {
+		"en": "Status",
+		"pt": "Status"
 	},
 	"genders, type: dict": {
 		"en": {

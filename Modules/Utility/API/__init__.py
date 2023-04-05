@@ -91,30 +91,64 @@ class API():
 		# Build API object
 		api["object"] = build(api["name"], api["version"], developerKey = api["key"], credentials = api["credentials"])
 
+		if "submethod" not in api or api["submethod"] == "":
+			api["submethod"] = "list"
+
+		if "method" not in api:
+			api["method"] = api["item"]
+
 		if "parameters" not in api:
-			method = api["item"]
-
-			if api["item"] == "playlistItems":
-				method = "playlistItems"
-
 			key = "id"
 
 			if api["item"] == "playlistItems":
 				key = "playlistId"
 
-			api.update({
-				"method": method,
-				"submethod": "list",
-				"parameters": {
+			if api["submethod"] != "insert":
+				api["parameters"] = {
 					key: api["id"]
 				}
-			})
+
+			if api["item"] == "playlists" and api["submethod"] == "insert":
+				api["parameters"] = {
+					"body": {
+						"snippet": {
+							"title": api["title"],
+							"description": api["description"]
+						},
+						"status": {
+							"privacyStatus": "public"
+						}
+					}
+				}
+
+			if api["item"] == "playlistItems" and api["submethod"] == "insert":
+				api["parameters"] = {
+					"body": {
+						"snippet": {
+							"playlistId": api["id"],
+							"resourceId": {
+								"kind": "youtube#video",
+								"videoId": api["videoId"]
+							}
+						}
+					}
+				}
 
 		if "part" not in api["parameters"]:
 			api["parameters"]["part"] = ["snippet"]
 
-		if "maxResults" not in api["parameters"] and api["method"] != "comments":
-			api["parameters"]["maxResults"] = 1
+		if api["item"] == "playlists" and api["submethod"] == "insert":
+			api["parameters"]["part"] = [
+				"snippet",
+				"status"
+			]
+
+		if "maxResults" not in api["parameters"]:
+			if api["item"] not in ["comments", "playlists"]:
+				api["parameters"]["maxResults"] = 1
+
+		if api["submethod"] == "insert" and "maxResults" in api["parameters"]:
+			api["parameters"].pop("maxResults")
 
 		# Get method, for example, "videos"
 		api["method_object"] = getattr(api["object"], api["method"])
@@ -122,11 +156,13 @@ class API():
 		# Get submethod, for example, "list" method of "videos" method)
 		api["submethod_object"] = getattr(api["method_object"](), api["submethod"])
 
+		# Define empty response Dictionary
 		api["response"] = {
 			"nextPageToken": "",
 			"items": []
 		}
 
+		# Define empty Dictionary
 		api["Dictionary"] = {
 			"Number": 0,
 			"Total Number": 1
@@ -150,53 +186,80 @@ class API():
 			if "pageInfo" in api["response"] and "totalResults" in api["response"]["pageInfo"]:
 				api["Dictionary"]["Total Number"] = api["response"]["pageInfo"]["totalResults"]
 
+			if "items" not in api["response"]:
+				id = api["response"]["id"]
+
+				# Get the snippet
+				snippet = api["response"]["snippet"]
+
+				# Add the returned item inside to the items list
+				api["response"]["items"] = [
+					{
+						"snippet": snippet
+					}
+				]
+
+			# Iterate through the response items list
 			for dictionary in api["response"]["items"]:
+				# Get the snippet
 				snippet = dictionary["snippet"]
 
+				# Get Channel or Playlist Dictionary
 				for name in ["channelId", "playlistId"]:
-					key = name.replace("Id", "").title()
+					name_key = name.replace("Id", "").title()
 
-					if name in snippet and key not in api["Dictionary"]:
+					if name in snippet and name_key not in api["Dictionary"]:
 						item = {
-							"method": name.replace("Id", "") + "s",
+							"item": name.replace("Id", "") + "s",
 							"submethod": "list",
 							"parameters": {
 								"id": snippet[name]
 							}
 						}
 
-						api["Dictionary"][key] = self.Call("YouTube", item)["Dictionary"][snippet[name]]
+						api["Dictionary"][name_key] = self.Call("YouTube", item)["Dictionary"][snippet[name]]
 
+				# Use the video ID as the ID
 				if "resourceId" in snippet:
 					id = snippet["resourceId"]["videoId"]
 
+				# Else, use the Playlist ID as the ID
 				elif "playlistId" in api["parameters"]:
 					id = api["parameters"]["playlistId"]
 
+				# Else, get the normal ID
 				elif "id" in api["parameters"]:
 					id = api["parameters"]["id"]
 
+				# Get the root YouTube link
 				link = api["link"]
 
+				# If the method is "channels", add the channel folder to the link
 				if api["method"] == "channels":
 					link += "channel/"
 
+				# If the method is "playlists", add the PHP "playlist" file name and the "list" playlist parameter to the link
 				if api["method"] == "playlists":
 					link += "playlist?list="
 
+				# If the method is "videos" or "playlistItems", add the PHP "watch" file name and the "v" video parameter to the link
 				if api["method"] in ["videos", "playlistItems"]:
 					link += "watch?v="
 
+				# Define the items dictionary as the Dictionary
 				items = api["Dictionary"]
 
+				# If the method is "playlistItems", create the videos dictionary inside the items list and make that the default list
 				if api["method"] == "playlistItems":
 					if "Videos" not in items:
 						items["Videos"] = {}
 
 					items = items["Videos"]
 
+				# Add the ID (video, playlist, or comment) to the items dictionary, with the default values
 				items[id] = {
 					"Title": "",
+					"Channel ID": "",
 					"ID": id,
 					"Link": link + id,
 					"Description": "",
@@ -206,6 +269,8 @@ class API():
 					"Language": ""
 				}
 
+				# If title or description are inside the snippet, add them to the item dictionary
+				# Else, remove the key from the item dictionary
 				for name in ["title", "description"]:
 					if name in snippet:
 						items[id][name.title()] = snippet[name]
@@ -213,32 +278,72 @@ class API():
 					else:
 						items[id].pop(name.title())
 
-				if api["method"] != "comments":
+				# If the item is not "comments", remove the "Text" key as it is not needed
+				if api["item"] != "comments":
 					items[id].pop("Text")
 
-				if api["method"] == "comments":
+				# If the item is "comments", remove the "Link" key as it is not needed
+				if api["item"] == "comments":
 					items[id].pop("Link")
 
+					# Add the orignal and display texts of the Comment to the item dictionary
 					items[id]["Text"].update({
 						"Original": snippet["textOriginal"],
 						"Display": snippet["textDisplay"]
 					})
 
+				# If the "thumbnails" is inside the snippet, create a list with the links of all images
 				if "thumbnails" in snippet:
-					for key in snippet["thumbnails"]:
-						image = snippet["thumbnails"][key]
+					for image_key in snippet["thumbnails"]:
+						image = snippet["thumbnails"][image_key]
 						items[id]["Images"].append(image["url"])
 
+				# Else, remove the "Images" key
 				else:
 					items[id].pop("Images")
 
+				# If the "defaultAudioLanguage" key is inside the snippet, add the "Language" and "Full langauge" keys
 				if "defaultAudioLanguage" in snippet:
 					items[id]["Language"] = snippet["defaultAudioLanguage"]
 
+					if snippet["defaultAudioLanguage"] not in self.JSON.Language.languages["full"]:
+						snippet["defaultAudioLanguage"] = snippet["defaultAudioLanguage"].split("-")[0]
+						
+					items[id]["Full language"] = self.JSON.Language.languages["full"][snippet["defaultAudioLanguage"]]
+
+				# Else, remove the "Language" key
 				else:
 					items[id].pop("Language")
 
-				if "Title" in items[id] and items[id]["Title"] == "Private video":
+				# Add the localized dictionary
+				if "localized" in snippet:
+					items[id]["Localized"] = {}
+
+					for key in snippet["localized"]:
+						items[id]["Localized"][key.capitalize()] = snippet["localized"][key]
+
+				# Add the Channel ID
+				if "channelId" in snippet:
+					items[id]["Channel ID"] = snippet["channelId"]
+
+				# Else, remove the "Channel ID" key
+				else:
+					items[id].pop("Channel ID")
+
+				# If the item is "videos", create the "Video" key for easier accessing of values
+				if api["item"] == "videos":
+					items["Video"] = items[id]
+
+				# If the item is "playlists", create the "Playlist" key for easier accessing of values
+				if api["item"] == "playlists":
+					items["Playlist"] = items[id]
+
+				# If the item is "comments", create the "Comment" key for easier accessing of values
+				if api["item"] == "comments":
+					items["Comment"] = items[id]
+
+				# If the "Title" key is inside the item dictionary and the video is private, remove it from the items dictionary
+				if "Title" in items[id] and items[id]["Title"] in ["Private video", "Deleted video"]:
 					items.pop(id)
 
 		return api

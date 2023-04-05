@@ -161,7 +161,7 @@ class Input():
 		dictionary = {
 			"option": option,
 			"language_option": option,
-			"number": option_number,
+			"number": option_number
 		}
 
 		if language_options != None:
@@ -193,7 +193,7 @@ class Input():
 	def Yes_Or_No(self, question, convert_to_text = False, first_space = True):
 		options = [
 			self.language_texts["yes, title()"],
-			self.language_texts["no, title()"],
+			self.language_texts["no, title()"]
 		]
 
 		if type(question) == dict:
@@ -228,27 +228,21 @@ class Input():
 		if first_space == True:
 			print()
 
-		if next_line == False:
-			if accept_enter == True:
-				typed = input(text)
-
-			if accept_enter == False:
-				typed = ""
-
-				while typed == "":
-					typed = input(text)
+		local_text = text
 
 		if next_line == True:
 			print(text)
 
-			if accept_enter == True:
-				typed = input()
+			local_text = ""
 
-			if accept_enter == False:
-				typed = ""
+		if accept_enter == True:
+			typed = input(local_text)
 
-				while typed == "":
-					typed = input()
+		if accept_enter == False:
+			typed = ""
+
+			while typed == "":
+				typed = input(local_text)
 
 		if typed != "" and regex != None:
 			split_ = regex.split("; ")
@@ -288,7 +282,7 @@ class Input():
 				"dots": False,
 				"show_finish_text": True,
 				"next_line": True,
-				"colon": True,
+				"colon": True
 			}
 
 		for item in ["print", "enumerate", "enumerate_text", "capitalize", "dots", "show_finish_text", "next_line", "colon"]:
@@ -315,7 +309,7 @@ class Input():
 		contents = {
 			"lines": [],
 			"string": "",
-			"length": 0,
+			"length": 0
 		}
 
 		line = ""

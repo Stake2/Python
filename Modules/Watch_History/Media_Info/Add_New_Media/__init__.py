@@ -91,7 +91,7 @@ class Add_New_Media(Watch_History):
 				self.media_list_file = self.media_dictionary["Media"]["item"]["folders"]["root"] + self.media_list_text + ".txt"
 				self.File.Create(self.media_list_file)
 
-		self.watching_status = self.option_info["media_details"][self.language_texts["status, title()"]]
+		self.watching_status = self.option_info["media_details"][self.JSON.Language.language_texts["status, title()"]]
 		self.media_dictionary["Media"]["details"][self.language_texts["origin_type"]] = self.option_info["media_details"][self.language_texts["origin_type"]]
 
 		self.watching_status_file = self.watching_status_files[self.plural_media_types["en"]][self.watching_status]
@@ -120,7 +120,7 @@ class Add_New_Media(Watch_History):
 				for key in self.option_info["media_details"].copy():
 					dict_[key] = self.option_info["media_details"][key]
 
-					if key == self.language_texts["status, title()"]:
+					if key == self.JSON.Language.language_texts["status, title()"]:
 						dict_.update({self.language_texts["episode, title()"]: "None"})
 
 				self.option_info["media_details"] = dict_
