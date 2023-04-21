@@ -100,9 +100,12 @@ class Register(Watch_History):
 			self.dictionaries["Watched"]
 		]
 
-		# Add one to the total number of Entries of all dictionaries
+		# Add one to the entry, media type entry, and root media type entry numbers
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] += 1
+
+			if self.media_type in dict_["Numbers"]:
+				dict_["Numbers"][self.media_type] += 1
 
 		# Define sanitized version of entry name for files
 		self.dictionary["Entry"]["Name"] = {
@@ -516,7 +519,7 @@ class Register(Watch_History):
 
 				template = template.replace(self.language_texts["re_watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + self.media["episode"]["re_watched"]["time_text"][self.user_language])
 
-			if self.media["States"]["single_unit"] == False:
+			if self.media["States"]["single_unit"] == False and self.media["States"]["video"] == False:
 				# Replace "this" text with "the first" if the episode is the first one
 				if self.media["episode"]["title"] == self.media["item"]["episodes"]["titles"][self.media["Language"]][0]:
 					self.watched_item_text = self.watched_item_text.replace(self.language_texts["this, masculine"], self.language_texts["the_first, masculine"])
@@ -662,7 +665,8 @@ class Register(Watch_History):
 					"value": self.JSON.Language.language_texts["completed, title()"]
 				}
 
-				self.media["item"]["details"] = self.JSON.Add_Key_After_Key(self.media["item"]["details"], key_value, add_to_end = True)
+				if self.media["States"]["video"] == False:
+					self.media["item"]["details"] = self.JSON.Add_Key_After_Key(self.media["item"]["details"], key_value, add_to_end = True)
 
 				if self.language_texts["episode, title()"] in self.media["item"]["details"] and self.media["States"]["single_unit"] == True:
 					self.media["item"]["details"].pop(self.language_texts["episode, title()"])
@@ -671,7 +675,8 @@ class Register(Watch_History):
 					# Update the media item details file
 					self.File.Edit(self.media["item"]["folders"]["details"], self.Text.From_Dictionary(self.media["item"]["details"]), "w")
 
-				self.media["States"]["Completed media item"] = True
+				if self.media["States"]["video"] == False:
+					self.media["States"]["Completed media item"] = True
 
 			# If the media has no media item list and the episode title is the last one, define the media as completed
 			if self.media["States"]["Media item list"] == False and self.media["episode"]["title"] == self.media["item"]["episodes"]["titles"][self.media["Language"]][-1] and self.media["States"]["video"] == False:

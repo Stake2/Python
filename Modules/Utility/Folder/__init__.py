@@ -101,7 +101,7 @@ class Folder():
 				folder = "Atalhos"
 
 			self.folders["apps"][key] = {
-				"root": os.path.join(self.folders["apps"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
 			}
 
 		self.folders["apps"]["module_files"]["utility"] = {
@@ -114,7 +114,7 @@ class Folder():
 
 		# User folders
 		self.folders["user"] = {
-			"root": self.Sanitize(os.path.join(self.folders["root"]["users"], pathlib.Path.home().name + "/")),
+			"root": self.Sanitize(os.path.join(self.folders["root"]["users"], pathlib.Path.home().name + "/"))
 		}
 
 		# User sub folders
@@ -122,7 +122,7 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"][key] = {
-				"root": os.path.join(self.folders["user"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["user"]["root"], folder + "/")
 			}
 
 		# Downloads folders
@@ -130,7 +130,7 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"]["downloads"][key] = {
-				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/")
 			}
 
 		# AppData folders
@@ -138,7 +138,7 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"]["appdata"][key] = {
-				"root": os.path.join(self.folders["user"]["appdata"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["user"]["appdata"]["root"], folder + "/")
 			}
 
 		# System32 subfolders
@@ -173,7 +173,7 @@ class Folder():
 
 		# Mega Notepad folders
 		self.folders["mega"]["notepad"]["effort"] = {
-			"root": os.path.join(self.folders["mega"]["notepad"]["root"], "Dedicação/"),
+			"root": os.path.join(self.folders["mega"]["notepad"]["root"], "Dedicação/")
 		}
 
 		# Mega Notepad Effort folders
@@ -181,142 +181,148 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["mega"]["notepad"]["effort"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["root"], folder + "/")
 			}
 
 		# Mega Notepad Effort Networks folders
-		for folder in ["Audiovisual Media Network", "Database Network", "Game Network", "Productive Network"]:
-			key = folder.lower().replace(" ", "_")
-
-			self.folders["mega"]["notepad"]["effort"]["networks"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["root"], folder + "/"),
+		for network in ["Audiovisual Media Network", "Database Network", "Game Network", "Productive Network"]:
+			# Network dictionary
+			network = {
+				"Title": network,
+				"Key": network.lower().replace(" ", "_"),
+				"Info": "",
+				"History": "",
+				"Type": "Entry",
+				"Entries": "Entries",
+				"Subfolders": [
+					"Data"
+				]
 			}
 
-		# Mega Notepad/Effort/Networks/Audiovisual Media Network folders
-		for item in ["Comments", "Data", "Media Info", "Watch History"]:
-			key = item.lower().replace(" ", "_")
+			self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]] = {
+				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["root"], network["Title"] + "/")
+			}			
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["root"], item + "/"),
-			}
+			# "Audiovisual Media Network" subfolders
+			if network["Title"] == "Audiovisual Media Network":
+				network["Subfolders"].append("Comments")
 
-		# Audiovisual Media Network/Comments folders
-		for item in ["Backups"]:
-			key = item.lower().replace(" ", "_")
+				network.update({
+					"Info": "Media",
+					"History": "Watch",
+					"Type": "Media"
+				})
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["comments"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["comments"]["root"], item + "/"),
-			}
+			# "Database Network" subfolders
+			if network["Title"] == "Database Network":
+				network.update({
+					"Info": None,
+					"History": None,
+					"Type": None
+				})
 
-		# Audiovisual Media Network/Media Info folders and files
-		for item in ["Info.json"]:
-			key = item.lower().replace(" ", "_").replace(".json", "")
+			# "Game Network" subfolders
+			if network["Title"] == "Game Network":
+				network.update({
+					"Info": None,
+					"History": "Play",
+					"Type": "Game",
+					"Entries": "Sessions"
+				})
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["media_info"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["media_info"]["root"], item)
+			# "Productive Network" subfolders
+			if network["Title"] == "Productive Network":
+				network.update({
+					"History": "Task",
+					"Type": "Task",
+					"Entries": "Tasks"
+				})
 
-		# Audiovisual Media Network/Data files
-		for item in ["Types.json"]:
-			key = item.lower().replace(" ", "_").replace(".json", "")
+			# Network subfolder items
+			for item in ["Info", "History"]:
+				if network[item] != "":
+					item_name = item
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["data"]["root"], item)
+					if item == "Info" and network["Title"] in ["Database Network", "Game Network"]:
+						item_name = "Information"
 
-		# Audiovisual Media Network/Watch History folders
-		for item in ["Movies"]:
-			key = item.lower().replace(" ", "_")
+					if network[item] != None:
+						network[item] = network[item] + " " + item_name
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], item + "/"),
-			}
+					if network[item] == None:
+						network[item] = item_name
 
-		# Audiovisual Media Network/Watch History "History" file
-		self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["history"] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], "History.json")
+					network["Subfolders"].append(network[item])
 
-		# Audiovisual Media Network/Watch History year folders
-		for item in [self.date["year"]]:
-			key = str(item).lower().replace(" ", "_")
+					network[item] = network[item].lower().replace(" ", "_")
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"]["root"], str(item) + "/"),
-			}
+			for sub_folder in network["Subfolders"]:
+				key = sub_folder.lower().replace(" ", "_")
 
-			for item in ["Per Media Type"]:
-				self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key][item] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"], str(item) + "/"),
+				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][key] = {
+					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["root"], sub_folder + "/")
 				}
 
-			# Entries.json file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["entries"] = self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Entries.json"
+			if network["Title"] == "Audiovisual Media Network":
+				# "Audiovisual Media Network/Comments" folders
+				for item in ["Backups"]:
+					key = item.lower().replace(" ", "_")
 
-			# Entry list.txt file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["audiovisual_media_network"]["watch_history"][key]["root"] + "Entry list.txt"
+					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["comments"][key] = {
+						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["comments"]["root"], item + "/")
+					}
 
-		# Mega Notepad/Effort/Networks/Database Network folders
-		for item in ["Data", "History"]:
-			key = item.lower().replace(" ", "_")
+				# "Audiovisual Media Network/Watch History" folders
+				for item in ["Movies"]:
+					key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["root"], item + "/"),
-			}
+					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
+						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], item + "/")
+					}
 
-		# Database Network/Data files
-		for item in ["Types.json"]:
-			key = item.lower().replace(" ", "_").replace(".json", "")
+			if network["Info"] != "":
+				# Network "Info" folders and files
+				for item in ["Info.json"]:
+					key = item.lower().replace(" ", "_").replace(".json", "")
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["data"]["root"], item)
+					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["Info"]][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["Info"]]["root"], item)
 
-		# Networks/Database Network/History folders
-		for item in [self.date["year"]]:
-			key = str(item).lower().replace(" ", "_")
+			# Network "Data" folders and files
+			for item in ["Types.json"]:
+				key = item.lower().replace(" ", "_").replace(".json", "")
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"]["root"], str(item) + "/"),
-			}
+				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["data"]["root"], item)
 
-			for item in ["Per Type"]:
-				self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key][item] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"], str(item) + "/"),
+			# "Network History" "History" file
+			self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["history"] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], "History.json")
+
+			# "Network History" year folders
+			for item in [self.date["year"]]:
+				key = str(item).lower().replace(" ", "_")
+
+				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
+					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], str(item) + "/"),
 				}
 
-			# Entries.json file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["entries"] = self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"] + "Entries.json"
+				if network["Type"] != None:
+					network["Type"] = " " + network["Type"] + " "
 
-			# Entry list.txt file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["database_network"]["history"][key]["root"] + "Entry list.txt"
+				if network["Type"] == None:
+					network["Type"] = " "
 
-		# Mega Notepad/Effort/Networks/Productive Network folders
-		for item in ["Data", "Task History"]:
-			key = item.lower().replace(" ", "_")
+				# Per Type folder
+				for item in ["Per" + network["Type"] + "Type"]:
+					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key][item] = {
+						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"], str(item) + "/"),
+					}
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["root"], item + "/"),
-			}
+				# Entries.json file
+				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key][network["Entries"].lower()] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + network["Entries"] + ".json"
 
-		# Productive Network/Data files
-		for item in ["Types.json"]:
-			key = item.lower().replace(" ", "_").replace(".json", "")
+				# Entry list.txt file
+				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
 
-			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["data"]["root"], item)
-
-		# Networks/Productive Network/Task History folders
-		for item in [self.date["year"]]:
-			key = str(item).lower().replace(" ", "_")
-
-			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"]["root"], str(item) + "/"),
-			}
-
-			for item in ["Per Task Type"]:
-				self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key][item] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"], str(item) + "/"),
-				}
-
-			# Tasks.json file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["tasks"] = self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Tasks.json"
-
-			# Entry list.txt file
-			self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"]["productive_network"]["task_history"][key]["root"] + "Entry list.txt"
-
-		# Years folders
+		# "Years" folders
 		for item in range(2021, self.date["year"] + 1):
 			key = str(item).lower().replace(" ", "_")
 
@@ -335,7 +341,7 @@ class Folder():
 
 				self.folders["mega"]["notepad"]["effort"]["years"]["current_year"] = self.folders["mega"]["notepad"]["effort"]["years"][key]
 
-		# Notepad folders
+		# Notepad folders dictionary
 		self.folders["notepad"] = {}
 
 		for key in self.folders["mega"]["notepad"]:

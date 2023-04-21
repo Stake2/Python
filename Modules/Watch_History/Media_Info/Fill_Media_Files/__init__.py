@@ -5,8 +5,10 @@ from Watch_History.Watch_History import Watch_History as Watch_History
 from Watch_History.Watch_Media import Watch_Media
 
 class Fill_Media_Files(Watch_History):
-	def __init__(self, option_info = None):
+	def __init__(self, dictionary = None):
 		super().__init__()
+
+		self.dictionary = dictionary
 
 		options = {
 			"media_type": {
@@ -18,8 +20,13 @@ class Fill_Media_Files(Watch_History):
 		# Remove the "Movies" media type from the media type dictionary, returning a local media types dictionary
 		options["media_type"]["list"] = self.Remove_Media_Type(self.texts["movies, title()"]["en"])["list"]
 
-		# Ask user to select media type and media
-		self.dictionary = self.Select_Media_Type_And_Media(options, watch = True, select_media_item = True)
+		self.dictionary_is_none = False
+
+		if self.dictionary == None:
+			# Ask user to select media type and media
+			self.dictionary = self.Select_Media_Type_And_Media(options, watch = True, select_media_item = True)
+
+			self.dictionary_is_none = True
 
 		# Define the "Fill episode titles" dictionary
 		self.dictionary["Fill episode titles"] = {
@@ -51,15 +58,16 @@ class Fill_Media_Files(Watch_History):
 				if method not in ["keys", "values"]:
 					methods[method] = getattr(self, method)
 
-			# Select the method
-			selected_method = self.Input.Select(methods["keys"], language_options = methods["values"])["option"]
+			if self.dictionary_is_none == True:
+				# Select the method
+				selected_method = self.Input.Select(methods["keys"], language_options = methods["values"])["option"]
 
-			method = methods[selected_method]
+				method = methods[selected_method]
 
-			if selected_method == "Fill_Files":
-				self.Define_Variables()
+				if selected_method == "Fill_Files":
+					self.Define_Variables()
 
-			method()
+				method()
 
 		if list(methods.keys()) == ["Fill_Files"]:
 			self.Define_Variables()
@@ -430,8 +438,12 @@ class Fill_Media_Files(Watch_History):
 			titles[language] = []
 
 		if language != self.dictionary["Media"]["Language"]:
+			if self.dictionary_is_none == False:
+				print()
+
 			print(self.language_texts["please_translate_this_title_to_{}"].format(translated_language) + ":")
 			print(title)
+
 			self.Text.Copy(title)
 
 			title = self.Input.Type(self.JSON.Language.language_texts["title, title()"] + ": ")

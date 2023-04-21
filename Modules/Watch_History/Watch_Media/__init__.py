@@ -284,8 +284,13 @@ class Watch_Media(Watch_History):
 				if "v=" not in self.media["episode"]["remote"]["origin_location"]:
 					self.media["episode"]["remote"]["link"] += "watch?v=" + self.media["episode"]["id"]
 
+					# Add Playlist ID to link if the media has a media item list
 					if self.media["States"]["Media item list"] == True:
-						self.media["episode"]["remote"]["link"] += "&list=" + self.media["episode"]["remote"]["origin_location"] + "&index=" + str(self.media["episode"]["number"])
+						self.media["episode"]["remote"]["link"] += "&list=" + self.media["episode"]["remote"]["origin_location"]
+
+						# Add the index (number of video on playlist) if the media is episodic
+						if self.media["States"]["episodic"] == True:
+							self.media["episode"]["remote"]["link"] += "&index=" + str(self.media["episode"]["number"] + 1)
 
 				if "v=" in self.media["episode"]["remote"]["origin_location"]:
 					self.media["episode"]["remote"]["link"] += "watch?" + self.media["episode"]["remote"]["origin_location"]
@@ -567,7 +572,7 @@ class Watch_Media(Watch_History):
 			self.Folder.Create(self.media["item"]["folders"]["media"]["root"])
 
 			# Add media episode to local media folder
-			self.media["episode"]["unit"] = "file:///" + self.media["item"]["folders"]["media"]["root"] + self.media["episode"]["Sanitized"]
+			self.media["episode"]["unit"] = self.media["item"]["folders"]["media"]["root"] + self.media["episode"]["Sanitized"]
 
 			file_exists = self.File_Exists(self.media["episode"]["unit"])
 
@@ -610,12 +615,12 @@ class Watch_Media(Watch_History):
 								file = self.media["episode"]["unit"] + "." + extension
 
 								if self.File.Exist(file) == True:
-									self.media["episode"]["unit"] = "file:///" + file
+									self.media["episode"]["unit"] = file
 
 			# If it does not, then, ask if the user wants to move the file from somewhere to the correct folder
 			if file_exists == False:
 				print()
-				print(self.media["episode"]["unit"].replace("file:///", "") + "." + str(self.media_dictionary["file_extensions"]).replace("'", "").replace(", ", "/"))
+				print(self.media["episode"]["unit"] + "." + str(self.media_dictionary["file_extensions"]).replace("'", "").replace(", ", "/"))
 				print()
 				print(self.language_texts["the_media_file_does_not_exist"] + ".")
 				print()
@@ -625,7 +630,7 @@ class Watch_Media(Watch_History):
 				bring_file = self.Input.Yes_Or_No(question, first_space = False)
 
 				if bring_file == True:
-					self.media["episode"]["unit"] = "file:///" + self.Find_Media_file(self.media["episode"]["Sanitized"])
+					self.media["episode"]["unit"] = self.Find_Media_file(self.media["episode"]["Sanitized"])
 
 				if bring_file == False:
 					print()
@@ -636,15 +641,13 @@ class Watch_Media(Watch_History):
 
 		# Check if an episode file with one of the accepted extensions exist
 		for extension in self.media_dictionary["file_extensions"]:
-			file = file.replace("file:///", "")
-
 			if "." + extension not in file:
 				file += "." + extension
 
 			if self.File.Exist(file) == True:
-				file = "file:///" + file
-
 				file_exists = True
+
+				self.media["episode"]["unit"] = file
 
 		return file_exists
 
@@ -653,12 +656,7 @@ class Watch_Media(Watch_History):
 
 	def Open_Episode_Unit(self):
 		# Open media unit with its executor
-		if self.media["States"]["remote"] == True:
-			self.File.Open(self.media["episode"]["unit"])
-
-		if self.media["States"]["local"] == True and self.switches["testing"] == False:
-			import subprocess
-			subprocess.Popen('"' + self.folders["root"]["program_files_86"] + 'Mozilla Firefox/Firefox.exe" ' + '"' + self.media["episode"]["unit"] + '"')
+		self.File.Open(self.media["episode"]["unit"])
 
 	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
 	def Create_Discord_Status(self):

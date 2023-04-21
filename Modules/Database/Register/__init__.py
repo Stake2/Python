@@ -67,9 +67,12 @@ class Register(Database):
 			self.dictionaries["Entry Type"][self.type]
 		]
 
-		# Add to entry and type entry numbers
+		# Add one to the entry, type entry, and root type entry numbers
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] += 1
+
+			if self.type in dict_["Numbers"]:
+				dict_["Numbers"][self.type] += 1
 
 		if self.dictionaries["Entries"]["Numbers"]["Total"] == 1:
 			self.dictionaries["Entry"]["States"]["First entry in year"] = True

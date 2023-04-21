@@ -99,5 +99,37 @@
 	"the_{}_game_called_{}": {
 		"en": "the \"{}\" game called \"{}\"",
 		"pt": "o jogo de \"{}\" chamado \"{}\""
+	},
+	"statuses, type: list": {
+		"en": [
+			"Plan to play",
+			"Playing",
+			"Re-playing",
+			"Completed",
+			"On hold"
+		],
+		"pt": [
+			"Planejo jogar",
+			"Jogando",
+			"Re-jogando",
+			"Completo",
+			"Em pausa"
+		]
+	},
+	"plan_to_play, title()": {
+		"en": "Plan to play",
+		"pt": "Planejo jogar"
+	},
+	"playing, title()": {
+		"en": "Playing",
+		"pt": "Jogando"
+	},
+	"re_playing, title()": {
+		"en": "Re-playing",
+		"pt": "Re-jogando"
+	},
+	"on_hold, title()": {
+		"en": "On hold",
+		"pt": "Em pausa"
 	}
 }

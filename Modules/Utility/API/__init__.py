@@ -187,7 +187,8 @@ class API():
 				api["Dictionary"]["Total Number"] = api["response"]["pageInfo"]["totalResults"]
 
 			if "items" not in api["response"]:
-				id = api["response"]["id"]
+				if "id" in api["response"]:
+					id = api["response"]["id"]
 
 				# Get the snippet
 				snippet = api["response"]["snippet"]
@@ -223,6 +224,13 @@ class API():
 				if "resourceId" in snippet:
 					id = snippet["resourceId"]["videoId"]
 
+				# Else, use the ID inside the first item
+				elif "id" in dictionary:
+					id = dictionary["id"]
+
+					if type(id) == dict and "channelId" in id:
+						id = id["channelId"]
+
 				# Else, use the Playlist ID as the ID
 				elif "playlistId" in api["parameters"]:
 					id = api["parameters"]["playlistId"]
@@ -235,11 +243,11 @@ class API():
 				link = api["link"]
 
 				# If the method is "channels", add the channel folder to the link
-				if api["method"] == "channels":
+				if api["method"] == "channels" or "Channel" in api["Dictionary"]:
 					link += "channel/"
 
 				# If the method is "playlists", add the PHP "playlist" file name and the "list" playlist parameter to the link
-				if api["method"] == "playlists":
+				if api["method"] == "playlists" or "Playlist" in api["Dictionary"]:
 					link += "playlist?list="
 
 				# If the method is "videos" or "playlistItems", add the PHP "watch" file name and the "v" video parameter to the link
@@ -345,6 +353,9 @@ class API():
 				# If the "Title" key is inside the item dictionary and the video is private, remove it from the items dictionary
 				if "Title" in items[id] and items[id]["Title"] in ["Private video", "Deleted video"]:
 					items.pop(id)
+
+				if api["item"] == "search":
+					api["response"].pop("nextPageToken")
 
 		return api
 

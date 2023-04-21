@@ -89,22 +89,22 @@ class Tasks(object):
 				for item in ["singular", "plural"]:
 					self.task_types[plural_task_type][item][language] = self.task_types[item][language][i]
 
-			# Create "Per task type" task type folder
+			# Create "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][key] = {
 				"root": self.folders["task_history"]["current_year"]["per_task_type"]["root"] + plural_task_type + "/"
 			}
 
 			self.Folder.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["root"])
 
-			# Create "Tasks.json" file in "Per task type" task type folder
+			# Create "Tasks.json" file in "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"] = self.folders["task_history"]["current_year"]["per_task_type"][key]["root"] + "Tasks.json"
 			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])
 
-			# Create "Entry list.txt" file in "Per task type" task type folder
+			# Create "Entry list.txt" file in "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][key]["entry_list"] = self.folders["task_history"]["current_year"]["per_task_type"][key]["root"] + "Entry list.txt"
 			self.File.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["entry_list"])
 
-			# Create "Files" folder on "Per task type" task type folder
+			# Create "Files" folder on "Per Task Type" task type folder
 			self.folders["task_history"]["current_year"]["per_task_type"][key]["files"] = {
 				"root": self.folders["task_history"]["current_year"]["per_task_type"][key]["root"] + "Files/"
 			}
@@ -116,18 +116,18 @@ class Tasks(object):
 				"per_task_type": self.folders["task_history"]["current_year"]["per_task_type"][key]
 			}
 
-			# Define task type subfolders and item
+			# Define the task type subfolders and item
 			for language in self.languages["small"]:
 				for item in ["Art", "Programming"]:
 					if plural_task_type in self.task_types["subfolders, type: dict"][item]:
 						self.task_types[plural_task_type]["subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
 
-				# Define task item
+				# Define the task item
 				self.task_types[plural_task_type]["items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
 
 			i += 1
 
-		# Write the types dictionary into "Types.json" file
+		# Write the types dictionary into the "Types.json" file
 		self.JSON.Edit(self.folders["data"]["types"], self.task_types)
 
 	def Define_Registry_Format(self):
@@ -143,29 +143,85 @@ class Tasks(object):
 		}
 
 		self.dictionaries = {
+			"History": {
+				"Numbers": {
+					"Years": 0,
+					"Tasks": 0
+				},
+				"Years": []
+			},
 			"Tasks": deepcopy(self.template),
 			"Task": {},
 			"Task Type": {}
 		}
 
-		# If Tasks.json is not empty, get Tasks dictionary from it
+		if self.File.Contents(self.folders["task_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["history"])["Years"] != []:
+			# Get the History dictionary from file
+			self.dictionaries["History"] = self.JSON.To_Python(self.folders["task_history"]["history"])
+
+		# If the current year is not inside the "History" years list, add it to the list
+		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
+			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
+
+		# Update the number of years with the length of the years list
+		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
+
+		tasks = 0
+
+		# Update the number of entries of all years
+		for year in range(self.date["year"], self.date["year"] + 1):
+			year = str(year)
+
+			# Get the year folder and the entries file
+			year_folder = self.folders["task_history"]["root"] + year + "/"
+			entries_file = year_folder + "Tasks.json"
+
+			# If the file exists and it is not empty
+			if self.File.Exist(entries_file) == True and self.File.Contents(entries_file)["lines"] != []:
+				# Add the number of lines of the file to the local number of entries
+				tasks += self.JSON.To_Python(entries_file)["Numbers"]["Total"]
+
+			# Add the year to the Years list if it is not inside it
+			if year not in self.dictionaries["History"]["Years"]:
+				self.dictionaries["History"]["Years"].append(year)
+
+		# Sort the Years list
+		self.dictionaries["History"]["Years"] = sorted(self.dictionaries["History"]["Years"], key = str.lower)
+
+		# Define the number of Entries of all years as the local number of entries
+		self.dictionaries["History"]["Numbers"]["Tasks"] = tasks
+
+		# Update the "History.json" file with the new History dictionary
+		self.JSON.Edit(self.folders["task_history"]["history"], self.dictionaries["History"])
+
+		# If the "Tasks.json" is not empty, get the Tasks dictionary from it
 		if self.File.Contents(self.folders["task_history"]["current_year"]["tasks"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["current_year"]["tasks"])["Entries"] != []:
 			self.dictionaries["Tasks"] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["tasks"])
 
-		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
-
-		# Iterate through English plural task types list
+		# Iterate through the English plural task types list
 		for plural_task_type in self.task_types["plural"]["en"]:
 			key = plural_task_type.lower().replace(" ", "_")
 
 			# Define default task type dictionary
 			self.dictionaries["Task Type"][plural_task_type] = deepcopy(self.template)
 
-			# If task type "Tasks.json" is not empty, get task type Tasks dictionary from it
+			# If the task type "Tasks.json" is not empty, get the task type Tasks dictionary from it
 			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["Entries"] != []:
 				self.dictionaries["Task Type"][plural_task_type] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])
 
+			# Add the task type number to the root numbers if it does not exist in there
+			if plural_task_type not in self.dictionaries["Tasks"]["Numbers"]:
+				self.dictionaries["Tasks"]["Numbers"][plural_task_type] = 0
+
+			# Else, define the root total number per task type as the number inside the Tasks dictionary per task type
+			if plural_task_type in self.dictionaries["Tasks"]["Numbers"]:
+				self.dictionaries["Tasks"]["Numbers"][plural_task_type] = self.dictionaries["Task Type"][plural_task_type]["Numbers"]["Total"]
+
+			# Update the per task type "Tasks.json" file with the updated per type Tasks dictionary
 			self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.dictionaries["Task Type"][plural_task_type])
+
+		# Update the "Tasks.json" file with the updated Tasks dictionary
+		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
 
 	def Define_States_Dictionary(self, dictionary):
 		states_dictionary = {

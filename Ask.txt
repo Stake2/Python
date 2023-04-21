@@ -1,7 +1,0 @@
-# How can I write this code without having to import the class at the first line?
-
-from Module.Sub_Module import Parent_Class as Parent_Class
-
-class Child_Class(Parent_Class):
-	def __init__(self):
-		super().__init__()

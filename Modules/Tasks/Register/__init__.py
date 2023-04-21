@@ -101,9 +101,12 @@ class Register(Tasks):
 			self.dictionaries["Task Type"][self.task_type]
 		]
 
-		# Add to task and task type task numbers
+		# Add one to the entry, task type entry, and root task type entry numbers
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] += 1
+
+			if self.task_type in dict_["Numbers"]:
+				dict_["Numbers"][self.task_type] += 1
 
 		if self.dictionaries["Tasks"]["Numbers"]["Total"] == 1:
 			self.dictionaries["Task"]["States"]["First task in year"] = True

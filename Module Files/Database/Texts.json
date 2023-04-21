@@ -6,5 +6,41 @@
 	"type_the_entry_title_in": {
 		"en": "Type the entry title in",
 		"pt": "Digite o título da entrada em"
+	},
+	"statuses, type: list": {
+		"en": [
+			"Plan to register",
+			"Registering",
+			"Re-registering",
+			"Registered",
+			"On hold"
+		],
+		"pt": [
+			"Planejo registrar",
+			"Registrando",
+			"Re-registrando",
+			"Registrado",
+			"Em pausa"
+		]
+	},
+	"plan_to_register, title()": {
+		"en": "Plan to register",
+		"pt": "Planejo registrar"
+	},
+	"registering, title()": {
+		"en": "Registering",
+		"pt": "Registrando"
+	},
+	"re_registering, title()": {
+		"en": "Re-registering",
+		"pt": "Re-registrando"
+	},
+	"registered, title()": {
+		"en": "Registered",
+		"pt": "Registrado"
+	},
+	"on_hold, title()": {
+		"en": "On hold",
+		"pt": "Em pausa"
 	}
 }

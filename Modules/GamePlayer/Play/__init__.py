@@ -2,7 +2,7 @@
 
 from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
-from GamePlayer.Register_Playing_Time import Register_Playing_Time as Register_Playing_Time
+from GamePlayer.Register import Register as Register
 
 class Play(GamePlayer):
 	def __init__(self):
@@ -46,7 +46,7 @@ class Play(GamePlayer):
 
 				self.game_dictionary["texts"][translated_language + " played time"] = text.format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
 
-			Register_Playing_Time(self.game_dictionary)
+			Register(self.game_dictionary)
 
 	def Choose_Game(self):
 		# Select a game folder

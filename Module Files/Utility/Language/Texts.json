@@ -728,6 +728,10 @@
 		"en": "Status",
 		"pt": "Status"
 	},
+	"christmas, title()": {
+		"en": "Christmas",
+		"pt": "Natal"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

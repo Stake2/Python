@@ -36,7 +36,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 		if self.diary_slim_exists == False:
 			# Reset all states to have no current order
 			self.Update_State(new_order = "")
-			self.Finish_Checking_Things()
 
 		print()
 		print(self.large_bar)
@@ -147,19 +146,3 @@ class Create_New_Diary_Slim(Diary_Slim):
 				self.File.Edit(self.current_month_file_names_file, text_to_append, "a")
 
 		# ----- #
-
-	def Finish_Checking_Things(self):
-		self.finished_checking_things = False
-
-		if self.finished_checking_things == False:
-			i = 1
-			while self.finished_checking_things == False:
-				self.finished_checking_things = self.Input.Yes_Or_No(self.language_texts["finished_checking_things_on_habitica_and_microsoft_todo"])
-
-				i += 1
-
-		if self.finished_checking_things == True:
-			print()
-
-			text_to_write = self.language_texts["i_opened_firefox_and_checked_the_things_on_microsoft_todo_and_habitica"] + "."
-			Write_On_Diary_Slim_Module(text_to_write)
