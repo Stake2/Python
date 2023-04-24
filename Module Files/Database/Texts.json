@@ -1,4 +1,28 @@
 {
+	"data, title()": {
+		"en": "Data",
+		"pt": "Dado"
+	},
+	"datas, title()": {
+		"en": "Data",
+		"pt": "Dados"
+	},
+	"data_types": {
+		"en": "Data types",
+		"pt": "Tipos de dados"
+	},
+	"select_one_data_type_to_experience": {
+		"en": "Select one data type to experience",
+		"pt": "Selecione um tipo de dado para experimentar"
+	},
+	"select_one_data_to_experience": {
+		"en": "Select one data to experience",
+		"pt": "Selecione um dado para experimentar"
+	},
+	"press_enter_when_you_finish_experiencing_the_data": {
+		"en": "Press Enter when you finish experiencing the data",
+		"pt": "Pressione Enter quando você terminar de experimentar os dados"
+	},
 	"added_entries": {
 		"en": "Added entries",
 		"pt": "Entradas adicionadas"
@@ -9,38 +33,34 @@
 	},
 	"statuses, type: list": {
 		"en": [
-			"Plan to register",
-			"Registering",
-			"Re-registering",
+			"Plan to experience",
+			"Experiencing",
+			"Re-experiencing",
 			"Registered",
 			"On hold"
 		],
 		"pt": [
-			"Planejo registrar",
-			"Registrando",
-			"Re-registrando",
+			"Planejo experimentar",
+			"Experimentando",
+			"Re-experimentando",
 			"Registrado",
 			"Em pausa"
 		]
 	},
-	"plan_to_register, title()": {
-		"en": "Plan to register",
-		"pt": "Planejo registrar"
+	"plan_to_experience, title()": {
+		"en": "Plan to experience",
+		"pt": "Planejo experimentar"
 	},
-	"registering, title()": {
-		"en": "Registering",
-		"pt": "Registrando"
+	"experiencing, title()": {
+		"en": "Experiencing",
+		"pt": "Experimentando"
 	},
-	"re_registering, title()": {
-		"en": "Re-registering",
-		"pt": "Re-registrando"
+	"re_experiencing, title()": {
+		"en": "Re-experiencing",
+		"pt": "Re-experimentando"
 	},
 	"registered, title()": {
 		"en": "Registered",
 		"pt": "Registrado"
-	},
-	"on_hold, title()": {
-		"en": "On hold",
-		"pt": "Em pausa"
 	}
 }

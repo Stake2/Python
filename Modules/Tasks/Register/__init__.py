@@ -53,8 +53,8 @@ class Register(Tasks):
 			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
 
 	def Select_Task_Type(self):
-		options = self.task_types["plural"]["en"]
-		language_options = self.task_types["plural"][self.user_language]
+		options = self.task_types["Plural"]["en"]
+		language_options = self.task_types["Plural"][self.user_language]
 
 		show_text = self.language_texts["task_types"]
 		select_text = self.language_texts["select_a_task_type"]
@@ -77,7 +77,7 @@ class Register(Tasks):
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
-			self.dictionaries["Task"]["Titles"][language] = self.task_types["task_texts, type: dict"][self.dictionaries["Task"]["Type"]["plural"]["en"]][language] + "."
+			self.dictionaries["Task"]["Titles"][language] = self.task_types["task_texts, type: dict"][self.dictionaries["Task"]["Type"]["Plural"]["en"]][language] + "."
 
 			# Ask for the task item if it is present in the task text
 			if "{" in self.dictionaries["Task"]["Titles"][language]:
@@ -94,7 +94,7 @@ class Register(Tasks):
 			self.dictionaries["Task"]["Descriptions"][language] += self.Input.Lines(type_text)["string"]
 
 	def Register_In_JSON(self):
-		self.task_type = self.dictionaries["Task"]["Type"]["plural"]["en"]
+		self.task_type = self.dictionaries["Task"]["Type"]["Plural"]["en"]
 
 		dicts = [
 			self.dictionaries["Tasks"],
@@ -152,11 +152,11 @@ class Register(Tasks):
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
 
 		# Update task type "Tasks.json" file
-		self.JSON.Edit(self.dictionaries["Task"]["Type"]["folders"]["per_task_type"]["tasks"], self.dictionaries["Task Type"][self.task_type])
+		self.JSON.Edit(self.dictionaries["Task"]["Type"]["Folders"]["per_task_type"]["tasks"], self.dictionaries["Task Type"][self.task_type])
 
 		# Add to root and task type "Entry list.txt" file
 		self.File.Edit(self.folders["task_history"]["current_year"]["entry_list"], self.dictionaries["Task"]["Name"]["Normal"], "a")
-		self.File.Edit(self.dictionaries["Task"]["Type"]["folders"]["per_task_type"]["entry_list"], self.dictionaries["Task"]["Name"]["Normal"], "a")
+		self.File.Edit(self.dictionaries["Task"]["Type"]["Folders"]["per_task_type"]["entry_list"], self.dictionaries["Task"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [Task number]
@@ -229,7 +229,7 @@ class Register(Tasks):
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionaries["Task"]["Type"]["plural"][language] + "\n",
+			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionaries["Task"]["Type"]["Plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.File.texts["file_name"][language] + ":" + "\n" + self.dictionaries["Task"]["Name"]["Normal"]
 		])
@@ -313,7 +313,7 @@ class Register(Tasks):
 
 			# Folder names
 			root_folder = self.texts["done_tasks"][language]
-			type_folder = self.dictionaries["Task"]["Type"]["plural"][language]
+			type_folder = self.dictionaries["Task"]["Type"]["Plural"][language]
 
 			# Done tasks folder
 			folder = self.current_year["folders"][full_language]["root"]
@@ -344,7 +344,7 @@ class Register(Tasks):
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
-			subfolder_name = self.dictionaries["Task"]["Type"]["subfolders"][language]
+			subfolder_name = self.dictionaries["Task"]["Type"]["Subfolders"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
 
@@ -355,7 +355,7 @@ class Register(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year task type folder
-			item_folder = self.dictionaries["Task"]["Type"]["items"][language]
+			item_folder = self.dictionaries["Task"]["Type"]["Items"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
@@ -390,7 +390,7 @@ class Register(Tasks):
 
 		print(self.JSON.Language.language_texts["type, title()"] + ":")
 
-		for plural_task_type in self.dictionaries["Task"]["Type"]["plural"].values():
+		for plural_task_type in self.dictionaries["Task"]["Type"]["Plural"].values():
 			print("\t" + plural_task_type)
 
 		print()

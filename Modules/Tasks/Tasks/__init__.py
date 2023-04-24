@@ -11,10 +11,9 @@ class Tasks(object):
 
 		self.Define_Texts()
 
+		# Import the Years class
 		from Years.Years import Years as Years
-
-		# Load Years module
-		self.Years = Years(self.switches)
+		self.Years = Years()
 
 		self.Define_Folders_And_Files()
 
@@ -70,23 +69,23 @@ class Tasks(object):
 	def Define_Types(self):
 		self.task_types = self.JSON.To_Python(self.folders["data"]["types"])
 
-		# Iterate through English plural task types list
+		# Iterate through the English plural task types list
 		i = 0
-		for plural_task_type in self.task_types["plural"]["en"]:
+		for plural_task_type in self.task_types["Plural"]["en"]:
 			key = plural_task_type.lower().replace(" ", "_")
 
 			# Create task type dictionary
 			self.task_types[plural_task_type] = {
-				"singular": {},
-				"plural": {},
-				"folders": {},
-				"subfolders": {},
-				"items": {}
+				"Singular": {},
+				"Plural": {},
+				"Folders": {},
+				"Subfolders": {},
+				"Items": {}
 			}
 
 			# Define singular and plural types
 			for language in self.languages["small"]:
-				for item in ["singular", "plural"]:
+				for item in ["Singular", "Plural"]:
 					self.task_types[plural_task_type][item][language] = self.task_types[item][language][i]
 
 			# Create "Per Task Type" task type folder
@@ -112,7 +111,7 @@ class Tasks(object):
 			self.Folder.Create(self.folders["task_history"]["current_year"]["per_task_type"][key]["files"]["root"])
 
 			# Define type folders and files
-			self.task_types[plural_task_type]["folders"] = {
+			self.task_types[plural_task_type]["Folders"] = {
 				"per_task_type": self.folders["task_history"]["current_year"]["per_task_type"][key]
 			}
 
@@ -120,10 +119,10 @@ class Tasks(object):
 			for language in self.languages["small"]:
 				for item in ["Art", "Programming"]:
 					if plural_task_type in self.task_types["subfolders, type: dict"][item]:
-						self.task_types[plural_task_type]["subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
+						self.task_types[plural_task_type]["Subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
 
 				# Define the task item
-				self.task_types[plural_task_type]["items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
+				self.task_types[plural_task_type]["Items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
 
 			i += 1
 
@@ -199,7 +198,7 @@ class Tasks(object):
 			self.dictionaries["Tasks"] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["tasks"])
 
 		# Iterate through the English plural task types list
-		for plural_task_type in self.task_types["plural"]["en"]:
+		for plural_task_type in self.task_types["Plural"]["en"]:
 			key = plural_task_type.lower().replace(" ", "_")
 
 			# Define default task type dictionary
@@ -260,7 +259,7 @@ class Tasks(object):
 							text = self.texts[text_key][language]
 
 					if key == "First task type task in year":
-						task_item = dictionary["Type"]["items"][language]
+						task_item = dictionary["Type"]["Items"][language]
 
 						if self.task_type not in ["Python", "PHP"]:
 							task_item = task_item.lower()

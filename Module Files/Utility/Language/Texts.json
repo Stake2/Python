@@ -732,6 +732,35 @@
 		"en": "Christmas",
 		"pt": "Natal"
 	},
+	"shortcut, title()": {
+		"en": "Shortcut",
+		"pt": "Atalho"
+	},
+	"shortcuts, title()": {
+		"en": "Shortcuts",
+		"pt": "Atalhos"
+	},
+	"on_hold, title()": {
+		"en": "On hold",
+		"pt": "Em pausa"
+	},
+	"origin_type": {
+		"en": "Origin type",
+		"pt": "Tipo de origem"
+	},
+	"remote, title()": {
+		"pt": "Remota",
+		"en": "Remote"
+	},
+	"local, title()": {
+		"pt": "Local",
+		"en": "Local"
+	},
+	"romanized_name": {
+		"en": "Romanized name",
+		"pt": "Nome romanizado",
+		"es": "Nombre romanizado"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

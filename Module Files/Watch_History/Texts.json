@@ -286,11 +286,6 @@
 		"en": "no",
 		"pt": "não"
 	},
-	"romanized_name": {
-		"en": "Romanized name",
-		"pt": "Nome romanizado",
-		"es": "Nombre romanizado"
-	},
 	"has_dub": {
 		"en": "Has dub",
 		"pt": "Tem dublagem"
@@ -323,25 +318,9 @@
 		"en": "Watched dubbed",
 		"pt": "Assistiu dublado"
 	},
-	"remote": {
-		"en": "remote",
-		"pt": "remoto"
-	},
-	"local": {
-		"en": "local",
-		"pt": "local"
-	},
-	"hybrid": {
-		"en": "hybrid",
-		"pt": "híbrido"
-	},
 	"remote_origin": {
 		"en": "Remote origin",
 		"pt": "Origem remota"
-	},
-	"origin_type": {
-		"en": "Origin type",
-		"pt": "Tipo de origem"
 	},
 	"plan_to_watch": {
 		"en": "plan to watch",
@@ -374,10 +353,6 @@
 	"re_watched": {
 		"en": "re-watched",
 		"pt": "re-assistido"
-	},
-	"on_hold": {
-		"en": "on hold",
-		"pt": "em pausa"
 	},
 	"origin_types, type: list": {
 		"en": [
@@ -894,25 +869,9 @@
 		"pt": "Dublado",
 		"en": "Dubbed"
 	},
-	"remote, title()": {
-		"pt": "Remota",
-		"en": "Remote"
-	},
-	"local, title()": {
-		"pt": "Local",
-		"en": "Local"
-	},
-	"hybrid, title()": {
-		"pt": "Híbrido",
-		"en": "Hybrid"
-	},
 	"remote_origin, title()": {
 		"pt": "Origem remota",
 		"en": "Remote origin"
-	},
-	"origin_type, title()": {
-		"pt": "Tipo de origem",
-		"en": "Origin type"
 	},
 	"plan_to_watch, title()": {
 		"pt": "Planejo assistir",
@@ -925,10 +884,6 @@
 	"re_watching, title()": {
 		"pt": "Re-assistindo",
 		"en": "Re-watching"
-	},
-	"on_hold, title()": {
-		"pt": "Em pausa",
-		"en": "On hold"
 	},
 	"origin_location, title()": {
 		"pt": "Local de origem",
