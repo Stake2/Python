@@ -340,8 +340,24 @@
 		"en": "End date",
 		"pt": "Data final"
 	},
+	"current_time": {
+		"en": "Current time",
+		"pt": "Horário atual"
+	},
 	"duration, title()": {
 		"en": "Duration",
 		"pt": "Duração"
+	},
+	"before, title()": {
+		"en": "Before",
+		"pt": "Antes"
+	},
+	"now, title()": {
+		"en": "Now",
+		"pt": "Agora"
+	},
+	"after, title()": {
+		"en": "After",
+		"pt": "Depois"
 	}
 }

@@ -5,5 +5,9 @@ def Run():
 
 	Play()
 
+arguments = [
+	"play"
+]
+
 if __name__ == "__main__":
 	Run()

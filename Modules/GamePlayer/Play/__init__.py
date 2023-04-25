@@ -2,34 +2,28 @@
 
 from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
-from GamePlayer.Register import Register as Register
-
 class Play(GamePlayer):
-	def __init__(self):
+	def __init__(self, dictionary = {}):
 		super().__init__()
 
-		self.Choose_Game()
+		import importlib
+
+		classes = [
+			"Register"
+		]
+
+		for title in classes:
+			class_ = getattr(importlib.import_module("."  + title, "GamePlayer"), title)
+			setattr(self, title, class_)
+
+		self.dictionary = dictionary
 
 		self.Define_Game_Dictionary()
-		self.Show_Game_Information(self.game_dictionary)
+		self.Show_Information(self.dictionary)
 		self.Open_Game()
+		self.Register_The_Session()
 
-		self.start_counting_time = False
-
-		if self.start_counting_time == False:
-			i = 0
-			while self.start_counting_time == False:
-				self.start_counting_time = self.Input.Yes_Or_No(self.language_texts["start_counting_playing_time"])
-
-				i += 1
-
-		print()
-		print("-----")
-
-		try:
-			self.Count()
-
-		except KeyboardInterrupt:
+		'''
 			self.File.Delete(self.played_time_backup_file)
 
 			self.game_dictionary["texts"] = {
@@ -45,180 +39,67 @@ class Play(GamePlayer):
 				text = self.texts["i_played_the_{}_game_called_{}_for_{}_current_time_{}"][language]
 
 				self.game_dictionary["texts"][translated_language + " played time"] = text.format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
-
-			Register(self.game_dictionary)
-
-	def Choose_Game(self):
-		# Select a game folder
-		if len(self.games["folder"]["list"]) != 1:
-			show_text = self.language_texts["game_folders"]
-			select_text = self.language_texts["select_a_game_folder"]
-
-			self.option_info = self.Input.Select(self.games["folder"]["list"], language_options = self.games["folder"]["list_with_numbers"], show_text = show_text, select_text = select_text)
-
-		if len(self.games["folder"]["list"]) == 1:
-			self.option_info = {
-				"option": self.games["folder"]["list"][0],
-				"number": 0,
-			}
-
-		self.game = {
-			"category": {
-				"name": self.games["folder"]["names"][self.option_info["number"]],
-			}
-		}
-
-		self.game["category"]["names"] = {}
-
-		for language in self.languages["small"]:
-			self.game["category"]["names"][language] = self.games["Folder names"][language][self.option_info["number"] - 1]
-
-		self.game["category"]["folder"] = self.option_info["option"]
-
-		dict_ = self.games["files"][self.game["category"]["name"]]
-
-		self.game["category"]["file"] = {
-			"list": dict_["list"],
-			"names": dict_["names"],
-		}
-
-		# Define media type files folder and folders folder
-		self.game["category"]["media_type_files_folder"] = self.folders["play_history"]["played"]["per_media_type"]["files"] + self.game["category"]["name"] + "/"
-		self.Folder.Create(self.game["category"]["media_type_files_folder"])
-
-		self.game["category"]["media_type_folders_folder"] = self.folders["play_history"]["played"]["per_media_type"]["folders"] + self.game["category"]["name"] + "/"
-		self.Folder.Create(self.game["category"]["media_type_folders_folder"])
-
-		# Select a game
-		options = self.game["category"]["file"]["names"]
-		show_text = self.language_texts["games, title()"]
-		select_text = self.language_texts["select_a_game"]
-
-		self.option_info = self.Input.Select(options, show_text = show_text, select_text = select_text)
-
-		self.game["name"] = self.option_info["option"]
-
-		if self.game["name"] in self.game_names:
-			self.game["name"] = self.game_names[self.game["name"]]
-
-		self.game["sanitized_name"] = self.Sanitize(self.game["name"], restricted_characters = True)
-
-		self.game["file"] = self.game["category"]["file"]["list"][self.option_info["number"]]
-
-		if self.File.Exist(self.folders["apps"]["shortcuts"]["root"] + self.game["name"] + ".lnk") == True:
-			self.game["python_module_link"] = self.folders["apps"]["shortcuts"]["root"] + self.game["name"] + ".lnk"
+		'''
 
 	def Define_Game_Dictionary(self):
-		self.game_dictionary = {}
-		self.game_dictionary["game"] = self.game
-		self.game_dictionary["show_text"] = self.language_texts["opening_this_game"]
+		# Select the game type and the game if the dictionary is empty
+		if self.dictionary == {}:
+			# Ask the user to select a game type and game
+			self.dictionary = self.Select_Game_Type_And_Game()
+
+		self.game = self.dictionary["Game"]
 
 	def Open_Game(self):
 		if self.switches["testing"] == False:
-			if "python_module_link" in self.game:
-				self.File.Open(self.game["python_module_link"])
+			if "Bat" in self.game["Files"]:
+				self.File.Open(self.game["Files"]["Bat"])
 
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
 
-			self.File.Open(self.game["file"])
+			self.File.Open(self.game["Files"]["Shortcut"])
 
-	def Count(self):
-		self.played_time_backup_file = self.folders["play_history"]["played"]["current_year"]["root"] + "Played time backup.txt"
-		self.File.Create(self.played_time_backup_file)
+	def Register_The_Session(self):
+		print()
+		print(self.large_bar)
+		print()
 
-		self.has_hours = False
+		# Ask the user to press Enter to start counting the session time
+		self.Input.Type(self.language_texts["start_counting_the_session_time"], first_space = False)
 
-		self.hours = 0
-		self.hour_texts = {}
+		# Define the Entry dictionary and the "Before" time (now)
+		self.dictionary["Entry"] = {
+			"Session duration": {
+				"Before": self.Date.Now(),
+				"After": ""
+			}
+		}
 
-		self.minutes = 0
+		print()
+		print(self.Date.language_texts["now, title()"] + ":")
+		print(self.dictionary["Entry"]["Session duration"]["Before"]["hh:mm DD/MM/YYYY"])
 
-		self.time_to_wait = 59
+		text = self.language_texts["press_enter_when_you_finish_playing_the_game"]
 
-		self.game_dictionary["played_texts"] = {}
+		self.game["States"]["Finished playing"] = self.Input.Type(text)
+		self.game["States"]["Finished playing"] = True
 
-		if self.switches["testing"] == True:
-			self.time_to_wait = 0.1
+		# Define the "After" time (now, after playing)
+		#self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
+		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.Date.Now()["date"] + self.Date.Timedelta(hours = 1))
 
-		while self.hours <= 54000:
-			self.now_time = self.Date.Now()["%H:%M %d/%m/%Y"]
+		print()
+		print(self.Date.language_texts["after, title()"] + ":")
+		print(self.dictionary["Entry"]["Session duration"]["After"]["hh:mm DD/MM/YYYY"])
 
-			self.hours_text = str(self.hours)
+		# Define the time difference
+		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
 
-			if self.hours == 0:
-				self.hours_text = "0"
+		# Define the time difference text key
+		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]
 
-			self.minutes_text = str(self.minutes)
+		# Register the finished playing time
+		self.dictionary["Entry"]["Time"] = self.dictionary["Entry"]["Session duration"]["After"]
 
-			if self.minutes == 0:
-				self.minutes_text = "00"
-
-			self.time_text = {}
-
-			for language in self.languages["small"]:
-				self.time_text[language] = self.Date.Time_Text(self.hours_text + ":" + self.minutes_text, language, add_original_time = False)
-
-			self.has_minutes = False
-
-			if self.hours > 0:
-				for language in self.languages["small"]:
-					self.hour_texts[language] = self.time_text[language]
-
-				self.game_dictionary["time_list"] = self.hour_texts
-
-				self.has_minutes = True
-				self.has_hours = True
-
-			if self.hours == 0 and self.minutes != 0:
-				self.minute_texts = {}
-
-				for language in self.languages["small"]:
-					self.minute_texts[language] = self.time_text[language]
-
-				self.game_dictionary["time_list"] = self.minute_texts
-
-				self.has_minutes = True
-
-			if self.has_minutes == True:
-				for language in self.languages["small"]:
-					self.game_dictionary["played_texts"][language] = self.texts["i_am_playing_the_{}_game_called_{}_for_{}_current_time_{}"][language].format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
-
-				print()
-				print(self.game_dictionary["played_texts"][self.user_language])
-
-			if self.minutes == 59:
-				self.minutes = 0
-				self.hours += 1
-
-			if self.has_minutes == True:
-				text_to_write = self.game_dictionary["played_texts"][self.user_language] + "\n"
-
-				for language in self.languages["small"]:
-					if language != self.user_language:
-						text_to_write += self.game_dictionary["played_texts"][language]
-
-						if language != self.languages["small"][-1]:
-							text_to_write += "\n"
-
-				text_to_write += "\n\n"
-
-				if self.has_hours == True:
-					for language in self.languages["small"]:
-						text_to_write += str(self.hour_texts[language])
-
-						if language != self.languages["small"][-1]:
-							text_to_write += "\n"
-
-					text_to_write += "\n\n"
-
-				for language in self.languages["small"]:
-					text_to_write += str(self.minute_texts[language])
-
-					if language != self.languages["small"][-1]:
-						text_to_write += "\n"
-
-				self.File.Edit(self.played_time_backup_file, text_to_write, "w")
-
-			self.minutes += 1
-
-			self.Date.Sleep(self.time_to_wait)
+		# Use the "Register" class to register the played game, and giving the dictionary to it
+		if self.Register != None:
+			self.Register(self.dictionary)

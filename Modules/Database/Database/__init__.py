@@ -232,6 +232,9 @@ class Database(object):
 
 					d += 1
 
+				if self.types[plural_type]["Data list (option)"] == []:
+					self.types[plural_type].pop("Data list (option)")
+
 			# Remove the "JSON" key
 			self.types[plural_type].pop("JSON")
 
@@ -240,9 +243,8 @@ class Database(object):
 				self.types[plural_type]["Items"][language] = self.types["items, type: dict"][plural_type][language]
 
 			# Add the data list length numbers to the data types list to show on select data type
-			for language in self.languages["small"]:
-				for text_type in ["Singular", "Plural"]:
-					self.types[plural_type][text_type]["Show"] = self.types[plural_type][text_type][self.user_language] + " (" + str(len(self.types[plural_type]["Data list"])) + ")"
+			for text_type in ["Singular", "Plural"]:
+				self.types[plural_type][text_type]["Show"] = self.types[plural_type][text_type][self.user_language] + " (" + str(len(self.types[plural_type]["Data list"])) + ")"
 
 			# Update the "Show" text
 			self.types[plural_type]["Texts"]["Show"] = self.Text.By_Number(self.types[plural_type]["Data list"], self.types[plural_type]["Singular"]["Show"], self.types[plural_type]["Plural"]["Show"])
@@ -278,6 +280,7 @@ class Database(object):
 				},
 				"Years": []
 			},
+			"Registered": deepcopy(self.template),
 			"Entries": deepcopy(self.template),
 			"Entry type": {}
 		}
@@ -321,6 +324,9 @@ class Database(object):
 		# Update the "History.json" file with the new History dictionary
 		self.JSON.Edit(self.folders["history"]["history"], self.dictionaries["History"])
 
+		# Create the "Per Type" key inside the "Numbers" dictionary of the "Entries" dictionary
+		self.dictionaries["Entries"]["Numbers"]["Per Type"] = {}
+
 		# If the "Entries.json" is not empty and has entries, get the Entries dictionary from it
 		if self.File.Contents(self.folders["history"]["current_year"]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])["Entries"] != []:
 			self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])
@@ -336,13 +342,13 @@ class Database(object):
 			if self.File.Contents(self.folders["history"]["current_year"]["per_type"][key]["entries"])["lines"] != [] and self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])["Entries"] != []:
 				self.dictionaries["Entry type"][plural_type] = self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])
 
-			# Add the plural type number to the root numbers if it does not exist in there
-			if plural_type not in self.dictionaries["Entries"]["Numbers"]:
-				self.dictionaries["Entries"]["Numbers"][plural_type] = 0
+			# Add the plural type number to the root numbers per type if it does not exist in there
+			if plural_type not in self.dictionaries["Entries"]["Numbers"]["Per Type"]:
+				self.dictionaries["Entries"]["Numbers"]["Per Type"][plural_type] = 0
 
 			# Else, define the root total number per type as the number inside the Entries dictionary per type
-			if plural_type in self.dictionaries["Entries"]["Numbers"]:
-				self.dictionaries["Entries"]["Numbers"][plural_type] = self.dictionaries["Entry type"][plural_type]["Numbers"]["Total"]
+			if plural_type in self.dictionaries["Entries"]["Numbers"]["Per Type"]:
+				self.dictionaries["Entries"]["Numbers"]["Per Type"][plural_type] = self.dictionaries["Entry type"][plural_type]["Numbers"]["Total"]
 
 			# Update the per type "Entries.json" file with the updated per type Entries dictionary
 			self.JSON.Edit(self.folders["history"]["current_year"]["per_type"][key]["entries"], self.dictionaries["Entry type"][plural_type])
@@ -455,6 +461,8 @@ class Database(object):
 		return dictionary
 
 	def Select_Data(self, options = None):
+		from copy import deepcopy
+
 		dictionary = {}
 
 		if options != None:
@@ -485,7 +493,7 @@ class Database(object):
 
 		# Define the data information folder
 		data["folders"] = {
-			"root": dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize(data["Title"], restricted_characters = True) + "/"
+			"root": dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(data["Title"]) + "/"
 		}
 
 		# Create the folders
@@ -529,6 +537,44 @@ class Database(object):
 
 		if self.File.Contents(data["folders"][data["Information"]["Key"]])["lines"] != []:
 			data["Information"]["Dictionary"] = self.JSON.To_Python(data["folders"][data["Information"]["Key"]])
+
+		# Create the "Registered" folder
+		data["folders"]["registered"] = {
+			"root": data["folders"]["root"] + self.language_texts["registered, title()"] + "/"
+		}
+
+		self.Folder.Create(data["folders"]["registered"]["root"])
+
+		# Create the "Entries.json" file inside the "Registered" folder
+		data["folders"]["registered"]["entries"] = data["folders"]["registered"]["root"] + "Entries.json"
+		self.File.Create(data["folders"]["registered"]["entries"])
+
+		# Create the "Entry list.txt" file inside the "Registered" folder
+		data["folders"]["registered"]["entry_list"] = data["folders"]["registered"]["root"] + "Entry list.txt"
+		self.File.Create(data["folders"]["registered"]["entry_list"])
+
+		# Create the "Files" folder file inside the "Registered" folder
+		data["folders"]["registered"]["files"] = {
+			"root": data["folders"]["registered"]["root"] + self.File.language_texts["files, title()"] + "/"
+		}
+
+		self.Folder.Create(data["folders"]["registered"]["files"]["root"])
+
+		# Define the "Registered" dictionary as the template
+		self.dictionaries["Registered"] = deepcopy(self.template)
+
+		# Get the "Registered" dictionary from file if the dictionary is not empty and has entries
+		if self.File.Contents(data["folders"]["registered"]["entries"])["lines"] != [] and self.JSON.To_Python(data["folders"]["registered"]["entries"])["Entries"] != []:
+			self.dictionaries["Registered"] = self.JSON.To_Python(data["folders"]["registered"]["entries"])
+
+		# Update the number of entries with the length of the entries list
+		self.dictionaries["Registered"]["Numbers"]["Total"] = len(self.dictionaries["Registered"]["Entries"])
+
+		# Define the "Registered" dictionary inside the data dictionary
+		data["Registered"] = deepcopy(self.dictionaries["Registered"])
+
+		# Write the default or file dictionary into the "Registered.json" file
+		self.JSON.Edit(data["folders"]["registered"]["entries"], self.dictionaries["Registered"])
 
 		# Define the data details
 		data["details"] = self.File.Dictionary(data["folders"]["details"])
@@ -591,13 +637,13 @@ class Database(object):
 		if self.JSON.Language.language_texts["status, title()"] in data["details"] and data["details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_experiencing, title()"]:
 			data["States"]["Re-experiencing"] = True
 
-		dictionary = self.Define_Data_Titles(dictionary)
-
 		if self.dictionaries["Entries"]["Numbers"]["Total"] == 0:
 			data["States"]["First entry in year"] = True
 
 		if self.dictionaries["Entry type"][dictionary["Type"]["Plural"]["en"]]["Numbers"]["Total"] == 0:
 			data["States"]["First type entry in year"] = True
+
+		dictionary = self.Define_Data_Titles(dictionary)
 
 		return dictionary
 
@@ -637,14 +683,26 @@ class Database(object):
 
 		# Define the keys for the states
 		keys = [
+			"Re-experiencing",
+			"Christmas",
+			"Completed data",
 			"First entry in year",
 			"First type entry in year"
 		]
+
+		state_texts = {
+			"Re-experiencing": "Re-experienced",
+			"Completed data": "Completed the data"
+		}
 
 		# Iterate through the states keys
 		for key in keys:
 			# If the state is True
 			if dictionary["Data"]["States"][key] == True:
+				# If the key has a different state text, get it
+				if key in state_texts:
+					key = state_texts[key]
+
 				state = True
 
 				# Define the state dictionary
@@ -762,11 +820,27 @@ class Database(object):
 				data["Titles"]["Language"] = data["Titles"]["Romanized"]
 
 			# Sanitize data title
-			data["Titles"]["Sanitized"] = self.Sanitize(data["Titles"]["Sanitized"], restricted_characters = True)
+			data["Titles"]["Sanitized"] = self.Sanitize_Title(data["Titles"]["Sanitized"])
 
 		return dictionary
 
-	def Show_Information(self):
+	def Sanitize_Title(self, title):
+		if len(title) > 1 and title[0] + title[1] == ": ":
+			title = title[2:]
+
+		if ". " in title:
+			title = title.replace(". ", " ")
+
+		elif "." in title:
+			title = title.replace(".", "")
+
+		title = self.Sanitize(title, restricted_characters = True)
+
+		return title
+
+	def Show_Information(self, dictionary):
+		data = dictionary["Data"]
+
 		print()
 		print(self.large_bar)
 		print()
@@ -791,14 +865,35 @@ class Database(object):
 
 		print(self.JSON.Language.language_texts["type, title()"] + ":")
 
-		for plural_type in self.dictionary["Type"]["Plural"].values():
-			if "(" not in plural_type:
-				print("\t" + plural_type)
+		types = []
 
-		print()
+		for language in self.languages["small"]:
+			text = "\t" + dictionary["Type"]["Plural"][language]
 
-		print(self.JSON.Language.language_texts["when, title()"] + ":")
-		print(self.dictionaries["Entry"]["Times"]["Timezone"])
+			if text not in types:
+				types.append(text)
+
+		for item in types:
+			print(item)
+
+		if "Entry" in dictionary:
+			print()
+			print(self.JSON.Language.language_texts["when, title()"] + ":")
+			print("\t" + dictionary["Entry"]["Times"]["Timezone"])
+
+			# If there are states, show them
+			if "States" in self.dictionary and self.dictionary["States"]["States"] != {}:
+				print()
+				print(self.JSON.Language.language_texts["states, title()"] + ":")
+
+				for key in self.dictionary["States"]["Texts"]:
+					print("\t" + self.dictionary["States"]["Texts"][key][self.user_language])
+
+			# If the user finished experiencing, ask for input before ending execution
+			print()
+			print(self.large_bar)
+
+			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
 
 if __name__ == "__main__":
 	Database()

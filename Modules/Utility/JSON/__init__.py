@@ -136,7 +136,6 @@ class JSON():
 		items = deepcopy(items_parameter)
 
 		if type(items) == dict:
-			import types as Types
 			import datetime
 
 			for key in items:
@@ -151,6 +150,9 @@ class JSON():
 
 				if type(value) == dict:
 					for sub_key in value:
+						if "_PytzShimTimezone" in str(items[key][sub_key]):
+							items[key][sub_key] = str(items[key][sub_key])
+
 						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None]:
 							if isinstance(value, datetime.datetime) == False:
 								items[key][sub_key] = str(items[key][sub_key])

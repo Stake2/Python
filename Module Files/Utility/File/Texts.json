@@ -187,5 +187,9 @@
 	"opening, title()": {
 		"en": "Opening",
 		"pt": "Abrindo"
+	},
+	"shortcut, title()": {
+		"en": "Shortcut",
+		"pt": "Atalho"
 	}
 }

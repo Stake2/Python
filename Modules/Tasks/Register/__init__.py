@@ -3,33 +3,36 @@
 from Tasks.Tasks import Tasks as Tasks
 
 class Register(Tasks):
-	def __init__(self, task = {}, show_text = True):
+	def __init__(self, dictionary = {}, show_text = True):
 		super().__init__()
 
-		self.dictionaries["Task"] = task
+		self.dictionary = dictionary
 
-		if self.dictionaries["Task"] == {}:
+		# Ask for the task information
+		if self.dictionary == {}:
 			self.Select_Task_Type()
 			self.Type_Task_Information()
 
-		if self.dictionaries["Task"] != {}:
-			self.dictionaries["Task"]["large_bar"] = False
-			self.dictionaries["Task"]["input"] = False
+		if self.dictionary != {}:
+			self.dictionary["large_bar"] = False
+			self.dictionary["input"] = False
 
-			if "Descriptions" not in self.dictionaries["Task"]:
-				self.dictionaries["Task"]["Descriptions"] = self.dictionaries["Task"]["Titles"]
+		# Define the task variable to make typing the task dictionary easier
+		self.task = self.dictionary["Task"]
 
-		if type(self.dictionaries["Task"]["Type"]) == str:
-			self.dictionaries["Task"]["Type"] = self.task_types[self.dictionaries["Task"]["Type"]]
+		if "Descriptions" not in self.task:
+			self.task["Descriptions"] = self.task["Titles"]
 
-		self.dictionaries["Task"].update({
+		if type(self.dictionary["Type"]) == str:
+			self.dictionary["Type"] = self.task_types[self.dictionary["Type"]]
+
+		self.dictionary["Entry"].update({
 			"Times": {
-				"UTC": self.Date.To_String(self.dictionaries["Task"]["Time"]["utc"]),
-				"Timezone": self.dictionaries["Task"]["Time"]["hh:mm DD/MM/YYYY"]
+				"UTC": self.Date.To_String(self.dictionary["Entry"]["Time"]["utc"]),
+				"Timezone": self.dictionary["Entry"]["Time"]["hh:mm DD/MM/YYYY"]
 			},
-			"States": {
-				"First task in year": False,
-				"First task type task in year": False
+			"Diary Slim": {
+				"Text": ""
 			}
 		})
 
@@ -38,19 +41,9 @@ class Register(Tasks):
 		self.Create_Entry_File()
 		self.Add_Entry_File_To_Year_Folder()
 
-		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
+		self.Write_On_Diary_Slim()
 
-		# Write on Diary Slim
-		Write_On_Diary_Slim_Module(self.dictionaries["Task"]["Descriptions"][self.user_language], self.dictionaries["Task"]["Times"]["Timezone"], show_text = False)
-
-		self.Show_Information()
-
-		if self.dictionaries["Task"]["large_bar"] == True:
-			print()
-			print(self.large_bar)
-
-		if self.dictionaries["Task"]["input"] == True:
-			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		self.Show_Information(self.dictionary)
 
 	def Select_Task_Type(self):
 		options = self.task_types["Plural"]["en"]
@@ -61,12 +54,20 @@ class Register(Tasks):
 
 		dictionary = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
-		self.dictionaries["Task"] = {
-			"Name": {},
-			"Titles": {},
-			"Descriptions": {},
+		self.dictionary = {
 			"Type": self.task_types[dictionary["option"]],
-			"Time": self.Date.Now(),
+			"Task": {
+				"Name": {},
+				"Titles": {},
+				"Descriptions": {},
+				"States": {
+					"First task in year": False,
+					"First task type task in year": False
+				}
+			},
+			"Entry": {
+				"Time": self.Date.Now()
+			},
 			"large_bar": True,
 			"input": True
 		}
@@ -77,24 +78,82 @@ class Register(Tasks):
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
-			self.dictionaries["Task"]["Titles"][language] = self.task_types["task_texts, type: dict"][self.dictionaries["Task"]["Type"]["Plural"]["en"]][language] + "."
+			self.dictionary["Task"]["Titles"][language] = self.dictionary["Type"]["Texts"][language] + "."
 
 			# Ask for the task item if it is present in the task text
-			if "{" in self.dictionaries["Task"]["Titles"][language]:
-				task_item_text = self.dictionaries["Task"]["Titles"][language].split("{")[1].split("}")[0]
+			if "{" in self.dictionary["Task"]["Titles"][language]:
+				if hasattr(self, "re") == False:
+					import re
 
-				replace = "{" + task_item_text + "}"
+					self.re = re
 
-				task_item = self.Input.Type(task_item_text)
+				print()
+				print(self.dictionary["Task"]["Titles"][language])
 
-				self.dictionaries["Task"]["Titles"][language] = self.dictionaries["Task"]["Titles"][language].replace(replace, task_item)
+				# List the text format templates of the task items
+				items = self.re.findall("\{[(\w+\s)]+\}", self.dictionary["Task"]["Titles"][language])
 
-			self.dictionaries["Task"]["Descriptions"][language] = self.dictionaries["Task"]["Titles"][language] + "\n\n"
+				for item in items:
+					# Remove the braces of the task item
+					item_text = item.replace("{", "").replace("}", "")
 
-			self.dictionaries["Task"]["Descriptions"][language] += self.Input.Lines(type_text)["string"]
+					# Ask for the task item
+					task_item = self.Input.Type(item_text.capitalize())
+
+					# If there is the "(s)" plural prototype text on the task title template
+					if "(s)" in self.dictionary["Task"]["Titles"][language]:
+						# Determine if the typed task item has commas
+						has_comma = False
+
+						if "," in task_item or ", " in task_item:
+							has_comma = True
+
+							for list_item in [",", ", "]:
+								if list_item in task_item:
+									comma = list_item
+
+						# If it has, split each item of the task item into a list of sub items
+						if has_comma == True:
+							sub_items = task_item.split(comma)
+
+							# Reset the task item string into an empty string
+							task_item = ""
+
+							# Iterate through the sub items list
+							for sub_item in sub_items:
+								# If the sub item is not the first one and the list has only two items
+								if sub_item != sub_items[0] and len(sub_items) == 2:
+									# Add a space before the second item
+									task_item += " "
+
+								# If the sub item is equal to the last item, add the "and" text and a space
+								if sub_item == sub_items[-1]:
+									task_item += self.JSON.Language.texts["and"][language] + " "
+
+								task_item += sub_item
+
+								# If the sub item is equal to the last one and the list has more than two items, add a comma and a space
+								if sub_item != sub_items[-1] and len(sub_items) != 2:
+									task_item += ", "
+
+							# Replace the parenthesis of the task title template
+							self.dictionary["Task"]["Titles"][language] = self.dictionary["Task"]["Titles"][language].replace("(s)", "s")
+
+						# Else, remove the "(s)" plural prototype text
+						else:
+							self.dictionary["Task"]["Titles"][language] = self.dictionary["Task"]["Titles"][language].replace("(s)", "")
+
+					# Replace the text format template with the typed task item
+					self.dictionary["Task"]["Titles"][language] = self.dictionary["Task"]["Titles"][language].replace(item, task_item)
+
+			# Define the task description as the task title plus two new lines
+			self.dictionary["Task"]["Descriptions"][language] = self.dictionary["Task"]["Titles"][language] + "\n\n"
+
+			# Ask for the task description
+			self.dictionary["Task"]["Descriptions"][language] += self.Input.Lines(type_text)["string"]
 
 	def Register_In_JSON(self):
-		self.task_type = self.dictionaries["Task"]["Type"]["Plural"]["en"]
+		self.task_type = self.dictionary["Type"]["Plural"]["en"]
 
 		dicts = [
 			self.dictionaries["Tasks"],
@@ -105,58 +164,58 @@ class Register(Tasks):
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] += 1
 
-			if self.task_type in dict_["Numbers"]:
-				dict_["Numbers"][self.task_type] += 1
+			if "Per Task Type" in dict_["Numbers"]:
+				dict_["Numbers"]["Per Task Type"][self.task_type] += 1
 
 		if self.dictionaries["Tasks"]["Numbers"]["Total"] == 1:
-			self.dictionaries["Task"]["States"]["First task in year"] = True
+			self.task["States"]["First task in year"] = True
 
 		if self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"] == 1:
-			self.dictionaries["Task"]["States"]["First task type task in year"] = True
+			self.task["States"]["First task type task in year"] = True
 
 		# Define sanitized version of entry name for files
-		self.dictionaries["Task"]["Name"] = {
-			"Normal": str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + ". " + self.task_type + " (" + self.dictionaries["Task"]["Times"]["Timezone"] + ")",
+		self.task["Name"] = {
+			"Normal": str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + ". " + self.task_type + " (" + self.dictionary["Entry"]["Times"]["Timezone"] + ")",
 			"Sanitized": ""
 		}
 
-		self.dictionaries["Task"]["Name"]["Sanitized"] = self.dictionaries["Task"]["Name"]["Normal"].replace(":", ";").replace("/", "-")
+		self.task["Name"]["Sanitized"] = self.task["Name"]["Normal"].replace(":", ";").replace("/", "-")
 
 		# Add to the "Tasks" lists
 		for dict_ in dicts:
-			if self.dictionaries["Task"]["Name"]["Normal"] not in dict_["Entries"]:
-				dict_["Entries"].append(self.dictionaries["Task"]["Name"]["Normal"])
+			if self.task["Name"]["Normal"] not in dict_["Entries"]:
+				dict_["Entries"].append(self.task["Name"]["Normal"])
 
-		self.key = self.dictionaries["Task"]["Name"]["Normal"]
+		self.key = self.task["Name"]["Normal"]
 
 		self.dictionaries["Tasks"]["Dictionary"][self.key] = {
 			"Number": self.dictionaries["Tasks"]["Numbers"]["Total"],
 			"Type number": self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"],
-			"Entry": self.dictionaries["Task"]["Name"]["Normal"],
-			"Titles": self.dictionaries["Task"]["Titles"],
+			"Entry": self.task["Name"]["Normal"],
+			"Titles": self.task["Titles"],
 			"Type": self.task_type,
-			"Time": self.dictionaries["Task"]["Times"]["UTC"],
-			"Lines": len(self.dictionaries["Task"]["Descriptions"]["en"].splitlines())
+			"Time": self.dictionary["Entry"]["Times"]["UTC"],
+			"Lines": len(self.task["Descriptions"]["en"].splitlines())
 		}
 
 		# Get the States dictionary
-		self.states_dictionary = self.Define_States_Dictionary(self.dictionaries["Task"])
+		self.dictionary["States"] = self.Define_States_Dictionary(self.dictionary)
 
-		if self.states_dictionary["States"] != {}:
-			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = self.states_dictionary["States"]
+		if self.dictionary["States"]["States"] != {}:
+			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = self.dictionary["States"]["States"]
 
 		# Add task dictionary to task type tasks dictionary
 		self.dictionaries["Task Type"][self.task_type]["Dictionary"][self.key] = self.dictionaries["Tasks"]["Dictionary"][self.key].copy()
 
-		# Update "Tasks.json" file
+		# Update the "Tasks.json" file
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
 
-		# Update task type "Tasks.json" file
-		self.JSON.Edit(self.dictionaries["Task"]["Type"]["Folders"]["per_task_type"]["tasks"], self.dictionaries["Task Type"][self.task_type])
+		# Update the task type "Tasks.json" file
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_task_type"]["tasks"], self.dictionaries["Task Type"][self.task_type])
 
-		# Add to root and task type "Entry list.txt" file
-		self.File.Edit(self.folders["task_history"]["current_year"]["entry_list"], self.dictionaries["Task"]["Name"]["Normal"], "a")
-		self.File.Edit(self.dictionaries["Task"]["Type"]["Folders"]["per_task_type"]["entry_list"], self.dictionaries["Task"]["Name"]["Normal"], "a")
+		# Add to the root and task type "Entry list.txt" file
+		self.File.Edit(self.folders["task_history"]["current_year"]["entry_list"], self.task["Name"]["Normal"], "a")
+		self.File.Edit(self.dictionary["Type"]["Folders"]["per_task_type"]["entry_list"], self.task["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [Task number]
@@ -188,20 +247,20 @@ class Register(Tasks):
 		# English:
 		# [English task description]
 
-		# Define task file
+		# Define the task file
 		folder = self.folders["task_history"]["current_year"]["per_task_type"][self.task_type.lower()]["files"]["root"]
-		file = folder + self.dictionaries["Task"]["Name"]["Sanitized"] + ".txt"
+		file = folder + self.task["Name"]["Sanitized"] + ".txt"
 		self.File.Create(file)
 
-		self.dictionaries["Task"]["Text"] = {
+		self.dictionary["Text"] = {
 			"General": self.Define_File_Text("General")
 		}
 
 		for language in self.languages["small"]:
-			self.dictionaries["Task"]["Text"][language] = self.Define_File_Text(language)
+			self.dictionary["Text"][language] = self.Define_File_Text(language)
 
-		# Write task text into task file
-		self.File.Edit(file, self.dictionaries["Task"]["Text"]["General"], "w")
+		# Write the task text into the task file
+		self.File.Edit(file, self.dictionary["Text"]["General"], "w")
 
 	# Define task text per language
 	def Define_File_Text(self, language_parameter = None):
@@ -229,21 +288,21 @@ class Register(Tasks):
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionaries["Task"]["Type"]["Plural"][language] + "\n",
+			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.File.texts["file_name"][language] + ":" + "\n" + self.dictionaries["Task"]["Name"]["Normal"]
+			self.File.texts["file_name"][language] + ":" + "\n" + self.task["Name"]["Normal"]
 		])
 
 		# Add states texts lines
-		if self.states_dictionary["Texts"] != {}:
+		if self.dictionary["States"]["Texts"] != {}:
 			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
 
-			for key in self.states_dictionary["Texts"]:
-				language_text = self.states_dictionary["Texts"][key][language]
+			for key in self.dictionary["States"]["Texts"]:
+				language_text = self.dictionary["States"]["Texts"][key][language]
 
 				text += language_text
 
-				if key != list(self.states_dictionary["Texts"].keys())[-1]:
+				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					text += "\n"
 
 			lines.append(text)
@@ -266,11 +325,11 @@ class Register(Tasks):
 		titles = ""
 
 		if language_parameter != "General":
-			titles = self.dictionaries["Task"]["Titles"][language] + "\n"
+			titles = self.task["Titles"][language] + "\n"
 
 		if language_parameter == "General":
 			for language in self.languages["small"]:
-				titles += self.dictionaries["Task"]["Titles"][language] + "\n"
+				titles += self.task["Titles"][language] + "\n"
 
 		items.append(titles)
 
@@ -278,7 +337,7 @@ class Register(Tasks):
 		times = ""
 
 		for key in ["UTC", "Timezone"]:
-			time = self.dictionaries["Task"]["Times"][key]
+			time = self.dictionary["Entry"]["Times"][key]
 
 			times += time + "\n"
 
@@ -288,13 +347,13 @@ class Register(Tasks):
 		descriptions = ""
 
 		if language_parameter != "General":
-			descriptions = self.dictionaries["Task"]["Descriptions"][language]
+			descriptions = self.task["Descriptions"][language]
 
 		if language_parameter == "General":
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 
-				descriptions += full_language + ":" + "\n" + self.dictionaries["Task"]["Descriptions"][language]
+				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][language]
 
 				if language != self.languages["small"][-1]:
 					descriptions += "\n\n"
@@ -313,7 +372,7 @@ class Register(Tasks):
 
 			# Folder names
 			root_folder = self.texts["done_tasks"][language]
-			type_folder = self.dictionaries["Task"]["Type"]["Plural"][language]
+			type_folder = self.dictionary["Type"]["Plural"][language]
 
 			# Done tasks folder
 			folder = self.current_year["folders"][full_language]["root"]
@@ -335,16 +394,16 @@ class Register(Tasks):
 
 			# Done tasks file
 			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
-			file_name = self.dictionaries["Task"]["Name"]["Sanitized"]
+			file_name = self.task["Name"]["Sanitized"]
 			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
 			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
 
-			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.dictionaries["Task"]["Text"][language], "w")
+			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
-			subfolder_name = self.dictionaries["Task"]["Type"]["Subfolders"][language]
+			subfolder_name = self.dictionary["Type"]["Subfolders"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
 
@@ -355,7 +414,7 @@ class Register(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year task type folder
-			item_folder = self.dictionaries["Task"]["Type"]["Items"][language]
+			item_folder = self.dictionary["Type"]["Items"][language]
 
 			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
@@ -366,41 +425,28 @@ class Register(Tasks):
 			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"])
 
 			# First task type task in year file
-			if self.dictionaries["Task"]["States"]["First task type task in year"] == True:
+			if self.task["States"]["First task type task in year"] == True:
 				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"]
 
 				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name] = folder + file_name + ".txt"
 				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name])
 
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name], self.dictionaries["Task"]["Text"][language], "w")
+				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name], self.dictionary["Text"][language], "w")
 
-	def Show_Information(self):
-		print()
-		print(self.large_bar)
-		print()
+	def Write_On_Diary_Slim(self):
+		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.user_language]
 
-		print(self.language_texts["this_task_was_registered"] + ":")
+		# If there are states, add the texts to the Diary Slim text
+		if self.dictionary["States"]["States"] != {}:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.JSON.Language.language_texts["states, title()"] + ":" + "\n"
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			for key in self.dictionary["States"]["Texts"]:
+				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]
 
-			print("\t" + translated_language + ":")
-			print("\t" + self.dictionaries["Task"]["Titles"][language])
-			print()
+				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
 
-		print(self.JSON.Language.language_texts["type, title()"] + ":")
+		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		for plural_task_type in self.dictionaries["Task"]["Type"]["Plural"].values():
-			print("\t" + plural_task_type)
-
-		print()
-
-		print(self.JSON.Language.language_texts["when, title()"] + ":")
-		print(self.dictionaries["Task"]["Times"]["Timezone"])
-
-		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.language_texts["can_be_long"] + ")")
-
-		if show_task_description == True:
-			print()
-			print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
-			print("[" + self.dictionaries["Task"]["Descriptions"][self.user_language] + "]")
+		# Write on Diary Slim
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Times"]["Timezone"], add_dot = False, show_text = False)

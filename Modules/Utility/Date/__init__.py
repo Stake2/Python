@@ -157,17 +157,17 @@ class Date():
 		return date
 
 	def Difference(self, before, after):
-		date = {}
+		date = {
+			"before": before,
+			"after": after
+		}
 
-		date["before"] = before
+		for key in date:
+			if type(date[key]) == str:
+				date[key] = self.Check(date[key])
 
-		if type(date["before"]) == str:
-			date["before"] = self.Check(date["before"])
-
-		date["after"] = after
-
-		if type(date["after"]) == str:
-			date["after"] = self.Check(date["after"])
+			if type(date[key]) == datetime:
+				date[key] = self.Now(date[key])
 
 		string = date["after"]["date"] - date["before"]["date"]
 
@@ -177,62 +177,69 @@ class Date():
 
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			if hasattr(string, attribute):
-				date["difference"][attribute] = getattr(string, attribute)
+				date["difference"][attribute.capitalize()] = getattr(string, attribute)
 
-		if hasattr(string, "years") == False and "days" in date["difference"]:
-			if (date["difference"]["days"] // 365) != 0:
-				date["difference"]["years"] = date["difference"]["days"] // 365
+		if hasattr(string, "years") == False and "Days" in date["difference"]:
+			if (date["difference"]["Days"] // 365) != 0:
+				date["difference"]["Years"] = date["difference"]["Days"] // 365
 		
-			if (date["difference"]["days"] // 365) == 0:
-				date["difference"]["years"] = 0
+			if (date["difference"]["Days"] // 365) == 0:
+				date["difference"]["Years"] = 0
 
-		if date["difference"]["years"] == -1:
-			date["difference"]["years"] = 0
+		if date["difference"]["Years"] == -1:
+			date["difference"]["Years"] = 0
 
-		date["difference"]["year_days"] = 0
-		date["difference"]["month_days"] = 0
+		date["difference"]["Year days"] = 0
+		date["difference"]["Month days"] = 0
 
-		if (date["difference"]["days"] // 365) not in [0, 1]:
-			date["difference"]["year_days"] = date["difference"]["years"] * 365
+		if (date["difference"]["Days"] // 365) not in [0, 1]:
+			date["difference"]["Year days"] = date["difference"]["Years"] * 365
 
-		if hasattr(string, "months") == False and ((date["difference"]["days"] - date["difference"]["year_days"]) // 30) != 0:
-			date["difference"]["months"] = (date["difference"]["days"] - date["difference"]["year_days"]) // 30
-			date["difference"]["month_days"] = date["difference"]["months"] * 30
+		if hasattr(string, "months") == False and ((date["difference"]["Days"] - date["difference"]["Year days"]) // 30) != 0:
+			date["difference"]["Months"] = (date["difference"]["Days"] - date["difference"]["Year days"]) // 30
+			date["difference"]["Month days"] = date["difference"]["Months"] * 30
 
-		date["difference"]["days"] = date["difference"]["days"] - date["difference"]["year_days"] - date["difference"]["month_days"]
+		date["difference"]["Days"] = date["difference"]["Days"] - date["difference"]["Year days"] - date["difference"]["Month days"]
 
-		if "seconds" not in date["difference"]:
-			date["difference"]["seconds"] = 0
+		if "Seconds" not in date["difference"]:
+			date["difference"]["Seconds"] = 0
 
-		date["difference"]["seconds"] = date["difference"]["seconds"] % (24 * 3600)
-		date["difference"]["hours"] = date["difference"]["seconds"] // 3600
-		date["difference"]["seconds"] %= 3600
-		date["difference"]["minutes"] = date["difference"]["seconds"] // 60 
-		date["difference"]["seconds"] %= 60
+		date["difference"]["Seconds"] = date["difference"]["Seconds"] % (24 * 3600)
+		date["difference"]["Hours"] = date["difference"]["Seconds"] // 3600
+		date["difference"]["Seconds"] %= 3600
+		date["difference"]["Minutes"] = date["difference"]["Seconds"] // 60 
+		date["difference"]["Seconds"] %= 60
 
 		singular = {}
 		plural = {}
 
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
-			if attribute in date["difference"] and date["difference"][attribute] != 0:
-				for language in self.languages["small"]:
-					if language not in singular:
-						singular[language] = []
+			attribute = attribute.capitalize()
 
-					if language not in plural:
-						plural[language] = []
+			if attribute in date["difference"]:
+				if date["difference"][attribute] != 0:
+					for language in self.languages["small"]:
+						if language not in singular:
+							singular[language] = []
 
-					singular_attribute = texts["date_attributes, type: list"][language][i]
-					plural_attribute = texts["plural_date_attributes, type: list"][language][i]
+						if language not in plural:
+							plural[language] = []
 
-					singular[language].append(singular_attribute)
-					plural[language].append(plural_attribute)
+						singular_attribute = texts["date_attributes, type: list"][language][i]
+						plural_attribute = texts["plural_date_attributes, type: list"][language][i]
 
-			if attribute in date["difference"] and date["difference"][attribute] == 0:
-				del date["difference"][attribute]
+						singular[language].append(singular_attribute)
+						plural[language].append(plural_attribute)
+
+				if date["difference"][attribute] == 0:
+					date["difference"].pop(attribute)
 
 			i += 1
+
+		for attribute in date["difference"].copy():
+			if date["difference"][attribute] == 0:
+				date["difference"].pop(attribute)
 
 		texts["date_attributes, type: list"] = singular
 
@@ -245,8 +252,10 @@ class Date():
 
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
+			attribute = attribute.capitalize()
+
 			if attribute in date["difference"]:
-				if attribute != texts["plural_date_attributes, type: list"]["en"][0]:
+				if attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
 					date["difference_string"] += ", "
 
 				date["difference_string"] += str(date["difference"][attribute])
@@ -262,12 +271,14 @@ class Date():
 
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
+			attribute = attribute.capitalize()
+
 			if attribute in date["difference"]:
 				for language in self.languages["small"]:
 					if language not in date["difference_strings"]:
 						date["difference_strings"][language] = ""
 
-					if attribute != "years":
+					if attribute != "years" and attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
 						date["difference_strings"][language] += ", "
 
 					if attribute == "months" and date["difference"][attribute] != 12:
@@ -288,6 +299,9 @@ class Date():
 						date["difference_strings"][language] += " " + list_[i]
 
 			i += 1
+
+		date["Difference"] = date["difference"]
+		date["Text"] = date["difference_strings"]
 
 		return date
 

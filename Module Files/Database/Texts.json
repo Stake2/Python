@@ -62,5 +62,9 @@
 	"registered, title()": {
 		"en": "Registered",
 		"pt": "Registrado"
+	},
+	"re_experienced": {
+		"en": "Re-experienced",
+		"pt": "Re-experimentou"
 	}
 }
