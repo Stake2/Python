@@ -29,10 +29,10 @@ class Register(GamePlayer):
 		# Define the media variable to make typing the media dictionary easier
 		self.game = self.dictionary["Game"]
 
-		#self.Check_Game_Status()
+		self.Check_Game_Status()
 
-		#if self.game["States"]["Re-playing"] == False and self.game["States"]["Completed game"] == True:
-		#	self.Check_Game_Dates()
+		if self.game["States"]["Re-playing"] == False and self.game["States"]["Completed game"] == True:
+			self.Check_Game_Dates()
 
 		# Database related methods
 		self.Register_In_JSON()
@@ -363,6 +363,56 @@ class Register(GamePlayer):
 
 				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
+	def Check_Game_Status(self):
+		self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])
+
+		if self.game["States"]["Completed game"] == True:
+			# Update the status key in the game details
+			self.Change_Status(self.dictionary)
+
+	def Check_Game_Dates(self):
+		# Completed game time and date template
+		template = self.language_texts["when_i_finished_playing"] + ":" + "\n" + \
+		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
+		"\n" + \
+		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
+		"{}"
+
+		# Gets the date that the user started and finished playing the game and writes it to the game dates text file
+		if self.game["States"]["Completed game"] == True:
+			# Gets the game dates from the game dates file
+			self.game["dates"] = self.File.Dictionary(self.game["folders"]["dates"], next_line = True)
+
+			key = self.language_texts["when_i_started_to_play"]
+
+			# Get the started playing time
+			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["dates"][key]))
+
+			# Define time spent playing using started playing time and finished playing time
+			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+
+			if self.game["Time spent playing"][0] + self.game["Time spent playing"][1] == ", ":
+				self.game["Time spent playing"] = self.game["Time spent playing"][2:]
+
+			# Format the time template
+			self.game["Formatted datetime template"] = "\n\n" + template.format(self.game["Time spent playing"])
+
+			# Read the game dates file
+			self.game["Finished playing text"] = self.File.Contents(self.game["folders"]["dates"])["string"]
+
+			# Add the time template to the game dates text
+			self.game["Finished playing text"] += self.game["Formatted datetime template"]
+
+			# Update the game dates text file
+			self.File.Edit(self.game["folders"]["dates"], self.game["Finished playing text"], "w")
+
+			text = self.game_types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["game, title()"].lower()
+
+			# Add the time template to the Diary Slim text
+			self.game["Finished playing text"] = self.game["Finished playing text"].replace(self.language_texts["when_i_started_to_play"], self.language_texts["when_i_started_to_play"] + " " + text)
+
+			self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.game["Finished playing text"]
+
 	def Define_Diary_Slim_Text(self):
 		items = [
 			self.game_type,
@@ -385,6 +435,10 @@ class Register(GamePlayer):
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
+
+		# If there are dates, add them to the Diary Slim text
+		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
 		self.social_networks = [

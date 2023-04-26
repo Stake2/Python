@@ -80,7 +80,6 @@ class GamePlayer(object):
 		self.game_types = self.JSON.To_Python(self.folders["data"]["types"])
 
 		self.game_types.update({
-			"Types": self.game_types["Types"],
 			"Genders": self.JSON.Language.texts["genders, type: dict"],
 			"Gender items": self.JSON.Language.texts["gender_items"],
 			"Game list": {
@@ -210,13 +209,18 @@ class GamePlayer(object):
 			# Edit the "Info.json" file with the new dictionary
 			self.JSON.Edit(self.game_types[game_type]["Folders"]["information"]["info"], self.game_types[game_type]["JSON"])
 
+			# Check the status of the game list
+			# Add the game inside the correct status list if it is not there already
+			# Remove the game from the wrong status list if it is there
+			self.game_types[game_type] = self.Check_Status(self.game_types[game_type])
+
 			# Add the game number to the game number
 			self.game_types["Game list"]["Number"] += self.game_types[game_type]["JSON"]["Number"]
 
 			# Add the game number to the root game number
 			info_dictionary["Numbers"][game_type] = self.game_types[game_type]["JSON"]["Number"]
 
-			# Add the media number to the media type media numbers
+			# Add the game number to the game type game numbers
 			self.game_types["Game list"]["Numbers"][game_type] = self.game_types[game_type]["JSON"]["Number"]
 
 			# Get the game list with "Playing" and "Re-playing" statuses
@@ -745,26 +749,6 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Get_Language_Status(self, status):
-		return_english = False
-
-		if status in self.texts["statuses, type: list"][self.user_language]:
-			return_english = True
-
-		w = 0
-		for english_status in self.texts["statuses, type: list"]["en"]:
-			# Return the user language status
-			if return_english == False and english_status == status:
-				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
-
-			# Return the English status
-			if return_english == True and status == self.texts["statuses, type: list"][self.user_language][w]:
-				status_to_return = english_status
-
-			w += 1
-
-		return status_to_return
-
 	def Define_Game_Titles(self, dictionary):
 		game = dictionary["Game"]
 
@@ -830,6 +814,96 @@ class GamePlayer(object):
 		title = self.Sanitize(title, restricted_characters = True)
 
 		return title
+
+	def Get_Language_Status(self, status):
+		return_english = False
+
+		if status in self.texts["statuses, type: list"][self.user_language]:
+			return_english = True
+
+		w = 0
+		for english_status in self.texts["statuses, type: list"]["en"]:
+			# Return the user language status
+			if return_english == False and english_status == status:
+				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
+
+			# Return the English status
+			if return_english == True and status == self.texts["statuses, type: list"][self.user_language][w]:
+				status_to_return = english_status
+
+			w += 1
+
+		return status_to_return
+
+	def Change_Status(self, dictionary, status = ""):
+		if status == "":
+			status = self.JSON.Language.language_texts["completed, title()"]
+
+		# Update the status key in the game details
+		dictionary["Game"]["details"][self.JSON.Language.language_texts["status, title()"]] = status
+
+		# Update the game details file
+		self.File.Edit(dictionary["Game"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["details"]), "w")
+
+		self.Check_Status(dictionary)
+
+	def Check_Status(self, dictionary):
+		game_type = dictionary
+
+		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+			game_type = dictionary["Type"]
+
+			self.language_status = dictionary["Game"]["details"][self.JSON.Language.language_texts["status, title()"]]
+
+			# Get the English status from the language status of the game details
+			status = self.Get_Language_Status(self.language_status)
+
+		dictionary["JSON"] = self.JSON.To_Python(game_type["Folders"]["information"]["info"])
+
+		# Update the number of games
+		dictionary["JSON"]["Number"] = len(dictionary["JSON"]["Titles"])
+
+		# Sort the titles list
+		dictionary["JSON"]["Titles"] = sorted(dictionary["JSON"]["Titles"], key = str.lower)
+
+		titles = []
+
+		if "Type" in dictionary and "JSON" not in dictionary["Type"]:
+			titles.extend(dictionary["JSON"]["Titles"])
+
+		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+			titles.append(dictionary["Game"]["Title"])
+
+		# Iterate through the statuses list
+		for playing_status in self.texts["statuses, type: list"]["en"]:
+			for data_title in titles:
+				if "Type" in dictionary and "JSON" not in dictionary["Type"]:
+					folder = game_type["Folders"]["information"]["root"] + self.Sanitize_Title(data_title) + "/"
+					details_file = folder + self.JSON.Language.language_texts["details, title()"] + ".txt"
+					details = self.File.Dictionary(details_file)
+
+					self.language_status = details[self.JSON.Language.language_texts["status, title()"]]
+
+					# Get the English status from the language status of the game details
+					status = self.Get_Language_Status(self.language_status)
+
+				# If the game status is equal to the playing status
+				# And the game is not in the correct status list, add it to the list
+				if status == playing_status and data_title not in dictionary["JSON"]["Status"][playing_status]:
+					dictionary["JSON"]["Status"][playing_status].append(data_title)
+
+				# If the game status is not equal to the playing status
+				# And the game is in the wrong playing status list, remove it from the list
+				if status != playing_status and data_title in dictionary["JSON"]["Status"][playing_status]:
+					dictionary["JSON"]["Status"][playing_status].remove(data_title)
+
+			# Sort the games list
+			dictionary["JSON"]["Status"][playing_status] = sorted(dictionary["JSON"]["Status"][playing_status], key = str.lower)
+
+		# Update the game type "Info.json" file
+		self.JSON.Edit(game_type["Folders"]["information"]["info"], dictionary["JSON"])
+
+		return dictionary
 
 	def Show_Information(self, dictionary):
 		game = dictionary["Game"]

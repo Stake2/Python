@@ -45,7 +45,7 @@ class Watch_Media(Watch_History):
 
 		self.media["States"]["Open media"] = self.open_media
 
-		# Define the status list for "Plan to watch" related media
+		# Define the status list for "Plan to watch" related statuses
 		status_list = [
 			self.texts["plan_to_watch, title()"][self.user_language],
 			self.JSON.Language.texts["on_hold, title()"][self.user_language]
@@ -54,8 +54,8 @@ class Watch_Media(Watch_History):
 		# If the media watching status is inside the status list
 		if self.media["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
 			# If the media "Dates.txt" file is empty
-			if self.File.Contents(self.media["folders"]["dates"])["lines"] == "":
-				# Gets the first watching time where the user started watching the media
+			if self.File.Contents(self.media["folders"]["dates"])["lines"] == []:
+				# Get the first watching time where the user started watching the media
 				self.media["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
 
 				# Create the Dates text
@@ -67,7 +67,7 @@ class Watch_Media(Watch_History):
 			# If the media has a media item list
 			if self.media["States"]["Media item list"] == True:
 				# And the media item "Dates.txt" file is empty
-				if self.File.Contents(self.media["Item"]["folders"]["dates"])["lines"] == "":
+				if self.File.Contents(self.media["Item"]["folders"]["dates"])["lines"] == []:
 					# Gets the first watching time where the user started watching the media
 					self.media["Item"]["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
 

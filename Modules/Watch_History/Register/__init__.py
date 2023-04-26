@@ -38,7 +38,6 @@ class Register(Watch_History):
 		# Database related methods
 		self.Register_In_JSON()
 		self.Create_Entry_File()
-
 		self.Add_Entry_File_To_Year_Folder()
 
 		self.Define_Diary_Slim_Text()
@@ -552,7 +551,7 @@ class Register(Watch_History):
 				elif self.media["details"][self.language_texts["remote_origin, title()"]] == "YouTube":
 					self.media["details"].pop(self.language_texts["remote_origin, title()"])
 
-			# Update status key in media details
+			# Update the status key in the media details
 			self.Change_Status(self.dictionary)
 
 		# Check if media item has a correspondent movie inside the movies folder
@@ -579,7 +578,7 @@ class Register(Watch_History):
 					# Change the status of the movie to "Completed"
 					self.Change_Status(self.movie_dictionary)
 
-		# If media is non-series media
+		# If the media is non-series media
 		if self.media["States"]["Series media"] == False:
 			# Define the empty series media list
 			self.series_media_list = {}
@@ -665,28 +664,17 @@ class Register(Watch_History):
 									self.File.Edit(media_dictionary["Media"]["Item"]["folders"]["details"], self.Text.From_Dictionary(media_dictionary["Media"]["Item"]["details"]), "w")
 
 	def Check_Media_Dates(self):
-		# Completed media and media item time and date part
+		# Completed media and media item time and date template
 		template = self.language_texts["when_i_finished_watching"] + ":" + "\n" + \
-		"[Timezone]" + "\n" + \
+		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
 
-		if "Timezone" in self.dictionary["Entry"]["Times"]:
-			template = template.replace("[Timezone]", self.dictionary["Entry"]["Times"]["Timezone"])
-
-		if self.dictionary["Entry"]["Time"] != {}:
-			self.dictionary["Entry"]["Time"] = self.Date.To_Timezone(self.dictionary["Entry"]["Time"])
-
 		# Gets the date that the user started and finished watching the media item and writes it into the media item dates file
-		if self.media["States"]["Completed media item"] == True and self.dictionary["Entry"]["Time"] != {}:
+		if self.media["States"]["Completed media item"] == True:
 			# Gets the item dates from the item dates file
 			self.media["Item"]["dates"] = self.File.Dictionary(self.media["Item"]["folders"]["dates"], next_line = True)
-
-			if "Timezone" not in self.dictionary["Entry"]["Times"]:
-				key = self.language_texts["when_i_finished_watching"]
-
-				self.dictionary["Entry"]["Times"]["Timezone"] = self.media["Item"]["dates"][key]
 
 			key = self.language_texts["when_i_started_to_watch"]
 
@@ -697,68 +685,64 @@ class Register(Watch_History):
 			self.media["Item"]["started_watching_item"] = self.Date.To_UTC(self.Date.From_String(self.media["Item"]["dates"][key]))
 
 			# Define time spent watching using started watching time and finished watching time
-			self.media["Item"]["time_spent_watching"] = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Time"])["difference_strings"][self.user_language]
+			self.media["Item"]["Time spent watching"] = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
 
-			if self.media["Item"]["time_spent_watching"][0] + self.media["Item"]["time_spent_watching"][1] == ", ":
-				self.media["Item"]["time_spent_watching"] = self.media["Item"]["time_spent_watching"][2:]
+			if self.media["Item"]["Time spent watching"][0] + self.media["Item"]["Time spent watching"][1] == ", ":
+				self.media["Item"]["Time spent watching"] = self.media["Item"]["Time spent watching"][2:]
 
 			# Format the time template
-			self.media["Item"]["formatted_template"] = "\n\n" + template.format(self.media["Item"]["time_spent_watching"])
+			self.media["Item"]["Formatted datetime template"] = "\n\n" + template.format(self.media["Item"]["Time spent watching"])
+
+			# Read the media item dates file
+			self.media["Item"]["Finished watching text"] = self.File.Contents(self.media["Item"]["folders"]["dates"])["string"]
 
 			# Add the time template to the item dates text
-			self.media["Item"]["finished_watching_text"] = self.File.Contents(self.media["Item"]["folders"]["dates"])["string"]
-
-			self.media["Item"]["finished_watching_text"] += self.media["Item"]["formatted_template"]
+			self.media["Item"]["Finished watching text"] += self.media["Item"]["Formatted datetime template"]
 
 			# Update item dates text file
-			self.File.Edit(self.media["Item"]["folders"]["dates"], self.media["Item"]["finished_watching_text"], "w")
+			self.File.Edit(self.media["Item"]["folders"]["dates"], self.media["Item"]["Finished watching text"], "w")
 
-			self.media["Item"]["finished_watching_text"] = self.media["Item"]["finished_watching_text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["the_item"][self.user_language])
+			self.media["Item"]["Finished watching text"] = self.media["Item"]["Finished watching text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["the_item"][self.user_language])
 
 			# Add the time template to the Diary Slim text if the media is not completed
 			if self.media["States"]["Completed media"] == False and self.media["States"]["Single unit"] == False:
-				self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["Item"]["finished_watching_text"]
+				self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.media["Item"]["Finished watching text"]
 
 		# Gets the date that the user started and finished watching the media and writes it to the media dates text file
-		if self.media["States"]["Completed media"] == True and self.dictionary["Entry"]["Time"] != {}:
+		if self.media["States"]["Completed media"] == True:
 			# Gets the media dates from the media dates file
 			self.media["dates"] = self.File.Dictionary(self.media["folders"]["dates"], next_line = True)
 
-			if "Timezone" not in self.dictionary["Entry"]["Times"]:
-				key = self.language_texts["when_i_finished_watching"]
-
-				self.dictionary["Entry"]["Times"]["Timezone"] = self.media["dates"][key]
-
 			key = self.language_texts["when_i_started_to_watch"]
 
-			if key in self.media["dates"]:
-				# Get the started watching time
-				self.media["started_watching"] = self.Date.To_UTC(self.Date.From_String(self.media["dates"][key]))
+			# Get the started watching time
+			self.media["Started watching"] = self.Date.To_UTC(self.Date.From_String(self.media["dates"][key]))
 
-				# Define time spent watching using started watching time and finished watching time
-				self.media["time_spent_watching"] = self.Date.Difference(self.media["started_watching"], self.dictionary["Entry"]["Time"])["difference_strings"][self.user_language]
+			# Define time spent watching using started watching time and finished watching time
+			self.media["Time spent watching"] = self.Date.Difference(self.media["Started watching"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
 
-				if self.media["time_spent_watching"][0] + self.media["time_spent_watching"][1] == ", ":
-					self.media["time_spent_watching"] = self.media["time_spent_watching"][2:]
+			if self.media["Time spent watching"][0] + self.media["Time spent watching"][1] == ", ":
+				self.media["Time spent watching"] = self.media["Time spent watching"][2:]
 
-				# Format the time template
-				self.media["Item"]["formatted_template"] = "\n\n" + template.format(self.media["time_spent_watching"])
+			# Format the time template
+			self.media["Item"]["Formatted datetime template"] = "\n\n" + template.format(self.media["Time spent watching"])
 
-			else:
-				self.media["started_watching"] = self.dictionary["Entry"]["Times"]["UTC"]
+			# Read the media dates file
+			self.media["Finished watching text"] = self.File.Contents(self.media["folders"]["dates"])["string"]
 
 			# Add the time template to the media dates text
-			self.media["finished_watching_text"] = self.File.Contents(self.media["folders"]["dates"])["string"]
+			self.media["Finished watching text"] += self.media["Item"]["Formatted datetime template"]
 
-			self.media["finished_watching_text"] += self.media["Item"]["formatted_template"]
-
-			# Update media dates text file
-			self.File.Edit(self.media["folders"]["dates"], self.media["finished_watching_text"], "w")
+			# Update the media dates text file
+			self.File.Edit(self.media["folders"]["dates"], self.media["Finished watching text"], "w")
 
 			# Add the time template to the Diary Slim text
-			self.media["finished_watching_text"] = self.media["finished_watching_text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["container_text"]["the"])
+			self.media["Finished watching text"] = self.media["Finished watching text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["container_text"]["the"])
 
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["finished_watching_text"]
+			if "Dates" not in self.dictionary["Entry"]["Diary Slim"]["Text"]:
+				self.dictionary["Entry"]["Diary Slim"]["Dates"] = ""
+
+			self.dictionary["Entry"]["Diary Slim"]["Dates"] += "\n\n" + self.media["Finished watching text"]
 
 	def Define_Diary_Slim_Text(self):
 		template = self.language_texts["i_just_finished_watching_{}"]
@@ -868,6 +852,10 @@ class Register(Watch_History):
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
+
+		# If there are dates, add them to the Diary Slim text
+		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
 		self.social_networks = [

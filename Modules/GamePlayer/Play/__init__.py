@@ -23,24 +23,6 @@ class Play(GamePlayer):
 		self.Open_Game()
 		self.Register_The_Session()
 
-		'''
-			self.File.Delete(self.played_time_backup_file)
-
-			self.game_dictionary["texts"] = {
-				"Games": self.game["name"],
-				"Number": int(self.File.Contents(self.game_played_files["Number"])["lines"][0]) + 1,
-				"Game categories": self.game["category"]["name"],
-				"Times": self.Date.Now()["%H:%M %d/%m/%Y"],
-				"Time spent": self.game_dictionary["time_list"]["en"] + " - " + self.game_dictionary["time_list"]["pt"],
-			}
-
-			for language in self.languages["small"]:
-				translated_language = self.languages["full_translated"][language]["en"]
-				text = self.texts["i_played_the_{}_game_called_{}_for_{}_current_time_{}"][language]
-
-				self.game_dictionary["texts"][translated_language + " played time"] = text.format(self.game["category"]["names"][language], self.game["name"], self.game_dictionary["time_list"][language], self.now_time)
-		'''
-
 	def Define_Game_Dictionary(self):
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
@@ -48,6 +30,30 @@ class Play(GamePlayer):
 			self.dictionary = self.Select_Game_Type_And_Game()
 
 		self.game = self.dictionary["Game"]
+
+		# Define the playing status list for "Plan to play" related statuses
+		status_list = [
+			self.texts["plan_to_play, title()"][self.user_language],
+			self.JSON.Language.texts["on_hold, title()"][self.user_language]
+		]
+
+		# If the game playing status is inside the status list
+		if self.game["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+			print(self.game["folders"]["dates"])
+
+			# If the game "Dates.txt" file is empty
+			if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
+				# Get the first playing time where the user started playing the game
+				self.game["Started playing time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+
+				# Create the Dates text
+				self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
+				self.game["Dates"] += self.game["Started playing time"]
+
+				self.File.Edit(self.game["folders"]["dates"], self.game["Dates"], "w")
+
+			# Change the playing status to "Playing"
+			self.Change_Status(self.dictionary, self.language_texts["playing, title()"])
 
 	def Open_Game(self):
 		if self.switches["testing"] == False:
@@ -84,8 +90,7 @@ class Play(GamePlayer):
 		self.game["States"]["Finished playing"] = True
 
 		# Define the "After" time (now, after playing)
-		#self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
-		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.Date.Now()["date"] + self.Date.Timedelta(hours = 1))
+		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
 
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")

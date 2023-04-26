@@ -29,6 +29,28 @@ class Experience(Database):
 
 		self.data = self.dictionary["Data"]
 
+		# Define the experiencing status list for "Plan to experience" related statuses
+		status_list = [
+			self.texts["plan_to_experience, title()"][self.user_language],
+			self.JSON.Language.texts["on_hold, title()"][self.user_language]
+		]
+
+		# If the game experiencing status is inside the status list
+		if self.data["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+			# If the data "Dates.txt" file is empty
+			if self.File.Contents(self.data["folders"]["dates"])["lines"] == []:
+				# Get the first experiencing time where the user started experiencing the data
+				self.data["Started experiencing time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+
+				# Create the Dates text
+				self.data["Dates"] = self.language_texts["when_i_started_to_experience"] + ":\n"
+				self.data["Dates"] += self.data["Started experiencing time"]
+
+				self.File.Edit(self.data["folders"]["dates"], self.data["Dates"], "w")
+
+			# Change the experiencing status to "Experiencing"
+			self.Change_Status(self.dictionary, self.language_texts["experiencing, title()"])
+
 	def Register_The_Data(self):
 		text = self.language_texts["press_enter_when_you_finish_experiencing_the_data"]
 

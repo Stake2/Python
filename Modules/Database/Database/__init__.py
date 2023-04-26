@@ -70,13 +70,15 @@ class Database(object):
 		# Folders dictionary
 		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["database_network"]["root"], lower_key = True)["dictionary"]
 
-		# Audiovisual Media Network root files
+		# Audiovisual Data Network root files
 		self.folders["history"]["current_year"] = self.folders["history"][str(self.date["year"])]
 
 	def Define_Types(self):
 		self.types = self.JSON.To_Python(self.folders["data"]["types"])
 
 		self.types.update({
+			"Genders": self.JSON.Language.texts["genders, type: dict"],
+			"Gender items": self.JSON.Language.texts["gender_items"],
 			"Data list": {
 				"Number": 0,
 				"Numbers": {}
@@ -195,6 +197,11 @@ class Database(object):
 
 			# Edit the "Info.json" file with the new dictionary
 			self.JSON.Edit(self.types[plural_type]["Folders"]["information"]["info"], self.types[plural_type]["JSON"])
+
+			# Check the status of the data list
+			# Add the data inside the correct status list if it is not there already
+			# Remove the data from the wrong status list if it is there
+			self.types[plural_type] = self.Check_Status(self.types[plural_type])
 
 			# Add the data number to the data number inside the data list
 			self.types["Data list"]["Number"] += self.types[plural_type]["JSON"]["Number"]
@@ -752,26 +759,6 @@ class Database(object):
 
 		return dictionary
 
-	def Get_Language_Status(self, status):
-		return_english = False
-
-		if status in self.texts["statuses, type: list"][self.user_language]:
-			return_english = True
-
-		w = 0
-		for english_status in self.texts["statuses, type: list"]["en"]:
-			# Return the user language status
-			if return_english == False and english_status == status:
-				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
-
-			# Return the English status
-			if return_english == True and status == self.texts["statuses, type: list"][self.user_language][w]:
-				status_to_return = english_status
-
-			w += 1
-
-		return status_to_return
-
 	def Define_Data_Titles(self, dictionary):
 		data = dictionary["Data"]
 
@@ -837,6 +824,96 @@ class Database(object):
 		title = self.Sanitize(title, restricted_characters = True)
 
 		return title
+
+	def Get_Language_Status(self, status):
+		return_english = False
+
+		if status in self.texts["statuses, type: list"][self.user_language]:
+			return_english = True
+
+		w = 0
+		for english_status in self.texts["statuses, type: list"]["en"]:
+			# Return the user language status
+			if return_english == False and english_status == status:
+				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
+
+			# Return the English status
+			if return_english == True and status == self.texts["statuses, type: list"][self.user_language][w]:
+				status_to_return = english_status
+
+			w += 1
+
+		return status_to_return
+
+	def Change_Status(self, dictionary, status = ""):
+		if status == "":
+			status = self.language_texts["registered, title()"]
+
+		# Update the status key in the data details
+		dictionary["Data"]["details"][self.JSON.Language.language_texts["status, title()"]] = status
+
+		# Update the data details file
+		self.File.Edit(dictionary["Data"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Data"]["details"]), "w")
+
+		self.Check_Status(dictionary)
+
+	def Check_Status(self, dictionary):
+		data_type = dictionary
+
+		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+			data_type = dictionary["Type"]
+
+			self.language_status = dictionary["Data"]["details"][self.JSON.Language.language_texts["status, title()"]]
+
+			# Get the English status from the language status of the data details
+			status = self.Get_Language_Status(self.language_status)
+
+		dictionary["JSON"] = self.JSON.To_Python(data_type["Folders"]["information"]["info"])
+
+		# Update the number of data
+		dictionary["JSON"]["Number"] = len(dictionary["JSON"]["Titles"])
+
+		# Sort the titles list
+		dictionary["JSON"]["Titles"] = sorted(dictionary["JSON"]["Titles"], key = str.lower)
+
+		titles = []
+
+		if "Type" in dictionary and "JSON" not in dictionary["Type"]:
+			titles.extend(dictionary["JSON"]["Titles"])
+
+		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+			titles.append(dictionary["Data"]["Title"])
+
+		# Iterate through the statuses list
+		for experiencing_status in self.texts["statuses, type: list"]["en"]:
+			for data_title in titles:
+				if "Type" in dictionary and "JSON" not in dictionary["Type"]:
+					folder = data_type["Folders"]["information"]["root"] + self.Sanitize_Title(data_title) + "/"
+					details_file = folder + self.JSON.Language.language_texts["details, title()"] + ".txt"
+					details = self.File.Dictionary(details_file)
+
+					self.language_status = details[self.JSON.Language.language_texts["status, title()"]]
+
+					# Get the English status from the language status of the data details
+					status = self.Get_Language_Status(self.language_status)
+
+				# If the data status is equal to the experiencing status
+				# And the data is not in the correct status list, add it to the list
+				if status == experiencing_status and data_title not in dictionary["JSON"]["Status"][experiencing_status]:
+					dictionary["JSON"]["Status"][experiencing_status].append(data_title)
+
+				# If the data status is not equal to the experiencing status
+				# And the data is in the wrong experiencing status list, remove it from the list
+				if status != experiencing_status and data_title in dictionary["JSON"]["Status"][experiencing_status]:
+					dictionary["JSON"]["Status"][experiencing_status].remove(data_title)
+
+			# Sort the data list
+			dictionary["JSON"]["Status"][experiencing_status] = sorted(dictionary["JSON"]["Status"][experiencing_status], key = str.lower)
+
+		# Update the data type "Info.json" file
+		self.JSON.Edit(data_type["Folders"]["information"]["info"], dictionary["JSON"])
+
+		return dictionary
 
 	def Show_Information(self, dictionary):
 		data = dictionary["Data"]

@@ -66,5 +66,21 @@
 	"re_experienced": {
 		"en": "Re-experienced",
 		"pt": "Re-experimentou"
+	},
+	"when_i_started_to_experience": {
+		"en": "When I started to experience",
+		"pt": "Quando eu comecei a experimentar"
+	},
+	"when_i_finished_experiencing": {
+		"en": "When I finished experiencing",
+		"pt": "Quando eu terminei de experimentar"
+	},
+	"did_you_finished_the_whole_data": {
+		"en": "Did you finished the whole data",
+		"pt": "Você terminou o dado inteiro"
+	},
+	"completed_the_data": {
+		"en": "Completed the data",
+		"pt": "Completou o dado"
 	}
 }

@@ -26,6 +26,11 @@ class Register(Database):
 			}
 		})
 
+		self.Check_Data_Status()
+
+		if self.data["States"]["Re-experiencing"] == False and self.data["States"]["Completed data"] == True:
+			self.Check_Data_Dates()
+
 		# Database related methods
 		self.Register_In_JSON()
 		self.Create_Entry_File()
@@ -325,6 +330,56 @@ class Register(Database):
 
 				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
+	def Check_Data_Status(self):
+		self.data["States"]["Completed data"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_data"])
+
+		if self.data["States"]["Completed data"] == True:
+			# Update the status key in the data details
+			self.Change_Status(self.dictionary)
+
+	def Check_Data_Dates(self):
+		# Completed data time and date template
+		template = self.language_texts["when_i_finished_experiencing"] + ":" + "\n" + \
+		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
+		"\n" + \
+		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
+		"{}"
+
+		# Gets the date that the user started and finished experiencing the data and writes it to the data dates text file
+		if self.data["States"]["Completed data"] == True:
+			# Gets the data dates from the data dates file
+			self.data["dates"] = self.File.Dictionary(self.data["folders"]["dates"], next_line = True)
+
+			key = self.language_texts["when_i_started_to_experience"]
+
+			# Get the started experiencing time
+			self.data["Started experiencing"] = self.Date.To_UTC(self.Date.From_String(self.data["dates"][key]))
+
+			# Define time spent experiencing using started experiencing time and finished experiencing time
+			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+
+			if self.data["Time spent experiencing"][0] + self.data["Time spent experiencing"][1] == ", ":
+				self.data["Time spent experiencing"] = self.data["Time spent experiencing"][2:]
+
+			# Format the time template
+			self.data["Formatted datetime template"] = "\n\n" + template.format(self.data["Time spent experiencing"])
+
+			# Read the data dates file
+			self.data["Finished experiencing text"] = self.File.Contents(self.data["folders"]["dates"])["string"]
+
+			# Add the time template to the data dates text
+			self.data["Finished experiencing text"] += self.data["Formatted datetime template"]
+
+			# Update the data dates text file
+			self.File.Edit(self.data["folders"]["dates"], self.data["Finished experiencing text"], "w")
+
+			text = self.types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["data, title()"].lower()
+
+			# Add the time template to the Diary Slim text
+			self.data["Finished experiencing text"] = self.data["Finished experiencing text"].replace(self.language_texts["when_i_started_to_experience"], self.language_texts["when_i_started_to_experience"] + " " + text)
+
+			self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.data["Finished experiencing text"]
+
 	def Write_On_Diary_Slim(self):
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.data["Titles"]["Language"]
 
@@ -337,6 +392,10 @@ class Register(Database):
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
+
+		# If there are dates, add them to the Diary Slim text
+		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
