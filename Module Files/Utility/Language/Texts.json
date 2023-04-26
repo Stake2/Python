@@ -761,6 +761,18 @@
 		"pt": "Nome romanizado",
 		"es": "Nombre romanizado"
 	},
+	"session_duration": {
+		"en": "Session duration",
+		"pt": "Duração da sessão"
+	},
+	"category, title()": {
+		"en": "Category",
+		"pt": "Categoria"
+	},
+	"played, title()": {
+		"en": "Played",
+		"pt": "Jogado"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

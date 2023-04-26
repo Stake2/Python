@@ -75,7 +75,8 @@ class Folder():
 			"Program Files (x86)",
 			"Apps",
 			"Mega",
-			"Mídias",
+			"Media",
+			"Games",
 			"Sony Vegas Files",
 			"XAMPP"
 		]
@@ -83,12 +84,21 @@ class Folder():
 		for name in folder_names:
 			key = name.lower().replace(" ", "_")
 
+			if key == "media":
+				name = "Mídias"
+
+			if key == "games":
+				name = "Jogos"
+
 			self.folders["root"][key] = {
 				"root": self.folders["root"]["root"] + name + "/"
 			}
 
 		if "media_folder" in self.app_settings:
-			self.folders["root"]["mídias"]["root"] = self.app_settings["media_folder"]
+			self.folders["root"]["media"]["root"] = self.app_settings["media_folder"]
+
+		if "game_folder" in self.app_settings:
+			self.folders["root"]["games"]["root"] = self.app_settings["game_folder"]
 
 		# Apps folders
 		self.folders["apps"] = self.folders["root"]["apps"]
@@ -111,6 +121,22 @@ class Folder():
 		self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
 
 		self.folders["apps"]["shortcuts"]["white_shortcuts"] = os.path.join(self.folders["apps"]["shortcuts"]["root"], "Ícone Branco/")
+
+		# Jogos (Games) folders
+		self.folders["games"] = self.folders["root"]["games"]
+
+		for folder in ["Shortcuts", "Folders"]:
+			key = folder.lower().replace(" ", "_")
+
+			if key == "shortcuts":
+				folder = "Atalhos"
+
+			if key == "folders":
+				folder = "Pastas"
+
+			self.folders["games"][key] = {
+				"root": os.path.join(self.folders["games"]["root"], folder + "/")
+			}
 
 		# User folders
 		self.folders["user"] = {

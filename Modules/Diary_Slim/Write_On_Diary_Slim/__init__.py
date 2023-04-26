@@ -132,12 +132,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 						self.text["data"][language] = ""
 
 						for item in split:
+							if item != split[0] and len(split) == 2:
+								self.text["data"][language] += " "
+
 							if item == split[-1]:
 								self.text["data"][language] += self.texts["and"][language] + " "
 
 							self.text["data"][language] += item
 
-							if item != split[-1]:
+							if item != split[-1] and len(split) != 2:
 								self.text["data"][language] += ", "
 
 						# Replace singular name with plural name on text

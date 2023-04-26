@@ -35,7 +35,9 @@ class Run():
 		module = importlib.import_module("." + option, self.__module__)
 		sub_class = getattr(module, option)()
 
-arguments = ["slim"]
+arguments = [
+	"slim"
+]
 
 if __name__ == "__main__":
 	Run()

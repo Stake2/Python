@@ -24,23 +24,8 @@ class Experience(Database):
 	def Define_Data_Dictionary(self):
 		# Select the data type and the data if the dictionary is empty
 		if self.dictionary == {}:
-			# Define the options dictionary, with the data type dictionary containing the status list of the data
-			options = {
-				"Data type": {
-					"Status": [
-						self.texts["plan_to_experience, title()"]["en"],
-						self.texts["experiencing, title()"]["en"],
-						self.texts["re_experiencing, title()"]["en"],
-						self.JSON.Language.texts["on_hold, title()"]["en"]
-					]
-				}
-			}
-
-			# Define the options for the dictionary
-			self.dictionary = self.Define_Options(self.dictionary, options)
-
 			# Ask the user to select a data type and data
-			self.dictionary = self.Select_Data_Type_And_Data(options)
+			self.dictionary = self.Select_Data_Type_And_Data()
 
 		self.data = self.dictionary["Data"]
 

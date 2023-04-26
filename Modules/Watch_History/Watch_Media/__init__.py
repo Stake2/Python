@@ -38,23 +38,8 @@ class Watch_Media(Watch_History):
 	def Define_Media_Dictionary(self):
 		# Select the media type and the media if the dictionary is empty
 		if self.dictionary == {}:
-			# Define the options dictionary, with the media type dictionary containing the status list of the media
-			options = {
-				"Media type": {
-					"Status": [
-						self.texts["plan_to_watch, title()"]["en"],
-						self.texts["watching, title()"]["en"],
-						self.texts["re_watching, title()"]["en"],
-						self.JSON.Language.texts["on_hold, title()"]["en"]
-					]
-				}
-			}
-
-			# Define the options for the dictionary
-			self.dictionary = self.Define_Options(self.dictionary, options)
-
 			# Ask the user to select a media type and media
-			self.dictionary = self.Select_Media_Type_And_Media(options, watch = True)
+			self.dictionary = self.Select_Media_Type_And_Media(watch = True)
 
 		self.media = self.dictionary["Media"]
 

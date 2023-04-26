@@ -80,7 +80,8 @@ class Tasks(object):
 				"Plural": {},
 				"Folders": {},
 				"Subfolders": {},
-				"Items": {}
+				"Items": {},
+				"Texts": {}
 			}
 
 			# Define singular and plural types
@@ -123,6 +124,9 @@ class Tasks(object):
 
 				# Define the task item
 				self.task_types[plural_task_type]["Items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
+
+				# Define the task texts
+				self.task_types[plural_task_type]["Texts"][language] = self.task_types["task_texts, type: dict"][plural_task_type][language]
 
 			i += 1
 
@@ -193,6 +197,9 @@ class Tasks(object):
 		# Update the "History.json" file with the new History dictionary
 		self.JSON.Edit(self.folders["task_history"]["history"], self.dictionaries["History"])
 
+		# Create the "Per Task Type" key inside the "Numbers" dictionary of the "Tasks" dictionary
+		self.dictionaries["Tasks"]["Numbers"]["Per Task Type"] = {}
+
 		# If the "Tasks.json" is not empty, get the Tasks dictionary from it
 		if self.File.Contents(self.folders["task_history"]["current_year"]["tasks"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["current_year"]["tasks"])["Entries"] != []:
 			self.dictionaries["Tasks"] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["tasks"])
@@ -208,13 +215,13 @@ class Tasks(object):
 			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["Entries"] != []:
 				self.dictionaries["Task Type"][plural_task_type] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])
 
-			# Add the task type number to the root numbers if it does not exist in there
-			if plural_task_type not in self.dictionaries["Tasks"]["Numbers"]:
-				self.dictionaries["Tasks"]["Numbers"][plural_task_type] = 0
+			# Add the task type number to the root numbers per task type if it does not exist in there
+			if plural_task_type not in self.dictionaries["Tasks"]["Numbers"]["Per Task Type"]:
+				self.dictionaries["Tasks"]["Numbers"]["Per Task Type"][plural_task_type] = 0
 
 			# Else, define the root total number per task type as the number inside the Tasks dictionary per task type
-			if plural_task_type in self.dictionaries["Tasks"]["Numbers"]:
-				self.dictionaries["Tasks"]["Numbers"][plural_task_type] = self.dictionaries["Task Type"][plural_task_type]["Numbers"]["Total"]
+			if plural_task_type in self.dictionaries["Tasks"]["Numbers"]["Per Task Type"]:
+				self.dictionaries["Tasks"]["Numbers"]["Per Task Type"][plural_task_type] = self.dictionaries["Task Type"][plural_task_type]["Numbers"]["Total"]
 
 			# Update the per task type "Tasks.json" file with the updated per type Tasks dictionary
 			self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.dictionaries["Task Type"][plural_task_type])
@@ -237,7 +244,7 @@ class Tasks(object):
 		# Iterate through the states keys
 		for key in keys:
 			# If the state is True
-			if dictionary["States"][key] == True:
+			if dictionary["Task"]["States"][key] == True:
 				state = True
 
 				# Define the state dictionary
@@ -272,3 +279,60 @@ class Tasks(object):
 					states_dictionary["Texts"][key][language] = text
 
 		return states_dictionary
+
+	def Show_Information(self, dictionary):
+		task = dictionary["Task"]
+
+		print()
+		print(self.large_bar)
+		print()
+
+		print(self.language_texts["this_task_was_registered"] + ":")
+
+		for language in self.languages["small"]:
+			translated_language = self.languages["full_translated"][language][self.user_language]
+
+			print("\t" + translated_language + ":")
+			print("\t" + task["Titles"][language])
+			print()
+
+		print(self.JSON.Language.language_texts["type, title()"] + ":")
+
+		types = []
+
+		for language in self.languages["small"]:
+			text = "\t" + dictionary["Type"]["Plural"][language]
+
+			if text not in types:
+				types.append(text)
+
+		for item in types:
+			print(item)
+
+		print()
+
+		print(self.JSON.Language.language_texts["when, title()"] + ":")
+		print("\t" + dictionary["Entry"]["Times"]["Timezone"])
+
+		# If there are states, show them
+		if "States" in self.dictionary and self.dictionary["States"]["States"] != {}:
+			print()
+			print(self.JSON.Language.language_texts["states, title()"] + ":")
+
+			for key in self.dictionary["States"]["Texts"]:
+				print("\t" + self.dictionary["States"]["Texts"][key][self.user_language])
+
+		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.language_texts["can_be_long"] + ")")
+
+		if show_task_description == True:
+			print()
+			print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
+			print("[" + task["Descriptions"][self.user_language] + "]")
+
+		if dictionary["large_bar"] == True:
+			print()
+			print(self.large_bar)
+
+		# If the user finished reading the information summary, ask for input before ending execution
+		if dictionary["input"] == True:
+			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
