@@ -56,7 +56,7 @@ class Watch_Media(Watch_History):
 			# If the media "Dates.txt" file is empty
 			if self.File.Contents(self.media["folders"]["dates"])["lines"] == []:
 				# Get the first watching time where the user started watching the media
-				self.media["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+				self.media["Started watching time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 				# Create the Dates text
 				self.media["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
@@ -69,7 +69,7 @@ class Watch_Media(Watch_History):
 				# And the media item "Dates.txt" file is empty
 				if self.File.Contents(self.media["Item"]["folders"]["dates"])["lines"] == []:
 					# Gets the first watching time where the user started watching the media
-					self.media["Item"]["Started watching time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+					self.media["Item"]["Started watching time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 					# Create the Dates text
 					self.media["Item"]["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
@@ -299,11 +299,11 @@ class Watch_Media(Watch_History):
 
 				# Add dubbed text to media link if the media has a dub in the user language and user wants to watch it dubbed
 				if self.media["States"]["Dubbing"]["Has dubbing"] == True and self.media["States"]["Dubbing"]["Watch dubbed"] == True:
-					self.media["Episode"]["Remote"]["Link"] += self.texts["dubbed"]["pt"]
+					self.media["Episode"]["Remote"]["Link"] += self.texts["dubbed, title()"]["pt"].lower()
 
 				# Add subbed text to media link if there is no dub for the media or the user wants to watch it subbed
 				if self.media["States"]["Dubbing"]["Has dubbing"] == False or self.media["States"]["Dubbing"]["Watch dubbed"] == False:
-					self.media["Episode"]["Remote"]["Link"] += self.texts["subbed"]["pt"]
+					self.media["Episode"]["Remote"]["Link"] += self.texts["subbed, title()"]["pt"].lower()
 
 			self.media["Episode"]["unit"] = self.media["Episode"]["Remote"]["Link"]
 
@@ -536,10 +536,14 @@ class Watch_Media(Watch_History):
 	def Define_Episode_Unit(self):
 		# Local media episode file definition
 		if self.media["States"]["Local"] == True:
-			if self.media["States"]["Series media"] == True and self.media["States"]["Video"] == False:
-				# Add "Português" text to media item folder if media has dubbing and watch dubbed is true
-				if self.media["States"]["Dubbing"]["Has dubbing"] == True and self.media["States"]["Dubbing"]["Watch dubbed"] == True:
-					self.media["Item"]["folders"]["media"]["root"] += self.full_user_language + "/"
+			if self.media["States"]["Video"] == False:
+				if self.media["States"]["Dubbing"]["Has dubbing"] == True:
+					# Add dubbed text to the media folder if there is dub for the media and user wants to watch it dubbed
+					if self.media["States"]["Dubbing"]["Watch dubbed"] == True:
+						self.media["Item"]["folders"]["media"]["root"] += self.texts["dubbed, title()"][self.user_language] + "/"
+
+					if self.File_Exists(self.media["Item"]["folders"]["media"]["root"] + self.media["Episode"]["Sanitized"]) == True:
+						self.media["States"]["Dubbing"]["Watch dubbed"] = self.Input.Yes_Or_No(self.language_texts["watch_dubbed"])
 
 			self.Folder.Create(self.media["Item"]["folders"]["media"]["root"])
 
@@ -550,8 +554,8 @@ class Watch_Media(Watch_History):
 
 			# If the media has dubbing and no "Watch dubbed" setting was found
 			if self.language_texts["dubbing, title()"] in self.media["details"] and self.found_watch_dubbed_setting == False:
-				# If the user language episode file exists, ask for the user if it wants to watch the episode dubbed
-				if file_exists == True:
+				# If the file exists and the "Dubbed" text is inside the file, define the "Watch dubbed" state as True
+				if file_exists == True and self.texts["dubbed, title()"][self.user_language] in self.media["Episode"]["unit"]:
 					self.media["States"]["Dubbing"]["Watch dubbed"] = True
 
 				# If the user language episode file does not exist
@@ -592,7 +596,8 @@ class Watch_Media(Watch_History):
 			# If it does not, then, ask if the user wants to move the file from somewhere to the correct folder
 			if file_exists == False:
 				print()
-				print(self.media["Episode"]["unit"] + "." + str(self.dictionary["file_extensions"]).replace("'", "").replace(", ", "/"))
+				print(self.File.language_texts["file, title()"] + ":")
+				print("\t" + self.media["Episode"]["unit"] + "." + str(self.dictionary["file_extensions"]).replace("'", "").replace(", ", "/"))
 				print()
 				print(self.language_texts["the_media_file_does_not_exist"] + ".")
 				print()
@@ -606,7 +611,7 @@ class Watch_Media(Watch_History):
 
 				if bring_file == False:
 					print()
-					quit(self.language_texts["alright"] + ".")
+					quit(self.JSON.Language.language_texts["alright"] + ".")
 
 	def File_Exists(self, file):
 		file_exists = False
@@ -658,7 +663,7 @@ class Watch_Media(Watch_History):
 
 		# Register the finished watching time
 		self.dictionary["Entry"] = {
-			"Time": self.Date.Now()
+			"Date": self.Date.Now()
 		}
 
 		# Use the "Register" class to register the watched media, and giving the dictionary to it

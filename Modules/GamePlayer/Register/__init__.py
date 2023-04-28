@@ -13,9 +13,9 @@ class Register(GamePlayer):
 			self.Type_Entry_Information()
 
 		self.dictionary["Entry"].update({
-			"Times": {
-				"UTC": self.Date.To_String(self.dictionary["Entry"]["Time"]["utc"]),
-				"Timezone": self.Date.Now(self.dictionary["Entry"]["Time"]["date"].astimezone())["hh:mm DD/MM/YYYY"]
+			"Dates": {
+				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 			},
 			"Diary Slim": {
 				"Text": "",
@@ -91,7 +91,7 @@ class Register(GamePlayer):
 
 		# Define sanitized version of entry name for files
 		self.dictionary["Entry"]["Name"] = {
-			"Normal": str(self.dictionaries["Sessions"]["Numbers"]["Total"]) + ". " + self.game_type + " (" + self.dictionary["Entry"]["Times"]["Timezone"] + ")",
+			"Normal": str(self.dictionaries["Sessions"]["Numbers"]["Total"]) + ". " + self.game_type + " (" + self.dictionary["Entry"]["Dates"]["Timezone"] + ")",
 			"Sanitized": ""
 		}
 
@@ -122,7 +122,7 @@ class Register(GamePlayer):
 			"Entry": self.dictionary["Entry"]["Name"]["Normal"],
 			"Titles": game_titles,
 			"Type": self.game_type,
-			"Time": self.dictionary["Entry"]["Times"]["UTC"],
+			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
 			"Session duration": self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
 		}
 
@@ -268,7 +268,7 @@ class Register(GamePlayer):
 		times = ""
 
 		for key in ["UTC", "Timezone"]:
-			time = self.dictionary["Entry"]["Times"][key]
+			time = self.dictionary["Entry"]["Dates"][key]
 
 			times += time + "\n"
 
@@ -373,7 +373,7 @@ class Register(GamePlayer):
 	def Check_Game_Dates(self):
 		# Completed game time and date template
 		template = self.language_texts["when_i_finished_playing"] + ":" + "\n" + \
-		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
+		self.dictionary["Entry"]["Dates"]["Timezone"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -389,7 +389,7 @@ class Register(GamePlayer):
 			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["dates"][key]))
 
 			# Define time spent playing using started playing time and finished playing time
-			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
 
 			if self.game["Time spent playing"][0] + self.game["Time spent playing"][1] == ", ":
 				self.game["Time spent playing"] = self.game["Time spent playing"][2:]
@@ -475,7 +475,7 @@ class Register(GamePlayer):
 
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"])
 
-			self.Text.Copy(self.dictionary["Entry"]["Times"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
+			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 
 		print()
 		print("-----")
@@ -488,4 +488,4 @@ class Register(GamePlayer):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Times"]["Timezone"], add_dot = False)
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False)

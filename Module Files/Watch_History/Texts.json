@@ -290,9 +290,9 @@
 		"en": "Has dub",
 		"pt": "Tem dublagem"
 	},
-	"subbed": {
-		"en": "subbed",
-		"pt": "legendado"
+	"subbed, title()": {
+		"en": "Subbed",
+		"pt": "Legendado"
 	},
 	"dubbing": {
 		"en": "dubbing",
@@ -302,9 +302,9 @@
 		"en": "Dubbing",
 		"pt": "Dublagem"
 	},
-	"dubbed": {
-		"en": "dubbed",
-		"pt": "dublado"
+	"dubbed, title()": {
+		"en": "Dubbed",
+		"pt": "Dublado"
 	},
 	"dubbed_to_title": {
 		"en": "Dubbed to title",
@@ -522,10 +522,6 @@
 	"please_select_a_file_that_is_either_mp4_or_mkv": {
 		"pt": "Selecione um arquivo que seja MP4 ou MKV",
 		"en": "Please select a file that is either MP4 or MKV"
-	},
-	"alright": {
-		"pt": "Tudo bem",
-		"en": "Alright"
 	},
 	"select_a_season": {
 		"pt": "Selecione uma temporada",

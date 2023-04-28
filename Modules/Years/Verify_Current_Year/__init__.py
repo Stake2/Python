@@ -35,7 +35,7 @@ class Verify_Current_Year(Years):
 				text_to_write = self.File.Contents(self.this_year_i_post_file)["string"]
 
 				if "{current_year}" in text_to_write:
-					text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+					text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
@@ -48,7 +48,7 @@ class Verify_Current_Year(Years):
 			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
 
 			if "{current_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+				text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
 
@@ -56,7 +56,7 @@ class Verify_Current_Year(Years):
 			text_to_write = self.File.Contents(self.files["new_year"])["string"]
 
 			if "{next_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{next_year}", str(self.date["year"] + 1))
+				text_to_write = text_to_write.replace("{next_year}", str(self.date["Units"]["Year"] + 1))
 
 			self.File.Edit(self.files["new_year"], text_to_write, "w")
 
@@ -78,7 +78,7 @@ class Verify_Current_Year(Years):
 				text_to_write = self.File.Contents(file)["string"]
 
 				if "{current_year}" in text_to_write:
-					text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+					text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 				self.File.Edit(file, text_to_write, "w")
 
@@ -90,7 +90,7 @@ class Verify_Current_Year(Years):
 			text_to_show = self.language_texts["the_current_year_did_not_existed_in_the_years_folder"]
 
 		print(text_to_show + ":")
-		print(self.date["year"])
+		print(self.date["Units"]["Year"])
 		print()
 
 		text_to_show = self.language_texts["this_is_its_year_folder"]

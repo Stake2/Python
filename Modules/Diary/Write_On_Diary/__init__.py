@@ -38,7 +38,7 @@ class Write_On_Diary(Diary):
 			if self.presenter_text not in self.presenter_numbers:
 				format_text = self.format_text
 
-				text_to_append = self.Date.Now()["%H:%M %d/%m/%Y"] + ":" + "\n" + format_text.format(self.presenter, self.presenter_text)
+				text_to_append = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"] + ":" + "\n" + format_text.format(self.presenter, self.presenter_text)
 
 				if self.File.Contents(self.diary_chapter_file)["lines"] != []:
 					text_to_append = "\n" + text_to_append

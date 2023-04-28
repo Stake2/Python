@@ -17,9 +17,9 @@ class Register(Database):
 		self.data = self.dictionary["Data"]
 
 		self.dictionary["Entry"].update({
-			"Times": {
-				"UTC": self.Date.To_String(self.dictionary["Entry"]["Time"]["utc"]),
-				"Timezone": self.Date.Now(self.dictionary["Entry"]["Time"]["date"].astimezone())["hh:mm DD/MM/YYYY"]
+			"Dates": {
+				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 			},
 			"Diary Slim": {
 				"Text": ""
@@ -53,7 +53,7 @@ class Register(Database):
 			"Type": self.types[dictionary["option"]],
 			"Name": {},
 			"Titles": {},
-			"Time": self.Date.Now()
+			"Date": self.Date.Now()
 		}
 
 	def Type_Entry_Information(self):
@@ -82,7 +82,7 @@ class Register(Database):
 
 		# Define sanitized version of entry name for files
 		self.dictionary["Entry"]["Name"] = {
-			"Normal": str(self.dictionaries["Entries"]["Numbers"]["Total"]) + ". " + self.type + " (" + self.dictionary["Entry"]["Times"]["Timezone"] + ")",
+			"Normal": str(self.dictionaries["Entries"]["Numbers"]["Total"]) + ". " + self.type + " (" + self.dictionary["Entry"]["Dates"]["Timezone"] + ")",
 			"Sanitized": ""
 		}
 
@@ -113,7 +113,7 @@ class Register(Database):
 			"Entry": self.dictionary["Entry"]["Name"]["Normal"],
 			"Titles": data_titles,
 			"Type": self.type,
-			"Time": self.dictionary["Entry"]["Times"]["UTC"]
+			"Date": self.dictionary["Entry"]["Dates"]["UTC"]
 		}
 
 		# Get the States dictionary
@@ -150,8 +150,8 @@ class Register(Database):
 		# Type:
 		# [Type]
 		#
-		# Times:
-		# [Entry times]
+		# Dates:
+		# [Entry dates]
 		# 
 		# File name:
 		# [Number. Type (Time)]
@@ -252,7 +252,7 @@ class Register(Database):
 		times = ""
 
 		for key in ["UTC", "Timezone"]:
-			time = self.dictionary["Entry"]["Times"][key]
+			time = self.dictionary["Entry"]["Dates"][key]
 
 			times += time + "\n"
 
@@ -340,7 +340,7 @@ class Register(Database):
 	def Check_Data_Dates(self):
 		# Completed data time and date template
 		template = self.language_texts["when_i_finished_experiencing"] + ":" + "\n" + \
-		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
+		self.dictionary["Entry"]["Dates"]["Timezone"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -356,7 +356,7 @@ class Register(Database):
 			self.data["Started experiencing"] = self.Date.To_UTC(self.Date.From_String(self.data["dates"][key]))
 
 			# Define time spent experiencing using started experiencing time and finished experiencing time
-			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Texts"][self.user_language]
 
 			if self.data["Time spent experiencing"][0] + self.data["Time spent experiencing"][1] == ", ":
 				self.data["Time spent experiencing"] = self.data["Time spent experiencing"][2:]
@@ -400,4 +400,4 @@ class Register(Database):
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 		# Write on Diary Slim
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Times"]["Timezone"], add_dot = False)
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False)

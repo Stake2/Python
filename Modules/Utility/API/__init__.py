@@ -272,7 +272,7 @@ class API():
 					"Link": link + id,
 					"Description": "",
 					"Text": {},
-					"Time": self.Date.To_String(self.Get_Date(snippet["publishedAt"])),
+					"Date": self.Date.To_String(self.Get_Date(snippet["publishedAt"]), utc = True),
 					"Images": [],
 					"Language": ""
 				}

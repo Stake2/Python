@@ -21,7 +21,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 	def Write(self):
 		if self.time == None:
-			self.time = self.Date.Now()["date_time_format"][self.user_language]
+			self.time = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 		text_to_append = ""
 

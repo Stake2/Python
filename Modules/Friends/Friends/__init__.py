@@ -12,7 +12,7 @@ class Friends(object):
 		self.Define_Texts()
 
 		if current_year != None:
-			self.date["year"] = current_year
+			self.date["Units"]["Year"] = current_year
 
 		if social_network != None:
 			self.social_network = social_network
@@ -337,7 +337,7 @@ class Friends(object):
 			if self.year_i_met in self.year_friends_numbers:
 				self.year_friends_numbers[self.year_i_met] += 1
 
-		for year in range(2018, self.date["year"] + 1):
+		for year in range(2018, self.date["Units"]["Year"] + 1):
 			if str(year) not in self.year_friends_numbers:
 				self.year_friends_numbers[str(year)] = 0
 
@@ -389,7 +389,7 @@ class Friends(object):
 		# Edit Information.json file to add JSON dictionary
 		self.JSON.Edit(self.information_file, self.information)
 
-		self.current_year_friends_number = self.year_friends_numbers[str(self.date["year"])]
+		self.current_year_friends_number = self.year_friends_numbers[str(self.date["Units"]["Year"])]
 
 	def Select_Friend(self, friends = None, select_text = None, first_space = True, second_space = True):
 		if friends != None:

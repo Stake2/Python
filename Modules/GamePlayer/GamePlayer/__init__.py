@@ -309,7 +309,7 @@ class GamePlayer(object):
 		sessions = 0
 
 		# Update the number of sessions of all years
-		for year in range(self.date["year"], self.date["year"] + 1):
+		for year in range(self.date["Units"]["Year"], self.date["Units"]["Year"] + 1):
 			year = str(year)
 
 			# Get the year folder and the entries file
@@ -952,7 +952,7 @@ class GamePlayer(object):
 			print()
 
 			print(self.language_texts["when_you_finished_playing"] + ":")
-			print("\t" + dictionary["Entry"]["Times"]["Timezone"])
+			print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 			print()
 
 			print(self.JSON.Language.language_texts["session_duration"] + ":")

@@ -65,12 +65,12 @@ class Christmas():
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-		self.christmas = self.Date.From_String("25/12/" + str(self.date["year"]))
+		self.christmas = self.Date.From_String("25/12/" + str(self.date["Units"]["Year"]))
 
 	def Today_Is_Christmas(self):
 		self.today_is_christmas = False
 
-		if self.date["day"] == self.christmas["day"] and self.date["month"] == self.christmas["month"]:
+		if self.date["Units"]["Day"] == self.christmas["Units"]["Day"] and self.date["Units"]["Month"] == self.christmas["Units"]["Month"]:
 			self.today_is_christmas = True
 
 		return self.today_is_christmas

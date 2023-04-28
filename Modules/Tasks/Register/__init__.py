@@ -23,13 +23,19 @@ class Register(Tasks):
 		if "Descriptions" not in self.task:
 			self.task["Descriptions"] = self.task["Titles"]
 
+		if "States" not in self.task:
+			self.task["States"] = {
+				"First task in year": False,
+				"First task type task in year": False
+			}
+
 		if type(self.dictionary["Type"]) == str:
 			self.dictionary["Type"] = self.task_types[self.dictionary["Type"]]
 
 		self.dictionary["Entry"].update({
-			"Times": {
-				"UTC": self.Date.To_String(self.dictionary["Entry"]["Time"]["utc"]),
-				"Timezone": self.dictionary["Entry"]["Time"]["hh:mm DD/MM/YYYY"]
+			"Dates": {
+				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 			},
 			"Diary Slim": {
 				"Text": ""
@@ -66,7 +72,7 @@ class Register(Tasks):
 				}
 			},
 			"Entry": {
-				"Time": self.Date.Now()
+				"Date": self.Date.Now()
 			},
 			"large_bar": True,
 			"input": True
@@ -175,7 +181,7 @@ class Register(Tasks):
 
 		# Define sanitized version of entry name for files
 		self.task["Name"] = {
-			"Normal": str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + ". " + self.task_type + " (" + self.dictionary["Entry"]["Times"]["Timezone"] + ")",
+			"Normal": str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + ". " + self.task_type + " (" + self.dictionary["Entry"]["Dates"]["Timezone"] + ")",
 			"Sanitized": ""
 		}
 
@@ -194,7 +200,7 @@ class Register(Tasks):
 			"Entry": self.task["Name"]["Normal"],
 			"Titles": self.task["Titles"],
 			"Type": self.task_type,
-			"Time": self.dictionary["Entry"]["Times"]["UTC"],
+			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
 			"Lines": len(self.task["Descriptions"]["en"].splitlines())
 		}
 
@@ -228,8 +234,8 @@ class Register(Tasks):
 		# Type:
 		# [Task type]
 		# 
-		# Times:
-		# [Task times]
+		# Dates:
+		# [Task dates]
 		# 
 		# File name:
 		# [Number. Type (Time)]
@@ -337,7 +343,7 @@ class Register(Tasks):
 		times = ""
 
 		for key in ["UTC", "Timezone"]:
-			time = self.dictionary["Entry"]["Times"][key]
+			time = self.dictionary["Entry"]["Dates"][key]
 
 			times += time + "\n"
 
@@ -449,4 +455,4 @@ class Register(Tasks):
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 		# Write on Diary Slim
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Times"]["Timezone"], add_dot = False, show_text = False)
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False, show_text = False)

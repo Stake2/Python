@@ -323,7 +323,7 @@ class Folder():
 			self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["history"] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], "History.json")
 
 			# "Network History" year folders
-			for item in [self.date["year"]]:
+			for item in [self.date["Units"]["Year"]]:
 				key = str(item).lower().replace(" ", "_")
 
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
@@ -349,14 +349,14 @@ class Folder():
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
 
 		# "Years" folders
-		for item in range(2021, self.date["year"] + 1):
+		for item in range(2021, self.date["Units"]["Year"] + 1):
 			key = str(item).lower().replace(" ", "_")
 
 			self.folders["mega"]["notepad"]["effort"]["years"][key] = {
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["years"]["root"], str(item) + "/"),
 			}
 
-			if key == str(self.date["year"]):
+			if key == str(self.date["Units"]["Year"]):
 				# Per language years folder
 				for language in self.languages["small"]:
 					full_language = self.languages["full"][language]

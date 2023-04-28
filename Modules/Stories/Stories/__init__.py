@@ -126,8 +126,8 @@ class Stories(object):
 
 		# Dictionaries
 		self.default_information_items = {
-			self.language_texts["creation_date"]: self.Date.Now()["%d/%m/%Y"],
-			self.language_texts["author, title()"]: self.author,
+			self.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
+			self.language_texts["author, title()"]: self.author
 		}
 
 	def Define_Stories_Dictionary(self):
@@ -571,8 +571,8 @@ class Stories(object):
 		if "Type" not in task_dictionary:
 			task_dictionary["Type"] = "Stories"
 
-		if "Time" not in task_dictionary:
-			task_dictionary["Time"] = self.Date.Now()
+		if "Date" not in task_dictionary["Entry"]:
+			task_dictionary["Entry"]["Date"] = self.Date.Now()
 
 		# Register task with Tasks module, Register class
 		if register_task == True:
@@ -588,4 +588,4 @@ class Stories(object):
 
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-			Write_On_Diary_Slim_Module(task_dictionary["descriptions"][self.user_language], self.task_dictionary["Time"]["date_time_format"][self.user_language], show_text = False)
+			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False)

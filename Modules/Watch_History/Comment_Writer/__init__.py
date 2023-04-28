@@ -13,33 +13,33 @@ class Comment_Writer(Watch_History):
 
 		self.dictionary["Comment Writer"] = {
 			"States": {
-				"backup": True,
-				"new": True,
-				"make": False,
-				"write": False
+				"Backup": True,
+				"New": True,
+				"Make": False,
+				"Write": False
 			}
 		}
 
 		if self.write_comment != False:
-			self.dictionary["Comment Writer"]["States"]["write"] = self.write_comment
+			self.dictionary["Comment Writer"]["States"]["Write"] = self.write_comment
 
 		self.folders["comments"]["backups"]["backup"] = self.folders["comments"]["backups"]["root"] + "Backup.txt"
 
 		# If the backup file exists, it is not a new comment and the user is going to write the comment
 		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == True:
-			self.dictionary["Comment Writer"]["States"]["new"] = False
+			self.dictionary["Comment Writer"]["States"]["New"] = False
 
-			self.dictionary["Comment Writer"]["States"]["write"] = True
+			self.dictionary["Comment Writer"]["States"]["Write"] = True
 
 		# If the backup file does not exist, ask the user if it wants to write a comment
-		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False and self.dictionary["Comment Writer"]["States"]["write"] == False:
-			self.dictionary["Comment Writer"]["States"]["write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
+		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False and self.dictionary["Comment Writer"]["States"]["Write"] == False:
+			self.dictionary["Comment Writer"]["States"]["Write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
 
-		if self.dictionary["Comment Writer"]["States"]["write"] == True:
+		if self.dictionary["Comment Writer"]["States"]["Write"] == True:
 			self.media["States"]["Commented"] = True
 
 			# Create backup file
-			if self.dictionary["Comment Writer"]["States"]["backup"] == True:
+			if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
 				self.File.Create(self.folders["comments"]["backups"]["backup"])
 
 			# Run methods
@@ -59,10 +59,13 @@ class Comment_Writer(Watch_History):
 			]
 
 			# If media type is inside the above list, and the episode is a remote one, open remote episode link to post comment
-			if self.dictionary["Media type"]["Plural"]["en"] in self.media_types["comment_posting"] and \
-				"remote" in self.media["Episode"] and self.media["Episode"]["Remote"]["Link"] != "":
+			if (
+				self.dictionary["Media type"]["Plural"]["en"] in self.media_types["comment_posting"] and
+				"Remote" in self.media["Episode"] and self.media["Episode"]["Remote"]["Link"] != "" and
+				self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
+			):
 				# Copy the comment
-				self.Text.Copy(self.media["comment"]["comment"]["Text"])
+				self.Text.Copy(self.media["Comment"]["Text"]["String"])
 
 				if self.media["States"]["Remote"] == False:
 					# Open remote episode link
@@ -74,9 +77,13 @@ class Comment_Writer(Watch_History):
 			self.Write_Comment_To_Files()
 
 	def Define_Files(self):
-		self.media["comment"] = {
-			"file_name": "",
-			"file": ""
+		self.media["Comment"] = {
+			"File name": "",
+			"Text": {
+				"String": "",
+				"Lines": []
+			},
+			"Line number": 0
 		}
 
 		# Comment file name for non-movies
@@ -88,28 +95,28 @@ class Comment_Writer(Watch_History):
 					add = True
 
 			if add == True:
-				self.media["comment"]["file_name"] += self.media["Episode"]["Separator"] + " "
+				self.media["Comment"]["File name"] += self.media["Episode"]["Separator"] + " "
 
 			if self.media["States"]["Episodic"] == True:
 				if "Number text" in self.media["Episode"]:
-					self.media["comment"]["file_name"] += self.media["Episode"]["Number text"]
+					self.media["Comment"]["File name"] += self.media["Episode"]["Number text"]
 
 				else:
-					self.media["comment"]["file_name"] += str(self.Text.Add_Leading_Zeroes(self.media["Episode"]["Number"]))
+					self.media["Comment"]["File name"] += str(self.Text.Add_Leading_Zeroes(self.media["Episode"]["Number"]))
 
 			if self.media["States"]["Episodic"] == False:
-				self.media["comment"]["file_name"] = self.media["Episode"]["Title"]
+				self.media["Comment"]["File name"] = self.media["Episode"]["Title"]
 
 		# Comment file name for movies or single unit media items
 		if self.media["States"]["Series media"] == False or self.media["States"]["Single unit"] == True:
-			self.media["comment"]["file_name"] = self.JSON.Language.language_texts["comment, title()"]
+			self.media["Comment"]["File name"] = self.JSON.Language.language_texts["comment, title()"]
 
 		# Add Re-watching text to comment file name if it exists
 		if self.media["States"]["Re-watching"] == True:
-			self.media["comment"]["file_name"] += self.media["Episode"]["re_watched"]["text"]
+			self.media["Comment"]["File name"] += self.media["Episode"]["re_watched"]["text"]
 
 		# Media folder comment file
-		self.media["Item"]["folders"]["comments"]["comment"] = self.media["Item"]["folders"]["comments"]["root"] + self.Sanitize(self.media["comment"]["file_name"], restricted_characters = True) + ".txt"
+		self.media["Item"]["folders"]["comments"]["comment"] = self.media["Item"]["folders"]["comments"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
 		self.File.Create(self.media["Item"]["folders"]["comments"]["comment"])
 
 		# Read Comments.json file to get comments dictionary
@@ -119,19 +126,12 @@ class Comment_Writer(Watch_History):
 		self.dictionaries["Comments"] = self.JSON.To_Python(self.media["Item"]["folders"]["comments"]["comments"])
 
 	def Write_Comment(self):
-		# Define comment as an empty string
-		self.media["comment"]["comment"] = {
-			"Text": "",
-			"Lines": [],
-			"Line number": 0
-		}
-
 		# If backup is true and the comment is not a new one, get the comment from the backup file
-		if self.dictionary["Comment Writer"]["States"]["backup"] == True and self.dictionary["Comment Writer"]["States"]["new"] == False:
+		if self.dictionary["Comment Writer"]["States"]["Backup"] == True and self.dictionary["Comment Writer"]["States"]["New"] == False:
 			text = self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
-			self.media["comment"]["comment"]["Text"] += text
-			self.media["comment"]["comment"]["Lines"].append(text)
+			self.media["Comment"]["Text"]["String"] += text
+			self.media["Comment"]["Text"]["Lines"].append(text)
 
 			print()
 			print("---")
@@ -141,7 +141,7 @@ class Comment_Writer(Watch_History):
 		# Define the show text to be shown in the "Input.Lines" method
 		show_text = "----------" + "\n\n"
 		show_text += self.language_texts["comment_file_name"] + ":" + "\n"
-		show_text += self.media["comment"]["file_name"] + "\n"
+		show_text += self.media["Comment"]["File name"] + "\n"
 		show_text += "\n"
 
 		# Define masculine or feminine text based on masculine or feminine text with function
@@ -150,7 +150,7 @@ class Comment_Writer(Watch_History):
 		show_text += "\n\n" + "----------"
 
 		# If the comment is a new one, add episode text to comment
-		if self.dictionary["Comment Writer"]["States"]["new"] == True:
+		if self.dictionary["Comment Writer"]["States"]["New"] == True:
 			key = "with_title"
 
 			if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Title"] and self.media["States"]["Video"] == False and self.media["States"]["Single unit"] == False:
@@ -167,81 +167,81 @@ class Comment_Writer(Watch_History):
 			# Define episode text (title)
 			episode_text = self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
-			self.media["comment"]["comment"]["Text"] += episode_text
+			self.media["Comment"]["Text"]["String"] += episode_text
 
-			self.media["comment"]["comment"]["Lines"].append(self.JSON.Language.language_texts["title, title()"] + ":")
-			self.media["comment"]["comment"]["Lines"].append(title)
+			self.media["Comment"]["Text"]["Lines"].append(self.JSON.Language.language_texts["title, title()"] + ":")
+			self.media["Comment"]["Text"]["Lines"].append(title)
 
 			if self.media["States"]["Video"] == True:
-				self.media["comment"]["comment"]["Text"] += self.media["Episode"]["ID"] + "\n"
-				self.media["comment"]["comment"]["Lines"].append(self.media["Episode"]["ID"])
+				self.media["Comment"]["Text"]["String"] += self.media["Episode"]["ID"] + "\n"
+				self.media["Comment"]["Text"]["Lines"].append(self.media["Episode"]["ID"])
 
-			self.media["comment"]["comment"]["Text"] += "\n"
-			self.media["comment"]["comment"]["Lines"].append("")
+			self.media["Comment"]["Text"]["String"] += "\n"
+			self.media["Comment"]["Text"]["Lines"].append("")
 
 			# Add the time text to the comment to be replaced by the commented time after finishing the comment
-			self.media["comment"]["comment"]["Text"] += self.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"
+			self.media["Comment"]["Text"]["String"] += self.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"
 
-			self.media["comment"]["comment"]["Lines"].append(self.language_texts["time, title()"] + ":")
-			self.media["comment"]["comment"]["Lines"].append("[Time]")
+			self.media["Comment"]["Text"]["Lines"].append(self.language_texts["time, title()"] + ":")
+			self.media["Comment"]["Text"]["Lines"].append("[Time]")
 
 			# If backup is true, backup comment to file
-			if self.dictionary["Comment Writer"]["States"]["backup"] == True:
-				self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media["comment"]["comment"]["Text"], "a", next_line = False)
+			if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
+				self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media["Comment"]["Text"]["String"], "a", next_line = False)
 
 			# Add comment to show text
-			show_text += "\n" + self.media["comment"]["comment"]["Text"]
+			show_text += "\n" + self.media["Comment"]["Text"]["String"]
 
 			# Add "\n" to comment after adding comment to show text, to have a correct space before the input line
-			self.media["comment"]["comment"]["Text"] += "\n"
-			self.media["comment"]["comment"]["Lines"].append("")
+			self.media["Comment"]["Text"]["String"] += "\n"
+			self.media["Comment"]["Text"]["Lines"].append("")
 
 		# If the comment is not a new one, load already written comment from backup file
-		if self.dictionary["Comment Writer"]["States"]["new"] == False:
+		if self.dictionary["Comment Writer"]["States"]["New"] == False:
 			show_text += "\n" + self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
 		# Ask for user to write comment
 		dictionary = self.Input.Lines(show_text, line_options = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])
 
 		# Add comment to the comment text string and lines list
-		self.media["comment"]["comment"]["Text"] += dictionary["string"]
-		self.media["comment"]["comment"]["Lines"].extend(dictionary["lines"])
+		self.media["Comment"]["Text"]["String"] += dictionary["string"]
+		self.media["Comment"]["Text"]["Lines"].extend(dictionary["lines"])
 
 		# Get line number
-		self.media["comment"]["comment"]["Line number"] = len(self.media["comment"]["comment"]["Lines"])
+		self.media["Comment"]["Line number"] = len(self.media["Comment"]["Text"]["Lines"])
 
 		# Define comment time
-		self.media["comment"]["time"] = self.Date.Now()
+		self.media["Comment"]["Date"] = self.Date.Now()
 
 		# Replace time text in comment with comment time
-		self.media["comment"]["comment"]["Text"] = self.media["comment"]["comment"]["Text"].replace("[Time]", self.Date.To_String(self.media["comment"]["time"]["date"].astimezone(), self.Date.language_texts["date_time_format"]))
+		self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# Replace time text in comment with comment time
-		self.media["comment"]["comment"]["Lines"][4] = self.media["comment"]["comment"]["Lines"][4].replace("[Time]", self.Date.To_String(self.media["comment"]["time"]["date"].astimezone(), self.Date.language_texts["date_time_format"]))
+		self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 	def Write_Comment_To_Files(self):
 		from copy import deepcopy
 
 		# Delete backup file
-		if self.dictionary["Comment Writer"]["States"]["backup"] == True:
+		if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
 			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
 		# Add to total comment number
 		self.dictionaries["Root comments"]["Numbers"]["Total"] += 1
 
 		# Add to year comment number
-		self.dictionaries["Root comments"]["Numbers"]["Years"][str(self.date["year"])] += 1
+		self.dictionaries["Root comments"]["Numbers"]["Years"][str(self.date["Units"]["Year"])] += 1
 
 		# Add to media type comment number
 		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Total"] += 1
 
 		# Add to media type comment number per year
-		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(self.date["year"])] += 1
+		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(self.date["Units"]["Year"])] += 1
 
 		# Update root Comments.json file to update numbers
 		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root comments"])
 
-		self.key = self.media["comment"]["file_name"]
+		self.key = self.media["Comment"]["File name"]
 
 		# Add comment file name to file names list
 		self.dictionaries["Comments"]["Entries"].append(self.key)
@@ -255,13 +255,13 @@ class Comment_Writer(Watch_History):
 			"Entry": self.key,
 			"Type": self.dictionary["Media type"]["Plural"]["en"],
 			"Titles": self.media["Episode"]["Titles"],
-			"Time": self.Date.To_String(self.media["comment"]["time"]["utc"]),
-			"Lines": self.media["comment"]["comment"]["Line number"]
+			"Date": self.media["Comment"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+			"Lines": self.media["Comment"]["Line number"]
 		}
 
 		# Add YouTube video ID, comment link, and comment ID to comment dictionary
 		if self.media["States"]["Video"] == True:
-			self.dictionaries["Comments"]["Dictionary"][self.key].pop("Time")
+			self.dictionaries["Comments"]["Dictionary"][self.key].pop("Date")
 
 			lines = self.dictionaries["Comments"]["Dictionary"][self.key]["Lines"]
 			self.dictionaries["Comments"]["Dictionary"][self.key].pop("Lines")
@@ -269,19 +269,19 @@ class Comment_Writer(Watch_History):
 			self.dictionaries["Comments"]["Dictionary"][self.key].update({
 				"ID": "",
 				"Link": "",
-				"Time": "",
+				"Date": "",
 				"Lines": lines,
 				"Video": {
 					"ID": self.media["Episode"]["ID"],
 					"Link": self.remote_origins["YouTube"] + "watch?v=" + self.media["Episode"]["ID"],
-					"Time": ""
+					"Date": ""
 				}
 			})
 
 			video_information = self.Get_YouTube_Information("video", self.dictionaries["Comments"]["Dictionary"][self.key]["Video"]["Link"])
 
 			# Define video time as video published time gotten from YouTube API
-			self.dictionaries["Comments"]["Dictionary"][self.key]["Video"]["Time"] = video_information["Time"]
+			self.dictionaries["Comments"]["Dictionary"][self.key]["Video"]["Date"] = video_information["Date"]
 
 			original_link = ""
 
@@ -306,18 +306,18 @@ class Comment_Writer(Watch_History):
 			comment_information = self.Get_YouTube_Information("comment", self.dictionaries["Comments"]["Dictionary"][self.key]["Link"])
 
 			# Convert the comment date to a string using the date time format
-			comment_date = self.Date.From_String(comment_information["Time"])
+			comment_date = self.Date.From_String(comment_information["Date"] )
 
 			# Define comment time as comment published time gotten from YouTube API
-			self.dictionaries["Comments"]["Dictionary"][self.key]["Time"] = self.Date.To_String(comment_date)
+			self.dictionaries["Comments"]["Dictionary"][self.key]["Date"] = self.Date.To_String(comment_date, utc = True)
 
 			# Update time in comment file
-			self.media["comment"]["comment"]["Text"] = self.media["comment"]["comment"]["Text"].splitlines()
-			self.media["comment"]["comment"]["Text"][5] = self.Date.To_Timezone(comment_date)["date_time_format"][self.user_language]
-			self.media["comment"]["comment"]["Text"] = self.Text.From_List(self.media["comment"]["comment"]["Text"])
+			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
+			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
+			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
 
 		# Write comment into media folder comment file
-		self.File.Edit(self.media["Item"]["folders"]["comments"]["comment"], self.media["comment"]["comment"]["Text"], "w")
+		self.File.Edit(self.media["Item"]["folders"]["comments"]["comment"], self.media["Comment"]["Text"]["String"], "w")
 
 		# Get states dictionary
 		states_dictionary = self.Define_States_Dictionary(self.dictionary)["States"]

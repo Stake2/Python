@@ -290,7 +290,7 @@
 	},
 	"second": {
 		"en": "second",
-		"pt": "segundos"
+		"pt": "segundo"
 	},
 	"seconds": {
 		"en": "seconds",
@@ -298,15 +298,11 @@
 	},
 	"second, title()": {
 		"en": "Second",
-		"pt": "Segundos"
+		"pt": "Segundo"
 	},
 	"seconds, title()": {
 		"en": "Seconds",
 		"pt": "Segundos"
-	},
-	"and": {
-		"en": "and",
-		"pt": "e"
 	},
 	"date_format": {
 		"en": "%m/%d/%Y",

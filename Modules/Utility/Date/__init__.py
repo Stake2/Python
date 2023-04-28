@@ -31,89 +31,190 @@ class Date():
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
+		if date_parameter == None:
+			date_parameter = datetime.now()
+
 		date = {
-			"timezone": self.user_timezone
+			"User timezone": {
+				"String": self.user_timezone,
+				"UTC Offset": date_parameter.replace(microsecond = 0).astimezone().strftime("%z"),
+				"Name": date_parameter.replace(microsecond = 0).astimezone().strftime("%Z")
+			},
+			"Object": {},
+			"Units": {},
+			"Texts": {},
+			"Formats": {},
+			"UTC": {
+				"Object": date_parameter.replace(microsecond = 0).astimezone(pytz.UTC)
+			},
+			"Timezone": {
+				"Object": date_parameter.replace(microsecond = 0).astimezone()
+			}
 		}
 
-		if date_parameter == None:
-			date["utc"] = datetime.now(pytz.UTC).replace(microsecond=0)
-			date["date"] = datetime.now().replace(microsecond=0)
+		# Iterate through the date names list
+		for date_name in ["UTC", "Timezone"]:
+			# Iterate through the date types list
+			for date_type in ["Date", "Time"]:
+				date[date_name][date_type] = {
+					"Object": date[date_name]["Object"],
+					"Units": {
+						"Day": 0,
+						"Week day": 0,
+						"Month": 0,
+						"Year": 0
+					},
+					"Texts": {
+						"Day name": {},
+						"Day gender": {},
+						"Day": {},
+						"Month name": {}
+					},
+					"Formats": {
+						"YYYY-MM-DD": "",
+						"DD/MM/YYYY": "",
+						"DD-MM-YYYY": ""
+					}
+				}
 
-		if date_parameter != None:
-			date["utc"] = date_parameter.astimezone(pytz.UTC).replace(microsecond=0)
-			date["date"] = date_parameter.replace(microsecond=0)
+				formats = [
+					"%Y-%m-%d",
+					"%d/%m/%Y",
+					"%d-%m-%Y"
+				]
 
-		# Day
-		date["day"] = date["date"].day
-		date["weekday"] = date["date"].weekday()
-		date["day_name"] = self.language_texts["day_names, type: list"][date["weekday"]]
+				# If the date type is "Time", define its unique object and its own unit, text, and format keys
+				if date_type == "Time":
+					date[date_name][date_type] = {
+						"Object": date[date_name][date_type]["Object"].time(),
+						"Units": {
+							"Hour": 0,
+							"Minute": 0,
+							"Second": 0
+						},
+						"Texts": {
+							"Hour": {},
+							"Minute": {},
+							"Second": {}
+						},
+						"Formats": {
+							"HH:MM": ""
+						}
+					}
 
-		date["day_names"] = {}
+					formats = [
+						"%H:%M"
+					]
 
-		for language in self.languages["small"]:
-			if language in self.texts["day_names, type: list"]:
-				date["day_names"][language] = self.texts["day_names, type: list"][language][date["weekday"]]
+				# Add the date or time units
+				for key in date[date_name][date_type]["Units"]:
+					data_key = key.lower()
 
-		# Month
-		date["month"] = date["date"].month
-		date["month_name"] = self.language_texts["month_names, type: list"][date["month"]]
+					if " " in data_key:
+						data_key = data_key.replace(" ", "")
 
-		date["month_names"] = {}
+					date[date_name][date_type]["Units"][key] = getattr(date[date_name][date_type]["Object"], data_key)
 
-		for language in self.languages["small"]:
-			date["month_names"][language] = self.texts["month_names, type: list"][language][date["month"]]
+					if key == "Week day":
+						date[date_name][date_type]["Units"][key] = date[date_name][date_type]["Units"][key]()
 
-		# Year
-		date["year"] = date["date"].year
+				# Add the date or time texts
+				for key in date[date_name][date_type]["Texts"]:
+					for language in self.languages["small"]:
+						if key == "Day name":
+							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names, type: list"][language][date[date_name][date_type]["Units"]["Week day"]]
 
-		# Time
-		date["time"] = date["date"].time()
-		date["hour"] = date["date"].hour
-		date["minute"] = date["date"].minute
-		date["second"] = date["date"].second
+						elif key == "Day":
+							date[date_name][date_type]["Texts"][key][language] = self.Text.By_Number(date[date_name][date_type]["Units"][key], self.texts[key.lower()][language], self.texts[key.lower() + "s"][language])
 
-		# Date formats
-		date["%d/%m/%Y"] = date["date"].strftime("%d/%m/%Y")
-		date["%d-%m-%Y"] = date["date"].strftime("%d-%m-%Y")
-		date["DD/MM/YYYY"] = date["date"].strftime("%d/%m/%Y")
+						elif key == "Month name":
+							date[date_name][date_type]["Texts"][key][language] = self.texts["month_names, type: list"][language][date[date_name][date_type]["Units"]["Month"]]
 
-		date["date_format"] = {}
+						elif key == "Day gender":
+							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names_genders, type: list"][language][date[date_name][date_type]["Units"]["Week day"]]
 
-		for language in self.languages["small"]:
-			date["date_format"][language] = date["date"].strftime(self.texts["date_format"][language])
+						else:
+							date[date_name][date_type]["Texts"][key][language] = self.Text.By_Number(date[date_name][date_type]["Units"][key], self.texts[key.lower()][language], self.texts[key.lower() + "s"][language])
 
-		# Time formats
-		date["%H:%M"] = date["date"].strftime("%H:%M")
+				# Add the date or time formats
+				i = 0
+				for format in formats:
+					format_key = list(date[date_name][date_type]["Formats"].keys())[i]
 
-		# Date time formats
-		date["date_time_format"] = {}
+					date[date_name][date_type]["Formats"][format_key] = date[date_name]["Object"].strftime(format)
 
-		for language in self.languages["small"]:
-			date["date_time_format"][language] = date["date"].strftime(self.texts["date_time_format"][language])
+					i += 1
 
-		date["%Y-%m-%dT%H:%M:%S"] = date["date"].strftime("%Y-%m-%dT%H:%M:%S")
-		date["%Y-%m-%dT%H:%M:%SZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
-		date["YYYY-MM-DDTHH:MM:SSZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
-		date["YYYY-MM-DDThh:mm:ssZ"] = date["date"].strftime("%Y-%m-%dT%H:%M:%SZ")
-		date["ISO8601"] = date["date"].isoformat()
-		date["ISO 8601"] = date["date"].isoformat()
-		date["%Y-%m-%d %H:%M:%S"] = date["date"].strftime("%Y-%m-%d %H:%M:%S")
-		date["%H:%M %d/%m/%Y"] = date["date"].strftime("%H:%M %d/%m/%Y")
-		date["hh:mm DD/MM/YYYY"] = date["date"].strftime("%H:%M %d/%m/%Y")
+			# Create the "DateTime" key
+			if "DateTime" not in date[date_name]:
+				date[date_name]["DateTime"] = {}
+
+			# Import all of the variables from inside the "Date" and "Time" dictionaries
+			for date_type in ["Date", "Time"]:
+				for key in ["Units", "Texts", "Formats"]:
+					if key not in date[date_name]["DateTime"]:
+						date[date_name]["DateTime"][key] = {}
+
+					for sub_key in date[date_name][date_type][key]:
+						date[date_name]["DateTime"][key][sub_key] = date[date_name][date_type][key][sub_key]
+
+			keys = [
+				"HH:MM DD/MM/YYYY",
+				"YYYY-MM-DDTHH:MM:SSZ"
+			]
+
+			formats = [
+				"%H:%M %d/%m/%Y",
+				"%Y-%m-%dT%H:%M:%S"
+			]
+
+			i = 0
+			for format in formats:
+				format_key = keys[i]
+
+				object = date[date_name]["Object"]
+
+				if format_key == "YYYY-MM-DDTHH:MM:SSZ":
+					if object.strftime("%Z") in ["UTC", ""]:
+						format += "Z"
+
+					else:
+						format += "%z"
+
+				date[date_name]["DateTime"]["Formats"][format_key] = object.strftime(format)
+
+				if object.strftime("%Z") not in ["UTC", ""] and format_key == "YYYY-MM-DDTHH:MM:SSZ":
+					list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
+					list_.insert(22, ":")
+
+					date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_, break_line = False)
+
+				i += 1
+
+			# Import all of the variables from inside the "Timezone" dictionary since the modules usually use the timezone dates and times
+			if date_name == "Timezone":
+				date["Object"] = date[date_name]["Object"]
+
+				for key in date[date_name]["DateTime"]:
+					date[key] = date[date_name]["DateTime"][key]
 
 		return date
 
-	def Check(self, date):
-		if type(date) == dict and "date" in date:
-			date = date["date"]
+	def Check(self, date, utc = False):
+		if type(date) == dict:
+			if utc == False and "Object" in date:
+				date = date["Object"]
+
+			if utc == True:
+				date = date["UTC"]["Object"]
 
 		if type(date) == str:
 			date = self.From_String(date)
 
 		return date
 
-	def To_String(self, date, format = ""):
-		date = self.Check(date)
+	def To_String(self, date, format = "", utc = False):
+		date = self.Check(date, utc)
 
 		if format == "":
 			format = self.texts["default_format"]
@@ -169,7 +270,7 @@ class Date():
 			if type(date[key]) == datetime:
 				date[key] = self.Now(date[key])
 
-		string = date["after"]["date"] - date["before"]["date"]
+		string = date["after"]["Object"] - date["before"]["Object"]
 
 		date["difference"] = {}
 
@@ -256,7 +357,11 @@ class Date():
 
 			if attribute in date["difference"]:
 				if attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
-					date["difference_string"] += ", "
+					if len(date["difference"]) > 1 and len(date["difference"]) != 2:
+						date["difference_string"] += ", "
+
+					if len(date["difference"]) == 2:
+						date["difference_string"] += " " + self.JSON.Language.language_texts["and"] + " "
 
 				date["difference_string"] += str(date["difference"][attribute])
 
@@ -279,7 +384,17 @@ class Date():
 						date["difference_strings"][language] = ""
 
 					if attribute != "years" and attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
-						date["difference_strings"][language] += ", "
+						# Add the ", " text (comma and space) if the number of time units is more than 1 and not 2 (can be more than 2)
+						if len(date["difference"]) > 1 and len(date["difference"]) != 2:
+							date["difference_strings"][language] += ", "
+
+						# Add the " and " text if the number of time units is 2
+						if len(date["difference"]) == 2:
+							date["difference_strings"][language] += " " + self.JSON.Language.texts["and"][language] + " "
+
+					# Add "and " text if the attribute is the last one and the number of time units is more than 2
+					if attribute == texts["plural_date_attributes, type: list"]["en"][-1].capitalize() and len(date["difference"]) > 2:
+						date["difference_strings"][language] += self.JSON.Language.texts["and"][language] + " "
 
 					if attribute == "months" and date["difference"][attribute] != 12:
 						date["difference_strings"][language] += str(date["difference"][attribute])
@@ -424,7 +539,7 @@ class Date():
 		if mode == "dict":
 			dict_ = {}
 
-		current_year = self.Now()["year"] + plus
+		current_year = self.Now()["Units"]["Year"] + plus
 
 		while start <= current_year:
 			year = function(start)
@@ -526,7 +641,7 @@ class Date():
 
 		# Create trigger
 		if start_time == "":
-			start_time = self.Now()["date"] + self.Timedelta(minutes = time_from_now)
+			start_time = self.Now()["Object"] + self.Timedelta(minutes = time_from_now)
 
 		TASK_TRIGGER_TIME = 1 # Triggers the task at a specific time of day.
 		trigger = task_def.Triggers.Create(TASK_TRIGGER_TIME)

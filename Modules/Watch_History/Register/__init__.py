@@ -13,9 +13,9 @@ class Register(Watch_History):
 			self.Type_Entry_Information()
 
 		self.dictionary["Entry"].update({
-			"Times": {
-				"UTC": self.Date.To_String(self.dictionary["Entry"]["Time"]["utc"]),
-				"Timezone": self.Date.Now(self.dictionary["Entry"]["Time"]["date"].astimezone())["hh:mm DD/MM/YYYY"]
+			"Dates": {
+				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 			},
 			"Diary Slim": {
 				"Text": "",
@@ -76,12 +76,9 @@ class Register(Watch_History):
 
 		# Define sanitized version of entry name for files
 		self.dictionary["Entry"]["Name"] = {
-			"Normal": str(self.dictionaries["Entries"]["Numbers"]["Total"]) + ". " + self.media_type,
+			"Normal": str(self.dictionaries["Entries"]["Numbers"]["Total"]) + ". " + self.media_type + " (" + self.dictionary["Entry"]["Dates"]["Timezone"] + ")",
 			"Sanitized": ""
 		}
-
-		if "Timezone" in self.dictionary["Entry"]["Times"]:
-			self.dictionary["Entry"]["Name"]["Normal"] += " (" + self.dictionary["Entry"]["Times"]["Timezone"] + ")"
 
 		self.dictionary["Entry"]["Name"]["Sanitized"] = self.dictionary["Entry"]["Name"]["Normal"].replace(":", ";").replace("/", "-")
 
@@ -98,16 +95,17 @@ class Register(Watch_History):
 		media_titles = self.media["Titles"].copy()
 		item_titles = self.media["Item"]["Titles"].copy()
 
-		for dictionary in [media_titles, item_titles]:
-			dictionary.pop("Language")
+		for dict_ in [media_titles, item_titles]:
+			dict_.pop("Language")
 
 			for key in ["ja", "Sanitized"]:
-				if key in dictionary:
-					dictionary.pop(key)
+				if key in dict_:
+					dict_.pop(key)
 
 			for language in self.languages["small"]:
-				if language in dictionary and dictionary["Original"] == dictionary[language]:
-					dictionary.pop(language)
+				if language in dict_:
+					if dict_["Original"] == dict_[language] or "Romanized" in dict_ and dict_["Romanized"] == dict_[language]:
+						dict_.pop(language)
 
 		self.key = self.dictionary["Entry"]["Name"]["Normal"]
 
@@ -123,11 +121,8 @@ class Register(Watch_History):
 				"Titles": self.media["Episode"]["Titles"]
 			},
 			"Type": self.media_type,
-			"Time": ""
+			"Date": self.dictionary["Entry"]["Dates"]["UTC"]
 		}
-
-		if "UTC" in self.dictionary["Entry"]["Times"]:
-			self.dictionaries["Entries"]["Dictionary"][self.key]["Time"] = self.dictionary["Entry"]["Times"]["UTC"]
 
 		# Remove the media item dictionary if the media has not media item list, the media item title is the same as the media title, or the media is non-series media
 		if self.media["States"]["Media item list"] == False or self.media["Item"]["Title"] == self.media["Title"] or self.media["States"]["Series media"] == False:
@@ -157,7 +152,7 @@ class Register(Watch_History):
 		if "Comment" in self.dictionary["Comment Writer"]:
 			self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"] = self.dictionary["Comment Writer"]["Comment"]
 
-			if list(self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"].keys()) == ["Time"] and self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"]["Time"] == self.dictionaries["Entries"]["Dictionary"][self.key]["Time"]:
+			if list(self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"].keys()) == ["Date"] and self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"]["Date"] == self.dictionaries["Entries"]["Dictionary"][self.key]["Date"]:
 				self.dictionaries["Entries"]["Dictionary"][self.key].pop("Comment")
 
 		# Get the States dictionary
@@ -182,7 +177,7 @@ class Register(Watch_History):
 		self.dictionaries["Media type"][self.media_type]["Numbers"]["Comments"] = self.dictionaries["Comments"]["Numbers"]["Type"][self.media_type]["Years"][self.current_year["Number"]]
 
 		# Add to the media "Watched" comments number
-		if self.dictionary["Comment Writer"]["States"]["write"] == True:
+		if self.dictionary["Comment Writer"]["States"]["Write"] == True:
 			self.dictionaries["Watched"]["Numbers"]["Comments"] += 1
 
 		# Update the "Entries.json" file
@@ -220,8 +215,8 @@ class Register(Watch_History):
 		# Type:
 		# [Media type]
 		#
-		# Times:
-		# [Episode times]
+		# Dates:
+		# [Media unit dates]
 		# 
 		# File name:
 		# [Number. Type (Time)]
@@ -289,13 +284,12 @@ class Register(Watch_History):
 			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Media type"]["Plural"][language] + "\n"
 		]
 
-		if self.dictionary["Entry"]["Times"] != {}:
-			text = self.Date.texts["times, title()"][language] + ":" + "\n" + "{}"
+		text = self.Date.texts["times, title()"][language] + ":" + "\n" + "{}"
 
-			if self.dictionary["Entry"]["Times"]["UTC"] == self.dictionary["Entry"]["Times"]["Timezone"]:
-				text = self.Date.texts["time, title()"][language] + ":" + "\n" + "{}"
+		if self.dictionary["Entry"]["Dates"]["UTC"] == self.dictionary["Entry"]["Dates"]["Timezone"]:
+			text = self.Date.texts["time, title()"][language] + ":" + "\n" + "{}"
 
-			lines_to_add.append(text)
+		lines_to_add.append(text)
 
 		lines_to_add.append(self.File.texts["file_name"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"])
 
@@ -375,18 +369,17 @@ class Register(Watch_History):
 
 				items.append(episode_titles)
 
-		if self.dictionary["Entry"]["Times"] != {}:
-			# Add times to items list
-			times = ""
+		# Add the times to the items list
+		times = ""
 
-			for key in ["UTC", "Timezone"]:
-				if key in self.dictionary["Entry"]["Times"]:
-					time = self.dictionary["Entry"]["Times"][key]
+		for key in ["UTC", "Timezone"]:
+			if key in self.dictionary["Entry"]["Dates"]:
+				time = self.dictionary["Entry"]["Dates"][key]
 
-					if time + "\n" not in times:
-						times += time + "\n"
+				if time + "\n" not in times:
+					times += time + "\n"
 
-			items.append(times)
+		items.append(times)
 
 		return file_text.format(*items)
 
@@ -475,7 +468,7 @@ class Register(Watch_History):
 
 					# If the media item is not the last media item (media is not completed), get next media item
 					if self.media["Item"]["Title"] != self.media["Items"]["List"][-1]:
-						item_title = self.media["Items"]["List"][self.media["Item"]["number"] + 1]
+						item_title = self.media["Items"]["List"][self.media["Item"]["Number"] + 1]
 
 						sanitized_title = self.Sanitize_Title(item_title)
 
@@ -484,7 +477,7 @@ class Register(Watch_History):
 							"Title": item_title,
 							"Titles": {},
 							"Sanitized": sanitized_title,
-							"Folders": {
+							"folders": {
 								"root": self.media["Items"]["folders"]["root"] + sanitized_title + "/",
 								"media": {
 									"root": self.media["folders"]["media"]["root"] + sanitized_title + "/"
@@ -666,7 +659,7 @@ class Register(Watch_History):
 	def Check_Media_Dates(self):
 		# Completed media and media item time and date template
 		template = self.language_texts["when_i_finished_watching"] + ":" + "\n" + \
-		self.dictionary["Entry"]["Times"]["Timezone"] + "\n" + \
+		self.dictionary["Entry"]["Dates"]["Timezone"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -679,13 +672,13 @@ class Register(Watch_History):
 			key = self.language_texts["when_i_started_to_watch"]
 
 			if self.media["States"]["Single unit"] == True:
-				self.media["Item"]["dates"][key] = self.dictionary["Entry"]["Times"]["Timezone"]
+				self.media["Item"]["dates"][key] = self.dictionary["Entry"]["Dates"]["Timezone"]
 
 			# Get started watching time
 			self.media["Item"]["started_watching_item"] = self.Date.To_UTC(self.Date.From_String(self.media["Item"]["dates"][key]))
 
 			# Define time spent watching using started watching time and finished watching time
-			self.media["Item"]["Time spent watching"] = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+			self.media["Item"]["Time spent watching"] = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
 
 			if self.media["Item"]["Time spent watching"][0] + self.media["Item"]["Time spent watching"][1] == ", ":
 				self.media["Item"]["Time spent watching"] = self.media["Item"]["Time spent watching"][2:]
@@ -719,7 +712,7 @@ class Register(Watch_History):
 			self.media["Started watching"] = self.Date.To_UTC(self.Date.From_String(self.media["dates"][key]))
 
 			# Define time spent watching using started watching time and finished watching time
-			self.media["Time spent watching"] = self.Date.Difference(self.media["Started watching"], self.dictionary["Entry"]["Time"]["utc"])["difference_strings"][self.user_language]
+			self.media["Time spent watching"] = self.Date.Difference(self.media["Started watching"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
 
 			if self.media["Time spent watching"][0] + self.media["Time spent watching"][1] == ", ":
 				self.media["Time spent watching"] = self.media["Time spent watching"][2:]
@@ -752,7 +745,7 @@ class Register(Watch_History):
 
 			text = self.dictionary["Media type"]["Genders"][self.user_language]["of_the"]
 
-			if self.media["States"]["Video"] == True:
+			if self.media["States"]["Video"] == True or self.media["States"]["Single unit"] == True:
 				text = self.media_types["Genders"][self.user_language]["masculine"]["of_the"]
 
 			# Add unit and "of the" text
@@ -830,18 +823,18 @@ class Register(Watch_History):
 
 		# If the media unit is single unit, add the episode with media title
 		if self.media["States"]["Single unit"] == True:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media["Episode"]["with_title"][self.media["Language"]]
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + self.media["Episode"]["Titles"][self.media["Language"]]
 
 		# Add the Re-watching text if the user is re-watching the media
 		if self.media["States"]["Re-watching"] == True:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["re_watched"]["text"]
 
-		# Define the clean text to be used on the "Post_On_Social_Networks" method
-		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]
-
 		# Add the episode link if it exists
 		if "Remote" in self.media["Episode"] and "Link" in self.media["Episode"]["Remote"] and self.media["Episode"]["Remote"]["Title"] != "Animes Vision":
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["Episode"]["Remote"]["Link"]
+
+		# Define the clean text to be used on the "Post_On_Social_Networks" method
+		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
@@ -900,7 +893,7 @@ class Register(Watch_History):
 
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"])
 
-			self.Text.Copy(self.dictionary["Entry"]["Times"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
+			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 
 		print()
 		print("-----")
@@ -913,7 +906,7 @@ class Register(Watch_History):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Times"]["Timezone"], add_dot = False)
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False)
 
 	def Show_Information(self):
 		self.dictionary["header_text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ": "

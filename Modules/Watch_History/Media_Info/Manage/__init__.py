@@ -40,7 +40,7 @@ class Manage(Watch_History):
 		}
 
 		# Add missing year numbers
-		for year in range(2018, self.date["year"] + 1):
+		for year in range(2018, self.date["Units"]["Year"] + 1):
 			if str(year) not in self.comments_number["Numbers"]["Years"]:
 				# If the year of the entry is not inside the comment numbers per year, add it
 				self.comments_number["Numbers"]["Years"][str(year)] = 0
@@ -306,18 +306,18 @@ class Manage(Watch_History):
 				# Get the entry from the entries dictionary
 				entry = comments["Dictionary"][entry_name]
 
-				# If the "Time" key is inside the entry dictionary
-				if "Time" in entry:
-					# If the time is not empty
-					if entry["Time"] != "":
-						# If the time has more than the year
-						if len(entry["Time"]) != 4:
-							# Get the year from the time by converting the time into a date dictionary
-							year = self.Date.From_String(entry["Time"])["year"]
+				# If the "Date" key is inside the entry dictionary
+				if "Date" in entry:
+					# If the date is not empty
+					if entry["Date"] != "":
+						# If the date has more than the year
+						if len(entry["Date"]) != 4:
+							# Get the year from the date by converting the date into a date dictionary
+							year = self.Date.From_String(entry["Date"])["Units"]["Year"]
 
-						# If the time contains only the year
-						if len(entry["Time"]) == 4:
-							year = entry["Time"]
+						# If the date contains only the year
+						if len(entry["Date"]) == 4:
+							year = entry["Date"]
 
 						# Add one to the comments number per year
 						self.comments_number["Numbers"]["Years"][str(year)] += 1
@@ -325,9 +325,9 @@ class Manage(Watch_History):
 						# Add one to the comments number per type per year
 						self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(year)] += 1
 
-					# If the time is empty or the time contains only the year
-					if entry["Time"] == "" or len(entry["Time"]) == 4:
-						# Add one to the comments without time
+					# If the date is empty or the date contains only the year
+					if entry["Date"] == "" or len(entry["Date"]) == 4:
+						# Add one to the comments without date
 						self.comments_number["Numbers"]["No time"] += 1
 
 						# Add one to the comments without time per type
@@ -496,7 +496,7 @@ class Manage(Watch_History):
 						key_value["value"] = media_dictionary["Information"]["Dictionary"]["Dates"][key]["Date"]["DD/MM/YYYY"]
 
 						if media_dictionary["Information"]["Dictionary"]["Dates"][key]["Date Time"] != {}:
-							key_value["value"] = media_dictionary["Information"]["Dictionary"]["Dates"][key]["Date Time"]["HH:MM DD/MM/YYYY"]
+							key_value["value"] = media_dictionary["Information"]["Dictionary"]["Dates"][key]["DateTime"]["HH:MM DD/MM/YYYY"]
 
 					media_dictionary["details"] = self.JSON.Add_Key_After_Key(media_dictionary["details"], key_value, after_key = after_key)
 
@@ -730,14 +730,14 @@ class Manage(Watch_History):
 					new_information["Dates"][key] = {
 						"Date": {
 							"YYYY-MM-DD": date,
-							"DD/MM/YYYY": self.Date.From_String(date)["DD/MM/YYYY"]
+							"DD/MM/YYYY": self.Date.From_String(date)["Formats"]["DD/MM/YYYY"]
 						},
 						"Time": {},
-						"Date Time": {},
-						"Year": self.Date.From_String(date)["year"]
+						"DateTime": {},
+						"Year": self.Date.From_String(date)["Units"]["Year"]
 					}
 
-			new_information["Time"] = self.Date.To_String(self.Date.From_String(information["start_date"])["date"])
+			new_information["Time"] = self.Date.To_String(self.Date.From_String(information["start_date"])["date"], utc = True)
 
 		else:
 			if "Dates" in information:
@@ -746,11 +746,11 @@ class Manage(Watch_History):
 			if "Time" in information:
 				new_information["Time"] = information["Time"]
 
-			elif new_information["Dates"]["Start"] != {} and new_information["Dates"]["Start"]["Date Time"] != {}:
-				new_information["Time"] = new_information["Dates"]["Start"]["Date Time"]["YYYY-MM-DDTHH:MM:SSZ"]
+			elif new_information["Dates"]["Start"] != {} and new_information["Dates"]["Start"]["DateTime"] != {}:
+				new_information["Time"] = new_information["Dates"]["Start"]["DateTime"]["YYYY-MM-DDTHH:MM:SSZ"]
 
-			if "Date Time" in new_information["Dates"]["Start"] and new_information["Dates"]["Start"]["Date Time"] == {}:
-				new_information["Time"] = self.Date.To_String(self.Date.From_String(new_information["Dates"]["Start"]["Date"]["YYYY-MM-DD"])["date"])
+			if "DateTime" in new_information["Dates"]["Start"] and new_information["Dates"]["Start"]["DateTime"] == {}:
+				new_information["Time"] = self.Date.To_String(self.Date.From_String(new_information["Dates"]["Start"]["Date"]["YYYY-MM-DD"])["date"], utc = True)
 
 		if "start_season" in information:
 			new_information["Start season"] = {
@@ -777,7 +777,7 @@ class Manage(Watch_History):
 				# Add ISO-8601 date time and European date time
 				new_information["Dates"][key]["Date Time"].update({
 					"YYYY-MM-DDTHH:MM:SSZ": new_information["Dates"][key]["Date"]["YYYY-MM-DD"] + "T" + information["broadcast"]["start_time"] + ":00Z",
-					"HH:MM DD/MM/YYYY": information["broadcast"]["start_time"] + " " + self.Date.From_String(date)["DD/MM/YYYY"]
+					"HH:MM DD/MM/YYYY": information["broadcast"]["start_time"] + " " + self.Date.From_String(date)["Formats"]["DD/MM/YYYY"]
 				})
 
 			new_information["Time"] = new_information["Dates"]["Start"]["Date Time"]["YYYY-MM-DDTHH:MM:SSZ"]
@@ -1170,7 +1170,7 @@ class Manage(Watch_History):
 		# Get the History dictionary to update the entries number
 		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
 
-		self.years_list = range(2018, self.date["year"] + 1)
+		self.years_list = range(2018, self.date["Units"]["Year"] + 1)
 
 		# Iterate through years list (of years that contain a "Watch_History" folder)
 		for self.year in self.years_list:
@@ -1316,7 +1316,7 @@ class Manage(Watch_History):
 					entry = {
 						"Episode title": entry,
 						"Type": self.year["Lists"]["Media Types"][e],
-						"Time": self.year["Lists"]["Times"][e]
+						"Date": self.year["Lists"]["Times"][e]
 					}
 
 					if entry["Episode title"] == self.year["Lists"]["Episodes"][0]:
@@ -1330,8 +1330,8 @@ class Manage(Watch_History):
 					self.JSON.Language.language_texts["type, title()"] + ":" + "\n" + \
 					"[" + entry["Type"] + "]" + "\n" + \
 					"\n" + \
-					self.Date.language_texts["time, title()"] + ":" + "\n" + \
-					"[" + entry["Time"] + "]" + "\n" + \
+					self.Date.language_texts["date, title()"] + ":" + "\n" + \
+					"[" + entry["Date"] + "]" + "\n" + \
 					"\n" + \
 					self.JSON.Language.language_texts["entry, title()"] + ":" + "\n" + \
 					"[" + entry["Episode title"] + "]" + "\n"
@@ -1376,7 +1376,7 @@ class Manage(Watch_History):
 									# Select media and define its variables, returning the media dictionary (without asking user to select the media)
 									self.dictionary = self.Select_Media(self.dictionary)
 
-									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["per_media_type"], str(self.date["year"]), self.year["Number"])
+									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["per_media_type"], str(self.date["Units"]["Year"]), self.year["Number"])
 
 						if self.dictionary != {}:
 							self.dictionary["Old history"] = self.old_history
@@ -1517,8 +1517,8 @@ class Manage(Watch_History):
 								input("Not equal: ")
 
 							# If time is not unknown, convert it into a Date dictionary
-							if entry["Time"] != "Unknown Watched Time - Horário Assistido Desconhecido":
-								entry["Time"] = self.Date.To_UTC(self.Date.From_String(entry["Time"], "%H:%M %d/%m/%Y"))
+							if entry["Date"] != "Unknown Watched Time - Horário Assistido Desconhecido":
+								entry["Date"] = self.Date.To_UTC(self.Date.From_String(entry["Date"], "%H:%M %d/%m/%Y"))
 
 							# Define the "Comment Writer" dictionary
 							self.dictionary["Comment Writer"] = {
@@ -1651,8 +1651,8 @@ class Manage(Watch_History):
 
 							states_dictionary["Christmas"] = False
 
-							# If the "12-25" text is inside the UTC time string (12 = month, 25 = day, Christmas day)
-							if "12-25" in entry["Time"]["%H:%M %d/%m/%Y"] or "25/12" in entry["Time"]["%H:%M %d/%m/%Y"]:
+							# If the "25-12" text is inside the UTC time string (25 = day, 12 = month, Christmas day)
+							if "25/12" in entry["Time"]["Formats"]["HH:MM DD/MM/YYYY"]:
 								# Set the "Christmas" state as True
 								states_dictionary["Christmas"] = True
 
@@ -1677,8 +1677,8 @@ class Manage(Watch_History):
 								}
 							})
 
-							if self.dictionary["Entry"]["Time"] == "Unknown Watched Time - Horário Assistido Desconhecido":
-								self.dictionary["Entry"]["Time"] = {}
+							if self.dictionary["Entry"]["Date"] == "Unknown Watched Time - Horário Assistido Desconhecido":
+								self.dictionary["Entry"]["Date"] = {}
 
 							# Add Comment dictionary to "Comment Writer" dictionary
 							if "Comment" in entry:

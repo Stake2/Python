@@ -44,7 +44,7 @@ class Play(GamePlayer):
 			# If the game "Dates.txt" file is empty
 			if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
 				# Get the first playing time where the user started playing the game
-				self.game["Started playing time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+				self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 				# Create the Dates text
 				self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
@@ -82,7 +82,7 @@ class Play(GamePlayer):
 
 		print()
 		print(self.Date.language_texts["now, title()"] + ":")
-		print(self.dictionary["Entry"]["Session duration"]["Before"]["hh:mm DD/MM/YYYY"])
+		print(self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		text = self.language_texts["press_enter_when_you_finish_playing_the_game"]
 
@@ -94,7 +94,7 @@ class Play(GamePlayer):
 
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")
-		print(self.dictionary["Entry"]["Session duration"]["After"]["hh:mm DD/MM/YYYY"])
+		print(self.dictionary["Entry"]["Session duration"]["After"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# Define the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
@@ -103,7 +103,7 @@ class Play(GamePlayer):
 		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]
 
 		# Register the finished playing time
-		self.dictionary["Entry"]["Time"] = self.dictionary["Entry"]["Session duration"]["After"]
+		self.dictionary["Entry"]["Date"] = self.dictionary["Entry"]["Session duration"]["After"]
 
 		# Use the "Register" class to register the played game, and giving the dictionary to it
 		if self.Register != None:

@@ -773,6 +773,10 @@
 		"en": "Played",
 		"pt": "Jogado"
 	},
+	"alright": {
+		"pt": "Tudo bem",
+		"en": "Alright"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

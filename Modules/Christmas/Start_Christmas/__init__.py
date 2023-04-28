@@ -13,18 +13,18 @@ class Start_Christmas(Christmas):
 		print()
 
 		if self.today_is_christmas == False:
-			self.months_left = abs((self.date["year"] - self.christmas["year"]) * 12 + self.date["month"] - self.christmas["month"])
-			self.days_left = abs(abs((self.date["date"] - self.christmas["date"]).days - 1) - (self.months_left * monthrange(self.date["year"], self.date["month"])[1]))
+			self.months_left = abs((self.date["Units"]["Year"] - self.christmas["Units"]["Year"]) * 12 + self.date["Units"]["Month"] - self.christmas["Units"]["Month"])
+			self.days_left = abs(abs((self.date["Object"] - self.christmas["Object"]).days - 1) - (self.months_left * monthrange(self.date["Units"]["Year"], self.date["Units"]["Month"])[1]))
 
-			print(self.language_texts["today_is_not_christmas_day_wait_until"] + " " + self.christmas["%d/%m/%Y"] + ".")
+			print(self.language_texts["today_is_not_christmas_day_wait_until"] + " " + self.christmas["Formats"]["DD/MM/YYYY"] + ".")
 
 			print()
 			print(self.language_texts["current_date"] + ":")
-			print(self.date["%d/%m/%Y"])
+			print(self.date["Formats"]["DD/MM/YYYY"])
 
 			print()
 			print(self.language_texts["christmas_date"] + ":")
-			print(self.christmas["%d/%m/%Y"])
+			print(self.christmas["Formats"]["DD/MM/YYYY"])
 
 			if self.months_left != 0:
 				print()
@@ -39,7 +39,7 @@ class Start_Christmas(Christmas):
 		if self.today_is_christmas == True:
 			self.Execute_Steps()
 
-			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.date["year"]))
+			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.date["Units"]["Year"]))
 
 		print()
 		print(self.large_bar)
@@ -48,7 +48,7 @@ class Start_Christmas(Christmas):
 		self.planning = self.File.Contents(self.planning_file)["lines"]
 		self.objects = self.File.Contents(self.objects_file)["lines"]
 
-		print(self.language_texts["starting_{}_of_{}..."].format(self.language_texts["christmas, title()"], self.date["year"]))
+		print(self.language_texts["starting_{}_of_{}..."].format(self.language_texts["christmas, title()"], self.date["Units"]["Year"]))
 		print()
 		print("-")
 		print()

@@ -71,7 +71,7 @@ class Years(object):
 		self.watch_history_folder = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + "Watch History/"
 		self.Folder.Create(self.watch_history_folder)
 
-		self.current_year_watched_folder = self.watch_history_folder + str(self.date["year"]) + "/"
+		self.current_year_watched_folder = self.watch_history_folder + str(self.date["Units"]["Year"]) + "/"
 		self.Folder.Create(self.current_year_watched_folder)
 
 		self.episodes_file = self.current_year_watched_folder + "Entries.json"
@@ -93,7 +93,7 @@ class Years(object):
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
-		self.summary_date = self.Date.From_String("30/12/{}".format(self.date["year"]))
+		self.summary_date = self.Date.From_String("30/12/{}".format(self.date["Units"]["Year"]))
 
 		# Dictionaries
 		self.years = {
@@ -104,7 +104,7 @@ class Years(object):
 		}
 
 		# Add Years to Years list
-		for year in range(2018, int(self.date["year"]) + 1):
+		for year in range(2018, int(self.date["Units"]["Year"]) + 1):
 			self.years["List"].append(str(year))
 			self.years["Numbers"]["Total"] += 1
 
@@ -144,7 +144,7 @@ class Years(object):
 		self.years["year_texts"] = self.Folder.Contents(self.year_texts_folder)["dictionary"]
 
 		# Current Year dictionary definition
-		self.current_year = self.years[str(self.date["year"])]
+		self.current_year = self.years[str(self.date["Units"]["Year"])]
 
 		from copy import deepcopy
 

@@ -99,7 +99,7 @@ class Food_Time():
 		for time_type in self.times["types"]:
 			# If the time type is "ate", its date is only a normal date
 			if time_type == "ate":
-				self.times[time_type]["date"] = self.Date.Now()["date"]
+				self.times[time_type]["date"] = self.Date.Now()["Object"]
 
 			# If the time type is not "ate", its date is the "ate" date plus the timedelta of the time type "time to add"
 			if time_type != "ate":
@@ -111,7 +111,7 @@ class Food_Time():
 				self.times[time_type]["date"] = self.Date.Now(self.times["ate"]["date"] + self.Date.Timedelta(**dictionary))["date"]
 
 			# Format the date as "Hours:Minutes", "HH:MM"
-			self.times[time_type]["time_string"] = self.Date.Now(self.times[time_type]["date"])["%H:%M"]
+			self.times[time_type]["time_string"] = self.Date.Now(self.times[time_type]["date"])["Formats"]["HH:MM"]
 
 		# Stringfy "datetime" objects to write them into the JSON file
 		for time_type in self.times["types"]:

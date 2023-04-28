@@ -351,7 +351,9 @@ class Fill_Media_Files(Watch_History):
 	def Add_To_Videos_List(self):
 		video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
 
-		while video_id == "":
+		import validators
+
+		while validators.url(video_id) != True:
 			video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
 
 		print()
@@ -388,7 +390,7 @@ class Fill_Media_Files(Watch_History):
 
 			self.File.Edit(self.dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"][language], title, "a")
 
-		video["Date"] = self.Date.From_String(video["Time"])["hh:mm DD/MM/YYYY"]
+		video["Date"] = self.Date.From_String(video["Date"])["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Add the "End date" key after the "Start date" key or update it
 		key_value = {
@@ -452,7 +454,7 @@ class Fill_Media_Files(Watch_History):
 				print()
 
 			print(self.language_texts["please_translate_this_title_to_{}"].format(translated_language) + ":")
-			print(title)
+			print("[" + title + "]")
 
 			self.Text.Copy(title)
 

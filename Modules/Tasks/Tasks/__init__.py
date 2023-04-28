@@ -64,7 +64,7 @@ class Tasks(object):
 		# Folders dictionary
 		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["productive_network"]["root"], lower_key = True)["dictionary"]
 
-		self.folders["task_history"]["current_year"] = self.folders["task_history"][str(self.date["year"])]
+		self.folders["task_history"]["current_year"] = self.folders["task_history"][str(self.date["Units"]["Year"])]
 
 	def Define_Types(self):
 		self.task_types = self.JSON.To_Python(self.folders["data"]["types"])
@@ -172,7 +172,7 @@ class Tasks(object):
 		tasks = 0
 
 		# Update the number of entries of all years
-		for year in range(self.date["year"], self.date["year"] + 1):
+		for year in range(self.date["Units"]["Year"], self.date["Units"]["Year"] + 1):
 			year = str(year)
 
 			# Get the year folder and the entries file
@@ -312,7 +312,7 @@ class Tasks(object):
 		print()
 
 		print(self.JSON.Language.language_texts["when, title()"] + ":")
-		print("\t" + dictionary["Entry"]["Times"]["Timezone"])
+		print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 
 		# If there are states, show them
 		if "States" in self.dictionary and self.dictionary["States"]["States"] != {}:

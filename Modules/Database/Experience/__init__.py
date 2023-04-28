@@ -40,7 +40,7 @@ class Experience(Database):
 			# If the data "Dates.txt" file is empty
 			if self.File.Contents(self.data["folders"]["dates"])["lines"] == []:
 				# Get the first experiencing time where the user started experiencing the data
-				self.data["Started experiencing time"] = self.Date.Now()["hh:mm DD/MM/YYYY"]
+				self.data["Started experiencing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 				# Create the Dates text
 				self.data["Dates"] = self.language_texts["when_i_started_to_experience"] + ":\n"
@@ -59,7 +59,7 @@ class Experience(Database):
 
 		# Register the finished experiencing time
 		self.dictionary["Entry"] = {
-			"Time": self.Date.Now()
+			"Date": self.Date.Now()
 		}
 
 		# Use the "Register" class to register the experienced data, and giving the dictionary to it

@@ -154,11 +154,26 @@ class JSON():
 							items[key][sub_key] = str(items[key][sub_key])
 
 						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None]:
-							if isinstance(value, datetime.datetime) == False:
+							if isinstance(items[key][sub_key], datetime.datetime) == False:
 								items[key][sub_key] = str(items[key][sub_key])
 
-							if isinstance(value, datetime.datetime) == True:
+							if isinstance(items[key][sub_key], datetime.datetime) == True:
 								items[key][sub_key] = self.Date_To_String(items[key][sub_key])
+
+						if type(items[key][sub_key]) == dict:
+							for sub_sub_key in items[key][sub_key]:
+								if "_PytzShimTimezone" in str(items[key][sub_key][sub_sub_key]):
+									items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+
+								if type(items[key][sub_key][sub_sub_key]) not in [str, int, list, dict, bool, None]:
+									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == False:
+										items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+
+									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
+										items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
+
+								if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
+									items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
 
 		if type(items) == list:
 			i = 0

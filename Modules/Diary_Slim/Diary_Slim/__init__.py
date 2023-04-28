@@ -77,17 +77,17 @@ class Diary_Slim():
 		for folder in self.database_year_folders.values():
 			self.Folder.Create(folder)
 
-		self.current_year_folder = self.year_folders[self.date["year"]]
+		self.current_year_folder = self.year_folders[self.date["Units"]["Year"]]
 		self.Folder.Create(self.current_year_folder)
 
 		# Current month folder
-		self.month_folder_name = str(self.Text.Add_Leading_Zeroes(self.date["month"])) + " - " + self.date["month_name"]
+		self.month_folder_name = str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language]
 
 		self.current_month_folder = self.current_year_folder + self.month_folder_name + "/"
 		self.Folder.Create(self.current_month_folder)
 
 		# Current month database folder
-		self.current_month_database_folder = self.database_year_folders[self.date["year"]] + self.month_folder_name + "/"
+		self.current_month_database_folder = self.database_year_folders[self.date["Units"]["Year"]] + self.month_folder_name + "/"
 		self.Folder.Create(self.current_month_database_folder)
 
 		# Files
@@ -104,7 +104,7 @@ class Diary_Slim():
 		self.File.Create(self.month_folders_file)
 
 		# Current year database file
-		self.current_year_file_names_file = self.database_year_folders[self.date["year"]] + "Year file names.txt"
+		self.current_year_file_names_file = self.database_year_folders[self.date["Units"]["Year"]] + "Year file names.txt"
 		self.File.Create(self.current_year_file_names_file)
 
 		# Current month database file
