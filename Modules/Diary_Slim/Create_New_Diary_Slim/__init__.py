@@ -16,7 +16,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		print(self.large_bar)
 		print()
 		print(self.language_texts["today_is"] + ":")
-		print(self.day_of_of_text.replace("Dia ", "").format(self.date["Units"]["Day"], self.date["Texts"]["Month name"], self.date["Units"]["Year"]))
+		print(self.day_of_of_text.replace("Dia ", "").format(self.date["Units"]["Day"], self.date["Texts"]["Month name"][self.user_language], self.date["Units"]["Year"]))
 		print()
 
 		self.Define_Slim_File()
@@ -43,10 +43,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 	def Define_Times(self):
 		self.date = self.Date.Now()
 
-		self.file_name_string = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["Units"]["Day"]), self.date["Texts"]["Day name"], self.date["Formats"]["DD-MM-YYYY"])
+		self.file_name_string = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["Units"]["Day"]), self.date["Texts"]["Day name"][self.user_language], self.date["Formats"]["DD-MM-YYYY"])
 
 	def Make_Header(self):
-		self.today_is = self.today_is_text_header_prototype.format(self.date["Texts"]["Day name"], self.date["Units"]["Day"], self.date["Texts"]["Month name"], self.date["Units"]["Year"])
+		self.today_is = self.today_is_text_header_prototype.format(self.date["Texts"]["Day name"][self.user_language], self.date["Units"]["Day"], self.date["Texts"]["Month name"][self.user_language], self.date["Units"]["Year"])
 		self.text_header = self.text_header_prototype.format(self.file_name_string)
 
 		self.select_text = self.language_texts["type_the_time_that_you_{}"].format(self.language_texts["have_gone_to_sleep"])

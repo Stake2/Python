@@ -4,6 +4,9 @@ from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Register(GamePlayer):
 	def __init__(self, dictionary = {}):
+		if hasattr(self, "old_history") == True:
+			super(Register, self).__setattr__("old_history", self.old_history)
+
 		super().__init__()
 
 		self.dictionary = dictionary
@@ -76,6 +79,23 @@ class Register(GamePlayer):
 	def Register_In_JSON(self):
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
 
+		# Re-read the dictionaries because somehow, someway, the "Played" dictionary is empty even after getting it from the "Played" file
+		# And also to ensure that the dictionaries are up to date
+		self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["sessions"])
+		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["per_game_type"][self.game_type.lower().replace(" ", "_")]["sessions"])
+		self.dictionaries["Played"] = self.JSON.To_Python(self.game["folders"]["played"]["entries"])
+		self.game["Played"] = self.JSON.To_Python(self.game["folders"]["played"]["entries"])
+
+		self.game["States"]["First game session in year"] = False
+
+		if self.dictionaries["Sessions"]["Numbers"]["Total"] == 0:
+			self.game["States"]["First game session in year"] = True
+
+		self.game["States"]["First game type session in year"] = False
+
+		if self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"] == 0:
+			self.game["States"]["First game type session in year"] = True
+
 		dicts = [
 			self.dictionaries["Sessions"],
 			self.dictionaries["Game type"][self.game_type],
@@ -122,11 +142,12 @@ class Register(GamePlayer):
 			"Entry": self.dictionary["Entry"]["Name"]["Normal"],
 			"Titles": game_titles,
 			"Type": self.game_type,
+			"Platform": self.game["Platform"]["en"],
 			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
-			"Session duration": self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
+			"Session duration": self.dictionary["Entry"]["Session duration"]["Difference"]
 		}
 
-		self.dictionaries["Sessions"]["Dictionary"][self.key]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]["en"]
+		self.dictionaries["Sessions"]["Dictionary"][self.key]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Text"]["en"]
 
 		# Get the States dictionary
 		self.dictionary["States"] = self.Define_States_Dictionary(self.dictionary)
@@ -148,9 +169,10 @@ class Register(GamePlayer):
 		# Update the game "Played.json" file
 		self.JSON.Edit(self.game["folders"]["played"]["entries"], self.dictionaries["Played"])
 
-		# Add to the root and type "Entry list.txt" file
+		# Add to the root, type, and game "Entry list.txt" files
 		self.File.Edit(self.folders["play_history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 		self.File.Edit(self.dictionary["Type"]["Folders"]["per_game_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.game["folders"]["played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [entry number]
@@ -162,8 +184,11 @@ class Register(GamePlayer):
 		# Type:
 		# [Type]
 		#
-		# Times:
-		# [Entry times]
+		# Plaform:
+		# [Platform]
+		# 
+		# Dates:
+		# [Entry dates]
 		# 
 		# Session duration:
 		# [Session duration]
@@ -218,6 +243,7 @@ class Register(GamePlayer):
 
 		lines.extend([
 			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
+			self.JSON.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.JSON.Language.texts["session_duration"][language] + ":" + "\n" + "{}",
 			self.JSON.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
@@ -425,6 +451,15 @@ class Register(GamePlayer):
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(*items)
 
 		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]
+
+		# Ask the user if it wants to write a description for the gaming session
+		print()
+		print(self.large_bar)
+
+		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
+
+		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Input.Lines(self.JSON.Language.language_texts["description, title()"] + ":", line_options_parameter = {"print": True, "next_line": False, "show_finish_text": True})["string"]
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:

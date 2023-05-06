@@ -2,6 +2,10 @@
 
 class GamePlayer(object):
 	def __init__(self):
+		if hasattr(self, "old_history") == True:
+			for key, value in self.old_history.items():
+				setattr(self, key, value)
+
 		self.Define_Basic_Variables()
 
 		# Define module folders
@@ -36,7 +40,9 @@ class GamePlayer(object):
 		from Utility.JSON import JSON as JSON
 		from Utility.Text import Text as Text
 
-		self.switches = Global_Switches().switches["global"]
+		self.Global_Switches = Global_Switches()
+
+		self.switches = self.Global_Switches.switches["global"]
 
 		self.File = File()
 		self.Folder = Folder()
@@ -169,7 +175,7 @@ class GamePlayer(object):
 				if root_folder == "Shortcuts":
 					self.folders[root_key] = {
 						key: {
-							"root": self.Folder.folders["games"]["shortcuts"]["root"] + self.Sanitize(game_type) + "/"
+							"root": self.Folder.folders["games"]["shortcuts"]["root"] + self.Sanitize(language_type) + "/"
 						}
 					}
 
@@ -261,8 +267,9 @@ class GamePlayer(object):
 
 			i += 1
 
-		# Write the game types dictionary into the "Types.json" file
-		self.JSON.Edit(self.folders["data"]["types"], self.game_types)
+		if hasattr(self, "old_history") == False:
+			# Write the game types dictionary into the "Types.json" file
+			self.JSON.Edit(self.folders["data"]["types"], self.game_types)
 
 		# Update the game list inside the root "Info.json" dictionary
 		info_dictionary.update(self.game_types["Game list"])
@@ -309,7 +316,7 @@ class GamePlayer(object):
 		sessions = 0
 
 		# Update the number of sessions of all years
-		for year in range(self.date["Units"]["Year"], self.date["Units"]["Year"] + 1):
+		for year in range(2021, self.date["Units"]["Year"] + 1):
 			year = str(year)
 
 			# Get the year folder and the entries file
@@ -570,7 +577,7 @@ class GamePlayer(object):
 		self.dictionaries["Played"] = deepcopy(self.template)
 
 		# Get the "Played" dictionary from file if the dictionary is not empty and has entries
-		if self.File.Contents(game["folders"]["played"]["entries"])["lines"] != [] and self.JSON.To_Python(data["folders"]["played"]["entries"])["Entries"] != []:
+		if self.File.Contents(game["folders"]["played"]["entries"])["lines"] != [] and self.JSON.To_Python(game["folders"]["played"]["entries"])["Entries"] != []:
 			self.dictionaries["Played"] = self.JSON.To_Python(game["folders"]["played"]["entries"])
 
 		# Update the number of entries with the length of the entries list
@@ -581,6 +588,39 @@ class GamePlayer(object):
 
 		# Write the default or file dictionary into the "Played.json" file
 		self.JSON.Edit(game["folders"]["played"]["entries"], self.dictionaries["Played"])
+
+		# Create the "Time.json" file inside the "Played" folder
+		game["folders"]["played"]["time"] = game["folders"]["played"]["root"] + "Time.json"
+		self.File.Create(game["folders"]["played"]["time"])
+
+		# Define the "Time" dictionary as a template
+		game["Time"] = {
+			"First time": {},
+			"Last time": {},
+			"Years": 0,
+			"Months": 0,
+			"Days": 0,
+			"Hours": 0,
+			"Minutes": 0,
+			"Seconds": 0
+		}
+
+		# Get the "Time" dictionary from file if the dictionary is not empty and has entries
+		if self.File.Contents(game["folders"]["played"]["time"])["lines"] != []:
+			game["Time"] = self.JSON.To_Python(game["folders"]["played"]["time"])
+
+		# Write the default or file dictionary into the "Time.json" file
+		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
+
+		# Create the "Gaming time.txt" file inside the "Played" folder
+		game["folders"]["played"]["gaming_time"] = game["folders"]["played"]["root"] + self.language_texts["gaming_time"] + ".txt"
+		self.File.Create(game["folders"]["played"]["gaming_time"])
+
+		gaming_time = self.Make_Gaming_Time_Text(game)
+
+		# Write the gaming time into the gaming time file
+		if gaming_time != "":
+			self.File.Edit(game["folders"]["played"]["gaming_time"], gaming_time, "w")
 
 		# Define the game details
 		game["details"] = self.File.Dictionary(game["folders"]["details"])
@@ -600,7 +640,19 @@ class GamePlayer(object):
 				if full_language == game["Language"]:
 					game["Language"] = small_language
 
-		# Define game states dictionary
+		game["Platform"] = game["details"][self.JSON.Language.language_texts["platform, title()"]]
+
+		i = 0
+		for platform in self.game_types["Platforms"][self.user_language]:
+			if platform == game["Platform"]:
+				game["Platform"] = {}
+
+				for language in self.languages["small"]:
+					game["Platform"][language] = self.game_types["Platforms"][language][i]
+
+			i += 1
+
+		# Define the game states dictionary
 		states = {
 			"Re-playing": False,
 			"Christmas": False,
@@ -623,8 +675,12 @@ class GamePlayer(object):
 		if self.JSON.Language.language_texts["status, title()"] in game["details"] and game["details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]:
 			game["States"]["Re-playing"] = True
 
+		game["States"]["First game session in year"] = False
+
 		if self.dictionaries["Sessions"]["Numbers"]["Total"] == 0:
 			game["States"]["First game session in year"] = True
+
+		game["States"]["First game type session in year"] = False
 
 		if self.dictionaries["Game type"][dictionary["Type"]["Type"]["en"]]["Numbers"]["Total"] == 0:
 			game["States"]["First game type session in year"] = True
@@ -712,7 +768,13 @@ class GamePlayer(object):
 					text = ""
 
 					if key != "First game type session in year":
-						text_key = key.lower().replace(" ", "_")
+						text_key = key.lower()
+
+						if " " not in text_key:
+							text_key += ", title()"
+
+						if ", title()" not in text_key:
+							text_key = text_key.replace(" ", "_")
 
 						if text_key in self.JSON.Language.texts:
 							text = self.JSON.Language.texts[text_key][language]
@@ -905,6 +967,157 @@ class GamePlayer(object):
 
 		return dictionary
 
+	def Calculate_Gaming_Time(self, dictionary):
+		from copy import deepcopy
+
+		game = dictionary["Game"]
+
+		if "Entry" in dictionary:
+			entry = dictionary["Entry"]
+
+		# Define the time of the first game session
+		if game["Time"]["First time"] == {}:
+			game["Time"]["First time"] = entry["Session duration"]["Before"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+
+		# Define the time of the last game session (most recent)
+		game["Time"]["Last time"] = dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+
+		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
+			attribute = attribute.capitalize()
+
+			if attribute in entry["Session duration"]["Difference"] and attribute != "Years":
+				game["Time"][attribute] += entry["Session duration"]["Difference"][attribute]
+
+		year = False
+		day = False
+
+		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
+			attribute = attribute.capitalize()
+
+			bigger_time = ""
+
+			if attribute == "Months":
+				bigger_time = "Years"
+				total_number = 12
+
+			if attribute == "Days":
+				bigger_time = "Months"
+				total_number = 30
+
+			if attribute == "Hours":
+				bigger_time = "Days"
+				total_number = 24
+
+			if attribute in ["Minutes", "Seconds"]:
+				total_number = 60
+
+				if attribute == "Minutes":
+					bigger_time = "Hours"
+
+				if attribute == "Seconds":
+					bigger_time = "Minutes"
+
+			# Smaller time into bigger time
+			if bigger_time != "" and game["Time"][attribute] >= total_number:
+				# Add bigger time made with smaller time to the bigger time key
+				game["Time"][bigger_time] = game["Time"][bigger_time] + game["Time"][attribute] // total_number
+
+				if game["Time"][attribute] // total_number == 1:
+					# Get the remainder of the division of the smaller time
+					game["Time"][attribute] = game["Time"][attribute] % total_number
+
+					if attribute == "Days":
+						day = True
+
+					if attribute == "Months":
+						year = True
+
+		# Update the "Time.json" file
+		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
+
+		gaming_time = self.Make_Gaming_Time_Text(game)
+
+		# Write the gaming time into the gaming time file
+		if gaming_time != "":
+			self.File.Edit(game["folders"]["played"]["gaming_time"], gaming_time, "w")
+
+		return game
+
+	def Make_Gaming_Time_Text(self, game):
+		from copy import deepcopy
+
+		# Copy and remove unused keys
+		times = deepcopy(game["Time"])
+		times.pop("First time")
+		times.pop("Last time")
+
+		# Define the singular and plural time text lists
+		singular = deepcopy(self.Date.language_texts["date_attributes, type: list"])
+		plural = deepcopy(self.Date.language_texts["plural_date_attributes, type: list"])
+
+		# Iterate through the times dictionary to remove zero time keys
+		# And also remove time texts of zero times from the singular and plural lists
+		i = 0
+		for key in times.copy():
+			time = times[key]
+
+			if time == 0:
+				times.pop(key)
+
+				text = self.Date.language_texts[key.lower()[:-1] + ", title()"].lower()
+
+				if text in singular:
+					singular.remove(text)
+
+				text = self.Date.language_texts[key.lower() + ", title()"].lower()
+
+				if text in plural:
+					plural.remove(text)
+
+			i += 1
+
+		# Define the empty gaming time string
+		gaming_time = ""
+
+		# Iterate through the times dictionary
+		i = 0
+		for key in times.copy():
+			time = times[key]
+
+			# If the time key is not the first one and not the last one
+			if key != list(times.keys())[0].capitalize():
+				# If the number of times is more than one and not two, add a comma
+				if len(times) > 1 and len(times) != 2 and gaming_time[-1] + gaming_time[-2] not in [" ,", ", "]:
+					gaming_time += ", "
+
+				# If the number of times is two, add the " and " text
+				if len(times) == 2:
+					gaming_time += " " + self.JSON.Language.language_texts["and"] + " "
+
+			# If the time key is the last one and the number of times is more or equal to two, add the ", and " text
+			if key == list(times.keys())[-1].capitalize() and len(times) > 2:
+				if gaming_time[-1] + gaming_time[-2] != " ,":
+					gaming_time += ", "
+
+				gaming_time += self.JSON.Language.language_texts["and"] + " "
+
+			# Add the time to the full gaming time text
+			gaming_time += str(time)
+
+			# Define the default time text list as the singular one 
+			list_ = singular
+
+			# If the time is more than one, define the time text list as the plural one
+			if time > 1:
+				list_ = plural
+
+			# Add a space and the time text to the full gaming time text
+			gaming_time += " " + list_[i]
+
+			i += 1
+
+		return gaming_time
+
 	def Show_Information(self, dictionary):
 		game = dictionary["Game"]
 
@@ -945,8 +1158,23 @@ class GamePlayer(object):
 
 		print()
 
+		platforms = []
+
+		for language in self.languages["small"]:
+			text = "\t" + dictionary["Game"]["Platform"][language]
+
+			if text not in platforms:
+				platforms.append(text)
+
+		print(self.JSON.Language.language_texts["platform, title()"] + ":")
+
+		for item in platforms:
+			print(item)
+
+		print()
+
 		print(self.File.language_texts["shortcut, title()"] + ":")
-		print("\t" + self.game["Files"]["Shortcut"])
+		print("\t" + game["Files"]["Shortcut"])
 
 		if "Entry" in dictionary:
 			print()
@@ -958,13 +1186,21 @@ class GamePlayer(object):
 			print(self.JSON.Language.language_texts["session_duration"] + ":")
 			print("\t" + dictionary["Entry"]["Session duration"]["Text"][self.user_language])
 
+			if "dates" in game:
+				print()
+				print(self.Date.language_texts["dates, title()"] + ":")
+
+				for key, value in game["dates"].items():
+					print("\t" + key + ":")
+					print("\t" + value)
+
 			# If there are states, show them
-			if "States" in self.dictionary and self.dictionary["States"]["States"] != {}:
+			if "States" in dictionary and dictionary["States"] != {}:
 				print()
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 
-				for key in self.dictionary["States"]["Texts"]:
-					print("\t" + self.dictionary["States"]["Texts"][key][self.user_language])
+				for key in dictionary["States"]["Texts"]:
+					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
 			# If the user finished playing, ask for input before ending execution
 			print()

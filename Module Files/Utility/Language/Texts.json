@@ -777,6 +777,32 @@
 		"pt": "Tudo bem",
 		"en": "Alright"
 	},
+	"platform, title()": {
+		"en": "Platform",
+		"pt": "Plataforma"
+	},
+	"resolution, title()": {
+		"en": "Resolution",
+		"pt": "Resolução"
+	},
+	"wrong, title()": {
+		"en": "Wrong",
+		"pt": {
+			"masculine": "Errado",
+			"feminine": "Errada"
+		}
+	},
+	"right, title()": {
+		"en": "Right",
+		"pt": {
+			"masculine": "Certo",
+			"feminine": "Certa"
+		}
+	},
+	"description, title()": {
+		"en": "Description",
+		"pt": "Descrição"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

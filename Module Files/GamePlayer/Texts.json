@@ -51,6 +51,14 @@
 		"en": "Game sessions",
 		"pt": "Sessões de jogo"
 	},
+	"session_duration": {
+		"en": "Session duration",
+		"pt": "Duração da sessão"
+	},
+	"gaming_time": {
+		"en": "Gaming time",
+		"pt": "Tempo de jogatina"
+	},
 	"select_one_game_category_to_play": {
 		"en": "Select one game category to play",
 		"pt": "Selecione uma categoria de jogo para jogar"
@@ -103,6 +111,10 @@
 		"en": "Did you finished the whole game",
 		"pt": "Você terminou o jogo inteiro"
 	},
+	"write_a_description_for_the_gaming_session": {
+		"en": "Write a description for the gaming session",
+		"pt": "Escrever uma descrição para a sessão de jogatina"
+	},
 	"post_on_the_social_networks": {
 		"en": "Post on the Social Networks",
 		"pt": "Postar nas Redes Sociais"
@@ -114,5 +126,13 @@
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",
 		"pt": "Pressione Enter para copiar o texto do jogo jogado"
+	},
+	"convert_history": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"iterate_through_game_list": {
+		"en": "Iterate through game list",
+		"pt": "Iterar através da lista de jogos"
 	}
 }

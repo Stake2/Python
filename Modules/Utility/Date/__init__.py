@@ -1,6 +1,8 @@
 # Date.py
 
-from datetime import datetime, timedelta, timezone
+from datetime import date, time, datetime, timedelta, timezone
+from dateutil.relativedelta import relativedelta
+from time import sleep
 import pytz
 
 class Date():
@@ -23,6 +25,16 @@ class Date():
 		self.Define_Texts()
 		self.Number_Name_Generator()
 
+		# Import time, datetime, and dateutil methods
+		self.Sleep = sleep
+		self.Date = date
+		self.Time = time
+		self.Datetime = datetime
+		self.Timedelta = timedelta
+		self.Timezone = timezone
+		self.Relativedelta = relativedelta
+		self.Combine = datetime.combine
+
 		self.date = self.Now()
 
 	def Define_Texts(self):
@@ -31,8 +43,17 @@ class Date():
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
+		if date_parameter != None:
+			today = self.Datetime.now()
+
+			if type(date_parameter) == type(self.Date(today.year, today.month, today.day)):
+				date_parameter = self.Combine(date_parameter, self.Datetime.min.time())
+
+			if type(date_parameter) == type(self.Time(today.hour, today.minute)):
+				date_parameter = self.Combine(self.Date(today.year, today.month, today.day), date_parameter)
+
 		if date_parameter == None:
-			date_parameter = datetime.now()
+			date_parameter = self.Datetime.now()
 
 		date = {
 			"User timezone": {
@@ -160,11 +181,13 @@ class Date():
 
 			keys = [
 				"HH:MM DD/MM/YYYY",
+				"HH:MM:SS DD/MM/YYYY",
 				"YYYY-MM-DDTHH:MM:SSZ"
 			]
 
 			formats = [
 				"%H:%M %d/%m/%Y",
+				"%H:%M:%S %d/%m/%Y",
 				"%Y-%m-%dT%H:%M:%S"
 			]
 
@@ -234,24 +257,19 @@ class Date():
 			date = parser.parse(string)
 
 		if format != "":
-			date = datetime.strptime(string, format)
+			date = self.Datetime.strptime(string, format)
 
 		date = self.Now(date)
 
 		return date
 
-	def Timedelta(self, **arguments):
-		return timedelta(**arguments)
-
 	def To_UTC(self, date):
-		date = self.Check(date)
-
-		date = self.Now(date.astimezone(pytz.UTC))
+		date = self.Now(date["UTC"]["Object"])
 
 		return date
 
-	def To_Timezone(self, date):
-		date = self.Check(date)
+	def To_Timezone(self, date, utc = False):
+		date = self.Check(date, utc)
 
 		date = self.Now(date.astimezone())
 
@@ -259,57 +277,112 @@ class Date():
 
 	def Difference(self, before, after):
 		date = {
-			"before": before,
-			"after": after
+			"Before": before,
+			"After": after,
+			"Object": {},
+			"Difference": {},
+			"Unit texts": {},
+			"Text": {}
 		}
 
 		for key in date:
-			if type(date[key]) == str:
-				date[key] = self.Check(date[key])
+			if key in ["Before", "After"]:
+				if type(date[key]) == str:
+					date[key] = self.Check(date[key])
 
-			if type(date[key]) == datetime:
-				date[key] = self.Now(date[key])
+				if type(date[key]) == self.Datetime:
+					date[key] = self.Now(date[key])
 
-		string = date["after"]["Object"] - date["before"]["Object"]
+		date["Object"] = self.Relativedelta(date["After"]["Object"], date["Before"]["Object"])
 
-		date["difference"] = {}
+		# Build the attribute dictionaries
+		i = 0
+		for key in self.texts["plural_date_attributes, type: list"]["en"]:
+			if key in dir(date["Object"]) and getattr(date["Object"], key) != 0:
+				number = abs(getattr(date["Object"], key))
+
+				text_list = self.language_texts["date_attributes, type: list"]
+
+				if number > 1:
+					text_list = self.language_texts["plural_date_attributes, type: list"]
+
+				date["Difference"][key.title()] = abs(number)
+				date["Unit texts"][key.title()] = text_list[i]
+
+			i += 1
+
+		date = self.Make_Difference_Text(date)
+
+		return date
+
+	def Make_Difference_Text(self, date):
+		# Make the time difference texts per language
+		for key in date["Difference"]:
+			for language in self.languages["small"]:
+				if language not in date["Text"]:
+					date["Text"][language] = ""
+
+				# If the key is the last one and the number of time attributes is 2 or more than 2, add the "and " text
+				if key == list(date["Difference"].keys())[-1]:
+					if len(date["Difference"]) > 2 or len(date["Difference"]) == 2:
+						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
+
+				# Add the number and the time text (plural or singular)
+				date["Text"][language] += str(date["Difference"][key]) + " " + date["Unit texts"][key]
+
+				# If the number of time attributes is equal to 2, add a space
+				if len(date["Difference"]) == 2:
+					date["Text"][language] += " "
+
+				# If the key is not the last one and the number of time attributes is more than 2, add the ", " text (comma)
+				if key != list(date["Difference"].keys())[-1] and len(date["Difference"]) > 2:
+					date["Text"][language] += ", "
+
+		return date
+
+		'''
+	def Difference(self, before, after):
+		date["Object"] = date["After"]["Object"] - date["Before"]["Object"]
 
 		texts = self.texts.copy()
 
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
-			if hasattr(string, attribute):
-				date["difference"][attribute.capitalize()] = getattr(string, attribute)
+			if hasattr(date["Object"], attribute):
+				date["Difference"][attribute.capitalize()] = getattr(date["Object"], attribute)
 
-		if hasattr(string, "years") == False and "Days" in date["difference"]:
-			if (date["difference"]["Days"] // 365) != 0:
-				date["difference"]["Years"] = date["difference"]["Days"] // 365
+		if hasattr(date["Object"], "years") == False and "Days" in date["Difference"]:
+			if (date["Difference"]["Days"] // 365) != 0:
+				date["Difference"]["Years"] = date["Difference"]["Days"] // 365
 		
-			if (date["difference"]["Days"] // 365) == 0:
-				date["difference"]["Years"] = 0
+			if (date["Difference"]["Days"] // 365) == 0:
+				date["Difference"]["Years"] = 0
 
-		if date["difference"]["Years"] == -1:
-			date["difference"]["Years"] = 0
+		date["Difference"]["Year days"] = 0
+		date["Difference"]["Month days"] = 0
 
-		date["difference"]["Year days"] = 0
-		date["difference"]["Month days"] = 0
+		if (date["Difference"]["Days"] // 365) not in [0, 1]:
+			date["Difference"]["Year days"] = date["Difference"]["Years"] * 365
 
-		if (date["difference"]["Days"] // 365) not in [0, 1]:
-			date["difference"]["Year days"] = date["difference"]["Years"] * 365
+		if hasattr(date["Object"], "months") == False and ((date["Difference"]["Days"] - date["Difference"]["Year days"]) // 30) != 0:
+			date["Difference"]["Months"] = (date["Difference"]["Days"] - date["Difference"]["Year days"]) // 30
+			date["Difference"]["Month days"] = date["Difference"]["Months"] * 30
 
-		if hasattr(string, "months") == False and ((date["difference"]["Days"] - date["difference"]["Year days"]) // 30) != 0:
-			date["difference"]["Months"] = (date["difference"]["Days"] - date["difference"]["Year days"]) // 30
-			date["difference"]["Month days"] = date["difference"]["Months"] * 30
+		if hasattr(date["Object"], "months") == True and date["Difference"]["Months"] >= 12:
+			date["Difference"]["Years"] = date["Difference"]["Months"] // 12
 
-		date["difference"]["Days"] = date["difference"]["Days"] - date["difference"]["Year days"] - date["difference"]["Month days"]
+		date["Difference"]["Days"] = date["Difference"]["Days"] - date["Difference"]["Year days"] - date["Difference"]["Month days"]
 
-		if "Seconds" not in date["difference"]:
-			date["difference"]["Seconds"] = 0
+		if "Months" in date["Difference"] and date["Difference"]["Months"] >= 12:
+			date["Difference"]["Months"] = date["Difference"]["Months"] - 12
 
-		date["difference"]["Seconds"] = date["difference"]["Seconds"] % (24 * 3600)
-		date["difference"]["Hours"] = date["difference"]["Seconds"] // 3600
-		date["difference"]["Seconds"] %= 3600
-		date["difference"]["Minutes"] = date["difference"]["Seconds"] // 60 
-		date["difference"]["Seconds"] %= 60
+		if "Seconds" not in date["Difference"]:
+			date["Difference"]["Seconds"] = 0
+
+		date["Difference"]["Seconds"] = date["Difference"]["Seconds"] % (24 * 3600)
+		date["Difference"]["Hours"] = date["Difference"]["Seconds"] // 3600
+		date["Difference"]["Seconds"] %= 3600
+		date["Difference"]["Minutes"] = date["Difference"]["Seconds"] // 60 
+		date["Difference"]["Seconds"] %= 60
 
 		singular = {}
 		plural = {}
@@ -318,8 +391,8 @@ class Date():
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			attribute = attribute.capitalize()
 
-			if attribute in date["difference"]:
-				if date["difference"][attribute] != 0:
+			if attribute in date["Difference"]:
+				if date["Difference"][attribute] != 0:
 					for language in self.languages["small"]:
 						if language not in singular:
 							singular[language] = []
@@ -333,14 +406,14 @@ class Date():
 						singular[language].append(singular_attribute)
 						plural[language].append(plural_attribute)
 
-				if date["difference"][attribute] == 0:
-					date["difference"].pop(attribute)
+				if date["Difference"][attribute] == 0:
+					date["Difference"].pop(attribute)
 
 			i += 1
 
-		for attribute in date["difference"].copy():
-			if date["difference"][attribute] == 0:
-				date["difference"].pop(attribute)
+		for attribute in date["Difference"].copy():
+			if date["Difference"][attribute] == 0:
+				date["Difference"].pop(attribute)
 
 		texts["date_attributes, type: list"] = singular
 
@@ -348,26 +421,28 @@ class Date():
 
 		language_texts = self.JSON.Language.Item(texts)
 
-		date["difference_strings"] = {}
 		date["difference_string"] = ""
 
 		i = 0
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			attribute = attribute.capitalize()
 
-			if attribute in date["difference"]:
+			if attribute in date["Difference"]:
 				if attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
-					if len(date["difference"]) > 1 and len(date["difference"]) != 2:
+					if len(date["Difference"]) > 1 and len(date["Difference"]) != 2:
 						date["difference_string"] += ", "
 
-					if len(date["difference"]) == 2:
+					if len(date["Difference"]) == 2:
 						date["difference_string"] += " " + self.JSON.Language.language_texts["and"] + " "
 
-				date["difference_string"] += str(date["difference"][attribute])
+				if attribute == list(date["Difference"])[-1].capitalize() and len(date["Difference"]) > 2:
+					date["difference_string"] += ", " + self.JSON.Language.language_texts["and"] + " "
+
+				date["difference_string"] += str(date["Difference"][attribute])
 
 				list_ = language_texts["date_attributes, type: list"]
 
-				if date["difference"][attribute] > 1:
+				if date["Difference"][attribute] > 1:
 					list_ = language_texts["plural_date_attributes, type: list"]
 
 				date["difference_string"] += " " + list_[i]
@@ -378,47 +453,49 @@ class Date():
 		for attribute in texts["plural_date_attributes, type: list"]["en"]:
 			attribute = attribute.capitalize()
 
-			if attribute in date["difference"]:
+			if attribute in date["Difference"]:
 				for language in self.languages["small"]:
-					if language not in date["difference_strings"]:
-						date["difference_strings"][language] = ""
+					if language not in date["Text"]:
+						date["Text"][language] = ""
 
+					# If the attribute is not "years" and the attribute is not the first one
 					if attribute != "years" and attribute != texts["plural_date_attributes, type: list"]["en"][0].capitalize():
 						# Add the ", " text (comma and space) if the number of time units is more than 1 and not 2 (can be more than 2)
-						if len(date["difference"]) > 1 and len(date["difference"]) != 2:
-							date["difference_strings"][language] += ", "
+						if len(date["Difference"]) > 1 and len(date["Difference"]) != 2:
+							date["Text"][language] += ", "
 
 						# Add the " and " text if the number of time units is 2
-						if len(date["difference"]) == 2:
-							date["difference_strings"][language] += " " + self.JSON.Language.texts["and"][language] + " "
+						if len(date["Difference"]) == 2:
+							date["Text"][language] += " " + self.JSON.Language.texts["and"][language] + " "
 
 					# Add "and " text if the attribute is the last one and the number of time units is more than 2
-					if attribute == texts["plural_date_attributes, type: list"]["en"][-1].capitalize() and len(date["difference"]) > 2:
-						date["difference_strings"][language] += self.JSON.Language.texts["and"][language] + " "
+					if attribute == texts["plural_date_attributes, type: list"]["en"][-1].capitalize() and len(date["Difference"]) > 2:
+						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
 
-					if attribute == "months" and date["difference"][attribute] != 12:
-						date["difference_strings"][language] += str(date["difference"][attribute])
+					if attribute == "months" and date["Difference"][attribute] != 12:
+						date["Text"][language] += str(date["Difference"][attribute])
 
 					else:
-						date["difference_strings"][language] += str(date["difference"][attribute])
+						date["Text"][language] += str(date["Difference"][attribute])
 
 					list_ = texts["date_attributes, type: list"][language]
 
-					if date["difference"][attribute] > 1:
+					if date["Difference"][attribute] > 1:
 						list_ = texts["plural_date_attributes, type: list"][language]
 
-					if attribute == "months" and date["difference"][attribute] != 12:
-						date["difference_strings"][language] += " " + list_[i]
+					if attribute == "months" and date["Difference"][attribute] != 12:
+						date["Text"][language] += " " + list_[i]
 
 					else:
-						date["difference_strings"][language] += " " + list_[i]
+						date["Text"][language] += " " + list_[i]
+
+					if "1.0" in date["Text"][language]:
+						date["Text"][language] = date["Text"][language].replace("1.0", "1")
 
 			i += 1
 
-		date["Difference"] = date["difference"]
-		date["Text"] = date["difference_strings"]
-
 		return date
+		'''
 
 	def Number_Name_Generator(self):
 		self.numbers = {}
@@ -561,10 +638,6 @@ class Date():
 		if mode == "dict":
 			return dict_
 
-	def Sleep(self, ms):
-		import time
-		time.sleep(ms)
-
 	def Time_Text(self, time_string, language, add_original_time = False):
 		language_texts = self.JSON.Language.Item(self.texts, language)
 
@@ -600,7 +673,7 @@ class Date():
 			text += self.Text.Remove_Leading_Zeroes(hour) + " " + texts["hours"]
 
 			if texts["minutes"] != "" and texts["seconds"] == "":
-				text += " " + language_texts["and"] + " "
+				text += " " + self.JSON.Language.language_texts["and"] + " "
 
 		if texts["hours"] != "" and texts["minutes"] != "" and texts["seconds"] != "" and texts["seconds"] != "00":
 			text += ", "
@@ -609,7 +682,7 @@ class Date():
 			text += self.Text.Remove_Leading_Zeroes(minute) + " " + texts["minutes"]
 
 		if texts["minutes"] != "" and texts["seconds"] != "":
-			text += " " + language_texts["and"] + " "
+			text += " " + self.JSON.Language.language_texts["and"] + " "
 
 		if texts["seconds"] != "" and texts["seconds"] != "00":
 			text += self.Text.Remove_Leading_Zeroes(second) + " " + texts["seconds"]

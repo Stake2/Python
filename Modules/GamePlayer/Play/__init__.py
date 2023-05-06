@@ -3,7 +3,7 @@
 from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Play(GamePlayer):
-	def __init__(self, dictionary = {}):
+	def __init__(self, dictionary = {}, open_game = True):
 		super().__init__()
 
 		import importlib
@@ -17,10 +17,14 @@ class Play(GamePlayer):
 			setattr(self, title, class_)
 
 		self.dictionary = dictionary
+		self.open_game = open_game
 
 		self.Define_Game_Dictionary()
 		self.Show_Information(self.dictionary)
-		self.Open_Game()
+
+		if self.open_game == True:
+			self.Open_Game()
+
 		self.Register_The_Session()
 
 	def Define_Game_Dictionary(self):
@@ -39,21 +43,22 @@ class Play(GamePlayer):
 
 		# If the game playing status is inside the status list
 		if self.game["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
-			print(self.game["folders"]["dates"])
-
-			# If the game "Dates.txt" file is empty
-			if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
-				# Get the first playing time where the user started playing the game
-				self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
-
-				# Create the Dates text
-				self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
-				self.game["Dates"] += self.game["Started playing time"]
-
-				self.File.Edit(self.game["folders"]["dates"], self.game["Dates"], "w")
-
 			# Change the playing status to "Playing"
 			self.Change_Status(self.dictionary, self.language_texts["playing, title()"])
+
+		# If the game "Dates.txt" file is empty
+		if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
+			# Get the first playing time where the user started playing the game
+			self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
+
+			if "Entry" in self.dictionary and "Session duration" in self.dictionary["Entry"]:
+				self.game["Started playing time"] = self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+			# Create the Dates text
+			self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
+			self.game["Dates"] += self.game["Started playing time"]
+
+			self.File.Edit(self.game["folders"]["dates"], self.game["Dates"], "w")
 
 	def Open_Game(self):
 		if self.switches["testing"] == False:
@@ -70,27 +75,35 @@ class Play(GamePlayer):
 		print()
 
 		# Ask the user to press Enter to start counting the session time
-		self.Input.Type(self.language_texts["start_counting_the_session_time"], first_space = False)
+		if self.open_game == True:
+			self.Input.Type(self.language_texts["start_counting_the_session_time"], first_space = False)
 
 		# Define the Entry dictionary and the "Before" time (now)
-		self.dictionary["Entry"] = {
-			"Session duration": {
-				"Before": self.Date.Now(),
-				"After": ""
+		if "Entry" not in self.dictionary:
+			self.dictionary["Entry"] = {
+				"Session duration": {
+					"Before": self.Date.Now(),
+					"After": {}
+				}
 			}
-		}
 
-		print()
+		if self.open_game == True:
+			print()
+
 		print(self.Date.language_texts["now, title()"] + ":")
 		print(self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
-		text = self.language_texts["press_enter_when_you_finish_playing_the_game"]
+		if self.open_game == True:
+			self.Input.Type(self.language_texts["press_enter_when_you_finish_playing_the_game"])
 
-		self.game["States"]["Finished playing"] = self.Input.Type(text)
 		self.game["States"]["Finished playing"] = True
 
 		# Define the "After" time (now, after playing)
-		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
+		if self.dictionary["Entry"]["Session duration"]["After"] == {}:
+			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
+
+		if self.switches["testing"] == True:
+			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 1, minutes = 30, seconds = 28))
 
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")
@@ -99,11 +112,19 @@ class Play(GamePlayer):
 		# Define the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
 
-		# Define the time difference text key
 		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]
+
+		self.dictionary["Entry"]["Session duration"]["Difference"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
 
 		# Register the finished playing time
 		self.dictionary["Entry"]["Date"] = self.dictionary["Entry"]["Session duration"]["After"]
+
+		print()
+		print(self.language_texts["session_duration"] + ":")
+		print(self.dictionary["Entry"]["Session duration"]["Text"][self.user_language])
+
+		# Calculate the gaming time
+		self.Calculate_Gaming_Time(self.dictionary)
 
 		# Use the "Register" class to register the played game, and giving the dictionary to it
 		if self.Register != None:

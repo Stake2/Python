@@ -74,19 +74,38 @@ class Language():
 
 	def Get_System_Information(self):
 		import locale
+		import pathlib
 
-		self.system_information = {}
-		self.system_information["locale"] = locale.getdefaultlocale()
-		self.system_information["encoding"] = self.system_information["locale"][1]
-		self.system_information["language_with_country"] = self.system_information["locale"][0]
+		self.system_information = {
+			"User folder": str(pathlib.Path.home()),
+			"User name": str(pathlib.Path.home().name),
+			"Locale": locale.getdefaultlocale()
+		}
 
-		self.system_information["language"] = self.system_information["language_with_country"]
+		self.system_information["Encoding"] = self.system_information["Locale"][1]
 
-		if "_" in self.system_information["language"]:
-			self.system_information["language"] = self.system_information["language"].split("_")[0]
+		self.system_information["Language with country"] = self.system_information["Locale"][0]
 
-		if self.system_information["language"] in self.languages["full"]:
-			self.system_information["full_language"] = self.languages["full"][self.system_information["language"]]
+		self.system_information["Language"] = self.system_information["Language with country"]
+
+		if "_" in self.system_information["Language"]:
+			self.system_information["Language"] = self.system_information["Language"].split("_")[0]
+
+		if self.system_information["Language"] in self.languages["full"]:
+			self.system_information["Full language"] = self.languages["full"][self.system_information["Language"]]
+
+		self.system_information["Resolution"] = {}
+
+		import ctypes
+
+		user32 = ctypes.windll.user32
+
+		self.system_information["Resolution"].update({
+			"Width": str(user32.GetSystemMetrics(0)),
+			"Height": str(user32.GetSystemMetrics(1)),
+		})
+
+		self.system_information["Resolution"]["Joined"] = self.system_information["Resolution"]["Width"] + "x" + self.system_information["Resolution"]["Height"]
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
@@ -460,7 +479,7 @@ class Language():
 
 		self.app_settings = {}
 
-		self.app_settings["language"] = self.system_information["language"]
+		self.app_settings["language"] = self.system_information["Language"]
 		self.username = pathlib.Path.home().name
 		self.user_language = self.app_settings["language"]
 		self.full_user_language = self.languages["full"][self.user_language]
@@ -702,6 +721,8 @@ class Language():
 		self.language_texts = self.Item(self.texts)
 
 		for language_type in self.languages["types"]:
+			language_type = language_type.lower().replace(" ", "_")
+
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
 		self.settings_file = os.path.join(self.folders["apps"]["root"], self.language_texts["settings"].capitalize() + ".json")
@@ -840,20 +861,36 @@ class Language():
 		print(self.language_texts["class, title()"] + ' "' + self.module["name"] + '", ' + self.language_texts["the_user_information"] + ":")
 
 		print("\t" + self.language_texts["username, title()"] + ":")
-		print("\t\t" + self.username)
+		print("\t\t" + self.system_information["User folder"])
+		print("\t\t" + self.system_information["User name"])
 		print()
 
 		for language_type in self.languages["types"]:
+			language_type = language_type.lower().replace(" ", "_")
+
 			print("\t" + self.language_texts[language_type].capitalize() + ":")
-			print("\t\t" + self.system_information[language_type])
+
+			if language_type in self.system_information:
+				language = self.system_information[language_type]
+
+			else:
+				language = self.system_information[language_type.capitalize().replace("_", " ")]
+
+			print("\t\t" + language)
 
 			if language_type != self.languages["types"][-1]:
 				print()
 
-		if "language" in self.app_settings and self.user_language != self.system_information["language"]:
+		if "language" in self.app_settings and self.user_language != self.system_information["Language"]:
 			print()
 			print("\t" + self.language_texts["your_{}_is"].format(self.language_texts["custom_language"]) + ":")
 			print("\t\t" + self.user_language + ", " + self.languages["full"][self.user_language])
+
+		print()
+		print("\t" + self.language_texts["resolution, title()"] + ":")
+		print("\t\t" + self.system_information["Resolution"]["Width"])
+		print("\t\t" + self.system_information["Resolution"]["Height"])
+		print("\t\t" + self.system_information["Resolution"]["Joined"])
 
 		print()
 		print("\t" + self.language_texts["time_zone"] + ":")

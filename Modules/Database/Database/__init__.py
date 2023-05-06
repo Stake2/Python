@@ -959,12 +959,12 @@ class Database(object):
 			print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 
 			# If there are states, show them
-			if "States" in self.dictionary and self.dictionary["States"]["States"] != {}:
+			if "States" in dictionary and dictionary["States"] != {}:
 				print()
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 
-				for key in self.dictionary["States"]["Texts"]:
-					print("\t" + self.dictionary["States"]["Texts"][key][self.user_language])
+				for key in dictionary["States"]["Texts"]:
+					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
 			# If the user finished experiencing, ask for input before ending execution
 			print()

@@ -201,7 +201,7 @@ class Comment_Writer(Watch_History):
 			show_text += "\n" + self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
 		# Ask for user to write comment
-		dictionary = self.Input.Lines(show_text, line_options = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])
+		dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])
 
 		# Add comment to the comment text string and lines list
 		self.media["Comment"]["Text"]["String"] += dictionary["string"]

@@ -191,7 +191,7 @@ class JSON():
 		import datetime
 
 		if isinstance(date, datetime.datetime) == False:
-			date = date["date"]
+			date = date["Object"]
 
 		if format == "":
 			format = self.date_texts["default_format"]

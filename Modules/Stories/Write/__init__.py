@@ -258,10 +258,6 @@ class Write(Stories):
 		self.Input.Type(type_text)
 
 		# Define finish writing time
-		self.chapter["finish_writing_time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
-
-		# --- Testing: Add one hour
-		self.chapter["finish_writing_time"] = self.Date.Now()["Object"] + self.Date.Timedelta(hours = 1)
 		self.chapter["finish_writing_time"] = self.Date.Now(self.chapter["finish_writing_time"])["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Define time difference
@@ -269,15 +265,12 @@ class Write(Stories):
 
 		# Make time difference using already defined "started writing time"
 		if self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"] != "":
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.From_String(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["date"]
+			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.From_String(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Object"]
 
-			dict_ = {}
+			dict_ = self.chapter["time_difference"]["Difference"]
 
-			for key in self.chapter["time_difference"]["Difference"]:
-				dict_[key] = self.chapter["time_difference"]["Difference"][key]
-
-			# Add timedelta to "started writing time"
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] + self.Date.Timedelta(**dict_)
+			# Add Relativedelta to the "started writing time"
+			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] + self.Date.Relativedelta(**dict_)
 
 			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.Now(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Formats"]["HH:MM DD/MM/YYYY"]
 

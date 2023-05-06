@@ -84,10 +84,10 @@ class Folder():
 		for name in folder_names:
 			key = name.lower().replace(" ", "_")
 
-			if key == "media":
+			if name == "Media":
 				name = "Mídias"
 
-			if key == "games":
+			if name == "Games":
 				name = "Jogos"
 
 			self.folders["root"][key] = {
@@ -107,7 +107,7 @@ class Folder():
 		for folder in ["Module Files", "Modules", "Shortcuts"]:
 			key = folder.lower().replace(" ", "_")
 
-			if key == "shortcuts":
+			if folder == "Shortcuts":
 				folder = "Atalhos"
 
 			self.folders["apps"][key] = {
@@ -175,7 +175,7 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["root"]["sony_vegas_files"][key] = {
-				"root": os.path.join(self.folders["root"]["sony_vegas_files"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["root"]["sony_vegas_files"]["root"], folder + "/")
 			}
 
 		# XAMPP folder
@@ -194,7 +194,7 @@ class Folder():
 				folder = "Bloco De Notas"
 
 			self.folders["mega"][key] = {
-				"root": os.path.join(self.folders["mega"]["root"], folder + "/"),
+				"root": os.path.join(self.folders["mega"]["root"], folder + "/")
 			}
 
 		# Mega Notepad folders
@@ -327,7 +327,7 @@ class Folder():
 				key = str(item).lower().replace(" ", "_")
 
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], str(item) + "/"),
+					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], str(item) + "/")
 				}
 
 				if network["Type"] != None:
@@ -339,7 +339,7 @@ class Folder():
 				# Per Type folder
 				for item in ["Per" + network["Type"] + "Type"]:
 					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key][item] = {
-						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"], str(item) + "/"),
+						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"], str(item) + "/")
 					}
 
 				# Entries.json file
@@ -353,7 +353,7 @@ class Folder():
 			key = str(item).lower().replace(" ", "_")
 
 			self.folders["mega"]["notepad"]["effort"]["years"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["years"]["root"], str(item) + "/"),
+				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["years"]["root"], str(item) + "/")
 			}
 
 			if key == str(self.date["Units"]["Year"]):
@@ -378,7 +378,7 @@ class Folder():
 
 		# Temporary set PHP folder to Remake
 		self.folders["mega"]["php"] = {
-			"root": os.path.join(self.folders["mega"]["php"]["root"], "Remake/"),
+			"root": os.path.join(self.folders["mega"]["php"]["root"], "Remake/")
 		}
 
 		# Mega PHP folders
@@ -386,7 +386,7 @@ class Folder():
 			key = item.lower().replace(" ", "_")
 
 			self.folders["mega"]["php"][key] = {
-				"root": os.path.join(self.folders["mega"]["php"]["root"], item + "/"),
+				"root": os.path.join(self.folders["mega"]["php"]["root"], item + "/")
 			}
 
 		# Mega PHP JSON files
@@ -400,7 +400,7 @@ class Folder():
 			key = item.lower().replace(" ", "_")
 
 			self.folders["mega"]["obsidian_s_vaults"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["root"], item + "/"),
+				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["root"], item + "/")
 			}
 
 		# Mega Obsidian's Vaults/Creativity folders
@@ -408,7 +408,7 @@ class Folder():
 			key = item.lower().replace(" ", "_")
 
 			self.folders["mega"]["obsidian_s_vaults"]["creativity"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["root"], item + "/"),
+				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["root"], item + "/")
 			}
 
 		# Mega Obsidian's Vaults/Creativity/Literature folders
@@ -416,7 +416,7 @@ class Folder():
 			key = item.lower().replace(" ", "_")
 
 			self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/"),
+				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/")
 			}
 
 		# Mega Websites folders and files
@@ -428,7 +428,7 @@ class Folder():
 
 			else:
 				self.folders["mega"]["websites"][key] = {
-					"root": os.path.join(self.folders["mega"]["websites"]["root"], item + "/"),
+					"root": os.path.join(self.folders["mega"]["websites"]["root"], item + "/")
 				}
 
 		self.folders["mega"]["websites"]["images"]["story_covers"] = self.folders["mega"]["websites"]["images"]["root"] + "Story Covers/"
@@ -685,7 +685,7 @@ class Folder():
 			"files": {},
 			"file_list": [],
 			"file_names": [],
-			"size": 0,
+			"size": 0
 		}
 
 		self.contents["root_folders"] = os.listdir(folder)
@@ -783,14 +783,14 @@ class Folder():
 		contents = {
 			"folder": {
 				"list": [],
-				"names": [],
+				"names": []
 			},
 			"file": {
 				"list": [],
-				"names": [],
+				"names": []
 			},
 			"dictionary": {},
-			"size": 0,
+			"size": 0
 		}
 
 		contents["dictionary"]["root"] = folder

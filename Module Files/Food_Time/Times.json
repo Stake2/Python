@@ -1,54 +1,12 @@
 {
-	"types": [
-		"ate",
-		"can_drink_water",
-		"will_be_hungry"
+	"Types": [
+		"Ate",
+		"Can drink water",
+		"Will be hungry"
 	],
-	"times": {
-		"ate": 0,
-		"can_drink_water": 40,
-		"will_be_hungry": 3
-	},
-	"ate": {
-		"time": 0,
-		"unit_name": "hours",
-		"unit": {
-			"en": "hours",
-			"pt": "horas"
-		},
-		"texts": {
-			"pt": "Esta é a hora que você comeu",
-			"en": "This is the time that you ate"
-		},
-		"date": "2023-04-28 13:23:50",
-		"time_string": "13:23"
-	},
-	"can_drink_water": {
-		"time": 40,
-		"unit_name": "minutes",
-		"unit": {
-			"en": "minutes",
-			"pt": "minutos"
-		},
-		"texts": {
-			"pt": "Esta é a hora que você pode beber água",
-			"en": "This is the time that you can drink water"
-		},
-		"date": "2023-04-28 14:03:50",
-		"time_string": "14:03"
-	},
-	"will_be_hungry": {
-		"time": 3,
-		"unit_name": "hours",
-		"unit": {
-			"en": "hours",
-			"pt": "horas"
-		},
-		"texts": {
-			"pt": "Esta é a hora que você irá ter fome",
-			"en": "This is the time that you will be hungry"
-		},
-		"date": "2023-04-28 16:23:50",
-		"time_string": "16:23"
+	"Times": {
+		"Ate": 0,
+		"Can drink water": 40,
+		"Will be hungry": 3
 	}
 }

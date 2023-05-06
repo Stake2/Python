@@ -30,7 +30,7 @@
 			"ja": "日本語"
 		}
 	},
-	"language_with_country": {
+	"Language with country": {
 		"pt": [
 			"pt_BR",
 			"pt_PT"
@@ -40,7 +40,7 @@
 	},
 	"types": [
 		"language",
-		"language_with_country",
+		"Language with country",
 		"full_language"
 	]
 }

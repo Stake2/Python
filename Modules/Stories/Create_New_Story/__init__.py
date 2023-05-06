@@ -65,7 +65,7 @@ class Create_New_Story(Stories):
 
 					type_text = self.language_texts["story_synopsis_in_{}"].format(translated_language)
 
-					synopsis = self.Input.Lines(type_text, line_options = {"next_line": True})["string"]
+					synopsis = self.Input.Lines(type_text, line_options_parameter = {"next_line": True})["string"]
 
 					self.stories[self.story_titles["en"]]["Information"][english_information_item][full_language] = synopsis
 

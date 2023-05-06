@@ -136,9 +136,10 @@ class Register(Database):
 		# Update the data "Registered.json" file
 		self.JSON.Edit(self.data["folders"]["registered"]["entries"], self.dictionaries["Registered"])
 
-		# Add to the root and type "Entry list.txt" file
+		# Add to the root, type, and data "Entry list.txt" files
 		self.File.Edit(self.folders["history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 		self.File.Edit(self.dictionary["Type"]["Folders"]["per_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.data["folders"]["registered"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [entry number]

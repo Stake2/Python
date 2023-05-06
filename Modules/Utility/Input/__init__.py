@@ -87,6 +87,7 @@ class Input():
 		try:
 			option = int(option)
 			option_number = option - 1
+			self.option_number_backup = option_number
 
 			try:
 				option = options[option_number]
@@ -163,6 +164,9 @@ class Input():
 			"language_option": option,
 			"number": option_number
 		}
+
+		if hasattr(self, "option_number_backup") == True:
+			dictionary["number_backup"] = self.option_number_backup
 
 		if language_options != None:
 			dictionary["language_option"] = language_options[dictionary["number"]]
@@ -267,27 +271,28 @@ class Input():
 
 		return text
 
-	def Lines(self, show_text_parameter = None, length = None, line_options = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None):
+	def Lines(self, show_text_parameter = None, length = None, line_options_parameter = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None):
 		show_text = show_text_parameter
 
 		if show_text_parameter == None:
 			show_text = self.language_texts["type_the_lines_of_text"] + ": "
 
-		if line_options == None:
-			line_options = {
-				"print": False,
-				"enumerate": False,
-				"enumerate_text": False,
-				"capitalize": False,
-				"dots": False,
-				"show_finish_text": True,
-				"next_line": True,
-				"colon": True
-			}
+		line_options = {
+			"print": False,
+			"enumerate": False,
+			"enumerate_text": False,
+			"capitalize": False,
+			"dots": False,
+			"show_finish_text": True,
+			"next_line": True,
+			"colon": True,
+			"first_space": True
+		}
 
-		for item in ["print", "enumerate", "enumerate_text", "capitalize", "dots", "show_finish_text", "next_line", "colon"]:
-			if item not in line_options:
-				line_options[item] = False
+		if line_options_parameter != None:
+			for key in line_options:
+				if key in line_options_parameter:
+					line_options[key] = line_options_parameter[key]
 
 		finish_keywords = self.language_texts["finish_keywords, type: list"]
 

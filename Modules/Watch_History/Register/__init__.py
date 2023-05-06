@@ -216,7 +216,7 @@ class Register(Watch_History):
 		# [Media type]
 		#
 		# Dates:
-		# [Media unit dates]
+		# [Entry dates]
 		# 
 		# File name:
 		# [Number. Type (Time)]

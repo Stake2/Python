@@ -1248,17 +1248,5 @@
 	"iterate_through_media_list": {
 		"en": "Iterate through media list",
 		"pt": "Iterar através da lista de mídia"
-	},
-	"convert_history": {
-		"en": "Convert history",
-		"pt": "Converter histórico"
-	},
-	"the_media_is_not_inside_the_media_info_database": {
-		"en": "The media is not inside the Media Info Database",
-		"pt": "A mídia não está dentro do Banco de Dados de Informações de Mídia"
-	},
-	"unknown_watched_time": {
-		"en": "Unknown watched time",
-		"pt": "Tempo de assistido desconhecido"
 	}
 }

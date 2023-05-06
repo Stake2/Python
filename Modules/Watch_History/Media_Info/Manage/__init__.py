@@ -11,8 +11,8 @@ class Manage(Watch_History):
 
 		methods = {
 			"Iterate_Through_Media_List": self.language_texts["iterate_through_media_list"],
-			#"Convert_History": self.language_texts["convert_history"],
-			"Add_To_Comments_Dictionary": self.language_texts["add_to_comments_dictionary"]
+			"Add_To_Comments_Dictionary": self.language_texts["add_to_comments_dictionary"],
+			#"Convert_History": self.language_texts["convert_history"]
 		}
 
 		# Get the keys and values
@@ -179,9 +179,9 @@ class Manage(Watch_History):
 
 		# Only edit the root Comments file if the program iterated through all of the media types
 		# (If a media type was removed from the list, the comments number will be wrong)
-		if media_types_to_remove == []:
+		#if media_types_to_remove == []:
 			# Update the root "Comments.json" file
-			self.JSON.Edit(self.folders["comments"]["comments"], self.comments_number)
+			#self.JSON.Edit(self.folders["comments"]["comments"], self.comments_number)
 
 	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary and is not a single unit media item
@@ -338,26 +338,6 @@ class Manage(Watch_History):
 
 					# Add one to the total comments number per type
 					self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Total"] += 1
-
-	def Add_Last_Playlist_Date(self):
-		if len(self.dictionary["Media"]["Item"]["Episodes"]["Titles"]["IDs"]) >= 1:
-			id = self.dictionary["Media"]["Item"]["Episodes"]["Titles"]["IDs"][-1]
-
-			dict_ = self.Get_YouTube_Information("video", id)
-
-			video_title = self.dictionary["Media"]["Item"]["Episodes"]["Titles"][self.dictionary["Media"]["Language"]][-1]
-			video_title_from_api = dict_["Title"]
-
-			video_title_from_api = video_title_from_api.replace("  ", " ")
-
-			if video_title_from_api != video_title:
-				print()
-				print(video_title)
-				print(video_title_from_api)
-				print(id)
-
-		else:
-			print("IDs file empty.")
 
 	def Add_Anime_Information(self):
 		item_types = ["Media"]
@@ -737,7 +717,7 @@ class Manage(Watch_History):
 						"Year": self.Date.From_String(date)["Units"]["Year"]
 					}
 
-			new_information["Time"] = self.Date.To_String(self.Date.From_String(information["start_date"])["date"], utc = True)
+			new_information["Time"] = self.Date.To_String(self.Date.From_String(information["start_date"])["Object"], utc = True)
 
 		else:
 			if "Dates" in information:
@@ -750,7 +730,7 @@ class Manage(Watch_History):
 				new_information["Time"] = new_information["Dates"]["Start"]["DateTime"]["YYYY-MM-DDTHH:MM:SSZ"]
 
 			if "DateTime" in new_information["Dates"]["Start"] and new_information["Dates"]["Start"]["DateTime"] == {}:
-				new_information["Time"] = self.Date.To_String(self.Date.From_String(new_information["Dates"]["Start"]["Date"]["YYYY-MM-DD"])["date"], utc = True)
+				new_information["Time"] = self.Date.To_String(self.Date.From_String(new_information["Dates"]["Start"]["Date"]["YYYY-MM-DD"])["Object"], utc = True)
 
 		if "start_season" in information:
 			new_information["Start season"] = {

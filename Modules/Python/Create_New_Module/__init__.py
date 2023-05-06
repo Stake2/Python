@@ -43,7 +43,7 @@ class Create_New_Module(Python):
 		# Module descriptions
 		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
-		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
+		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
 
 		self.module_descriptions = {}
 
@@ -61,7 +61,7 @@ class Create_New_Module(Python):
 
 		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], self.translated_english_language + ", " + self.language_texts["separated_by_lines"]) + ": "
 
-		self.classes = self.Input.Lines(self.show_text, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+		self.classes = self.Input.Lines(self.show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		i = 0
 		for class_ in self.classes:
@@ -80,7 +80,7 @@ class Create_New_Module(Python):
 
 			self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions_of_classes"], translated_language + ", " + self.language_texts["separated_by_lines"]) + ":"
 
-			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes), line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		i = 0
 		for class_ in self.classes:
