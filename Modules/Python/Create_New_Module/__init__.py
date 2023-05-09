@@ -224,23 +224,21 @@ class Create_New_Module(Python):
 		self.File.Edit(self.conemu_xml_file, self.conemu_xml_text, "w")
 
 	def Add_To_Modules_List(self):
-		lines = self.File.Contents(self.usage_modules_file)["lines"]
+		if self.module_name not in self.modules["Usage"]["List"]:
+			self.modules["Usage"]["List"].append(self.module_name)
 
-		if self.module_name not in lines:
-			lines.append(self.module_name)
+		self.modules["Usage"]["List"] = sorted(self.modules["Usage"]["List"], key = str.lower)
 
-		lines = sorted(lines, key = str.lower)
-
-		self.File.Edit(self.usage_modules_file, self.Text.From_List(lines), "w")
+		self.JSON.Edit(self.folders["modules_file"], self.modules)
 
 	def Change_Global_Switches(self):
-		self.switches_file = self.Global_Switches.switches_file
+		self.switches_file = self.Global_Switches.switches["file"]
 
-		self.switches = self.JSON.To_Python(self.switches_file)
-		self.switches["testing"] = True
-		self.switches["versbose"] = True
+		self.switches["global"] = self.JSON.To_Python(self.switches_file)
+		self.switches["global"]["testing"] = True
+		self.switches["global"]["versbose"] = True
 
-		self.File.Edit(self.switches_file, sself.JSON.From_Python(self.switches), "w")
+		self.JSON.Edit(self.switches_file, self.switches["global"])
 
 	def Show_Module_Info(self):
 		print(self.large_bar)

@@ -542,6 +542,8 @@ class Main():
 		print("Diferença até hoje (Date.Difference):")
 		print("\t" + date_difference["Text"][self.user_language])
 
+		self.JSON.Show(self.Date.Now())
+
 	def Tables(self):
 		link = ""
 

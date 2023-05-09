@@ -1,6 +1,6 @@
-# Media_Info.py
+# Manage.py
 
-class Media_Info():
+class Manage():
 	def __init__(self):
 		import os
 		import importlib
@@ -16,11 +16,15 @@ class Media_Info():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Add_New_Media",
-			"Fill_Media_Files",
-			"Manage"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key not in ["show_text", "Remove list"]:
+				if (
+					"Remove list" not in self.descriptions or
+					"Remove list" in self.descriptions and key not in self.descriptions["Remove list"]
+				):
+					self.classes.append(key)
 
 		self.class_descriptions = []
 

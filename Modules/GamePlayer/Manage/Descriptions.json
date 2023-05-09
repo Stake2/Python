@@ -1,14 +1,10 @@
 {
 	"show_text": {
-		"en": "Manage Game Media Network",
-		"pt": "Gerenciar Rede de Jogos (Game Network)"
-	},
-	"Play": {
-		"en": "Play",
-		"pt": "Jogar"
-	},
-	"Manage": {
 		"en": "Manage the [Game Information] Database and [Play History]",
 		"pt": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
+	},
+	"Iterate_Through_The_Game_List": {
+		"en": "Iterate through the game list",
+		"pt": "Iterar através da lista de jogos"
 	}
 }

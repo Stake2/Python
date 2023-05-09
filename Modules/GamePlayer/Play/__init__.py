@@ -42,7 +42,7 @@ class Play(GamePlayer):
 		]
 
 		# If the game playing status is inside the status list
-		if self.game["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+		if self.game["Details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
 			# Change the playing status to "Playing"
 			self.Change_Status(self.dictionary, self.language_texts["playing, title()"])
 
@@ -50,9 +50,6 @@ class Play(GamePlayer):
 		if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
 			# Get the first playing time where the user started playing the game
 			self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
-
-			if "Entry" in self.dictionary and "Session duration" in self.dictionary["Entry"]:
-				self.game["Started playing time"] = self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"]
 
 			# Create the Dates text
 			self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
@@ -79,13 +76,12 @@ class Play(GamePlayer):
 			self.Input.Type(self.language_texts["start_counting_the_session_time"], first_space = False)
 
 		# Define the Entry dictionary and the "Before" time (now)
-		if "Entry" not in self.dictionary:
-			self.dictionary["Entry"] = {
-				"Session duration": {
-					"Before": self.Date.Now(),
-					"After": {}
-				}
+		self.dictionary["Entry"] = {
+			"Session duration": {
+				"Before": self.Date.Now(),
+				"After": {}
 			}
+		}
 
 		if self.open_game == True:
 			print()
@@ -99,11 +95,10 @@ class Play(GamePlayer):
 		self.game["States"]["Finished playing"] = True
 
 		# Define the "After" time (now, after playing)
-		if self.dictionary["Entry"]["Session duration"]["After"] == {}:
-			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
+		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
 
 		if self.switches["testing"] == True:
-			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 1, minutes = 30, seconds = 28))
+			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(years = 2, months = 6, days = 27, hours = 2, minutes = 30, seconds = 28))
 
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")

@@ -16,9 +16,11 @@ class Run():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Generate_CSS_Selectors"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
 
 		self.class_descriptions = []
 

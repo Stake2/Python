@@ -82,5 +82,9 @@
 	"completed_the_data": {
 		"en": "Completed the data",
 		"pt": "Completou o dado"
+	},
+	"type_the_data_titles_(press_enter_to_leave_it_empty)": {
+		"en": "Type the data titles (press Enter to leave it empty)",
+		"pt": "Digite os títulos do dado (pressione Enter para deixar vazio)"
 	}
 }

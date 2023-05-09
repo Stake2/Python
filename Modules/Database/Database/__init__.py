@@ -195,6 +195,13 @@ class Database(object):
 			# Update the number of data inside the json dictionary
 			self.types[plural_type]["JSON"]["Number"] = len(self.types[plural_type]["JSON"]["Titles"])
 
+			# Sort the data titles list
+			self.types[plural_type]["JSON"]["Titles"] = sorted(self.types[plural_type]["JSON"]["Titles"], key = str.lower)
+
+			# Sort the status lists
+			for english_status in self.texts["statuses, type: list"]["en"]:
+				self.types[plural_type]["JSON"]["Status"][english_status] = sorted(self.types[plural_type]["JSON"]["Status"][english_status], key = str.lower)
+
 			# Edit the "Info.json" file with the new dictionary
 			self.JSON.Edit(self.types[plural_type]["Folders"]["information"]["info"], self.types[plural_type]["JSON"])
 
@@ -451,7 +458,7 @@ class Database(object):
 		dictionary.update(self.types[dictionary["option"]])
 
 		# Get the status from the options dictionary
-		if "Status" in options:
+		if options != None and "Status" in options:
 			dictionary["Status"] = options["Status"]
 
 		# Get the data list using the correct status
@@ -552,13 +559,17 @@ class Database(object):
 
 		self.Folder.Create(data["folders"]["registered"]["root"])
 
-		# Create the "Entries.json" file inside the "Registered" folder
-		data["folders"]["registered"]["entries"] = data["folders"]["registered"]["root"] + "Entries.json"
-		self.File.Create(data["folders"]["registered"]["entries"])
+		# Create the "Registered" files
+		files = [
+			"Entries.json",
+			"Entry list.txt"
+		]
 
-		# Create the "Entry list.txt" file inside the "Registered" folder
-		data["folders"]["registered"]["entry_list"] = data["folders"]["registered"]["root"] + "Entry list.txt"
-		self.File.Create(data["folders"]["registered"]["entry_list"])
+		for file in files:
+			key = file.lower().split(".")[0].replace(" ", "_")
+
+			data["folders"]["registered"][key] = data["folders"]["registered"]["root"] + file
+			self.File.Create(data["folders"]["registered"][key])
 
 		# Create the "Files" folder file inside the "Registered" folder
 		data["folders"]["registered"]["files"] = {
@@ -584,14 +595,18 @@ class Database(object):
 		self.JSON.Edit(data["folders"]["registered"]["entries"], self.dictionaries["Registered"])
 
 		# Define the data details
-		data["details"] = self.File.Dictionary(data["folders"]["details"])
+		if "Details" not in data:
+			data["Details"] = self.File.Dictionary(data["folders"]["details"])
+
+		# Edit the data details file with the details above (or the one that already existed in the dictionary)
+		self.File.Edit(data["folders"]["details"], self.Text.From_Dictionary(data["Details"]), "w")
 
 		# Define the default data language as the user language
 		data["Language"] = self.full_user_language
 
 		# Change user language to original data language if the key exists inside the data details
-		if self.JSON.Language.language_texts["original_language"] in data["details"]:
-			data["Language"] = data["details"][self.JSON.Language.language_texts["original_language"]]
+		if self.JSON.Language.language_texts["original_language"] in data["Details"]:
+			data["Language"] = data["Details"][self.JSON.Language.language_texts["original_language"]]
 
 		if data["Language"] in list(self.languages["full"].values()):
 			# Iterate through full languages list to find small language from the full language
@@ -629,19 +644,19 @@ class Database(object):
 
 		# Define the origin type state
 		for key in origin_types:
-			if self.JSON.Language.language_texts["origin_type"] in data["details"]:
-				if data["details"][self.JSON.Language.language_texts["origin_type"]] == self.language_texts[key.lower() + ", title()"]:
+			if self.JSON.Language.language_texts["origin_type"] in data["Details"]:
+				if data["Details"][self.JSON.Language.language_texts["origin_type"]] == self.JSON.Language.language_texts[key.lower() + ", title()"]:
 					data["States"][key] = True
 
 		data["States"]["Remote"] = False
 
-		if self.JSON.Language.language_texts["origin_type"] not in data["details"]:
+		if self.JSON.Language.language_texts["origin_type"] not in data["Details"]:
 			data["States"]["Remote"] = True
 
-			data["details"][self.JSON.Language.language_texts["origin_type"]] = self.JSON.Language.language_texts["remote, title()"]
+			data["Details"][self.JSON.Language.language_texts["origin_type"]] = self.JSON.Language.language_texts["remote, title()"]
 
 		# Define Re-experiencing state for Re-experiencing status
-		if self.JSON.Language.language_texts["status, title()"] in data["details"] and data["details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_experiencing, title()"]:
+		if self.JSON.Language.language_texts["status, title()"] in data["Details"] and data["Details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_experiencing, title()"]:
 			data["States"]["Re-experiencing"] = True
 
 		if self.dictionaries["Entries"]["Numbers"]["Total"] == 0:
@@ -763,26 +778,26 @@ class Database(object):
 		data = dictionary["Data"]
 
 		if self.File.Exist(data["folders"]["details"]) == True:
-			data["details"] = self.File.Dictionary(data["folders"]["details"])
+			data["Details"] = self.File.Dictionary(data["folders"]["details"])
 
 			# Define titles key
 			data["Titles"] = {
-				"Original": data["details"][self.JSON.Language.language_texts["title, title()"]],
-				"Sanitized": data["details"][self.JSON.Language.language_texts["title, title()"]],
+				"Original": data["Details"][self.JSON.Language.language_texts["title, title()"]],
+				"Sanitized": data["Details"][self.JSON.Language.language_texts["title, title()"]]
 			}
 
 			data["Titles"]["Language"] = data["Titles"]["Original"]
 
-			# If the "romanized_name" key exists inside the data details, define the romanized name and ja name
-			if self.JSON.Language.language_texts["romanized_name"] in data["details"]:
-				if self.JSON.Language.language_texts["romanized_name"] in data["details"]:
-					data["Titles"]["Romanized"] = data["details"][self.JSON.Language.language_texts["romanized_name"]]
+			# If the "romanized_title" key exists inside the data details, define the romanized name and ja name
+			if self.JSON.Language.language_texts["romanized_title"] in data["Details"]:
+				if self.JSON.Language.language_texts["romanized_title"] in data["Details"]:
+					data["Titles"]["Romanized"] = data["Details"][self.JSON.Language.language_texts["romanized_title"]]
 					data["Titles"]["Language"] = data["Titles"]["Romanized"]
 
 				if "Romanized" in data["Titles"]:
 					data["Titles"]["Sanitized"] = data["Titles"]["Romanized"]
 
-				data["Titles"]["ja"] = data["details"][self.JSON.Language.language_texts["title, title()"]]
+				data["Titles"]["ja"] = data["Details"][self.JSON.Language.language_texts["title, title()"]]
 
 			if " (" in data["Titles"]["Original"] and " (" not in data["Titles"]["Language"]:
 				data["Titles"]["Language"] = data["Titles"]["Language"] + " (" + data["Titles"]["Original"].split(" (")[-1]
@@ -792,11 +807,10 @@ class Database(object):
 
 			# Define data titles per language
 			for language in self.languages["small"]:
-				language_name = self.JSON.Language.texts["language_name"][language][self.user_language]
+				key = self.JSON.Language.texts["title_in_language"][language][self.user_language]
 
-				for key in data["details"]:
-					if language_name == key:
-						data["Titles"][language] = data["details"][language_name]
+				if key in data["Details"]:
+					data["Titles"][language] = data["Details"][key]
 
 			data["Titles"]["Language"] = data["Titles"]["Original"]
 
@@ -850,10 +864,10 @@ class Database(object):
 			status = self.language_texts["registered, title()"]
 
 		# Update the status key in the data details
-		dictionary["Data"]["details"][self.JSON.Language.language_texts["status, title()"]] = status
+		dictionary["Data"]["Details"][self.JSON.Language.language_texts["status, title()"]] = status
 
 		# Update the data details file
-		self.File.Edit(dictionary["Data"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Data"]["details"]), "w")
+		self.File.Edit(dictionary["Data"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Data"]["Details"]), "w")
 
 		self.Check_Status(dictionary)
 
@@ -863,7 +877,7 @@ class Database(object):
 		if "Type" in dictionary and "JSON" in dictionary["Type"]:
 			data_type = dictionary["Type"]
 
-			self.language_status = dictionary["Data"]["details"][self.JSON.Language.language_texts["status, title()"]]
+			self.language_status = dictionary["Data"]["Details"][self.JSON.Language.language_texts["status, title()"]]
 
 			# Get the English status from the language status of the data details
 			status = self.Get_Language_Status(self.language_status)
@@ -959,7 +973,7 @@ class Database(object):
 			print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 
 			# If there are states, show them
-			if "States" in dictionary and dictionary["States"] != {}:
+			if "States" in dictionary and dictionary["States"]["Texts"] != {}:
 				print()
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 

@@ -145,7 +145,7 @@ class Comment_Writer(Watch_History):
 		show_text += "\n"
 
 		# Define masculine or feminine text based on masculine or feminine text with function
-		show_text += self.language_texts["type_the_comment_for_{}"].format(self.dictionary["Media type"]["Genders"][self.user_language]["the"] + " " + self.media["texts"]["unit"][self.user_language]) + ": "
+		show_text += self.language_texts["type_the_comment_for"] + " " + self.dictionary["Media type"]["Genders"][self.user_language]["the"] + " " + self.media["texts"]["unit"][self.user_language] + ": "
 
 		show_text += "\n\n" + "----------"
 
@@ -159,7 +159,7 @@ class Comment_Writer(Watch_History):
 			title = self.media["Episode"][key][self.user_language]
 
 			if self.media["States"]["Series media"] == False:
-				title += " (" + self.media["details"][self.JSON.Language.language_texts["original_name"]].split(" (")[-1]
+				title += " (" + self.media["Details"][self.JSON.Language.language_texts["original_title"]].split(" (")[-1]
 
 			if self.media["States"]["Re-watching"] == True:
 				title += self.media["Episode"]["re_watched"]["text"]
@@ -180,9 +180,9 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["Text"]["Lines"].append("")
 
 			# Add the time text to the comment to be replaced by the commented time after finishing the comment
-			self.media["Comment"]["Text"]["String"] += self.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"
+			self.media["Comment"]["Text"]["String"] += self.Date.language_texts["time, title()"] + ":" + "\n" + "[Time]" + "\n"
 
-			self.media["Comment"]["Text"]["Lines"].append(self.language_texts["time, title()"] + ":")
+			self.media["Comment"]["Text"]["Lines"].append(self.Date.language_texts["time, title()"] + ":")
 			self.media["Comment"]["Text"]["Lines"].append("[Time]")
 
 			# If backup is true, backup comment to file

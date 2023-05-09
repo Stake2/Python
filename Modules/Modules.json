@@ -1,6 +1,6 @@
 {
-    "utility": {
-        "list": [
+    "Utility": {
+        "List": [
             "API",
             "Date",
             "Define_Folders",
@@ -14,8 +14,8 @@
             "Text"
         ]
     },
-    "usage": {
-        "list": [
+    "Usage": {
+        "List": [
             "Block_Websites",
             "Christmas",
             "Code",

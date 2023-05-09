@@ -19,6 +19,10 @@
         "en": "file",
         "pt": "arquivo"
     },
+	"create": {
+        "en": "create",
+        "pt": "criar"
+    },
     "created": {
         "en": "created",
         "pt": "criada"
@@ -78,5 +82,13 @@
 	"it_was_not_possible_to_{}_the_folder_permission_not_granted": {
         "en": "It was not possible to {} the folder, permission not granted",
         "pt": "Não foi possível {} a pasta, permissão não concedida"
-    }
+    },
+	"create_folder": {
+		"en": "Create folder",
+		"pt": "Criar pasta"
+	},
+	"root_folder": {
+		"en": "Root folder",
+		"pt": "Pasta raiz"
+	}
 }

@@ -2,10 +2,6 @@
 
 class GamePlayer(object):
 	def __init__(self):
-		if hasattr(self, "old_history") == True:
-			for key, value in self.old_history.items():
-				setattr(self, key, value)
-
 		self.Define_Basic_Variables()
 
 		# Define module folders
@@ -212,6 +208,13 @@ class GamePlayer(object):
 			# Update the number of games inside the json dictionary
 			self.game_types[game_type]["JSON"]["Number"] = len(self.game_types[game_type]["JSON"]["Titles"])
 
+			# Sort the game titles list
+			self.game_types[game_type]["JSON"]["Titles"] = sorted(self.game_types[game_type]["JSON"]["Titles"], key = str.lower)
+
+			# Sort the status lists
+			for english_status in self.texts["statuses, type: list"]["en"]:
+				self.game_types[game_type]["JSON"]["Status"][english_status] = sorted(self.game_types[game_type]["JSON"]["Status"][english_status], key = str.lower)
+
 			# Edit the "Info.json" file with the new dictionary
 			self.JSON.Edit(self.game_types[game_type]["Folders"]["information"]["info"], self.game_types[game_type]["JSON"])
 
@@ -267,9 +270,8 @@ class GamePlayer(object):
 
 			i += 1
 
-		if hasattr(self, "old_history") == False:
-			# Write the game types dictionary into the "Types.json" file
-			self.JSON.Edit(self.folders["data"]["types"], self.game_types)
+		# Write the game types dictionary into the "Types.json" file
+		self.JSON.Edit(self.folders["data"]["types"], self.game_types)
 
 		# Update the game list inside the root "Info.json" dictionary
 		info_dictionary.update(self.game_types["Game list"])
@@ -461,7 +463,7 @@ class GamePlayer(object):
 		dictionary.update(self.game_types[dictionary["option"]])
 
 		# Get the status from the options dictionary
-		if "Status" in options:
+		if options != None and "Status" in options:
 			dictionary["Status"] = options["Status"]
 
 		# Get the game list using the correct status
@@ -505,8 +507,7 @@ class GamePlayer(object):
 
 		# Define the game information folder
 		game["folders"] = {
-			"root": dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(game["Title"]) + "/",
-			"game": self.Folder.folders["games"]["folders"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + "/"
+			"root": dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(game["Title"]) + "/"
 		}
 
 		# Create the folders
@@ -558,13 +559,22 @@ class GamePlayer(object):
 
 		self.Folder.Create(game["folders"]["played"]["root"])
 
-		# Create the "Entries.json" file inside the "Played" folder
-		game["folders"]["played"]["entries"] = game["folders"]["played"]["root"] + "Entries.json"
-		self.File.Create(game["folders"]["played"]["entries"])
+		# Create the "Played" files
+		files = [
+			"Entries.json",
+			"Entry list.txt",
+			"Time.json",
+			self.language_texts["gaming_time"] + ".txt"
+		]
 
-		# Create the "Entry list.txt" file inside the "Played" folder
-		game["folders"]["played"]["entry_list"] = game["folders"]["played"]["root"] + "Entry list.txt"
-		self.File.Create(game["folders"]["played"]["entry_list"])
+		for file in files:
+			key = file.lower().split(".")[0].replace(" ", "_")
+
+			if self.language_texts["gaming_time"] in file:
+				key = "gaming_time"
+
+			game["folders"]["played"][key] = game["folders"]["played"]["root"] + file
+			self.File.Create(game["folders"]["played"][key])
 
 		# Create the "Files" folder file inside the "Played" folder
 		game["folders"]["played"]["files"] = {
@@ -589,10 +599,6 @@ class GamePlayer(object):
 		# Write the default or file dictionary into the "Played.json" file
 		self.JSON.Edit(game["folders"]["played"]["entries"], self.dictionaries["Played"])
 
-		# Create the "Time.json" file inside the "Played" folder
-		game["folders"]["played"]["time"] = game["folders"]["played"]["root"] + "Time.json"
-		self.File.Create(game["folders"]["played"]["time"])
-
 		# Define the "Time" dictionary as a template
 		game["Time"] = {
 			"First time": {},
@@ -605,16 +611,12 @@ class GamePlayer(object):
 			"Seconds": 0
 		}
 
-		# Get the "Time" dictionary from file if the dictionary is not empty and has entries
+		# Get the "Time" dictionary from file if the dictionary is not empty
 		if self.File.Contents(game["folders"]["played"]["time"])["lines"] != []:
 			game["Time"] = self.JSON.To_Python(game["folders"]["played"]["time"])
 
 		# Write the default or file dictionary into the "Time.json" file
 		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
-
-		# Create the "Gaming time.txt" file inside the "Played" folder
-		game["folders"]["played"]["gaming_time"] = game["folders"]["played"]["root"] + self.language_texts["gaming_time"] + ".txt"
-		self.File.Create(game["folders"]["played"]["gaming_time"])
 
 		gaming_time = self.Make_Gaming_Time_Text(game)
 
@@ -623,14 +625,18 @@ class GamePlayer(object):
 			self.File.Edit(game["folders"]["played"]["gaming_time"], gaming_time, "w")
 
 		# Define the game details
-		game["details"] = self.File.Dictionary(game["folders"]["details"])
+		if "Details" not in game:
+			game["Details"] = self.File.Dictionary(game["folders"]["details"])
+
+		# Edit the game details file with the details above (or the one that already existed in the dictionary)
+		self.File.Edit(game["folders"]["details"], self.Text.From_Dictionary(game["Details"]), "w")
 
 		# Define the default game language as the user language
 		game["Language"] = self.full_user_language
 
 		# Change user language to original game language if the key exists inside the game details
-		if self.JSON.Language.language_texts["original_language"] in game["details"]:
-			game["Language"] = game["details"][self.JSON.Language.language_texts["original_language"]]
+		if self.JSON.Language.language_texts["original_language"] in game["Details"]:
+			game["Language"] = game["Details"][self.JSON.Language.language_texts["original_language"]]
 
 		if game["Language"] in list(self.languages["full"].values()):
 			# Iterate through full languages list to find small language from the full language
@@ -640,7 +646,7 @@ class GamePlayer(object):
 				if full_language == game["Language"]:
 					game["Language"] = small_language
 
-		game["Platform"] = game["details"][self.JSON.Language.language_texts["platform, title()"]]
+		game["Platform"] = game["Details"][self.JSON.Language.language_texts["platform, title()"]]
 
 		i = 0
 		for platform in self.game_types["Platforms"][self.user_language]:
@@ -672,7 +678,7 @@ class GamePlayer(object):
 			game["States"]["Christmas"] = True
 
 		# Define Re-playing state for Re-playing status
-		if self.JSON.Language.language_texts["status, title()"] in game["details"] and game["details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]:
+		if self.JSON.Language.language_texts["status, title()"] in game["Details"] and game["Details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]:
 			game["States"]["Re-playing"] = True
 
 		game["States"]["First game session in year"] = False
@@ -689,14 +695,65 @@ class GamePlayer(object):
 
 		# Define game files
 		game["Files"] = {
-			"Shortcut": dictionary["Type"]["Folders"]["shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".lnk"
+			"Shortcut": dictionary["Type"]["Folders"]["shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True),
+			"Shortcut path": ""
 		}
+
+		found_shortcut = False
+
+		for extension in [".lnk", ".url"]:
+			file = game["Files"]["Shortcut"] + extension
+
+			if self.File.Exist(file) == True:
+				game["Files"]["Shortcut"] += extension
+
+				found_shortcut = True
+
+		if found_shortcut == False:
+			game["Files"]["Shortcut"] = ""
+
+		if ".lnk" in game["Files"]["Shortcut"] or ".url" in game["Files"]["Shortcut"]:
+			import win32com.client
+			shell = win32com.client.Dispatch("WScript.Shell")
+			game["Files"]["Shortcut path"] = shell.CreateShortCut(game["Files"]["Shortcut"]).Targetpath.replace("\\", "/")
 
 		# Define bat File for game
 		file = self.Folder.folders["apps"]["shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
 
 		if self.File.Exist(file) == True:
 			game["Files"]["Bat"] = file
+
+		# Create the local game folder
+		root_folder = self.Folder.folders["games"]["folders"]["root"]
+
+		if self.Folder.language_texts["root_folder"] in game["Details"]:
+			root_folder += game["Details"][self.Folder.language_texts["root_folder"]] + "/"
+
+		if dictionary["Type"]["Type"]["en"] in ["Flash", "Nintendo 64", "Super Nintendo"]:
+			root_folder += dictionary["Type"]["Type"]["en"] + "/"
+
+		game_folder = self.Sanitize(game["Title"], restricted_characters = True)
+
+		if self.Folder.language_texts["folder, title()"] in game["Details"]:
+			game_folder = game["Details"][self.Folder.language_texts["folder, title()"]]
+
+		game["folders"]["local"] = root_folder + game_folder + "/"
+
+		if (
+			self.Folder.language_texts["create_folder"] not in game["Details"] or 
+			self.Folder.language_texts["create_folder"] in game["Details"] and self.Input.Define_Yes_Or_No(game["Details"][self.Folder.language_texts["create_folder"]]) == False
+		):
+			if (
+				game["Platform"]["en"] not in ["Console", "Mobile", "Super Nintendo", "Nintendo 64"] and
+				dictionary["Type"]["Type"]["en"] not in ["Flash", "Nintendo 64", "Super Nintendo"] and
+				self.JSON.Language.language_texts["steam, title()"] not in game["Details"] and
+				"steam://" not in game["Files"]["Shortcut path"] and
+				"https://" not in game["Files"]["Shortcut path"]
+			):
+				self.Folder.Create(game["folders"]["local"])
+
+			else:
+				game["folders"]["local"] = ""
 
 		return dictionary
 
@@ -815,26 +872,26 @@ class GamePlayer(object):
 		game = dictionary["Game"]
 
 		if self.File.Exist(game["folders"]["details"]) == True:
-			game["details"] = self.File.Dictionary(game["folders"]["details"])
+			game["Details"] = self.File.Dictionary(game["folders"]["details"])
 
 			# Define titles key
 			game["Titles"] = {
-				"Original": game["details"][self.JSON.Language.language_texts["title, title()"]],
-				"Sanitized": game["details"][self.JSON.Language.language_texts["title, title()"]],
+				"Original": game["Details"][self.JSON.Language.language_texts["title, title()"]],
+				"Sanitized": game["Details"][self.JSON.Language.language_texts["title, title()"]],
 			}
 
 			game["Titles"]["Language"] = game["Titles"]["Original"]
 
-			# If the "romanized_name" key exists inside the game details, define the romanized name and ja name
-			if self.JSON.Language.language_texts["romanized_name"] in game["details"]:
-				if self.JSON.Language.language_texts["romanized_name"] in game["details"]:
-					game["Titles"]["Romanized"] = game["details"][self.JSON.Language.language_texts["romanized_name"]]
+			# If the "romanized_title" key exists inside the game details, define the romanized name and ja name
+			if self.JSON.Language.language_texts["romanized_title"] in game["Details"]:
+				if self.JSON.Language.language_texts["romanized_title"] in game["Details"]:
+					game["Titles"]["Romanized"] = game["Details"][self.JSON.Language.language_texts["romanized_title"]]
 					game["Titles"]["Language"] = game["Titles"]["Romanized"]
 
 				if "Romanized" in game["Titles"]:
 					game["Titles"]["Sanitized"] = game["Titles"]["Romanized"]
 
-				game["Titles"]["ja"] = game["details"][self.JSON.Language.language_texts["title, title()"]]
+				game["Titles"]["ja"] = game["Details"][self.JSON.Language.language_texts["title, title()"]]
 
 			if " (" in game["Titles"]["Original"] and " (" not in game["Titles"]["Language"]:
 				game["Titles"]["Language"] = game["Titles"]["Language"] + " (" + game["Titles"]["Original"].split(" (")[-1]
@@ -844,11 +901,10 @@ class GamePlayer(object):
 
 			# Define game titles per language
 			for language in self.languages["small"]:
-				language_name = self.JSON.Language.texts["language_name"][language][self.user_language]
+				key = self.JSON.Language.texts["title_in_language"][language][self.user_language]
 
-				for key in game["details"]:
-					if language_name == key:
-						game["Titles"][language] = game["details"][language_name]
+				if key in game["Details"]:
+					game["Titles"][language] = game["Details"][key]
 
 			game["Titles"]["Language"] = game["Titles"]["Original"]
 
@@ -902,10 +958,10 @@ class GamePlayer(object):
 			status = self.JSON.Language.language_texts["completed, title()"]
 
 		# Update the status key in the game details
-		dictionary["Game"]["details"][self.JSON.Language.language_texts["status, title()"]] = status
+		dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]] = status
 
 		# Update the game details file
-		self.File.Edit(dictionary["Game"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["details"]), "w")
+		self.File.Edit(dictionary["Game"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["Details"]), "w")
 
 		self.Check_Status(dictionary)
 
@@ -915,7 +971,7 @@ class GamePlayer(object):
 		if "Type" in dictionary and "JSON" in dictionary["Type"]:
 			game_type = dictionary["Type"]
 
-			self.language_status = dictionary["Game"]["details"][self.JSON.Language.language_texts["status, title()"]]
+			self.language_status = dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]]
 
 			# Get the English status from the language status of the game details
 			status = self.Get_Language_Status(self.language_status)
@@ -985,16 +1041,14 @@ class GamePlayer(object):
 		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
 			attribute = attribute.capitalize()
 
-			if attribute in entry["Session duration"]["Difference"] and attribute != "Years":
+			if attribute in entry["Session duration"]["Difference"]:
 				game["Time"][attribute] += entry["Session duration"]["Difference"][attribute]
-
-		year = False
-		day = False
 
 		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
 			attribute = attribute.capitalize()
 
 			bigger_time = ""
+			total_number = 0
 
 			if attribute == "Months":
 				bigger_time = "Years"
@@ -1002,7 +1056,7 @@ class GamePlayer(object):
 
 			if attribute == "Days":
 				bigger_time = "Months"
-				total_number = 30
+				total_number = self.Date.Monthrange()[1]
 
 			if attribute == "Hours":
 				bigger_time = "Days"
@@ -1020,17 +1074,14 @@ class GamePlayer(object):
 			# Smaller time into bigger time
 			if bigger_time != "" and game["Time"][attribute] >= total_number:
 				# Add bigger time made with smaller time to the bigger time key
-				game["Time"][bigger_time] = game["Time"][bigger_time] + game["Time"][attribute] // total_number
+				game["Time"][bigger_time] = divmod(game["Time"][bigger_time] + game["Time"][attribute], total_number)[0]
 
+				# Get the remainder of the division of the smaller time
 				if game["Time"][attribute] // total_number == 1:
-					# Get the remainder of the division of the smaller time
-					game["Time"][attribute] = game["Time"][attribute] % total_number
+					game["Time"][attribute] = 0
 
-					if attribute == "Days":
-						day = True
-
-					if attribute == "Months":
-						year = True
+				else:
+					game["Time"][attribute] %= total_number
 
 		# Update the "Time.json" file
 		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
@@ -1171,10 +1222,29 @@ class GamePlayer(object):
 		for item in platforms:
 			print(item)
 
-		print()
+		if game["folders"]["local"] == "":
+			print()
+			print(self.Folder.language_texts["folder, title()"] + ":")
+			print("\t" + game["folders"]["root"])
 
-		print(self.File.language_texts["shortcut, title()"] + ":")
-		print("\t" + game["Files"]["Shortcut"])
+		if game["folders"]["local"] != "":
+			print()
+			print(self.Folder.language_texts["folders, title()"] + ":")
+			print("\t" + self.JSON.Language.language_texts["information, title(), plural"] + ":")
+			print("\t" + game["folders"]["root"])
+			print()
+			print("\t" + self.JSON.Language.language_texts["local, title()"] + ":")
+			print("\t" + game["folders"]["local"])
+
+		if game["Files"]["Shortcut"] != "":
+			print()
+			print(self.File.language_texts["shortcut, title()"] + ":")
+			print("\t" + game["Files"]["Shortcut"])
+
+		if game["Files"]["Shortcut path"] != "":
+			print()
+			print(self.JSON.Language.language_texts["path, title()"] + ":")
+			print("\t" + game["Files"]["Shortcut path"])
 
 		if "Entry" in dictionary:
 			print()
@@ -1195,7 +1265,7 @@ class GamePlayer(object):
 					print("\t" + value)
 
 			# If there are states, show them
-			if "States" in dictionary and dictionary["States"] != {}:
+			if "States" in dictionary and dictionary["States"]["Texts"] != {}:
 				print()
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 

@@ -155,6 +155,9 @@ class Folder():
 		for folder in ["Mega", "Vídeos"]:
 			key = folder.lower().replace(" ", "_")
 
+			if folder == "Vídeos":
+				key = "videos"
+
 			self.folders["user"]["downloads"][key] = {
 				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/")
 			}
@@ -512,6 +515,8 @@ class Folder():
 			return True
 
 		else:
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]), folder, verbose = True)
+
 			return False
 
 	def Create_Folders(self, folders = None, depth = 0):

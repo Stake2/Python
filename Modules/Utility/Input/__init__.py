@@ -188,10 +188,10 @@ class Input():
 		return dictionary
 
 	def Define_Yes_Or_No(self, response):
-		if response in ["Yes", self.language_texts["yes, title()"]]:
+		if response in ["Yes", "yes", self.language_texts["yes, title()"], self.language_texts["yes, title()"].lower()]:
 			return True
 
-		if response in ["No", self.language_texts["no, title()"]]:
+		if response in ["No", "no", self.language_texts["no, title()"], self.language_texts["no, title()"].lower()]:
 			return False
 
 	def Yes_Or_No(self, question, convert_to_text = False, first_space = True):

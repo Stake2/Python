@@ -4,9 +4,6 @@ from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Register(GamePlayer):
 	def __init__(self, dictionary = {}):
-		if hasattr(self, "old_history") == True:
-			super(Register, self).__setattr__("old_history", self.old_history)
-
 		super().__init__()
 
 		self.dictionary = dictionary
@@ -441,7 +438,7 @@ class Register(GamePlayer):
 
 	def Define_Diary_Slim_Text(self):
 		items = [
-			self.game_type,
+			self.dictionary["Type"]["Type"][self.user_language],
 			self.game["Titles"]["Language"],
 			self.dictionary["Entry"]["Session duration"]["Text"][self.user_language]
 		]

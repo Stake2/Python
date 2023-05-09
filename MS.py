@@ -186,8 +186,8 @@ class Module_Selector():
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
 		# Iterate through usage modules list
-		for title in self.modules["usage"]["list"]:
-			self.modules["usage"][title] = {
+		for title in self.modules["Usage"]["List"]:
+			self.modules["Usage"][title] = {
 				"title": title,
 				"key": title.lower(),
 				"list": [title.lower()],
@@ -196,26 +196,26 @@ class Module_Selector():
 			}
 
 			# Add custom argument names from module
-			if hasattr(self.modules["usage"][title]["module"], "arguments") == True and type(self.modules["usage"][title]["module"].arguments) == list:
-				arguments = self.modules["usage"][title]["module"].arguments
+			if hasattr(self.modules["Usage"][title]["module"], "arguments") == True and type(self.modules["Usage"][title]["module"].arguments) == list:
+				arguments = self.modules["Usage"][title]["module"].arguments
 
 				for argument in arguments:
-					self.modules["usage"][title]["list"].append(argument)
+					self.modules["Usage"][title]["list"].append(argument)
 
-			self.Add_Argument(self.modules["usage"][title], self.argparse["default_options"])
+			self.Add_Argument(self.modules["Usage"][title], self.argparse["default_options"])
 
 			# Add separate arguments from module
-			if hasattr(self.modules["usage"][title]["module"], "separate_arguments") == True:
-				separate_arguments = self.modules["usage"][title]["module"].separate_arguments
+			if hasattr(self.modules["Usage"][title]["module"], "separate_arguments") == True:
+				separate_arguments = self.modules["Usage"][title]["module"].separate_arguments
 
 				for key in separate_arguments:
 					dictionary = {
 						"list": [key],
-						"text": self.language_texts[self.modules["usage"][title]["key"] + "." + key]
+						"text": self.language_texts[self.modules["Usage"][title]["key"] + "." + key]
 					}
 
 					if "{module}" in dictionary["text"]:
-						dictionary["text"] = dictionary["text"].replace("{module}", '"' + self.modules["usage"][title]["title"] + '"')
+						dictionary["text"] = dictionary["text"].replace("{module}", '"' + self.modules["Usage"][title]["title"] + '"')
 
 					self.Add_Argument(dictionary, self.argparse["default_options"])
 
@@ -250,12 +250,12 @@ class Module_Selector():
 		show_text = self.language_texts["modules, title()"]
 		select_text = self.language_texts["select_a_module_from_the_list"]
 
-		option = self.Input.Select(self.modules["usage"]["list"], show_text = show_text, select_text = select_text)["option"]
+		option = self.Input.Select(self.modules["Usage"]["list"], show_text = show_text, select_text = select_text)["option"]
 
 		self.Define_Module(option)
 
 	def Check_Arguments(self):
-		for module in self.modules["usage"]["list"]:
+		for module in self.modules["Usage"]["List"]:
 			module_lower = module.lower()
 
 			possible_options = [
@@ -280,7 +280,7 @@ class Module_Selector():
 		self.module = {
 			"title": option,
 			"key": option.lower(),
-			"module": self.modules["usage"][option]["module"]
+			"module": self.modules["Usage"][option]["module"]
 		}
 
 	def Switch(self):

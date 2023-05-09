@@ -36,7 +36,7 @@ class Experience(Database):
 		]
 
 		# If the game experiencing status is inside the status list
-		if self.data["details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+		if self.data["Details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
 			# If the data "Dates.txt" file is empty
 			if self.File.Contents(self.data["folders"]["dates"])["lines"] == []:
 				# Get the first experiencing time where the user started experiencing the data

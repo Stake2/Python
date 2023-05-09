@@ -1,7 +1,7 @@
 {
 	"show_text": {
-		"en": "Manage Database Network",
-		"pt": "Gerenciar Rede de Banco de Dados (Database Network)"
+		"en": "Manage the Database Network",
+		"pt": "Gerenciar a Rede de Banco de Dados (Database Network)"
 	},
 	"Experience": {
 		"en": "Experience",
@@ -10,6 +10,10 @@
 	"Register": {
 		"en": "Register",
 		"pt": "Registrar"
+	},
+	"Manage": {
+		"en": "Manage the [Data Information] Database and the [Experience History]",
+		"pt": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]"
 	},
 	"View": {
 		"en": "View",

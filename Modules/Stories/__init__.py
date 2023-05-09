@@ -16,12 +16,11 @@ class Run():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Select_Story",
-			"Create_New_Story",
-			"Show_Story_Information",
-			"Copy_Story_Titles"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
 
 		self.class_descriptions = []
 

@@ -126,13 +126,5 @@
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",
 		"pt": "Pressione Enter para copiar o texto do jogo jogado"
-	},
-	"convert_history": {
-		"en": "Convert history",
-		"pt": "Converter histórico"
-	},
-	"iterate_through_game_list": {
-		"en": "Iterate through game list",
-		"pt": "Iterar através da lista de jogos"
 	}
 }

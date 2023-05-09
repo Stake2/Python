@@ -11,12 +11,12 @@ class List_Modules(Python):
 		print()
 		print(self.language_texts["these_are_the_modules_that_exist_in_the_modules_folder"] + ":")
 
-		for key in ["utility", "usage"]:
-			if self.modules[key]["list"] != []:
+		for key in ["Utility", "Usage"]:
+			if self.modules[key]["List"] != []:
 				print()
-				print(self.language_texts[key + "_modules"] + ":")
+				print(self.language_texts[key.lower() + "_modules"] + ":")
 
-				for module in self.modules[key]["list"]:
+				for module in self.modules[key]["List"]:
 					print(module)
 
 		print()

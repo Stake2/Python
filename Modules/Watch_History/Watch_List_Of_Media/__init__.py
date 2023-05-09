@@ -150,10 +150,10 @@ class Watch_List_Of_Media(Watch_History):
 
 				self.Show_Media_Title(option_info)
 
-				if self.language_texts["episode, title()"] in self.media_dictionary["Media"]["Item"]["details"]:
+				if self.JSON.Language.language_texts["episode, title()"] in self.media_dictionary["Media"]["Item"]["Details"]:
 					print()
-					print(self.language_texts["episode, title()"] + ":")
-					print(self.media_dictionary["Media"]["Item"]["details"][self.language_texts["episode, title()"]] + "]")
+					print(self.JSON.Language.language_texts["episode, title()"] + ":")
+					print(self.media_dictionary["Media"]["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] + "]")
 					print()
 
 				key = option_info["Media"]["Title"]

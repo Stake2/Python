@@ -2,6 +2,7 @@
 
 from datetime import date, time, datetime, timedelta, timezone
 from dateutil.relativedelta import relativedelta
+from calendar import monthrange
 from time import sleep
 import pytz
 
@@ -25,7 +26,7 @@ class Date():
 		self.Define_Texts()
 		self.Number_Name_Generator()
 
-		# Import time, datetime, and dateutil methods
+		# Import time, datetime, dateutil, and calendar methods
 		self.Sleep = sleep
 		self.Date = date
 		self.Time = time
@@ -82,6 +83,7 @@ class Date():
 					"Units": {
 						"Day": 0,
 						"Week day": 0,
+						"Month days": 0,
 						"Month": 0,
 						"Year": 0
 					},
@@ -134,10 +136,14 @@ class Date():
 					if " " in data_key:
 						data_key = data_key.replace(" ", "")
 
-					date[date_name][date_type]["Units"][key] = getattr(date[date_name][date_type]["Object"], data_key)
+					if hasattr(date[date_name][date_type]["Object"], data_key) == True:
+						date[date_name][date_type]["Units"][key] = getattr(date[date_name][date_type]["Object"], data_key)
 
 					if key == "Week day":
 						date[date_name][date_type]["Units"][key] = date[date_name][date_type]["Units"][key]()
+
+					if key == "Month days":
+						date[date_name][date_type]["Units"][key] = self.Monthrange(self.Datetime.now().month)[1]
 
 				# Add the date or time texts
 				for key in date[date_name][date_type]["Texts"]:
@@ -275,6 +281,21 @@ class Date():
 
 		return date
 
+	def Monthrange(self, year = None, month = None):
+		arguments = [
+			year,
+			month
+		]
+
+		i = 0
+		for argument in ["year", "month"]:
+			if arguments[i] == None:
+				arguments[i] = getattr(self.Datetime.now(), argument)
+
+			i += 1
+
+		return monthrange(*arguments)
+
 	def Difference(self, before, after):
 		date = {
 			"Before": before,
@@ -301,13 +322,16 @@ class Date():
 			if key in dir(date["Object"]) and getattr(date["Object"], key) != 0:
 				number = abs(getattr(date["Object"], key))
 
-				text_list = self.language_texts["date_attributes, type: list"]
+				date["Difference"][key.title()] = abs(number)
+				date["Unit texts"][key.title()] = {}
+
+				text_list = self.texts["date_attributes, type: list"]
 
 				if number > 1:
-					text_list = self.language_texts["plural_date_attributes, type: list"]
+					text_list = self.texts["plural_date_attributes, type: list"]
 
-				date["Difference"][key.title()] = abs(number)
-				date["Unit texts"][key.title()] = text_list[i]
+				for language in self.languages["small"]:
+					date["Unit texts"][key.title()][language] = text_list[language][i]
 
 			i += 1
 
@@ -328,7 +352,7 @@ class Date():
 						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
 
 				# Add the number and the time text (plural or singular)
-				date["Text"][language] += str(date["Difference"][key]) + " " + date["Unit texts"][key]
+				date["Text"][language] += str(date["Difference"][key]) + " " + date["Unit texts"][key][language]
 
 				# If the number of time attributes is equal to 2, add a space
 				if len(date["Difference"]) == 2:
