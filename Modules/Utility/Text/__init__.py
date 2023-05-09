@@ -110,7 +110,7 @@ class Text():
 
 		return string
 
-	def List_To_Text(self, list_, language = None, or_ = False):
+	def List_To_Text(self, list_, language = None, or_ = False, lower = False):
 		text = ""
 
 		text_list = self.JSON.Language.language_texts
@@ -119,7 +119,9 @@ class Text():
 			text_list = self.JSON.Language.texts
 
 		for item in list_:
-			if item == list_[-1]:
+			item_backup = item
+
+			if item_backup == list_[-1]:
 				if len(list_) > 2 or len(list_) == 2:
 					if or_ == False:
 						separator_text = text_list["and"]
@@ -132,9 +134,12 @@ class Text():
 
 					text += separator_text + " "
 
+			if lower == True:
+				item = item.lower()
+
 			text += item
 
-			if item != list_[-1]:
+			if item_backup != list_[-1]:
 				if len(list_) == 2:
 					text += " "
 

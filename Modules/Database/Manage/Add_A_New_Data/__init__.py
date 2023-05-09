@@ -36,7 +36,7 @@ class Add_A_New_Data(Database):
 		print()
 		print(self.large_bar)
 		print()
-		print(self.language_texts["type_the_data_titles_(press_enter_to_leave_it_empty)"] + ":")
+		print(self.language_texts["type_the_data_information_(some_items_can_be_left_empty_by_pressing_enter)"] + ":")
 
 		# Ask for the data titles
 		self.data["Title"] = self.Input.Type(self.JSON.Language.language_texts["original_title"], next_line = True, accept_enter = False)
@@ -87,7 +87,7 @@ class Add_A_New_Data(Database):
 
 		language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
-		if language != self.full_user_language:
+		if language != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
 			self.data["Language"] = language
 
 		# Ask for the data status

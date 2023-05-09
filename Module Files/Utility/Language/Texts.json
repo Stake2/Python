@@ -613,6 +613,22 @@
 		"en": "Information",
 		"pt": "Informações"
 	},
+	"developer, title()": {
+		"en": "Developer",
+		"pt": "Desenvolvedor"
+	},
+	"developers, title()": {
+		"en": "Developers",
+		"pt": "Desenvolvedores"
+	},
+	"publisher, title()": {
+		"en": "Publisher",
+		"pt": "Publicador"
+	},
+	"publishers, title()": {
+		"en": "Publishers",
+		"pt": "Publicadores"
+	},
 	"producer, title()": {
 		"en": "Producer",
 		"pt": "Produtor"

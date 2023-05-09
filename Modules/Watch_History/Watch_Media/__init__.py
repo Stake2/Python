@@ -412,7 +412,7 @@ class Watch_Media(Watch_History):
 				# If the item is the title and the ": " is inside the item title
 				# Or the item is the episode and the "S[Any number two times]" is found on the item title
 				if (
-					item_type == "title" and ": " in self.media["Item"]["Title"] or
+					item_type == "title" and self.media["Item"]["Title"][0] + self.media["Item"]["Title"][1] == ": " or
 					item_type == "episode" and re.findall(r"S[0-9]{2}", self.media["Item"]["Title"]) != []
 				):
 					# The item or episode separator is defined as an empty string

@@ -126,5 +126,9 @@
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",
 		"pt": "Pressione Enter para copiar o texto do jogo jogado"
+	},
+	"type_the_game_information_(some_items_can_be_left_empty_by_pressing_enter)": {
+		"en": "Type the game information (some items can be left empty by pressing Enter)",
+		"pt": "Digite as informações do jogo (alguns itens podem ser deixados em branco ao pressionar Enter)"
 	}
 }
