@@ -304,6 +304,8 @@ class Input():
 			print(show_text + ":")
 
 		if length == None and line_options["show_finish_text"] == True:
+			print("--------------------")
+			print()
 			print("(" + self.language_texts["to_finish_typing_please_type_one_of_the_texts_below"] + ":")
 			print(str(finish_keywords).replace("'", '"').replace("[", "").replace("]", "") + ")")
 
@@ -348,6 +350,9 @@ class Input():
 						type_text = ""
 
 				if line == "" and line_options["print"] == True:
+					if line_options["show_finish_text"] == True:
+						print()
+
 					print(show_text)
 
 					type_text = ""

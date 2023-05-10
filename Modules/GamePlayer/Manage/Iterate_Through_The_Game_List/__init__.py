@@ -50,7 +50,18 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 					self.Show_Information(self.dictionary)
 
+					# Add missing game information
+					self.Add_Game_Information()
+
 			if self.switches["testing"] == True and game_type != self.game_types["Types"]["en"][-1] and game_type not in game_types_to_remove:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 			i += 1
+
+	def Add_Game_Information(self):
+		if hasattr(self, "Add_A_New_Game") == False:
+			from GamePlayer.Manage.Add_A_New_Game import Add_A_New_Game as Add_A_New_Game
+
+			self.Add_A_New_Game = Add_A_New_Game
+
+		self.Add_A_New_Game(self.dictionary)

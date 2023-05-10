@@ -818,6 +818,10 @@
 		"en": "Platform",
 		"pt": "Plataforma"
 	},
+	"platforms, title()": {
+		"en": "Platforms",
+		"pt": "Plataformas"
+	},
 	"resolution, title()": {
 		"en": "Resolution",
 		"pt": "Resolução"

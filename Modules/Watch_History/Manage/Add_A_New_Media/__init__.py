@@ -41,10 +41,11 @@ class Add_A_New_Media(Watch_History):
 
 		self.dictionary["Added media"] = True
 
-		# Ask user to fill the media files
-		from Watch_History.Manage.Fill_Media_Files import Fill_Media_Files as Fill_Media_Files
+		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["movies, title()"]["en"]:
+			# Ask user to fill the media files
+			from Watch_History.Manage.Fill_Media_Files import Fill_Media_Files as Fill_Media_Files
 
-		Fill_Media_Files(self.dictionary)
+			Fill_Media_Files(self.dictionary)
 
 		if self.media["States"]["Media item list"] == True:
 			if "folders" in self.dictionary["Media"]:
@@ -64,6 +65,26 @@ class Add_A_New_Media(Watch_History):
 
 		if self.item == True:
 			media = self.media["Item"]
+
+		# Create the "Staff keys" list for the anime media type
+		if self.dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:
+			media["Staff keys"] = [
+				"studios"
+			]
+
+		multiple_staff_media_types = [
+			self.texts["cartoons, title()"]["en"],
+			self.texts["series, title()"]["en"],
+			self.texts["movies, title()"]["en"]
+		]
+
+		# Create the "Staff keys" list for media types that has directors, producers, and distributors
+		if self.dictionary["Media type"]["Plural"]["en"] in multiple_staff_media_types:
+			media["Staff keys"] = [
+				"directors",
+				"producers",
+				"distributors"
+			]
 
 		print()
 		print(self.large_bar)
@@ -186,6 +207,17 @@ class Add_A_New_Media(Watch_History):
 				media["Handle"] = handle
 				media["ID"] = id
 
+			# Ask for the media directors, producers, and distributors
+			if "Staff keys" in media:
+				for key in media["Staff keys"]:
+					text = self.JSON.Language.language_texts[key + ", title()"]
+
+					if self.switches["testing"] == False:
+						media[key.capitalize()] = self.Input.Type(text + ":", next_line = True, accept_enter = False)
+
+					if self.switches["testing"] == True:
+						media[key.capitalize()] = text
+
 			# Ask for the original language of the media
 			show_text = self.JSON.Language.language_texts["languages, title()"]
 			select_text = self.JSON.Language.language_texts["language, title()"]
@@ -212,10 +244,12 @@ class Add_A_New_Media(Watch_History):
 			select_text = self.JSON.Language.language_texts["status, title()"]
 
 			if self.switches["testing"] == False:
-				media["Status"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
+				status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
 
 			if self.switches["testing"] == True:
-				media["Status"] = self.language_texts["statuses, type: list"][0]
+				status = self.language_texts["statuses, type: list"][0]
+
+			media["Status"] = status
 
 			# Ask for the media origin type
 			show_text = self.JSON.Language.language_texts["origin_types"]
@@ -236,6 +270,12 @@ class Add_A_New_Media(Watch_History):
 					media["Dubbed to the media title"] = self.JSON.Language.language_texts["yes, title()"]
 
 		if self.item == True:
+			# Define the media directors, producers, and distributors
+			if "Staff keys" in media:
+				for key in media["Staff keys"]:
+					if key.capitalize() in self.media:
+						media[key.capitalize()] = self.media[key.capitalize()]
+
 			# Ask for the playlist information if the media type is "Videos"
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 				if self.switches["testing"] == False:
@@ -339,6 +379,18 @@ class Add_A_New_Media(Watch_History):
 
 			if "End date" in media:
 				media["Details"][self.Date.language_texts["end_date"]] = media["End date"]
+
+		if "Staff keys" in media:
+			for key in media["Staff keys"]:
+				text_key = key
+
+				if ", " not in media[key.capitalize()]:
+					text_key = text_key[:-1]
+
+				text_key = self.JSON.Language.language_texts[text_key + ", title()"]
+
+				if key.capitalize() in media:
+					media["Details"][text_key] = media[key.capitalize()]
 
 		if self.item == False:
 			if "Handle" in media:

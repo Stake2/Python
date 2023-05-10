@@ -250,7 +250,7 @@ class Module_Selector():
 		show_text = self.language_texts["modules, title()"]
 		select_text = self.language_texts["select_a_module_from_the_list"]
 
-		option = self.Input.Select(self.modules["Usage"]["list"], show_text = show_text, select_text = select_text)["option"]
+		option = self.Input.Select(self.modules["Usage"]["List"], show_text = show_text, select_text = select_text)["option"]
 
 		self.Define_Module(option)
 
