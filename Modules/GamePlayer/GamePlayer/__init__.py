@@ -601,8 +601,9 @@ class GamePlayer(object):
 
 		# Define the "Time" dictionary as a template
 		game["Time"] = {
-			"First time": {},
-			"Last time": {},
+			"First time": "",
+			"Last time": "",
+			"Added time": "",
 			"Years": 0,
 			"Months": 0,
 			"Days": 0,
@@ -1031,57 +1032,53 @@ class GamePlayer(object):
 		if "Entry" in dictionary:
 			entry = dictionary["Entry"]
 
-		# Define the time of the first game session
-		if game["Time"]["First time"] == {}:
-			game["Time"]["First time"] = entry["Session duration"]["Before"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+		# Define the first and last times
+		for key in ["First", "Last"]:
+			if game["Time"][key + " time"] == "":
+				sub_key = "Before"
 
-		# Define the time of the last game session (most recent)
-		game["Time"]["Last time"] = dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+				if key == "Last":
+					sub_key = "After"
 
-		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
-			attribute = attribute.capitalize()
+				game["Time"][key + " time"] = entry["Session duration"][sub_key]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
 
-			if attribute in entry["Session duration"]["Difference"]:
-				game["Time"][attribute] += entry["Session duration"]["Difference"][attribute]
+			# Create the date dictionary of the played time
+			game["Time"][key + " time"] = self.Date.From_String(game["Time"][key + " time"])
 
-		for attribute in self.Date.texts["plural_date_attributes, type: list"]["en"]:
-			attribute = attribute.capitalize()
+		# Define the "Added time" as the first played time
+		game["Time"]["Added time"] = game["Time"]["First time"].copy()
 
-			bigger_time = ""
-			total_number = 0
+		# Iterate through the time difference keys
+		for key in entry["Session duration"]["Difference"]:
+			diff = entry["Session duration"]["Difference"][key]
 
-			if attribute == "Months":
-				bigger_time = "Years"
-				total_number = 12
+			# Add the difference time to the game time
+			game["Time"][key] += diff
 
-			if attribute == "Days":
-				bigger_time = "Months"
-				total_number = self.Date.Monthrange()[1]
+		# Iterate through the difference time units
+		for key in entry["Session duration"]["Difference"]:
+			dict_ = {
+				key.lower(): game["Time"][key]
+			}
 
-			if attribute == "Hours":
-				bigger_time = "Days"
-				total_number = 24
+			# Add the game time difference time unit to the "Added time" date object
+			game["Time"]["Added time"]["Object"] += self.Date.Relativedelta(**dict_)
 
-			if attribute in ["Minutes", "Seconds"]:
-				total_number = 60
+		# Transform the "Added time" into a date dictionary with the added time above
+		game["Time"]["Added time"] = self.Date.Now(game["Time"]["Added time"]["Object"])
 
-				if attribute == "Minutes":
-					bigger_time = "Hours"
+		# Make the difference between the first time and the added time
+		difference = self.Date.Difference(game["Time"]["First time"]["Object"], game["Time"]["Added time"]["Object"])
 
-				if attribute == "Seconds":
-					bigger_time = "Minutes"
+		# Define the game time difference units as the difference above
+		for key in difference["Difference"]:
+			diff = difference["Difference"][key]
 
-			# Smaller time into bigger time
-			if bigger_time != "" and game["Time"][attribute] >= total_number:
-				# Add bigger time made with smaller time to the bigger time key
-				game["Time"][bigger_time] = divmod(game["Time"][bigger_time] + game["Time"][attribute], total_number)[0]
+			game["Time"][key] = diff
 
-				# Get the remainder of the division of the smaller time
-				if game["Time"][attribute] // total_number == 1:
-					game["Time"][attribute] = 0
-
-				else:
-					game["Time"][attribute] %= total_number
+		# Transform the times back into date strings
+		for key in ["First", "Last", "Added"]:
+			game["Time"][key + " time"] = self.Date.To_String(game["Time"][key + " time"], utc = True)
 
 		# Update the "Time.json" file
 		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
@@ -1099,8 +1096,12 @@ class GamePlayer(object):
 
 		# Copy and remove unused keys
 		times = deepcopy(game["Time"])
-		times.pop("First time")
-		times.pop("Last time")
+
+		for key in ["First", "Last", "Added"]:
+			key += " time"
+
+			if key in times:
+				times.pop(key)
 
 		# Define the singular and plural time text lists
 		singular = deepcopy(self.Date.language_texts["date_attributes, type: list"])

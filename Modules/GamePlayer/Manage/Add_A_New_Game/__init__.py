@@ -26,14 +26,15 @@ class Add_A_New_Game(GamePlayer):
 		# Create the details dictionary
 		self.Create_Details()
 
-		# Select the game to define its variables
-		self.Select_Game(self.dictionary)
+		if "Update" not in self.dictionary:
+			# Select the game to define its variables
+			self.Select_Game(self.dictionary)
 
-		# Add the game to the Game Information GamePlayer
-		self.Add_To_The_Database()
+			# Add the game to the Game Information GamePlayer
+			self.Add_To_The_Database()
 
-		# Instantiate the root class to update the database files
-		super().__init__()
+			# Instantiate the root class to update the database files
+			super().__init__()
 
 	def Type_Game_Information(self):
 		print()
@@ -187,7 +188,7 @@ class Add_A_New_Game(GamePlayer):
 		if "Language" in self.game:
 			self.game["Details"][self.JSON.Language.language_texts["original_language"]] = self.game["Language"]
 
-		self.game["Details"][self.JSON.Language.language_texts["platform, title()"]] = self.game["Platform"]
+		self.game["Details"][self.JSON.Language.language_texts["platform, title()"]] = self.game["Platform"][self.user_language]
 
 		for key in ["developers", "publishers", "distributors"]:
 			text_key = key

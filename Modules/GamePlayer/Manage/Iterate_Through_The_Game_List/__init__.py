@@ -64,4 +64,33 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 			self.Add_A_New_Game = Add_A_New_Game
 
+		self.dictionary["Update"] = True
+
 		self.Add_A_New_Game(self.dictionary)
+
+	def Create_Years_List(self):
+		self.years_list = range(2021, self.date["Units"]["Year"] + 1)
+
+		self.years_list_dictionary = []
+
+		# Iterate through years list (of years that contain a "Play_History" folder)
+		for self.year in self.years_list:
+			# Convert the year number into a string
+			self.year = str(self.year)
+
+			# Define year dictionary with year number and folders
+			self.year = {
+				"Number": self.year,
+				"folders": {
+					"root": self.folders["play_history"]["root"] + self.year + "/"
+				}
+			}
+
+			# Define and create the "Entries.json" file
+			self.year["folders"]["entries"] = self.year["folders"]["root"] + "Sessions.json"
+
+			self.year["Entries"] = self.JSON.To_Python(self.year["folders"]["entries"])
+
+			self.years_list_dictionary.append(self.year)
+
+		return self.years_list_dictionary

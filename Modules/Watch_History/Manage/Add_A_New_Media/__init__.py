@@ -207,7 +207,7 @@ class Add_A_New_Media(Watch_History):
 				media["Handle"] = handle
 				media["ID"] = id
 
-			# Ask for the media directors, producers, and distributors
+			# Ask for the media staff information
 			if "Staff keys" in media:
 				for key in media["Staff keys"]:
 					text = self.JSON.Language.language_texts[key + ", title()"]
@@ -270,7 +270,7 @@ class Add_A_New_Media(Watch_History):
 					media["Dubbed to the media title"] = self.JSON.Language.language_texts["yes, title()"]
 
 		if self.item == True:
-			# Define the media directors, producers, and distributors
+			# Define the media staff information
 			if "Staff keys" in media:
 				for key in media["Staff keys"]:
 					if key.capitalize() in self.media:

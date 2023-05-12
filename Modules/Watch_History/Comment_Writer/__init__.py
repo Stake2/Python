@@ -52,15 +52,15 @@ class Comment_Writer(Watch_History):
 			print(self.language_texts["you_finished_writing_the_comment"] + ".")
 
 			# Define media types where user can post comments
-			self.media_types["comment_posting"] = [
+			self.media_types["Post comment"] = [
 				self.texts["animes, title()"]["en"],
 				self.texts["cartoons, title()"]["en"],
 				self.texts["videos, title()"]["en"]
 			]
 
-			# If media type is inside the above list, and the episode is a remote one, open remote episode link to post comment
+			# If the media type is inside the "Post comment" list, and the episode is a remote one, open the remote episode link to post the comment
 			if (
-				self.dictionary["Media type"]["Plural"]["en"] in self.media_types["comment_posting"] and
+				self.dictionary["Media type"]["Plural"]["en"] in self.media_types["Post comment"] and
 				"Remote" in self.media["Episode"] and self.media["Episode"]["Remote"]["Link"] != "" and
 				self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
 			):

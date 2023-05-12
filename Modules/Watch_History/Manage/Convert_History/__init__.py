@@ -35,7 +35,7 @@ class Convert_History(Watch_History):
 			self.year = {
 				"Number": self.year,
 				"folders": {
-					"root": self.folders["watch_history"]["root"] + self.year + "/",
+					"root": self.folders["watch_history"]["root"] + self.year + "/"
 				},
 				"Entries dictionary": deepcopy(self.template),
 				"Lists": {}
