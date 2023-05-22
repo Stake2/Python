@@ -18,7 +18,7 @@ class Post(Stories):
 			"Create_Cover",
 			"Update_Websites",
 			"Post_On_Wattpad",
-			"Post_On_Social_Networks"
+			"Post_On_Social_Networks",
 		]
 
 		# Define texts of post steps
@@ -26,7 +26,7 @@ class Post(Stories):
 			self.language_texts["cover_creation"],
 			self.language_texts["websites_update"],
 			self.language_texts["wattpad_chapter_posting"],
-			self.language_texts["social_network_posting"]
+			self.language_texts["social_network_posting"],
 		]
 
 		self.post_steps_texts = {}
@@ -138,9 +138,9 @@ class Post(Stories):
 		self.cover_types = {
 			"list": [
 				"portrait, title()",
-				"landscape, title()"
+				"landscape, title()",
 			],
-			"extension": "jpg"
+			"extension": "jpg",
 		}
 
 		list_ = []
@@ -154,7 +154,7 @@ class Post(Stories):
 				"name": english_text,
 				"title": self.language_texts[item],
 				"extension": self.cover_types["extension"],
-				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg"
+				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg",
 			}
 
 			list_.append(english_text)

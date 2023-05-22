@@ -51,8 +51,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 					self.Show_Information(self.dictionary)
 
 					# Add missing game information
-					if self.Date.language_texts["year, title()"] not in self.game["Details"]:
-						self.Add_Game_Information()
+					self.Add_Game_Information()
 
 			if self.switches["testing"] == True and game_type != self.game_types["Types"]["en"][-1] and game_type not in game_types_to_remove:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
@@ -66,12 +65,6 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			self.Add_A_New_Game = Add_A_New_Game
 
 		self.dictionary["Update"] = True
-
-		self.duckduckgo = {
-			"Format": "https://duckduckgo.com/?t=ffab&q={}"
-		}
-
-		self.File.Open(self.duckduckgo["Format"].format(self.game["Title"]))
 
 		self.Add_A_New_Game(self.dictionary)
 
