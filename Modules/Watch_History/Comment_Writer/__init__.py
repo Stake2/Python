@@ -289,8 +289,12 @@ class Comment_Writer(Watch_History):
 			import validators
 
 			while validators.url(original_link) != True:
-				# Ask for YouTube comment link
-				original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+				# Ask for the YouTube comment link
+				if self.switches["testing"] == False:
+					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+
+				if self.switches["testing"] == True:
+					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc=UgxuNs35fO-gFEDY7l14AaABAg"
 
 			link = urlparse(original_link)
 			query = link.query

@@ -315,12 +315,12 @@ class Tasks(object):
 		print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 
 		# If there are states, show them
-		if "States" in task and task["States"]["States"] != {}:
+		if "States" in dictionary and dictionary["States"]["Texts"] != {}:
 			print()
 			print(self.JSON.Language.language_texts["states, title()"] + ":")
 
-			for key in task["States"]["Texts"]:
-				print("\t" + task["States"]["Texts"][key][self.user_language])
+			for key in dictionary["States"]["Texts"]:
+				print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
 		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.language_texts["can_be_long"] + ")")
 

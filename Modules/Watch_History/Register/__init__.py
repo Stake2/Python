@@ -145,7 +145,7 @@ class Register(Watch_History):
 			self.dictionaries["Entries"]["Dictionary"][self.key]["ID"] = self.media["Episode"]["ID"]
 
 			# Add episode link
-			if "remote" in self.media["Episode"]:
+			if "Remote" in self.media["Episode"]:
 				self.dictionaries["Entries"]["Dictionary"][self.key]["Link"] = self.media["Episode"]["Remote"]["Link"]
 
 		# Add the "Comment" dictionary if it exists

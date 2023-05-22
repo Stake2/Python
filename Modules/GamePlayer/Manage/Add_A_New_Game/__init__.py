@@ -43,35 +43,36 @@ class Add_A_New_Game(GamePlayer):
 		print(self.language_texts["type_the_game_information_(some_items_can_be_left_empty_by_pressing_enter)"] + ":")
 
 		# Ask for the game titles
-		if self.switches["testing"] == False:
-			title = self.Input.Type(self.JSON.Language.language_texts["original_title"], next_line = True, accept_enter = False)
+		if "Original" not in self.game["Titles"]:
+			if self.switches["testing"] == False:
+				title = self.Input.Type(self.JSON.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
-		if self.switches["testing"] == True:
-			title = self.JSON.Language.language_texts["title, title()"] + " (" + self.dictionary["Type"]["Type"][self.user_language] + ")"
+			if self.switches["testing"] == True:
+				title = self.JSON.Language.language_texts["title, title()"] + " (" + self.dictionary["Type"]["Type"][self.user_language] + ")"
 
-		if self.game["Title"] == "":
-			self.game["Title"] = title
+				if self.game["Title"] == "":
+					self.game["Title"] = title
 
-		self.game["Titles"]["Original"] = self.game["Title"]
+				self.game["Titles"]["Original"] = self.game["Title"]
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			for language in self.languages["small"]:
+				translated_language = self.languages["full_translated"][language][self.user_language]
+
+				title = ""
+
+				if self.switches["testing"] == False:
+					title = self.Input.Type(self.JSON.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
+
+				if title != "":
+					self.game["Titles"][language] = title
 
 			title = ""
 
 			if self.switches["testing"] == False:
-				title = self.Input.Type(self.JSON.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
+				title = self.Input.Type(self.JSON.Language.language_texts["romanized_title"], next_line = True)
 
 			if title != "":
-				self.game["Titles"][language] = title
-
-		title = ""
-
-		if self.switches["testing"] == False:
-			title = self.Input.Type(self.JSON.Language.language_texts["romanized_title"], next_line = True)
-
-		if title != "":
-			self.game["Titles"]["Romanized"] = title
+				self.game["Titles"]["Romanized"] = title
 
 		# Ask for the game year and dates
 		text = self.Date.language_texts["year, title()"] + " (" + self.JSON.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
@@ -108,61 +109,74 @@ class Add_A_New_Game(GamePlayer):
 				self.game[date_type.title() + " date"] = date
 
 		# Ask for the original language of the game
-		show_text = self.JSON.Language.language_texts["languages, title()"]
-		select_text = self.JSON.Language.language_texts["language, title()"]
+		self.game["Language"] = "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
 
-		languages = list(self.languages["full"].values())
-		languages.append("[" + self.JSON.Language.language_texts["empty, title()"] + "]")
+		if "Update" not in self.dictionary:
+			show_text = self.JSON.Language.language_texts["languages, title()"]
+			select_text = self.JSON.Language.language_texts["language, title()"]
 
-		if self.switches["testing"] == False:
-			language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
+			languages = list(self.languages["full"].values())
+			languages.append("[" + self.JSON.Language.language_texts["empty, title()"] + "]")
 
-		if self.switches["testing"] == True:
-			language = "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
+			if self.switches["testing"] == False:
+				language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
-		if language != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
-			self.game["Language"] = language
+			if self.switches["testing"] == True:
+				language = "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
 
-		# Ask for the game platform
-		show_text = self.JSON.Language.language_texts["platforms, title()"]
-		select_text = self.JSON.Language.language_texts["platform, title()"]
+			if language != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
+				self.game["Language"] = language
 
-		if self.switches["testing"] == False:
-			platform = self.Input.Select(show_text = show_text, select_text = select_text, options = self.game_types["Platforms"][self.user_language])["option"]
+			# Ask for the game platform
+			show_text = self.JSON.Language.language_texts["platforms, title()"]
+			select_text = self.JSON.Language.language_texts["platform, title()"]
 
-		if self.switches["testing"] == True:
-			platform = self.game_types["Platforms"][self.user_language][0]
+			if self.switches["testing"] == False:
+				platform = self.Input.Select(show_text = show_text, select_text = select_text, options = self.game_types["Platforms"][self.user_language])["option"]
 
-		if "Platform" not in self.game:
-			self.game["Platform"] = platform
+			if self.switches["testing"] == True:
+				platform = self.game_types["Platforms"][self.user_language][0]
+
+			if "Platform" not in self.game:
+				self.game["Platform"] = platform
 
 		# Ask for the game developers, publishers, and distributors
 		for key in ["developers", "publishers", "distributors"]:
 			text = self.JSON.Language.language_texts[key + ", title()"]
 
 			if self.switches["testing"] == False:
-				self.game[key.capitalize()] = self.Input.Type(text + ":", next_line = True, accept_enter = False)
+				accept_enter = False
+
+				if key == "publishers":
+					accept_enter = True
+
+				self.game[key.capitalize()] = self.Input.Type(text + ":", next_line = True, accept_enter = accept_enter)
+
+				if self.game[key.capitalize()] == "":
+					self.game.pop(key.capitalize())
 
 			if self.switches["testing"] == True:
 				self.game[key.capitalize()] = text
 
 		# Ask for the game status
-		show_text = self.JSON.Language.language_texts["statuses, title()"]
-		select_text = self.JSON.Language.language_texts["status, title()"]
+		if "Update" not in self.dictionary:
+			show_text = self.JSON.Language.language_texts["statuses, title()"]
+			select_text = self.JSON.Language.language_texts["status, title()"]
 
-		if self.switches["testing"] == False:
-			status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
+			if self.switches["testing"] == False:
+				status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
 
-		if self.switches["testing"] == True:
-			status = self.language_texts["statuses, type: list"][0]
+			if self.switches["testing"] == True:
+				status = self.language_texts["statuses, type: list"][0]
 
-		if "Status" not in self.game:
-			self.game["Status"] = status
+			if "Status" not in self.game:
+				self.game["Status"] = status
 
 	def Create_Details(self):
-		self.game["Details"] = {
-			self.JSON.Language.language_texts["title, title()"]: self.game["Title"]
-		}
+		if "Details" not in self.game:
+			self.game["Details"] = {
+				self.JSON.Language.language_texts["title, title()"]: self.game["Title"]
+			}
 
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
@@ -185,7 +199,7 @@ class Add_A_New_Game(GamePlayer):
 		if "End date" in self.game:
 			self.game["Details"][self.Date.language_texts["end_date"]] = self.game["End date"]
 
-		if "Language" in self.game:
+		if "Update" not in self.dictionary and "Language" in self.game and self.game["Language"] != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
 			self.game["Details"][self.JSON.Language.language_texts["original_language"]] = self.game["Language"]
 
 		self.game["Details"][self.JSON.Language.language_texts["platform, title()"]] = self.game["Platform"][self.user_language]
@@ -193,19 +207,20 @@ class Add_A_New_Game(GamePlayer):
 		for key in ["developers", "publishers", "distributors"]:
 			text_key = key
 
-			if ", " not in self.game[key.capitalize()]:
-				text_key = text_key[:-1]
+			if key.capitalize() in self.game:
+				if ", " not in self.game[key.capitalize()]:
+					text_key = text_key[:-1]
 
-			text_key = self.JSON.Language.language_texts[text_key + ", title()"]
+				text_key = self.JSON.Language.language_texts[text_key + ", title()"]
 
-			self.game["Details"][text_key] = self.game[key.capitalize()]
+				self.game["Details"][text_key] = self.game[key.capitalize()]
 
-		if self.game["Status"] != self.JSON.Language.language_texts["remote, title()"]:
+		if "Status" in self.game:
 			self.game["Details"][self.JSON.Language.language_texts["status, title()"]] = self.game["Status"]
 
 		# Create the game folders
 		self.game["folders"] = {
-			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize(self.game["Title"], restricted_characters = True) + "/"
+			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(self.game["Title"]) + "/"
 		}
 
 		self.Folder.Create(self.game["folders"]["root"])

@@ -19,6 +19,7 @@ class Main():
 			"Create_Playlist",
 			"Add_To_Playlist",
 			"Copy_Playlist",
+			"Get_Comment_Info",
 			"String_To_Date",
 			"Time_Difference"
 		]
@@ -297,7 +298,8 @@ class Main():
 
 	def Get_ID(self, key = "", link = ""):
 		if link == "":
-			link = self.Input.Type("{} link or ID".format(key.title()))
+			while link == "":
+				link = self.Input.Type("{} link or ID".format(key.title()))
 
 		ids = {
 			"video": "v",
@@ -315,6 +317,18 @@ class Main():
 			id = parameters[ids[key]][0]
 
 		return id
+
+	def Get_Comment_Info(self):
+		id = self.Get_ID("comment")
+
+		youtube = {
+			"item": "comments",
+			"id": id
+		}
+
+		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+
+		self.JSON.Show(dict_)
 
 	def Get_Video_Info(self):
 		id = self.Get_ID("video")
