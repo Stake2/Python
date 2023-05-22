@@ -43,7 +43,7 @@ class Create_New_Module(Python):
 		# Module descriptions
 		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
-		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
+		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
 
 		self.module_descriptions = {}
 
@@ -61,7 +61,7 @@ class Create_New_Module(Python):
 
 		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], self.translated_english_language + ", " + self.language_texts["separated_by_lines"]) + ": "
 
-		self.classes = self.Input.Lines(self.show_text, line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+		self.classes = self.Input.Lines(self.show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		i = 0
 		for class_ in self.classes:
@@ -80,7 +80,7 @@ class Create_New_Module(Python):
 
 			self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions_of_classes"], translated_language + ", " + self.language_texts["separated_by_lines"]) + ":"
 
-			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes), line_options = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		i = 0
 		for class_ in self.classes:
@@ -224,23 +224,21 @@ class Create_New_Module(Python):
 		self.File.Edit(self.conemu_xml_file, self.conemu_xml_text, "w")
 
 	def Add_To_Modules_List(self):
-		lines = self.File.Contents(self.usage_modules_file)["lines"]
+		if self.module_name not in self.modules["Usage"]["List"]:
+			self.modules["Usage"]["List"].append(self.module_name)
 
-		if self.module_name not in lines:
-			lines.append(self.module_name)
+		self.modules["Usage"]["List"] = sorted(self.modules["Usage"]["List"], key = str.lower)
 
-		lines = sorted(lines, key=str.lower)
-
-		self.File.Edit(self.usage_modules_file, self.Text.From_List(lines), "w")
+		self.JSON.Edit(self.folders["modules_file"], self.modules)
 
 	def Change_Global_Switches(self):
-		self.switches_file = self.Global_Switches.switches_file
+		self.switches_file = self.Global_Switches.switches["file"]
 
-		self.switches = self.JSON.To_Python(self.switches_file)
-		self.switches["testing"] = True
-		self.switches["versbose"] = True
+		self.switches["global"] = self.JSON.To_Python(self.switches_file)
+		self.switches["global"]["testing"] = True
+		self.switches["global"]["versbose"] = True
 
-		self.File.Edit(self.switches_file, sself.JSON.From_Python(self.switches), "w")
+		self.JSON.Edit(self.switches_file, self.switches["global"])
 
 	def Show_Module_Info(self):
 		print(self.large_bar)

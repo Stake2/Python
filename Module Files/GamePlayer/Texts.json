@@ -1,103 +1,134 @@
 {
-	"game": {
-		"en": "game",
-		"pt": "jogo"
-	},
-	"games": {
-		"en": "games",
-		"pt": "jogos"
-	},
 	"game, title()": {
 		"en": "Game",
 		"pt": "Jogo"
 	},
-	"games, title()": {
-		"en": "Games",
-		"pt": "Jogos"
-	},
-	"opening_this_game": {
-		"en": "Opening this game",
-		"pt": "Abrindo este jogo"
-	},
-	"game_folder": {
-		"en": "Game folder",
-		"pt": "Pasta de jogo"
-	},
-	"game_folders": {
-		"en": "Game folders",
-		"pt": "Pastas de jogo"
-	},
-	"game_file": {
-		"en": "Game file",
-		"pt": "Arquivo de jogo"
+	"game_title": {
+		"en": "Game title",
+		"pt": "Título do jogo"
 	},
 	"game_category": {
 		"en": "Game category",
 		"pt": "Categoria de jogo"
 	},
-	"played_texts": {
-		"en": "Played texts",
-		"pt": "Textos de jogatina"
+	"game_categories": {
+		"en": "Game categories",
+		"pt": "Categorias de jogo"
 	},
-	"played_texts, en - pt, capitalize()": "Played texts - Textos de jogatina",
-	"all_played_files": {
-		"en": "All Played Files",
-		"pt": "Todos os Arquivos de Jogatina"
+	"statuses, type: list": {
+		"en": [
+			"Plan to play",
+			"Playing",
+			"Re-playing",
+			"Completed",
+			"On hold"
+		],
+		"pt": [
+			"Planejo jogar",
+			"Jogando",
+			"Re-jogando",
+			"Completo",
+			"Em pausa"
+		]
 	},
-	"select_a_game_folder": {
-		"en": "Select a game folder",
-		"pt": "Selecione uma pasta de jogo"
+	"plan_to_play, title()": {
+		"en": "Plan to play",
+		"pt": "Planejo jogar"
 	},
-	"select_a_game": {
-		"en": "Select a game",
-		"pt": "Selecione um jogo"
+	"playing, title()": {
+		"en": "Playing",
+		"pt": "Jogando"
 	},
-	"start_counting_playing_time": {
-		"en": "Start counting playing time",
-		"pt": "Começar a contar o tempo de jogatina"
+	"re_playing, title()": {
+		"en": "Re-playing",
+		"pt": "Re-jogando"
+	},
+	"re_played": {
+		"en": "Re-played",
+		"pt": "Re-jogou"
+	},
+	"game_sessions": {
+		"en": "Game sessions",
+		"pt": "Sessões de jogo"
+	},
+	"session_duration": {
+		"en": "Session duration",
+		"pt": "Duração da sessão"
+	},
+	"gaming_time": {
+		"en": "Gaming time",
+		"pt": "Tempo de jogatina"
+	},
+	"select_one_game_category_to_play": {
+		"en": "Select one game category to play",
+		"pt": "Selecione uma categoria de jogo para jogar"
+	},
+	"select_one_game_to_play": {
+		"en": "Select one game to play",
+		"pt": "Selecione um jogo para jogar"
+	},
+	"first_game_session_in_year": {
+		"en": "First game session in year",
+		"pt": "Primeira sessão de jogo no ano"
+	},
+	"first_game_session_of_the_{}_category_in_year": {
+		"en": "First game session of the \"{}\" category in year",
+		"pt": "Primeira sessão de jogo da categria \"{}\" no ano"
+	},
+	"start_counting_the_session_time": {
+		"en": "Start counting the session time",
+		"pt": "Começar a contar o tempo de sessão"
 	},
 	"press_enter_when_you_finish_using_the_python_module_of_the_game": {
         "en": "Press Enter when you finish using the Python module of the game",
         "pt": "Pressione Enter quando você terminar de usar o módulo de Python do jogo"
     },
-	"i_am_playing_the_{}_game_called_{}_for_{}_current_time_{}": {
-		"en": "I am playing the \"{}\" game called \"{}\" for {}, current time: {}",
-		"pt": "Estou jogando o jogo de \"{}\" chamado \"{}\" por {}, horário atual: {}"
+	"press_enter_when_you_finish_playing_the_game": {
+        "en": "Press Enter when you finish playing the game",
+        "pt": "Pressione Enter quando você terminar de jogar o jogo"
+    },
+	"i_played_the_{}_game_called_{}_for_{}": {
+		"en": "I played the \"{}\" game called \"{}\" for {}",
+		"pt": "Eu joguei o jogo de \"{}\" chamado \"{}\" por {}"
 	},
-	"i_played_the_{}_game_called_{}_for_{}_current_time_{}": {
-		"en": "I played the \"{}\" game called \"{}\" for {}, current time: {}",
-		"pt": "Eu joguei o jogo de \"{}\" chamado \"{}\" por {}, horário atual: {}"
+	"when_you_finished_playing": {
+		"en": "When you finished playing",
+		"pt": "Quando você terminou de jogar"
 	},
-	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
+	"when_i_started_to_play": {
+		"en": "When I started to play",
+		"pt": "Quando eu comecei a jogar"
 	},
-	"media": {
-		"en": "media",
-		"pt": "mídia"
+	"when_i_finished_playing": {
+		"en": "When I finished playing",
+		"pt": "Quando eu terminei de jogar"
 	},
-	"media, title()": {
-		"en": "Media",
-		"pt": "Mídia"
+	"completed_the_game": {
+		"en": "Completed the game",
+		"pt": "Completou o jogo"
+	},
+	"did_you_finished_the_whole_game": {
+		"en": "Did you finished the whole game",
+		"pt": "Você terminou o jogo inteiro"
+	},
+	"write_a_description_for_the_gaming_session": {
+		"en": "Write a description for the gaming session",
+		"pt": "Escrever uma descrição para a sessão de jogatina"
 	},
 	"post_on_the_social_networks": {
 		"en": "Post on the Social Networks",
 		"pt": "Postar nas Redes Sociais"
 	},
-	"press_enter_to_copy_the_played_text": {
-		"en": "Press Enter to copy the played text",
-		"pt": "Pressione Enter para copiar o texto de jogatina"
+	"i_posted_the_text_of_the_played_game_and_a_screenshot_on_the_status_of_{}_and_tweet_on_{}": {
+		"pt": "Postei o texto do jogo jogado e uma print no status do {}, e tweet no {}",
+		"en": "I posted the text of the played game and a screenshot on the status of {}, and tweet on {}"
 	},
-	"when_finished_playing": {
-		"en": "When finished playing",
-		"pt": "Quando terminou de jogar"
+	"press_enter_to_copy_the_text_of_the_played_game": {
+		"en": "Press Enter to copy the text of the played game",
+		"pt": "Pressione Enter para copiar o texto do jogo jogado"
 	},
-	"for_how_much_time": {
-		"en": "For how much time",
-		"pt": "Por quanto tempo"
-	},
-	"the_{}_game_called_{}": {
-		"en": "the \"{}\" game called \"{}\"",
-		"pt": "o jogo de \"{}\" chamado \"{}\""
+	"type_the_game_information_(some_items_can_be_left_empty_by_pressing_enter)": {
+		"en": "Type the game information (some items can be left empty by pressing Enter)",
+		"pt": "Digite as informações do jogo (alguns itens podem ser deixados em branco ao pressionar Enter)"
 	}
 }

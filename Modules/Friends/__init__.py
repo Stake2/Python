@@ -16,11 +16,11 @@ class Run():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Open_Friend_File",
-			"Create_Friend_File",
-			"Show_Friend_Information"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
 
 		self.class_descriptions = []
 

@@ -9,6 +9,16 @@ Lua
 Rubbish
 Texts
 
+# Root files
+desktop.ini
+Chat_Bot.py
+Rename Episode Files.py
+Sync.lnk
+Test.txt
+Test.json
+Time Travel.bat
+shutdown.bat
+
 # Module files
 Module Files/Block_Websites/Log.txt
 Module Files/Code/Last Setting Data
@@ -16,15 +26,6 @@ Module Files/SproutGigs/Categories
 Module Files/Utility/API/client_secrets.json
 Module Files/Utility/API/Secrets.json
 Module Files/Utility/API/Token.json
-
-# Root files
-desktop.ini
-Chat_Bot.py
-Rename Episode Files.py
-Sync.lnk
-Test.py
-Test.json
-Time Travel.bat
 
 # rar and zip
 *.rar

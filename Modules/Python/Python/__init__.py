@@ -2,8 +2,6 @@
 
 class Python(object):
 	def __init__(self):
-		self.Global_Switches = Global_Switches()
-
 		self.Define_Basic_Variables()
 
 		# Define module folders
@@ -67,6 +65,10 @@ class Python(object):
 		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'
 
 	def Define_Files(self):
+		self.folders["modules_file"] = self.folders["apps"]["modules"]["modules"]
+
+		self.modules = self.JSON.To_Python(self.folders["modules_file"])
+
 		self.root_code_template_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Root code template.txt"
 		self.File.Create(self.root_code_template_file)
 
@@ -82,20 +84,8 @@ class Python(object):
 		self.last_task_number_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Last task number.txt"
 		self.File.Create(self.last_task_number_file)
 
-		self.conemu_xml_file = self.user_folders["appdata"]["roaming"] + "ConEmu.xml"
+		self.conemu_xml_file = self.folders["user"]["appdata"]["roaming"]["root"] + "ConEmu.xml"
 		self.File.Create(self.conemu_xml_file)
-
-		self.module_types = [
-			"utility_modules",
-			"usage_modules",
-		]
-
-		self.module_files = {}
-
-		for key in self.module_types:
-			language_type = self.language_texts[key]
-
-			self.module_files[language_type] = self.folders["apps"]["modules"]["root"] + self.Text.Capitalize(self.texts[key]["en"]) + ".txt"
 
 	def Define_Lists(self):
 		self.root_code_template = self.File.Contents(self.root_code_template_file)["string"]

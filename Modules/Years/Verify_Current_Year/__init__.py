@@ -13,18 +13,18 @@ class Verify_Current_Year(Years):
 		print("-----")
 		print()
 
-		folder_list = self.Folder.Contents(self.current_year["folder"])["folder"]["list"]
+		folder_list = self.Folder.Contents(self.current_year["Folder"])["folder"]["list"]
 
 		# Creates the new Year text and image folder, copies the Year template files to the text folder, and edits some of them
 		if folder_list == []:
 			# Copy "Year Texts" folder to Current Year folder
-			self.Folder.Copy(self.years["year_texts"]["root"], self.current_year["folder"])
+			self.Folder.Copy(self.years["year_texts"]["root"], self.current_year["Folder"])
 
 			# Copy "Year Images" folder to Current Year Image folder
 			self.Folder.Copy(self.year_images_folder, self.current_year["image_folder"])
 
 			# Re-define folders (re-read directory)
-			self.current_year["folders"] = self.Folder.Contents(self.current_year["folder"])["dictionary"]
+			self.current_year["folders"] = self.Folder.Contents(self.current_year["Folder"])["dictionary"]
 
 			# This Year I (post) file
 			for language in self.languages["small"]:
@@ -35,7 +35,7 @@ class Verify_Current_Year(Years):
 				text_to_write = self.File.Contents(self.this_year_i_post_file)["string"]
 
 				if "{current_year}" in text_to_write:
-					text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+					text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
@@ -48,7 +48,7 @@ class Verify_Current_Year(Years):
 			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
 
 			if "{current_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+				text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
 
@@ -56,16 +56,16 @@ class Verify_Current_Year(Years):
 			text_to_write = self.File.Contents(self.files["new_year"])["string"]
 
 			if "{next_year}" in text_to_write:
-				text_to_write = text_to_write.replace("{next_year}", str(self.date["year"] + 1))
+				text_to_write = text_to_write.replace("{next_year}", str(self.date["Units"]["Year"] + 1))
 
 			self.File.Edit(self.files["new_year"], text_to_write, "w")
 
 			# Created In file
-			self.created_in_file = self.current_year["folder"] + self.language_texts["created_in, en - " + self.user_language] + ".txt"
+			self.created_in_file = self.current_year["Folder"] + self.language_texts["created_in, en - " + self.user_language] + ".txt"
 			self.File.Edit(self.created_in_file, self.Date.Now()["strftime"], "w")
 
 			# Edited In file
-			self.edited_in_file = self.current_year["folder"] + self.language_texts["edited_in, en - " + self.user_language] + ".txt"
+			self.edited_in_file = self.current_year["Folder"] + self.language_texts["edited_in, en - " + self.user_language] + ".txt"
 			self.File.Edit(self.edited_in_file, self.Date.Now()["strftime"], "w")
 
 			# New Year posts folder
@@ -78,7 +78,7 @@ class Verify_Current_Year(Years):
 				text_to_write = self.File.Contents(file)["string"]
 
 				if "{current_year}" in text_to_write:
-					text_to_write = text_to_write.replace("{current_year}", str(self.date["year"]))
+					text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
 				self.File.Edit(file, text_to_write, "w")
 
@@ -90,7 +90,7 @@ class Verify_Current_Year(Years):
 			text_to_show = self.language_texts["the_current_year_did_not_existed_in_the_years_folder"]
 
 		print(text_to_show + ":")
-		print(self.date["year"])
+		print(self.date["Units"]["Year"])
 		print()
 
 		text_to_show = self.language_texts["this_is_its_year_folder"]
@@ -99,7 +99,7 @@ class Verify_Current_Year(Years):
 			text_to_show = self.language_texts["its_year_folder_was_created"]
 
 		print(text_to_show + ":")
-		print(self.current_year["folder"])
+		print(self.current_year["Folder"])
 		print()
 
 		print(self.language_texts["image_folder"] + ":")

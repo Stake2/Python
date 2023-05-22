@@ -20,25 +20,25 @@ Read [Code of Conduct](https://github.com/Stake2/Python/blob/main/CODE_OF_CONDUC
 ## Installing
 - Install the requirements in the [Requirements file](https://github.com/Stake2/Python/blob/main/requirements.txt)
 ```
-> pip install -r requiriments.txt
+$ pip install -r requirements.txt
 ```
 - Add the [Modules folder](https://github.com/Stake2/Python/tree/main/Modules) to your PATH or copy its contents into your Python modules folder
 
 - To list all modules avaliable to run (MS = Module Selector)
 ```
-> py MS.py -help
+$ py MS.py -help
 ```
 
 - To run a specific module
 ```
-> py MS.py -[Lowercased module name]
-> py MS.py -m [Module name typed in any case, with spaces or underlines]
-> py MS.py -module [Module name typed in any case, with spaces or underlines]
+$ py MS.py -[Lowercased module name]
+$ py MS.py -m [Module name typed in any case, with spaces or underlines]
+$ py MS.py -module [Module name typed in any case, with spaces or underlines]
 ```
 
 - You can also run the MS script without any arguments and it will list the available modules for you to select one
 ```
-> MS.py
+$ MS.py
 
 # Output example:
 

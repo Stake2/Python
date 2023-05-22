@@ -178,7 +178,7 @@ class File():
 
 			return False
 
-	def Edit(self, file, text, mode, next_line = True):
+	def Edit(self, file, text, mode = "w", next_line = True):
 		file = self.Sanitize(file)
 
 		contents = self.Contents(file)

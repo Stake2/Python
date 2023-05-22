@@ -1,0 +1,14 @@
+{
+	"show_text": {
+		"en": "Manage the [Game Information] Database and [Play History]",
+		"pt": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
+	},
+	"Add_A_New_Game": {
+		"en": "Add a new game to the Database",
+		"pt": "Adicionar um novo jogo ao Banco de Dados"
+	},
+	"Iterate_Through_The_Game_List": {
+		"en": "Iterate through the game list",
+		"pt": "Iterar através da lista de jogos"
+	}
+}

@@ -33,12 +33,12 @@ class Write_On_Diary(Diary):
 		self.presenter_text = None
 
 		while self.presenter_text not in self.finish_texts:
-			self.presenter_text = self.Input.Lines(self.presenter + ": " + self.format_text_item, line_options = {"capitalize": True, "dots": True, "next_line": False})["string"]
+			self.presenter_text = self.Input.Lines(self.presenter + ": " + self.format_text_item, line_options_parameter = {"capitalize": True, "dots": True, "next_line": False})["string"]
 
 			if self.presenter_text not in self.presenter_numbers:
 				format_text = self.format_text
 
-				text_to_append = self.Date.Now()["%H:%M %d/%m/%Y"] + ":" + "\n" + format_text.format(self.presenter, self.presenter_text)
+				text_to_append = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"] + ":" + "\n" + format_text.format(self.presenter, self.presenter_text)
 
 				if self.File.Contents(self.diary_chapter_file)["lines"] != []:
 					text_to_append = "\n" + text_to_append

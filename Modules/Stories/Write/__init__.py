@@ -42,10 +42,10 @@ class Write(Stories):
 		if self.chapter["finished_writing"] == True:
 			self.register_task = True
 
-		self.Register_Task(self.task_dictionary, self.register_task)
+		self.Register_Task()
 
 		if self.chapter["finished_writing"] == False:
-			print(self.task_dictionary["Descriptions"][self.user_language])
+			print(self.task_dictionary["Task"]["Descriptions"][self.user_language])
 			print()
 			print(self.large_bar)
 
@@ -246,7 +246,7 @@ class Write(Stories):
 		self.Input.Type(type_text)
 
 		# Define start writing time
-		self.chapter["start_writing_time"] = self.Date.Now()["%H:%M %d/%m/%Y"]
+		self.chapter["start_writing_time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 		print()
 		print(self.language_texts["now_time"] + ":")
@@ -258,29 +258,21 @@ class Write(Stories):
 		self.Input.Type(type_text)
 
 		# Define finish writing time
-		self.chapter["finish_writing_time"] = self.Date.Now()["%H:%M %d/%m/%Y"]
-
-		# --- Testing: Add one hour
-		self.chapter["finish_writing_time"] = self.Date.Now()["date"] + self.Date.Timedelta(hours = 1)
-		self.chapter["finish_writing_time"] = self.Date.Now(self.chapter["finish_writing_time"])["%H:%M %d/%m/%Y"]
+		self.chapter["finish_writing_time"] = self.Date.Now(self.chapter["finish_writing_time"])["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Define time difference
 		self.chapter["time_difference"] = self.Date.Difference(self.chapter["start_writing_time"], self.chapter["finish_writing_time"])
 
 		# Make time difference using already defined "started writing time"
 		if self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"] != "":
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.From_String(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["date"]
+			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.From_String(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Object"]
 
-			dict_ = {}
+			dict_ = self.chapter["time_difference"]["Difference"]
 
-			for item in ["hours", "minutes", "seconds"]:
-				if item in self.chapter["time_difference"]["difference"]:
-					dict_[item] = self.chapter["time_difference"]["difference"][item]
+			# Add Relativedelta to the "started writing time"
+			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] + self.Date.Relativedelta(**dict_)
 
-			# Add timedelta to "started writing time"
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] + self.Date.Timedelta(**dict_)
-
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.Now(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["%H:%M %d/%m/%Y"]
+			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.Now(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Ask if user finished writing the chapter
 		self.chapter["finished_writing"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_{}_the_chapter"].format(self.chapter["writing_mode"]["action"][self.user_language]))
@@ -317,7 +309,7 @@ class Write(Stories):
 
 		# Show time difference
 		print(self.language_texts["time_difference"] + ":")
-		print(self.chapter["time_difference"]["difference_strings"][self.user_language])
+		print(self.chapter["time_difference"]["Text"][self.user_language])
 		print()
 
 		print(self.large_bar)
@@ -363,11 +355,13 @@ class Write(Stories):
 			if source_file != self.chapter["files"]["obsidian"][key]:
 				self.File.Move(source_file, self.chapter["files"]["obsidian"][key])
 
-	def Define_Task_Dictionary(self):
+	def Register_Task(self):
 		# Define task dictionary, to use it on Tasks class
 		self.task_dictionary = {
-			"Titles": {},
-			"Descriptions": {},
+			"Task": {
+				"Titles": {},
+				"Descriptions": {}
+			}
 		}
 
 		# Define I text based on finished writing or not
@@ -390,33 +384,36 @@ class Write(Stories):
 				parameters = tuple(parameters)
 
 			# Create task titles
-			self.task_dictionary["Titles"][language] = i_text[language]
-			self.task_dictionary["Titles"][language] = self.task_dictionary["Titles"][language].format(*parameters)
+			self.task_dictionary["Task"]["Titles"][language] = i_text[language]
+			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(*parameters)
 
 			# Add translated user language to task name if writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["Titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
+				self.task_dictionary["Task"]["Titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
 
-			self.task_dictionary["Titles"][language] += "."
+			self.task_dictionary["Task"]["Titles"][language] += "."
 
 			# Create task descriptions
-			self.task_dictionary["Descriptions"][language] = self.task_dictionary["Titles"][language]
+			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language]
 
 			# Add writing time
-			self.task_dictionary["Descriptions"][language] += "\n\n"
+			self.task_dictionary["Task"]["Descriptions"][language] += "\n\n"
 
 			text = self.chapter["writing_mode"]["past_action"][language]
 
 			if self.texts["{}_time"][language][0] == "{":
 				text = text.capitalize()
 
-			self.task_dictionary["Descriptions"][language] += self.texts["{}_time"][language].format(text) + ":" + "\n"
-			self.task_dictionary["Descriptions"][language] += self.chapter["time_difference"]["difference_strings"][language]
+			self.task_dictionary["Task"]["Descriptions"][language] += self.texts["{}_time"][language].format(text) + ":" + "\n"
+			self.task_dictionary["Task"]["Descriptions"][language] += self.chapter["time_difference"]["Text"][language]
 
 			# Add "still did not finished writing" text to task description if did not finished writing
 			if self.chapter["finished_writing"] == False:
-				self.task_dictionary["Descriptions"][language] += "\n\n"
-				self.task_dictionary["Descriptions"][language] += self.texts["i_still_did_not_finished_{}_the_chapter"][language].format(self.chapter["writing_mode"]["action"][language]) + "."
+				self.task_dictionary["Task"]["Descriptions"][language] += "\n\n"
+				self.task_dictionary["Task"]["Descriptions"][language] += self.texts["i_still_did_not_finished_{}_the_chapter"][language].format(self.chapter["writing_mode"]["action"][language]) + "."
+
+		# Register the task with the root method
+		Stories.Register_Task(self, self.task_dictionary, register_task = self.register_task)
 
 	def Close_Obsidian(self):
 		# Close Obsidian

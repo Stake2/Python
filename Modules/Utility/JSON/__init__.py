@@ -136,7 +136,6 @@ class JSON():
 		items = deepcopy(items_parameter)
 
 		if type(items) == dict:
-			import types as Types
 			import datetime
 
 			for key in items:
@@ -151,12 +150,30 @@ class JSON():
 
 				if type(value) == dict:
 					for sub_key in value:
+						if "_PytzShimTimezone" in str(items[key][sub_key]):
+							items[key][sub_key] = str(items[key][sub_key])
+
 						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None]:
-							if isinstance(value, datetime.datetime) == False:
+							if isinstance(items[key][sub_key], datetime.datetime) == False:
 								items[key][sub_key] = str(items[key][sub_key])
 
-							if isinstance(value, datetime.datetime) == True:
+							if isinstance(items[key][sub_key], datetime.datetime) == True:
 								items[key][sub_key] = self.Date_To_String(items[key][sub_key])
+
+						if type(items[key][sub_key]) == dict:
+							for sub_sub_key in items[key][sub_key]:
+								if "_PytzShimTimezone" in str(items[key][sub_key][sub_sub_key]):
+									items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+
+								if type(items[key][sub_key][sub_sub_key]) not in [str, int, list, dict, bool, None]:
+									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == False:
+										items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+
+									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
+										items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
+
+								if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
+									items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
 
 		if type(items) == list:
 			i = 0
@@ -174,7 +191,7 @@ class JSON():
 		import datetime
 
 		if isinstance(date, datetime.datetime) == False:
-			date = date["date"]
+			date = date["Object"]
 
 		if format == "":
 			format = self.date_texts["default_format"]
@@ -203,15 +220,21 @@ class JSON():
 	def Show(self, json):
 		print(self.From_Python(json))
 
-	def Add_Key_After_Key(self, dictionary, key_value, after_key, number_to_add = 1):
+	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False):
 		keys = list(dictionary.keys())
 		values = list(dictionary.values())
 
 		i = 0
 		for key in keys.copy():
-			if key_value["key"] not in keys and key == after_key:
-				keys.insert(i + number_to_add, key_value["key"])
-				values.insert(i + number_to_add, key_value["value"])
+			if key_value["key"] not in keys and key == after_key or add_to_end == True:
+				if add_to_end == True:
+					number = len(keys)
+
+				else:
+					number = i + number_to_add
+
+				keys.insert(number, key_value["key"])
+				values.insert(number, key_value["value"])
 
 			if key_value["key"] in keys and key == key_value["key"]:
 				values[i] = key_value["value"]

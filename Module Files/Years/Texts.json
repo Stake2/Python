@@ -212,10 +212,6 @@
 		"pt": "últimas",
 		"en": "last"
 	},
-	"episodes": {
-		"pt": "episódios",
-		"en": "episodes"
-	},
 	"select_a_year_to_show_its_information": {
 		"pt": "Selecione um Ano para mostrar suas informações",
 		"en": "Select a Year to show its information"
@@ -247,13 +243,5 @@
 	"{}_texts": {
 		"pt": "Textos de \"{}\"",
 		"en": "\"{}\" texts"
-	},
-	"watched_media": {
-		"en": "Watched media",
-		"pt": "Mídia assistida"
-	},
-	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
 	}
 }

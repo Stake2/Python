@@ -7,13 +7,9 @@
 		"en": "Add a new media to the Database",
 		"pt": "Adicionar uma nova mídia ao Banco de Dados"
 	},
-	"Open_Details_File": {
-		"en": "Open media details file",
-		"pt": "Abrir arquivo de detalhes de mídia"
-	},
-	"Fill_Episode_Titles": {
-		"en": "Fill episode titles file",
-		"pt": "Preencher arquivo de títulos de episódio"
+	"Fill_Media_Files": {
+		"en": "Fill media files",
+		"pt": "Preencher arquivos de mídia"
 	},
 	"Manage": {
 		"en": "Manage",

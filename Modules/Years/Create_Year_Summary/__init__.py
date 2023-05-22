@@ -19,7 +19,7 @@ class Create_Year_Summary(Years):
 				self.Show_Summary_Information()
 
 	def Define_Year(self):
-		years_list = self.years["list"].copy()
+		years_list = self.years["List"].copy()
 
 		for year in self.years:
 			english_files = self.years[year]["folders"][self.languages["full"]["en"]]
@@ -33,7 +33,7 @@ class Create_Year_Summary(Years):
 			print("--------------------")
 			print()
 			print(self.language_texts["you_already_created_the_summary_for_this_year"] + ":")
-			print(self.date["year"])
+			print(self.date["Units"]["Year"])
 			print()
 			print("--------------------")
 
@@ -45,12 +45,12 @@ class Create_Year_Summary(Years):
 	def Check_Day(self):
 		self.today_is_summary_day = False
 
-		if self.date["day"] == self.summary_date["day"] and self.date["month"] == self.summary_date["month"]:
+		if self.date["Units"]["Day"] == self.summary_date["Day"] and self.date["Units"]["Month"] == self.summary_date["Month"]:
 			self.today_is_summary_day = True
 
 		if self.today_is_summary_day == False:
-			day_month = self.language_texts["{} {} {}"].format(self.summary_date["day"], self.summary_date["month_name"], self.date["year"])
-			today = self.language_texts["{} {} {}"].format(self.date["day"], self.date["month_name"], self.date["year"])
+			day_month = self.language_texts["{} {} {}"].format(self.summary_date["Day"], self.summary_date["Timezone"]["Texts"]["Month name"], self.date["Units"]["Year"])
+			today = self.language_texts["{} {} {}"].format(self.date["Units"]["Day"], self.date["Timezone"]["Texts"]["Month name"], self.date["Units"]["Year"])
 
 			print()
 			print("--------------------")
@@ -104,13 +104,13 @@ class Create_Year_Summary(Years):
 		self.year_numbers["things_done_in_{year}"] = 0
 
 		# Tasks data
-		self.tasks = self.JSON.To_Python(self.Tasks.folders["Task History"][str(self.date["year"])]["Tasks.json"])
-		self.task_times = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Times"])["lines"]
+		self.tasks = self.JSON.To_Python(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Tasks.json"])
+		self.task_times = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Times"])["lines"]
 
 		# Watch History data
 		self.watch_history_data = self.JSON.To_Python(self.episodes_file)
 
-		self.year_numbers["productive_things"] = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["year"])]["Number"])["lines"][0]
+		self.year_numbers["productive_things"] = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Number"])["lines"][0]
 		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
 		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
 		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
@@ -174,14 +174,14 @@ class Create_Year_Summary(Years):
 				summary_text = self.texts[summary_text][language]
 
 				if "{year}" in summary_text:
-					summary_text = summary_text.replace("{year}", self.year["number"])
+					summary_text = summary_text.replace("{year}", self.year["Number"])
 
 				summary_text += ": "
 
 				if summary_text_backup in self.year_numbers:
 					summary_text += str(self.year_numbers[summary_text_backup])
 
-				if self.year["number"] in summary_text:
+				if self.year["Number"] in summary_text:
 					summary_text += " (" + self.texts["the_sum_of_numbers_below"][language] + ")"
 
 				if summary_text != self.summary_texts[-1]:
@@ -268,7 +268,7 @@ class Create_Year_Summary(Years):
 		print("--------------------")
 		print()
 		print(self.language_texts["the_summary_of_this_year_was_created"] + ":")
-		print(self.year["number"])
+		print(self.year["Number"])
 		print()
 
 		print(self.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
@@ -279,4 +279,4 @@ class Create_Year_Summary(Years):
 		self.File.Open(self.language_files[self.user_language])
 
 		print()
-		print(self.language_texts["the_program_has_finished_the_creation_of_the_year_summary_for"] + " " + self.year["number"] + ".")
+		print(self.language_texts["the_program_has_finished_the_creation_of_the_year_summary_for"] + " " + self.year["Number"] + ".")

@@ -26,31 +26,9 @@
         "pt": "idioma completo",
         "en": "full language"
     },
-	"original_name": {
-		"en": "Original name",
-		"pt": "Nome original"
-	},
-	"[language]_name": {
-		"en": "English name",
-		"pt": "Nome Português",
-		"es": "Nombre español"
-	},
-	"language_name": {
-		"en": {
-			"en": "English name",
-			"pt": "Nome Inglês",
-			"es": "Nombre Inglés"
-		},
-		"pt": {
-			"en": "Portuguese name",
-			"pt": "Nome Português",
-			"es": "Nombre Portugués"
-		},
-		"es": {
-			"en": "Spanish name",
-			"pt": "Nome Espanhol",
-			"es": "Nombre Español"
-		}
+	"original_title": {
+		"en": "Original title",
+		"pt": "Título original"
 	},
 	"original_language": {
 		"en": "Original language",
@@ -109,6 +87,22 @@
 	"number, title()": {
 		"en": "Number",
 		"pt": "Número"
+	},
+	"item": {
+		"en": "item",
+		"pt": "item"
+	},
+	"item, title()": {
+		"en": "Item",
+		"pt": "Item"
+	},
+	"items": {
+		"en": "items",
+		"pt": "itens"
+	},
+	"items, title()": {
+		"en": "Items",
+		"pt": "Itens"
 	},
 	"select_an_item_from_the_list": {
 		"en": "Select an item from the list",
@@ -486,12 +480,16 @@
 		"pt": "Número de tipo"
 	},
 	"firsts_of_the_year": {
-		"pt": "Primeiros Do Ano",
-		"en": "Firsts Of The Year"
+		"pt": "Primeiros do Ano",
+		"en": "Firsts of the Year"
 	},
 	"when, title()": {
 		"en": "When",
 		"pt": "Quando"
+	},
+	"entry": {
+		"en": "entry",
+		"pt": "entrada"
 	},
 	"entry, title()": {
 		"en": "Entry",
@@ -517,6 +515,10 @@
 		"en": "IDs",
 		"pt": "IDs"
 	},
+	"ids_file": {
+		"en": "IDs file",
+		"pt": "Arquivo de IDs"
+	},
 	"comment": {
 		"en": "comment",
 		"pt": "comentário"
@@ -537,9 +539,15 @@
 		"en": "Commented",
 		"pt": "Comentou"
 	},
-	"title_in_[language]": {
-		"pt": "Título em Português",
-		"en": "Title in English"
+	"title_in_language": {
+		"pt": {
+			"pt": "Título em Português",
+			"en": "Title in Portuguese"
+		},
+		"en": {
+			"pt": "Título em Inglês",
+			"en": "Title in English"
+		}
 	},
 	"states, title()": {
 		"pt": "Estados",
@@ -548,6 +556,10 @@
 	"and": {
 		"en": "and",
 		"pt": "e"
+	},
+	"or": {
+		"en": "or",
+		"pt": "ou"
 	},
 	"iterate, title()": {
 		"en": "Iterate",
@@ -597,17 +609,49 @@
 		"en": "Information",
 		"pt": "Informação"
 	},
+	"information, title(), plural": {
+		"en": "Information",
+		"pt": "Informações"
+	},
+	"developer, title()": {
+		"en": "Developer",
+		"pt": "Desenvolvedor"
+	},
+	"developers, title()": {
+		"en": "Developers",
+		"pt": "Desenvolvedores"
+	},
+	"publisher, title()": {
+		"en": "Publisher",
+		"pt": "Publicador"
+	},
+	"publishers, title()": {
+		"en": "Publishers",
+		"pt": "Publicadores"
+	},
 	"producer, title()": {
 		"en": "Producer",
 		"pt": "Produtor"
 	},
+	"producers, title()": {
+		"en": "Producers",
+		"pt": "Produtores"
+	},
 	"distributor, title()": {
-		"en": "distributor",
+		"en": "Distributor",
 		"pt": "Distribuidor"
+	},
+	"distributors, title()": {
+		"en": "Distributors",
+		"pt": "Distribuidores"
 	},
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
+	},
+	"directors, title()": {
+		"en": "Directors",
+		"pt": "Diretores"
 	},
 	"handle, title()": {
 		"en": "Handle",
@@ -645,6 +689,287 @@
 		"en": "Official website",
 		"pt": "Site oficial"
 	},
+	"short": {
+		"en": "short",
+		"pt": "curta"
+	},
+	"shorts": {
+		"en": "shorts",
+		"pt": "curtas"
+	},
+	"special": {
+		"en": "special",
+		"pt": "especial"
+	},
+	"specials": {
+		"en": "specials",
+		"pt": "especiais"
+	},
+	"pilot": {
+		"en": "pilot",
+		"pt": "piloto"
+	},
+	"music": {
+		"en": "music",
+		"pt": "música"
+	},
+	"musics": {
+		"en": "musics",
+		"pt": "músicas"
+	},
+	"next": {
+		"en": "next",
+		"pt": {
+			"masculine": "próximo",
+			"feminine": "próxima"
+		}
+	},
+	"media": {
+		"en": "media",
+		"pt": "mídia"
+	},
+	"media, title()": {
+		"en": "Media",
+		"pt": "Mídia"
+	},
+	"and_also": {
+		"en": "and also",
+		"pt": "e também"
+	},
+	"status": {
+		"en": "status",
+		"pt": "status"
+	},
+	"status, title()": {
+		"en": "Status",
+		"pt": "Status"
+	},
+	"statuses": {
+		"en": "statuses",
+		"pt": "status"
+	},
+	"statuses, title()": {
+		"en": "Statuses",
+		"pt": "Status"
+	},
+	"christmas, title()": {
+		"en": "Christmas",
+		"pt": "Natal"
+	},
+	"shortcut, title()": {
+		"en": "Shortcut",
+		"pt": "Atalho"
+	},
+	"shortcuts, title()": {
+		"en": "Shortcuts",
+		"pt": "Atalhos"
+	},
+	"on_hold, title()": {
+		"en": "On hold",
+		"pt": "Em pausa"
+	},
+	"origin_type": {
+		"en": "Origin type",
+		"pt": "Tipo de origem"
+	},
+	"origin_types": {
+		"en": "Origin types",
+		"pt": "Tipos de origem"
+	},
+	"origin_types, type: list": {
+		"en": [
+			"Remote",
+			"Local"
+		],
+		"pt": [
+			"Remota",
+			"Local"
+		]
+	},
+	"remote, title()": {
+		"pt": "Remota",
+		"en": "Remote"
+	},
+	"local, title()": {
+		"pt": "Local",
+		"en": "Local"
+	},
+	"romanized_title": {
+		"en": "Romanized title",
+		"pt": "Título romanizado"
+	},
+	"session_duration": {
+		"en": "Session duration",
+		"pt": "Duração da sessão"
+	},
+	"category, title()": {
+		"en": "Category",
+		"pt": "Categoria"
+	},
+	"played, title()": {
+		"en": "Played",
+		"pt": "Jogado"
+	},
+	"alright": {
+		"pt": "Tudo bem",
+		"en": "Alright"
+	},
+	"platform, title()": {
+		"en": "Platform",
+		"pt": "Plataforma"
+	},
+	"platforms, title()": {
+		"en": "Platforms",
+		"pt": "Plataformas"
+	},
+	"resolution, title()": {
+		"en": "Resolution",
+		"pt": "Resolução"
+	},
+	"wrong, title()": {
+		"en": "Wrong",
+		"pt": {
+			"masculine": "Errado",
+			"feminine": "Errada"
+		}
+	},
+	"right, title()": {
+		"en": "Right",
+		"pt": {
+			"masculine": "Certo",
+			"feminine": "Certa"
+		}
+	},
+	"description, title()": {
+		"en": "Description",
+		"pt": "Descrição"
+	},
+	"steam, title()": {
+		"en": "Steam",
+		"pt": "Steam"
+	},
+	"path, title()": {
+		"en": "Path",
+		"pt": "Caminho"
+	},
+	"root, title()": {
+		"en": "Root",
+		"pt": "Raiz"
+	},
+	"title_in_{}": {
+		"pt": "Título em {}",
+		"en": "Title in {}"
+	},
+	"titles_in_{}": {
+		"pt": "Títulos em {}",
+		"en": "Titles in {}"
+	},
+	"titles_file_in_{}": {
+		"pt": "Arquivo de títulos em {}",
+		"en": "Titles file in {}"
+	},
+	"subbed, title()": {
+		"pt": "Legendado",
+		"en": "Subbed"
+	},
+	"dubbed, title()": {
+		"pt": "Dublado",
+		"en": "Dubbed"
+	},
+	"has_dub": {
+		"en": "Has dub",
+		"pt": "Tem dublagem"
+	},
+	"dubbed_{}": {
+		"en": "Dubbed {}",
+		"pt": "{} dublado"
+	},
+	"dubbing, title()": {
+		"en": "Dubbing",
+		"pt": "Dublagem"
+	},
+	"origin_location": {
+		"en": "Origin location",
+		"pt": "Local de origem"
+	},
+	"remote_origin": {
+		"pt": "Origem remota",
+		"en": "Remote origin"
+	},
+	"channel, title()": {
+		"pt": "Canal",
+		"en": "Channel"
+	},
+	"channels, title()": {
+		"pt": "Canais",
+		"en": "Channels"
+	},
+	"episode, title()": {
+		"pt": "Episódio",
+		"en": "Episode"
+	},
+	"title_separator": {
+		"en": "Title separator",
+		"pt": "Separador de título"
+	},
+	"episode_separator": {
+		"en": "Episode separator",
+		"pt": "Separador de episódio"
+	},
+	"of_the_{}": {
+		"pt": "da {}",
+		"en": "of the {}"
+	},
+	"congratulations": {
+		"pt": "Parabéns",
+		"en": "Congratulations"
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
+	"episodic, title()": {
+		"en": "Episodic",
+		"pt": "Episódica"
+	},
+	"current_{}": {
+		"en": "Current {}",
+		"pt": "{} atual"
+	},
+	"the_first": {
+		"pt": {
+			"masculine": "o primeiro",
+			"feminine": "a primeira"
+		},
+		"en": "the first"
+	},
+	"the_last": {
+		"pt": {
+			"masculine": "o último",
+			"feminine": "a última"
+		},
+		"en": "the last"
+	},
+	"with": {
+		"en": "with",
+		"pt": "com"
+	},
+	"with_{}_title": {
+		"en": "with {} title",
+		"pt": "com título d{}"
+	},
+	"like": {
+		"en": "like",
+		"pt": "como"
+	},
+	"format": {
+		"en": "format",
+		"pt": "formato"
+	},
+	"add_more": {
+		"en": "Add more",
+		"pt": "Adicionar mais"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {
@@ -654,6 +979,7 @@
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
+				"or": "or",
 				"first": "first",
 				"last": "last",
 				"in": "in"
@@ -665,6 +991,7 @@
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
+				"or": "or",
 				"first": "first",
 				"last": "last",
 				"in": "in"
@@ -678,6 +1005,7 @@
 				"a": "um",
 				"of": "do",
 				"of_the": "do",
+				"or": "ou",
 				"first": "primeiro",
 				"last": "último",
 				"in": "em"
@@ -689,6 +1017,7 @@
 				"a": "uma",
 				"of": "da",
 				"of_the": "da",
+				"or": "ou",
 				"first": "primeira",
 				"last": "última",
 				"in": "em"
@@ -702,6 +1031,7 @@
         "a",
         "of",
         "of_the",
+		"or",
         "first",
         "last",
 		"in"

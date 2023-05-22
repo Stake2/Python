@@ -426,7 +426,7 @@
 	"status, type: list": {
 		"en": [
 			"Writing",
-			"Re-Writing",
+			"Re-writing",
 			"Reviewing",
 			"Finished",
 			"Published",
@@ -434,7 +434,7 @@
 		],
 		"pt": [
 			"Escrevendo",
-			"Re-Escrevendo",
+			"Re-escrevendo",
 			"Revisando",
 			"Finalizada",
 			"Publicada",

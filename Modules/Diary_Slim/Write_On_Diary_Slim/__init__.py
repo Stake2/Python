@@ -25,7 +25,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.slim_texts = self.JSON.To_Python(self.slim_texts_file)
 
 		# Get today task done text using weekday
-		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["weekday"]]
+		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["Units"]["Week day"]]
 
 		for language in self.languages["small"]:
 			# Iterate through state names
@@ -132,12 +132,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 						self.text["data"][language] = ""
 
 						for item in split:
+							if item != split[0] and len(split) == 2:
+								self.text["data"][language] += " "
+
 							if item == split[-1]:
 								self.text["data"][language] += self.texts["and"][language] + " "
 
 							self.text["data"][language] += item
 
-							if item != split[-1]:
+							if item != split[-1] and len(split) != 2:
 								self.text["data"][language] += ", "
 
 						# Replace singular name with plural name on text
@@ -162,10 +165,14 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def Type_Task_Descriptions(self):
 		# Define task dictionary with titles, descriptions, type, time, and files
 		self.task_dictionary = {
-			"Titles": {},
-			"Descriptions": {},
 			"Type": self.text["key"],
-			"Time": self.Date.Now(),
+			"Task": {
+				"Titles": {},
+				"Descriptions": {}
+			},
+			"Entry": {
+				"Date": self.Date.Now()
+			},
 			"Files": {}
 		}
 
@@ -210,12 +217,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Define task descriptions and make a backup of them
 		for language in self.languages["small"]:
-			self.task_dictionary["Titles"][language] = self.text["texts"][language] + "."
+			self.task_dictionary["Task"]["Titles"][language] = self.text["texts"][language] + "."
 
-			self.task_dictionary["Descriptions"][language] = self.task_dictionary["Titles"][language] + "\n\n"
-			self.task_dictionary["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
+			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "\n\n"
+			self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
 
-			text = self.task_dictionary["Descriptions"][language]
+			text = self.task_dictionary["Task"]["Descriptions"][language]
 
 			if language != self.languages["small"][-1]:
 				text += "\n\n"
@@ -232,17 +239,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if self.text["key"] in self.slim_texts:
 			self.Tasks = self
 
+			# Import the "Regsiter" class of the "Tasks" module
 			from Tasks.Register import Register as Register
 
 			self.Tasks.Register = Register
 
+			# Run the "Register" class
 			self.Tasks.Register(self.task_dictionary)
 
-			if self.switches["verbose"] == True:
-				self.task_dictionary["Time"] = str(self.task_dictionary["Time"])
-
-				self.JSON.Show(self.task_dictionary)
-
+			# Delete the backup file
 			self.File.Delete(self.backup_file)
 
 		# Update state and define text to write if text key is in state names list

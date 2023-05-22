@@ -65,12 +65,12 @@ class Christmas():
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-		self.christmas = self.Date.From_String("25/12/" + str(self.date["year"]))
+		self.christmas = self.Date.From_String("25/12/" + str(self.date["Units"]["Year"]))
 
 	def Today_Is_Christmas(self):
 		self.today_is_christmas = False
 
-		if self.date["day"] == self.christmas["day"] and self.date["month"] == self.christmas["month"]:
+		if self.date["Units"]["Day"] == self.christmas["Units"]["Day"] and self.date["Units"]["Month"] == self.christmas["Units"]["Month"]:
 			self.today_is_christmas = True
 
 		return self.today_is_christmas
@@ -155,7 +155,7 @@ class Christmas():
 			social_networks = ["Twitter"]
 
 		if social_network_backup != self.twitter_scheduled_text:
-			social_networks = sorted(self.Social_Networks.social_networks["Names"], key=str.lower)
+			social_networks = sorted(self.Social_Networks.social_networks["Names"], key = str.lower)
 			social_networks.remove("Habitica")
 
 			self.option_info = {"type": "profile"}

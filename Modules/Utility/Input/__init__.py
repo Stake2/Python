@@ -87,6 +87,7 @@ class Input():
 		try:
 			option = int(option)
 			option_number = option - 1
+			self.option_number_backup = option_number
 
 			try:
 				option = options[option_number]
@@ -161,8 +162,11 @@ class Input():
 		dictionary = {
 			"option": option,
 			"language_option": option,
-			"number": option_number,
+			"number": option_number
 		}
+
+		if hasattr(self, "option_number_backup") == True:
+			dictionary["number_backup"] = self.option_number_backup
 
 		if language_options != None:
 			dictionary["language_option"] = language_options[dictionary["number"]]
@@ -184,16 +188,16 @@ class Input():
 		return dictionary
 
 	def Define_Yes_Or_No(self, response):
-		if response in ["Yes", self.language_texts["yes, title()"]]:
+		if response in ["Yes", "yes", self.language_texts["yes, title()"], self.language_texts["yes, title()"].lower()]:
 			return True
 
-		if response in ["No", self.language_texts["no, title()"]]:
+		if response in ["No", "no", self.language_texts["no, title()"], self.language_texts["no, title()"].lower()]:
 			return False
 
 	def Yes_Or_No(self, question, convert_to_text = False, first_space = True):
 		options = [
 			self.language_texts["yes, title()"],
-			self.language_texts["no, title()"],
+			self.language_texts["no, title()"]
 		]
 
 		if type(question) == dict:
@@ -228,27 +232,21 @@ class Input():
 		if first_space == True:
 			print()
 
-		if next_line == False:
-			if accept_enter == True:
-				typed = input(text)
-
-			if accept_enter == False:
-				typed = ""
-
-				while typed == "":
-					typed = input(text)
+		local_text = text
 
 		if next_line == True:
 			print(text)
 
-			if accept_enter == True:
-				typed = input()
+			local_text = ""
 
-			if accept_enter == False:
-				typed = ""
+		if accept_enter == True:
+			typed = input(local_text)
 
-				while typed == "":
-					typed = input()
+		if accept_enter == False:
+			typed = ""
+
+			while typed == "":
+				typed = input(local_text)
 
 		if typed != "" and regex != None:
 			split_ = regex.split("; ")
@@ -273,27 +271,28 @@ class Input():
 
 		return text
 
-	def Lines(self, show_text_parameter = None, length = None, line_options = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None):
+	def Lines(self, show_text_parameter = None, length = None, line_options_parameter = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None):
 		show_text = show_text_parameter
 
 		if show_text_parameter == None:
 			show_text = self.language_texts["type_the_lines_of_text"] + ": "
 
-		if line_options == None:
-			line_options = {
-				"print": False,
-				"enumerate": False,
-				"enumerate_text": False,
-				"capitalize": False,
-				"dots": False,
-				"show_finish_text": True,
-				"next_line": True,
-				"colon": True,
-			}
+		line_options = {
+			"print": False,
+			"enumerate": False,
+			"enumerate_text": False,
+			"capitalize": False,
+			"dots": False,
+			"show_finish_text": True,
+			"next_line": True,
+			"colon": True,
+			"first_space": True
+		}
 
-		for item in ["print", "enumerate", "enumerate_text", "capitalize", "dots", "show_finish_text", "next_line", "colon"]:
-			if item not in line_options:
-				line_options[item] = False
+		if line_options_parameter != None:
+			for key in line_options:
+				if key in line_options_parameter:
+					line_options[key] = line_options_parameter[key]
 
 		finish_keywords = self.language_texts["finish_keywords, type: list"]
 
@@ -305,6 +304,8 @@ class Input():
 			print(show_text + ":")
 
 		if length == None and line_options["show_finish_text"] == True:
+			print("--------------------")
+			print()
 			print("(" + self.language_texts["to_finish_typing_please_type_one_of_the_texts_below"] + ":")
 			print(str(finish_keywords).replace("'", '"').replace("[", "").replace("]", "") + ")")
 
@@ -315,7 +316,7 @@ class Input():
 		contents = {
 			"lines": [],
 			"string": "",
-			"length": 0,
+			"length": 0
 		}
 
 		line = ""
@@ -349,6 +350,9 @@ class Input():
 						type_text = ""
 
 				if line == "" and line_options["print"] == True:
+					if line_options["show_finish_text"] == True:
+						print()
+
 					print(show_text)
 
 					type_text = ""

@@ -1,47 +1,43 @@
 {
-	"animes": {
+	"animes, title()": {
 		"en": "Animes",
 		"pt": "Animes"
 	},
-	"cartoons": {
+	"cartoons, title()": {
 		"en": "Cartoons",
 		"pt": "Desenhos"
-	},
-	"movies": {
-		"en": "Movies",
-		"pt": "Filmes"
 	},
 	"movies, title()": {
 		"en": "Movies",
 		"pt": "Filmes"
 	},
-	"videos": {
-		"en": "Videos",
-		"pt": "Vídeos"
-	},
-	"videos, title()": {
-		"en": "Videos",
-		"pt": "Vídeos"
-	},
-	"anime": {
-		"en": "anime",
-		"pt": "anime"
-	},
-	"cartoon": {
-		"en": "cartoon",
-		"pt": "desenho"
-	},
-	"series": {
-		"en": "series",
-		"pt": "série"
+	"serie, title()": {
+		"en": "Series",
+		"pt": "Série"
 	},
 	"series, title()": {
 		"en": "Series",
 		"pt": "Séries"
 	},
+	"videos, title()": {
+		"en": "Videos",
+		"pt": "Vídeos"
+	},
+	"serie": {
+		"en": "series",
+		"pt": "série"
+	},
+	"series": {
+		"en": "series",
+		"pt": "séries"
+	},
 	"movie": {
 		"en": "movie",
 		"pt": "filme"
+	},
+	"movies": {
+		"en": "movies",
+		"pt": "filmes"
 	},
 	"video": {
 		"en": "video",
@@ -55,345 +51,33 @@
 		"en": "Media types",
 		"pt": "Tipos de mídia"
 	},
-	"mixed_media_type": {
-		"en": "Mixed media type",
-		"pt": "Tipo de mídia misturado"
-	},
-	"media_type, title()": {
-		"pt": "Tipo De Mídia",
-		"en": "Media Type"
-	},
-	"media_types, title()": {
-		"pt": "Tipos De Mídia",
-		"en": "Media Types"
-	},
 	"media_type_number": {
 		"en": "Media type number",
 		"pt": "Número de tipo de mídia"
-	},
-	"type, title()": {
-		"en": "Type",
-		"pt": "Tipo"
-	},
-	"media": {
-		"en": "media",
-		"pt": "mídia"
-	},
-	"media, title()": {
-		"en": "Media",
-		"pt": "Mídia"
 	},
 	"media_unit": {
 		"en": "Media unit",
 		"pt": "Unidade de mídia"
 	},
-	"title": {
-		"en": "title",
-		"pt": "título"
+	"season, title()": {
+		"en": "Season",
+		"pt": "Temporada"
 	},
-	"titles": {
-		"en": "titles",
-		"pt": "títulos"
-	},
-	"dates": {
-		"en": "dates",
-		"pt": "datas"
-	},
-	"season": {
-		"en": "season",
-		"pt": "temporada"
-	},
-	"seasons": {
-		"en": "seasons",
-		"pt": "temporadas"
-	},
-	"final_season": {
-		"en": "final season",
-		"pt": "temporada final"
-	},
-	"serie": {
-		"en": "series",
-		"pt": "série"
-	},
-	"series": {
-		"en": "series",
-		"pt": "séries"
-	},
-	"comment_file": {
-		"en": "Comment file",
-		"pt": "Arquivo de comentário"
+	"seasons, title()": {
+		"en": "Seasons",
+		"pt": "Temporadas"
 	},
 	"comment_file_name": {
 		"en": "Comment file name",
 		"pt": "Nome de arquivo de comentário"
 	},
-	"media_type_comment_file": {
-		"en": "Media type comment file",
-		"pt": "Arquivo de comentário de tipo de mídia"
-	},
-	"media_type_comment_time_file": {
-		"en": "Media type comment time file",
-		"pt": "Arquivo de tempo de comentário de tipo de mídia"
-	},
 	"loading_already_written_comment": {
 		"en": "Loading already written comment",
 		"pt": "Carregando comentário já escrito"
 	},
-	"when_commented": {
-		"en": "When commented",
-		"pt": "Quando comentou"
-	},
-	"started_watching_in": {
-		"en": "Started watching in",
-		"pt": "Comecei a assistir em"
-	},
-	"starting_to_watch": {
-		"en": "Starting to watch",
-		"pt": "Começando a assistir"
-	},
-	"at_this_time": {
-		"en": "At this time",
-		"pt": "Nesta hora"
-	},
-	"mixed_texts, type: list": {
-		"pt": [
-			"títulos",
-			"datas",
-			"temporadas",
-			"séries",
-			"comentário",
-			"comentários",
-			"Comecei a assistir em"
-		],
-		"en": [
-			"titles",
-			"dates",
-			"seasons",
-			"series",
-			"comment",
-			"comments",
-			"Started watching in"
-		]
-	},
-	"{}_details": {
-		"en": "{} details",
-		"pt": "Detalhes de {}"
-	},
-	"media_details": {
-		"en": "Media details",
-		"pt": "Detalhes de mídia"
-	},
-	"media_details_file": {
-		"en": "Media details file",
-		"pt": "Arquivo de detalhes de mídia"
-	},
-	"media_item_details": {
-		"en": "Media item details",
-		"pt": "Detalhes de item de mídia"
-	},
-	"media_folder": {
-		"en": "Media folder",
-		"pt": "Pasta de mídia"
-	},
-	"current_{}": {
-		"en": "Current {}",
-		"pt": "{} atual"
-	},
-	"and": {
-		"en": "and",
-		"pt": "e"
-	},
-	"the": {
-		"en": "the",
-		"pt": {
-			"masculine": "o",
-			"feminine": "a"
-		}
-	},
-	"of": {
-		"en": "of",
-		"pt": {
-			"masculine": "do",
-			"feminine": "da"
-		}
-	},
-	"of_the": {
-		"en": "of the",
-		"pt": {
-			"masculine": "do",
-			"feminine": "da"
-		}
-	},
-	"first": {
-		"en": "first",
-		"pt": {
-			"masculine": "primeiro",
-			"feminine": "primeira"
-		}
-	},
-	"last": {
-		"en": "last",
-		"pt": {
-			"masculine": "último",
-			"feminine": "última"
-		}
-	},
-	"the_first": {
-		"pt": "o primeiro",
-		"en": "the first"
-	},
-	"the_first, masculine": {
-		"pt": "o primeiro",
-		"en": "the first"
-	},
-	"the_first, feminine": {
-		"pt": "a primeira",
-		"en": "the first"
-	},
-	"the_last": {
-		"pt": "o último",
-		"en": "the last"
-	},
-	"the_last, masculine": {
-		"pt": "o último",
-		"en": "the last"
-	},
-	"the_last, feminine": {
-		"pt": "a última",
-		"en": "the last"
-	},
-	"this": {
-		"en": "this",
-		"pt": {
-			"masculine": "este",
-			"feminine": "esta"
-		}
-	},
-	"these": {
-		"en": "these",
-		"pt": {
-			"masculine": "esses",
-			"feminine": "essas"
-		}
-	},
-	"item": {
-		"en": "item",
-		"pt": "item"
-	},
-	"items": {
-		"en": "items",
-		"pt": "itens"
-	},
-	"a": {
-		"en": "a",
-		"pt": {
-			"masculine": "um",
-			"feminine": "uma"
-		}
-	},
-	"and_{}": {
-		"en": "and {}",
-		"pt": "e {}"
-	},
-	"with_{}": {
-		"en": "with {}",
-		"pt": "com {}"
-	},
-	"with_{}_title": {
-		"en": "with {} title",
-		"pt": "com título d{}"
-	},
-	"added": {
-		"en": "added",
-		"pt": {
-			"masculine": "adicionado",
-			"feminine": "adicionada"
-		}
-	},
-	"yes": {
-		"en": "yes",
-		"pt": "sim"
-	},
-	"no": {
-		"en": "no",
-		"pt": "não"
-	},
-	"romanized_name": {
-		"en": "Romanized name",
-		"pt": "Nome romanizado",
-		"es": "Nombre romanizado"
-	},
-	"has_dub": {
-		"en": "Has dub",
-		"pt": "Tem dublagem"
-	},
-	"subbed": {
-		"en": "subbed",
-		"pt": "legendado"
-	},
-	"dubbing": {
-		"en": "dubbing",
-		"pt": "dublagem"
-	},
-	"dubbing, title()": {
-		"en": "Dubbing",
-		"pt": "Dublagem"
-	},
-	"dubbed": {
-		"en": "dubbed",
-		"pt": "dublado"
-	},
-	"dubbed_to_title": {
-		"en": "Dubbed to title",
-		"pt": "Dublado no título"
-	},
-	"dubbed_{}": {
-		"en": "Dubbed {}",
-		"pt": "{} dublado"
-	},
-	"watched_dubbed": {
-		"en": "Watched dubbed",
-		"pt": "Assistiu dublado"
-	},
-	"remote": {
-		"en": "remote",
-		"pt": "remoto"
-	},
-	"local": {
-		"en": "local",
-		"pt": "local"
-	},
-	"hybrid": {
-		"en": "hybrid",
-		"pt": "híbrido"
-	},
-	"remote_origin": {
-		"en": "Remote origin",
-		"pt": "Origem remota"
-	},
-	"origin_type": {
-		"en": "Origin type",
-		"pt": "Tipo de origem"
-	},
-	"status": {
-		"en": "status",
-		"pt": "status"
-	},
-	"status, title()": {
-		"en": "Status",
-		"pt": "Status"
-	},
-	"plan_to_watch": {
-		"en": "plan to watch",
-		"pt": "planejo assistir"
-	},
 	"watch": {
 		"en": "watch",
 		"pt": "assistir"
-	},
-	"watching": {
-		"en": "watching",
-		"pt": "assistindo"
 	},
 	"watching, infinitive": {
 		"en": "watching",
@@ -407,58 +91,25 @@
 		"en": "re-watch",
 		"pt": "re-assistir"
 	},
-	"re_watching": {
-		"en": "re-watching",
-		"pt": "re-assistindo"
-	},
 	"re_watched": {
 		"en": "re-watched",
 		"pt": "re-assistido"
 	},
-	"on_hold": {
-		"en": "on hold",
-		"pt": "em pausa"
-	},
-	"origin_types, type: list": {
-		"en": [
-			"Remote",
-			"Local",
-			"Hybrid"
-		],
-		"pt": [
-			"Remoto",
-			"Local",
-			"Híbrido"
-		]
-	},
-	"origin_types, type: dict, en: pt": {
-		"Remote": "Remoto",
-		"Local": "Local",
-		"Hybrid": "Híbrido"
-	},
-	"origin_location": {
-		"en": "Origin location",
-		"pt": "Local de origem"
-	},
-	"watching_statuses, type: list": {
+	"statuses, type: list": {
 		"en": [
 			"Plan to watch",
 			"Watching",
-			"Completed",
 			"Re-watching",
+			"Completed",
 			"On hold"
 		],
 		"pt": [
 			"Planejo assistir",
 			"Assistindo",
-			"Completo",
 			"Re-assistindo",
+			"Completo",
 			"Em pausa"
 		]
-	},
-	"youtube_id": {
-		"en": "YouTube ID",
-		"pt": "ID do YouTube"
 	},
 	"youtube_ids": {
 		"en": "YouTube IDs",
@@ -472,33 +123,13 @@
 		"en": "YouTube channel",
 		"pt": "canal do YouTube"
 	},
-	"channel": {
-		"en": "channel",
-		"pt": "canal"
-	},
-	"channels": {
-		"en": "channels",
-		"pt": "canais"
-	},
 	"episode": {
 		"en": "episode",
 		"pt": "episódio"
 	},
-	"episodes": {
-		"en": "episodes",
-		"pt": "episódios"
-	},
 	"episodes, title()": {
 		"en": "Episodes",
 		"pt": "Episódios"
-	},
-	"episodes_with_subtitles": {
-		"en": "episodes with subtitles",
-		"pt": "episódios com legendas"
-	},
-	"episode_{}": {
-		"en": "episode {}",
-		"pt": "Episódio d{}"
 	},
 	"episode_list": {
 		"en": "Episode list",
@@ -512,33 +143,13 @@
 		"en": "a summary video",
 		"pt": "um vídeo resumo"
 	},
-	"{}_channel": {
-		"en": "{} channel",
-		"pt": "Canal do {}"
-	},
-	"and_this_episode": {
-		"en": "And this episode",
-		"pt": "E este episódio"
-	},
-	"type_the_comment_for_{}": {
-		"en": "Type the comment for {}",
-		"pt": "Digite o comentário para {}"
-	},
-	"has_media_list_(like_seasons_or_video_series)": {
-		"en": "Has media list (like seasons or video series)",
-		"pt": "Tem lista de mídia (como temporadas ou séries de vídeos)"
-	},
-	"add_media_items_to_media": {
-		"en": "Add media items to media",
-		"pt": "Adicionar itens de mídia á mídia"
+	"type_the_comment_for": {
+		"en": "Type the comment for",
+		"pt": "Digite o comentário para"
 	},
 	"select_one_watching_status_from_the_status_list": {
 		"en": "Select one Watching Status from the status list",
 		"pt": "Selecione um Status de Assistindo da lista de status"
-	},
-	"select_one_origin_type_from_the_list": {
-		"en": "Select one Origin type from the list",
-		"pt": "Selecione um Tipo de Origem da lista"
 	},
 	"select_one_media_type_to_watch": {
 		"en": "Select one media type to watch",
@@ -556,21 +167,9 @@
 		"pt": "série de vídeos",
 		"en": "video series"
 	},
-	"youtube_video": {
-		"pt": "vídeo do YouTube",
-		"en": "YouTube video"
-	},
-	"youtube_video_serie": {
-		"pt": "série de vídeos do YouTube",
-		"en": "YouTube video series"
-	},
-	"youtube_video_series": {
-		"pt": "séries de vídeos do YouTube",
-		"en": "YouTube video series"
-	},
-	"of_the_youtube_video_series": {
-		"pt": "da série de vídeos do YouTube",
-		"en": "of the YouTube video series"
+	"video_series": {
+		"pt": "séries de vídeos",
+		"en": "video series"
 	},
 	"the_media_file_does_not_exist": {
 		"pt": "O arquivo de mídia não existe",
@@ -588,25 +187,21 @@
 		"pt": "Selecione o arquivo da mídia",
 		"en": "Select the media file"
 	},
-	"please_select_a_file_that_is_either_mp4_or_mkv": {
-		"pt": "Selecione um arquivo que seja MP4 ou MKV",
-		"en": "Please select a file that is either MP4 or MKV"
+	"please_select_a_file_that_is_in_the_format": {
+		"pt": "Selecione um arquivo que esteja no formato",
+		"en": "Please select a file that is in the format"
 	},
-	"alright": {
-		"pt": "Tudo bem",
-		"en": "Alright"
+	"select_a_season": {
+		"pt": "Selecione uma temporada",
+		"en": "Select a season"
 	},
 	"select_a_youtube_video_series": {
 		"pt": "Selecione uma série de vídeos do YouTube",
 		"en": "Select a YouTube video series"
 	},
 	"paste_the_comment_link_of_youtube": {
-		"en": "Paste the Comment Link of YouTube",
-		"pt": "Cole o Link do Comentário do YouTube"
-	},
-	"paste_the_youtube_video_link": {
-		"en": "Paste the YouTube video link",
-		"pt": "Cole o link do vídeo do YouTube"
+		"en": "Paste the comment link of YouTube",
+		"pt": "Cole o link do comentário do YouTube"
 	},
 	"press_enter_when_you_finish_posting_the_comment": {
 		"en": "Press Enter when you finish posting the comment",
@@ -614,63 +209,47 @@
 	},
 	"write_a_comment": {
 		"en": "Write a comment",
-		"pt": "Fazer um comentário"
+		"pt": "Escrever um comentário"
 	},
 	"you_finished_writing_the_comment": {
 		"en": "You finished writing comment",
 		"pt": "Você terminou de escrever o comentário"
 	},
-	"press_enter_when_you_finish_posting_the_comment": {
-		"en": "Press Enter when you finish posting the comment",
-		"pt": "Pressione Enter quando você terminar de postar o comentário"
+	"press_enter_when_you_finish_watching": {
+		"pt": "Pressione Enter quando você terminar de assistir",
+		"en": "Press Enter when you finish watching"
 	},
-	"press_enter_when_you_finish_watching_{}": {
-		"pt": "Pressione Enter quando você terminar de assistir {}",
-		"en": "Press Enter when you finish watching {}"
+	"fill_titles_files": {
+		"en": "Fill titles files",
+		"pt": "Preencher arquivos de títulos"
 	},
-	"please_type_the_media_details": {
-		"en": "Please type the media details",
-		"pt": "Por favor digite os detalhes da mídia"
+	"add_to_videos_list": {
+		"en": "Add to videos list",
+		"pt": "Adicionar à lista de vídeos"
 	},
-	"you_finished_typing_the_media_details": {
-		"en": "You finished typing the media details",
-		"pt": "Você terminou de digitar os detalhes da mídia"
+	"filling_the_titles_files": {
+		"en": "Filling the titles files",
+		"pt": "Preenchendo os arquivos de títulos"
 	},
-	"please_type_the_movie_details": {
-		"en": "Please type the movie details",
-		"pt": "Por favor digite os detalhes do filme"
+	"filling_the_files_of_titles_and_youtube_ids": {
+		"en": "Filling the files of titles and YouTube IDs",
+		"pt": "Preenchendo os arquivos de títulos e IDs do YouTube"
 	},
-	"you_finished_typing_the_movie_details": {
-		"en": "You finished typing the movie details",
-		"pt": "Você terminou de digitar os detalhes do filme"
+	"finished_filling_the_files_of_titles": {
+		"en": "Finished filling the files of titles",
+		"pt": "Terminou de preencher os arquivos de títulos"
 	},
-	"please_type_the_media_item_details": {
-		"en": "Please type the media item details",
-		"pt": "Por favor digite os detalhes do item de mídia"
-	},
-	"type_the_video_series_playlist_link": {
-		"en": "Type the video series playlist link",
-		"pt": "Digite o link da playlist da série de vídeos"
-	},
-	"you_finished_typing_the_media_item_details": {
-		"en": "You finished typing the media item details",
-		"pt": "Você terminou de digitar os detalhes do item de mídia"
-	},
-	"add_more_media": {
-		"en": "Add more media",
-		"pt": "Adicionar mais mídias"
-	},
-	"please_paste_the_youtube_video_links_below_separated_by_lines": {
-		"en": "Please paste the YouTube video links below, separated by lines",
-		"pt": "Por favor cole os links dos vídeos do YouTube abaixo, separados em linhas"
-	},
-	"finished_filling_the_youtube_ids_file": {
-		"en": "Finished filling the YouTube IDs file",
-		"pt": "Terminou de preencher o arquivo de IDs do YouTube"
+	"finished_filling_the_files_of_titles_and_youtube_ids": {
+		"en": "Finished filling the files of titles and YouTube IDs",
+		"pt": "Terminou de preencher os arquivos de títulos e IDs do YouTube"
 	},
 	"starting_to_watch_the_list_of_media": {
 		"en": "Starting to watch the list of media",
 		"pt": "Começando a assistir a lista de mídia"
+	},
+	"please_translate_this_title_to_{}": {
+		"en": "Please, translate this title to {}",
+		"pt": "Por favor, traduza este título para {}"
 	},
 	"current_media_list": {
 		"en": "Current media list",
@@ -680,9 +259,9 @@
 		"en": "You finished watching your list of media",
 		"pt": "Você terminou de assistir sua lista de mídia"
 	},
-	"you_finished_watching_{}": {
-		"en": "You finished watching {}",
-		"pt": "Você terminou de assistir {}"
+	"you_finished_watching": {
+		"en": "You finished watching",
+		"pt": "Você terminou de assistir"
 	},
 	"type_the_number_of_episodes": {
 		"pt": "Digite o número de episódios",
@@ -692,46 +271,17 @@
 		"pt": "Digite o número de todos os episódios da mídia",
 		"en": "Type the number of all media episodes"
 	},
-	"type_or_paste_the_episode_title_in_{}": {
-		"pt": "Digite ou cole o título de episódio em {}",
-		"en": "Type or paste the episode title in {}"
+	"paste_the_episode_title_in_{}": {
+		"pt": "Cole o título de episódio em {}",
+		"en": "Paste the episode title in {}"
 	},
 	"episode_title": {
 		"en": "Episode title",
 		"pt": "Título de episódio"
 	},
-	"episode_titles": {
-		"en": "Episode titles",
-		"pt": "Títulos de episódio"
-	},
-	"video_titles": {
-		"en": "Video titles",
-		"pt": "Títulos de vídeo"
-	},
-	"episode_titles_file_in_{}": {
-		"pt": "Arquivo de títulos de episódio em {}",
-		"en": "Episode titles file in {}"
-	},
-	"finished_filling_episode_titles_files": {
-		"pt": "Terminou de preencher os arquivos de títulos de episódio",
-		"en": "Finished filling episode titles files"
-	},
-	"watch_the_dubbed_episode_in_your_language": {
-		"pt": "Assistir o episódio dublado no seu idioma",
-		"en": "Watch the dubbed episode in your language"
-	},
 	"type_the_number_of_times_that_you_watched": {
 		"pt": "Digite o número de vezes que você assistiu",
 		"en": "Type the number of times that you watched"
-	},
-	"type_the_number_of_times_that_you_re_watched": {
-		"pt": "Digite o número de vezes que você re-assistiu",
-		"en": "Type the number of times that you re-watched"
-	},
-	"re_watched, type: regex, en - pt": "\\(Re-Watched [0-9]{1,}x - Re-Assistido [0-9]{1,}x\\)",
-	"re_watched, type: regex": {
-		"pt": "(Re-Assistido [0-9]{1,}x)",
-		"en": "(Re-Watched [0-9]{1,}x)"
 	},
 	"re_watched, capitalize()": {
 		"pt": "Re-assistido",
@@ -740,195 +290,6 @@
 	"watched, title()": {
 		"pt": "Assistido",
 		"en": "Watched"
-	},
-	"season, title()": {
-		"pt": "Temporada",
-		"en": "Season"
-	},
-	"seasons, title()": {
-		"pt": "Temporadas",
-		"en": "Seasons"
-	},
-	"serie, title()": {
-		"pt": "Série",
-		"en": "Series"
-	},
-	"series, title()": {
-		"pt": "Séries",
-		"en": "Series"
-	},
-	
-	"comment_file, title()": {
-		"pt": "Arquivo De Comentário",
-		"en": "Comment File"
-	},
-	"comment_file_name, title()": {
-		"pt": "Nome De Arquivo De Comentário",
-		"en": "Comment File Name"
-	},
-	"media_type_comment_file, title()": {
-		"pt": "Arquivo De Comentário De Tipo De Mídia",
-		"en": "Media Type Comment File"
-	},
-	"media_type_comment_time_file, title()": {
-		"pt": "Arquivo De Tempo De Comentário De Tipo De Mídia",
-		"en": "Media Type Comment Time File"
-	},
-	"loading_already_written_comment, title()": {
-		"pt": "Carregando Comentário Já Escrito",
-		"en": "Loading Already Written Comment"
-	},
-	"when_commented, title()": {
-		"pt": "Quando Comentou",
-		"en": "When Commented"
-	},
-	"started_watching_in, title()": {
-		"pt": "Comecei A Assistir Em",
-		"en": "Started Watching In"
-	},
-	"starting_to_watch, title()": {
-		"pt": "Começando A Assistir",
-		"en": "Starting To Watch"
-	},
-	"at_this_time, title()": {
-		"pt": "Nesta Hora",
-		"en": "At This Time"
-	},
-	"{}_details, title()": {
-		"pt": "Detalhes De {}",
-		"en": "{} Details"
-	},
-	"media_item_details, title()": {
-		"pt": "Detalhes De Item De Mídia",
-		"en": "Media Item Details"
-	},
-	"and, title()": {
-		"pt": "E",
-		"en": "And"
-	},
-	"the, title(), masculine": {
-		"pt": "O",
-		"en": "The"
-	},
-	"the, title(), feminine": {
-		"pt": "A",
-		"en": "The"
-	},
-	"the, title()": {
-		"pt": "O",
-		"en": "The"
-	},
-	"this, title(), masculine": {
-		"pt": "este"
-	},
-	"this, title(), feminine": {
-		"pt": "esta"
-	},
-	"this, title()": {
-		"pt": "este",
-		"en": "This"
-	},
-	"these, title(), masculine": {
-		"pt": "esses"
-	},
-	"these, title(), feminine": {
-		"pt": "essas"
-	},
-	"these, title()": {
-		"pt": "esses",
-		"en": "These"
-	},
-	"item, title()": {
-		"pt": "Item",
-		"en": "Item"
-	},
-	"items, title()": {
-		"pt": "Itens",
-		"en": "Items"
-	},
-	"a, title(), masculine": {
-		"pt": "um"
-	},
-	"a, title(), feminine": {
-		"pt": "uma"
-	},
-	"a, title()": {
-		"pt": "um",
-		"en": "A"
-	},
-	"and_{}, title()": {
-		"pt": "E {}",
-		"en": "And {}"
-	},
-	"with_{}, title()": {
-		"pt": "Com {}",
-		"en": "With {}"
-	},
-	"with_{}_title, title()": {
-		"pt": "Com Título D{}",
-		"en": "With {} Title"
-	},
-	"added, title(), masculine": {
-		"pt": "adicionado"
-	},
-	"added, title(), feminine": {
-		"pt": "adicionada"
-	},
-	"added, title()": {
-		"pt": "adicionado",
-		"en": "Added"
-	},
-	"yes, title()": {
-		"pt": "Sim",
-		"en": "Yes"
-	},
-	"no, title()": {
-		"pt": "Não",
-		"en": "No"
-	},
-	"original_name, title()": {
-		"pt": "Nome Original",
-		"en": "Original Name"
-	},
-	"portuguese_name, title()": {
-		"pt": "Nome Português",
-		"en": "Portuguese Name"
-	},
-	"year, title()": {
-		"pt": "Ano",
-		"en": "Year"
-	},
-	"has_dub, title()": {
-		"pt": "Tem dublagem",
-		"en": "Has dub"
-	},
-	"dubbed, title()": {
-		"pt": "Dublado",
-		"en": "Dubbed"
-	},
-	"remote, title()": {
-		"pt": "Remota",
-		"en": "Remote"
-	},
-	"local, title()": {
-		"pt": "Local",
-		"en": "Local"
-	},
-	"hybrid, title()": {
-		"pt": "Híbrido",
-		"en": "Hybrid"
-	},
-	"remote_origin, title()": {
-		"pt": "Origem remota",
-		"en": "Remote origin"
-	},
-	"origin_type, title()": {
-		"pt": "Tipo de origem",
-		"en": "Origin type"
-	},
-	"status, title()": {
-		"pt": "Status",
-		"en": "Status"
 	},
 	"plan_to_watch, title()": {
 		"pt": "Planejo assistir",
@@ -942,197 +303,9 @@
 		"pt": "Re-assistindo",
 		"en": "Re-watching"
 	},
-	"on_hold, title()": {
-		"pt": "Em pausa",
-		"en": "On hold"
-	},
-	"origin_location, title()": {
-		"pt": "Local de origem",
-		"en": "Origin location"
-	},
-	"youtube_id, title()": {
-		"pt": "ID do YouTube",
-		"en": "YouTube ID"
-	},
-	"youtube_comment_id, title()": {
-		"pt": "ID do Comentário do YouTube",
-		"en": "YouTube Comment ID"
-	},
-	"opening_{}_to_watch, title()": {
-		"pt": "Abrindo {} Para Assistir",
-		"en": "Opening {} To Watch"
-	},
-	"channel, title()": {
-		"pt": "Canal",
-		"en": "Channel"
-	},
-	"channels, title()": {
-		"pt": "Canais",
-		"en": "Channels"
-	},
-	"episode, title()": {
-		"pt": "Episódio",
-		"en": "Episode"
-	},
-	"{}_channel, title()": {
-		"pt": "Canal Do {}",
-		"en": "{} Channel"
-	},
-	"and_this_episode, title()": {
-		"pt": "E Este Episódio",
-		"en": "And This Episode"
-	},
-	"type_the_comment_for_{}, title()": {
-		"pt": "Digite O Comentário Para {}",
-		"en": "Type The Comment For {}"
-	},
-	"has_media_list_(like_seasons_or_video_series), title()": {
-		"pt": "Tem Lista De Mídia (Como Temporadas Ou Séries De Vídeos)",
-		"en": "Has Media List (Like Seasons Or Video Series)"
-	},
-	"add_media_items_to_media, title()": {
-		"pt": "Adicionar Itens De Mídia Á Mídia",
-		"en": "Add Media Items To Media"
-	},
-	"select_one_watching_status_from_the_status_list, title()": {
-		"pt": "Selecione Um Status De Assistindo Da Lista De Status",
-		"en": "Select One Watching Status From The Status List"
-	},
-	"select_one_origin_type_from_the_list, title()": {
-		"pt": "Selecione Um Tipo De Origem Da Lista",
-		"en": "Select One Origin Type From The List"
-	},
-	"select_one_media_type_to_watch, title()": {
-		"pt": "Selecione Um Tipo De Mídia Para Assistir",
-		"en": "Select One Media Type To Watch"
-	},
-	"select_the_media_type_of_the_new_entry, title()": {
-		"pt": "Selecione O Tipo De Mídia Da Nova Entrada",
-		"en": "Select The Media Type Of The New Entry"
-	},
-	"select_{}_to_watch, title()": {
-		"pt": "Selecione {} Para Assistir",
-		"en": "Select {} To Watch"
-	},
-	"paste_the_comment_link_of_youtube, title()": {
-		"pt": "Cole O Link Do Comentário Do Youtube",
-		"en": "Paste The Comment Link Of Youtube"
-	},
-	"press_enter_when_you_finish_posting_the_comment, title()": {
-		"pt": "Pressione Enter Quando Você Terminar De Postar O Comentário",
-		"en": "Press Enter When You Finish Posting The Comment"
-	},
-	"write_a_comment, title()": {
-		"pt": "Fazer Um Comentário",
-		"en": "Write A Comment"
-	},
-	"you_finished_writing_the_comment, title()": {
-		"pt": "Você Terminou De Escrever O Comentário",
-		"en": "You Finished Writing Comment"
-	},
-	"please_type_the_media_details, title()": {
-		"pt": "Por Favor Digite Os Detalhes Da Mídia",
-		"en": "Please Type The Media Details"
-	},
-	"you_finished_typing_the_media_details, title()": {
-		"pt": "Você Terminou De Digitar Os Detalhes Da Mídia",
-		"en": "You Finished Typing The Media Details"
-	},
-	"please_type_the_movie_details, title()": {
-		"pt": "Por Favor Digite Os Detalhes Do Filme",
-		"en": "Please Type The Movie Details"
-	},
-	"you_finished_typing_the_movie_details, title()": {
-		"pt": "Você Terminou De Digitar Os Detalhes Do Filme",
-		"en": "You Finished Typing The Movie Details"
-	},
-	"please_type_the_media_item_details, title()": {
-		"pt": "Por Favor Digite Os Detalhes Do Item De Mídia",
-		"en": "Please Type The Media Item Details"
-	},
-	"type_the_video_series_playlist_link, title()": {
-		"pt": "Digite O Link Da Playlist Da Série De Vídeos",
-		"en": "Type The Video Series Playlist Link"
-	},
-	"you_finished_typing_the_media_item_details, title()": {
-		"pt": "Você Terminou De Digitar Os Detalhes Do Item De Mídia",
-		"en": "You Finished Typing The Media Item Details"
-	},
-	"add_more_media, title()": {
-		"pt": "Adicionar Mais Mídias",
-		"en": "Add More Media"
-	},
-	"starting_to_watch_the_list_of_media, title()": {
-		"pt": "Começando A Assistir A Lista De Mídia",
-		"en": "Starting To Watch The List Of Media"
-	},
-	"current_media_list, title()": {
-		"pt": "Lista De Mídia Atual",
-		"en": "Current Media List"
-	},
-	"you_finished_watching_your_list_of_media, title()": {
-		"pt": "Você Terminou De Assistir Sua Lista De Mídia",
-		"en": "You Finished Watching Your List Of Media"
-	},
-	"media_types_that_contain_episode_titles_files": {
-		"pt": "Tipos de mídias que contém arquivos de títulos de episódio",
-		"en": "Media types that contain episode titles files"
-	},
-	"select_a_media_type_to_list_their_media": {
-		"pt": "Selecione um tipo de mídia para listar suas mídias",
-		"en": "Select a media type to list their media"
-	},
-	"select_a_media_to_fill_its_episode_titles_file": {
-		"pt": "Selecione uma mídia para preencher seu arquivo de títulos de episódio",
-		"en": "Select a media to fill its episode titles file"
-	},
-	"opening_this_media_details_file": {
-		"pt": "Abrindo este arquivo de Detalhes de Mídia",
-		"en": "Opening this Media Details file"
-	},
-	"folder": {
-		"pt": "pasta",
-		"en": "folder"
-	},
-	"folders": {
-		"pt": "pastas",
-		"en": "folders"
-	},
-	"folders, title()": {
-		"pt": "Pastas",
-		"en": "Folders"
-	},
 	"i_just_finished_watching_{}": {
 		"pt": "Acabei de assistir {}",
 		"en": "I just finished watching {}"
-	},
-	"this_{}_of_{}": {
-		"pt": "este {} d{}",
-		"en": "this {} of {}"
-	},
-	"this_episode_{}": {
-		"pt": "este episódio {}",
-		"en": "this episode {}"
-	},
-	"this_{}_{}": {
-		"pt": "este {} {}",
-		"en": "this {} {}"
-	},
-	"of_the_{}": {
-		"pt": "da {}",
-		"en": "of the {}"
-	},
-	"of_the_first_{}": {
-		"pt": "da primeira {}",
-		"en": "of the first {}"
-	},
-	"of_the_final_{}": {
-		"pt": "da última {}",
-		"en": "of the final {}"
-	},
-	"first_{}_in_year": {
-		"en": "First {} in year",
-		"pt": "Primeiro {} no ano"
 	},
 	"i_posted_the_watched_text_and_{}_on_the_status_of_{}_and_tweet_on_{}": {
 		"pt": "Postei o texto de assistido e {} no status do {}, e tweet no {}",
@@ -1146,33 +319,17 @@
 		"pt": "Postar nas Redes Sociais",
 		"en": "Post on the Social Networks"
 	},
-	"watched_media_info": {
-		"pt": "Informações da mídia assistida",
-		"en": "Watched media info"
-	},
-	"{}_is_{}_{}_{}_that_you_watched_in_{}": {
-		"pt": "{} é {} {} {} que você assistiu em {}",
-		"en": "{} is {} {} {} that you watched in {}"
+	"{}_is_{}_that_you_watched_{}": {
+		"pt": "{} é {} que você assistiu {}",
+		"en": "{} is {} that you watched {}"
 	},
 	"when_i_finished_watching": {
 		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
 	},
-	"next_episode_to_watch": {
-		"pt": "Próximo episódio para assistir",
-		"en": "Next episode to watch"
-	},
-	"congratulations": {
-		"pt": "Parabéns",
-		"en": "Congratulations"
-	},
 	"you_finished_watching": {
 		"pt": "Você terminou de assistir",
 		"en": "You finished watching"
-	},
-	"next_{}_to_watch": {
-		"pt": "Próximo {} para assistir",
-		"en": "Next {} to watch"
 	},
 	"next_{}_to_watch, masculine": {
 		"pt": "Próximo {} para assistir",
@@ -1182,41 +339,9 @@
 		"pt": "Próxima {} para assistir",
 		"en": "Next {} to watch"
 	},
-	"finished_{}_information": {
-		"pt": "Finished {} information",
-		"en": "Informações d{} terminad{}"
-	},
-	"finished_{}_information, masculine": {
-		"pt": "Informações do {} terminado",
-		"en": "Finished {} information"
-	},
-	"finished_{}_information, feminine": {
-		"pt": "Informações da {} terminada",
-		"en": "Finished {} information"
-	},
 	"new_watching_status": {
 		"pt": "Novo status de assistindo",
 		"en": "New watching status"
-	},
-	"time, title()": {
-		"en": "Time",
-		"pt": "Tempo"
-	},
-	"time_and_day_that_you_{}_watching": {
-		"pt": "Hora e dia que você {} assistir",
-		"en": "Time and day that you {} watching"
-	},
-	"time_and_day_that_i_{}_watching": {
-		"pt": "Hora e dia que {} assistir",
-		"en": "Time and day that {} watching"
-	},
-	"started_to": {
-		"pt": "começou a",
-		"en": "started to"
-	},
-	"i_started_to": {
-		"pt": "eu comecei a",
-		"en": "I started to"
 	},
 	"when_i_started_to_watch": {
 		"pt": "Quando eu comecei a assistir",
@@ -1225,38 +350,6 @@
 	"when_i_finished_watching": {
 		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
-	},
-	"when_i_finished": {
-		"pt": "Quando eu terminei",
-		"en": "When I finished"
-	},
-	"time_that_i_spent_watching": {
-		"pt": "Tempo que eu passei assistindo",
-		"en": "Time that I spent watching"
-	},
-	"when_you_started_to_watch": {
-		"pt": "Quando você começou a assistir",
-		"en": "When you started to watch"
-	},
-	"when_you_finished_watching": {
-		"pt": "Quando você terminou de assistir",
-		"en": "When you finished watching"
-	},
-	"time_that_you_spent_watching": {
-		"pt": "Tempo que você passou assistindo",
-		"en": "Time that you spent watching"
-	},
-	"filling_the_episode_titles_files": {
-		"en": "Filling the episode titles files",
-		"pt": "Preenchendo os arquivos de títulos de episódios"
-	},
-	"title_separator": {
-		"en": "Title separator",
-		"pt": "Separador de título"
-	},
-	"episode_separator": {
-		"en": "Episode separator",
-		"pt": "Separador de episódio"
 	},
 	"episode_number_name": {
 		"en": "Episode number name",
@@ -1282,25 +375,13 @@
 		"en": "List of watched media",
 		"pt": "Lista de mídia assistida"
 	},
-	"number, title()": {
-		"en": "Number",
-		"pt": "Número"
-	},
 	"add_one_to_the_re_watched_times_number": {
-		"en": "Add one to the Re-Watched times number",
+		"en": "Add one to the Re-watched times number",
 		"pt": "Adicionar um ao número de vezes Re-Assistidas"
 	},
 	"single_unit": {
 		"en": "Single unit",
 		"pt": "Única unidade"
-	},
-	"episodic, title()": {
-		"en": "Episodic",
-		"pt": "Episódica"
-	},
-	"add_to_comments_dictionary": {
-		"en": "Add to comments dictionary",
-		"pt": "Adicionar ao dicionário de comentários"
 	},
 	"replace_title": {
 		"en": "Replace title",
@@ -1310,16 +391,20 @@
 		"en": "Episodes duration",
 		"pt": "Duração dos episódios"
 	},
-	"iterate_through_media_list": {
-		"en": "Iterate through media list",
-		"pt": "Iterar através da lista de mídia"
+	"type_the_media_information_(some_items_can_be_left_empty_by_pressing_enter)": {
+		"en": "Type the media information (some items can be left empty by pressing Enter)",
+		"pt": "Digite as informações da mídia (alguns itens podem ser deixados em branco ao pressionar Enter)"
 	},
-	"convert_history": {
-		"en": "Convert history",
-		"pt": "Converter histórico"
+	"type_the_media_item_information_(some_items_can_be_left_empty_by_pressing_enter)": {
+		"en": "Type the media item information (some items can be left empty by pressing Enter)",
+		"pt": "Digite as informações do item de mídia (alguns itens podem ser deixados em branco ao pressionar Enter)"
 	},
-	"the_media_is_not_inside_the_media_info_database": {
-		"en": "The media is not inside the Media Info Database",
-		"pt": "A mídia não está dentro do Banco de Dados de Informações de Mídia"
+	"has_media_items": {
+		"en": "Has media items",
+		"pt": "Tem itens de mídia"
+	},
+	"dubbed_to_the_media_title": {
+		"en": "Dubbed to the media title",
+		"pt": "Dublado para o título da mídia"
 	}
 }

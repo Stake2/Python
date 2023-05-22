@@ -11,13 +11,9 @@
 		"en": "Watch list of media",
 		"pt": "Assistir lista de mídia"
 	},
-	"Start_Watching_Media": {
-		"en": "Start watching a new media",
-		"pt": "Começar a assistir uma nova mídia"
-	},
-	"Media_Info": {
-		"en": "Manage Media Info Database",
-		"pt": "Gerenciar Banco de Dados de Informações de Mídia"
+	"Manage": {
+		"en": "Manage the [Media Information] Database and [Watched Media] History",
+		"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
 	},
 	"View": {
 		"en": "View database",

@@ -126,11 +126,13 @@ class Stories(object):
 
 		# Dictionaries
 		self.default_information_items = {
-			self.language_texts["creation_date"]: self.Date.Now()["%d/%m/%Y"],
-			self.language_texts["author, title()"]: self.author,
+			self.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
+			self.language_texts["author, title()"]: self.author
 		}
 
 	def Define_Stories_Dictionary(self):
+		import collections
+
 		to_remove = [
 			"Database",
 			"Diary",
@@ -222,8 +224,8 @@ class Stories(object):
 				self.Folder.Create(self.stories[story]["folders"]["Websites Story Covers"])
 
 			# Add Sony Vegas Files covers folder
-			if self.Folder.Exist(self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
-				self.stories[story]["folders"]["Sony Vegas Covers"] = self.root_folders["sony_vegas_files"]["story_covers"]["root"] + story + "/"
+			if self.Folder.Exist(self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/") == True:
+				self.stories[story]["folders"]["Sony Vegas Covers"] = self.folders["root"]["sony_vegas_files"]["story_covers"]["root"] + story + "/"
 				self.Folder.Create(self.stories[story]["folders"]["Sony Vegas Covers"])
 
 			# Add Obsidian's Vaults folder
@@ -359,7 +361,9 @@ class Stories(object):
 			self.Folder.Create(self.stories[story]["folders"]["Information"]["Synopsis"]["root"])
 
 			# Create synopsis files
-			for full_language in list(self.languages["full"].values()):
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
+
 				self.stories[story]["folders"]["Information"]["Synopsis"][full_language] = self.stories[story]["folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"	
 				self.File.Create(self.stories[story]["folders"]["Information"]["Synopsis"][full_language])
 
@@ -429,7 +433,7 @@ class Stories(object):
 
 			self.stories[story]["Information"]["Readers number"] = len(self.stories[story]["Information"]["Readers"])
 
-			self.stories[story]["Information"] = dict(sorted(self.stories[story]["Information"].items(), key=str.lower))
+			self.stories[story]["Information"] = dict(collections.OrderedDict(sorted(self.stories[story]["Information"].items())))
 
 		# Write stories dictionary to Stories.json
 		self.JSON.Edit(self.stories["folders"]["Database"]["Stories"], self.stories)
@@ -567,8 +571,8 @@ class Stories(object):
 		if "Type" not in task_dictionary:
 			task_dictionary["Type"] = "Stories"
 
-		if "Time" not in task_dictionary:
-			task_dictionary["Time"] = self.Date.Now()
+		if "Date" not in task_dictionary["Entry"]:
+			task_dictionary["Entry"]["Date"] = self.Date.Now()
 
 		# Register task with Tasks module, Register class
 		if register_task == True:
@@ -584,4 +588,4 @@ class Stories(object):
 
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-			Write_On_Diary_Slim_Module(task_dictionary["descriptions"][self.user_language], self.task_dictionary["Time"]["date_time_format"][self.user_language], show_text = False)
+			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False)

@@ -28,8 +28,8 @@ class Block(Block_Websites):
 		self.Update_Python_File()
 
 	def Check_Time(self):
-		self.current_hour = int(self.date["hour"])
-		self.week_day = int(self.date["weekday"])
+		self.current_hour = int(self.date["Units"]["Hour"])
+		self.week_day = int(self.date["Units"]["Week day"])
 
 		self.in_working_hours = False
 
@@ -98,7 +98,7 @@ class Block(Block_Websites):
 			self.key = "unlocked"
 			self.not_text = " " + self.language_texts["not"]
 
-		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.time, self.date["%H:%M %d/%m/%Y"])
+		self.log_text = self.texts["log"].format(self.language_texts[self.key + "_websites"], self.time, self.date["Formats"]["HH:MM DD/MM/YYYY"])
 
 		if self.website_to_unlock != None:
 			self.log_text += "\n\n" + self.text

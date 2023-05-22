@@ -1,4 +1,28 @@
 {
+	"data, title()": {
+		"en": "Data",
+		"pt": "Dado"
+	},
+	"datas, title()": {
+		"en": "Data",
+		"pt": "Dados"
+	},
+	"data_types": {
+		"en": "Data types",
+		"pt": "Tipos de dados"
+	},
+	"select_one_data_type_to_experience": {
+		"en": "Select one data type to experience",
+		"pt": "Selecione um tipo de dado para experimentar"
+	},
+	"select_one_data_to_experience": {
+		"en": "Select one data to experience",
+		"pt": "Selecione um dado para experimentar"
+	},
+	"press_enter_when_you_finish_experiencing_the_data": {
+		"en": "Press Enter when you finish experiencing the data",
+		"pt": "Pressione Enter quando você terminar de experimentar os dados"
+	},
 	"added_entries": {
 		"en": "Added entries",
 		"pt": "Entradas adicionadas"
@@ -6,5 +30,61 @@
 	"type_the_entry_title_in": {
 		"en": "Type the entry title in",
 		"pt": "Digite o título da entrada em"
+	},
+	"statuses, type: list": {
+		"en": [
+			"Plan to experience",
+			"Experiencing",
+			"Re-experiencing",
+			"Registered",
+			"On hold"
+		],
+		"pt": [
+			"Planejo experimentar",
+			"Experimentando",
+			"Re-experimentando",
+			"Registrado",
+			"Em pausa"
+		]
+	},
+	"plan_to_experience, title()": {
+		"en": "Plan to experience",
+		"pt": "Planejo experimentar"
+	},
+	"experiencing, title()": {
+		"en": "Experiencing",
+		"pt": "Experimentando"
+	},
+	"re_experiencing, title()": {
+		"en": "Re-experiencing",
+		"pt": "Re-experimentando"
+	},
+	"registered, title()": {
+		"en": "Registered",
+		"pt": "Registrado"
+	},
+	"re_experienced": {
+		"en": "Re-experienced",
+		"pt": "Re-experimentou"
+	},
+	"when_i_started_to_experience": {
+		"en": "When I started to experience",
+		"pt": "Quando eu comecei a experimentar"
+	},
+	"when_i_finished_experiencing": {
+		"en": "When I finished experiencing",
+		"pt": "Quando eu terminei de experimentar"
+	},
+	"did_you_finished_the_whole_data": {
+		"en": "Did you finished the whole data",
+		"pt": "Você terminou o dado inteiro"
+	},
+	"completed_the_data": {
+		"en": "Completed the data",
+		"pt": "Completou o dado"
+	},
+	"type_the_data_information_(some_items_can_be_left_empty_by_pressing_enter)": {
+		"en": "Type the data information (some items can be left empty by pressing Enter)",
+		"pt": "Digite as informações do dado (alguns itens podem ser deixados em branco ao pressionar Enter)"
 	}
 }

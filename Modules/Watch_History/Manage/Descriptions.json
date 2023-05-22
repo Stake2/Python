@@ -1,0 +1,30 @@
+{
+	"show_text": {
+		"en": "Manage the [Media Information] Database and [Watched Media] History",
+		"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+	},
+	"Add_A_New_Media": {
+		"en": "Add a new media to the Database",
+		"pt": "Adicionar uma nova mídia ao Banco de Dados"
+	},
+	"Iterate_Through_The_Media_List": {
+		"en": "Iterate through the media list",
+		"pt": "Iterar através da lista de mídia"
+	},
+	"Add_To_Comments_Dictionary": {
+		"en": "Add to comments dictionary",
+		"pt": "Adicionar ao dicionário de comentários"
+	},
+	"Fill_Media_Files": {
+		"en": "Fill media files",
+		"pt": "Preencher arquivos de mídia"
+	},
+	"Convert_History": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"Remove list": [
+		"Add_To_Comments_Dictionary",
+		"Convert_History"
+	]
+}

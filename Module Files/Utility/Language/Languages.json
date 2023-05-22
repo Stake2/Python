@@ -30,16 +30,17 @@
 			"ja": "日本語"
 		}
 	},
-	"ISO_639-1": {
+	"Language with country": {
 		"pt": [
 			"pt_BR",
 			"pt_PT"
 		],
-		"en": "en_US"
+		"en": "en_US",
+		"jp": "jp_JP"
 	},
 	"types": [
 		"language",
-		"language_with_country",
+		"Language with country",
 		"full_language"
 	]
 }

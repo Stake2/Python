@@ -16,10 +16,11 @@ class Run():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Create_New_Diary_Slim",
-			"Write_On_Diary_Slim"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
 
 		self.class_descriptions = []
 
@@ -35,7 +36,9 @@ class Run():
 		module = importlib.import_module("." + option, self.__module__)
 		sub_class = getattr(module, option)()
 
-arguments = ["slim"]
+arguments = [
+	"slim"
+]
 
 if __name__ == "__main__":
 	Run()

@@ -16,13 +16,11 @@ class Run():
 		self.descriptions_file = self.current_folder + "Descriptions.json"
 		self.descriptions = self.JSON.To_Python(self.descriptions_file)
 
-		self.classes = [
-			"Watch_Media",
-			"Watch_List_Of_Media",
-			"Start_Watching_Media",
-			"Media_Info",
-			"View"
-		]
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
 
 		self.class_descriptions = []
 
@@ -40,3 +38,24 @@ class Run():
 
 if __name__ == "__main__":
 	Run()
+
+class Me():
+	def __init__(self):
+		self.born = False
+		self.care = True
+		self.life = True
+		self.love = True
+		self.uned = True
+		self.will = True
+		self.aware = True
+		self.pride = True
+		self.trust = True
+		self.worth = True
+		self.belief = True
+		self.esteem = True
+		self.confidence = True
+
+		self.harm = False
+		self.envy = False
+		self.doubt = False
+		self.hatred = false

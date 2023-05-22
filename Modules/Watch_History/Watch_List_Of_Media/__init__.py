@@ -100,7 +100,7 @@ class Watch_List_Of_Media(Watch_History):
 			option_infos = []
 
 			i = 0
-			for plural_media_type in self.media_types["plural"]["en"]:
+			for plural_media_type in self.media_types["Plural"]["en"]:
 				option_infos.append(self.Select_Media_Type(options = {"number": i}))
 
 				i += 1
@@ -115,7 +115,7 @@ class Watch_List_Of_Media(Watch_History):
 				media_list.append(self.finish_selection_text)
 
 			option_info = {
-				"media_type": option_info,
+				"Media type": option_info,
 				"Media": {
 					"select": True,
 					"list": {}
@@ -123,7 +123,7 @@ class Watch_List_Of_Media(Watch_History):
 			}
 
 			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
-				option_info["media_type"]["media_list"] = media_list
+				option_info["Media type"]["Media list"] = media_list
 
 				option_info.update(self.Select_Media(option_info))
 
@@ -131,12 +131,12 @@ class Watch_List_Of_Media(Watch_History):
 				if self.media_title in media_list:
 					option_info.update(self.Select_Media(option_info))
 
-					option_info["Media"]["title"] = self.media_title
+					option_info["Media"]["Title"] = self.media_title
 
 				if self.media_title not in media_list:
-					option_info["Media"]["title"] = ""
+					option_info["Media"]["Title"] = ""
 
-			self.selected_option = option_info["Media"]["title"]
+			self.selected_option = option_info["Media"]["Title"]
 
 			if self.selected_option != self.finish_selection_text and self.selected_option != "":
 				self.Watch_Media = Watch_Media(option_info, run_as_module = True, open_media = False)
@@ -146,26 +146,26 @@ class Watch_List_Of_Media(Watch_History):
 				self.media_dictionary = self.Watch_Media.media_dictionary
 
 				print()
-				print("[" + option_info["media_type"]["singular"][self.user_language] + ":")
+				print("[" + option_info["Media type"]["Singular"][self.user_language] + ":")
 
 				self.Show_Media_Title(option_info)
 
-				if self.language_texts["episode, title()"] in self.media_dictionary["Media"]["item"]["details"]:
+				if self.JSON.Language.language_texts["episode, title()"] in self.media_dictionary["Media"]["Item"]["Details"]:
 					print()
-					print(self.language_texts["episode, title()"] + ":")
-					print(self.media_dictionary["Media"]["item"]["details"][self.language_texts["episode, title()"]] + "]")
+					print(self.JSON.Language.language_texts["episode, title()"] + ":")
+					print(self.media_dictionary["Media"]["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] + "]")
 					print()
 
-				key = option_info["Media"]["title"]
+				key = option_info["Media"]["Title"]
 
-				if option_info["Media"]["title"] not in self.media_list_dict:
+				if option_info["Media"]["Title"] not in self.media_list_dict:
 					self.i = 2
 
-				if option_info["Media"]["title"] in self.media_list_dict:
-					if option_info["Media"]["title"] + " (2x)" in list(self.media_list_dict.keys()):
+				if option_info["Media"]["Title"] in self.media_list_dict:
+					if option_info["Media"]["Title"] + " (2x)" in list(self.media_list_dict.keys()):
 						self.i += 1
 
-					key = option_info["Media"]["title"] + " (" + str(self.i) + "x)"
+					key = option_info["Media"]["Title"] + " (" + str(self.i) + "x)"
 
 				self.media_list_dict[key] = option_info
 
@@ -177,16 +177,16 @@ class Watch_List_Of_Media(Watch_History):
 
 	def Show_Media_List(self, media_title = None):
 		number = 1
-		for item in self.media_list_dict:
+		for media_list_item in self.media_list_dict:
 			text = str(number)
 
-			if item == media_title:
+			if media_list_item == media_title:
 				text += " (" + self.language_texts["watching, title()"] + ")"
 
-			if media_title != None and self.i > number and item != media_title:
+			if media_title != None and self.i > number and media_list_item != media_title:
 				text += " (" + self.language_texts["watched, title()"] + ")"
 
-			text += ": " + item
+			text += ": " + media_list_item
 
 			print(text)
 

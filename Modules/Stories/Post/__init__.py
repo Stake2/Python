@@ -18,7 +18,7 @@ class Post(Stories):
 			"Create_Cover",
 			"Update_Websites",
 			"Post_On_Wattpad",
-			"Post_On_Social_Networks",
+			"Post_On_Social_Networks"
 		]
 
 		# Define texts of post steps
@@ -26,7 +26,7 @@ class Post(Stories):
 			self.language_texts["cover_creation"],
 			self.language_texts["websites_update"],
 			self.language_texts["wattpad_chapter_posting"],
-			self.language_texts["social_network_posting"],
+			self.language_texts["social_network_posting"]
 		]
 
 		self.post_steps_texts = {}
@@ -138,9 +138,9 @@ class Post(Stories):
 		self.cover_types = {
 			"list": [
 				"portrait, title()",
-				"landscape, title()",
+				"landscape, title()"
 			],
-			"extension": "jpg",
+			"extension": "jpg"
 		}
 
 		list_ = []
@@ -154,7 +154,7 @@ class Post(Stories):
 				"name": english_text,
 				"title": self.language_texts[item],
 				"extension": self.cover_types["extension"],
-				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg",
+				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg"
 			}
 
 			list_.append(english_text)
@@ -279,8 +279,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.root_folders["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.root_folders["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
@@ -439,15 +439,17 @@ class Post(Stories):
 		self.File.Edit(self.story["folders"]["Information"]["Post template"], self.mixed_cards, "w")
 
 	def Register_Task(self):
-		# Create task dictionary
+		# Create the task dictionary
 		self.task_dictionary = {
-			"Titles": {}
+			"Task": {
+				"Titles": {}
+			}
 		}
 
 		# Add task titles
 		for language in self.languages["small"]:
-			self.task_dictionary["Titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
-			self.task_dictionary["Titles"][language] = self.task_dictionary["titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
+			self.task_dictionary["Task"]["Titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
+			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
 
-		# Register task with root method
+		# Register the task with the root method
 		Stories.Register_Task(self, self.task_dictionary, register_task = True)

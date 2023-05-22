@@ -2,7 +2,7 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
-from Watch_History.Media_Info.Fill_Episode_Titles import Fill_Episode_Titles as Fill_Episode_Titles
+from Watch_History.Media_Info.Fill_Media_Files import Fill_Media_Files as Fill_Media_Files
 
 class Add_New_Media(Watch_History):
 	def __init__(self, run_as_module = False):
@@ -20,14 +20,18 @@ class Add_New_Media(Watch_History):
 			self.Define_Media_Variables()
 			self.Write_To_Files()
 			self.Show_Information()
-			Fill_Episode_Titles(self.option_info)
+			Fill_Media_Files(self.option_info)
 
 	def Define_Media_Type_Variables(self):
-		dictionary = {}
-
-		dictionary["select_media"] = False
-		dictionary["media_type"] = {
-			"select": self.language_texts["select_the_media_type_of_the_new_entry"],
+		dictionary = {
+			"Media type": {
+				"Texts": {
+					"Select": self.language_texts["select_the_media_type_of_the_new_entry"]
+				}
+			}
+			"Media": {
+				"Select": False
+			}
 		}
 
 		self.option_info = self.Select_Media_Type_And_Media(dictionary, status_text = None)
@@ -42,14 +46,14 @@ class Add_New_Media(Watch_History):
 		self.media_names_file = self.media_info_name_files[self.plural_media_types["en"]]
 		self.media_type_number_file = self.media_info_number_files[self.plural_media_types["en"]]
 
-		self.media_dictionary["Media"]["States"]["series_media"] = True
+		self.media_dictionary["Media"]["States"]["Series media"] = True
 		self.option_info["is_video_series_media"] = False
 
 		# Series media, video series media, and re-watching variables definition
-		if self.plural_media_types["en"] == self.texts["movies"]["en"]:
-			self.media_dictionary["Media"]["States"]["series_media"] = False
+		if self.plural_media_types["en"] == self.texts["movies, title()"]["en"]:
+			self.media_dictionary["Media"]["States"]["Series media"] = False
 
-		if self.plural_media_types["en"] == self.texts["videos"]["en"]:
+		if self.plural_media_types["en"] == self.texts["videos, title()"]["en"]:
 			self.option_info["is_video_series_media"] = True
 
 		self.media_info_media_type_folder = self.option_info["media_info_media_type_folder"]
@@ -65,13 +69,13 @@ class Add_New_Media(Watch_History):
 
 		self.add_media_items = False
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == True:
+		if self.media_dictionary["Media"]["States"]["Series media"] == True:
 			self.add_media_items = self.Input.Yes_Or_No(self.language_texts["add_media_items_to_media"])
 
 		if self.add_media_items == False:
 			self.Type_Media_Details()
 
-			if self.media_dictionary["Media"]["States"]["series_media"] == False:
+			if self.media_dictionary["Media"]["States"]["Series media"] == False:
 				self.Type_Movie_Details()
 
 		self.media_list_text = self.media_types["subfolders"][self.plural_media_types["en"]]["media_list"]
@@ -84,14 +88,14 @@ class Add_New_Media(Watch_History):
 			self.option_info["media_folder"] = self.option_info["media_folder"]
 			self.Folder.Create(self.option_info["media_folder"])
 
-			if self.media_dictionary["Media"]["States"]["series_media"] == True:
+			if self.media_dictionary["Media"]["States"]["Series media"] == True:
 				self.media_dictionary["Media"]["item"]["folders"]["root"] = self.option_info["media_folder"] + self.media_list_text + "/"
 				self.Folder.Create(self.media_dictionary["Media"]["item"]["folders"]["root"]) 
 
 				self.media_list_file = self.media_dictionary["Media"]["item"]["folders"]["root"] + self.media_list_text + ".txt"
 				self.File.Create(self.media_list_file)
 
-		self.watching_status = self.option_info["media_details"][self.language_texts["status, title()"]]
+		self.watching_status = self.option_info["media_details"][self.JSON.Language.language_texts["status, title()"]]
 		self.media_dictionary["Media"]["details"][self.language_texts["origin_type"]] = self.option_info["media_details"][self.language_texts["origin_type"]]
 
 		self.watching_status_file = self.watching_status_files[self.plural_media_types["en"]][self.watching_status]
@@ -99,7 +103,7 @@ class Add_New_Media(Watch_History):
 		if self.option_info["media_details"][self.JSON.Language.language_texts["original_name"]] in self.media_type_media_names:
 			self.is_new_media = False
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == True:
+		if self.media_dictionary["Media"]["States"]["Series media"] == True:
 			if self.option_info["media_details"][self.language_texts["origin_type"]] in [self.language_texts["remote, title()"], self.texts["hybrid, title()"]["en"]]:
 				self.media_item_details_parameters["Remote origin"] = {
 					"mode": "choice_dict",
@@ -120,7 +124,7 @@ class Add_New_Media(Watch_History):
 				for key in self.option_info["media_details"].copy():
 					dict_[key] = self.option_info["media_details"][key]
 
-					if key == self.language_texts["status, title()"]:
+					if key == self.JSON.Language.language_texts["status, title()"]:
 						dict_.update({self.language_texts["episode, title()"]: "None"})
 
 				self.option_info["media_details"] = dict_
@@ -168,7 +172,7 @@ class Add_New_Media(Watch_History):
 			if self.parameter_name not in [self.JSON.Language.language_texts["language_name"][self.user_language], self.language_texts["has_dub"]]:
 				self.option_info["media_details"][self.parameter_name] = self.input_parameter
 
-			if self.parameter_name == self.JSON.Language.language_texts["language_name"][self.user_language] and self.plural_media_types["en"] == self.texts["animes"]["en"]:
+			if self.parameter_name == self.JSON.Language.language_texts["language_name"][self.user_language] and self.plural_media_types["en"] == self.texts["animes, title()"]["en"]:
 				self.select_text = self.language_texts["romanized_name"]
 
 				self.input_parameter = self.Input.Type(self.select_text, next_line = True)
@@ -305,7 +309,7 @@ class Add_New_Media(Watch_History):
 	def Define_Media_Variables(self):
 		name = self.option_info["media_details"][self.JSON.Language.language_texts["original_name"]]
 
-		if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+		if self.plural_media_types["en"] == self.texts["animes, title()"]["en"]:
 			name = self.option_info["media_details"][self.language_texts["romanized_name"]]
 
 		self.option_info["media_folder"] = self.media_info_media_type_folder + self.Sanitize(name, restricted_characters = True) + "/"
@@ -314,14 +318,14 @@ class Add_New_Media(Watch_History):
 		self.option_info["media_details_file"] = self.option_info["media_folder"] + "Media details.txt"
 		self.File.Create(self.option_info["media_details_file"])
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == False:
+		if self.media_dictionary["Media"]["States"]["Series media"] == False:
 			self.movie_details_file = self.option_info["media_folder"] + "Movie details.txt"
 			self.File.Create(self.movie_details_file)	
 
 		if self.is_new_media == False:
 			self.option_info["media_details"] = self.File.Dictionary(self.option_info["media_details_file"])
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == True:
+		if self.media_dictionary["Media"]["States"]["Series media"] == True:
 			if self.has_media_list == True:
 				self.media_dictionary["Media"]["item"]["folders"]["root"] = self.option_info["media_folder"] + self.media_list_text + "/"
 				self.Folder.Create(self.media_dictionary["Media"]["item"]["folders"]["root"])
@@ -365,7 +369,7 @@ class Add_New_Media(Watch_History):
 			if self.has_media_list == False:
 				self.media_list_names = []
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == False:
+		if self.media_dictionary["Media"]["States"]["Series media"] == False:
 			self.files_to_create = [
 				self.texts["comment, title(), en - pt"],
 			]
@@ -388,10 +392,10 @@ class Add_New_Media(Watch_History):
 	def Write_To_Files(self):
 		self.File.Edit(self.option_info["media_details_file"], self.Text.From_Dictionary(self.option_info["media_details"]), "w")
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == False:
+		if self.media_dictionary["Media"]["States"]["Series media"] == False:
 			self.File.Edit(self.movie_details_file, self.Text.From_Dictionary(self.movie_details, next_line_value = True), "w")
 
-		if self.media_dictionary["Media"]["States"]["series_media"] == True and self.has_media_list == True:
+		if self.media_dictionary["Media"]["States"]["Series media"] == True and self.has_media_list == True:
 			self.File.Edit(self.media_list_file, self.Text.From_List(self.media_list_names), "w")
 
 			self.File.Edit(self.current_media_item_file, self.media_list_names[0], "w")
@@ -409,13 +413,13 @@ class Add_New_Media(Watch_History):
 
 		name = self.option_info["media_details"][self.JSON.Language.language_texts["original_name"]]
 
-		if self.plural_media_types["en"] == self.texts["animes"]["en"]:
+		if self.plural_media_types["en"] == self.texts["animes, title()"]["en"]:
 			name = self.option_info["media_details"][self.language_texts["romanized_name"]]
 
 		if name not in self.watching_status_text:
 			self.watching_status_text.append(name)
 
-		self.watching_status_text = self.Text.From_List(sorted(self.watching_status_text, key=str.lower))
+		self.watching_status_text = self.Text.From_List(sorted(self.watching_status_text, key = str.lower))
 
 		self.File.Edit(self.watching_status_file, self.watching_status_text, "w")
 
@@ -423,7 +427,7 @@ class Add_New_Media(Watch_History):
 		if name not in self.media_type_media_names:
 			self.media_type_media_names.append(name)
 
-			self.media_type_media_names = self.Text.From_List(sorted(self.media_type_media_names, key=str.lower))
+			self.media_type_media_names = self.Text.From_List(sorted(self.media_type_media_names, key = str.lower))
 
 			# Edit media type names file
 			self.File.Edit(self.media_names_file, self.media_type_media_names, "w")
@@ -458,14 +462,14 @@ class Add_New_Media(Watch_History):
 		if self.is_new_media == False:
 			this = self.Text.By_Number(self.old_media_list_names, self.language_texts["this, masculine"], self.language_texts["this, masculine"])
 			these = self.Text.By_Number(self.old_media_list_names, self.language_texts["these, masculine"], self.language_texts["these, masculine"])
-			item = self.Text.By_Number(self.old_media_list_names, self.language_texts["item"], self.language_texts["item"])
+			list_item = self.Text.By_Number(self.old_media_list_names, self.language_texts["list_item"], self.language_texts["list_item"])
 			serie = self.Text.By_Number(self.old_media_list_names, self.language_texts["serie"], self.language_texts["series"])
 			season = self.Text.By_Number(self.old_media_list_names, self.language_texts["season"], self.language_texts["seasons"])
 			s = self.Text.By_Number(self.old_media_list_names, "", "s")
 
 			texts = {
-				"en": "{} media {} to this".format(this, item),
-				"pt": "{} {} de mídia a ".format(this, item) + this,
+				"en": "{} media {} to this".format(this, list_item),
+				"pt": "{} {} de mídia a ".format(this, list_item) + this,
 			}
 
 			media_item_text = self.JSON.Language.Item(texts)
@@ -524,10 +528,10 @@ class Add_New_Media(Watch_History):
 			print(self.option_info["media_details"][self.language_texts["origin_type"]])
 
 			print()
-			print(self.language_texts["media_type"] + ":")
+			print(self.language_texts["Media type"] + ":")
 			print(self.singular_media_types["language"].capitalize())
 
-			if self.plural_media_types["en"] != self.texts["animes"]["en"]:
+			if self.plural_media_types["en"] != self.texts["animes, title()"]["en"]:
 				print()
 				print(self.language_texts["mixed_media_type"] + ":")
 				print(self.mixed_plural_media_type)
@@ -542,11 +546,11 @@ class Add_New_Media(Watch_History):
 			print()
 
 		if self.has_media_list == True:
-			item = self.Text.By_Number(self.old_media_list_names, self.language_texts["item"], self.language_texts["item"])
+			list_item = self.Text.By_Number(self.old_media_list_names, self.language_texts["list_item"], self.language_texts["list_item"])
 
 			media_item_texts = {
-				"en": "Media " + item,
-				"pt": item.capitalize() + " de mídia",
+				"en": "Media " + list_item,
+				"pt": list_item.capitalize() + " de mídia",
 			}
 
 			media_item_texts = self.JSON.Language.Item(media_item_texts)
@@ -557,10 +561,10 @@ class Add_New_Media(Watch_History):
 			print("-")
 			print()
 
-			for item in self.old_media_list_names:
-				self.media_dictionary["Media"]["item"]["details"] = self.media_list[item]
+			for list_item in self.old_media_list_names:
+				self.media_dictionary["Media"]["item"]["details"] = self.media_list[list_item]
 
-				text = item
+				text = list_item
 
 				if self.JSON.Language.language_texts["[language]_name"] in self.media_dictionary["Media"]["item"]["details"] and self.media_dictionary["Media"]["item"]["details"][self.JSON.Language.language_texts["[language]_name"]] != self.media_dictionary["Media"]["item"]["details"][self.JSON.Language.language_texts["original_name"]]:
 					text += "\n\t" + self.media_dictionary["Media"]["item"]["details"][self.JSON.Language.language_texts["[language]_name"]]
@@ -576,7 +580,7 @@ class Add_New_Media(Watch_History):
 					print("\t" + self.language_texts["remote_origin"] + ":")
 					print("\t" + self.media_dictionary["Media"]["item"]["details"]["Remote origin"])
 
-				if len(self.old_media_list_names) != 1 and item != self.old_media_list_names[-1]:
+				if len(self.old_media_list_names) != 1 and list_item != self.old_media_list_names[-1]:
 					print()
 					print(self.large_bar)
 

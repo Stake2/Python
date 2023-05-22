@@ -13,8 +13,8 @@ class Create_Diary_File(Project_Zomboid):
 		self.Define_Date_Folders()
 		self.Define_Date_Variables()
 		self.Write_To_Files()
-		self.Open_File()
 		self.Show_Information()
+		self.Open_File()
 
 	def Select_City(self, first_space = False):
 		kentucky_city_names = self.kentucky_city_names
@@ -34,12 +34,13 @@ class Create_Diary_File(Project_Zomboid):
 		if self.predefined_values["City"] != "":
 			self.city = self.predefined_values["City"]
 
+		if self.predefined_values["City"] != "" and self.predefined_values["Character"] != "":
 			self.used_predefined_values = True
 
 	def Select_Character(self):
 		if self.predefined_values["Character"] == "":
 			show_text = self.language_texts["survivors, title()"]
-			select_text = self.language_texts["select_a_survivor_from_{}_to_survive_as_it"]
+			select_text = self.language_texts["select_a_survivor_from_{}_to_survive_as_it"].format("[" + self.city + "]")
 
 			self.survivor = self.Input.Select(self.kentucky_cities[self.city]["survivors"], show_text = show_text, select_text = select_text)["option"]
 
@@ -92,7 +93,7 @@ class Create_Diary_File(Project_Zomboid):
 
 		self.date = self.Date.From_String(str(self.dates["Day"]) + "/" + str(self.dates["Month"]) + "/" + str(self.dates["Year"]))
 
-		self.survival_diary_file_name = self.file_name_template.format(str(self.dates["Survival day"]), self.date["day_name"], self.date["%d-%m-%Y"])
+		self.survival_diary_file_name = self.file_name_template.format(str(self.dates["Survival day"]), self.date["Texts"]["Day name"][self.user_language], self.date["Formats"]["DD-MM-YYYY"])
 
 		self.diary_header_template = "Hoje é dia {} de {} de {}, {}." + \
 		"\n" + \
@@ -101,7 +102,7 @@ class Create_Diary_File(Project_Zomboid):
 
 		self.day_number_name = self.Date.language_texts["number_names, type: list"][self.dates["Day"]].capitalize()
 
-		self.diary_header = self.diary_header_template.format(self.day_number_name.lower(), self.date["month_name"], self.dates["Year"], self.date["%d/%m/%Y"], self.Date.language_texts["day_names_genders, type: list"][self.date["weekday"]], self.date["day_name"])
+		self.diary_header = self.diary_header_template.format(self.day_number_name.lower(), self.date["Texts"]["Month name"][self.user_language], self.dates["Year"], self.date["Formats"]["DD/MM/YYYY"], self.date["Texts"]["Day gender"][self.user_language], self.date["Texts"]["Day name"][self.user_language])
 
 		self.survival_diary_file = self.dates["folders"]["Month"] + self.survival_diary_file_name + ".txt"
 		self.File.Create(self.survival_diary_file)
@@ -130,13 +131,13 @@ class Create_Diary_File(Project_Zomboid):
 			print(self.language_texts["the_class_used_predefined_city_and_survivor"] + ".")
 			print()
 
-			print(self.language_texts["city, title()"] + ":")
-			print(self.city)
-			print()
+		print(self.language_texts["city, title()"] + ":")
+		print(self.city)
+		print()
 
-			print(self.language_texts["survivor, title()"] + ":")
-			print(self.survivor)
-			print()
+		print(self.language_texts["survivor, title()"] + ":")
+		print(self.survivor)
+		print()
 
 		print(self.language_texts["this_survival_diary_file_was_created"] + ":")
 		print(self.survival_diary_file_name)

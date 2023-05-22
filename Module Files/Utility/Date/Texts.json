@@ -290,7 +290,7 @@
 	},
 	"second": {
 		"en": "second",
-		"pt": "segundos"
+		"pt": "segundo"
 	},
 	"seconds": {
 		"en": "seconds",
@@ -298,15 +298,11 @@
 	},
 	"second, title()": {
 		"en": "Second",
-		"pt": "Segundos"
+		"pt": "Segundo"
 	},
 	"seconds, title()": {
 		"en": "Seconds",
 		"pt": "Segundos"
-	},
-	"and": {
-		"en": "and",
-		"pt": "e"
 	},
 	"date_format": {
 		"en": "%m/%d/%Y",
@@ -315,6 +311,10 @@
 	"date_time_format": {
 		"en": "%H:%M %m/%d/%Y",
 		"pt": "%H:%M %d/%m/%Y"
+	},
+	"time, title()": {
+		"en": "Time",
+		"pt": "Tempo"
 	},
 	"times, title()": {
 		"en": "Times",
@@ -336,8 +336,24 @@
 		"en": "End date",
 		"pt": "Data final"
 	},
+	"current_time": {
+		"en": "Current time",
+		"pt": "Horário atual"
+	},
 	"duration, title()": {
 		"en": "Duration",
 		"pt": "Duração"
+	},
+	"before, title()": {
+		"en": "Before",
+		"pt": "Antes"
+	},
+	"now, title()": {
+		"en": "Now",
+		"pt": "Agora"
+	},
+	"after, title()": {
+		"en": "After",
+		"pt": "Depois"
 	}
 }
