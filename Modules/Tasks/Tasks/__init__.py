@@ -155,7 +155,7 @@ class Tasks(object):
 			},
 			"Tasks": deepcopy(self.template),
 			"Task": {},
-			"Task Type": {}
+			"Task type": {}
 		}
 
 		if self.File.Contents(self.folders["task_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["history"])["Years"] != []:
@@ -166,13 +166,10 @@ class Tasks(object):
 		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
 			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
 
-		# Update the number of years with the length of the years list
-		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
-
 		tasks = 0
 
 		# Update the number of entries of all years
-		for year in range(self.date["Units"]["Year"], self.date["Units"]["Year"] + 1):
+		for year in range(2018, self.date["Units"]["Year"] + 1):
 			year = str(year)
 
 			# Get the year folder and the entries file
@@ -190,6 +187,9 @@ class Tasks(object):
 
 		# Sort the Years list
 		self.dictionaries["History"]["Years"] = sorted(self.dictionaries["History"]["Years"], key = str.lower)
+
+		# Update the number of years with the length of the years list
+		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
 
 		# Define the number of Entries of all years as the local number of entries
 		self.dictionaries["History"]["Numbers"]["Tasks"] = tasks
@@ -209,11 +209,11 @@ class Tasks(object):
 			key = plural_task_type.lower().replace(" ", "_")
 
 			# Define default task type dictionary
-			self.dictionaries["Task Type"][plural_task_type] = deepcopy(self.template)
+			self.dictionaries["Task type"][plural_task_type] = deepcopy(self.template)
 
 			# If the task type "Tasks.json" is not empty, get the task type Tasks dictionary from it
 			if self.File.Contents(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])["Entries"] != []:
-				self.dictionaries["Task Type"][plural_task_type] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])
+				self.dictionaries["Task type"][plural_task_type] = self.JSON.To_Python(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"])
 
 			# Add the task type number to the root numbers per task type if it does not exist in there
 			if plural_task_type not in self.dictionaries["Tasks"]["Numbers"]["Per Task Type"]:
@@ -221,10 +221,10 @@ class Tasks(object):
 
 			# Else, define the root total number per task type as the number inside the Tasks dictionary per task type
 			if plural_task_type in self.dictionaries["Tasks"]["Numbers"]["Per Task Type"]:
-				self.dictionaries["Tasks"]["Numbers"]["Per Task Type"][plural_task_type] = self.dictionaries["Task Type"][plural_task_type]["Numbers"]["Total"]
+				self.dictionaries["Tasks"]["Numbers"]["Per Task Type"][plural_task_type] = self.dictionaries["Task type"][plural_task_type]["Numbers"]["Total"]
 
 			# Update the per task type "Tasks.json" file with the updated per type Tasks dictionary
-			self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.dictionaries["Task Type"][plural_task_type])
+			self.JSON.Edit(self.folders["task_history"]["current_year"]["per_task_type"][key]["tasks"], self.dictionaries["Task type"][plural_task_type])
 
 		# Update the "Tasks.json" file with the updated Tasks dictionary
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
@@ -269,12 +269,14 @@ class Tasks(object):
 						task_item = dictionary["Type"]["Items"][language]
 
 						if self.task_type not in ["Python", "PHP"]:
+							text_key = "first_{}_in_year"
 							task_item = task_item.lower()
 
 						if self.task_type in ["Python", "PHP"]:
+							text_key = "first_{}_in_year, feminine"
 							task_item = self.texts["{}_task"][language].format(task_item)
 
-						text = self.JSON.Language.texts["first_{}_in_year"][language].format(task_item)
+						text = self.JSON.Language.texts[text_key][language].format(task_item)
 
 					states_dictionary["Texts"][key][language] = text
 

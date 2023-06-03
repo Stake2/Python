@@ -428,29 +428,24 @@ class Watch_History(object):
 		}
 
 		if self.File.Contents(self.folders["watch_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["watch_history"]["history"])["Years"] != []:
-			# Get the History dictionary from file
+			# Get the History dictionary from the file
 			self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
 
 		# If the current year is not inside the "History" years list, add it to the list
 		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
 			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
 
-		# Update the number of years with the length of the years list
-		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
-
 		entries = 0
 
 		# Update the number of entries of all years
-		for year in range(2018, self.date["Units"]["Year"] + 1):
-			year = str(year)
-
+		for year in self.Date.Create_Years_List(function = str):
 			# Get the year folder and the entries file
 			year_folder = self.folders["watch_history"]["root"] + year + "/"
 			entries_file = year_folder + "Entries.json"
 
 			# If the file exists and it is not empty
 			if self.File.Exist(entries_file) == True and self.File.Contents(entries_file)["lines"] != []:
-				# Add the number of lines of the file to the local number of entries
+				# Add the total number to the local number of entries
 				entries += self.JSON.To_Python(entries_file)["Numbers"]["Total"]
 
 			# Add the year to the Years list if it is not inside it
@@ -459,6 +454,9 @@ class Watch_History(object):
 
 		# Sort the Years list
 		self.dictionaries["History"]["Years"] = sorted(self.dictionaries["History"]["Years"], key = str.lower)
+
+		# Update the number of years with the length of the years list
+		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
 
 		# Define the number of Entries of all years as the local number of entries
 		self.dictionaries["History"]["Numbers"]["Entries"] = entries

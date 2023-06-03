@@ -71,6 +71,12 @@ class Fill_Media_Files(Watch_History):
 		if list(methods.keys()) == ["Fill_Files"]:
 			self.Define_Variables()
 
+		# Re-select media to update the files
+		self.Select_Media(self.dictionary)
+
+		# Re-select media item to update the files
+		self.Define_Media_Item(self.dictionary)
+
 	def Define_Variables(self):
 		print()
 

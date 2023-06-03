@@ -118,6 +118,14 @@ class Main():
 
 		i = 0
 		for title in titles:
+			print()
+			print("-----")
+			print()
+			print(str(i + 1) + "/" + str(len(titles)) + ":")
+			print(title)
+
+			file = ""
+
 			for item in files:
 				if (
 					self.File.Sanitize(title, restricted_characters = True) in item and
@@ -125,44 +133,47 @@ class Main():
 				):
 					file = item
 
-			track = document.createElement("track")
+			if file != "":
+				print(file)
 
-			for item in ["location", "title", "duration", "extension"]:
-				element = document.createElement(item)
+				track = document.createElement("track")
 
-				if item == "location":
-					from requests.utils import requote_uri
-					text = document.createTextNode("file:///./" + requote_uri(self.File.Name(file) + "." + file.split(".")[-1]))
-					element.appendChild(text)
+				for item in ["location", "title", "duration", "extension"]:
+					element = document.createElement(item)
 
-				if item == "title":
-					text = document.createTextNode(self.File.Name(file))
-					element.appendChild(text)
+					if item == "location":
+						from requests.utils import requote_uri
+						text = document.createTextNode("file:///./" + requote_uri(self.File.Name(file) + "." + file.split(".")[-1]))
+						element.appendChild(text)
 
-				if item == "duration":
-					from pymediainfo import MediaInfo
-					media_info = MediaInfo.parse(file)
-					duration = media_info.tracks[0].duration
+					if item == "title":
+						text = document.createTextNode(self.File.Name(file))
+						element.appendChild(text)
 
-					text = document.createTextNode(str(duration))
-					element.appendChild(text)
+					if item == "duration":
+						from pymediainfo import MediaInfo
+						media_info = MediaInfo.parse(file)
+						duration = media_info.tracks[0].duration
 
-				if item == "extension":
-					element.setAttribute("application", "http://www.videolan.org/vlc/playlist/0")
+						text = document.createTextNode(str(duration))
+						element.appendChild(text)
 
-					id_element = document.createElement("vlc:id")
-					id = document.createTextNode(str(i))
-					id_element.appendChild(id)
+					if item == "extension":
+						element.setAttribute("application", "http://www.videolan.org/vlc/playlist/0")
 
-					element.appendChild(id_element)
+						id_element = document.createElement("vlc:id")
+						id = document.createTextNode(str(i))
+						id_element.appendChild(id)
 
-				track.appendChild(element)
+						element.appendChild(id_element)
 
-			element = document.createElement("vlc:item")
-			element.setAttribute("tid", str(i))
-			extension.appendChild(element)
+					track.appendChild(element)
 
-			trackList.appendChild(track)
+				element = document.createElement("vlc:item")
+				element.setAttribute("tid", str(i))
+				extension.appendChild(element)
+
+				trackList.appendChild(track)
 
 			i += 1
 
@@ -172,6 +183,9 @@ class Main():
 		playlist_file = folder + "Playlist.xspf"
 		self.File.Create(playlist_file)
 		self.File.Edit(playlist_file, export)
+
+		print()
+		print(playlist_file)
 
 	def Remove_Line_Of_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))

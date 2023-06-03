@@ -22,10 +22,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.date = self.Date.Now()
 
 		# Get slim texts
-		self.slim_texts = self.JSON.To_Python(self.slim_texts_file)
+		self.slim_texts = self.JSON.To_Python(self.folders["diary_slim"]["data"]["slim_texts"])
 
 		# Get today task done text using weekday
-		self.today_task_done_text = self.File.Contents(self.things_done_texts_file)["lines"][self.date["Units"]["Week day"]]
+		self.today_task_done_text = self.File.Contents(self.folders["diary_slim"]["data"]["things_done_texts"])["lines"][self.date["Units"]["Week day"]]
 
 		for language in self.languages["small"]:
 			# Iterate through state names
@@ -217,9 +217,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Define task descriptions and make a backup of them
 		for language in self.languages["small"]:
-			self.task_dictionary["Task"]["Titles"][language] = self.text["texts"][language] + "."
+			self.task_dictionary["Task"]["Titles"][language] = self.text["texts"][language]
 
-			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "\n\n"
+			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "." + "\n\n"
 			self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
 
 			text = self.task_dictionary["Task"]["Descriptions"][language]

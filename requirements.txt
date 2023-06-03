@@ -14,6 +14,7 @@ pyperclip
 beautifultable
 validators
 tzlocal
+pandas
 python-dateutil
 google-api-python-client
 google_auth_oauthlib

@@ -79,6 +79,10 @@
 		"en": "Done tasks",
 		"pt": "Tarefas feitas"
 	},
+	"completed_tasks": {
+		"en": "Completed tasks",
+		"pt": "Tarefas concluídas"
+	},
 	"first_task_in_year": {
 		"en": "First task in year",
 		"pt": "Primeira tarefa no ano"

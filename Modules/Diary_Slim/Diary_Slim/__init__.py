@@ -56,78 +56,249 @@ class Diary_Slim():
 		self.day_of_of_text = "Dia {} de {} de {}"
 		self.today_is_text_header_prototype = "Hoje é {}, " + self.day_of_of_text + "."
 
+		self.template = {
+			"Numbers": {
+				"Months": 12,
+				"Days": 152
+			},
+			"Months": {
+				"06 - Junho": {
+					"Numbers": {
+						"Year": 2023,
+						"Month": 6,
+						"Days": 30
+					},
+					"Names": {
+						"pt": "Junho",
+						"en": "June"
+					},
+					"Formats": {
+						"Diary Slim": "06 - Junho"
+					},
+					"Diary Slims": {
+						"02 Sexta-Feira, 02-06-2023": {
+							"Day": 2,
+							"Names": {
+								"pt": "Sexta-Feira",
+								"en": "Friday"
+							},
+							"Formats": {
+								"DD-MM-YYYY": "02-06-2023"
+							},
+							"Creation time": {
+								"HH:MM": "08:27",
+								"Hours": 8,
+								"Minutes": 27
+							},
+							"Data": {
+								"Sleep times": {
+									"Slept": "23:55",
+									"Woke up": "08:25"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		self.templates = {
+			"Year": {
+				"Numbers": {
+					"Year": 0,
+					"Months": 0,
+					"Days": 0,
+					"Diary Slims": 0
+				},
+				"Months": {}
+			},
+			"Month": {
+				"Numbers": {
+					"Year": 0,
+					"Month": 0,
+					"Days": 0,
+					"Diary Slims": 0
+				},
+				"Names": {},
+				"Formats": {},
+				"Diary Slims": {}
+			},
+			"Day": {
+				"Day": 0,
+				"Names": {},
+				"Formats": {
+					"DD-MM-YYYY": ""
+				},
+				"Creation time": {
+					"HH:MM": "",
+					"Hours": 0,
+					"Minutes": 0
+				},
+				"Data": {
+					"Sleep times": {}
+				}
+			}
+		}
+
 	def Define_Folders_And_Files(self):
+		from copy import deepcopy
+
+		# If there is no current year variable inside the self object, get the current year variable from the "Years" module
+		if hasattr(self, "current_year") == False:
+			self.current_year = {
+				"Number": str(self.date["Units"]["Year"])
+			}
+
 		# Folders
-		self.diary_slim_data_folder = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "Data/"
-		self.Folder.Create(self.diary_slim_data_folder)
+		self.folders["diary_slim"] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]
 
-		self.state_texts_folder = self.diary_slim_data_folder + "State texts/"
-		self.Folder.Create(self.state_texts_folder)
+		# Subfolders
+		names = [
+			"Data",
+			"Story",
+			"Years"
+		]
 
-		self.database_folder = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "Database/"
-		self.Folder.Create(self.database_folder)
+		for name in names:
+			key = name.lower().replace(" ", "_")
 
-		self.year_folders = self.Date.Create_Years_List("dict", 2020, function = str, string_format = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "{}" + "/")
+			if name == "Years":
+				name = self.Date.language_texts[name.lower() + ", title()"]
 
-		for folder in self.year_folders.values():
-			self.Folder.Create(folder)
+			self.folders["diary_slim"][key] = {
+				"root": self.folders["diary_slim"]["root"] + name + "/"
+			}
 
-		self.database_year_folders = self.Date.Create_Years_List("dict", 2020, function = str, string_format = self.database_folder + "{}" + "/")
+			self.Folder.Create(self.folders["diary_slim"][key]["root"])
 
-		for folder in self.database_year_folders.values():
-			self.Folder.Create(folder)
+		# Data folders
+		names = [
+			"State texts"
+		]
 
-		self.current_year_folder = self.year_folders[self.date["Units"]["Year"]]
-		self.Folder.Create(self.current_year_folder)
+		for name in names:
+			key = name.lower().replace(" ", "_")
 
-		# Current month folder
-		self.month_folder_name = str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language]
+			self.folders["diary_slim"]["data"][key] = {
+				"root": self.folders["diary_slim"]["data"]["root"] + name + "/"
+			}
 
-		self.current_month_folder = self.current_year_folder + self.month_folder_name + "/"
-		self.Folder.Create(self.current_month_folder)
+			self.Folder.Create(self.folders["diary_slim"]["data"][key]["root"])
 
-		# Current month database folder
-		self.current_month_database_folder = self.database_year_folders[self.date["Units"]["Year"]] + self.month_folder_name + "/"
-		self.Folder.Create(self.current_month_database_folder)
+		# Year files
+		names = [
+			"History"
+		]
+
+		for name in names:
+			key = name.lower().replace(" ", "_")
+
+			self.folders["diary_slim"]["years"][key] = self.folders["diary_slim"]["years"]["root"] + name + ".json"
+			self.File.Create(self.folders["diary_slim"]["years"][key])
+
+		# Years folders
+		self.history = {
+			"Numbers": {
+				"Years": 0,
+				"Diary Slims": 0
+			},
+			"Years": []
+		}
+
+		if self.File.Contents(self.folders["diary_slim"]["years"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["diary_slim"]["years"]["history"])["Years"] != []:
+			# Get the History dictionary from the file
+			self.history = self.JSON.To_Python(self.folders["diary_slim"]["years"]["history"])
+
+		# If the current year is not inside the "History" years list, add it to the list
+		if self.current_year["Number"] not in self.history["Years"]:
+			self.history["Years"].append(self.current_year["Number"])
+
+		self.years = self.Date.Create_Years_List(start = 2020, function = str)
+
+		diary_slims = 0
+
+		# Iterate through the Years list
+		for year in self.years:
+			# Create the year folder
+			self.folders["diary_slim"]["years"][year] = {
+				"root": self.folders["diary_slim"]["years"]["root"] + year + "/"
+			}
+
+			self.Folder.Create(self.folders["diary_slim"]["years"][year]["root"])
+
+			# Create the year file
+			self.folders["diary_slim"]["years"][year]["year"] = self.folders["diary_slim"]["years"][year]["root"] + "Year.json"
+			self.File.Create(self.folders["diary_slim"]["years"][year]["year"])
+
+			# If the file exists and it is not empty
+			if self.File.Contents(self.folders["diary_slim"]["years"][year]["year"])["lines"] != []:
+				# Add the days number to the local number of Diary Slims
+				diary_slims += self.JSON.To_Python(self.folders["diary_slim"]["years"][year]["year"])["Numbers"]["Days"]
+
+			# Add the year to the Years list if it is not inside it
+			if year not in self.history["Years"]:
+				self.history["Years"].append(year)
+
+		# Sort the Years list
+		self.history["Years"] = sorted(self.history["Years"], key = str.lower)
+
+		# Update the number of years with the length of the years list
+		self.history["Numbers"]["Years"] = len(self.history["Years"])
+
+		# Define the number of Diary Slims of all years as the local number of Diary Slims
+		self.history["Numbers"]["Diary Slims"] = diary_slims
+
+		# Update the "History.json" file with the new History dictionary
+		self.JSON.Edit(self.folders["diary_slim"]["years"]["history"], self.history)
+
+		# Current year folder
+		self.folders["diary_slim"]["current_year"] = self.folders["diary_slim"]["years"][self.current_year["Number"]]
+
+		# Define the Year dictionary
+		self.current_year["Year"] = deepcopy(self.templates["Year"])
+
+		if self.File.Contents(self.folders["diary_slim"]["current_year"]["year"])["lines"] != []:
+			self.current_year["Year"] = self.JSON.To_Python(self.folders["diary_slim"]["current_year"]["year"])
+
+		# Define the year Month dictionary
+		self.current_year["Month"] = {
+			"Name": str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language],
+			"Folder": "",
+			"File": "",
+			"Dictionary": {}
+		}
+
+		self.current_year["Month"]["Folder"] = self.folders["diary_slim"]["current_year"]["root"] + self.current_year["Month"]["Name"] + "/"
+		self.current_year["Month"]["File"] = self.current_year["Month"]["Folder"] + "Month.json"
+		self.current_year["Month"]["Dictionary"] = deepcopy(self.templates["Month"])
+
+		if self.File.Contents(self.current_year["Month"]["File"])["lines"] != []:
+			self.current_year["Month"]["Dictionary"] = self.JSON.To_Python(self.current_year["Month"]["File"])
+
+		self.current_year["File"] = self.Current_Diary_Slim()
 
 		# Files
-		self.slim_texts_file = self.diary_slim_data_folder + "Slim texts.json"
-		self.File.Create(self.slim_texts_file)
+		self.folders["diary_slim"]["data"]["slim_texts"] = self.folders["diary_slim"]["data"]["root"] + "Slim texts.json"
+		self.File.Create(self.folders["diary_slim"]["data"]["slim_texts"])
 
-		self.file_names_file = self.database_folder + "File names.txt"
-		self.File.Create(self.file_names_file)
+		# Data files
+		names = [
+			"Things to do",
+			"Things done texts"
+		]
 
-		self.year_folders_file = self.database_folder + "Year folders.txt"
-		self.File.Create(self.year_folders_file)
+		for name in names:
+			key = name.lower().replace(" ", "_")
 
-		self.month_folders_file = self.database_folder + "Month folders.txt"
-		self.File.Create(self.month_folders_file)
+			self.folders["diary_slim"]["data"][key] = self.folders["diary_slim"]["data"]["root"] + name + ".txt"
+			self.File.Create(self.folders["diary_slim"]["data"][key])
 
-		# Current year database file
-		self.current_year_file_names_file = self.database_year_folders[self.date["Units"]["Year"]] + "Year file names.txt"
-		self.File.Create(self.current_year_file_names_file)
-
-		# Current month database file
-		self.current_month_file_names_file = self.current_month_database_folder + "Month file names.txt"
-		self.File.Create(self.current_month_file_names_file)
-
-		self.current_diary_slim_file = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "Current file.txt"
-		self.File.Create(self.current_diary_slim_file)
-
-		self.things_to_do_file = self.diary_slim_data_folder + "Things to do.txt"
-		self.File.Create(self.things_to_do_file)
-
-		self.things_done_texts_file = self.diary_slim_data_folder + "Things done texts.txt"
-		self.File.Create(self.things_done_texts_file)
-
-		self.diary_slim_header_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Header.txt"
-		self.File.Create(self.diary_slim_header_file)
+		self.folders["apps"]["module_files"][self.module["key"]]["header"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Header.txt"
+		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["header"])
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
-		self.current_diary_slim = self.File.Contents(self.current_diary_slim_file)["lines"][0]
-
-		self.diary_slim_header = self.File.Contents(self.diary_slim_header_file)["string"]
+		self.diary_slim_header = self.File.Contents(self.folders["apps"]["module_files"][self.module["key"]]["header"])["string"]
 
 		# Dictionaries
 		self.states = {
@@ -137,7 +308,7 @@ class Diary_Slim():
 				"current",
 			],
 			"names": [],
-			"folders": self.Folder.Contents(self.state_texts_folder),
+			"folders": self.Folder.Contents(self.folders["diary_slim"]["data"]["state_texts"]["root"]),
 		}
 
 		i = 0
@@ -194,5 +365,19 @@ class Diary_Slim():
 			if state == selected_state or state == None or selected_state == None:
 				self.File.Edit(current_state_file, new_order, "w")
 
-	def Open_Current_Diary_Slim(self):
-		self.File.Open(self.current_diary_slim)
+	def Current_Diary_Slim(self, current_year = None):
+		if current_year == None:
+			current_year = self.current_year
+
+		# Get the current month
+		self.current_month = str(self.Text.Add_Leading_Zeroes(self.date["Timezone"]["DateTime"]["Units"]["Month"])) + " - " + self.date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
+
+		# Get the current day
+		self.current_day = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["Timezone"]["DateTime"]["Units"]["Day"]), self.date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language], self.date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"])
+
+		year_folder = self.folders["diary_slim"]["years"]["root"] + current_year["Number"] + "/"
+		month_folder = year_folder + self.current_month + "/"
+
+		day_file = month_folder + self.current_day + ".txt"
+
+		return day_file

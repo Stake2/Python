@@ -597,6 +597,10 @@
 		"en": "First {} in year",
 		"pt": "Primeiro {} no ano"
 	},
+	"first_{}_in_year, feminine": {
+		"en": "First {} in year",
+		"pt": "Primeira {} no ano"
+	},
 	"first_entry_in_year": {
 		"en": "First entry in year",
 		"pt": "Primeira entrada no ano"
@@ -969,6 +973,10 @@
 	"add_more": {
 		"en": "Add more",
 		"pt": "Adicionar mais"
+	},
+	"general, title()": {
+		"en": "General",
+		"pt": "Geral"
 	},
 	"genders, type: dict": {
 		"en": {

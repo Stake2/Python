@@ -6,8 +6,6 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 	def __init__(self, text, time = None, add_time = True, show_text = True, add_dot = True, check_file_length = True):
 		super().__init__()
 
-		self.current_diary_slim_file = self.File.Contents(self.current_diary_slim_file)["lines"][0]
-
 		self.text = text
 		self.time = time
 		self.add_time = add_time
@@ -33,7 +31,17 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		if self.check_file_length == True:
 			text_to_append = "\n\n" + text_to_append
 
-		self.File.Edit(self.current_diary_slim_file, text_to_append, "a", next_line = False)
+		if self.File.Exist(self.current_year["File"]) == False:
+			import inspect
+
+			self.caller = inspect.stack()[3][1].split("\\")[-2]
+		
+			if self.caller != "Create_New_Diary_Slim":
+				from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
+
+				Create_New_Diary_Slim()
+
+		self.File.Edit(self.current_year["File"], text_to_append, "a", next_line = False)
 
 		if self.switches["verbose"] == True:
 			print()

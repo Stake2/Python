@@ -226,7 +226,7 @@ class File():
 			"lines_none": [None],
 			"string": "",
 			"size": 0,
-			"length": 0,
+			"length": 0
 		}
 
 		if self.Exist(file) == True:
@@ -364,5 +364,7 @@ class File():
 			os.startfile(item)
 
 	def Close(self, program):
+		import psutil
+
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
 			process.kill()

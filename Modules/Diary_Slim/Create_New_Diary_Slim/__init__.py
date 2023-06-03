@@ -10,8 +10,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 	def __init__(self):
 		super().__init__()
 
-		self.Define_Times()
-
 		print()
 		print(self.large_bar)
 		print()
@@ -40,14 +38,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 		print()
 		print(self.large_bar)
 
-	def Define_Times(self):
-		self.date = self.Date.Now()
-
-		self.file_name_string = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["Units"]["Day"]), self.date["Texts"]["Day name"][self.user_language], self.date["Formats"]["DD-MM-YYYY"])
-
 	def Make_Header(self):
 		self.today_is = self.today_is_text_header_prototype.format(self.date["Texts"]["Day name"][self.user_language], self.date["Units"]["Day"], self.date["Texts"]["Month name"][self.user_language], self.date["Units"]["Year"])
-		self.text_header = self.text_header_prototype.format(self.file_name_string)
+
+		self.text_header = self.text_header_prototype.format(self.current_day)
 
 		self.select_text = self.language_texts["type_the_time_that_you_{}"].format(self.language_texts["have_gone_to_sleep"])
 		self.sleeping_time = self.Match_Time_Pattern(self.select_text)
@@ -85,23 +79,23 @@ class Create_New_Diary_Slim(Diary_Slim):
 		self.diary_slim_exists = False
 
 		# Current day file
-		self.current_day_file = self.current_month_folder + self.file_name_string + ".txt"
+		current_month = list(self.current_year["Year"]["Months"].keys())[-1]
 
-		if self.File.Exist(self.current_day_file) == True:
+		if self.File.Exist(self.current_year["File"]) == True:
 			self.diary_slim_exists = True
 
-		if self.File.Exist(self.current_day_file) == False:
-			self.File.Create(self.current_day_file)
+		if self.File.Exist(self.current_year["File"]) == False:
+			self.File.Create(self.current_year["File"])
 
 	def Write_To_Files(self):
+		from copy import deepcopy
+
+		# Write the header text
 		if self.diary_slim_exists == False:
 			print(self.dash_space)
 			print()
 
-			self.current_day_file_text = self.File.Contents(self.current_day_file)["string"]
-
-			if self.current_day_file_text == "":
-				self.File.Edit(self.current_diary_slim_file, self.current_day_file, "w")
+			self.current_day_file_text = self.File.Contents(self.current_year["File"])["string"]
 
 			text_to_write = self.text_header + "\n\n" + self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"] + ":\n" + self.today_is + "\n\n" + self.header
 
@@ -111,38 +105,41 @@ class Create_New_Diary_Slim(Diary_Slim):
 			print()
 			print(self.dash_space)
 
-		self.File.Open(self.current_day_file)
+		# Open the Diary Slim file
+		self.File.Open(self.current_year["File"])
 
 		# ----- #
 
 		if self.diary_slim_exists == False:
-			# Year folders.txt
-			text_to_append = str(self.date["Units"]["Year"]) + "/"
+			day = deepcopy(self.templates["Day"])
 
-			self.File.Edit(self.year_folders_file, text_to_append, "a")
+			# Create the Day dictionary
+			day["Day"] = self.date["Units"]["Day"]
+			day["Names"] = self.date["Texts"]["Day name"]
+			day["Formats"]["DD-MM-YYYY"] = self.date["Formats"]["DD-MM-YYYY"]
+			day["Creation time"]["HH:MM"] = self.date["Formats"]["HH:MM"]
+			day["Creation time"]["Hours"] = self.date["Units"]["Hour"]
+			day["Creation time"]["Minutes"] = self.date["Units"]["Minute"]
+			day["Data"]["Sleep times"] = {
+				"Slept": self.sleeping_time,
+				"Woke up": self.waking_time
+			}
 
-			# Month folders.txt
-			text_to_append = str(self.month_folder_name + "/")
+			# Edit the Month dictionary
+			key = self.current_day
 
-			self.File.Edit(self.month_folders_file, text_to_append, "a")
+			# Add to the Diary Slims dictionary
+			self.current_year["Month"]["Dictionary"]["Diary Slims"][key] = day
 
-			# File names.txt
-			text_to_append = self.file_name_string
+			# Update the "Diary Slims" number
+			self.current_year["Month"]["Dictionary"]["Numbers"]["Diary Slims"] = len(list(self.current_year["Month"]["Dictionary"]["Diary Slims"].keys()))
 
-			if text_to_append not in self.File.Contents(self.file_names_file)["lines"]:
-				self.File.Edit(self.file_names_file, text_to_append, "a")
+			# Edit the "Month.json" file
+			self.JSON.Edit(self.current_year["Month"]["File"], self.current_year["Month"]["Dictionary"])
 
-		# ----- #
+			# Edit the "Year.json" file
+			self.current_year["Year"]["Months"][self.current_year["Month"]["Name"]] = self.current_year["Month"]["Dictionary"]
 
-		if self.diary_slim_exists == False:
-			text_to_append = self.file_name_string
+			self.JSON.Edit(self.folders["diary_slim"]["current_year"]["year"], self.current_year["Year"])
 
-			# [Year]/Year file names.txt
-			if text_to_append not in self.File.Contents(self.current_year_file_names_file)["lines"]:
-				self.File.Edit(self.current_year_file_names_file, text_to_append, "a")
-
-			# [Year]/[Month]/Month file names.txt
-			if text_to_append not in self.File.Contents(self.current_month_file_names_file)["lines"]:
-				self.File.Edit(self.current_month_file_names_file, text_to_append, "a")
-
-		# ----- #
+			super().__init__()

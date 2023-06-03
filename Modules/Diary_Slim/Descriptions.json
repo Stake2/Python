@@ -10,5 +10,9 @@
 	"Write_On_Diary_Slim": {
 		"en": "Write on Diary Slim",
 		"pt": "Escrever no Diário Slim"
+	},
+	"Manage": {
+		"en": "Manage the [Diary Slim] Database and History",
+		"pt": "Gerenciar o Banco de Dados e Histórico do [Diário Slim]"
 	}
 }

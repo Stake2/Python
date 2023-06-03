@@ -140,8 +140,8 @@
 		"pt": "Você terminou de atualizar o site",
 		"en": "You finished updating the website"
 	},
-	"you_finished_updating_the_websites": {
-		"pt": "Você terminou de atualizar os sites",
-		"en": "You finished updating the websites"
+	"you_finished_updating_these_websites": {
+		"pt": "Você terminou de atualizar estes sites",
+		"en": "You finished updating these websites"
 	}
 }

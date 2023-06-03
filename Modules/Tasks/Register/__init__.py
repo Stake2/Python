@@ -84,7 +84,7 @@ class Register(Tasks):
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language
 
-			self.dictionary["Task"]["Titles"][language] = self.dictionary["Type"]["Texts"][language] + "."
+			self.dictionary["Task"]["Titles"][language] = self.dictionary["Type"]["Texts"][language]
 
 			# Ask for the task item if it is present in the task text
 			if "{" in self.dictionary["Task"]["Titles"][language]:
@@ -153,7 +153,7 @@ class Register(Tasks):
 					self.dictionary["Task"]["Titles"][language] = self.dictionary["Task"]["Titles"][language].replace(item, task_item)
 
 			# Define the task description as the task title plus two new lines
-			self.dictionary["Task"]["Descriptions"][language] = self.dictionary["Task"]["Titles"][language] + "\n\n"
+			self.dictionary["Task"]["Descriptions"][language] = self.dictionary["Task"]["Titles"][language] + "." + "\n\n"
 
 			# Ask for the task description
 			self.dictionary["Task"]["Descriptions"][language] += self.Input.Lines(type_text)["string"]
@@ -163,7 +163,7 @@ class Register(Tasks):
 
 		dicts = [
 			self.dictionaries["Tasks"],
-			self.dictionaries["Task Type"][self.task_type]
+			self.dictionaries["Task type"][self.task_type]
 		]
 
 		# Add one to the entry, task type entry, and root task type entry numbers
@@ -176,7 +176,7 @@ class Register(Tasks):
 		if self.dictionaries["Tasks"]["Numbers"]["Total"] == 1:
 			self.task["States"]["First task in year"] = True
 
-		if self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"] == 1:
+		if self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"] == 1:
 			self.task["States"]["First task type task in year"] = True
 
 		# Define sanitized version of entry name for files
@@ -196,7 +196,7 @@ class Register(Tasks):
 
 		self.dictionaries["Tasks"]["Dictionary"][self.key] = {
 			"Number": self.dictionaries["Tasks"]["Numbers"]["Total"],
-			"Type number": self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"],
+			"Type number": self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"],
 			"Entry": self.task["Name"]["Normal"],
 			"Titles": self.task["Titles"],
 			"Type": self.task_type,
@@ -211,13 +211,13 @@ class Register(Tasks):
 			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = self.dictionary["States"]["States"]
 
 		# Add task dictionary to task type tasks dictionary
-		self.dictionaries["Task Type"][self.task_type]["Dictionary"][self.key] = self.dictionaries["Tasks"]["Dictionary"][self.key].copy()
+		self.dictionaries["Task type"][self.task_type]["Dictionary"][self.key] = self.dictionaries["Tasks"]["Dictionary"][self.key].copy()
 
 		# Update the "Tasks.json" file
 		self.JSON.Edit(self.folders["task_history"]["current_year"]["tasks"], self.dictionaries["Tasks"])
 
 		# Update the task type "Tasks.json" file
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_task_type"]["tasks"], self.dictionaries["Task Type"][self.task_type])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_task_type"]["tasks"], self.dictionaries["Task type"][self.task_type])
 
 		# Add to the root and task type "Entry list.txt" file
 		self.File.Edit(self.folders["task_history"]["current_year"]["entry_list"], self.task["Name"]["Normal"], "a")
@@ -281,7 +281,7 @@ class Register(Tasks):
 		# Define task text lines
 		lines = [
 			self.texts["number, title()"][language] + ": " + str(self.dictionaries["Tasks"]["Numbers"]["Total"]),
-			self.texts["task_type_number"][language] + ": " + str(self.dictionaries["Task Type"][self.task_type]["Numbers"]["Total"])
+			self.texts["task_type_number"][language] + ": " + str(self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"])
 		]
 
 		# Add task title lines

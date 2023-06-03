@@ -379,11 +379,6 @@ class Folder():
 		for key in self.folders["mega"]["notepad"]["effort"]:
 			self.folders["notepad"][key] = self.folders["mega"]["notepad"]["effort"][key]
 
-		# Temporary set PHP folder to Remake
-		self.folders["mega"]["php"] = {
-			"root": os.path.join(self.folders["mega"]["php"]["root"], "Remake/")
-		}
-
 		# Mega PHP folders
 		for item in ["JSON"]:
 			key = item.lower().replace(" ", "_")

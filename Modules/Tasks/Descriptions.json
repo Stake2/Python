@@ -14,5 +14,9 @@
 	"View": {
 		"en": "View database",
 		"pt": "Visualizar banco de dados"
+	},
+	"Manage": {
+		"en": "Manage the Task History",
+		"pt": "Gerenciar Histórico de Tarefas"
 	}
 }

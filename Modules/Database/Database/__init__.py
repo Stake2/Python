@@ -307,9 +307,6 @@ class Database(object):
 		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
 			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
 
-		# Update the number of years with the length of the years list
-		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
-
 		entries = 0
 
 		# Update the number of entries of all years
@@ -331,6 +328,9 @@ class Database(object):
 
 		# Sort the Years list
 		self.dictionaries["History"]["Years"] = sorted(self.dictionaries["History"]["Years"], key = str.lower)
+
+		# Update the number of years with the length of the years list
+		self.dictionaries["History"]["Numbers"]["Years"] = len(self.dictionaries["History"]["Years"])
 
 		# Define the number of Entries of all years as the local number of entries
 		self.dictionaries["History"]["Numbers"]["Entries"] = entries

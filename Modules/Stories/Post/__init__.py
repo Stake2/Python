@@ -449,6 +449,7 @@ class Post(Stories):
 		# Add task titles
 		for language in self.languages["small"]:
 			self.task_dictionary["Task"]["Titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
+
 			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
 
 		# Register the task with the root method

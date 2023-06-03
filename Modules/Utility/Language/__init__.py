@@ -124,6 +124,15 @@ class Language():
 			print("\t" + text + ":")
 			print("\t" + item)
 
+	def Exist(self, file):
+		file = self.Sanitize(file)
+
+		if os.path.isfile(file) == True:
+			return True
+
+		if os.path.isfile(file) == False:
+			return False
+
 	def Create(self, item = None, text = None):
 		if item == None:
 			item = self.Type(text)
@@ -149,16 +158,23 @@ class Language():
 			"lines_none": [None],
 			"string": "",
 			"size": 0,
+			"length": 0
 		}
 
-		contents["string"] = open(file, "r", encoding = "utf8").read()
-		contents["size"] += os.path.getsize(file)
+		if self.Exist(file) == True:
+			contents["string"] = open(file, "r", encoding = "utf8").read()
+			contents["size"] += os.path.getsize(file)
 
-		for line in open(file, "r", encoding = "utf8").readlines():
-			line = line.replace("\n", "")
+			for line in open(file, "r", encoding = "utf8").readlines():
+				line = line.replace("\n", "")
 
-			contents["lines"].append(line)
-			contents["lines_none"].append(line)
+				contents["lines"].append(line)
+				contents["lines_none"].append(line)
+
+			contents["length"] = len(contents["lines"])
+
+		if self.Exist(file) == False:
+			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
 
 		return contents
 
@@ -254,12 +270,16 @@ class Language():
 	def Edit(self, file, text, mode):
 		file = self.Sanitize(file)
 
-		if self.switches["file"]["edit"] == True and os.path.isfile(file) == True:
-			edit = open(file, mode, encoding = "UTF8")
-			edit.write(text)
-			edit.close()
+		contents = self.Contents(file)
+		length = contents["length"]
 
-			self.Verbose(self.language_texts["file"].title() + " " + self.language_texts["edited, masculine"], file)
+		if self.Exist(file) == True:
+			if self.switches["file"]["edit"] == True and contents["string"] != text:
+				edit = open(file, mode, encoding = "UTF8")
+				edit.write(text)
+				edit.close()
+
+				self.Verbose(self.language_texts["file"].title() + " " + self.language_texts["edited, masculine"], file)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, function = False, first_space = True):
 		if show_text == None:
@@ -756,6 +776,21 @@ class Language():
 							self.full_user_language = self.languages["full"][setting]
 
 			self.Define_Language_Texts()
+
+			settings[self.language_texts["language, title()"]] = self.app_settings["language"]
+
+			self.Edit(self.settings_file, self.From_Python(settings), "w")
+
+			# ----- #
+
+			settings = {
+				"Language": self.app_settings["language"]
+			}
+
+			self.global_settings_file = os.path.join(self.folders["apps"]["root"], "Settings.json")
+
+			self.Create(self.global_settings_file)
+			self.Edit(self.global_settings_file, self.From_Python(settings), "w")
 
 		if os.path.isfile(self.settings_file) == False:
 			texts = {

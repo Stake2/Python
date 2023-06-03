@@ -1,0 +1,13 @@
+{
+	"show_text": {
+		"en": "Manage the [Diary Slim] Database and History",
+		"pt": "Gerenciar o Banco de Dados e Histórico do [Diário Slim]"
+	},
+	"Convert_History": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"Remove list": [
+		"Convert_History"
+	]
+}

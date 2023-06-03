@@ -53,26 +53,26 @@ class Update_Websites(Code):
 		print(self.large_bar)
 		print()
 
-		text = self.language_texts["you_finished_updating_the_website"]
+		text = self.language_texts["you_finished_updating_the_website"] + ' "' + self.websites[self.user_language][0] + '".'
 
 		if len(self.websites["update"]) > 1:
-			text = self.language_texts["you_finished_updating_the_websites"]
+			text = self.language_texts["you_finished_updating_these_websites"] + ":" + "\n"
 
-		print(text + ".")
+			for website in self.websites["update"]:
+				text += website
+
+				if website != list(self.websites["update"].keys())[-1]:
+					text += "\n"
+
+		print(text)
 
 	def Define_Variables(self):
 		self.small_languages_backup = self.languages["small"].copy()
 
-		self.languages = [
-			"general",
-			self.languages["full_translated"]["en"]["en"],
-			self.languages["full_translated"]["pt"]["en"]
-		]
-
 		self.languages["full_translated"]["general"] = {}
 
 		for language in self.languages["small"]:
-			self.languages["full_translated"]["general"][language] = self.texts["general, title()"][language]
+			self.languages["full_translated"]["general"][language] = self.JSON.Language.texts["general, title()"][language]
 
 		self.languages["small"].insert(0, "general")
 		self.languages["full"]["general"] = "General"
@@ -80,12 +80,12 @@ class Update_Websites(Code):
 		self.xampp_programs = [
 			"xampp-control",
 			"httpd",
-			"mysql",
+			"mysql"
 		]
 
 		self.websites = {
 			"list": self.JSON.To_Python(self.folders["mega"]["php"]["json"]["websites"]),
-			"update": {},
+			"update": {}
 		}
 
 		for language in self.languages["small"]:
@@ -120,8 +120,7 @@ class Update_Websites(Code):
 				self.Create_Websites_List()
 
 		if self.module_website != None:
-			# If the module website is a string find the number of that website
-			# If the module website is an integer, add it to the website numbers list
+			# If the module website is a string or an integer, find the number of that website
 			if type(self.module_website) in [str, int]:
 				number = 0
 				for website in self.websites["en"]:
@@ -207,7 +206,7 @@ class Update_Websites(Code):
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
 			if self.switches["testing"] == False:
-				self.File.Open(self.root_folders["xampp"]["xampp-control"])
+				self.File.Open(self.folders["root"]["xampp"]["xampp-control"])
 
 				self.Date.Sleep(4)
 
@@ -269,7 +268,7 @@ class Update_Websites(Code):
 				if self.switches["testing"] == False:
 					self.File.Open(link)
 
-					self.Date.Sleep(5)
+					self.Date.Sleep(4)
 
 		print()
 		print(self.large_bar)
@@ -277,7 +276,7 @@ class Update_Websites(Code):
 		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
 
 	def Open_Git_Console_Window(self):
-		files = self.Folder.Contents(self.folders["apps"]["shortcuts"]["white_shortcuts"])["file"]["list"]
+		files = self.Folder.Contents(self.folders["apps"]["shortcuts"]["root"])["file"]["list"]
 
 		for file in files:
 			if "GitHub" in file:
