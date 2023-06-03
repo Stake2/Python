@@ -310,9 +310,7 @@ class Database(object):
 		entries = 0
 
 		# Update the number of entries of all years
-		for year in range(self.date["Units"]["Year"], self.date["Units"]["Year"] + 1):
-			year = str(year)
-
+		for year in [str(self.date["Units"]["Year"])]:
 			# Get the year folder and the entries file
 			year_folder = self.folders["history"]["root"] + year + "/"
 			entries_file = year_folder + "Entries.json"

@@ -191,5 +191,13 @@
 	"shortcut, title()": {
 		"en": "Shortcut",
 		"pt": "Atalho"
+	},
+	"the_file_{}_opening_it": {
+		"en": "The file {}, opening it",
+		"pt": "O arquivo {}, abrindo ele"
+	},
+	"already_existed": {
+		"en": "already existed",
+		"pt": "já existia"
 	}
 }

@@ -49,7 +49,7 @@ class Date():
 			today = self.Datetime.now()
 
 			if type(date_parameter) == type(self.Date(today.year, today.month, today.day)):
-				date_parameter = self.Combine(date_parameter, self.Datetime.min.time())
+				date_parameter = self.Combine(date_parameter, today.time())
 
 			if type(date_parameter) == type(self.Time(today.hour, today.minute)):
 				date_parameter = self.Combine(self.Date(today.year, today.month, today.day), date_parameter)

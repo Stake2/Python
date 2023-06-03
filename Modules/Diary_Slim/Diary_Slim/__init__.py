@@ -275,7 +275,9 @@ class Diary_Slim():
 		if self.File.Contents(self.current_year["Month"]["File"])["lines"] != []:
 			self.current_year["Month"]["Dictionary"] = self.JSON.To_Python(self.current_year["Month"]["File"])
 
-		self.current_year["File"] = self.Current_Diary_Slim()
+		self.current_month = self.current_year["Month"]
+
+		self.current_year["File"] = self.Current_Diary_Slim()["File"]
 
 		# Files
 		self.folders["diary_slim"]["data"]["slim_texts"] = self.folders["diary_slim"]["data"]["root"] + "Slim texts.json"
@@ -365,19 +367,26 @@ class Diary_Slim():
 			if state == selected_state or state == None or selected_state == None:
 				self.File.Edit(current_state_file, new_order, "w")
 
-	def Current_Diary_Slim(self, current_year = None):
+	def Current_Diary_Slim(self, current_year = None, date = None):
 		if current_year == None:
 			current_year = self.current_year
 
-		# Get the current month
-		self.current_month = str(self.Text.Add_Leading_Zeroes(self.date["Timezone"]["DateTime"]["Units"]["Month"])) + " - " + self.date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
+		if date == None:
+			date = self.date
 
-		# Get the current day
-		self.current_day = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(self.date["Timezone"]["DateTime"]["Units"]["Day"]), self.date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language], self.date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"])
+		dictionary = {}
 
-		year_folder = self.folders["diary_slim"]["years"]["root"] + current_year["Number"] + "/"
-		month_folder = year_folder + self.current_month + "/"
+		# Define the month folder name
+		dictionary["Month folder name"] = str(self.Text.Add_Leading_Zeroes(date["Timezone"]["DateTime"]["Units"]["Month"])) + " - " + date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
 
-		day_file = month_folder + self.current_day + ".txt"
+		# Define the current day
+		dictionary["Day"] = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(date["Timezone"]["DateTime"]["Units"]["Day"]), date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language], date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"])
 
-		return day_file
+		# Define the year and month folder
+		dictionary["Year folder"] = self.folders["diary_slim"]["years"]["root"] + current_year["Number"] + "/"
+		dictionary["Month folder"] = dictionary["Year folder"] + dictionary["Month folder name"] + "/"
+
+		# Define the Diary Slim file
+		dictionary["File"] = dictionary["Month folder"] + dictionary["Day"] + ".txt"
+
+		return dictionary

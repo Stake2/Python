@@ -315,7 +315,7 @@ class GamePlayer(object):
 		sessions = 0
 
 		# Update the number of sessions of all years
-		for year in range(2021, self.date["Units"]["Year"] + 1):
+		for year in self.Date.Create_Years_List(start = 2021, function = str):
 			year = str(year)
 
 			# Get the year folder and the entries file

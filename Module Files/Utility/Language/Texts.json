@@ -451,6 +451,10 @@
 		"en": "0 1",
 		"pt": "1 0"
 	},
+	"format": {
+		"en": "format",
+		"pt": "formato"
+	},
 	"empty, title()": {
 		"en": "Empty",
 		"pt": "Vazio"
@@ -548,6 +552,10 @@
 			"pt": "Título em Inglês",
 			"en": "Title in English"
 		}
+	},
+	"state": {
+		"pt": "estado",
+		"en": "state"
 	},
 	"states, title()": {
 		"pt": "Estados",
@@ -977,6 +985,42 @@
 	"general, title()": {
 		"en": "General",
 		"pt": "Geral"
+	},
+	"first": {
+		"en": "first",
+		"pt": "primeiro"
+	},
+	"second": {
+		"en": "second",
+		"pt": "segundo"
+	},
+	"today_is": {
+		"pt": "Hoje é",
+		"en": "Today is"
+	},
+	"was": {
+		"en": "was",
+		"pt": "foi"
+	},
+	"was_not": {
+		"en": "was not",
+		"pt": "não foi"
+	},
+	"type_the_time_that_you_{}": {
+		"en": "Type the time that you {}",
+		"pt": "Digite a hora em que você {}"
+	},
+	"have_gone_to_sleep": {
+		"en": "have gone to sleep",
+		"pt": "foi dormir"
+	},
+	"woke_up": {
+		"en": "woke up",
+		"pt": "acordou"
+	},
+	"wrong_format_utilize_this_one": {
+		"en": "Wrong format, utilize this one",
+		"pt": "Formato incorreto, utilize este"
 	},
 	"genders, type: dict": {
 		"en": {

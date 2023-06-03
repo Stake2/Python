@@ -169,9 +169,7 @@ class Tasks(object):
 		tasks = 0
 
 		# Update the number of entries of all years
-		for year in range(2018, self.date["Units"]["Year"] + 1):
-			year = str(year)
-
+		for year in self.Date.Create_Years_List(function = str):
 			# Get the year folder and the entries file
 			year_folder = self.folders["task_history"]["root"] + year + "/"
 			entries_file = year_folder + "Tasks.json"

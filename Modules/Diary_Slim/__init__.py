@@ -19,8 +19,12 @@ class Run():
 		self.classes = []
 
 		for key in self.descriptions:
-			if key != "show_text":
-				self.classes.append(key)
+			if key not in ["show_text", "Remove list"]:
+				if (
+					"Remove list" not in self.descriptions or
+					"Remove list" in self.descriptions and key not in self.descriptions["Remove list"]
+				):
+					self.classes.append(key)
 
 		self.class_descriptions = []
 

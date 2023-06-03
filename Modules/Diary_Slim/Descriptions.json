@@ -14,5 +14,8 @@
 	"Manage": {
 		"en": "Manage the [Diary Slim] Database and History",
 		"pt": "Gerenciar o Banco de Dados e Histórico do [Diário Slim]"
-	}
+	},
+	"Remove list": [
+		"Manage"
+	]
 }

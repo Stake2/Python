@@ -41,7 +41,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 					order = "second"
 
 				# Define "first" or "second" order text in language
-				text = self.texts[order][language]
+				text = self.JSON.Language.texts[order][language]
 
 				# If the current order text is the second order text, remove the order from slim texts
 				if state_texts["current"] != [] and state_texts["current"][0] == state_texts["second"][self.user_language] and state_name in self.slim_texts:
@@ -49,7 +49,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# If the current order text is empty, or the current order is not equal to the second order text, add state name to slim texts
 				if state_texts["current"] == [] or state_texts["current"] != [] and state_texts["current"][0] != state_texts["second"][self.user_language]:
-					self.slim_texts[language][state_name] = state_name + " (" + text + " " + self.language_texts["state"] + ")"
+					self.slim_texts[language][state_name] = state_name + " (" + text + " " + self.JSON.Language.language_texts["state"] + ")"
 
 			# Add today done task to slim texts
 			if self.today_task_done_text != "":
@@ -63,8 +63,8 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def Remove_State_Text(self, text):
 		for state in self.states["names"]:
 			items_to_remove = [
-				" (" + self.language_texts["first"] + " " + self.language_texts["state"] + ")",
-				" (" + self.language_texts["second"] + " " + self.language_texts["state"] + ")",
+				" (" + self.JSON.Language.language_texts["first"] + " " + self.JSON.Language.language_texts["state"] + ")",
+				" (" + self.JSON.Language.language_texts["second"] + " " + self.JSON.Language.language_texts["state"] + ")",
 			]
 
 			for item in items_to_remove:
@@ -136,7 +136,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 								self.text["data"][language] += " "
 
 							if item == split[-1]:
-								self.text["data"][language] += self.texts["and"][language] + " "
+								self.text["data"][language] += self.JSON.Language.texts["and"][language] + " "
 
 							self.text["data"][language] += item
 
@@ -201,7 +201,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 				languages_text += " "
 
 			if language == self.languages["small"][-1]:
-				languages_text += self.language_texts["and"] + " "
+				languages_text += self.JSON.Language.language_texts["and"] + " "
 
 			languages_text += translated_language
 

@@ -178,7 +178,7 @@ class File():
 
 			return False
 
-	def Edit(self, file, text, mode = "w", next_line = True):
+	def Edit(self, file, text, mode = "w", next_line = True, verbose = None):
 		file = self.Sanitize(file)
 
 		contents = self.Contents(file)
@@ -205,7 +205,7 @@ class File():
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
-				self.Verbose(show_text, file_text)
+				self.Verbose(show_text, file_text, verbose = verbose)
 
 			if self.switches["file"]["edit"] == True:
 				return True

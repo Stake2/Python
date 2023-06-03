@@ -3,7 +3,7 @@
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
 class Write_On_Diary_Slim_Module(Diary_Slim):
-	def __init__(self, text, time = None, add_time = True, show_text = True, add_dot = True, check_file_length = True):
+	def __init__(self, text, time = None, add_time = True, show_text = True, add_dot = True, check_file_length = True, verbose = None):
 		super().__init__()
 
 		self.text = text
@@ -11,6 +11,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		self.add_time = add_time
 		self.show_text = show_text
 		self.check_file_length = check_file_length
+		self.verbose = verbose
 
 		if self.text[-1] != "." and add_dot == True:
 			self.text += "."
@@ -41,7 +42,9 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 				Create_New_Diary_Slim()
 
-		self.File.Edit(self.current_year["File"], text_to_append, "a", next_line = False)
+				print()
+
+		self.File.Edit(self.current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
 
 		if self.switches["verbose"] == True:
 			print()
@@ -49,7 +52,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		self.text_to_show = self.language_texts["this_text_was_written_to_the_current_diary_slim"] + ":"
 
 		if self.switches["testing"] == True:
-			self.text_to_show = self.text_to_show.replace(self.language_texts["was"], self.language_texts["was_not"])
+			self.text_to_show = self.text_to_show.replace(self.JSON.Language.language_texts["was"], self.JSON.Language.language_texts["was_not"])
 			self.text_to_show = self.text_to_show.replace(":", " (" + self.language_texts["testing_is_true"] + "):")
 
 		if text_to_append[0] == "\n":
@@ -57,7 +60,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 		self.text_to_show += "\n" + "[" + text_to_append + "]"
 
-		if self.show_text == True:
+		if self.show_text == True and self.verbose == None:
 			print(self.text_to_show)
 
 	def __str__(self):
