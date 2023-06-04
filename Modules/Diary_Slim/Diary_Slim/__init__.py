@@ -270,10 +270,10 @@ class Diary_Slim():
 
 		self.current_year["Month"]["Folder"] = self.folders["diary_slim"]["current_year"]["root"] + self.current_year["Month"]["Name"] + "/"
 		self.current_year["Month"]["File"] = self.current_year["Month"]["Folder"] + "Month.json"
-		self.current_year["Month"]["Dictionary"] = deepcopy(self.templates["Month"])
+		self.current_year["Month"]["Month"] = deepcopy(self.templates["Month"])
 
 		if self.File.Contents(self.current_year["Month"]["File"])["lines"] != []:
-			self.current_year["Month"]["Dictionary"] = self.JSON.To_Python(self.current_year["Month"]["File"])
+			self.current_year["Month"]["Month"] = self.JSON.To_Python(self.current_year["Month"]["File"])
 
 		self.current_month = self.current_year["Month"]
 
