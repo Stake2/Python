@@ -104,7 +104,7 @@ class Folder():
 		self.folders["apps"] = self.folders["root"]["apps"]
 
 		# Apps sub folders
-		for folder in ["Module Files", "Modules", "Shortcuts"]:
+		for folder in ["Module files", "Modules", "Shortcuts"]:
 			key = folder.lower().replace(" ", "_")
 
 			if folder == "Shortcuts":

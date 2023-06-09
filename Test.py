@@ -13,6 +13,7 @@ class Main():
 			"XML",
 			"Remove_Line_Of_Files",
 			"Add_Line_To_Files",
+			"Replace_Lines",
 			"Get_Video_Info",
 			"Get_Playlist_IDs_And_Titles",
 			"Get_Channel_ID",
@@ -285,6 +286,22 @@ class Main():
 					if file == list(files.values())[2]:
 						file_lines = self.File.Contents(list(files.values())[2])["lines"]
 						file_lines.append("[Finish]")
+
+	def Replace_Lines(self):
+		input()
+
+		lines = self.Text.Get_Clipboard().splitlines()
+
+		i = 0
+		for line in lines:
+			if "$" not in line:
+				lines[i] = "n"
+
+			i += 1
+
+		string = self.Text.From_List(lines)
+
+		self.Text.Copy(string)
 
 	def Reverse_Lines(self):
 		lines = self.Text.Get_Clipboard().splitlines()

@@ -32,19 +32,17 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		if self.check_file_length == True:
 			text_to_append = "\n\n" + text_to_append
 
-		if self.File.Exist(self.current_year["File"]) == False:
-			import inspect
+		# Get last month and last Diary Slim
+		last_month = list(self.current_year["Year"]["Months"].values())[-1]
+		last_diary_slim = list(last_month["Diary Slims"].values())[-1]
 
-			self.caller = inspect.stack()[3][1].split("\\")[-2]
-		
-			if self.caller != "Create_New_Diary_Slim":
-				from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
+		# Create the custom date of the last Diary Slim
+		date = self.Date.From_String(last_diary_slim["Formats"]["DD-MM-YYYY"], format = "%d-%m-%Y")
 
-				Create_New_Diary_Slim()
+		# Create the current year dictionary
+		current_year = self.Current_Diary_Slim(date = date)
 
-				print()
-
-		self.File.Edit(self.current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
+		self.File.Edit(current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
 
 		if self.switches["verbose"] == True:
 			print()

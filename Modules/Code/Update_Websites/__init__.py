@@ -44,7 +44,10 @@ class Update_Websites(Code):
 				if self.update_more_websites == False:
 					self.Open_And_Close_XAMPP(close = True)
 
-		if self.update_one_website == True:
+		if (
+			self.update_one_website == True or \
+			self.update_one_website == False and self.create_website_list_to_update == True
+		):
 			self.Open_And_Close_XAMPP(close = True)
 
 		self.Open_Git_Console_Window()
@@ -58,10 +61,10 @@ class Update_Websites(Code):
 		if len(self.websites["update"]) > 1:
 			text = self.language_texts["you_finished_updating_these_websites"] + ":" + "\n"
 
-			for website in self.websites["update"]:
-				text += website
+			for key, website in self.websites["update"].items():
+				text += website[self.user_language]
 
-				if website != list(self.websites["update"].keys())[-1]:
+				if key != list(self.websites["update"].keys())[-1]:
 					text += "\n"
 
 		print(text)
