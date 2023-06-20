@@ -6,6 +6,157 @@ class Convert_History(Watch_History):
 	def __init__(self):
 		super().__init__()
 
+		self.By_File()
+		#self.By_Year()
+
+	def By_File(self):
+		from copy import deepcopy
+
+		# Copy the switches dictionary
+		switches_dictionary = deepcopy(self.switches)
+
+		# Import the Watch_Media class
+		from Watch_History.Watch_Media import Watch_Media as Watch_Media
+
+		self.Watch_Media = Watch_Media
+
+		# Import the Register class
+		from Watch_History.Register import Register as Register
+
+		self.Register = Register
+
+		# Get the History dictionary to update the entries number
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
+
+		self.year = str(self.date["Units"]["Year"])
+
+		# Define the year dictionary with the year number and folders
+		self.year = {
+			"Number": self.year,
+			"folders": {
+				"root": self.folders["watch_history"]["root"] + self.year + "/"
+			},
+			"Entries": self.dictionaries["Entries"]
+		}
+
+		# Define the "Pre-entries.json" file
+		self.year["folders"]["pre_entries"] = self.year["folders"]["root"] + "Pre-entries.json"
+
+		# Read the "Pre-entries.json" file
+		self.year["Pre-entries"] = self.JSON.To_Python(self.year["folders"]["pre_entries"])
+
+		pre_entries = list(self.year["Pre-entries"].values())
+		last_pre_entry = pre_entries[0]
+
+		# Iterate through the Entries list
+		e = 0
+		for entry in pre_entries:
+			if entry["Title"] == last_pre_entry["Title"]:
+				print()
+
+			# Define the progress text with progress (current number and entries number)
+			# Media type, entry time and name
+			progress_text = "-----" + "\n" + \
+			"\n" + \
+			str(e + 1) + "/" + str(len(pre_entries)) + ":" + "\n" + "\n" + \
+			self.JSON.Language.language_texts["type, title()"] + ":" + "\n" + \
+			"[" + entry["Type"] + "]" + "\n" + \
+			"\n" + \
+			self.Date.language_texts["date, title()"] + ":" + "\n" + \
+			"[" + entry["Date"] + "]" + "\n" + \
+			"\n" + \
+			self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + \
+			"[" + entry["Title"] + "]" + "\n"
+
+			# Convert the Date to UTC
+			entry["Date"] = self.Date.To_UTC(self.Date.From_String(entry["Date"], "%H:%M %d/%m/%Y"))
+
+			# Show the progress text
+			print(progress_text)
+
+			# Define the root dictionary with the media type and media
+			self.dictionary = {
+				"Media type": self.media_types[entry["Type"]],
+				"Media": {
+					"Title": entry["Media"]
+				}
+			}
+
+			# Select the media and define its variables, returning the media dictionary (without asking the user to select the media)
+			self.dictionary = self.Select_Media(self.dictionary)
+
+			# Define the media dictionary to speed up typing
+			self.media = self.dictionary["Media"]
+
+			# Show the media title
+			print(self.JSON.Language.language_texts["media, title()"] + ":")
+			print("[" + self.media["Title"] + "]")
+
+			# Define the media item dictionary
+			if "Item" in entry:
+				self.dictionary.update(self.Define_Media_Item(deepcopy(self.dictionary), media_item = entry["Item"]))
+
+			# Define the media dictionary to speed up typing
+			self.media = self.dictionary["Media"]
+
+			# Show the media item title
+			if self.media["Item"]["Title"] != self.media["Title"]:
+				text = "\t" + "[" + self.media["Item"]["Title"] + "]"
+
+				progress_text += "\n" + self.JSON.Language.language_texts["item"].title() + ":" + "\n" + \
+				text.replace(tab, "") + "\n"
+
+				print()
+				print(text)
+
+			# Define the title
+			self.dictionary["Defined title"] = entry["Title"]
+
+			# Add the Entry dictionary to the root dictionary
+			self.dictionary.update({
+				"Entry": {
+					"Date": entry["Date"]
+				}
+			})
+
+			# Run the "Watch_Media" class to define more media variables
+			self.dictionary = self.Watch_Media(self.dictionary, open_media = False).dictionary
+
+			self.media = self.dictionary["Media"]
+
+			self.media["States"]["Finished watching"] = True
+
+			self.media["States"]["Replace title"] = False
+
+			self.dictionary["Comment Writer"] = {
+				"States": {
+					"Backup": True,
+					"New": True,
+					"Make": False,
+					"Write": False
+				}
+			}
+
+			# Keep the original switches inside the "Switches.json" file before running the "Register" class
+			self.Global_Switches.Switch(switches_dictionary)
+
+			# Run the "Register" class to register the media unit
+			self.Register(self.dictionary)
+
+			if progress_text[-1] == "\n":
+				progress_text = progress_text[:-1]
+
+			print()
+			print(progress_text)
+
+			if entry["Title"] != last_pre_entry["Title"] and self.switches["testing"] == True:
+				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, feminine"].title() + " " + self.JSON.Language.language_texts["entry"] + ")")
+
+			print()
+
+			e += 1
+
+	def By_Year(self):
 		from copy import deepcopy
 
 		# Copy the switches dictionary
@@ -26,12 +177,12 @@ class Convert_History(Watch_History):
 
 		self.years_list = range(2018, self.date["Units"]["Year"] + 1)
 
-		# Iterate through years list (of years that contain a "Watch_History" folder)
+		# Iterate through the years list (of the years that contain a "Watch_History" folder)
 		for self.year in self.years_list:
 			# Convert the year number into a string
 			self.year = str(self.year)
 
-			# Define year dictionary with year number and folders
+			# Define the year dictionary with the year number and folders
 			self.year = {
 				"Number": self.year,
 				"folders": {
@@ -131,7 +282,7 @@ class Convert_History(Watch_History):
 				self.Input.Type("Finished creating files")
 
 			if "Episodes" in self.year["Lists"]:
-				# Add to total and comments numbers
+				# Add to the total and comments numbers
 				self.year["Entries dictionary"]["Numbers"]["Total"] = len(self.year["Lists"]["Episodes"])
 				self.year["Entries dictionary"]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Years"][self.year["Number"]]
 
@@ -140,7 +291,7 @@ class Convert_History(Watch_History):
 
 				# Iterate through the English plural media types
 				for plural_media_type in self.media_types["Plural"]["en"]:
-					# Create media type dictionary with media number and media item list (with all media titles)
+					# Create the media type dictionary with media number and media item list (with all media titles)
 					self.media_type_dictionaries[plural_media_type] = {
 						"Number": 1,
 						"Media list": self.Get_Media_List(self.media_types[plural_media_type], self.texts["statuses, type: list"]["en"])
@@ -285,6 +436,7 @@ class Convert_History(Watch_History):
 
 								self.media = self.dictionary["Media"]
 
+							# Show the media item title
 							tab = "\t"
 
 							if self.media["Item"]["Title"] != self.media["Title"]:
@@ -377,7 +529,7 @@ class Convert_History(Watch_History):
 							# Define the "Comment Writer" dictionary
 							self.dictionary["Comment Writer"] = {
 								"States": {
-									"write": False
+									"Write": False
 								}
 							}
 
@@ -506,7 +658,7 @@ class Convert_History(Watch_History):
 							states_dictionary["Christmas"] = False
 
 							# If the "25-12" text is inside the UTC time string (25 = day, 12 = month, Christmas day)
-							if "25/12" in entry["Time"]["Formats"]["HH:MM DD/MM/YYYY"]:
+							if "25/12" in entry["Date"]["Formats"]["HH:MM DD/MM/YYYY"]:
 								# Set the "Christmas" state as True
 								states_dictionary["Christmas"] = True
 
@@ -527,7 +679,7 @@ class Convert_History(Watch_History):
 							# Add Entry dictionary to root dictionary
 							self.dictionary.update({
 								"Entry": {
-									"Time": entry["Time"]
+									"Date": entry["Date"]
 								}
 							})
 

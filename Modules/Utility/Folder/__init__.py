@@ -170,6 +170,8 @@ class Folder():
 				"root": os.path.join(self.folders["user"]["appdata"]["root"], folder + "/")
 			}
 
+		self.folders["appdata"] = self.folders["user"]["appdata"]
+
 		# System32 subfolders
 		self.folders["root"]["system32"]["drivers/etc"] = self.Sanitize(os.path.join(self.folders["root"]["system32"]["root"], "drivers/etc/"))
 

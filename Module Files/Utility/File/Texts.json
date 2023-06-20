@@ -176,10 +176,6 @@
         "pt": "editado",
         "en": "Edited"
     },
-    "text, title()": {
-        "pt": "Texto",
-        "en": "Text"
-    },
     "read, title()": {
         "pt": "Ler",
         "en": "Read"

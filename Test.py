@@ -10,6 +10,7 @@ class Main():
 		self.Define_Basic_Variables()
 
 		methods = [
+			"Notepad_Theme",
 			"XML",
 			"Remove_Line_Of_Files",
 			"Add_Line_To_Files",
@@ -22,7 +23,8 @@ class Main():
 			"Copy_Playlist",
 			"Get_Comment_Info",
 			"String_To_Date",
-			"Time_Difference"
+			"Time_Difference",
+			"Play_Sound"
 		]
 
 		method_name = self.Input.Select(methods)["option"]
@@ -58,6 +60,39 @@ class Main():
 		self.full_user_language = self.JSON.Language.full_user_language
 
 		self.folders = self.Folder.folders
+
+	def Notepad_Theme(self):
+		self.File.Close("notepad++")
+
+		self.folders["notepad"] = {
+			"root": self.folders["appdata"]["roaming"]["root"] + "Notepad++/"
+		}
+
+		self.folders["notepad"]["config"] = self.folders["notepad"]["root"] + "config.xml"
+
+		config = self.File.Contents(self.folders["notepad"]["config"])["string"]
+
+		themes = [
+			"Littletato",
+			"SpaceLiving"
+		]
+
+		new_theme = self.Input.Select(themes)["option"]
+
+		new_theme_config = self.File.Contents(self.folders["notepad"]["root"] + "config (" + new_theme + ").xml")["string"]
+
+		template = 'name="DarkMode" enable="yes" colorTone="32" '
+		dark_theme_name = ' darkThemeName="DarkModeDefault ({}).xml"'.format(new_theme)
+
+		config = re.sub(template + '.*darkThemeName=".*\.xml"', template + new_theme_config + dark_theme_name, config)
+
+		self.File.Edit(self.folders["notepad"]["config"], config, "w")
+
+		self.Date.Sleep(2)
+
+		notepad = self.folders["root"]["program_files"]["root"] + "Notepad++/notepad++.exe"
+
+		self.File.Open(notepad)
 
 	def Time_Difference(self):
 		before = self.Date.Now()
@@ -699,5 +734,28 @@ class Main():
 			print(key + ":")
 			self.Text.Copy(self.Text.From_List(list_))
 			input()
+
+	def Play_Sound(self):
+		from gtts import gTTS
+		from io import BytesIO
+
+		print()
+
+		import pygame
+
+		mp3_file_object = BytesIO()
+		tts = gTTS(self.Input.Type("Text"), lang = "pt")
+		tts.save("Test.mp3")
+		file = open("test.mp3", "r")
+
+		print(file)
+
+		pygame.init()
+		pygame.mixer.init()
+		pygame.mixer.music.load(file, "mp3")
+		pygame.mixer.music.play()
+
+		import time
+		time.sleep(15)
 
 Main()

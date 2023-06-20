@@ -56,10 +56,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				#self.texts["animes, title()"]["en"],
-				#self.texts["cartoons, title()"]["en"],
-				#self.texts["series, title()"]["en"],
-				#self.texts["movies, title()"]["en"],
+				self.texts["animes, title()"]["en"],
+				self.texts["cartoons, title()"]["en"],
+				self.texts["series, title()"]["en"],
+				self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 
@@ -81,7 +81,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 					print()
 					print("\t" + "---")
 					print()
-					print("\t" + self.dictionary["Media"]["Title"] + ":")
+					print("\t" + self.JSON.Language.language_texts["media, title()"] + ":")
+					print("\t" + "[" + self.dictionary["Media"]["Title"] + "]")
 
 					# Select media and define its variables, returning the media dictionary (without asking user to select the media)
 					self.dictionary = self.Select_Media(self.dictionary)
@@ -102,7 +103,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 						# Show media item title
 						print()
-						print("\t\t" + self.dictionary["Media"]["Item"]["Title"] + ":")
+						print("\t\t" + "[" + self.dictionary["Media"]["Item"]["Title"] + "]:")
 
 						# Verify if empty episodes' titles files exist
 						#self.Check_Episodes_Titles()

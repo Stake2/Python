@@ -195,6 +195,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 				print()
 
+				if hasattr(self, "Create_New_Diary_Slim") == False:
+					from Diary_Slim.Create_New_Diary_Slim import Create_New_Diary_Slim as Create_New_Diary_Slim
+
+					self.Create_New_Diary_Slim = Create_New_Diary_Slim
+
 				# Create the skipped Diary Slims
 				for day in diary_slims_dictionary:
 					day = diary_slims_dictionary[day]
@@ -204,7 +209,12 @@ class Create_New_Diary_Slim(Diary_Slim):
 						"Check": True
 					}
 
-					Create_New_Diary_Slim(dictionary)
+					# Create
+					self.Create_New_Diary_Slim = self.Create_New_Diary_Slim(dictionary)
+
+					# Update local year and month variables here with the new variables
+					self.current_year = self.Create_New_Diary_Slim.current_year
+					self.current_month = self.Create_New_Diary_Slim.current_month
 
 					print()
 
@@ -214,37 +224,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 	def Write_To_Files(self):
 		from copy import deepcopy
-
-		# Write the header text into the Diary Slim
-		if self.dictionary["Diary Slim exists"] == False:
-			if "Check" in self.dictionary:
-				print()
-
-			print(self.dash_space)
-
-			if "Check" not in self.dictionary:
-				print()
-
-			# Get the file text
-			self.current_day_file_text = self.File.Contents(self.dictionary["File"])["string"]
-
-			# Define the text to write
-			text_to_write = self.dictionary["Text header"] + "\n\n" + self.dictionary["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"] + ":\n" + self.dictionary["Today is"] + "\n\n" + self.dictionary["Header"]
-
-			# If the file is empty
-			if self.current_day_file_text == "":
-				verbose = None
-
-				if "Check" in self.dictionary:
-					verbose = False
-
-				# Write the header text into the Diary Slim file
-				Write_On_Diary_Slim_Module(text_to_write, add_time = False, check_file_length = False, verbose = verbose)
-
-		# Open the Diary Slim file
-		self.File.Open(self.dictionary["File"])
-
-		# ----- #
 
 		# Add the Diary Slim to the database
 		if self.dictionary["Diary Slim exists"] == False:
@@ -324,4 +303,35 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# Edit the "Year.json" file with the new Year dictionary
 			self.JSON.Edit(self.folders["diary_slim"]["current_year"]["year"], self.current_year["Year"], verbose = verbose)
 
-			super().__init__()
+		# ----- #
+
+		# Write the header text into the Diary Slim
+		if self.dictionary["Diary Slim exists"] == False:
+			if "Check" in self.dictionary:
+				print()
+
+			print(self.dash_space)
+
+			if "Check" not in self.dictionary:
+				print()
+
+			# Get the file text
+			self.current_day_file_text = self.File.Contents(self.dictionary["File"])["string"]
+
+			# Define the text to write
+			text_to_write = self.dictionary["Text header"] + "\n\n" + self.dictionary["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"] + ":\n" + self.dictionary["Today is"] + "\n\n" + self.dictionary["Header"]
+
+			# If the file is empty
+			if self.current_day_file_text == "":
+				verbose = None
+				check_diary_slim = True
+
+				if "Check" in self.dictionary:
+					verbose = False
+					check_diary_slim = False
+
+				# Write the header text into the Diary Slim file
+				Write_On_Diary_Slim_Module(text_to_write, add_time = False, check_file_length = False, check_diary_slim = check_diary_slim, verbose = verbose)
+
+		# Open the Diary Slim file
+		self.File.Open(self.dictionary["File"])

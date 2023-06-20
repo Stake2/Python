@@ -687,12 +687,8 @@ class Watch_History(object):
 		if "Title" not in media:
 			language_options = dictionary["Media type"]["Media list"]
 
-			print(len(language_options))
-
 			if "Media list (option)" in dictionary["Media type"]:
 				language_options = dictionary["Media type"]["Media list (option)"]
-
-			print(len(language_options))
 
 			media.update({
 				"Title": self.Input.Select(dictionary["Media type"]["Media list"], language_options = language_options, show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]

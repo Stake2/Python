@@ -1022,6 +1022,18 @@
 		"en": "Wrong format, utilize this one",
 		"pt": "Formato incorreto, utilize este"
 	},
+	"text_difference": {
+		"en": "Text difference",
+		"pt": "Diferença de texto"
+	},
+	"text, title()": {
+        "en": "Text",
+        "pt": "Texto"
+    },
+	"line, title()": {
+		"en": "Line",
+		"pt": "Linha"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

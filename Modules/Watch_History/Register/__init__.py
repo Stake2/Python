@@ -42,7 +42,8 @@ class Register(Watch_History):
 
 		self.Define_Diary_Slim_Text()
 
-		self.Post_On_Social_Networks()
+		if "Defined title" not in self.dictionary:
+			self.Post_On_Social_Networks()
 
 		self.Write_On_Diary_Slim()
 

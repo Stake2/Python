@@ -178,6 +178,107 @@ class File():
 
 			return False
 
+	def Text_From_List(self, list_, break_line = True, separator = ""):
+		string = ""
+
+		i = 0
+		for item in list_:
+			string += item
+
+			if i != len(list_) - 1:
+				if separator != "":
+					string += separator
+
+				if break_line == True:
+					string += "\n"
+
+			i += 1
+
+		return string
+
+	def Text_Difference(self, file_text, text_lines_to_write):
+		if type(file_text) == dict:
+			file_text = file_text["lines"]
+
+		if type(text_lines_to_write) == str:
+			text_lines_to_write = text_lines_to_write.splitlines()
+
+		# Make the text difference between the text inside the file and the text to be written
+		text_difference = []
+
+		line_text = self.JSON.Language.language_texts["line, title()"]
+
+		template = "\t\t" + line_text + " {}:"
+
+		text_lines_number = str(len(text_lines_to_write))
+		file_lines_number = len(file_text)
+
+		i = 0
+		for line in text_lines_to_write:
+			add = False
+
+			# If the number of file lines is greater than or equal to number of text lines
+			# Or the number of file lines is lesser than the number of text lines
+			if (
+				len(file_text) >= len(text_lines_to_write) or \
+				len(file_text) < len(text_lines_to_write)
+			):
+				# If the number of file lines is greater than or equal to number of text lines
+				if len(file_text) >= len(text_lines_to_write):
+					# And the current file line is not the same as the text line
+					if file_text[i] != text_lines_to_write[i]:
+						# Add the line to the text difference list
+						add = True
+
+					# And the line is not inside the file lines list or the line is empty
+					if line not in file_text or line == "":
+						# Add the line to the text difference list
+						add = True
+
+				# If the number of file lines is lesser than the number of text lines
+				if len(file_text) < len(text_lines_to_write):
+					# And the line is not inside the file lines list or the line is empty
+					if line not in file_text or line == "":
+						# Add the line to the text difference list
+						add = True
+
+				# Add the line to the text difference list
+				if add == True:
+					number_string = str(i + 1)
+
+					if len(text_lines_to_write) < len(file_text):
+						number_string = str(file_lines_number + 1)
+
+						file_lines_number += 1
+
+					while len(number_string) < len(text_lines_number):
+						number_string = " " + number_string
+
+					line = template.format(number_string) + " " + line
+
+					# If the "i" number is greater than the number of file lines
+					# Or the number of text lines is lesser than the number of file lines
+					# Add the "+ " text to show that it is a new line
+					if (i + 1) > len(file_text) or len(text_lines_to_write) < len(file_text):
+						symbol = "+"
+
+					# If the "i" number is lesser than or equal to the number of file lines
+					# And the number of text lines is greater than the number of file lines
+					# Add the "~ " text to show that it is a modified line
+					if (i + 1) <= len(file_text) and len(text_lines_to_write) > len(file_text):
+						symbol = "~"
+
+					line = line.replace(line_text, symbol + " " + line_text)
+
+					# Add the line to the text difference list
+					text_difference.append(line)
+
+			i += 1
+
+		text_difference = self.Text_From_List(text_difference)
+
+		return text_difference
+
 	def Edit(self, file, text, mode = "w", next_line = True, verbose = None):
 		file = self.Sanitize(file)
 
@@ -189,9 +290,28 @@ class File():
 		if next_line == True and length != 0 and mode == "a":
 			line_break = "\n"
 
+		text_backup = text
+
 		text = line_break + text
 
-		file_text = file + "\n\n\t" + self.language_texts["text, title()"] + ":\n[" + text + "]"
+		maximum_lines = 20
+
+		# If the number of lines is lesser or equal to the maximum number of lines to show
+		# Or the file is empty
+		# Show the full text to be written (text inside file plus new text)
+		if len(contents["lines"]) <= maximum_lines or contents["lines"] == []:
+			verbose_text = self.JSON.Language.language_texts["text, title()"] + ":\n[" + text + "]"
+
+		# If the number of lines is greater than the maximum number of lines to show
+		# And the file is not empty
+		# Show only the text difference
+		if len(contents["lines"]) > maximum_lines and contents["lines"] != []:
+			# Make the text difference between the text inside the file and the text to be written
+			text_difference = self.Text_Difference(contents, text_backup)
+
+			verbose_text = self.JSON.Language.language_texts["text_difference"] + ":\n\t[\n" + text_difference + "\n\t]"
+
+		file_text = file + "\n\n\t" + verbose_text
 
 		if self.Exist(file) == True:
 			if self.switches["file"]["edit"] == True and contents["string"] != text:

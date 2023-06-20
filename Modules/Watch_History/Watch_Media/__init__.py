@@ -28,12 +28,14 @@ class Watch_Media(Watch_History):
 		self.Define_Episode_Variables()
 
 		if self.media["States"]["Open media"] == True:
-			self.Define_Episode_Unit()
+			self.Define_Media_Unit()
 			self.Show_Information()
-			self.Open_Episode_Unit()
-			self.Create_Discord_Status()
-			self.Comment_On_Media()
-			self.Register_The_Media()
+
+			if "Defined title" not in self.dictionary:
+				self.Open_Media_Unit()
+				self.Create_Discord_Status()
+				self.Comment_On_Media()
+				self.Register_The_Media()
 
 	def Define_Media_Dictionary(self):
 		# Select the media type and the media if the dictionary is empty
@@ -181,8 +183,11 @@ class Watch_Media(Watch_History):
 			self.media["Episode"].update({
 				"Title": self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]],
 				"Titles": {},
-				"Sanitized": self.Sanitize_Title(self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]])
+				"Sanitized": self.Sanitize(self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]], restricted_characters = True)
 			})
+
+			if "Defined title" in self.dictionary:
+				self.media["Episode"]["Title"] = self.dictionary["Defined title"]
 
 			for alternative_episode_type in self.alternative_episode_types:
 				if alternative_episode_type in self.media["Episode"]["Title"]:
@@ -533,7 +538,7 @@ class Watch_Media(Watch_History):
 		if self.media["States"]["Re-watching"] == True:
 			self.dictionary["header_text"] = self.dictionary["header_text"].replace(self.language_texts["watch"], self.language_texts["re_watch"])
 
-	def Define_Episode_Unit(self):
+	def Define_Media_Unit(self):
 		# Local media episode file definition
 		if self.media["States"]["Local"] == True:
 			if self.media["States"]["Video"] == False:
@@ -631,7 +636,7 @@ class Watch_Media(Watch_History):
 	def Show_Information(self):
 		self.Show_Media_Information(self.dictionary)
 
-	def Open_Episode_Unit(self):
+	def Open_Media_Unit(self):
 		# Open media unit with its executor
 		self.File.Open(self.media["Episode"]["unit"])
 
