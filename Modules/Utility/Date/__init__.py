@@ -186,6 +186,13 @@ class Date():
 
 					i += 1
 
+				#date[date_name][date_type]["Formats"]["Unix"] = self.Datetime(1970, 1, 1).replace(microsecond = 0).astimezone(pytz.UTC)
+				#date[date_name][date_type]["Formats"]["Unix"] = self.Datetime(1970, 1, 1).astimezone(pytz.UTC)
+				#date[date_name][date_type]["Formats"]["Unix"] = date["UTC"]["Object"] - date[date_name][date_type]["Formats"]["Unix"]
+				#date[date_name][date_type]["Formats"]["Unix"] = date[date_name][date_type]["Formats"]["Unix"].total_seconds()
+
+				date[date_name][date_type]["Formats"]["Unix"] = int(date[date_name]["Object"].timestamp())
+
 			# Create the "DateTime" key
 			if "DateTime" not in date[date_name]:
 				date[date_name]["DateTime"] = {}

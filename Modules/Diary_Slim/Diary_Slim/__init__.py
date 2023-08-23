@@ -66,7 +66,8 @@ class Diary_Slim():
 					"Numbers": {
 						"Year": 2023,
 						"Month": 6,
-						"Days": 30
+						"Days": 30,
+						"Diary Slims": 0
 					},
 					"Names": {
 						"pt": "Junho",
@@ -114,13 +115,15 @@ class Diary_Slim():
 			},
 			"Month": {
 				"Numbers": {
-					"Year": 0,
-					"Month": 0,
-					"Days": 0,
+					"Year": self.date["Units"]["Year"],
+					"Month": self.date["Units"]["Month"],
+					"Days": self.date["Units"]["Month days"],
 					"Diary Slims": 0
 				},
-				"Names": {},
-				"Formats": {},
+				"Names": self.date["Texts"]["Month name"],
+				"Formats": {
+					"Diary Slim": self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"]) + " - " + self.date["Texts"]["Month name"][self.user_language]
+				},
 				"Diary Slims": {}
 			},
 			"Day": {
@@ -268,8 +271,14 @@ class Diary_Slim():
 			"Dictionary": {}
 		}
 
+		# Define and create the month folder
 		self.current_year["Month"]["Folder"] = self.folders["diary_slim"]["current_year"]["root"] + self.current_year["Month"]["Name"] + "/"
+		self.Folder.Create(self.current_year["Month"]["Folder"])
+
+		# Define and create the month file
 		self.current_year["Month"]["File"] = self.current_year["Month"]["Folder"] + "Month.json"
+		self.File.Create(self.current_year["Month"]["File"])
+
 		self.current_year["Month"]["Month"] = deepcopy(self.templates["Month"])
 
 		if self.File.Contents(self.current_year["Month"]["File"])["lines"] != []:
@@ -279,7 +288,7 @@ class Diary_Slim():
 
 		self.current_year["File"] = self.Current_Diary_Slim()["File"]
 
-		# Files
+		# Slim texts file
 		self.folders["diary_slim"]["data"]["slim_texts"] = self.folders["diary_slim"]["data"]["root"] + "Slim texts.json"
 		self.File.Create(self.folders["diary_slim"]["data"]["slim_texts"])
 

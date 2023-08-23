@@ -12,6 +12,7 @@ class Main():
 		methods = [
 			"Notepad_Theme",
 			"XML",
+			"Remove_Dots_From_String",	
 			"Remove_Line_Of_Files",
 			"Add_Line_To_Files",
 			"Replace_Lines",
@@ -152,6 +153,8 @@ class Main():
 		extension.setAttribute("application", "http://www.videolan.org/vlc/playlist/0")
 		playlist.appendChild(extension)
 
+		excluded_extensions = ["SRT", "srt", "png", "jpg", "jpeg", "txt"]
+
 		i = 0
 		for title in titles:
 			print()
@@ -160,16 +163,27 @@ class Main():
 			print(str(i + 1) + "/" + str(len(titles)) + ":")
 			print(title)
 
+			sanitized_title = self.File.Sanitize(title, restricted_characters = True)
+
+			if sanitized_title != title:
+				print(sanitized_title)
+
 			file = ""
 
 			for item in files:
-				if (
-					self.File.Sanitize(title, restricted_characters = True) in item and
-					"srt" not in item and "png" not in item and "jpg" not in item and "txt" not in item
-				):
-					file = item
+				if sanitized_title in item:
+					extensions_list = []
+
+					for ext in excluded_extensions:
+						if ext not in item and item.split(".")[-1] != ext:
+							extensions_list.append(ext)
+
+					if len(extensions_list) == len(excluded_extensions):
+						file = item
 
 			if file != "":
+				print()
+				print(self.File.language_texts["file, title()"] + ":")
 				print(file)
 
 				track = document.createElement("track")
@@ -179,7 +193,11 @@ class Main():
 
 					if item == "location":
 						from requests.utils import requote_uri
-						text = document.createTextNode("file:///./" + requote_uri(self.File.Name(file) + "." + file.split(".")[-1]))
+
+						url = self.File.Name(file) + "." + file.split(".")[-1]
+						url = url.replace("#", "%23")
+
+						text = document.createTextNode("file:///./" + url)
 						element.appendChild(text)
 
 					if item == "title":
@@ -221,7 +239,28 @@ class Main():
 		self.File.Edit(playlist_file, export)
 
 		print()
+		print("-----")
+		print()
+		print(self.JSON.Language.language_texts["playlist, title()"] + ":")
 		print(playlist_file)
+
+	def Remove_Dots_From_String(self):
+		type = ""
+
+		while type != "exit":
+			type = self.Input.Type()
+
+			if type != "exit":
+				clipboard = self.Text.Get_Clipboard().splitlines()
+
+				i = 0
+				for line in clipboard:
+					if line != "" and line[-1] == "." and line[-3] + line[-2] + line[-1] != "...":
+						clipboard[i] = clipboard[i][:-1]
+
+					i += 1
+
+				self.Text.Copy(self.Text.From_List(clipboard))
 
 	def Remove_Line_Of_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -606,23 +645,106 @@ class Main():
 		return add_to_playlist
 
 	def String_To_Date(self):
-		before = self.Date.Now(self.Date.Datetime(2023, 1, 20, 2, 10, 22))["Object"]
-		today = self.Date.Now()["Object"]
+		templates = {}
 
-		relative_delta_difference = self.Date.Difference(before, today)
-		date_difference = self.Date.Difference(before, today)
+		for key in self.Date.texts["date_and_time_texts, type: dict"].keys():
+			text_code = self.Date.texts["date_and_time_texts, type: dict"][key]
 
-		print()
-		print("Antes:")
-		print("\t" + self.Date.Now(before)["Formats"]["HH:MM:SS DD/MM/YYYY"])
-		print()
-		print("Hoje:")
-		print("\t" + self.Date.Now(today)["Formats"]["HH:MM:SS DD/MM/YYYY"])
-		print()
-		print("Diferença até hoje (Date.Difference):")
-		print("\t" + date_difference["Text"][self.user_language])
+			templates[key] = "<t:" + "{}:" + text_code + ">"
 
-		self.JSON.Show(self.Date.Now())
+		dictionary = {}
+
+		for key in self.Date.texts["date_and_time_texts, type: dict"].keys():
+			if key in self.Date.language_texts:
+				text = self.Date.language_texts[key]
+
+			else:
+				text = self.Date.language_texts[key + ", title()"]
+
+			template = templates[key]
+
+			date = self.Date.Now()
+
+			formatted_template = template.format(date["Formats"]["Unix"])
+
+			dictionary[text + ": " + formatted_template] = formatted_template
+
+		text_templates = "Há [] {}(s)", "Em [] {}(s)"
+
+		time_texts = ["segundo", "minuto", "hora", "dia"]
+
+		for time_text in time_texts:
+			template = text_templates[0].format(time_text)
+
+			dictionary[template] = template
+
+			template = text_templates[1].format(time_text)
+
+			dictionary[template] = template
+
+		dictionary["Data"] = "Data"
+		dictionary["Tempo"] = "Tempo"
+
+		dictionary[self.JSON.Language.language_texts["exit, title()"]] = "Exit"
+
+		options = list(dictionary.values())
+		language_options = list(dictionary.keys())
+
+		test = True
+
+		if test == True:
+			select = {
+				"option": ""
+			}
+
+			while select["option"] != "Exit":
+				select = self.Input.Select(options, language_options)
+
+				key = select["language_option"]
+
+				for time_text in time_texts:
+					if time_text == "segundo":
+						text_key = "seconds"
+
+					if time_text == "minuto":
+						text_key = "minutes"
+
+					if time_text == "hora":
+						text_key = "hours"
+
+					if time_text == "dia":
+						text_key = "days"
+
+					possible_options = [text_templates[0].format(time_text), text_templates[1].format(time_text)]
+
+					number = ""
+
+					if select["language_option"] in possible_options:
+						number = int(self.Input.Type(self.Date.language_texts[text_key + ", title()"]))
+
+					dict_ = {
+						text_key: number
+					}
+
+					if number != "":
+						timedelta = self.Date.Timedelta(**dict_)
+
+						if select["language_option"] == text_templates[0].format(time_text):
+							date = self.Date.Now(self.Date.Now()["Object"] - timedelta)
+
+						if select["language_option"] == text_templates[1].format(time_text):
+							date = self.Date.Now(self.Date.Now()["Object"] + timedelta)
+
+				dictionary[key] = templates["relative"].format(date["Formats"]["Unix"])
+
+				if select["option"] != "Exit":
+					select["option"] = dictionary[key]
+
+				self.Text.Copy(select["option"])
+
+			print()
+
+			self.JSON.Show(dictionary)
 
 	def Tables(self):
 		link = ""

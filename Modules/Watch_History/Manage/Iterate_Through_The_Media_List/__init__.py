@@ -87,23 +87,29 @@ class Iterate_Through_The_Media_List(Watch_History):
 					# Select media and define its variables, returning the media dictionary (without asking user to select the media)
 					self.dictionary = self.Select_Media(self.dictionary)
 
+					# Define the media dictionary
+					self.media = self.dictionary["Media"]
+
 					# Define the media items list as the media title for media without a media item list
 					self.media_items_list = [
 						self.dictionary["Media"]["Item"]["Title"]
 					]
 
-					# For media with media item list, get the actual media items
+					# For media with the media item list, get the actual media items
 					if self.dictionary["Media"]["States"]["Media item list"] == True:
 						self.media_items_list = self.dictionary["Media"]["Items"]["List"]
 
-					# Iterate through media items list
+					# Iterate through the media items list
+					self.media_item_number = 0
+
 					for self.media_item in self.media_items_list:
 						# Define media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
 						# Show media item title
 						print()
-						print("\t\t" + "[" + self.dictionary["Media"]["Item"]["Title"] + "]:")
+						print("\t\t" + self.JSON.Language.language_texts["item"].title() + ":")
+						print("\t\t" + "[" + self.dictionary["Media"]["Item"]["Title"] + "]")
 
 						# Verify if empty episodes' titles files exist
 						#self.Check_Episodes_Titles()
@@ -136,6 +142,11 @@ class Iterate_Through_The_Media_List(Watch_History):
 						#		self.Watch_Media = Watch_Media
 						#
 						#	self.Watch_Media(self.dictionary, open_media = False)
+
+						# Move the media folder to the new media type local folder
+						#self.Move_Folder()
+
+						self.media_item_number += 1
 
 					if self.switches["testing"] == True and self.media_title != media_list[-1]:
 						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
@@ -856,6 +867,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 		# Add episodes and episode titles, pictures, (media items), original language, and country of origin
 		# -------------- #
 
+		variable = None
+
 	def Paste_Links(self, media_dictionary):
 		links = {
 			"Official": {
@@ -1100,3 +1113,35 @@ class Iterate_Through_The_Media_List(Watch_History):
 		for item in items_to_remove:
 			if item in new_information:
 				new_information.pop(item)
+
+	def Move_Folder(self):
+		old_folder = self.media["folders"]["media"]["root"]
+
+		media_type_key = self.dictionary["Media type"]["Plural"]["en"].lower().replace(" ", "_")
+
+		new_folder = self.folders["media"][media_type_key]["root"] + self.media["Titles"]["Sanitized"] + "/"
+
+		if self.Folder.Exist(old_folder) == True and self.Folder.Exist(new_folder) == False and self.media_item_number == 0:
+			self.Folder.Create(new_folder)
+
+			# Move the "C:/" folder
+			self.Folder.Move(old_folder, new_folder)
+
+			# Move the "D:/" folder
+			old_folder = old_folder.replace("C:", "D:")
+			new_folder = new_folder.replace("C:", "D:")
+
+			self.Folder.Create(new_folder)
+
+			self.Folder.Move(old_folder, new_folder)
+
+		# Delete the empty old folders
+		old_folder = self.Folder.folders["root"]["media"]["root"] + self.media["Titles"]["Sanitized"] + "/"
+
+		import os
+
+		if self.Folder.Exist(old_folder) == True:
+			file_list = self.Folder.Contents(old_folder)["file"]["list"]
+
+			if file_list == []:
+				self.Folder.Delete(old_folder)

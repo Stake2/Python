@@ -74,15 +74,18 @@ class Folder():
 			"Program Files",
 			"Program Files (x86)",
 			"Apps",
+			"Art",
 			"Mega",
 			"Media",
 			"Games",
-			"Sony Vegas Files",
 			"XAMPP"
 		]
 
 		for name in folder_names:
 			key = name.lower().replace(" ", "_")
+
+			if name == "Art":
+				name = "Arte"
 
 			if name == "Media":
 				name = "Mídias"
@@ -100,10 +103,10 @@ class Folder():
 		if "game_folder" in self.app_settings:
 			self.folders["root"]["games"]["root"] = self.app_settings["game_folder"]
 
-		# Apps folders
+		# "Apps" folders
 		self.folders["apps"] = self.folders["root"]["apps"]
 
-		# Apps sub folders
+		# "Apps" sub folders
 		for folder in ["Module files", "Modules", "Shortcuts"]:
 			key = folder.lower().replace(" ", "_")
 
@@ -143,7 +146,7 @@ class Folder():
 			"root": self.Sanitize(os.path.join(self.folders["root"]["users"], pathlib.Path.home().name + "/"))
 		}
 
-		# User sub folders
+		# "User" sub folders
 		for folder in ["AppData", "Downloads", "Pictures", "Videos"]:
 			key = folder.lower().replace(" ", "_")
 
@@ -151,7 +154,7 @@ class Folder():
 				"root": os.path.join(self.folders["user"]["root"], folder + "/")
 			}
 
-		# Downloads folders
+		# "Downloads" folders
 		for folder in ["Mega", "Vídeos"]:
 			key = folder.lower().replace(" ", "_")
 
@@ -162,7 +165,7 @@ class Folder():
 				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/")
 			}
 
-		# AppData folders
+		# "AppData" folders
 		for folder in ["Local", "Roaming"]:
 			key = folder.lower().replace(" ", "_")
 
@@ -175,12 +178,36 @@ class Folder():
 		# System32 subfolders
 		self.folders["root"]["system32"]["drivers/etc"] = self.Sanitize(os.path.join(self.folders["root"]["system32"]["root"], "drivers/etc/"))
 
-		# Sony Vegas Files subfolders
+		# "Art" subfolders
+		folders = [
+			"Paint Tool SAI",
+			"Photoshop",
+			"Sony Vegas"
+		]
+
+		self.folders["art"] = self.folders["root"]["art"]
+
+		for folder in folders:
+			key = folder.lower().replace(" ", "_")
+
+			self.folders["art"][key] = {
+				"root": os.path.join(self.folders["art"]["root"], folder + "/")
+			}
+
+		# Art "Photoshop" subfolders
+		for folder in ["Ana", "Games", "Media", "Operational System", "PHP", "Render", "Stake2", "Stories", "Websites"]:
+			key = folder.lower().replace(" ", "_")
+
+			self.folders["art"]["photoshop"][key] = {
+				"root": os.path.join(self.folders["art"]["photoshop"]["root"], folder + "/")
+			}
+
+		# Art "Sony Vegas" subfolders
 		for folder in ["Render", "Story Covers"]:
 			key = folder.lower().replace(" ", "_")
 
-			self.folders["root"]["sony_vegas_files"][key] = {
-				"root": os.path.join(self.folders["root"]["sony_vegas_files"]["root"], folder + "/")
+			self.folders["art"]["sony_vegas"][key] = {
+				"root": os.path.join(self.folders["art"]["sony_vegas"]["root"], folder + "/")
 			}
 
 		# XAMPP folder
@@ -353,7 +380,7 @@ class Folder():
 				# Entry list.txt file
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
 
-		# "Years" folders
+		# Mega "Years" folders
 		for item in range(2021, self.date["Units"]["Year"] + 1):
 			key = str(item).lower().replace(" ", "_")
 
@@ -431,7 +458,12 @@ class Folder():
 					"root": os.path.join(self.folders["mega"]["websites"]["root"], item + "/")
 				}
 
-		self.folders["mega"]["websites"]["images"]["story_covers"] = self.folders["mega"]["websites"]["images"]["root"] + "Story Covers/"
+		self.folders["mega"]["websites"]["images"]["story_covers"] = {
+			"root": self.folders["mega"]["websites"]["images"]["root"] + "Story Covers/"
+		}
+
+		# "Media" folder
+		self.folders["media"] = self.folders["root"]["media"]
 
 		# Get website subdomain
 		self.website = {}
@@ -614,7 +646,7 @@ class Folder():
 
 				shutil.move(source, destination)
 
-			self.Verbose(self.language_texts["source_folder"] + ":\n" + source_folder + "\n\n" + self.language_texts["destination_folder"], destination_folder)
+			self.Verbose(self.language_texts["source_folder"] + ":\n\t" + source_folder + "\n\n\t" + self.language_texts["destination_folder"], destination_folder)
 
 			return True
 

@@ -55,14 +55,6 @@
 		"en": "Select a chapter to",
 		"pt": "Selecione um capítulo para"
 	},
-	"skip, title()": {
-		"en": "Skip",
-		"pt": "Pular"
-	},
-	"skip_the": {
-		"en": "Skip the",
-		"pt": "Pular a"
-	},
 	"you_skipped_the": {
 		"en": "You skipped the",
 		"pt": "Você pulou a"
@@ -86,30 +78,6 @@
 	"social_network_posting": {
 		"en": "Social Network posting",
 		"pt": "postagem nas Redes Sociais"
-	},
-	"id, title()": {
-		"en": "ID",
-		"pt": "ID"
-	},
-	"links, title()": {
-		"en": "Links",
-		"pt": "Links"
-	},
-	"website_link": {
-		"en": "Website link",
-		"pt": "Link do site"
-	},
-	"portrait, title()": {
-		"en": "Portrait",
-		"pt": "Retrato"
-	},
-	"landscape, title()": {
-		"en": "Landscape",
-		"pt": "Paisagem"
-	},
-	"in_{}_mode": {
-		"en": "in {} mode",
-		"pt": "em modo {}"
 	},
 	"opening_the_vegas_file_of_chapter_covers, type: long": {
 		"en": "Opening the Vegas file of chapter covers in [{}] mode.\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
@@ -139,14 +107,6 @@
 		"en": "Paste the second part of the card of {} on the post text box",
 		"pt": "Cole a segunda parte do card do {} na caixa de texto da postagem"
 	},
-	"and": {
-		"en": "and",
-		"pt": "e"
-	},
-	"and_in": {
-		"en": "and in",
-		"pt": "e em"
-	},
 	"copying_the_cover_to_the_{}_folder": {
 		"en": "Copying the cover to the {} folder",
 		"pt": "Copiando a capa para a pasta {}"
@@ -163,10 +123,6 @@
 		"en": "Now render the covers in",
 		"pt": "Agora renderize as capas em"
 	},
-	"move, title()": {
-		"en": "Move",
-		"pt": "Mover"
-	},
 	"mega_stories": {
 		"en": "Mega Stories",
 		"pt": "de Histórias do Mega"
@@ -182,14 +138,6 @@
 	"the_{}_part_of_the": {
 		"en": "the {} of the",
 		"pt": "a {} parte do"
-	},
-	"first": {
-		"en": "first",
-		"pt": "primeira"
-	},
-	"second": {
-		"en": "second",
-		"pt": "segunda"
 	},
 	"one_more_chapter": {
 		"en": "One more chapter",
@@ -218,38 +166,6 @@
 			"Status",
 			"Sinopse"
 		]
-	},
-	"title": {
-		"en": "title",
-		"pt": "título"
-	},
-	"title, title()": {
-		"en": "Title",
-		"pt": "Título"
-	},
-	"titles": {
-		"en": "titles",
-		"pt": "títulos"
-	},
-	"titles, title()": {
-		"en": "Titles",
-		"pt": "Títulos"
-	},
-	"author, title()": {
-		"en": "Author",
-		"pt": "Autor"
-	}, 
-	"creation_date": {
-		"en": "Creation date",
-		"pt": "Data de criação"
-	},
-	"status, title()": {
-		"en": "Status",
-		"pt": "Status"
-	},
-	"synopsis, title()": {
-		"en": "Synopsis",
-		"pt": "Sinopse"
 	},
 	"story_title_in_{}": {
 		"en": "Story title in {}",
@@ -323,30 +239,6 @@
 		"en": "Writing modes",
 		"pt": "Modos de escrita"
 	},
-	"write": {
-		"en": "write",
-		"pt": "escrever"
-	},
-	"write, title()": {
-		"en": "Write",
-		"pt": "Escrever"
-	},
-	"revise": {
-		"en": "revise",
-		"pt": "revisar"
-	},
-	"revise, title()": {
-		"en": "Revise",
-		"pt": "Revisar"
-	},
-	"translate": {
-		"en": "translate",
-		"pt": "traduzir"
-	},
-	"translate, title()": {
-		"en": "Translate",
-		"pt": "Traduzir"
-	},
 	"select_a_writing_mode": {
 		"en": "Select a writing mode",
 		"pt": "Selecione um modo de escrita"
@@ -375,18 +267,6 @@
 		"en": "{} this chapter",
 		"pt": "{} este capítulo"
 	},
-	"now_time": {
-		"en": "Now time",
-		"pt": "Tempo agora"
-	},
-	"after_{}_time": {
-		"en": "After {} time",
-		"pt": "Tempo após {}"
-	},
-	"time_difference": {
-		"en": "Time difference",
-		"pt": "Diferença de tempo"
-	},
 	"type_or_paste_the_chapter_title_in_{}": {
 		"en": "Type or paste the chapter title in {}",
 		"pt": "Digite ou cole o título do capítulo em {}"
@@ -402,18 +282,6 @@
 	"i_still_did_not_finished_{}_the_chapter": {
 		"en": "I still did not finished {} the chapter",
 		"pt": "Eu ainda não terminei de {} o capítulo"
-	},
-	"to": {
-		"en": "to",
-		"pt": "para"
-	},
-	"to_{}": {
-		"en": "to {}",
-		"pt": "para {}"
-	},
-	"{}_time": {
-		"en": "{} time",
-		"pt": "Tempo de {}"
 	},
 	"post": {
 		"en": "post",
@@ -473,10 +341,6 @@
 			"Portrait"
 		]
 	},
-	"number, title()": {
-		"en": "Number",
-		"pt": "Número"
-	},
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",
 		"pt": "Selecione {} para {}"
@@ -488,14 +352,6 @@
 	"please_select_one_{}_to_copy": {
 		"en": "Please select one {} to copy",
 		"pt": "Por favor selecione um {} para copiar"
-	},
-	"one_{}": {
-		"en": "one {} to copy",
-		"pt": "um {} para copiar"
-	},
-	"to_copy": {
-		"en": "to copy",
-		"pt": "um {} para copiar"
 	},
 	"copy_modes": {
 		"en": "Copy modes",
@@ -517,17 +373,9 @@
 			"Acrônimo"
 		]
 	},
-	"normal, title()": {
-		"en": "Normal",
-		"pt": "Normal"
-	},
 	"with_quotes": {
 		"en": "With quotes",
 		"pt": "Com aspas"
-	},
-	"acronym, title()": {
-		"en": "Acronym",
-		"pt": "Acrônimo"
 	},
 	"story_acronym": {
 		"en": "Story acronym",
@@ -555,17 +403,9 @@
 		"en": "Change mode",
 		"pt": "Mudar modo"
 	},
-	"join_{}": {
-		"en": "Join {}",
-		"pt": "Juntar {}"
-	},
 	"disable_junction_mode": {
 		"en": "Disable junction mode",
 		"pt": "Desabilitar o modo de junção"
-	},
-	"quit, title()": {
-		"en": "Quit",
-		"pt": "Sair"
 	},
 	"join": {
 		"en": "join",
@@ -574,18 +414,6 @@
 	"joined, title()": {
 		"en": "Joined",
 		"pt": "Juntado"
-	},
-	"the": {
-		"en": "the",
-		"pt": "o"
-	},
-	"the_first": {
-		"pt": "o primeiro",
-		"en": "the first"
-	},
-	"the_second": {
-		"pt": "o segundo",
-		"en": "the second"
 	},
 	"filler_formatted": {
 		"en": "[ ] (Filler)",
@@ -599,17 +427,13 @@
 		"en": "Finished copying the {}",
 		"pt": "Terminou de copiar os {}"
 	},
-	"Write": {
-		"en": "Write",
-		"pt": "Escrever"
+	"manage_story": {
+		"en": "Manage story",
+		"pt": "Gerenciar história"
 	},
-	"Post": {
-		"en": "Post",
-		"pt": "Postar"
-	},
-	"Update_Chapter_Covers": {
-		"en": "Update chapter covers",
-		"pt": "Atualizar capas de capítulos"
+	"what_to_do_with_the_story": {
+		"en": "What to do with the story",
+		"pt": "O que fazer com a história"
 	},
 	"select_one_story_class_to_execute": {
 		"en": "Select one story class to execute",
@@ -627,12 +451,12 @@
 		"en": "Finished updating the chapter covers",
 		"pt": "Terminou de atualizar as capas de capítulo"
 	},
-	"format, title()": {
-		"en": "Format",
-		"pt": "Formato"
-	},
 	"i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website": {
 		"en": "I published the chapter {} of my story \"{}\" on Wattpad and Stake2 Website",
 		"pt": "Eu publiquei o capítulo {} da minha história \"{}\" no Wattpad e no Site Stake2"
+	},
+	"you_finished_copying_the_chapter_titles_of_this_story": {
+		"en": "You finished copying the chapter titles of this story",
+		"pt": "Você terminou de copiar os títulos de capítulo desta história"
 	}
 }

@@ -116,13 +116,13 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["File name"] += self.media["Episode"]["re_watched"]["text"]
 
 		# Media folder comment file
-		self.media["Item"]["folders"]["comments"]["comment"] = self.media["Item"]["folders"]["comments"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
-		self.File.Create(self.media["Item"]["folders"]["comments"]["comment"])
+		self.media["Item"]["folders"]["comments"]["files"]["comment"] = self.media["Item"]["folders"]["comments"]["files"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
+		self.File.Create(self.media["Item"]["folders"]["comments"]["files"]["comment"])
 
-		# Read Comments.json file to get comments dictionary
+		# Read the "Comments.json" file to get the Comments dictionary
 		self.dictionaries["Root comments"] = self.JSON.To_Python(self.folders["comments"]["comments"])
 
-		# Read selected media "Comments.json" file to get media comments dictionary
+		# Read the selected media "Comments.json" file to get the media comments dictionary
 		self.dictionaries["Comments"] = self.JSON.To_Python(self.media["Item"]["folders"]["comments"]["comments"])
 
 	def Write_Comment(self):
@@ -153,13 +153,20 @@ class Comment_Writer(Watch_History):
 		if self.dictionary["Comment Writer"]["States"]["New"] == True:
 			key = "with_title"
 
-			if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Title"] and self.media["States"]["Video"] == False and self.media["States"]["Single unit"] == False:
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["States"]["Media item is media"] == False and
+				self.media["States"]["Video"] == False and
+				self.language_texts["single_unit"] not in self.media["Item"]["Details"] and
+				self.media["States"]["Replace title"] == False
+			):
 				key = "with_title_and_item"
 
-			title = self.media["Episode"][key][self.user_language]
+			if key in self.media["Episode"]:
+				title = self.media["Episode"][key][self.user_language]
 
 			if self.media["States"]["Series media"] == False:
-				title += " (" + self.media["Details"][self.JSON.Language.language_texts["original_title"]].split(" (")[-1]
+				title = self.media["Episode"]["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
 			if self.media["States"]["Re-watching"] == True:
 				title += self.media["Episode"]["re_watched"]["text"]
@@ -222,34 +229,34 @@ class Comment_Writer(Watch_History):
 	def Write_Comment_To_Files(self):
 		from copy import deepcopy
 
-		# Delete backup file
+		# Delete the backup file
 		if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
 			self.File.Delete(self.folders["comments"]["backups"]["backup"])
 
-		# Add to total comment number
+		# Add to the total comment number
 		self.dictionaries["Root comments"]["Numbers"]["Total"] += 1
 
-		# Add to year comment number
+		# Add to the year comment number
 		self.dictionaries["Root comments"]["Numbers"]["Years"][str(self.date["Units"]["Year"])] += 1
 
-		# Add to media type comment number
+		# Add to the media type comment number
 		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Total"] += 1
 
-		# Add to media type comment number per year
+		# Add to the media type comment number per year
 		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(self.date["Units"]["Year"])] += 1
 
-		# Update root Comments.json file to update numbers
+		# Update the root "Comments.json" file to update the numbers
 		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root comments"])
 
 		self.key = self.media["Comment"]["File name"]
 
-		# Add comment file name to file names list
+		# Add the comment file name to the file names list
 		self.dictionaries["Comments"]["Entries"].append(self.key)
 
-		# Update media comments number
+		# Update the media comments number
 		self.dictionaries["Comments"]["Numbers"]["Total"] = len(self.dictionaries["Comments"]["Entries"])
 
-		# Add comment file name, times, and titles keys to comment dictionary
+		# Add the comment file name, times, and the titles keys to the Comment dictionary
 		self.dictionaries["Comments"]["Dictionary"][self.key] = {
 			"Number": self.dictionaries["Comments"]["Numbers"]["Total"],
 			"Entry": self.key,
@@ -259,7 +266,29 @@ class Comment_Writer(Watch_History):
 			"Lines": self.media["Comment"]["Line number"]
 		}
 
-		# Add YouTube video ID, comment link, and comment ID to comment dictionary
+		# If the media is a movie
+		if self.media["States"]["Series media"] == False:
+			dict_ = self.dictionaries["Comments"]["Dictionary"][self.key]["Titles"]
+
+			# Remove "ja" and "Sanitized" keys
+			for key in ["ja", "Sanitized"]:
+				if key in dict_:
+					dict_.pop(key)
+
+			# Remove language keys if the original or romanized keys are the same as the original key
+			for language in self.languages["small"]:
+				if language in dict_:
+					if (
+						"Original" in dict_ and dict_["Original"] == dict_[language] or \
+						"Romanized" in dict_ and dict_["Romanized"] == dict_[language]
+					):
+						dict_.pop(language)
+
+			# Remove the "Language" key
+			if "Language" in dict_ and dict_["Language"] == dict_[self.media["Language"]]:
+				dict_.pop("Language")
+
+		# Add the YouTube video ID, comment link, and the comment ID to the Comment dictionary
 		if self.media["States"]["Video"] == True:
 			self.dictionaries["Comments"]["Dictionary"][self.key].pop("Date")
 
@@ -280,7 +309,7 @@ class Comment_Writer(Watch_History):
 
 			video_information = self.Get_YouTube_Information("video", self.dictionaries["Comments"]["Dictionary"][self.key]["Video"]["Link"])
 
-			# Define video time as video published time gotten from YouTube API
+			# Define the video time as the video published time gotten from the YouTube API
 			self.dictionaries["Comments"]["Dictionary"][self.key]["Video"]["Date"] = video_information["Date"]
 
 			original_link = ""
@@ -320,10 +349,10 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
 			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
 
-		# Write comment into media folder comment file
-		self.File.Edit(self.media["Item"]["folders"]["comments"]["comment"], self.media["Comment"]["Text"]["String"], "w")
+		# Write the comment into the media folder comment file
+		self.File.Edit(self.media["Item"]["folders"]["comments"]["files"]["comment"], self.media["Comment"]["Text"]["String"], "w")
 
-		# Get states dictionary
+		# Get the states dictionary
 		states_dictionary = self.Define_States_Dictionary(self.dictionary)["States"]
 
 		if self.write_comment == True:
@@ -331,31 +360,34 @@ class Comment_Writer(Watch_History):
 				if key in states_dictionary:
 					states_dictionary.pop(key)
 
-		# Remove the "Commented" state from the dictionary (because it is obvious that the user commented, it is a comment dictionary)
+		# Remove the "Commented" state from the dictionary
+		# (Because it is obvious that the user commented, it is a comment dictionary)
 		if "Commented" in states_dictionary:
 			states_dictionary.pop("Commented")
 
-		# If the state dictionary is not empty, add it to the comment dictionary
+		# If the states dictionary is not empty, add it to the comment dictionary
 		if states_dictionary != {}:
 			self.dictionaries["Comments"]["Dictionary"][self.key]["States"] = states_dictionary
 
 		# Import the collections module to sort the comments dictionary
 		import collections
 
-		# Sort media entries list and dictionary
-		self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key = str.lower)
-		self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
-
+		# If the media is non-episodic
 		if self.media["States"]["Episodic"] == False:
-			# Re-numerate the Entry numbers inside entry dictionaries
-			# (Numbers of the non-episodic media are wrong because the episode title is used as the dictionary key)
-			number = 1
-			for entry_name in self.dictionaries["Comments"]["Entries"]:
-				self.dictionaries["Comments"]["Dictionary"][entry_name]["Number"] = number
+			# Sort the media entries list and dictionary
+			self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key = str.lower)
+			self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
 
-				number += 1
+		# Re-numerate the Entry numbers inside entry dictionaries
+		# (Numbers of the non-episodic media are wrong when updated because the episode title is used as the dictionary key)
+		# (And also to fix Comment dictionary numbers of episodic media if they are wrong)
+		number = 1
+		for entry_name in self.dictionaries["Comments"]["Entries"]:
+			self.dictionaries["Comments"]["Dictionary"][entry_name]["Number"] = number
 
-		# Create "Comment" dictionary inside "Comment Writer" 
+			number += 1
+
+		# Create the "Comment" dictionary inside the "Comment Writer" dictionary
 		self.dictionary["Comment Writer"]["Comment"] = deepcopy(self.dictionaries["Comments"]["Dictionary"][self.key])
 
 		# Define the keys to be removed from the "Comment" dictionary
@@ -366,13 +398,14 @@ class Comment_Writer(Watch_History):
 			"Lines"
 		]
 
+		# If the media is not episodic, remove the "Number" key from the "Comment" dictionary
 		if self.media["States"]["Episodic"] == False:
 			keys_to_remove.append("Number")
 
-		# Remove not useful keys from "Comment" dictionary
+		# Remove the not useful keys from the "Comment" dictionary
 		for key in keys_to_remove:
 			if key in self.dictionary["Comment Writer"]["Comment"]:
 				self.dictionary["Comment Writer"]["Comment"].pop(key)
 
-		# Update the "Comments.json" file
+		# Update the media "Comments.json" file
 		self.JSON.Edit(self.media["Item"]["folders"]["comments"]["comments"], self.dictionaries["Comments"])

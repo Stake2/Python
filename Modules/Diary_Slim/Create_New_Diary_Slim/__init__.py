@@ -210,11 +210,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 					}
 
 					# Create
-					self.Create_New_Diary_Slim = self.Create_New_Diary_Slim(dictionary)
+					self.object = self.Create_New_Diary_Slim(dictionary)
 
 					# Update local year and month variables here with the new variables
-					self.current_year = self.Create_New_Diary_Slim.current_year
-					self.current_month = self.Create_New_Diary_Slim.current_month
+					self.current_year = self.object.current_year
+					self.current_month = self.object.current_month
 
 					print()
 
@@ -278,10 +278,8 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# Update the month "Diary Slims" number inside the Month dictionary
 			self.current_month["Month"]["Numbers"]["Diary Slims"] = len(list(self.current_month["Month"]["Diary Slims"].keys()))
 
-			verbose = False
-
 			# Edit the "Month.json" file with the new Month dictionary
-			self.JSON.Edit(self.current_month["File"], self.current_month["Month"], verbose = verbose)
+			self.JSON.Edit(self.current_month["File"], self.current_month["Month"])
 
 			# ----- #
 
@@ -301,7 +299,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 				self.current_year["Year"]["Numbers"]["Diary Slims"] += month["Numbers"]["Diary Slims"]
 
 			# Edit the "Year.json" file with the new Year dictionary
-			self.JSON.Edit(self.folders["diary_slim"]["current_year"]["year"], self.current_year["Year"], verbose = verbose)
+			self.JSON.Edit(self.folders["diary_slim"]["current_year"]["year"], self.current_year["Year"])
 
 		# ----- #
 
@@ -319,7 +317,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 			self.current_day_file_text = self.File.Contents(self.dictionary["File"])["string"]
 
 			# Define the text to write
-			text_to_write = self.dictionary["Text header"] + "\n\n" + self.dictionary["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"] + ":\n" + self.dictionary["Today is"] + "\n\n" + self.dictionary["Header"]
+			text_to_write = self.dictionary["Text header"] + "\n\n" + \
+			self.dictionary["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"] + ":\n" + \
+			self.dictionary["Today is"] + "\n\n" + \
+			self.dictionary["Header"]
 
 			# If the file is empty
 			if self.current_day_file_text == "":

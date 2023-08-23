@@ -2,16 +2,15 @@
 
 from Stories.Stories import Stories as Stories
 
-from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
-
-from Code.Update_Websites import Update_Websites as Update_Websites
-
 class Post(Stories):
-	def __init__(self, run_as_module = False, story = None):
-		super().__init__(select_story = False)
+	def __init__(self, story = None, run_as_module = False):
+		super().__init__(story = story)
 
 		self.run_as_module = run_as_module
-		self.story = story
+
+		from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
+
+		self.Open_Social_Network = Open_Social_Network
 
 		# Define post steps
 		self.post_steps = [
@@ -55,7 +54,7 @@ class Post(Stories):
 				select_text = None
 
 				if self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.user_language]):
-					story_title = self.story["Information"]["Titles"][self.user_language]
+					story_title = self.story["Titles"][self.user_language]
 					select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(story_title)
 
 				self.Select_Story(select_text_parameter = select_text)
@@ -87,7 +86,9 @@ class Post(Stories):
 			self.post_steps_texts[item] = custom_text
 
 		if self.ask_for_skipping == True and self.step_skips[item] == False:
-			self.step_skips[item] = self.Input.Yes_Or_No(self.language_texts["skip_the"] + " " + self.post_steps_texts[item])
+			input_text = self.JSON.Language.language_texts["skip_the, feminine"] + " " + self.post_steps_texts[item]
+
+			self.step_skips[item] = self.Input.Yes_Or_No(input_text)
 
 		if self.step_skips[item] == True:
 			print()
@@ -95,7 +96,7 @@ class Post(Stories):
 
 	def Define_Chapter(self):
 		if self.switches["testing"] == False:
-			self.File.Open(self.story["folders"]["Information"]["Chapter status"])
+			self.File.Open(self.story["Folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
 		self.chapter_titles = self.story["Information"]["Chapter titles"][self.user_language].copy()
@@ -131,7 +132,7 @@ class Post(Stories):
 			self.story["chapter_number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.story["chapter_number"])]
 
 		text_to_write = self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True)
-		self.File.Edit(self.story["folders"]["Information"]["Chapter status"], text_to_write, "w")
+		self.File.Edit(self.story["Folders"]["Information"]["Chapter status"], text_to_write, "w")
 
 	def Create_Cover(self):
 		# Create cover types dictionary
@@ -148,13 +149,13 @@ class Post(Stories):
 		# Populate cover types dictionary
 		i = 0
 		for item in self.cover_types["list"]:
-			english_text = self.texts[item]["en"]
+			english_text = self.JSON.Language.texts[item]["en"]
 
 			self.cover_types[english_text] = {
 				"name": english_text,
 				"title": self.language_texts[item],
 				"extension": self.cover_types["extension"],
-				"sony_vegas_file": self.story["folders"]["Sony Vegas Covers"] + english_text + ".veg"
+				"sony_vegas_file": self.story["Folders"]["Sony Vegas Covers"]["root"] + english_text + ".veg"
 			}
 
 			list_.append(english_text)
@@ -170,7 +171,7 @@ class Post(Stories):
 			self.cover_type = self.cover_types[self.cover_type]
 
 			# Ask if the user wants to skip the creation of the cover with the specific type
-			self.Skip("cover_creation_in_{}_mode", self.language_texts["cover_creation"] + " " + self.language_texts["in_{}_mode"].format("[" + self.cover_type["title"] + "]"))
+			self.Skip("cover_creation_in_{}_mode", self.language_texts["cover_creation"] + " " + self.JSON.Language.language_texts["in_{}_mode"].format("[" + self.cover_type["title"] + "]"))
 
 			# If skip is false
 			if self.step_skips["cover_creation_in_{}_mode"] == False:
@@ -215,7 +216,7 @@ class Post(Stories):
 
 							self.Input.Type(self.language_texts["now_render_the_covers_in"] + " " + translated_language, first_space = False)
 
-						text = self.language_texts["format, title()"] + ":" + "\n" + "[" + self.cover_type["title"] + "] " + self.language_texts["and_in"] + " [" + translated_language + "]"
+						text = self.JSON.Language.language_texts["format, title()"] + ":" + "\n" + "[" + self.cover_type["title"] + "] " + self.JSON.Language.language_texts["and_in"] + " [" + translated_language + "]"
 
 						self.story["chapter_number"] = 1
 
@@ -279,8 +280,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.folders["root"]["sony_vegas_files"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.folders["art"]["sony_vegas"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.folders["art"]["sony_vegas"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
@@ -293,7 +294,7 @@ class Post(Stories):
 		file_name = str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		# Copy cover file to Mega Stories Story covers folder
-		destination_file = self.story["folders"]["Covers"]["root"] + folder_name + file_name
+		destination_file = self.story["Folders"]["Covers"]["root"] + folder_name + file_name
 
 		print()
 		print(self.language_texts["copying_the_cover_to_the_{}_folder"].format(self.language_texts["mega_stories"]) + ":")
@@ -303,7 +304,7 @@ class Post(Stories):
 
 		# Copy cover file to Mega Websites Story covers folder if cover type is Landscape
 		if self.cover_type["name"] == self.texts["landscape, title()"]["en"]:
-			destination_file = self.story["folders"]["Websites Story Covers"] + folder_name.replace(self.texts["landscape, title()"]["en"] + "/", "") + file_name
+			destination_file = self.story["Folders"]["Covers"]["Websites Story Covers"]["root"] + folder_name.replace(self.texts["landscape, title()"]["en"] + "/", "") + file_name
 
 			print()
 			print(self.language_texts["copying_the_cover_to_the_{}_folder"].format(self.language_texts["website_story_covers"]) + ":")
@@ -315,15 +316,17 @@ class Post(Stories):
 		self.File.Delete(source_file)
 
 	def Update_Websites(self):
-		Update_Websites(self.switches, module_website = self.story["title"])
+		from Code.Update_Websites import Update_Websites as Update_Websites
+
+		Update_Websites(self.switches, module_website = self.story["Title"])
 
 	def Copy_Chapter_Text(self, language, full_language):
 		# Get chapter file
-		self.story["folders"]["Chapters"][full_language][self.story["chapter_number"]] = self.story["folders"]["Chapters"][full_language]["root"]
-		self.story["folders"]["Chapters"][full_language][self.story["chapter_number"]] += self.story["chapter_titles"][language] + ".txt"
+		self.story["Folders"]["Chapters"][full_language][self.story["chapter_number"]] = self.story["Folders"]["Chapters"][full_language]["root"]
+		self.story["Folders"]["Chapters"][full_language][self.story["chapter_number"]] += self.story["chapter_titles"][language] + ".txt"
 
 		# Get chapter text
-		chapter_text = self.File.Contents(self.story["folders"]["Chapters"][full_language][self.story["chapter_number"]])["string"]
+		chapter_text = self.File.Contents(self.story["Folders"]["Chapters"][full_language][self.story["chapter_number"]])["string"]
 
 		type_text = self.language_texts["press_enter_to_copy_the_chapter_text"]
 
@@ -344,7 +347,7 @@ class Post(Stories):
 			# Open Wattpad on story page
 			wattpad_link = self.story["Information"]["Wattpad"]["links"][language]
 
-			Open_Social_Network(social_network_parameter = "Wattpad", custom_link = wattpad_link, first_space = False)
+			self.Open_Social_Network(social_network_parameter = "Wattpad", custom_link = wattpad_link, first_space = False)
 
 			# Copy chapter title
 			self.Copy_Title(language, post_chapter = True)
@@ -359,7 +362,7 @@ class Post(Stories):
 				print()
 
 	def Post_On_Social_Networks(self):
-		self.story["title_underlined"] = self.story["Information"]["Titles"][self.user_language].replace(" ", "_")
+		self.story["title_underlined"] = self.story["Titles"][self.user_language].replace(" ", "_")
 
 		social_networks = {
 			"list": [
@@ -382,7 +385,7 @@ class Post(Stories):
 		print(self.large_bar)
 
 		# Format Wattpad template
-		social_networks["Wattpad"]["Card"] = self.JSON.To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
+		social_networks["Wattpad"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
 
 		social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].format(self.story["title_underlined"], self.story["chapter_number_name"], self.story["chapter_number"], self.story["Information"]["Wattpad"]["Chapter link"], self.story["title_underlined"])
 
@@ -390,7 +393,7 @@ class Post(Stories):
 		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?chapter={}#".format(str(self.story["chapter_number"]))
 
 		# Format Twitter & Facebook template
-		social_networks["Twitter, Facebook"]["Card"] = self.JSON.To_Python(self.stories["folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
+		social_networks["Twitter, Facebook"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
 
 		social_networks["Twitter, Facebook"]["Card"] = social_networks["Twitter, Facebook"]["Card"].format(self.story["Information"]["Website"]["Chapter link"], self.story["title_underlined"])
 
@@ -399,7 +402,7 @@ class Post(Stories):
 			social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].replace(self.language_texts["one_more_chapter"], self.language_texts["the_first_chapter"])
 
 		# Replace "One more chapter" with "The last chapter" if the chapter is the last one of the story
-		if int(self.story["chapter_number"]) == len(self.story["Information"]["Titles"][self.user_language]) - 1:
+		if int(self.story["chapter_number"]) == len(self.story["Titles"][self.user_language]) - 1:
 			social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].replace(self.language_texts["one_more_chapter"], self.language_texts["the_last_chapter"])
 
 		# Copy cards and open Social Network links to post cards
@@ -409,7 +412,7 @@ class Post(Stories):
 				self.Text.Copy(self.social_networks["Wattpad"]["Card"], verbose = False)
 
 				# Open Wattpad
-				Open_Social_Network(social_network_parameter = "Wattpad", custom_link = self.social_networks["Wattpad"]["profile"]["conversations"], first_space = False)
+				self.Open_Social_Network(social_network_parameter = "Wattpad", custom_link = self.social_networks["Wattpad"]["profile"]["conversations"], first_space = False)
 
 				# Wait for user to finish posting Wattpad card
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_card_on_{}"].format(social_network), first_space = False)
@@ -419,7 +422,7 @@ class Post(Stories):
 				self.Text.Copy(social_networks["Wattpad"]["Card"], verbose = False)
 
 				# Open Twitter
-				Open_Social_Network(social_network_parameter = ["Twitter", "Facebook"], custom_link = [self.social_networks["Twitter"]["profile"]["profile"], self.social_networks["Facebook"]["profile"]["profile"]], first_space = False)
+				self.Open_Social_Network(social_network_parameter = ["Twitter", "Facebook"], custom_link = [self.social_networks["Twitter"]["profile"]["profile"], self.social_networks["Facebook"]["profile"]["profile"]], first_space = False)
 
 				# Wait for user to finish posting
 				self.Input.Type(self.language_texts["paste_the_first_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network), first_space = False)
@@ -436,7 +439,7 @@ class Post(Stories):
 
 		# Write to post template file
 		self.mixed_cards = social_networks["Wattpad"]["Card"] + "\n\n---\n\n" + social_networks["Twitter, Facebook"]["Card"]
-		self.File.Edit(self.story["folders"]["Information"]["Post template"], self.mixed_cards, "w")
+		self.File.Edit(self.story["Folders"]["Information"]["Post template"], self.mixed_cards, "w")
 
 	def Register_Task(self):
 		# Create the task dictionary
@@ -450,7 +453,7 @@ class Post(Stories):
 		for language in self.languages["small"]:
 			self.task_dictionary["Task"]["Titles"][language] = self.texts["i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website"][language]
 
-			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(self.story["chapter_number_names"][language], self.story["Information"]["Titles"][language])
+			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(self.story["chapter_number_names"][language], self.story["Titles"][language])
 
 		# Register the task with the root method
 		Stories.Register_Task(self, self.task_dictionary, register_task = True)

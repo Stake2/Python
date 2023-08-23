@@ -4,9 +4,8 @@ from Stories.Stories import Stories as Stories
 
 class Write(Stories):
 	def __init__(self, story = None):
-		super().__init__(select_story = False)
+		super().__init__(story = story)
 
-		self.story = story
 		self.register_task = False
 
 		self.Select_Writing_Mode()
@@ -107,7 +106,7 @@ class Write(Stories):
 			self.chapter["number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.chapter["number"])]
 
 		# Update Chapter status file
-		self.File.Edit(self.story["folders"]["Information"]["Chapter status"], self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True), "w")
+		self.File.Edit(self.story["Folders"]["Information"]["Chapter status"], self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True), "w")
 
 		self.chapter["titles"] = {}
 
@@ -135,13 +134,13 @@ class Write(Stories):
 				self.chapter["language"] = full_language
 
 				# Story chapter file
-				self.chapter["files"]["story"][full_language] = self.story["folders"]["Chapters"][full_language]["root"] + self.chapter["titles"][full_language] + ".txt"
+				self.chapter["files"]["story"][full_language] = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["titles"][full_language] + ".txt"
 				self.File.Create(self.chapter["files"]["story"][full_language])
 
 				# Obsidian chapter file
 				self.chapter["title"] = self.chapter["titles"][full_language]
 
-				self.chapter["files"]["obsidian"][full_language] = self.story["folders"]["Obsidian's Vaults"]["Chapters"][full_language] + self.chapter["titles"][full_language] + ".md"
+				self.chapter["files"]["obsidian"][full_language] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][full_language] + self.chapter["titles"][full_language] + ".md"
 				self.File.Create(self.chapter["files"]["obsidian"][full_language])
 
 		# Define chapter language as full user language on Translate writing mode
@@ -201,7 +200,7 @@ class Write(Stories):
 		self.chapter["obsidian_link"] = "obsidian://open?vault=Creativity&file=Literature%2FStories%2F{}%2FChapters%2F{}%2F{}"
 
 		# Format Obsidian chapter link with story title, chapter language, and chapter title
-		self.chapter["obsidian_link"] = self.chapter["obsidian_link"].format(self.story["title"].replace(" ", "%20"), self.chapter["language"], self.chapter["title_obsidian"])
+		self.chapter["obsidian_link"] = self.chapter["obsidian_link"].format(self.story["Title"].replace(" ", "%20"), self.chapter["language"], self.chapter["title_obsidian"])
 
 		# Define the Obsidian link to be shown
 		self.chapter["obsidian_link_show"] = self.chapter["obsidian_link"].replace("%2F", "/")
@@ -212,7 +211,7 @@ class Write(Stories):
 		import win32com.client
 
 		# Create shortcut file
-		self.obsidian["lnk"] = self.story["folders"]["Obsidian's Vaults"]["root"] + "Obsidian.lnk"
+		self.obsidian["lnk"] = self.story["Folders"]["Obsidian's Vaults"]["root"] + "Obsidian.lnk"
 		self.obsidian["target"] = self.chapter["obsidian_link"]
 		self.obsidian["icon"] = self.user_folders["appdata"]["local"] + "/Obsidian/Obsidian.exe"
 
@@ -224,7 +223,7 @@ class Write(Stories):
 		self.obsidian["shortcut"].save()
 
 		# Create Obsidian bat
-		self.obsidian["bat"] = self.story["folders"]["Obsidian's Vaults"]["root"] + "Obsidian.bat"
+		self.obsidian["bat"] = self.story["Folders"]["Obsidian's Vaults"]["root"] + "Obsidian.bat"
 		self.File.Create(self.obsidian["bat"])
 
 		# Write to Obsidian bat
@@ -249,7 +248,7 @@ class Write(Stories):
 		self.chapter["start_writing_time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 		print()
-		print(self.language_texts["now_time"] + ":")
+		print(self.Date.language_texts["now_time"] + ":")
 		print(self.chapter["start_writing_time"])
 
 		# Ask for user to finish writing
@@ -294,21 +293,23 @@ class Write(Stories):
 			dict_ = self.story["Information"]["Writing"]["Time"]
 
 		# Update writing time JSON file
-		file = self.story["folders"]["Information"]["Writing"]["Time"]
+		file = self.story["Folders"]["Information"]["Writing"]["Time"]
 		self.JSON.Edit(file, dict_)
 
 		# Make time difference from past first and last writing times
 		if self.chapter["finished_writing"] == True:	
 			self.chapter["time_difference"] = self.Date.Difference(self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"], self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])
 
-		# Show finish writing time
+		# Show the finish writing time
+		item = self.chapter["writing_mode"]["past_action"][self.user_language]
+
 		print()
-		print(self.language_texts["after_{}_time"].format(self.chapter["writing_mode"]["past_action"][self.user_language]) + ":")
+		print(self.Date.language_texts["after_{}_time"].format(item) + ":")
 		print(self.chapter["finish_writing_time"])
 		print()
 
-		# Show time difference
-		print(self.language_texts["time_difference"] + ":")
+		# Show the time difference
+		print(self.Date.language_texts["time_difference"] + ":")
 		print(self.chapter["time_difference"]["Text"][self.user_language])
 		print()
 
@@ -324,10 +325,10 @@ class Write(Stories):
 				# Ask for chapter title
 				self.chapter["titles"][full_language] += " - " + self.Input.Type(self.language_texts["type_or_paste_the_chapter_title_in_{}"].format(translated_language))
 
-				titles_text = self.texts["titles, title()"][language]
+				titles_text = self.JSON.Language.texts["titles, title()"][language]
 
 				# Define titles file
-				file = self.story["folders"]["Chapters"][full_language][titles_text][titles_text]
+				file = self.story["Folders"]["Chapters"][full_language][titles_text][titles_text]
 
 				# Write new chapter title to titles file
 				self.File.Edit(file, self.chapter["titles"][full_language], "a")
@@ -340,7 +341,7 @@ class Write(Stories):
 			self.File.Edit(source_file, self.File.Contents(self.chapter["files"]["obsidian"][key])["string"], "w")
 
 			# Update chapter file path with chapter title
-			self.chapter["files"]["story"][key] = self.story["folders"]["Chapters"][key]["root"] + self.chapter["titles"][key] + ".txt"
+			self.chapter["files"]["story"][key] = self.story["Folders"]["Chapters"][key]["root"] + self.chapter["titles"][key] + ".txt"
 
 			if source_file != self.chapter["files"]["story"][key]:
 				self.File.Move(source_file, self.chapter["files"]["story"][key])
@@ -350,7 +351,7 @@ class Write(Stories):
 			source_file = self.chapter["files"]["obsidian"][key]
 
 			# Update chapter file path with chapter title
-			self.chapter["files"]["obsidian"][key] = self.story["folders"]["Obsidian's Vaults"]["Chapters"][key] + self.chapter["titles"][key] + ".md"
+			self.chapter["files"]["obsidian"][key] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][key] + self.chapter["titles"][key] + ".md"
 
 			if source_file != self.chapter["files"]["obsidian"][key]:
 				self.File.Move(source_file, self.chapter["files"]["obsidian"][key])
@@ -375,7 +376,7 @@ class Write(Stories):
 			full_language = self.languages["full"][language]
 			translated_user_language = self.languages["full_translated"][self.user_language][language]
 
-			parameters = self.chapter["writing_mode"]["action"][language], self.chapter["number_names"][language], self.story["Information"]["Titles"][language]
+			parameters = self.chapter["writing_mode"]["action"][language], self.chapter["number_names"][language], self.story["Titles"][language]
 
 			# Add past writing mode to parameters list
 			if self.chapter["finished_writing"] == True:
@@ -389,7 +390,7 @@ class Write(Stories):
 
 			# Add translated user language to task name if writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["Task"]["Titles"][language] += " " + self.texts["to"][language] + " " + translated_user_language
+				self.task_dictionary["Task"]["Titles"][language] += " " + self.JSON.Language.texts["to"][language] + " " + translated_user_language
 
 			self.task_dictionary["Task"]["Titles"][language] += "."
 
@@ -401,10 +402,10 @@ class Write(Stories):
 
 			text = self.chapter["writing_mode"]["past_action"][language]
 
-			if self.texts["{}_time"][language][0] == "{":
+			if self.Date.texts["{}_time"][language][0] == "{":
 				text = text.capitalize()
 
-			self.task_dictionary["Task"]["Descriptions"][language] += self.texts["{}_time"][language].format(text) + ":" + "\n"
+			self.task_dictionary["Task"]["Descriptions"][language] += self.Date.texts["{}_time"][language].format(text) + ":" + "\n"
 			self.task_dictionary["Task"]["Descriptions"][language] += self.chapter["time_difference"]["Text"][language]
 
 			# Add "still did not finished writing" text to task description if did not finished writing

@@ -1,2 +1,6 @@
 www.hcodecommerce.com.br
 php.stake2.site
+authserver.mojang.com
+api.mojang.com
+sessionserver.mojang.com
+api.minecraftservices.com

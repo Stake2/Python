@@ -79,6 +79,10 @@
 		"en": "watch",
 		"pt": "assistir"
 	},
+	"watched, infinitive": {
+		"pt": "assistiu",
+		"en": "watched"
+	},
 	"watching, infinitive": {
 		"en": "watching",
 		"pt": "assistir"
@@ -95,20 +99,24 @@
 		"en": "re-watched",
 		"pt": "re-assistido"
 	},
+	"re_watched, infinitive": {
+		"en": "re-watched",
+		"pt": "re-assistiu"
+	},
 	"statuses, type: list": {
 		"en": [
 			"Plan to watch",
+			"On hold",
 			"Watching",
 			"Re-watching",
-			"Completed",
-			"On hold"
+			"Completed"
 		],
 		"pt": [
 			"Planejo assistir",
+			"Em pausa",
 			"Assistindo",
 			"Re-assistindo",
-			"Completo",
-			"Em pausa"
+			"Completo"
 		]
 	},
 	"youtube_ids": {

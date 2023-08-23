@@ -477,7 +477,7 @@ class Register(GamePlayer):
 			"WhatsApp",
 			"Instagram",
 			"Facebook",
-			"Twitter",
+			"Twitter"
 		]
 
 		self.social_networks_string = self.Text.From_List(self.social_networks, break_line = False, separator = ", ")
@@ -503,7 +503,14 @@ class Register(GamePlayer):
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
 
-			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = "WhatsApp", first_space = False, second_space = False)
+			# Define the Social Networks list
+			social_network_list = [
+				"WhatsApp",
+				"Twitter"
+			]
+
+			# Open the Social Networks
+			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network_list, first_space = False, second_space = False)
 
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"])
 

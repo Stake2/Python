@@ -2,29 +2,75 @@
 
 from Stories.Stories import Stories as Stories
 
-from Stories.Write import Write as Write
-from Stories.Post import Post as Post
-from Stories.Update_Chapter_Covers import Update_Chapter_Covers as Update_Chapter_Covers
-
 class Select_Story(Stories):
 	def __init__(self):
-		super().__init__()
+		super().__init__(story = "Select")
 
-		self.classes = [
-			Write,
-			Post,
-			Update_Chapter_Covers,
+		self.Select()
+		self.Select_Class()
+
+	def Select(self, select_text_parameter = None):
+		from copy import deepcopy
+
+		show_text = self.language_texts["stories, title()"]
+
+		select_text = select_text_parameter
+
+		if select_text_parameter == None:
+			select_text = self.language_texts["select_a_story"]
+
+		class_name = type(self).__name__.lower()
+
+		if (
+			select_text_parameter == None and
+			issubclass(type(self), Stories) == True and
+			class_name in self.language_texts
+		):
+			select_text = self.language_texts["select_a_story_to"] + " " + self.language_texts[class_name]
+
+		stories = deepcopy(self.stories)
+
+		# Remove the stories with all chapters posted if the class is "Post"
+		if class_name == "post":
+			for story in deepcopy(self.stories["Titles"]["en"]):
+				story = stories[story]
+
+				post = story["Information"]["Chapter status"]["Post"]
+
+				if int(post) == len(story["Information"]["Chapter titles"][self.user_language]):
+					for language in self.languages["small"]:
+						stories["Titles"][language].remove(story["Information"]["Titles"][language])
+
+		self.option = self.Input.Select(stories["Titles"]["en"], language_options = stories["Titles"][self.user_language], show_text = show_text, select_text = select_text)["option"]
+
+		self.story = self.stories[self.option]
+
+		setattr(Stories, "story", self.story)
+
+	def Select_Class(self):
+		classes = [
+			"Write",
+			"Post",
+			"Manage"
 		]
 
-		self.class_descriptions = []
+		class_descriptions = []
 
-		for class_ in self.classes:
-			class_description = self.language_texts[class_.__name__]
+		for class_ in classes:
+			class_description = self.JSON.Language.language_texts[class_.lower() + ", title()"]
 
-			self.class_descriptions.append(class_description)
+			class_descriptions.append(class_description)
 
-		# Select class
-		class_ = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["select_one_story_class_to_execute"], select_text = self.JSON.Language.language_texts["select_one_class_to_execute"])["option"]
+		# Select the class
+		class_ = self.Input.Select(classes, language_options = class_descriptions, show_text = self.language_texts["what_to_do_with_the_story"], select_text = self.JSON.Language.language_texts["select_one_thing_to_do"])["option"]
 
-		# Execute class
+		import importlib
+
+		# Get the module
+		module = importlib.import_module("." + class_, "Stories")
+
+		# Get the class
+		class_ = getattr(module, class_)
+
+		# Execute the class
 		class_(story = self.story)

@@ -141,23 +141,25 @@
 	},
 	"information_items, type: list": {
 		"pt": [
-			"Nick e Tag",
+			"Originalmente",
+			"Arroba",
 			"ID",
+			"Membro Discord desde",
 			"Nome de usuário",
 			"Link de perfil",
 			"Link de mensagem",
-			"Arroba",
 			"ID de mensagem",
 			"Nome de contato",
 			"Número"
 		],
 		"en": [
-			"Nick and Tag",
+			"Originally",
+			"Handle",
 			"ID",
+			"Discord member since",
 			"Username",
 			"Profile link",
 			"Message link",
-			"Handle",
 			"Message ID",
 			"Contact name",
 			"Number"
@@ -198,5 +200,13 @@
 	"number": {
 		"en": "Number",
 		"pt": "Número"
+	},
+	"originally": {
+		"en": "Originally",
+		"pt": "Originalmente"
+	},
+	"discord_member_since": {
+		"en": "Discord member since",
+		"pt": "Membro Discord desde"
 	}
 }

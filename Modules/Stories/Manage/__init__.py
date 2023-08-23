@@ -1,0 +1,45 @@
+# Manage.py
+
+from Stories.Stories import Stories as Stories
+
+class Manage(Stories):
+	def __init__(self, story = None):
+		super().__init__(story = story)
+
+		import os
+		import importlib
+
+		self.current_folder = os.path.split(__file__)[0] + "\\"
+
+		self.descriptions_file = self.current_folder + "Descriptions.json"
+		self.descriptions = self.JSON.To_Python(self.descriptions_file)
+
+		self.classes = []
+
+		for key in self.descriptions:
+			if key != "show_text":
+				self.classes.append(key)
+
+		self.class_descriptions = []
+
+		for class_ in self.classes:
+			class_description = self.descriptions[class_]
+
+			self.class_descriptions.append(self.JSON.Language.Item(class_description))
+
+		# Select the class
+		show_text = self.language_texts["manage_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'
+
+		class_ = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = show_text, select_text = self.JSON.Language.language_texts["select_one_class_to_execute"])["option"]
+
+		# Get the module
+		module = importlib.import_module("." + class_, self.__module__)
+
+		# Get the class
+		class_ = getattr(module, class_)
+
+		# Add the story variable to the class
+		setattr(class_, "story", self.story)
+
+		# Execute the class
+		class_(story = self.story)

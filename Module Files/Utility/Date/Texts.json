@@ -355,5 +355,58 @@
 	"after, title()": {
 		"en": "After",
 		"pt": "Depois"
+	},
+	"short_time": {
+		"pt": "Tempo curto",
+		"en": "Short time"
+	},
+	"long_time": {
+		"pt": "Tempo longo",
+		"en": "Long time"
+	},
+	"short_date": {
+		"pt": "Data curta",
+		"en": "Short date"
+	},
+	"long_date": {
+		"pt": "Data longa",
+		"en": "Long date"
+	},
+	"long_date_with_short_time": {
+		"pt": "Data longa com tempo curto",
+		"en": "Long date with short time"
+	},
+	"long_date_with_day_of_week_and_short_time": {
+		"pt": "Data longa com dia da semana e tempo curto",
+		"en": "Long date with day of week and short time"
+	},
+	"relative, title()": {
+		"pt": "Relativo",
+		"en": "Relative"
+	},
+	"now_time": {
+		"en": "Now time",
+		"pt": "Tempo agora"
+	},
+	"after_{}_time": {
+		"en": "After {} time",
+		"pt": "Tempo após {}"
+	},
+	"time_difference": {
+		"en": "Time difference",
+		"pt": "Diferença de tempo"
+	},
+	"{}_time": {
+		"en": "{} time",
+		"pt": "Tempo de {}"
+	},
+	"date_and_time_texts, type: dict": {
+		"short_time": "t",
+		"long_time": "T",
+		"short_date": "d",
+		"long_date": "D",
+		"long_date_with_short_time": "f",
+		"long_date_with_day_of_week_and_short_time": "F",
+		"relative": "R"
 	}
 }

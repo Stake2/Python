@@ -29,7 +29,7 @@ class Add_To_Comments_Dictionary(Watch_History):
 			setattr(self, title, class_)
 
 		# Define media dictionary with already selected media type and media
-		self.dictionary = self.Watch_Media(self.dictionary, open_media = False).media_dictionary
+		self.dictionary = self.Watch_Media(self.dictionary, open_media = False).dictionary
 
 		# Comment on media without having to register the watched media unit (episode, video, or movie)
 		self.Comment_Writer(self.dictionary, write_comment = True)

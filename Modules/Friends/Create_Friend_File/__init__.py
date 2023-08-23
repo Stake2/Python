@@ -98,13 +98,14 @@ class Create_Friend_File(Friends):
 			self.friends.append(self.friend)
 
 		self.friend_files[self.friend] = {}
+
 		self.friend_folders[self.friend] = {
 			"Text": {
 				
 			},
 			"Image": {
 				
-			},
+			}
 		}
 
 		# Define text folder

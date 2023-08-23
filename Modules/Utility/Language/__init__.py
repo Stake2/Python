@@ -933,3 +933,395 @@ class Language():
 
 		print()
 		print("-----")
+
+	def Text_From_List(self, list_, break_line = True, separator = ""):
+		string = ""
+
+		i = 0
+		for item in list_:
+			string += item
+
+			if i != len(list_) - 1:
+				if separator != "":
+					string += separator
+
+				if break_line == True:
+					string += "\n"
+
+			i += 1
+
+		return string
+
+	# Make the text difference between the text inside the file and the text to be written
+	def Text_Difference(self, file_text, text_lines_to_write, filters = {}):
+		# Get the lines list if the file text is a dictionary
+		if type(file_text) == dict:
+			file_text = file_text["lines"]
+
+		# Get the lines list if the file text is a string
+		if type(text_lines_to_write) == str:
+			text_lines_to_write = text_lines_to_write.splitlines()
+
+		self.settings = filters
+
+		# Define the difference dictionary
+		dictionary = {
+			"Difference": {
+				"Lines": [],
+				"Text": ""
+			},
+			"Additions": 0,
+			"Changes": 0,
+			"Deletions": 0
+		}
+
+		# Get the length of the lines to write and the number of lines inside the file
+		text_lines_number = len(text_lines_to_write)
+		file_lines_number = len(file_text)
+
+		difference_number = abs(text_lines_number - file_lines_number)
+
+		# Define the line text and template
+		line_text = self.language_texts["line, title()"]
+
+		tab = "\t\t"
+
+		template = tab + "{} " + line_text + " {}: [{}"
+
+		added_space = False
+
+		# Define the default settings dictionary
+		self.default_settings = {
+			"Filters": {
+				"Add deletions": False,
+				"All text": False
+			},
+			"Separators": True
+		}
+
+		# Check the Settings dictionary
+		for key, default in self.default_settings.items():
+			if key not in self.settings:
+				self.settings[key] = default
+
+		i = 0
+		line_number = 0
+		for line in text_lines_to_write:
+			add = False
+
+			# If the "Separators" filter is on
+			# And the "i" number is zero
+			if (
+				self.settings["Separators"] == True and
+				i == 0
+			):
+				# Add a text to start the changes text
+				dictionary["Difference"]["Lines"].append("")
+				dictionary["Difference"]["Lines"].append(tab + "-----")
+				dictionary["Difference"]["Lines"].append("")
+				dictionary["Difference"]["Lines"].append(tab + self.language_texts["changes"].title() + ":")
+				dictionary["Difference"]["Lines"].append("")
+				dictionary["Difference"]["Lines"].append(tab + "---")
+
+			# If the number of file lines is greater than or equal to number of text lines
+			# Or the number of file lines is lesser than the number of text lines
+			if (
+				len(file_text) >= len(text_lines_to_write) or
+				len(file_text) < len(text_lines_to_write)
+			):
+				# If the number of file lines is greater than or equal to number of text lines
+				if len(file_text) >= len(text_lines_to_write):
+					# If the "All text" filter is off
+					if self.settings["Filters"]["All text"] == False:
+						# If the current file line is not the same as the current text line
+						# Or the line is not inside the file lines list
+						if (
+							file_text[i] != text_lines_to_write[i] or
+							line not in file_text
+						):
+							# Add the line to the text difference list
+							add = True
+
+					# If the "All text" filter is on
+					# And the current file line is not the same as the current text line
+					if (
+						self.settings["Filters"]["All text"] == True and
+						file_text[i] != text_lines_to_write[i]
+					):
+						# Add the line to the text difference list
+						add = True
+
+					# If the line is empty
+					if line == "":
+						# Add the line to the text difference list
+						add = True
+
+				# If the number of file lines is lesser than the number of text lines
+				if len(file_text) < len(text_lines_to_write):
+					# If the current line is empty
+					# Or the "i" number plus one is greater than or equal to the number of file text lines
+					if (
+						line == "" or
+						(i + 1) >= len(file_text)
+					):
+						# Add the line to the text difference list
+						add = True
+
+					# If the "All text" filter is off
+					# And the line is not inside the file lines list
+					if (
+						self.settings["Filters"]["All text"] == False and
+						line not in file_text
+					):
+						# Add the line to the text difference list
+						add = True
+
+					# If the "All text" filter is on
+					# And the "i" number plus one is lesser than or equal to the number of file text lines
+					if (
+						self.settings["Filters"]["All text"] == True and
+						(i + 1) <= len(file_text)
+					):
+						# Add the line to the text difference list
+						add = True
+
+				# Add the line to the text difference list
+				if add == True:
+					# Create the number text
+					number_text = str(i + 1)
+
+					# If the number of lines to write are lesser than the number of lines inside the file
+					if len(text_lines_to_write) < len(file_text):
+						# Add one to the number of lines inside the file
+						file_lines_number += 1
+
+						# Change the number text to the number of lines inside the file
+						number_text = str(file_lines_number)
+
+					# While the length of the number text is lesser than the number of lines to write
+					while len(number_text) < len(str(text_lines_number)):
+						# Add spaces to the number text
+						number_text = " " + number_text
+
+					previous_line = dictionary["Difference"]["Lines"][-1]
+
+					# If the "i" number is not in the previous line
+					# And the previous line is not empty
+					if (
+						str(i) not in previous_line and
+						previous_line != ""
+					):
+						# Add a space to separate the change lines
+						dictionary["Difference"]["Lines"].append("")
+
+					# If the "Add deletions" filter is on
+					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
+					if (
+						self.settings["Filters"]["Add deletions"] == True and
+						(i + 1) <= len(file_text)
+					):
+						# If the "i" number plus one is equal to the number of lines inside the file
+						if (i + 1) == len(file_text) and len(text_lines_to_write) >= len(file_text):
+							# Remove one from the line number
+							line_number -= 1
+
+						file_line = file_text[line_number]
+
+						# Make the old line text with the "-" (minus) symbol
+						old_line = template.format("-", number_text, file_line)
+
+						# Add the old line text to the text difference list
+						dictionary["Difference"]["Lines"].append(old_line)
+
+						# Add to the deletions number
+						dictionary["Deletions"] += 1
+
+					symbol = "+"
+
+					if (i + 1) <= len(file_text):
+						# If the "Add deletions" filter is off
+						if self.settings["Filters"]["Add deletions"] == False:
+							symbol = "~"
+
+						dictionary["Changes"] += 1
+
+					# Make the new line text with the "+" (plus) symbol
+					new_line = template.format(symbol, number_text, line)
+
+					# Add the new line text to the text difference list
+					dictionary["Difference"]["Lines"].append(new_line)
+
+					# If the "Add deletions" filter is on
+					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
+					# And the previous line is not a space
+					if (
+						self.settings["Filters"]["Add deletions"] == True and
+						(i + 1) <= len(file_text) and
+						dictionary["Difference"]["Lines"][-1] != ""
+					):
+						# Add a space to separate the change lines
+						dictionary["Difference"]["Lines"].append("")
+
+					# If the "i" number plus one is lesser than or equal to the number of lines inside the file
+					# And the number of lines to write is greater than or equal to the number of lines inside the file
+					if (
+						(i + 1) >= len(file_text) and
+						len(text_lines_to_write) >= len(file_text)
+					):
+						# Add to the additions number
+						dictionary["Additions"] += 1
+
+			# If the "Separators" filter is on
+			# And the "added_space" is False
+			# And the "i" number plus one is lesser than or equal to the number of lines inside the file
+			# And the "Additions" number is not zero
+			if (
+				self.settings["Separators"] == True and
+				added_space == False and
+				(i + 1) == len(file_text) and
+				dictionary["Additions"] != 0
+			):
+				# Add a text to separate the lines
+
+				# If the "Add deletions" filter is off
+				if self.settings["Filters"]["Add deletions"] == False:
+					dictionary["Difference"]["Lines"].append("")
+
+				dictionary["Difference"]["Lines"].append(tab + "-----")
+				dictionary["Difference"]["Lines"].append("")
+				dictionary["Difference"]["Lines"].append(tab + self.language_texts["additions"].title() + ":")
+				dictionary["Difference"]["Lines"].append("")
+				dictionary["Difference"]["Lines"].append(tab + "---")
+
+				added_space = True
+
+			i += 1
+			line_number += 1
+
+		# Make the number of additions and deletions text
+		numbers = []
+
+		# Define the text template
+		text_template = ""
+
+		# Add the "changes" number and text if the changes are not zero
+		if dictionary["Additions"] != 0:
+			numbers.append(dictionary["Additions"])
+
+			# Get the singular or plural text
+			text = self.language_texts["addition"]
+
+			if dictionary["Additions"] > 1:
+				text = self.language_texts["additions"]
+
+			# Add the " and {} additions" text
+			text_template += "[{} " + text + "]"
+
+		# Add the "changes" number and text if the changes are not zero
+		if dictionary["Changes"] != 0:
+			numbers.append(dictionary["Changes"])
+
+			# Remove the "]" character of the text template
+			if text_template != "" and "]" in text_template[-1]:
+				text_template = text_template[:-1]
+
+			# Get the singular or plural text
+			text = self.language_texts["change"]
+
+			if dictionary["Changes"] > 1:
+				text = self.language_texts["changes"]
+
+			# If the additions are not zero
+			# Add the " and " text
+			if dictionary["Additions"] != 0:
+				text_template += " " + self.language_texts["and"] + " "
+
+			# Else, add the "[" text
+			# (Difference has only changes)
+			else:
+				text_template += "["
+
+			# Add the " and {} changes" text
+			text_template += "{} " + text
+
+			# Re-add the "]" character
+			text_template += "]"
+
+		# Add the "deletions" number and text if the deletions are not zero
+		if dictionary["Deletions"] != 0:
+			numbers.append(dictionary["Deletions"])
+
+			# Remove the "]" character of the text template
+			if text_template != "" and "]" in text_template[-1]:
+				text_template = text_template[:-1]
+
+			# If the changes are not zero
+			# Replace the " and " text with the ", " (comma and space) text
+			if dictionary["Changes"] != 0:
+				text_template = text_template.replace(" " + self.language_texts["and"] + " ", ", ")
+
+			# Get the singular or plural text
+			text = self.language_texts["deletion"]
+
+			if dictionary["Deletions"] > 1:
+				text = self.language_texts["deletions"]
+
+			# If the changes are not zero
+			# Add the ", and " text
+			if dictionary["Changes"] != 0:
+				text_template += ", " + self.language_texts["and"] + " "
+
+			# Else, add the "[" text
+			# (Difference has only deletions)
+			else:
+				text_template += "["
+
+			# Add the " and {} deletions" text
+			text_template += "{} " + text
+
+			# Re-add the "]" character
+			text_template += "]"
+
+		# Format the text template
+		if numbers != []:
+			text = "\t\t" + text_template.format(*numbers)
+
+			# Add a space and the template to the lines of text difference
+			if dictionary["Difference"]["Lines"] != [] and dictionary["Difference"]["Lines"][-1] != "":
+				dictionary["Difference"]["Lines"].append("")
+
+			dictionary["Difference"]["Lines"].append(text)
+
+		# Transform the lines list into a string
+		dictionary["Difference"]["Text"] = self.Text_From_List(dictionary["Difference"]["Lines"])
+
+		return dictionary["Difference"]["Text"]
+
+	def Check_Text_Difference(self, file_text, text_lines_to_write, settings = {}):
+		# Define the maximum number of lines to use the text difference
+		self.maximum_lines = 20
+
+		self.make_difference = True
+
+		# Define the default verbose text for non-verbose mode
+		verbose_text = self.language_texts["text, title()"] + ":\n[" + \
+		text_lines_to_write + \
+		"]"
+
+		self.settings = settings
+
+		# If the verbose mode is activated
+		if self.switches["verbose"] == True and self.make_difference == True:
+			# If the number of lines is greater than the maximum number of lines to show
+			# And the file is not empty
+			# Show only the text difference
+			if len(file_text["lines"]) > self.maximum_lines and file_text["lines"] != []:
+				# Make the text difference between the text inside the file and the text to be written
+				text_difference = self.Text_Difference(file_text, text_lines_to_write, settings)
+
+				verbose_text = self.language_texts["text_difference"] + ":\n" + \
+				"\t[\n" + \
+				text_difference + \
+				"\n\t]"
+
+		return verbose_text

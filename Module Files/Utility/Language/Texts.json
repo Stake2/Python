@@ -53,6 +53,10 @@
             "feminine": "criada"
         }
     },
+	"edit, title()": {
+        "en": "Edit",
+        "pt": "Editar"
+    },
     "edited": {
         "en": "edited",
         "pt": {
@@ -439,6 +443,10 @@
 		"en": "Select one class to execute",
 		"pt": "Selecione uma classe para executar"
 	},
+	"select_one_thing_to_do": {
+		"en": "Select one thing to do",
+		"pt": "Selecione uma coisa para fazer"
+	},
 	"type_or_paste_the_folder_where_you_want_to_create_the_settings_file": {
 		"en": "Type or paste the folder where you want to create the settings file",
 		"pt": "Digite ou cole a pasta onde você quer criar o arquivo de configurações"
@@ -454,6 +462,10 @@
 	"format": {
 		"en": "format",
 		"pt": "formato"
+	},
+	"format, title()": {
+		"en": "Format",
+		"pt": "Formato"
 	},
 	"empty, title()": {
 		"en": "Empty",
@@ -564,6 +576,10 @@
 	"and": {
 		"en": "and",
 		"pt": "e"
+	},
+	"and_in": {
+		"en": "and in",
+		"pt": "e em"
 	},
 	"or": {
 		"en": "or",
@@ -852,6 +868,13 @@
 			"feminine": "Certa"
 		}
 	},
+	"correct, title()": {
+		"en": "Correct",
+		"pt": {
+			"masculine": "Correto",
+			"feminine": "Correta"
+		}
+	},
 	"description, title()": {
 		"en": "Description",
 		"pt": "Descrição"
@@ -948,12 +971,33 @@
 		"en": "Current {}",
 		"pt": "{} atual"
 	},
+	"first": {
+		"pt": {
+			"masculine": "primeiro",
+			"feminine": "primeira"
+		},
+		"en": "first"
+	},
+	"last": {
+		"pt": {
+			"masculine": "último",
+			"feminine": "última"
+		},
+		"en": "last"
+	},
 	"the_first": {
 		"pt": {
 			"masculine": "o primeiro",
 			"feminine": "a primeira"
 		},
 		"en": "the first"
+	},
+	"the_second": {
+		"pt": {
+			"masculine": "o segundo",
+			"feminine": "a segunda"
+		},
+		"en": "the second"
 	},
 	"the_last": {
 		"pt": {
@@ -965,6 +1009,22 @@
 	"with": {
 		"en": "with",
 		"pt": "com"
+	},
+	"was": {
+		"en": "was",
+		"pt": "foi"
+	},
+	"was_not": {
+		"en": "was not",
+		"pt": "não foi"
+	},
+	"to": {
+		"en": "to",
+		"pt": "para"
+	},
+	"with_{}": {
+		"en": "with {}",
+		"pt": "com {}"
 	},
 	"with_{}_title": {
 		"en": "with {} title",
@@ -982,6 +1042,30 @@
 		"en": "Add more",
 		"pt": "Adicionar mais"
 	},
+	"addition": {
+		"en": "addition",
+		"pt": "adição"
+	},
+	"additions": {
+		"en": "additions",
+		"pt": "adições"
+	},
+	"deletion": {
+		"en": "deletion",
+		"pt": "exclusão"
+	},
+	"deletions": {
+		"en": "deletions",
+		"pt": "exclusões"
+	},
+	"change": {
+		"en": "change",
+		"pt": "mudança"
+	},
+	"changes": {
+		"en": "changes",
+		"pt": "mudanças"
+	},
 	"general, title()": {
 		"en": "General",
 		"pt": "Geral"
@@ -997,14 +1081,6 @@
 	"today_is": {
 		"pt": "Hoje é",
 		"en": "Today is"
-	},
-	"was": {
-		"en": "was",
-		"pt": "foi"
-	},
-	"was_not": {
-		"en": "was not",
-		"pt": "não foi"
 	},
 	"type_the_time_that_you_{}": {
 		"en": "Type the time that you {}",
@@ -1033,6 +1109,93 @@
 	"line, title()": {
 		"en": "Line",
 		"pt": "Linha"
+	},
+	"playlist, title()": {
+		"en": "Playlist",
+		"pt": "Lista de reprodução"
+	},
+	"relative, title()": {
+		"pt": "Relativo",
+		"en": "Relative"
+	},
+	"exit, title()": {
+		"en": "Exit",
+		"pt": "Sair"
+	},
+	"old_status": {
+		"en": "Old status",
+		"pt": "Status antigo"
+	},
+	"new_status": {
+		"en": "New status",
+		"pt": "Novo status"
+	},
+	"classes, title()": {
+		"en": "Classes",
+		"pt": "Classes"
+	},
+	"author, title()": {
+		"en": "Author",
+		"pt": "Autor"
+	},
+	"creation_date": {
+		"en": "Creation date",
+		"pt": "Data de criação"
+	},
+	"synopsis, title()": {
+		"en": "Synopsis",
+		"pt": "Sinopse"
+	},
+	"skip, title()": {
+		"en": "Skip",
+		"pt": "Pular"
+	},
+	"skip_the": {
+		"en": "Skip the",
+		"pt": {
+			"masculine": "Pular a",
+			"feminine": "Pular o"
+		}
+	},
+	"website_link": {
+		"en": "Website link",
+		"pt": "Link do site"
+	},
+	"portrait, title()": {
+		"en": "Portrait",
+		"pt": "Retrato"
+	},
+	"landscape, title()": {
+		"en": "Landscape",
+		"pt": "Paisagem"
+	},
+	"in_{}_mode": {
+		"en": "in {} mode",
+		"pt": "em modo {}"
+	},
+	"acronym, title()": {
+		"en": "Acronym",
+		"pt": "Acrônimo"
+	},
+	"join_{}": {
+		"en": "Join {}",
+		"pt": "Juntar {}"
+	},
+	"quit, title()": {
+		"en": "Quit",
+		"pt": "Sair"
+	},
+	"write, title()": {
+		"en": "Write",
+		"pt": "Escrever"
+	},
+	"post, title()": {
+		"en": "Post",
+		"pt": "Postar"
+	},
+	"manage, title()": {
+		"en": "Manage",
+		"pt": "Gerenciar"
 	},
 	"genders, type: dict": {
 		"en": {

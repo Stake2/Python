@@ -7,16 +7,17 @@ class Define_Folders():
 			import pathlib
 
 			name = type(object_to_define).__name__
+			class_module = object_to_define.__module__
 
-			if "." in object_to_define.__module__:
-				if object_to_define.__module__.split(".")[0] == "Utility":
-					name = object_to_define.__module__.split(".")[1]
+			if "." in class_module:
+				if class_module.split(".")[0] == "Utility":
+					name = class_module.split(".")[1]
 
 				else:
-					name = object_to_define.__module__.split(".")[0]
+					name = class_module.split(".")[0]
 
 			if name == "Run":
-				name = object_to_define.__module__.split(".")[0]
+				name = class_module.split(".")[0]
 
 			if hasattr(object_to_define, "module") == False:
 				self.module = {
