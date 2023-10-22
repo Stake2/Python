@@ -82,17 +82,17 @@ class Christmas():
 		self.Folder.Create(self.christmas_image_folder)
 
 	def Define_Files(self):
-		if self.full_user_language in self.current_year["folders"]:
-			self.planning_file = self.current_year["folders"][self.full_user_language][self.language_texts["christmas, title()"]]
+		if self.full_user_language in self.current_year["Folders"]:
+			self.planning_file = self.current_year["Folders"][self.full_user_language][self.language_texts["christmas, title()"]]
 			self.planning_file = self.planning_file[self.language_texts["planning, title()"]]
 
-			self.objects_file = self.current_year["folders"]["English"][self.texts["christmas, title()"]["en"]]["root"] + "Objects.txt"
+			self.objects_file = self.current_year["Folders"]["English"][self.texts["christmas, title()"]["en"]]["root"] + "Objects.txt"
 
-			self.things_to_watch_file = self.current_year["folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["watch, title(), en - pt"] + ".txt"
+			self.things_to_watch_file = self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["watch, title(), en - pt"] + ".txt"
 
 			self.watch_list_file = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + "Watch List.txt"
 
-			self.things_to_eat_file = self.current_year["folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
+			self.things_to_eat_file = self.current_year["Folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
 
 	def Define_Lists(self):
 		self.twitter_scheduled_text = "Twitter Scheduled"
@@ -114,7 +114,7 @@ class Christmas():
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
 			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
-			"Texts - Textos": self.current_year["folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt",
+			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt",
 		}
 
 		texts = {

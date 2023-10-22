@@ -1,4 +1,8 @@
 {
+	"folders, title()": {
+        "en": "Folders",
+        "pt": "Pastas"
+    },
     "your_{}_is": {
         "pt": "Seu {} é",
         "en": "Your {} is"
@@ -760,6 +764,14 @@
 		"en": "Media",
 		"pt": "Mídia"
 	},
+	"medias, title()": {
+		"en": "Media",
+		"pt": "Mídias"
+	},
+	"games, title()": {
+		"en": "Games",
+		"pt": "Jogos"
+	},
 	"and_also": {
 		"en": "and also",
 		"pt": "e também"
@@ -783,6 +795,22 @@
 	"christmas, title()": {
 		"en": "Christmas",
 		"pt": "Natal"
+	},
+	"videos, title()": {
+		"en": "Videos",
+		"pt": "Vídeos"
+	},
+	"notepad, title()": {
+		"en": "Notepad",
+		"pt": "Bloco De Notas"
+	},
+	"effort, title()": {
+		"en": "Effort",
+		"pt": "Dedicação"
+	},
+	"images, title()": {
+		"en": "Images",
+		"pt": "Imagens"
 	},
 	"shortcut, title()": {
 		"en": "Shortcut",
@@ -1106,6 +1134,14 @@
         "en": "Text",
         "pt": "Texto"
     },
+	"background, title()": {
+		"en": "Background",
+		"pt": "Fundo"
+	},
+	"highlight, title()": {
+		"en": "Highlight",
+		"pt": "Destaque"
+	},
 	"line, title()": {
 		"en": "Line",
 		"pt": "Linha"
@@ -1196,6 +1232,10 @@
 	"manage, title()": {
 		"en": "Manage",
 		"pt": "Gerenciar"
+	},
+	"space, title()": {
+		"en": "Space",
+		"pt": "Espaço"
 	},
 	"genders, type: dict": {
 		"en": {

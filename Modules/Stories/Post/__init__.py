@@ -50,10 +50,10 @@ class Post(Stories):
 
 		# Select story and define chapter to be posted
 		if self.run_as_module == False:
-			if self.story == None or self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.user_language]):
+			if self.story == None or self.story != None and int(post) == len(self.story["Information"]["Chapters"]["Titles"][self.user_language]):
 				select_text = None
 
-				if self.story != None and int(post) == len(self.story["Information"]["Chapter titles"][self.user_language]):
+				if self.story != None and int(post) == len(self.story["Information"]["Chapters"]["Titles"][self.user_language]):
 					story_title = self.story["Titles"][self.user_language]
 					select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(story_title)
 
@@ -99,7 +99,7 @@ class Post(Stories):
 			self.File.Open(self.story["Folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
-		self.chapter_titles = self.story["Information"]["Chapter titles"][self.user_language].copy()
+		self.chapter_titles = self.story["Information"]["Chapters"]["Titles"][self.user_language].copy()
 
 		i = 1
 		while i <= int(self.story["Information"]["Chapter status"]["Post"]):
@@ -121,7 +121,7 @@ class Post(Stories):
 
 			self.story["chapter_titles"][language] = ""
 			self.story["chapter_titles"][language] += str(self.Text.Add_Leading_Zeroes(self.story["Information"]["Chapter status"]["Post"])) + " - "
-			self.story["chapter_titles"][language] += self.story["Information"]["Chapter titles"][language][int(self.story["Information"]["Chapter status"]["Post"]) - 1]
+			self.story["chapter_titles"][language] += self.story["Information"]["Chapters"]["Titles"][language][int(self.story["Information"]["Chapter status"]["Post"]) - 1]
 
 		# Define chapter number name
 		self.story["chapter_number_name"] = self.Date.language_texts["number_names, type: list"][int(self.story["chapter_number"])]
@@ -228,7 +228,7 @@ class Post(Stories):
 						print(text)
 						print()
 
-						for chapter_title in self.story["Information"]["Chapter titles"]["en"]:
+						for chapter_title in self.story["Information"]["Chapters"]["Titles"]["en"]:
 							print(self.story["chapter_number"])
 
 							self.Move_Cover(language, full_language)
@@ -385,7 +385,7 @@ class Post(Stories):
 		print(self.large_bar)
 
 		# Format Wattpad template
-		social_networks["Wattpad"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network Card Templates"]["Wattpad"])[self.user_language]
+		social_networks["Wattpad"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network post templates"]["Wattpad"])[self.user_language]
 
 		social_networks["Wattpad"]["Card"] = social_networks["Wattpad"]["Card"].format(self.story["title_underlined"], self.story["chapter_number_name"], self.story["chapter_number"], self.story["Information"]["Wattpad"]["Chapter link"], self.story["title_underlined"])
 
@@ -393,7 +393,7 @@ class Post(Stories):
 		self.story["Information"]["Website"]["Chapter link"] = self.story["Information"]["Website"]["link"].replace(" ", "%20") + "?chapter={}#".format(str(self.story["chapter_number"]))
 
 		# Format Twitter & Facebook template
-		social_networks["Twitter, Facebook"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network Card Templates"]["Twitter, Facebook"])[self.user_language]
+		social_networks["Twitter, Facebook"]["Card"] = self.JSON.To_Python(self.stories["Folders"]["Database"]["Social Network post templates"]["Twitter, Facebook"])[self.user_language]
 
 		social_networks["Twitter, Facebook"]["Card"] = social_networks["Twitter, Facebook"]["Card"].format(self.story["Information"]["Website"]["Chapter link"], self.story["title_underlined"])
 

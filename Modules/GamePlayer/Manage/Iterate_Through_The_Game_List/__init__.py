@@ -94,9 +94,9 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			}
 
 			# Define and create the "Entries.json" file
-			self.year["folders"]["entries"] = self.year["folders"]["root"] + "Sessions.json"
+			self.year["Folders"]["entries"] = self.year["Folders"]["root"] + "Sessions.json"
 
-			self.year["Entries"] = self.JSON.To_Python(self.year["folders"]["entries"])
+			self.year["Entries"] = self.JSON.To_Python(self.year["Folders"]["entries"])
 
 			self.years_list_dictionary.append(self.year)
 

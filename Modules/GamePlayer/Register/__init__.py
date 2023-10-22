@@ -39,13 +39,17 @@ class Register(GamePlayer):
 		self.Create_Entry_File()
 		self.Add_Entry_File_To_Year_Folder()
 
+		# Diary Slim related methods
 		self.Define_Diary_Slim_Text()
 
 		self.Post_On_Social_Networks()
 
 		self.Write_On_Diary_Slim()
 
+		# Show the information about the game session
 		self.Show_Information(self.dictionary)
+
+		super().__init__()
 
 	def Type_Entry_Information(self):
 		# Select the game type and the game if the dictionary is empty
@@ -329,62 +333,62 @@ class Register(GamePlayer):
 			type_folder = self.dictionary["Type"]["Type"][language]
 
 			# Entries folder
-			folder = self.current_year["folders"][full_language]["root"]
+			folder = self.current_year["Folders"][full_language]["root"]
 
-			self.current_year["folders"][full_language][root_folder] = {
+			self.current_year["Folders"][full_language][root_folder] = {
 				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder]["root"])
 
 			# Game type folder
-			folder = self.current_year["folders"][full_language][root_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder]["root"]
 
-			self.current_year["folders"][full_language][root_folder][type_folder] = {
+			self.current_year["Folders"][full_language][root_folder][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder][type_folder]["root"])
 
 			# Session file
-			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder][type_folder]["root"]
 			file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
-			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["Folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
+			self.File.Create(self.current_year["Folders"][full_language][root_folder][type_folder][file_name])
 
-			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+			self.File.Edit(self.current_year["Folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.texts["game_sessions"][language]
 
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
+			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text]["root"]
 
-			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
+			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
 				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year game type folder
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
+			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			type_folder = self.dictionary["Type"]["Type"][language]
 
-			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
+			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
 
 			# First game type session in year file
 			if self.game["States"]["First game type session in year"] == True:
-				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
+				folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
 
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
+				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
 
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Game_Status(self):
 		self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])

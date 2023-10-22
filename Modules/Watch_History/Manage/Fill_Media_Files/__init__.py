@@ -169,7 +169,7 @@ class Fill_Media_Files(Watch_History):
 			"(",
 			")",
 			"\t",
-			'"',
+			'"'
 		]
 
 		if " " in text[0]:
@@ -196,7 +196,10 @@ class Fill_Media_Files(Watch_History):
 			progress = str(i) + "/" + str(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total"])
 
 			# Add total episode number of all media items
-			if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Items"]["List"][0]:
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["Item"]["Title"] != self.media["Items"]["List"][0]
+			):
 				progress += " (" + str(self.Text.Remove_Leading_Zeroes(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"]))
 
 				progress += "/" + total_number_text + ")"
@@ -222,7 +225,10 @@ class Fill_Media_Files(Watch_History):
 				episode_title = "EP" + str(self.Text.Add_Leading_Zeroes(i))
 
 				# Also add the total episode number of all media items if the media has a media item list
-				if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Items"]["List"][0]:
+				if (
+					self.media["States"]["Media item list"] == True and
+					self.media["Item"]["Title"] != self.media["Items"]["List"][0]
+				):
 					episode_title += "(" + str(self.Text.Add_Leading_Zeroes(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"])) + ")"
 
 				first_space = True
@@ -235,7 +241,7 @@ class Fill_Media_Files(Watch_History):
 					typed_text = self.Input.Type(self.language_texts["paste_the_episode_title_in_{}"].format("[" + translated_language + "]"), accept_enter = False, next_line = True, first_space = first_space)
 
 				if self.switches["testing"] == True:
-					typed_text = self.texts["episode_title"][language] + " " + full_language
+					typed_text = self.texts["episode_title"][language] + " " + self.JSON.Language.language_texts["genders, type: dict"]["in"] + " " + full_language
 
 				# Remove some texts from the episode title and add quotes
 				typed_text = '"' + self.Replace_Text(typed_text) + '"'

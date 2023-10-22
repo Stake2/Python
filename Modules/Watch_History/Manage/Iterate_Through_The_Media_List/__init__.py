@@ -77,7 +77,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						}
 					}
 
-					# Show media title
+					# Show the media title
 					print()
 					print("\t" + "---")
 					print()

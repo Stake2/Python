@@ -34,9 +34,9 @@ class Show_Year_Information(Years):
 		print()
 		print("________________________")
 
-		for key in self.year["folders"]:
-			if type(self.year["folders"][key]) == str and os.path.isfile(self.year["folders"][key]) == True:
-				file = self.year["folders"][key]
+		for key in self.year["Folders"]:
+			if type(self.year["Folders"][key]) == str and os.path.isfile(self.year["Folders"][key]) == True:
+				file = self.year["Folders"][key]
 
 				print("____" + key + self.language_texts["_(file)"] + ":")
 
@@ -46,13 +46,13 @@ class Show_Year_Information(Years):
 
 			sub_dictionary = None
 
-			if type(self.year["folders"][key]) == dict:
-				sub_dictionary = self.year["folders"][key]
+			if type(self.year["Folders"][key]) == dict:
+				sub_dictionary = self.year["Folders"][key]
 
 				print("____" + key + self.language_texts["_(primary_folder)"] + ":")
 
-				for sub_key in self.year["folders"][key]:
-					sub_dictionary = self.year["folders"][key][sub_key]
+				for sub_key in self.year["Folders"][key]:
+					sub_dictionary = self.year["Folders"][key][sub_key]
 
 					if type(sub_dictionary) == str and os.path.isfile(sub_dictionary) == True:
 						file = sub_dictionary
@@ -81,13 +81,13 @@ class Show_Year_Information(Years):
 								if sub_sub_key != list(sub_dictionary.keys())[-1]:
 									print()
 
-					if sub_key != list(self.year["folders"][key].keys())[-1] and sub_dictionary == None or sub_dictionary != None and type(sub_dictionary) != str and len(sub_dictionary.keys()) != 1:
+					if sub_key != list(self.year["Folders"][key].keys())[-1] and sub_dictionary == None or sub_dictionary != None and type(sub_dictionary) != str and len(sub_dictionary.keys()) != 1:
 						print()
 
-			if key != list(self.year["folders"].keys())[-1] or sub_dictionary != None and type(sub_dictionary) != str and len(sub_dictionary.keys()) != 1:
+			if key != list(self.year["Folders"].keys())[-1] or sub_dictionary != None and type(sub_dictionary) != str and len(sub_dictionary.keys()) != 1:
 				print()
 
-			if self.year["folders"][key] != {} and key != list(self.year["folders"].keys())[-1]:
+			if self.year["Folders"][key] != {} and key != list(self.year["Folders"].keys())[-1]:
 				print("________________________")
 
 		print()

@@ -66,7 +66,7 @@ class Create_Year_Summary(Years):
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
-			self.language_folders[language] = self.year["folders"][full_language]["root"]
+			self.language_folders[language] = self.year["Folders"][full_language]["root"]
 
 		self.language_files = {}
 
@@ -78,16 +78,16 @@ class Create_Year_Summary(Years):
 			self.language_files[language] = self.language_folders[language] + summary_text + ".txt"
 			self.File.Create(self.language_files[language])
 
-			self.year["folders"][full_language][summary_text] = self.language_files[language]
+			self.year["Folders"][full_language][summary_text] = self.language_files[language]
 
 	def Define_Year_Data(self):
-		self.File.Edit(self.year["folders"][self.language_texts["edited_in, en - pt"]], self.Date.Now()["strftime"], "w")
+		self.File.Edit(self.year["Folders"][self.language_texts["edited_in, en - pt"]], self.Date.Now()["strftime"], "w")
 
 		self.year_data = {
 			"header": {
 				"author, title()": self.author,
-				"created_in": self.File.Contents(self.year["folders"][self.language_texts["created_in, en - pt"]])["lines"][0],
-				"edited_in": self.File.Contents(self.year["folders"][self.language_texts["edited_in, en - pt"]])["lines"][0],
+				"created_in": self.File.Contents(self.year["Folders"][self.language_texts["created_in, en - pt"]])["lines"][0],
+				"edited_in": self.File.Contents(self.year["Folders"][self.language_texts["edited_in, en - pt"]])["lines"][0],
 			}
 		}
 

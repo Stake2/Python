@@ -22,10 +22,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.date = self.Date.Now()
 
 		# Get slim texts
-		self.slim_texts = self.JSON.To_Python(self.folders["diary_slim"]["data"]["slim_texts"])
+		self.slim_texts = self.JSON.To_Python(self.folders["Diary Slim"]["Data"]["slim_texts"])
 
 		# Get today task done text using weekday
-		self.today_task_done_text = self.File.Contents(self.folders["diary_slim"]["data"]["things_done_texts"])["lines"][self.date["Units"]["Week day"]]
+		self.today_task_done_text = self.File.Contents(self.folders["Diary Slim"]["Data"]["things_done_texts"])["lines"][self.date["Units"]["Week day"]]
 
 		for language in self.languages["small"]:
 			# Iterate through state names

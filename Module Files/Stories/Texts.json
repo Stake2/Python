@@ -151,22 +151,6 @@
 		"en": "The last chapter",
 		"pt": "O último capítulo"
 	},
-	"information_items, type: list": {
-		"en": [
-			"Title",
-			"Author",
-			"Creation date",
-			"Status",
-			"Synopsis"
-		],
-		"pt": [
-			"Título",
-			"Autor",
-			"Data de criação",
-			"Status",
-			"Sinopse"
-		]
-	},
 	"story_title_in_{}": {
 		"en": "Story title in {}",
 		"pt": "Título da história em {}"
@@ -243,6 +227,18 @@
 		"en": "Select a writing mode",
 		"pt": "Selecione um modo de escrita"
 	},
+	"write, title()": {
+		"en": "Write",
+		"pt": "Escrever"
+	},
+	"revise, title()": {
+		"en": "Revise",
+		"pt": "Revisar"
+	},
+	"translate, title()": {
+		"en": "Translate",
+		"pt": "Traduzir"
+	},
 	"obsidian_link": {
 		"en": "Obsidian link",
 		"pt": "Link do Obsidian"
@@ -290,56 +286,6 @@
 	"post, title()": {
 		"en": "Post",
 		"pt": "Postar"
-	},
-	"status, type: list": {
-		"en": [
-			"Writing",
-			"Re-writing",
-			"Reviewing",
-			"Finished",
-			"Published",
-			"On hold"
-		],
-		"pt": [
-			"Escrevendo",
-			"Re-escrevendo",
-			"Revisando",
-			"Finalizada",
-			"Publicada",
-			"Em pausa"
-		]
-	},
-	"writing_statuses": {
-		"en": "Writing statuses",
-		"pt": "Estados de escrita"
-	},
-	"select_a_writing_status": {
-		"en": "Select a writing status",
-		"pt": "Selecione um estado de escrita"
-	},
-	"folder_names, type: list": [
-		"Chapters",
-		"Comments",
-		"Covers",
-		"Information",
-		"Lore",
-		"Readers and Reads"
-	],
-	"file_names, type: list": [
-		"Author",
-		"Chapter status",
-		"Chapter dates",
-		"Creation date",
-		"Information",
-		"Post template",
-		"Titles",
-		"Wattpad"
-	],
-	"sub_file_names, type: dict": {
-		"Covers": [
-			"Landscape",
-			"Portrait"
-		]
 	},
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",
@@ -458,5 +404,77 @@
 	"you_finished_copying_the_chapter_titles_of_this_story": {
 		"en": "You finished copying the chapter titles of this story",
 		"pt": "Você terminou de copiar os títulos de capítulo desta história"
+	},
+	"first_track": {
+		"en": "First track",
+		"pt": "Primeira faixa"
+	},
+	"folder_names, type: list": [
+		"Chapters",
+		"Comments",
+		"Covers",
+		"Information",
+		"Lore",
+		"Readers and Reads"
+	],
+	"file_names, type: list": [
+		"Author",
+		"Chapter dates",
+		"Creation date",
+		"Chapters",
+		"Information",
+		"Pack",
+		"Writing",
+		"Post",
+		"Titles",
+		"Wattpad"
+	],
+	"sub_file_names, type: dict": {
+		"Covers": [
+			"Landscape",
+			"Portrait"
+		]
+	},
+	"information_items, type: list": {
+		"en": [
+			"Title",
+			"Author",
+			"Creation date",
+			"Status",
+			"Synopsis"
+		],
+		"pt": [
+			"Título",
+			"Autor",
+			"Data de criação",
+			"Status",
+			"Sinopse"
+		]
+	},
+	"status, type: list": {
+		"en": [
+			"Writing",
+			"Re-writing",
+			"Reviewing",
+			"Finished",
+			"Published",
+			"On hold"
+		],
+		"pt": [
+			"Escrevendo",
+			"Re-escrevendo",
+			"Revisando",
+			"Finalizada",
+			"Publicada",
+			"Em pausa"
+		]
+	},
+	"writing_statuses": {
+		"en": "Writing statuses",
+		"pt": "Estados de escrita"
+	},
+	"select_a_writing_status": {
+		"en": "Select a writing status",
+		"pt": "Selecione um estado de escrita"
 	}
 }

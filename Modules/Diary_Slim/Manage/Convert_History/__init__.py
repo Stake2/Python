@@ -21,13 +21,13 @@ class Convert_History(Diary_Slim):
 			# Define year dictionary with year number and folders
 			self.year = {
 				"Number": self.year,
-				"folders": {},
+				"Folders": {},
 				"Year": deepcopy(self.templates["Year"])
 			}
 
-			self.year["folders"] = self.folders["diary_slim"]["years"][self.year["Number"]]
-			self.year["folders"]["old"] = {
-				"root": self.folders["diary_slim"]["root"] + self.year["Number"] + "/"
+			self.year["Folders"] = self.folders["Diary Slim"]["Years"][self.year["Number"]]
+			self.year["Folders"]["old"] = {
+				"root": self.folders["Diary Slim"]["root"] + self.year["Number"] + "/"
 			}
 
 			print()
@@ -37,7 +37,7 @@ class Convert_History(Diary_Slim):
 			print()
 
 			# Get the months list
-			self.year["Months"] = self.Folder.Contents(self.year["folders"]["old"]["root"])["folder"]["names"]
+			self.year["Months"] = self.Folder.Contents(self.year["Folders"]["old"]["root"])["folder"]["names"]
 
 			# Iterate through the months list
 			for month in self.year["Months"]:
@@ -67,7 +67,7 @@ class Convert_History(Diary_Slim):
 				self.year["Year"]["Months"][month["Formats"]["Diary Slim"]] = month
 
 				# Define the month folder
-				old_month_folder = self.year["folders"]["old"]["root"] + self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Formats"]["Diary Slim"] + "/"
+				old_month_folder = self.year["Folders"]["old"]["root"] + self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Formats"]["Diary Slim"] + "/"
 
 				# Define the days list
 				self.year["Days"] = self.Folder.Contents(old_month_folder)["file"]["names"]
@@ -140,7 +140,7 @@ class Convert_History(Diary_Slim):
 					if has_data == False:
 						self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Diary Slims"][day].pop("Data")
 
-				new_month_folder = self.year["folders"]["root"] + self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Formats"]["Diary Slim"] + "/"
+				new_month_folder = self.year["Folders"]["root"] + self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Formats"]["Diary Slim"] + "/"
 				self.Folder.Create(new_month_folder)
 
 				month_file = new_month_folder + "Month.json"
@@ -160,10 +160,10 @@ class Convert_History(Diary_Slim):
 			self.year["Year"]["Numbers"]["Days"] = self.Date.Now(self.Date.Date(year = int(self.year["Number"]), month = 1, day = 1))["Units"]["Year days"]
 
 			# Edit the "Year.json" file
-			self.JSON.Edit(self.year["folders"]["year"], self.year["Year"])
+			self.JSON.Edit(self.year["Folders"]["year"], self.year["Year"])
 
 			if self.year["Number"] != list(self.years_list)[-1] and self.switches["testing"] == True:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
 		# Update the "History.json" file with the new History dictionary
-		self.JSON.Edit(self.folders["diary_slim"]["years"]["history"], self.history)
+		self.JSON.Edit(self.folders["Diary Slim"]["Years"]["History"], self.history)

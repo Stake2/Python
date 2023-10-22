@@ -53,7 +53,7 @@ class JSON():
 		if self.switches["verbose"] == True and verbose == None or verbose == True:
 			import inspect
 
-			print()
+			print(self.Language.space_text)
 			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
@@ -232,7 +232,11 @@ class JSON():
 
 		i = 0
 		for key in keys.copy():
-			if key_value["key"] not in keys and key == after_key or add_to_end == True:
+			if (
+				key_value["key"] not in keys and
+				key == after_key or
+				add_to_end == True
+			):
 				if add_to_end == True:
 					number = len(keys)
 

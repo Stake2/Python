@@ -354,7 +354,7 @@ class API():
 				if "Title" in items[id] and items[id]["Title"] in ["Private video", "Deleted video"]:
 					items.pop(id)
 
-				if api["item"] == "search":
+				if api["item"] == "search" and "nextPageToken" in api["response"]:
 					api["response"].pop("nextPageToken")
 
 		return api

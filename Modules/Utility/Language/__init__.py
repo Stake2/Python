@@ -497,9 +497,10 @@ class Language():
 	def Define_App_Settings(self):
 		import pathlib
 
-		self.app_settings = {}
+		self.app_settings = {
+			"language": self.system_information["Language"]
+		}
 
-		self.app_settings["language"] = self.system_information["Language"]
 		self.username = pathlib.Path.home().name
 		self.user_language = self.app_settings["language"]
 		self.full_user_language = self.languages["full"][self.user_language]
@@ -751,6 +752,9 @@ class Language():
 			self.Create(self.settings_file)
 			self.Edit(self.settings_file, self.From_Python({}), "w")
 
+		#self.space_text = "__" + self.language_texts["space, title()"] + "__"
+		self.space_text = ""
+
 	def Read_Settings_File(self):
 		if os.path.isfile(self.settings_file) == True:
 			settings = self.To_Python(self.settings_file)
@@ -993,8 +997,8 @@ class Language():
 		# Define the default settings dictionary
 		self.default_settings = {
 			"Filters": {
-				"Add deletions": False,
-				"All text": False
+				"Deletions mode": False,
+				"Full text": False
 			},
 			"Separators": True
 		}
@@ -1031,8 +1035,8 @@ class Language():
 			):
 				# If the number of file lines is greater than or equal to number of text lines
 				if len(file_text) >= len(text_lines_to_write):
-					# If the "All text" filter is off
-					if self.settings["Filters"]["All text"] == False:
+					# If the "Full text" filter is off
+					if self.settings["Filters"]["Full text"] == False:
 						# If the current file line is not the same as the current text line
 						# Or the line is not inside the file lines list
 						if (
@@ -1042,10 +1046,10 @@ class Language():
 							# Add the line to the text difference list
 							add = True
 
-					# If the "All text" filter is on
+					# If the "Full text" filter is on
 					# And the current file line is not the same as the current text line
 					if (
-						self.settings["Filters"]["All text"] == True and
+						self.settings["Filters"]["Full text"] == True and
 						file_text[i] != text_lines_to_write[i]
 					):
 						# Add the line to the text difference list
@@ -1067,19 +1071,19 @@ class Language():
 						# Add the line to the text difference list
 						add = True
 
-					# If the "All text" filter is off
+					# If the "Full text" filter is off
 					# And the line is not inside the file lines list
 					if (
-						self.settings["Filters"]["All text"] == False and
+						self.settings["Filters"]["Full text"] == False and
 						line not in file_text
 					):
 						# Add the line to the text difference list
 						add = True
 
-					# If the "All text" filter is on
+					# If the "Full text" filter is on
 					# And the "i" number plus one is lesser than or equal to the number of file text lines
 					if (
-						self.settings["Filters"]["All text"] == True and
+						self.settings["Filters"]["Full text"] == True and
 						(i + 1) <= len(file_text)
 					):
 						# Add the line to the text difference list
@@ -1105,19 +1109,36 @@ class Language():
 
 					previous_line = dictionary["Difference"]["Lines"][-1]
 
+					if previous_line == "":
+						previous_line = dictionary["Difference"]["Lines"][-2]
+
+					self.testing = False
+
+					if self.testing == True:
+						print()
+						print("-----")
+						print()
+						print("[" + str(i - 1))
+						print("[" + str(i))
+						print("[" + str(i + 1))
+						print("[" + str(line_number))
+						print("[" + str(int(number_text) - 1))
+						print()
+						print(" - [" + previous_line)
+
 					# If the "i" number is not in the previous line
-					# And the previous line is not empty
+					# And the "number_text" number is not in the previous line
 					if (
 						str(i) not in previous_line and
-						previous_line != ""
+						str(int(number_text) - 1) not in previous_line
 					):
 						# Add a space to separate the change lines
 						dictionary["Difference"]["Lines"].append("")
 
-					# If the "Add deletions" filter is on
+					# If the "Deletions mode" filter is on
 					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
 					if (
-						self.settings["Filters"]["Add deletions"] == True and
+						self.settings["Filters"]["Deletions mode"] == True and
 						(i + 1) <= len(file_text)
 					):
 						# If the "i" number plus one is equal to the number of lines inside the file
@@ -1138,24 +1159,30 @@ class Language():
 
 					symbol = "+"
 
+					# If the "i" number plus one is lesser than or equal to the number of lines inside the file
 					if (i + 1) <= len(file_text):
-						# If the "Add deletions" filter is off
-						if self.settings["Filters"]["Add deletions"] == False:
+						# If the "Deletions mode" filter is off
+						if self.settings["Filters"]["Deletions mode"] == False:
 							symbol = "~"
 
+						# Add to the changes number
 						dictionary["Changes"] += 1
 
 					# Make the new line text with the "+" (plus) symbol
 					new_line = template.format(symbol, number_text, line)
 
+					if self.testing == True:
+						print(" - [" + new_line)
+						input()
+
 					# Add the new line text to the text difference list
 					dictionary["Difference"]["Lines"].append(new_line)
 
-					# If the "Add deletions" filter is on
+					# If the "Deletions mode" filter is on
 					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
 					# And the previous line is not a space
 					if (
-						self.settings["Filters"]["Add deletions"] == True and
+						self.settings["Filters"]["Deletions mode"] == True and
 						(i + 1) <= len(file_text) and
 						dictionary["Difference"]["Lines"][-1] != ""
 					):
@@ -1165,7 +1192,7 @@ class Language():
 					# If the "i" number plus one is lesser than or equal to the number of lines inside the file
 					# And the number of lines to write is greater than or equal to the number of lines inside the file
 					if (
-						(i + 1) >= len(file_text) and
+						(i + 1) <= len(file_text) and
 						len(text_lines_to_write) >= len(file_text)
 					):
 						# Add to the additions number
@@ -1183,8 +1210,8 @@ class Language():
 			):
 				# Add a text to separate the lines
 
-				# If the "Add deletions" filter is off
-				if self.settings["Filters"]["Add deletions"] == False:
+				# If the "Deletions mode" filter is off
+				if self.settings["Filters"]["Deletions mode"] == False:
 					dictionary["Difference"]["Lines"].append("")
 
 				dictionary["Difference"]["Lines"].append(tab + "-----")

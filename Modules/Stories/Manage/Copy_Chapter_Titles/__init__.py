@@ -30,24 +30,28 @@ class Copy_Chapter_Titles(Stories):
 		print()
 
 		# Get the chapter titles list
-		chapter_titles = self.story["Information"]["Chapter titles"][language]
+		chapter_titles = self.story["Information"]["Chapters"]["Titles"][language]
 
 		# Iterate through the chapter titles list
 		i = 1
 		for title in chapter_titles:
 			# Add the chapter number and separator to the chapter title
-			title = str(i) + " - " + title
+			edited_title = str(i) + " - " + title
 
 			# Show the chapter number and title
 			print("-")
 			print()
 			print(str(i) + "/" + str(len(chapter_titles)) + ":")
-			print("[" + title + "]")
+			print("[" + edited_title + "]")
 
 			# Copy the chapter title with the chapter number
-			self.Text.Copy(title, verbose = False)
+			self.Text.Copy(edited_title, verbose = False)
 
-			input()
+			if title != chapter_titles[-1]:
+				input()
+
+			if title == chapter_titles[-1]:
+				print()
 
 			i += 1
 

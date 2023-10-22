@@ -32,7 +32,10 @@ class Comment_Writer(Watch_History):
 			self.dictionary["Comment Writer"]["States"]["Write"] = True
 
 		# If the backup file does not exist, ask the user if it wants to write a comment
-		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False and self.dictionary["Comment Writer"]["States"]["Write"] == False:
+		if (
+			self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False and
+			self.dictionary["Comment Writer"]["States"]["Write"] == False
+		):
 			self.dictionary["Comment Writer"]["States"]["Write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
 
 		if self.dictionary["Comment Writer"]["States"]["Write"] == True:
@@ -46,32 +49,46 @@ class Comment_Writer(Watch_History):
 			self.Define_Files()
 			self.Write_Comment()
 
-			# Show text showing that the user finished writing the comment
+			# Show the text showing that the user finished writing the comment
 			print("----------")
 			print()
 			print(self.language_texts["you_finished_writing_the_comment"] + ".")
 
-			# Define media types where user can post comments
+			# Define the media types where the user can post comments
 			self.media_types["Post comment"] = [
 				self.texts["animes, title()"]["en"],
 				self.texts["cartoons, title()"]["en"],
 				self.texts["videos, title()"]["en"]
 			]
 
-			# If the media type is inside the "Post comment" list, and the episode is a remote one, open the remote episode link to post the comment
+			# Define the dictionary that says if comment posting on the remote media is activated
+			self.remote_origins_dictionary = {
+				"Animes Vision": True,
+				"YouTube": True
+			}
+
+			# If the media type is inside the "Post comment" list
+			# And the episode is a remote one
+			# And the remote episode link is not empty
+			# And the remote origin in the dictionary above is on (comment posting is on)
+			# -
+			# Open the remote episode link to post the comment
 			if (
 				self.dictionary["Media type"]["Plural"]["en"] in self.media_types["Post comment"] and
-				"Remote" in self.media["Episode"] and self.media["Episode"]["Remote"]["Link"] != "" and
-				self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
+				"Remote" in self.media["Episode"] and
+				self.media["Episode"]["Remote"]["Link"] != "" and
+				self.remote_origins_dictionary[self.media["Episode"]["Remote"]["Title"]] == True
 			):
-				# Copy the comment
+				# Copy the comment text
 				self.Text.Copy(self.media["Comment"]["Text"]["String"])
 
+				# If the media is not a remote one, open the remote episode link
+				# (Because for remote media, the episode is already opened)
 				if self.media["States"]["Remote"] == False:
 					# Open remote episode link
 					self.File.Open(self.media["Episode"]["Remote"]["Link"])
 
-				# Wait for user to finish posting comment
+				# Wait for the user to finish posting the comment on the episode link
 				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
 
 			self.Write_Comment_To_Files()
@@ -108,7 +125,10 @@ class Comment_Writer(Watch_History):
 				self.media["Comment"]["File name"] = self.media["Episode"]["Title"]
 
 		# Comment file name for movies or single unit media items
-		if self.media["States"]["Series media"] == False or self.media["States"]["Single unit"] == True:
+		if (
+			self.media["States"]["Series media"] == False or
+			self.media["States"]["Single unit"] == True
+		):
 			self.media["Comment"]["File name"] = self.JSON.Language.language_texts["comment, title()"]
 
 		# Add Re-watching text to comment file name if it exists
@@ -149,7 +169,7 @@ class Comment_Writer(Watch_History):
 
 		show_text += "\n\n" + "----------"
 
-		# If the comment is a new one, add episode text to comment
+		# If the comment is a new one, add the episode text to the comment
 		if self.dictionary["Comment Writer"]["States"]["New"] == True:
 			key = "with_title"
 
@@ -207,12 +227,28 @@ class Comment_Writer(Watch_History):
 		if self.dictionary["Comment Writer"]["States"]["New"] == False:
 			show_text += "\n" + self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
 
-		# Ask for user to write comment
+		# Ask for the user to write the comment
 		dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])
 
-		# Add comment to the comment text string and lines list
-		self.media["Comment"]["Text"]["String"] += dictionary["string"]
-		self.media["Comment"]["Text"]["Lines"].extend(dictionary["lines"])
+		# Get the comment from the backup file
+		# (The user may have edited the comment inside the backup file)
+		contents = self.File.Contents(self.folders["comments"]["backups"]["backup"])
+
+		# If the number of lines inside the backup file are different from the lines inside the comment text dictionary
+		# And the number of lines inside the backup file are not zero
+		if (
+			len(contents["lines"]) != len(dictionary["lines"]) and
+			len(contents["lines"]) != 0
+		):
+			# Define the comment text dictionary as the backup file text dictionary
+			self.media["Comment"]["Text"]["String"] = contents["string"]
+			self.media["Comment"]["Text"]["Lines"] = contents["lines"]
+
+		# Else, add the written comment to the comment string and lines list
+		else:
+			# Add comment to the comment text string and lines list
+			self.media["Comment"]["Text"]["String"] += dictionary["string"]
+			self.media["Comment"]["Text"]["Lines"].extend(dictionary["lines"])
 
 		# Get line number
 		self.media["Comment"]["Line number"] = len(self.media["Comment"]["Text"]["Lines"])
@@ -223,8 +259,10 @@ class Comment_Writer(Watch_History):
 		# Replace time text in comment with comment time
 		self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
 
-		# Replace time text in comment with comment time
-		self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
+		# If the number of lines inside the comment text is greater than or equal to 4
+		if len(self.media["Comment"]["Text"]["Lines"]) >= 4:
+			# Replace the time text in the comment with the comment time
+			self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 	def Write_Comment_To_Files(self):
 		from copy import deepcopy
@@ -339,7 +377,7 @@ class Comment_Writer(Watch_History):
 			comment_information = self.Get_YouTube_Information("comment", self.dictionaries["Comments"]["Dictionary"][self.key]["Link"])
 
 			# Convert the comment date to a string using the date time format
-			comment_date = self.Date.From_String(comment_information["Date"] )
+			comment_date = self.Date.From_String(comment_information["Date"])
 
 			# Define comment time as comment published time gotten from YouTube API
 			self.dictionaries["Comments"]["Dictionary"][self.key]["Date"] = self.Date.To_String(comment_date, utc = True)
@@ -372,20 +410,23 @@ class Comment_Writer(Watch_History):
 		# Import the collections module to sort the comments dictionary
 		import collections
 
+		self.sort_comments = False
+
 		# If the media is non-episodic
-		if self.media["States"]["Episodic"] == False:
+		#if self.media["States"]["Episodic"] == False:
+		if self.sort_comments == True:
 			# Sort the media entries list and dictionary
 			self.dictionaries["Comments"]["Entries"] = sorted(self.dictionaries["Comments"]["Entries"], key = str.lower)
 			self.dictionaries["Comments"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.dictionaries["Comments"]["Dictionary"].items())))
 
-		# Re-numerate the Entry numbers inside entry dictionaries
-		# (Numbers of the non-episodic media are wrong when updated because the episode title is used as the dictionary key)
-		# (And also to fix Comment dictionary numbers of episodic media if they are wrong)
-		number = 1
-		for entry_name in self.dictionaries["Comments"]["Entries"]:
-			self.dictionaries["Comments"]["Dictionary"][entry_name]["Number"] = number
+			# Re-numerate the Entry numbers inside entry dictionaries
+			# (Numbers of the non-episodic media are wrong when updated because the episode title is used as the dictionary key)
+			# (And also to fix Comment dictionary numbers of episodic media if they are wrong)
+			number = 1
+			for entry_name in self.dictionaries["Comments"]["Entries"]:
+				self.dictionaries["Comments"]["Dictionary"][entry_name]["Number"] = number
 
-			number += 1
+				number += 1
 
 		# Create the "Comment" dictionary inside the "Comment Writer" dictionary
 		self.dictionary["Comment Writer"]["Comment"] = deepcopy(self.dictionaries["Comments"]["Dictionary"][self.key])
@@ -401,6 +442,18 @@ class Comment_Writer(Watch_History):
 		# If the media is not episodic, remove the "Number" key from the "Comment" dictionary
 		if self.media["States"]["Episodic"] == False:
 			keys_to_remove.append("Number")
+
+			# If the media has a media unit
+			# And the media unit has titles
+			# And the media unit inside the Comment dictionary is the same as the media unit title
+			if (
+				"Episode" in self.media and
+				"Titles" in self.media["Episode"] and
+				self.dictionary["Comment Writer"]["Comment"]["Titles"][self.media["Language"]] == self.media["Episode"]["Titles"][self.media["Language"]
+			):
+				# Add the "Entry" key to be removed from the Comment dictionary that will be used by the Register class
+				# To be added into the media Entry dictionary
+				keys_to_remove.append("Entry")
 
 		# Remove the not useful keys from the "Comment" dictionary
 		for key in keys_to_remove:

@@ -84,13 +84,6 @@ class Years(object):
 		self.years_file = self.folders["notepad"]["effort"]["years"]["root"] + self.texts["years, title()"]["en"] + ".json"
 		self.File.Create(self.years_file)
 
-		# Year image folders
-		self.years_image_folder = self.folders["mega"]["image"]["root"] + self.texts["years, en - pt"] + "/"
-		self.Folder.Create(self.years_image_folder)
-
-		self.year_images_folder = self.years_image_folder + self.texts["images, title()"]["en"] + "/"
-		self.Folder.Create(self.year_images_folder)
-
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
 		self.summary_date = self.Date.From_String("30/12/{}".format(self.date["Units"]["Year"]))
@@ -103,59 +96,70 @@ class Years(object):
 			"List": []
 		}
 
-		# Add Years to Years list
-		for year in range(2018, int(self.date["Units"]["Year"]) + 1):
+		# Add the Years to the Years list
+		starting_year = 2018
+		current_year = int(self.date["Units"]["Year"]) + 1
+
+		for year in range(starting_year, current_year):
 			self.years["List"].append(str(year))
 			self.years["Numbers"]["Total"] += 1
 
-		# Dictionaries filling
+		# Make a local copy of the Years dictionary
+		from copy import deepcopy
+
+		local_dictionary = deepcopy(self.years)
+
+		# Fill the dictionaries
 		for year in self.years["List"]:
-			self.years[year] = {}
+			self.years[year] = {
+				"Number": year
+			}
 
-			self.years[year]["Number"] = year
-
-			# Define root folder
+			# Define the root folder
 			self.years[year]["Folder"] = self.folders["notepad"]["effort"]["years"]["root"] + year + "/"
 			self.Folder.Create(self.years[year]["Folder"])
 
-			# Define image folder
-			self.years[year]["image_folder"] = self.years_image_folder + year + "/"
-			self.Folder.Create(self.years[year]["image_folder"])
+			# Define the image folder
+			self.years[year]["Image folder"] = self.folders["mega"]["image"]["years"]["root"] + year + "/"
+			self.Folder.Create(self.years[year]["Image folder"])
 
-			# Define folders
-			self.years[year]["folders"] = self.Folder.Contents(self.years[year]["Folder"])["dictionary"]
+			# Define the folders
+			self.years[year]["Folders"] = self.Folder.Contents(self.years[year]["Folder"])["dictionary"]
 
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 
-				if full_language not in self.years[year]["folders"]:
-					self.years[year]["folders"][full_language] = {
-						"root": self.years[year]["folders"]["root"] + full_language + "/"
+				if full_language not in self.years[year]["Folders"]:
+					self.years[year]["Folders"][full_language] = {
+						"root": self.years[year]["Folders"]["root"] + full_language + "/"
 					}
 
 				text = self.JSON.Language.texts["firsts_of_the_year"][language]
 
-				if text not in self.years[year]["folders"][full_language]:
-					self.years[year]["folders"][full_language][text] = {
-						"root": self.years[year]["folders"][full_language]["root"] + text + "/"
+				if text not in self.years[year]["Folders"][full_language]:
+					self.years[year]["Folders"][full_language][text] = {
+						"root": self.years[year]["Folders"][full_language]["root"] + text + "/"
 					}
-
-		# Define "Year Texts" folders and files
-		self.years["year_texts"] = self.Folder.Contents(self.year_texts_folder)["dictionary"]
 
 		# Current Year dictionary definition
 		self.current_year = self.years[str(self.date["Units"]["Year"])]
 
-		from copy import deepcopy
+		# Add the "Years" key to the local Years dictionary
+		local_dictionary["Years"] = {}
 
-		# Write Years dictionary converted to JSON on "Years.json" file
-		dictionary = deepcopy(self.years)
+		# Iterate through the Years list
+		for year in self.years["List"]:
+			# Add the Year dictionary to the "Years" key
+			local_dictionary["Years"][year] = deepcopy(self.years[year])
 
-		for key in dictionary:
-			if key not in ["Numbers", "List", "year_texts"]:
-				dictionary[key].pop("folders")
+			# Remove the "Folders" key from each Year dictionary
+			local_dictionary["Years"][year].pop("Folders")
 
-		self.JSON.Edit(self.years_file, dictionary)
+		# Define the "Year Texts" folders and its files
+		local_dictionary["Year texts"] = self.Folder.Contents(self.year_texts_folder)["dictionary"]
+
+		# Write the local updated Years dictionary to the "Years.json"
+		self.JSON.Edit(self.years_file, local_dictionary)
 
 	def Select_Year(self, years = None, select_text = None):
 		if years == None:

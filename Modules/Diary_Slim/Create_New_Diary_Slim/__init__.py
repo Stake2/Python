@@ -299,7 +299,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 				self.current_year["Year"]["Numbers"]["Diary Slims"] += month["Numbers"]["Diary Slims"]
 
 			# Edit the "Year.json" file with the new Year dictionary
-			self.JSON.Edit(self.folders["diary_slim"]["current_year"]["year"], self.current_year["Year"])
+			self.JSON.Edit(self.folders["Diary Slim"]["current_year"]["year"], self.current_year["Year"])
 
 		# ----- #
 

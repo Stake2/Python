@@ -34,7 +34,7 @@ class Convert_History(Tasks):
 			# Define year dictionary with year number and folders
 			self.year = {
 				"Number": self.year,
-				"folders": {
+				"Folders": {
 					"root": self.folders["task_history"]["root"] + self.year + "/"
 				},
 				"Entries dictionary": deepcopy(self.template),
@@ -46,35 +46,35 @@ class Convert_History(Tasks):
 				key = folder_name.lower().replace(" ", "_")
 
 				# Define the folder
-				self.year["folders"][key] = {
-					"root": self.year["folders"]["root"] + folder_name + "/"
+				self.year["Folders"][key] = {
+					"root": self.year["Folders"]["root"] + folder_name + "/"
 				}
 
-				self.Folder.Create(self.year["folders"][key]["root"])
+				self.Folder.Create(self.year["Folders"][key]["root"])
 
 			# Define and create the "Tasks.json" file
-			self.year["folders"]["tasks"] = self.year["folders"]["root"] + "Tasks.json"
-			self.File.Create(self.year["folders"]["tasks"])
+			self.year["Folders"]["tasks"] = self.year["Folders"]["root"] + "Tasks.json"
+			self.File.Create(self.year["Folders"]["tasks"])
 
-			self.year["Entries dictionary"] = self.JSON.To_Python(self.year["folders"]["tasks"])
+			self.year["Entries dictionary"] = self.JSON.To_Python(self.year["Folders"]["tasks"])
 
 			for task_type in self.year["Entries dictionary"]["Numbers"]["Per Task Type"]:
-				self.year["folders"][task_type] = {
-					"root": self.year["folders"]["per_task_type"]["root"] + task_type + "/"
+				self.year["Folders"][task_type] = {
+					"root": self.year["Folders"]["per_task_type"]["root"] + task_type + "/"
 				}
 
-				self.Folder.Create(self.year["folders"][task_type]["root"])
+				self.Folder.Create(self.year["Folders"][task_type]["root"])
 
-				self.year["folders"][task_type]["tasks"] = self.year["folders"][task_type]["root"] + "Tasks.json"
-				self.File.Create(self.year["folders"][task_type]["tasks"])
+				self.year["Folders"][task_type]["tasks"] = self.year["Folders"][task_type]["root"] + "Tasks.json"
+				self.File.Create(self.year["Folders"][task_type]["tasks"])
 
-				self.JSON.Edit(self.year["folders"][task_type]["tasks"], self.template)
+				self.JSON.Edit(self.year["Folders"][task_type]["tasks"], self.template)
 
-				self.year["folders"][task_type]["entry_list"] = self.year["folders"][task_type]["root"] + "Entry list.txt"
-				self.File.Create(self.year["folders"][task_type]["entry_list"])
+				self.year["Folders"][task_type]["entry_list"] = self.year["Folders"][task_type]["root"] + "Entry list.txt"
+				self.File.Create(self.year["Folders"][task_type]["entry_list"])
 
-				if self.File.Exist(self.year["folders"][task_type]["tasks"]) == True:
-					self.year[task_type] = self.JSON.To_Python(self.year["folders"][task_type]["tasks"])
+				if self.File.Exist(self.year["Folders"][task_type]["tasks"]) == True:
+					self.year[task_type] = self.JSON.To_Python(self.year["Folders"][task_type]["tasks"])
 
 			print()
 			print("----------")
@@ -101,10 +101,10 @@ class Convert_History(Tasks):
 
 			# "Per Task Type/[Task Type]/Tasks.json"
 			for task_type in self.year["Entries dictionary"]["Numbers"]["Per Task Type"]:
-				self.JSON.Edit(self.year["folders"][task_type]["tasks"], self.year[task_type])
+				self.JSON.Edit(self.year["Folders"][task_type]["tasks"], self.year[task_type])
 
 				# "Entry list.txt"
-				self.File.Edit(self.year["folders"][task_type]["entry_list"], self.Text.From_List(self.year[task_type]["Entries"]), "w")
+				self.File.Edit(self.year["Folders"][task_type]["entry_list"], self.Text.From_List(self.year[task_type]["Entries"]), "w")
 
 			if self.year["Number"] != list(self.years_list)[-1]:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")

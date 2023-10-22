@@ -6,9 +6,10 @@ class Convert_History(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.Per_Media()
+		#self.Per_Media()
 		#self.By_File()
 		#self.By_Year()
+		self.Fix_Comment_Dictionaries()
 
 	def Per_Media(self):
 		from copy import deepcopy
@@ -281,17 +282,17 @@ class Convert_History(Watch_History):
 		# Define the year dictionary with the year number and folders
 		self.year = {
 			"Number": self.year,
-			"folders": {
+			"Folders": {
 				"root": self.folders["watch_history"]["root"] + self.year + "/"
 			},
 			"Entries": self.dictionaries["Entries"]
 		}
 
 		# Define the "Pre-entries.json" file
-		self.year["folders"]["pre_entries"] = self.year["folders"]["root"] + "Pre-entries.json"
+		self.year["Folders"]["pre_entries"] = self.year["Folders"]["root"] + "Pre-entries.json"
 
 		# Read the "Pre-entries.json" file
-		self.year["Pre-entries"] = self.JSON.To_Python(self.year["folders"]["pre_entries"])
+		self.year["Pre-entries"] = self.JSON.To_Python(self.year["Folders"]["pre_entries"])
 
 		pre_entries_list = list(self.year["Pre-entries"].values())
 		last_pre_entry = pre_entries_list[-1]
@@ -514,7 +515,7 @@ class Convert_History(Watch_History):
 			# Define the year dictionary with the year number and folders
 			self.year = {
 				"Number": self.year,
-				"folders": {
+				"Folders": {
 					"root": self.folders["watch_history"]["root"] + self.year + "/"
 				},
 				"Entries dictionary": deepcopy(self.template),
@@ -531,69 +532,69 @@ class Convert_History(Watch_History):
 				key = folder_name.lower().replace(" ", "_")
 
 				# Define the folder
-				self.year["folders"][key] = {
-					"root": self.year["folders"]["root"] + folder_name + "/"
+				self.year["Folders"][key] = {
+					"root": self.year["Folders"]["root"] + folder_name + "/"
 				}
 
-				self.Folder.Create(self.year["folders"][key]["root"])
+				self.Folder.Create(self.year["Folders"][key]["root"])
 
 			# Define the "Files" folder inside the "Per Media Type"
-			self.year["folders"]["per_media_type"]["files"] = {
-				"root": self.year["folders"]["per_media_type"]["root"] + "Files/"
+			self.year["Folders"]["per_media_type"]["files"] = {
+				"root": self.year["Folders"]["per_media_type"]["root"] + "Files/"
 			}
 
 			exist = False
 
 			# Define and create the "Entries.json" file
-			self.year["folders"]["entries"] = self.year["folders"]["root"] + "Entries.json"
+			self.year["Folders"]["entries"] = self.year["Folders"]["root"] + "Entries.json"
 
-			if self.File.Exist(self.year["folders"]["entries"]) == True:
+			if self.File.Exist(self.year["Folders"]["entries"]) == True:
 				exist = True
 
-			self.File.Create(self.year["folders"]["entries"])
+			self.File.Create(self.year["Folders"]["entries"])
 
 			# Define and create the "Entry list.txt" file
-			self.year["folders"]["entry_list"] = self.year["folders"]["root"] + "Entry list.txt"
-			self.File.Create(self.year["folders"]["entry_list"])
+			self.year["Folders"]["entry_list"] = self.year["Folders"]["root"] + "Entry list.txt"
+			self.File.Create(self.year["Folders"]["entry_list"])
 
 			# Define the per media type "Files" folders
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				key = plural_media_type.lower().replace(" ", "_")
 
 				# Create the media type folder
-				self.year["folders"]["per_media_type"][key] = {
-					"root": self.year["folders"]["per_media_type"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["per_media_type"][key] = {
+					"root": self.year["Folders"]["per_media_type"]["root"] + plural_media_type + "/"
 				}
 
-				self.Folder.Create(self.year["folders"]["per_media_type"][key]["root"])
+				self.Folder.Create(self.year["Folders"]["per_media_type"][key]["root"])
 
 				# Create the "Files" media type folder
-				self.year["folders"]["per_media_type"][key]["files"] = {
-					"root": self.year["folders"]["per_media_type"][key]["root"] + "Files/"
+				self.year["Folders"]["per_media_type"][key]["files"] = {
+					"root": self.year["Folders"]["per_media_type"][key]["root"] + "Files/"
 				}
 
-				self.Folder.Create(self.year["folders"]["per_media_type"][key]["files"]["root"])
+				self.Folder.Create(self.year["Folders"]["per_media_type"][key]["files"]["root"])
 
 				# Define and create the media type "Entries.json" file
-				self.year["folders"]["per_media_type"][key]["entries"] = self.year["folders"]["per_media_type"][key]["root"] + "Entries.json"
-				self.File.Create(self.year["folders"]["per_media_type"][key]["entries"])
+				self.year["Folders"]["per_media_type"][key]["entries"] = self.year["Folders"]["per_media_type"][key]["root"] + "Entries.json"
+				self.File.Create(self.year["Folders"]["per_media_type"][key]["entries"])
 
 				# Define and create the media type "Entry list.txt" file
-				self.year["folders"]["per_media_type"][key]["entry_list"] = self.year["folders"]["per_media_type"][key]["root"] + "Entry list.txt"
-				self.File.Create(self.year["folders"]["per_media_type"][key]["entry_list"])
+				self.year["Folders"]["per_media_type"][key]["entry_list"] = self.year["Folders"]["per_media_type"][key]["root"] + "Entry list.txt"
+				self.File.Create(self.year["Folders"]["per_media_type"][key]["entry_list"])
 
 				# Define the media type "Files" folder
-				self.year["folders"]["per_media_type"]["files"][key] = {
-					"root": self.year["folders"]["per_media_type"]["files"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["per_media_type"]["files"][key] = {
+					"root": self.year["Folders"]["per_media_type"]["files"]["root"] + plural_media_type + "/"
 				}
 
 				# Define the media type "Episodes" file
-				self.year["folders"]["per_media_type"]["files"][key]["episodes"] = self.year["folders"]["per_media_type"]["files"][key]["root"] + "Episodes.txt"
+				self.year["Folders"]["per_media_type"]["files"][key]["episodes"] = self.year["Folders"]["per_media_type"]["files"][key]["root"] + "Episodes.txt"
 
-				if self.Folder.Exist(self.year["folders"]["per_media_type"]["files"][key]["root"]) == True:
+				if self.Folder.Exist(self.year["Folders"]["per_media_type"]["files"][key]["root"]) == True:
 					# Create media type lists dictionary and read "Episodes" file
 					self.year["Lists"][plural_media_type] = {
-						"Episodes": self.File.Contents(self.year["folders"]["per_media_type"]["files"][key]["episodes"])["lines"]
+						"Episodes": self.File.Contents(self.year["Folders"]["per_media_type"]["files"][key]["episodes"])["lines"]
 					}
 
 			# Define the entry files
@@ -601,11 +602,11 @@ class Convert_History(Watch_History):
 				key = file_name.lower().replace(" ", "_")
 
 				# Define the entry file
-				self.year["folders"][key] = self.year["folders"]["root"] + file_name + ".txt"
+				self.year["Folders"][key] = self.year["Folders"]["root"] + file_name + ".txt"
 
-				if self.File.Exist(self.year["folders"][key]) == True:
+				if self.File.Exist(self.year["Folders"][key]) == True:
 					# Get the list of lines inside the file
-					self.year["Lists"][file_name] = self.File.Contents(self.year["folders"][key])["lines"]
+					self.year["Lists"][file_name] = self.File.Contents(self.year["Folders"][key])["lines"]
 
 			if "Episodes" in self.year["Lists"] and self.year["Number"] != list(self.years_list)[-1] and exist == False:
 				self.Input.Type("Finished creating files")
@@ -630,7 +631,7 @@ class Convert_History(Watch_History):
 
 				self.old_history = {
 					"current_year": self.Years.years[self.year["Number"]],
-					"folders": self.year["folders"],
+					"Folders": self.year["Folders"],
 					"old_history": {
 						"Number": self.year["Number"]
 					},
@@ -640,8 +641,8 @@ class Convert_History(Watch_History):
 				}
 
 				# If the "Entries.json" is not empty and has entries, get Entries dictionary from it
-				if self.File.Contents(self.year["folders"]["entries"])["lines"] != [] and self.JSON.To_Python(self.year["folders"]["entries"])["Entries"] != []:
-					self.dictionaries["Entries"] = self.JSON.To_Python(self.year["folders"]["entries"])
+				if self.File.Contents(self.year["Folders"]["entries"])["lines"] != [] and self.JSON.To_Python(self.year["Folders"]["entries"])["Entries"] != []:
+					self.dictionaries["Entries"] = self.JSON.To_Python(self.year["Folders"]["entries"])
 
 				# Iterate through the episodes list
 				e = 0
@@ -1076,18 +1077,18 @@ class Convert_History(Watch_History):
 					key = file_name.lower().replace(" ", "_")
 
 					# Delete the entry file
-					self.File.Delete(self.year["folders"][key])
+					self.File.Delete(self.year["Folders"][key])
 
 				# Delete the "Per Media Type" folders
 				for folder_name in ["Files", "Folders"]:
-					folder = self.year["folders"]["per_media_type"]["root"] + folder_name + "/"
+					folder = self.year["Folders"]["per_media_type"]["root"] + folder_name + "/"
 					self.Folder.Delete(folder)
 
 			from Watch_History.Watch_History import Watch_History as Watch_History
 
 			self.old_history = {
 				"current_year": self.Years.years[self.year["Number"]],
-				"folders": self.year["folders"],
+				"folders": self.year["Folders"],
 				"old_history": {
 					"Number": self.year["Number"]
 				},
@@ -1107,6 +1108,465 @@ class Convert_History(Watch_History):
 
 		# Update the "History.json" file with the new History dictionary
 		self.JSON.Edit(self.folders["watch_history"]["history"], self.dictionaries["History"])
+
+	def Fix_Comment_Dictionaries(self):
+		# Fix Comment dictionaries that exist on the "Comments.json" file of media
+		# But they do not exist on the Entry of the "Watch History" folder, in the "Entries.json" file
+
+		from copy import deepcopy
+
+		# Copy the switches dictionary
+		switches_dictionary = deepcopy(self.switches)
+
+		# Get the History dictionary to update the entries number
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
+
+		self.years_list = range(2018, self.date["Units"]["Year"] + 1)
+
+		self.medias = {}
+
+		# Iterate through the years list (of the years that contain a "Watch_History" folder)
+		for self.year in self.years_list:
+			# Convert the year number into a string
+			self.year = str(self.year)
+
+			# Define the year dictionary with the year number and folders
+			self.year = {
+				"Number": self.year,
+				"Folders": {
+					"root": self.folders["watch_history"]["root"] + self.year + "/"
+				},
+				"Entries": deepcopy(self.template),
+				"Media type entries": {}
+			}
+
+			print()
+			print("----------")
+			print()
+			print(self.Date.language_texts["year, title()"] + ": " + self.year["Number"])
+
+			# Define the history folders
+			for folder_name in ["Per Media Type"]:
+				key = folder_name.lower().replace(" ", "_")
+
+				# Define the folder
+				self.year["Folders"][key] = {
+					"root": self.year["Folders"]["root"] + folder_name + "/"
+				}
+
+				self.Folder.Create(self.year["Folders"][key]["root"])
+
+			# Define the "Files" folder inside the "Per Media Type"
+			self.year["Folders"]["per_media_type"]["files"] = {
+				"root": self.year["Folders"]["per_media_type"]["root"] + "Files/"
+			}
+
+			# Define and create the "Entries.json" file
+			self.year["Folders"]["entries"] = self.year["Folders"]["root"] + "Entries.json"
+			self.File.Create(self.year["Folders"]["entries"])
+
+			# Define the Per Media Type files and folders
+			for plural_media_type in self.media_types["Plural"]["en"]:
+				key = plural_media_type.lower().replace(" ", "_")
+
+				# Create the media type folder
+				self.year["Folders"]["per_media_type"][key] = {
+					"root": self.year["Folders"]["per_media_type"]["root"] + plural_media_type + "/"
+				}
+
+				self.Folder.Create(self.year["Folders"]["per_media_type"][key]["root"])
+
+				# Define and create the media type "Entries.json" file
+				self.year["Folders"]["per_media_type"][key]["entries"] = self.year["Folders"]["per_media_type"][key]["root"] + "Entries.json"
+				self.File.Create(self.year["Folders"]["per_media_type"][key]["entries"])
+
+				self.year["Media type entries"][plural_media_type] = self.JSON.To_Python(self.year["Folders"]["per_media_type"][key]["entries"])
+
+			# Get the Entries dictionary
+			self.year["Entries"] = self.JSON.To_Python(self.year["Folders"]["entries"])
+
+			# Iterate through the Entries dictionary
+			e = 0
+			for entry_key, entry in self.year["Entries"]["Dictionary"].items():
+				# If the "States" key is inside the Entry dictionary
+				# And the "Commented" key is inside the States dictionary
+				# And the "Commented" state is True
+				if (
+					"States" in entry and
+					"Commented" in entry["States"] and
+					entry["States"]["Commented"] == True
+				):
+					# Make a backup of the Entry dictionary to differentiate later
+					entry_backup = deepcopy(entry)
+
+					# Show the current and total entry number
+					print()
+					print(self.large_bar)
+					print()
+					print(str(e + 1) + "/" + str(len(self.year["Entries"]["Dictionary"].keys())) + ":")
+
+					# Show the Entry name
+					print()
+					print(self.JSON.Language.language_texts["entry, title()"] + ":")
+					print("[" + entry["Entry"] + "]")
+					print("[" + entry["Date"] + "]")
+					print()
+
+					self.media_title = entry["Media"]["Original"]
+
+					if "Romanized" in entry["Media"]:
+						self.media_title = entry["Media"]["Romanized"]
+
+					# Show the media title
+					print(self.JSON.Language.language_texts["media, title()"] + ":")
+					print("[" + self.media_title + "]")
+
+					if (
+						self.user_language in entry["Media"] and
+						entry["Media"][self.user_language] != self.media_title
+					):
+						print("[" + entry["Media"][self.user_language] + "]")
+
+					# If there is a Episode, show its title in the user language
+					if "Episode" in entry:
+						print()
+						print(self.JSON.Language.language_texts["episode, title()"] + ":")
+						print("[" + entry["Episode"]["Titles"][self.user_language] + "]")
+
+					# If there is a media Item, show its original title
+					if "Item" in entry:
+						print()
+						print(self.JSON.Language.language_texts["item, title()"] + ":")
+						print("[" + entry["Item"]["Original"] + "]")
+
+						if (
+							self.user_language in entry["Item"] and
+							entry["Item"][self.user_language] != entry["Item"]["Original"]
+						):
+							print("[" + entry["Item"][self.user_language] + "]")
+
+					if self.media_title not in self.medias:
+						# Define the root dictionary with the media type and media
+						self.medias[self.media_title] = {
+							"Media type": self.media_types[entry["Type"]],
+							"Media": {
+								"Title": self.media_title
+							}
+						}
+
+						# Select the media and define its variables, returning the media dictionary (without asking the user to select the media)
+						self.medias[self.media_title] = self.Select_Media(self.medias[self.media_title])
+
+						# Define the media item if it exists
+						media_item = None
+
+						if "Item" in entry:
+							media_item = entry["Item"]["Original"]
+
+						if (
+							"Item" not in entry and
+							"Items" in self.medias[self.media_title]
+						):
+							media_item = self.media_title
+
+						# Update the root dictionary with the defined media item
+						self.medias[self.media_title].update(self.Define_Media_Item(deepcopy(self.medias[self.media_title]), media_item = media_item))
+
+						if "Watched" not in self.medias[self.media_title]:
+							# Create the Watched dictionary
+							self.medias[self.media_title]["Watched"] = {
+								"Entries file": self.medias[self.media_title]["Media"]["Item"]["folders"]["watched"]["entries"]
+							}
+
+					# Define the media variable for easier typing
+					self.media = self.medias[self.media_title]["Media"]
+
+					print()
+					print("Arquivo de Assistido:")
+					print("[" + self.medias[self.media_title]["Watched"]["Entries file"] + "]")
+
+					# Get the Watched Entries dictionary
+					self.medias[self.media_title]["Watched"]["Entries"] = self.JSON.To_Python(self.medias[self.media_title]["Watched"]["Entries file"])
+
+					# Read the "Comments.json" file to get the Comments dictionary
+					self.comments = self.JSON.To_Python(self.medias[self.media_title]["Media"]["Item"]["folders"]["comments"]["comments"])
+
+					# Show the "Comments" header
+					print()
+					print(self.JSON.Language.language_texts["comments, title()"] + ":")
+
+					found_comment = False
+
+					found_comments = []
+
+					# Iterate through the comments list
+					c = 0
+					for comment in self.comments["Entries"]:
+						comment = self.comments["Dictionary"][comment]
+
+						if found_comment == False:
+							if c != 0:
+								print()
+								print("\t" + "---")
+								print()
+
+							# Show some Comment entry information
+							print("\t" + "[" + str(c + 1) + "/" + str(len(self.comments["Entries"])) + "]:")
+							print()
+							print("\t" + self.JSON.Language.language_texts["entry, title()"] + ":")
+							print("\t" + "[" + comment["Entry"] + "]")
+
+							if comment["Titles"][self.user_language] != comment["Entry"]:
+								print()
+								print("\t" + self.JSON.Language.language_texts["title, title()"] + ":")
+								print("\t" + "[" + comment["Titles"][self.user_language] + "]")
+
+							print()
+							print("\t" + self.Date.language_texts["date, title()"] + ":")
+							print("\t" + "[" + comment["Date"] + "]")
+
+						# Create the empty titles list
+						titles_list = []
+
+						# If there is a media title in the user language, add it to the titles list
+						if self.user_language in entry["Media"]:
+							titles_list.append(entry["Media"])
+
+						# If there is an episode in the Entry dictionary, add it to the titles list
+						if "Episode" in entry:
+							titles_list.append(entry["Episode"]["Titles"])
+
+						# If there is an episode in the Entry dictionary, add it to the titles list
+						if "Item" in entry:
+							titles_list.append(entry["Item"])
+
+						# If the media unit has been re-watched
+						if "Re-watched" in entry["States"]:
+							# Get the re-watched times
+							times = entry["States"]["Re-watched"]["Times"]
+
+							# Define the re-watched text
+							re_watched_text = self.language_texts["re_watched, capitalize()"] + " " + str(times) + "x"
+
+							re_watched = True
+
+							# Define the evaluation of "the re-watched text is in the Comment entry"
+							# The re-watched text with re-watched times number needs to be in the Comment entry
+							# The re-watched times number is included to differentiate between various re-watched comments
+							re_watched_check = re_watched_text in comment["Entry"]
+
+							print()
+							print("\t" + self.language_texts["re_watched, capitalize()"] + ":")
+							print("\t\t" + re_watched_text)
+							print("\t\t" + comment["Entry"])
+							print("\t\t" + str(re_watched))
+							print("\t\t" + str(re_watched_check))
+
+						# If the media unit has not been re-watched
+						if "Re-watched" not in entry["States"]:
+							re_watched = False
+
+							# Define the evaluation of "the re-watched text is not in the Comment entry"
+							# The re-watched text can not be in the Comment entry
+							# The re-watched times number is excluded because no re-watched comment must be selected
+							re_watched_check = self.language_texts["re_watched, capitalize()"] not in comment["Entry"]
+
+						comment_copy = deepcopy(comment)
+
+						# Iterate through the titles list
+						for titles in titles_list:
+							# If the re-watched check is correct
+							if re_watched_check:
+								# If the comment language title is equal to the media original title
+								# Or the comment language title is equal to the media language title
+								# Or the comment language title is equal to the media original title
+								if (
+									"Original" in titles and
+									comment_copy["Titles"][self.user_language] == titles["Original"] or
+									self.user_language in titles and
+									comment_copy["Titles"][self.user_language] == titles[self.user_language]
+								):
+									# Define a list of keys to remove from the Comment dictionary
+									keys_to_remove = [
+										"Type",
+										"Titles",
+										"States",
+										"Lines"
+									]
+
+									# If the media is non-episodic, add the "Number" key to be removed from the Comment dictionary
+									if self.media["States"]["Episodic"] == False:
+										keys_to_remove.append("Number")
+
+										if (
+											"Episode" in entry and
+											comment_copy["Titles"][self.user_language] == entry["Episode"]["Titles"][self.user_language]
+										):
+											keys_to_remove.append("Entry")
+
+									# Remove the not useful keys from the "Comment" dictionary
+									for key in keys_to_remove:
+										if key in comment:
+											comment.pop(key)
+
+									# Define the Entry Comment dictionary keys list
+									keys = list(comment.keys())
+
+									comment_backup = deepcopy(comment)
+
+									# If the comment date is the same as the entry date
+									if comment["Date"] == entry["Date"]:
+										# Remove the "Date" key from the Comment dictionary
+										comment.pop("Date")
+
+										# Update the keys list
+										keys = list(comment.keys())
+
+										# If the only key left inside the Comment dictionary is "Dates"
+										if keys == ["Dates"]:
+											# Remove the Comment dictionary from the Entry dictionary
+											entry.pop("Comment")
+
+									# If the Comment dictionary does not contain only the "Entry" key
+									if keys != ["Entry"]:
+										# Add it to the Entry dictionary, after the "Date" key
+										key_value = {
+											"key": "Comment",
+											"value": comment
+										}
+
+										entry = self.JSON.Add_Key_After_Key(entry, key_value, after_key = "Date")
+
+									entry["Comment"] = comment
+
+									# If the only key left inside the Comment dictionary is "Entry"
+									if keys == ["Entry"]:
+										# Remove the Comment dictionary from the Entry dictionary
+										entry.pop("Comment")
+
+									# If the entry backup is not the same as the entry, show it
+									if entry_backup != entry:
+										print()
+										self.JSON.Show(entry)
+
+										print()
+										print(self.large_bar)
+
+										# If the keys list does not contain only the "Entry" key
+										if keys != ["Entry"]:
+											# Show the "Updated: The entry and comment dates are different. Updating comment."
+											print()
+											print("Atualizado:")
+
+											if comment_backup["Date"] != entry["Date"]:
+												print("As datas da entrada e do comentário são diferentes.")
+
+											if comment_backup["Date"] == entry["Date"]:
+												print("As datas da entrada e do comentário são iguais.")
+												print('Removendo a chave "Date".')
+
+											if self.media["States"]["Episodic"] == False:
+												print('Removendo a chave "Number" pois a mídia é não-episódica.')
+
+												if (
+													"Episode" in entry and
+													comment_copy["Titles"][self.user_language] == entry["Episode"]["Titles"][self.user_language]
+												):
+													print('Removendo a chave "Entry" pois ela tem o mesmo valor que o título do episódio.')
+
+											print()
+											print('Atualizando o dicionário "Comment" na Entrada.')
+
+										# If the comment date is the same as the entry date
+										if (
+											entry_backup == entry and
+											comment_backup["Date"] == entry["Date"]
+										):
+											# Show the "Skipped: The entry and comment dates are equal" text
+											print()
+											print("Pulado:")
+											print("As datas da entrada e do comentário são iguais.")
+
+										# If the only key left inside the Comment dictionary is "Dates"
+										if keys == ["Dates"]:
+											# Show the "Skipped: The only key left is 'Dates'" text
+											print()
+											print('Só sobrou a chave "' + keys[0] + '".')
+
+										# If the only key left inside the Comment dictionary is "Entry"
+										if keys == ["Entry"]:
+											# Show the "Skipped: The only key left is 'Entry'" text
+											print()
+											print("Pulado:")
+											print('Só sobrou a chave "' + keys[0] + '".')
+
+										if (
+											comment_backup["Date"] == entry["Date"] and
+											"Comment" not in entry or
+											keys == ["Entry"]
+										):
+											print()
+											print('Removendo o dicionário "Comment" do dicionário da Entrada.')
+
+										print()
+										print(self.large_bar)
+
+									if entry_backup != entry:
+										found_comments.append("Comment")
+
+									found_comment = True		
+
+						c += 1
+
+					if (
+						found_comment == False and
+						found_comments != []
+					):
+						print()
+						print("Aviso:")
+						print("Comentário não encontrado.")
+						input()
+						print(self.large_bar)
+
+					if found_comments == []:
+						print()
+						print(self.large_bar)
+						print()
+						print("Pulado:")
+						print("O dicionário de Entrada original e editado são iguais, nada a ser alterado.")
+						print("Os dados do comentário estão corretos.")
+						print()
+						print(self.large_bar)
+
+					# Show "Continue" text on testing mode to pause between entries
+					if self.switches["testing"] == True:
+						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+
+					# Define the list of dictionaries to update the Entry dictionary
+					dicts = [
+						self.year["Entries"],
+						self.year["Media type entries"][entry["Type"]],
+						self.medias[self.media_title]["Watched"]["Entries"]
+					]
+
+					# Update the Entry dictionary in the dictionaries above
+					for dict_ in dicts:
+						dict_["Dictionary"][entry_key] = entry
+
+					# Update the "Watched.json" file with the updated Watched dictionary
+					self.JSON.Edit(self.medias[self.media_title]["Watched"]["Entries file"], self.medias[self.media_title]["Watched"]["Entries"])
+
+					e += 1
+
+			# Update the year "Entries.json" file with the updated year Entries dictionary
+			self.JSON.Edit(self.year["Folders"]["entries"], self.year["Entries"])
+
+			# Update the Per Media Type files
+			for plural_media_type in self.media_types["Plural"]["en"]:
+				key = plural_media_type.lower().replace(" ", "_")
+
+				# Update the Per Media Type "Entries.json" file with the updated Media type Entries dictionary
+				self.JSON.Edit(self.year["Folders"]["per_media_type"][key]["entries"], self.year["Media type entries"][plural_media_type])
 
 	def Replace_Year_Number(self, folders, to_replace, replace_with):
 		for key, value in folders.items():

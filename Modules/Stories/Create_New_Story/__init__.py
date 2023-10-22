@@ -89,7 +89,7 @@ class Create_New_Story(Stories):
 					information = self.Input.Type(information_item, next_line = True)
 
 					if information != "" and information_item == self.JSON.Language.language_texts["author, title()"]:
-						information = self.author + "\n" + information
+						information = self.default_author + "\n" + information
 
 					if information == "":
 						information = self.default_information_items[information_item]
@@ -148,7 +148,7 @@ class Create_New_Story(Stories):
 			if key == "Chapter status":
 				text = self.Text.From_Dictionary(text)
 
-			if key != "Author" or key == "Author" and self.stories[self.story_title]["Information"]["Author"] != self.author:
+			if key != "Author" or key == "Author" and self.stories[self.story_title]["Information"]["Author"] != self.default_author:
 				self.stories[self.story_title]["Folders"]["Information"][key] = self.stories[self.story_title]["Folders"]["Information"]["root"] + file_name
 
 				self.File.Create(self.stories[self.story_title]["Folders"]["Information"][key])

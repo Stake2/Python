@@ -17,20 +17,20 @@ class Verify_Current_Year(Years):
 
 		# Creates the new Year text and image folder, copies the Year template files to the text folder, and edits some of them
 		if folder_list == []:
-			# Copy "Year Texts" folder to Current Year folder
+			# Copy the "Year Texts" folder to the current Year folder
 			self.Folder.Copy(self.years["year_texts"]["root"], self.current_year["Folder"])
 
-			# Copy "Year Images" folder to Current Year Image folder
-			self.Folder.Copy(self.year_images_folder, self.current_year["image_folder"])
+			# Copy the "Year Images" folder to the current Year Image folder
+			self.Folder.Copy(self.folders["mega"]["image"]["years"]["images"]["root"], self.current_year["Image folder"])
 
 			# Re-define folders (re-read directory)
-			self.current_year["folders"] = self.Folder.Contents(self.current_year["Folder"])["dictionary"]
+			self.current_year["Folders"] = self.Folder.Contents(self.current_year["Folder"])["dictionary"]
 
-			# This Year I (post) file
+			# "This Year I (post)" file
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 
-				self.this_year_i_post_file = self.current_year["folders"][full_language][self.texts["this_year_i_post"][language]]
+				self.this_year_i_post_file = self.current_year["Folders"][full_language][self.texts["this_year_i_post"][language]]
 
 				text_to_write = self.File.Contents(self.this_year_i_post_file)["string"]
 
@@ -40,8 +40,8 @@ class Verify_Current_Year(Years):
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
 			self.files = {
-				"christmas, title()": self.current_year["folders"][self.language_texts["christmas, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
-				"new_year": self.current_year["folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
+				"christmas, title()": self.current_year["Folders"][self.language_texts["christmas, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
+				"new_year": self.current_year["Folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt"
 			}
 
 			# Replace "{current_year}" with current Year number on Christmas Texts file
@@ -52,7 +52,7 @@ class Verify_Current_Year(Years):
 
 			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
 
-			# Replace "{current_year}" with current Year number on New Year Texts file
+			# Replace the "{current_year}" text with the current Year number on the "New Year Texts" file
 			text_to_write = self.File.Contents(self.files["new_year"])["string"]
 
 			if "{next_year}" in text_to_write:
@@ -60,16 +60,16 @@ class Verify_Current_Year(Years):
 
 			self.File.Edit(self.files["new_year"], text_to_write, "w")
 
-			# Created In file
+			# "Created In" file
 			self.created_in_file = self.current_year["Folder"] + self.language_texts["created_in, en - " + self.user_language] + ".txt"
 			self.File.Edit(self.created_in_file, self.Date.Now()["strftime"], "w")
 
-			# Edited In file
+			# "Edited In" file
 			self.edited_in_file = self.current_year["Folder"] + self.language_texts["edited_in, en - " + self.user_language] + ".txt"
 			self.File.Edit(self.edited_in_file, self.Date.Now()["strftime"], "w")
 
-			# New Year posts folder
-			self.new_year_posts_folder = self.current_year["folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + "Posts/"
+			# "New Year posts" folder
+			self.new_year_posts_folder = self.current_year["Folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + "Posts/"
 
 			# Social Networks posts files
 			for item in ["Instagram, Facebook", "Twitter", "WhatsApp"]:
@@ -103,7 +103,7 @@ class Verify_Current_Year(Years):
 		print()
 
 		print(self.language_texts["image_folder"] + ":")
-		print(self.current_year["image_folder"])
+		print(self.current_year["Image folder"])
 
 		if folder_list == []:
 			print()

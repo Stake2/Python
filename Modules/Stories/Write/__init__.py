@@ -16,9 +16,18 @@ class Write(Stories):
 
 		print(self.language_texts["story, title()"] + ":")
 
-		for title in self.story["Information"]["Titles"].values():
-			print(title)
+		story_titles = ""
 
+		for language in self.languages["small"]:
+			title = self.story["Information"]["Titles"][language]
+
+			if title not in story_titles:
+				story_titles += title
+
+			if language != self.languages["small"][-1]:
+				story_titles += "\n"
+
+		print(story_titles)
 		print()
 
 		self.Define_Chapter()
@@ -53,19 +62,25 @@ class Write(Stories):
 		show_text = self.language_texts["writing_modes"]
 		select_text = self.language_texts["select_a_writing_mode"]
 
+		chapter_number = self.story["Information"]["Chapters"]["Number"]
+
 		i = 0
 		for writing_mode in options:
 			english_writing_mode = self.texts["writing_modes, type: list"]["en"][i]
 
 			writing_mode_chapter = int(self.story["Information"]["Chapter status"][english_writing_mode])
-			chapter_number = len(self.story["Information"]["Chapter titles"][self.user_language])
 
-			# If writing mode chapter status is equal to chapter number
-			if writing_mode_chapter == chapter_number:
+			# If the chapter number in the writing mode is equal to the chapter number of the story
+			# And the writing mode is not "Write"
+			if (
+				writing_mode_chapter == chapter_number and
+				writing_mode != self.language_texts["write, title()"]
+			):
 				# Then remove writing mode from options list
 				options.remove(writing_mode)
 
-			else:
+			# If the chapter number in the writing mode is not equal to the chapter number of the story
+			if writing_mode_chapter != chapter_number:
 				options[i] = options[i] + " (" + self.language_texts["chapter, title()"] + ": " + str(writing_mode_chapter + 1) + ")"
 
 			i += 1
@@ -81,8 +96,8 @@ class Write(Stories):
 				"action": {},
 				"present_action": {},
 				"past_action": {},
-				"past": {},
-			},
+				"past": {}
+			}
 		}
 
 		for language in self.languages["small"]:
@@ -94,7 +109,7 @@ class Write(Stories):
 		self.writing_mode = self.chapter["writing_mode"]["name"]
 
 	def Define_Chapter(self):
-		# Add to chapter status of writing mode
+		# Add to the chapter status of the writing mode
 		self.story["Information"]["Chapter status"][self.writing_mode] = int(self.story["Information"]["Chapter status"][self.writing_mode]) + 1
 		self.story["Information"]["Chapter status"][self.writing_mode] = str(self.story["Information"]["Chapter status"][self.writing_mode])
 
@@ -105,7 +120,7 @@ class Write(Stories):
 		for language in self.languages["small"]:
 			self.chapter["number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.chapter["number"])]
 
-		# Update Chapter status file
+		# Update the "Chapter status" file
 		self.File.Edit(self.story["Folders"]["Information"]["Chapter status"], self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True), "w")
 
 		self.chapter["titles"] = {}
@@ -117,7 +132,7 @@ class Write(Stories):
 
 			if self.writing_mode in ["Revise", "Translate"]:
 				self.chapter["titles"][full_language] += " - "
-				self.chapter["titles"][full_language] += self.story["Information"]["Chapter titles"][language][int(self.chapter["number"]) - 1]
+				self.chapter["titles"][full_language] += self.story["Information"]["Chapters"]["Titles"][language][int(self.chapter["number"]) - 1]
 
 		print(self.language_texts["{}_this_chapter"].format(self.chapter["writing_mode"]["present_action"][self.user_language].capitalize()) + ":")
 		print(self.chapter["titles"][self.full_user_language])
@@ -165,7 +180,7 @@ class Write(Stories):
 			"ú",
 			"❤️",
 			"🎄",
-			"🎁",
+			"🎁"
 		]
 
 		replace_with = [
@@ -180,7 +195,7 @@ class Write(Stories):
 			"%C3%BA",
 			"%E2%9D%A4%EF%B8%8F",
 			"%F0%9F%8E%84",
-			"%F0%9F%8E%81",
+			"%F0%9F%8E%81"
 		]
 
 		self.chapter["title_obsidian"] = self.chapter["title"]

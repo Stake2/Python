@@ -713,9 +713,10 @@ class GamePlayer(object):
 		if found_shortcut == False:
 			game["Files"]["Shortcut"] = ""
 
-		if ".lnk" in game["Files"]["Shortcut"] or ".url" in game["Files"]["Shortcut"]:
+		if found_shortcut == True:
 			import win32com.client
 			shell = win32com.client.Dispatch("WScript.Shell")
+
 			game["Files"]["Shortcut path"] = shell.CreateShortCut(game["Files"]["Shortcut"]).Targetpath.replace("\\", "/")
 
 		# Define bat File for game

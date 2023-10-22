@@ -37,7 +37,7 @@ class Select_Story(Stories):
 
 				post = story["Information"]["Chapter status"]["Post"]
 
-				if int(post) == len(story["Information"]["Chapter titles"][self.user_language]):
+				if int(post) == len(story["Information"]["Chapters"]["Titles"][self.user_language]):
 					for language in self.languages["small"]:
 						stories["Titles"][language].remove(story["Information"]["Titles"][language])
 
@@ -62,7 +62,9 @@ class Select_Story(Stories):
 			class_descriptions.append(class_description)
 
 		# Select the class
-		class_ = self.Input.Select(classes, language_options = class_descriptions, show_text = self.language_texts["what_to_do_with_the_story"], select_text = self.JSON.Language.language_texts["select_one_thing_to_do"])["option"]
+		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'
+
+		class_ = self.Input.Select(classes, language_options = class_descriptions, show_text = show_text, select_text = self.JSON.Language.language_texts["select_one_thing_to_do"])["option"]
 
 		import importlib
 

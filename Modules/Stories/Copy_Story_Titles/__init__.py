@@ -43,7 +43,7 @@ class Copy_Story_Titles(Stories):
 		from string import ascii_uppercase as ascii_uppercase
 
 		# Iterate through list of story titles
-		for story_title in self.stories["All titles"]:
+		for story_title in self.stories["Titles"]["All"]:
 			for copy_mode in self.language_texts["copy_modes, type: list"]:
 				# Add quotes around story title
 				if copy_mode == self.language_texts["with_quotes"]:

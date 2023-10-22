@@ -3,8 +3,8 @@
 from Stories.Stories import Stories as Stories
 
 class Update_Chapter_Covers(Stories):
-	def __init__(self):
-		super().__init__()
+	def __init__(self, story = None):
+		super().__init__(story = story)
 
 		print()
 		print(self.large_bar)

@@ -51,6 +51,9 @@ class Register(Tasks):
 
 		self.Show_Information(self.dictionary)
 
+		# Re-initiate the root class to update files
+		super().__init__()
+
 	def Select_Task_Type(self):
 		options = self.task_types["Plural"]["en"]
 		language_options = self.task_types["Plural"][self.user_language]
@@ -381,63 +384,63 @@ class Register(Tasks):
 			type_folder = self.dictionary["Type"]["Plural"][language]
 
 			# Done tasks folder
-			folder = self.current_year["folders"][full_language]["root"]
+			folder = self.current_year["Folders"][full_language]["root"]
 
-			self.current_year["folders"][full_language][root_folder] = {
+			self.current_year["Folders"][full_language][root_folder] = {
 				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder]["root"])
 
 			# Task type folder
-			folder = self.current_year["folders"][full_language][root_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder]["root"]
 
-			self.current_year["folders"][full_language][root_folder][type_folder] = {
+			self.current_year["Folders"][full_language][root_folder][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder][type_folder]["root"])
 
 			# Done tasks file
-			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder][type_folder]["root"]
 			file_name = self.task["Name"]["Sanitized"]
-			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["Folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
+			self.File.Create(self.current_year["Folders"][full_language][root_folder][type_folder][file_name])
 
-			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Text"][language], "w")
+			self.File.Edit(self.current_year["Folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
 			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 			subfolder_name = self.dictionary["Type"]["Subfolders"][language]
 
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
+			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text]["root"]
 
-			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
+			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
 				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 			# Firsts Of The Year task type folder
 			item_folder = self.dictionary["Type"]["Items"][language]
 
-			folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
+			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
 			
-			self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder] = {
+			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder] = {
 				"root": folder + item_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"])
 
 			# First task type task in year file
 			if self.task["States"]["First task type task in year"] == True:
-				folder = self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"]
+				folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder]["root"]
 
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name])
+				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name])
 
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name], self.dictionary["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][item_folder][file_name], self.dictionary["Text"][language], "w")
 
 	def Write_On_Diary_Slim(self):
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.user_language]

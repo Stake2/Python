@@ -158,7 +158,10 @@ class Register(Watch_History):
 		if "Comment" in self.dictionary["Comment Writer"]:
 			self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"] = self.dictionary["Comment Writer"]["Comment"]
 
-			if list(self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"].keys()) == ["Date"] and self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"]["Date"] == self.dictionaries["Entries"]["Dictionary"][self.key]["Date"]:
+			if (
+				list(self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"].keys()) == ["Date"] and
+				self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"]["Date"] == self.dictionaries["Entries"]["Dictionary"][self.key]["Date"]
+			):
 				self.dictionaries["Entries"]["Dictionary"][self.key].pop("Comment")
 
 		# Get the States dictionary
@@ -441,34 +444,34 @@ class Register(Watch_History):
 			type_folder = self.dictionary["Media type"]["Plural"][language]
 
 			# Watched media folder
-			folder = self.current_year["folders"][full_language]["root"]
+			folder = self.current_year["Folders"][full_language]["root"]
 			self.Folder.Create(folder)
 
-			self.current_year["folders"][full_language][root_folder] = {
+			self.current_year["Folders"][full_language][root_folder] = {
 				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder]["root"])
 
 			# Define the media type folder
-			folder = self.current_year["folders"][full_language][root_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder]["root"]
 			self.Folder.Create(folder)
 
-			self.current_year["folders"][full_language][root_folder][type_folder] = {
+			self.current_year["Folders"][full_language][root_folder][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["folders"][full_language][root_folder][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][full_language][root_folder][type_folder]["root"])
 
 			# Define the watched media file
-			folder = self.current_year["folders"][full_language][root_folder][type_folder]["root"]
+			folder = self.current_year["Folders"][full_language][root_folder][type_folder]["root"]
 			file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
-			self.current_year["folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["Folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["folders"][full_language][root_folder][type_folder][file_name])
+			self.File.Create(self.current_year["Folders"][full_language][root_folder][type_folder][file_name])
 
 			# Write the Entry text per language inside the year Entry file
-			self.File.Edit(self.current_year["folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+			self.File.Edit(self.current_year["Folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 			# "Firsts Of The Year" part
 			if self.media["States"]["First media type entry in year"] == True:
@@ -476,31 +479,31 @@ class Register(Watch_History):
 				firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
 				subfolder_name = self.JSON.Language.texts["media, title()"][language]
 
-				folder = self.current_year["folders"][full_language][firsts_of_the_year_text]["root"]
+				folder = self.current_year["Folders"][full_language][firsts_of_the_year_text]["root"]
 				self.Folder.Create(folder)
 
 				# Define the subfolder dictionary
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
+				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
 					"root": folder + subfolder_name + "/"
 				}
 
-				self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
+				self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
 
 				type_folder = self.dictionary["Media type"]["Singular"][language]
 
 				# Define the media type folder dictionary
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
+				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
 					"root": folder + type_folder + "/"
 				}
 
-				self.Folder.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
+				self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
 
 				# Define the "First Of The Year" Entry file
-				self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
+				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
 
 				# Write the Entry text per language inside the "First Of The Year" Entry file
-				self.File.Edit(self.current_year["folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Media_Status(self):
 		if self.media["States"]["Series media"] == True:
@@ -987,3 +990,6 @@ class Register(Watch_History):
 			self.dictionary["header_text"] = self.dictionary["header_text"].replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"])
 
 		self.Show_Media_Information(self.dictionary)
+
+		# Re-initiate the root class to update files
+		super().__init__()

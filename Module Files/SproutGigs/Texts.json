@@ -54,5 +54,9 @@
 	"you_finished_working_on": {
 		"en": "You finished working on",
 		"pt": "Você terminou de trabalhar no"
+	},
+	"i_worked_a_little_on": {
+		"en": "I worked a little on",
+		"pt": "Eu trabalhei um pouco no"
 	}
 }

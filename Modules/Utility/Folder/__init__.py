@@ -81,17 +81,23 @@ class Folder():
 			"XAMPP"
 		]
 
+		portuguese_folder_names = {
+			"Art": self.JSON.Language.language_texts["art, title()"],
+			"Media": self.JSON.Language.language_texts["medias, title()"],
+			"Games": self.JSON.Language.language_texts["games, title()"]
+		}
+
 		for name in folder_names:
 			key = name.lower().replace(" ", "_")
 
-			if name == "Art":
-				name = "Arte"
-
-			if name == "Media":
-				name = "Mídias"
-
-			if name == "Games":
-				name = "Jogos"
+			# If the user language is "Portuguese"
+			# And the folder name is inside the Portuguese folder names dictionary
+			if (
+				self.JSON.Language.system_information["Language"] == "pt" and
+				name in portuguese_folder_names
+			):
+				# Rename the current folder name to its respective Portuguese folder name
+				name = portuguese_folder_names[name]
 
 			self.folders["root"][key] = {
 				"root": self.folders["root"]["root"] + name + "/"
@@ -111,7 +117,7 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			if folder == "Shortcuts":
-				folder = "Atalhos"
+				folder = self.JSON.Language.language_texts["shortcuts, title()"]
 
 			self.folders["apps"][key] = {
 				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
@@ -132,10 +138,10 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			if key == "shortcuts":
-				folder = "Atalhos"
+				folder = self.JSON.Language.language_texts["shortcuts, title()"]
 
 			if key == "folders":
-				folder = "Pastas"
+				folder = self.JSON.Language.language_texts["folders, title()"]
 
 			self.folders["games"][key] = {
 				"root": os.path.join(self.folders["games"]["root"], folder + "/")
@@ -155,11 +161,16 @@ class Folder():
 			}
 
 		# "Downloads" folders
-		for folder in ["Mega", "Vídeos"]:
-			key = folder.lower().replace(" ", "_")
+		folders = {
+			"Mega": "",
+			"Videos": self.JSON.Language.language_texts["videos, title()"]
+		}
 
-			if folder == "Vídeos":
-				key = "videos"
+		for key, folder in folders.items():
+			key = key.lower().replace(" ", "_")
+
+			if folder == "":
+				folder = self.Capitalize(key)
 
 			self.folders["user"]["downloads"][key] = {
 				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/")
@@ -219,22 +230,31 @@ class Folder():
 		}
 
 		# Mega subfolders
-		for folder in ["Notepad", "Image", "PHP", "Obsidian's Vaults", "Stories", "Websites"]:
+		folders = [
+			"Notepad",
+			"Image",
+			"PHP",
+			"Obsidian's Vaults",
+			"Stories",
+			"Websites"
+		]
+
+		for folder in folders:
 			key = folder.lower().replace(" ", "_").replace("'", "_")
 
 			if key == "notepad":
-				folder = "Bloco De Notas"
+				folder = self.JSON.Language.language_texts["notepad, title()"]
 
 			self.folders["mega"][key] = {
 				"root": os.path.join(self.folders["mega"]["root"], folder + "/")
 			}
 
-		# Mega Notepad folders
+		# Mega "Notepad" folders
 		self.folders["mega"]["notepad"]["effort"] = {
-			"root": os.path.join(self.folders["mega"]["notepad"]["root"], "Dedicação/")
+			"root": os.path.join(self.folders["mega"]["notepad"]["root"], self.JSON.Language.language_texts["effort, title()"] + "/")
 		}
 
-		# Mega Notepad Effort folders
+		# Mega "Notepad" Effort folders
 		for folder in ["Diary", "Diary Slim", "Food", "Networks", "Years"]:
 			key = folder.lower().replace(" ", "_")
 
@@ -242,7 +262,7 @@ class Folder():
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["root"], folder + "/")
 			}
 
-		# Mega Notepad Effort Networks folders
+		# Mega "Notepad" Effort Networks folders
 		for network in ["Audiovisual Media Network", "Database Network", "Game Network", "Productive Network"]:
 			# Network dictionary
 			network = {
@@ -380,8 +400,11 @@ class Folder():
 				# Entry list.txt file
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
 
-		# Mega "Years" folders
-		for item in range(2021, self.date["Units"]["Year"] + 1):
+		# Mega "Notepad" Years folders
+		starting_year = 2021
+		current_year = self.date["Units"]["Year"] + 1
+
+		for item in range(starting_year, current_year):
 			key = str(item).lower().replace(" ", "_")
 
 			self.folders["mega"]["notepad"]["effort"]["years"][key] = {
@@ -399,7 +422,7 @@ class Folder():
 
 				self.folders["mega"]["notepad"]["effort"]["years"]["current_year"] = self.folders["mega"]["notepad"]["effort"]["years"][key]
 
-		# Notepad folders dictionary
+		# "Notepad" folders dictionary
 		self.folders["notepad"] = {}
 
 		for key in self.folders["mega"]["notepad"]:
@@ -408,7 +431,37 @@ class Folder():
 		for key in self.folders["mega"]["notepad"]["effort"]:
 			self.folders["notepad"][key] = self.folders["mega"]["notepad"]["effort"][key]
 
-		# Mega PHP folders
+		# Mega "Image" folders
+		folders = {
+			"Years": self.Date.language_texts["years, title()"]
+		}
+
+		for key, folder in folders.items():
+			key = key.lower().replace(" ", "_")
+
+			if folder == "":
+				folder = self.Capitalize(key)
+
+			self.folders["mega"]["image"][key] = {
+				"root": os.path.join(self.folders["mega"]["image"]["root"], folder + "/")
+			}
+
+		# Mega "Image" Years folders
+		folders = {
+			"Images": self.JSON.Language.language_texts["images, title()"]
+		}
+
+		for key, folder in folders.items():
+			key = key.lower().replace(" ", "_")
+
+			if folder == "":
+				folder = self.Capitalize(key)
+
+			self.folders["mega"]["image"]["years"][key] = {
+				"root": os.path.join(self.folders["mega"]["image"]["years"]["root"], folder + "/")
+			}
+
+		# Mega "PHP" folders
 		for item in ["JSON"]:
 			key = item.lower().replace(" ", "_")
 
@@ -416,7 +469,7 @@ class Folder():
 				"root": os.path.join(self.folders["mega"]["php"]["root"], item + "/")
 			}
 
-		# Mega PHP JSON files
+		# Mega "PHP" JSON files
 		for item in ["Colors", "URL", "Websites"]:
 			key = item.lower().replace(" ", "_")
 
@@ -482,6 +535,19 @@ class Folder():
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
+	def Capitalize(self, text, lower = False):
+		text = list(text)
+
+		if lower == False:
+			text[0] = text[0].upper()
+
+		if lower == True:
+			text[0] = text[0].lower()
+
+		text = "".join(text)
+
+		return text
+
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
 			path = os.path.normpath(path).replace("\\", "/")
@@ -505,7 +571,7 @@ class Folder():
 		if self.switches["verbose"] == True or verbose == True:
 			import inspect
 
-			print()
+			print(self.JSON.Language.space_text)
 			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)

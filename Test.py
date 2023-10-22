@@ -65,31 +65,36 @@ class Main():
 	def Notepad_Theme(self):
 		self.File.Close("notepad++")
 
-		self.folders["notepad"] = {
+		self.folders["notepad++"] = {
 			"root": self.folders["appdata"]["roaming"]["root"] + "Notepad++/"
 		}
 
-		self.folders["notepad"]["config"] = self.folders["notepad"]["root"] + "config.xml"
+		self.folders["notepad++"]["themes"] = {
+			"root": self.folders["notepad++"]["root"] + "themes/"
+		}
 
-		config = self.File.Contents(self.folders["notepad"]["config"])["string"]
+		self.folders["notepad++"]["config"] = self.folders["notepad++"]["root"] + "config.xml"
+
+		config = self.File.Contents(self.folders["notepad++"]["config"])["string"]
 
 		themes = [
 			"Littletato",
+			"Littletato (Brown)",
 			"SpaceLiving"
 		]
 
 		new_theme = self.Input.Select(themes)["option"]
 
-		new_theme_config = self.File.Contents(self.folders["notepad"]["root"] + "config (" + new_theme + ").xml")["string"]
+		new_theme_config = self.File.Contents(self.folders["notepad++"]["themes"]["root"] + new_theme + ".txt")["string"]
 
 		template = 'name="DarkMode" enable="yes" colorTone="32" '
-		dark_theme_name = ' darkThemeName="DarkModeDefault ({}).xml"'.format(new_theme)
+		dark_theme_name = ' darkThemeName="{}.xml"'.format(new_theme)
 
 		config = re.sub(template + '.*darkThemeName=".*\.xml"', template + new_theme_config + dark_theme_name, config)
 
-		self.File.Edit(self.folders["notepad"]["config"], config, "w")
+		self.File.Edit(self.folders["notepad++"]["config"], config, "w")
 
-		self.Date.Sleep(2)
+		self.Date.Sleep(1)
 
 		notepad = self.folders["root"]["program_files"]["root"] + "Notepad++/notepad++.exe"
 
@@ -120,10 +125,10 @@ class Main():
 				print(item)
 
 	def XML(self):
-		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
+		folder = self.Folder.Sanitize(self.Input.Type(self.Folder.language_texts["folder, title()"]))
 		files = self.Folder.Contents(folder, add_sub_folders = False)["file"]["list"]
 
-		titles_file = self.Folder.Sanitize(self.Input.Type("Titles file"))
+		titles_file = self.Folder.Sanitize(self.Input.Type(self.File.language_texts["file, title()"] + " " + self.JSON.Language.language_texts["genders, type: dict"]["of"] + " " + self.JSON.Language.language_texts["titles, title()"].lower()))
 		titles = self.File.Contents(titles_file)["lines"]
 
 		from xml.dom.minidom import getDOMImplementation
@@ -153,7 +158,11 @@ class Main():
 		extension.setAttribute("application", "http://www.videolan.org/vlc/playlist/0")
 		playlist.appendChild(extension)
 
-		excluded_extensions = ["SRT", "srt", "png", "jpg", "jpeg", "txt"]
+		accepted_extensions = [
+			"mp4",
+			"mkv",
+			"webm"
+		]
 
 		i = 0
 		for title in titles:
@@ -174,12 +183,15 @@ class Main():
 				if sanitized_title in item:
 					extensions_list = []
 
-					for ext in excluded_extensions:
-						if ext not in item and item.split(".")[-1] != ext:
-							extensions_list.append(ext)
+					for ext in accepted_extensions:
+						if (
+							"." + ext in item and
+							item.split(".")[-1] == ext
+						):
+							file = item
 
-					if len(extensions_list) == len(excluded_extensions):
-						file = item
+			if file == "":
+				input()
 
 			if file != "":
 				print()
@@ -197,8 +209,18 @@ class Main():
 						url = self.File.Name(file) + "." + file.split(".")[-1]
 						url = url.replace("#", "%23")
 
+						media_folder = file.replace(folder, "")
+						media_folder = media_folder.replace(self.File.Name(file), "")
+						media_folder = media_folder.split(".")[0]
+
+						url = media_folder + url
+
 						text = document.createTextNode("file:///./" + url)
 						element.appendChild(text)
+
+						print()
+						print("URL:")
+						print("./" + url)
 
 					if item == "title":
 						text = document.createTextNode(self.File.Name(file))

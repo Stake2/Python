@@ -122,7 +122,7 @@ class Diary_Slim():
 				},
 				"Names": self.date["Texts"]["Month name"],
 				"Formats": {
-					"Diary Slim": self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"]) + " - " + self.date["Texts"]["Month name"][self.user_language]
+					"Diary Slim": str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language]
 				},
 				"Diary Slims": {}
 			},
@@ -153,7 +153,7 @@ class Diary_Slim():
 			}
 
 		# Folders
-		self.folders["diary_slim"] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]
+		self.folders["Diary Slim"] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]
 
 		# Subfolders
 		names = [
@@ -163,16 +163,16 @@ class Diary_Slim():
 		]
 
 		for name in names:
-			key = name.lower().replace(" ", "_")
+			key = name
 
 			if name == "Years":
 				name = self.Date.language_texts[name.lower() + ", title()"]
 
-			self.folders["diary_slim"][key] = {
-				"root": self.folders["diary_slim"]["root"] + name + "/"
+			self.folders["Diary Slim"][key] = {
+				"root": self.folders["Diary Slim"]["root"] + name + "/"
 			}
 
-			self.Folder.Create(self.folders["diary_slim"][key]["root"])
+			self.Folder.Create(self.folders["Diary Slim"][key]["root"])
 
 		# Data folders
 		names = [
@@ -180,88 +180,150 @@ class Diary_Slim():
 		]
 
 		for name in names:
-			key = name.lower().replace(" ", "_")
-
-			self.folders["diary_slim"]["data"][key] = {
-				"root": self.folders["diary_slim"]["data"]["root"] + name + "/"
+			self.folders["Diary Slim"]["Data"][name] = {
+				"root": self.folders["Diary Slim"]["Data"]["root"] + name + "/"
 			}
 
-			self.Folder.Create(self.folders["diary_slim"]["data"][key]["root"])
+			self.Folder.Create(self.folders["Diary Slim"]["Data"][name]["root"])
 
-		# Year files
+		# Years folders and files
 		names = [
 			"History"
 		]
 
 		for name in names:
-			key = name.lower().replace(" ", "_")
+			self.folders["Diary Slim"]["Years"][name] = self.folders["Diary Slim"]["Years"]["root"] + name + ".json"
+			self.File.Create(self.folders["Diary Slim"]["Years"][name])
 
-			self.folders["diary_slim"]["years"][key] = self.folders["diary_slim"]["years"]["root"] + name + ".json"
-			self.File.Create(self.folders["diary_slim"]["years"][key])
+		# Years folders and files
 
-		# Years folders
+		# Define the default History dictionary
 		self.history = {
 			"Numbers": {
 				"Years": 0,
+				"Months": 0,
 				"Diary Slims": 0
 			},
 			"Years": []
 		}
 
-		if self.File.Contents(self.folders["diary_slim"]["years"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["diary_slim"]["years"]["history"])["Years"] != []:
-			# Get the History dictionary from the file
-			self.history = self.JSON.To_Python(self.folders["diary_slim"]["years"]["history"])
+		# If the "History.json" file is not empty
+		# And the "Years" list is not empty
+		if (
+			self.File.Contents(self.folders["Diary Slim"]["Years"]["History"])["lines"] != [] and
+			self.JSON.To_Python(self.folders["Diary Slim"]["Years"]["History"])["Years"] != []
+		):
+			# Get the filled History dictionary from the file
+			self.history = self.JSON.To_Python(self.folders["Diary Slim"]["Years"]["History"])
+
+		self.years = self.Date.Create_Years_List(start = 2020, function = str)
+
+		# If the Years list inside the History is empty, create a new one
+		if self.history["Years"] == []:
+			self.history["Years"] = self.years
 
 		# If the current year is not inside the "History" years list, add it to the list
 		if self.current_year["Number"] not in self.history["Years"]:
 			self.history["Years"].append(self.current_year["Number"])
 
-		self.years = self.Date.Create_Years_List(start = 2020, function = str)
+		# Sort the Years list
+		self.history["Years"] = sorted(self.history["Years"], key = str.lower)
 
-		diary_slims = 0
+		# Define the default numbers dictionary
+		numbers = {
+			"Years": len(self.years),
+			"Months": 0,
+			"Days": 0,
+			"Diary Slims": 0
+		}
 
 		# Iterate through the Years list
 		for year in self.years:
 			# Create the year folder
-			self.folders["diary_slim"]["years"][year] = {
-				"root": self.folders["diary_slim"]["years"]["root"] + year + "/"
+			self.folders["Diary Slim"]["Years"][year] = {
+				"root": self.folders["Diary Slim"]["Years"]["root"] + year + "/"
 			}
 
-			self.Folder.Create(self.folders["diary_slim"]["years"][year]["root"])
+			self.Folder.Create(self.folders["Diary Slim"]["Years"][year]["root"])
 
 			# Create the year file
-			self.folders["diary_slim"]["years"][year]["year"] = self.folders["diary_slim"]["years"][year]["root"] + "Year.json"
-			self.File.Create(self.folders["diary_slim"]["years"][year]["year"])
+			self.folders["Diary Slim"]["Years"][year]["year"] = self.folders["Diary Slim"]["Years"][year]["root"] + "Year.json"
+			self.File.Create(self.folders["Diary Slim"]["Years"][year]["year"])
 
-			# If the file exists and it is not empty
-			if self.File.Contents(self.folders["diary_slim"]["years"][year]["year"])["lines"] != []:
-				# Add the days number to the local number of Diary Slims
-				diary_slims += self.JSON.To_Python(self.folders["diary_slim"]["years"][year]["year"])["Numbers"]["Days"]
+			# If the is not empty
+			if self.File.Contents(self.folders["Diary Slim"]["Years"][year]["year"])["lines"] != []:
+				# Get the Year dictionary
+				year_dictionary = self.JSON.To_Python(self.folders["Diary Slim"]["Years"][year]["year"])
 
-			# Add the year to the Years list if it is not inside it
-			if year not in self.history["Years"]:
-				self.history["Years"].append(year)
+				# Iterate through the number keys
+				for key in numbers.keys():
+					# If the key is not equal to "Years"
+					if key != "Years":
+						# Add the current number to the local numbers dictionary
+						numbers[key] += year_dictionary["Numbers"][key]
 
-		# Sort the Years list
-		self.history["Years"] = sorted(self.history["Years"], key = str.lower)
+		# Define the History numbers dictionary as the local numbers dictionary
+		self.history["Numbers"] = numbers
 
-		# Update the number of years with the length of the years list
-		self.history["Numbers"]["Years"] = len(self.history["Years"])
+		# Update the "History.json" file with the updated History dictionary
+		self.JSON.Edit(self.folders["Diary Slim"]["Years"]["History"], self.history)
 
-		# Define the number of Diary Slims of all years as the local number of Diary Slims
-		self.history["Numbers"]["Diary Slims"] = diary_slims
+		# ---------- #
 
-		# Update the "History.json" file with the new History dictionary
-		self.JSON.Edit(self.folders["diary_slim"]["years"]["history"], self.history)
+		# Story folders and files
+		names = [
+			"Information",
+			"Titles"
+		]
+
+		for name in names:
+			self.folders["Diary Slim"]["Story"][name] = self.folders["Diary Slim"]["Story"]["root"] + name + ".json"
+			self.File.Create(self.folders["Diary Slim"]["Story"][name])
+
+		# Define the default Information dictionary
+		self.information = {
+			"Titles": {},
+			"Chapters": {
+				"Number": 0
+			},
+			"Status": {
+				"Number": 0,
+				"Names": {
+					"en": "Writing",
+					"pt": "Escrevendo"
+				}
+			},
+			"HEX color": "f1858d"
+		}
+
+		# If the "Information.json" file is not empty
+		if self.File.Contents(self.folders["Diary Slim"]["Story"]["Information"])["lines"] != []:
+			# Get the filled Information dictionary from the file
+			self.information = self.JSON.To_Python(self.folders["Diary Slim"]["Story"]["Information"])
+
+		# If the Titles dictionary is empty
+		if self.information["Titles"] == {}:
+			# Get the Titles dictionary from the "Titles.json" file
+			self.information["Titles"] = self.JSON.To_Python(self.folders["Diary Slim"]["Story"]["Titles"])
+
+		# If the number of chapters is 0 (zero)
+		if self.information["Chapters"]["Number"] == 0:
+			# Define the number of chapters as the number of Diary Slims
+			self.information["Chapters"]["Number"] = self.history["Numbers"]["Diary Slims"]
+
+		# Update the "Information.json" file with the updated Information dictionary
+		self.JSON.Edit(self.folders["Diary Slim"]["Story"]["Information"], self.information)
+
+		# ---------- #
 
 		# Current year folder
-		self.folders["diary_slim"]["current_year"] = self.folders["diary_slim"]["years"][self.current_year["Number"]]
+		self.folders["Diary Slim"]["current_year"] = self.folders["Diary Slim"]["Years"][self.current_year["Number"]]
 
 		# Define the Year dictionary
 		self.current_year["Year"] = deepcopy(self.templates["Year"])
 
-		if self.File.Contents(self.folders["diary_slim"]["current_year"]["year"])["lines"] != []:
-			self.current_year["Year"] = self.JSON.To_Python(self.folders["diary_slim"]["current_year"]["year"])
+		if self.File.Contents(self.folders["Diary Slim"]["current_year"]["year"])["lines"] != []:
+			self.current_year["Year"] = self.JSON.To_Python(self.folders["Diary Slim"]["current_year"]["year"])
 
 		# Define the year Month dictionary
 		self.current_year["Month"] = {
@@ -272,7 +334,7 @@ class Diary_Slim():
 		}
 
 		# Define and create the month folder
-		self.current_year["Month"]["Folder"] = self.folders["diary_slim"]["current_year"]["root"] + self.current_year["Month"]["Name"] + "/"
+		self.current_year["Month"]["Folder"] = self.folders["Diary Slim"]["current_year"]["root"] + self.current_year["Month"]["Name"] + "/"
 		self.Folder.Create(self.current_year["Month"]["Folder"])
 
 		# Define and create the month file
@@ -289,8 +351,8 @@ class Diary_Slim():
 		self.current_year["File"] = self.Current_Diary_Slim()["File"]
 
 		# Slim texts file
-		self.folders["diary_slim"]["data"]["slim_texts"] = self.folders["diary_slim"]["data"]["root"] + "Slim texts.json"
-		self.File.Create(self.folders["diary_slim"]["data"]["slim_texts"])
+		self.folders["Diary Slim"]["Data"]["slim_texts"] = self.folders["Diary Slim"]["Data"]["root"] + "Slim texts.json"
+		self.File.Create(self.folders["Diary Slim"]["Data"]["slim_texts"])
 
 		# Data files
 		names = [
@@ -301,8 +363,8 @@ class Diary_Slim():
 		for name in names:
 			key = name.lower().replace(" ", "_")
 
-			self.folders["diary_slim"]["data"][key] = self.folders["diary_slim"]["data"]["root"] + name + ".txt"
-			self.File.Create(self.folders["diary_slim"]["data"][key])
+			self.folders["Diary Slim"]["Data"][key] = self.folders["Diary Slim"]["Data"]["root"] + name + ".txt"
+			self.File.Create(self.folders["Diary Slim"]["Data"][key])
 
 		self.folders["apps"]["module_files"][self.module["key"]]["header"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Header.txt"
 		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["header"])
@@ -319,7 +381,7 @@ class Diary_Slim():
 				"current",
 			],
 			"names": [],
-			"folders": self.Folder.Contents(self.folders["diary_slim"]["data"]["state_texts"]["root"]),
+			"folders": self.Folder.Contents(self.folders["Diary Slim"]["Data"]["State texts"]["root"]),
 		}
 
 		i = 0
@@ -392,7 +454,7 @@ class Diary_Slim():
 		dictionary["Day"] = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(date["Timezone"]["DateTime"]["Units"]["Day"]), date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language], date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"])
 
 		# Define the year and month folder
-		dictionary["Year folder"] = self.folders["diary_slim"]["years"]["root"] + current_year["Number"] + "/"
+		dictionary["Year folder"] = self.folders["Diary Slim"]["Years"]["root"] + current_year["Number"] + "/"
 		dictionary["Month folder"] = dictionary["Year folder"] + dictionary["Month folder name"] + "/"
 
 		# Define the Diary Slim file

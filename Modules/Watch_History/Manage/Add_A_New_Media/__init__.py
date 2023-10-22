@@ -20,6 +20,8 @@ class Add_A_New_Media(Watch_History):
 		# Ask for the media information
 		self.media = self.Type_Media_Information()
 
+		self.dictionary["Media"] = self.media
+
 		# Select the media to define its variables
 		self.Select_Media(self.dictionary)
 
@@ -32,11 +34,13 @@ class Add_A_New_Media(Watch_History):
 			self.Add_Media_Items()
 
 		if self.media["States"]["Media item list"] == True:
+			# Remove "folders" key from the Media dictionary
 			if "folders" in self.dictionary["Media"]:
 				self.dictionary["Media"].pop("folders")
 
 			self.media = self.dictionary["Media"]
 
+			# Re-select the media to recreate the "folders" key
 			self.dictionary = self.Select_Media(self.dictionary)
 
 		self.dictionary["Added media"] = True
@@ -47,15 +51,7 @@ class Add_A_New_Media(Watch_History):
 
 			Fill_Media_Files(self.dictionary)
 
-		if self.media["States"]["Media item list"] == True:
-			if "folders" in self.dictionary["Media"]:
-				self.dictionary["Media"].pop("folders")
-
-			self.media = self.dictionary["Media"]
-
-			self.dictionary = self.Select_Media(self.dictionary)
-
-		# Instantiate the root class to update the database files
+		# Run the root class to update the media and database files
 		super().__init__()
 
 	def Type_Media_Information(self, item = False):
@@ -109,6 +105,7 @@ class Add_A_New_Media(Watch_History):
 
 		media["Title"] = title
 		media["Titles"]["Original"] = media["Title"]
+		media["Titles"]["Sanitized"] = self.Sanitize_Title(media["Title"])
 
 		# Ask for the media (item) titles per langauge
 		for language in self.languages["small"]:
@@ -144,7 +141,10 @@ class Add_A_New_Media(Watch_History):
 
 			accept_enter = False
 
-			if self.item == True and self.media["States"]["First media item"] == True:
+			if (
+				self.item == True and
+				self.media["States"]["First media item"] == True
+			):
 				accept_enter = True
 
 			if self.switches["testing"] == False:
@@ -295,7 +295,9 @@ class Add_A_New_Media(Watch_History):
 				# Ask which secondary type the media item is
 				self.local_secondary_types = self.secondary_types["Singular"][self.user_language]
 
-				self.local_secondary_types.append("[" + self.JSON.Language.language_texts["empty, title()"] + "]")
+				empty_text = "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
+
+				self.local_secondary_types.append(empty_text)
 
 				if self.switches["testing"] == False:
 					media_item_type = self.Input.Select(show_text = show_text, select_text = select_text, options = self.local_secondary_types)["option"]
@@ -303,7 +305,10 @@ class Add_A_New_Media(Watch_History):
 				if self.switches["testing"] == True:
 					media_item_type = self.local_secondary_types[3]
 
-				if media_item_type != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
+				if media_item_type == empty_text:
+					media_item_type = ""
+
+				if media_item_type != empty_text:
 					media["Type"] = media_item_type
 
 				# Ask if the media item is a single unit
@@ -344,9 +349,6 @@ class Add_A_New_Media(Watch_History):
 					media["Separators"][item_type] = separator
 
 		media = self.Create_Details(media)
-
-		if "States" in self.media and "Add more" in self.media["States"]:
-			self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.JSON.Language.language_texts["add_more"])
 
 		return media
 
@@ -423,7 +425,10 @@ class Add_A_New_Media(Watch_History):
 				media["Details"][self.JSON.Language.language_texts["link, title()"]] = self.remote_origins["YouTube"] + "playlist?list=" + media["ID"]
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
-				if "Type" in media:
+				if (
+					"Type" in media and
+					media["Type"] != ""
+				):
 					media["Details"][self.JSON.Language.language_texts["type, title()"]] = media["Type"]
 
 				if media["Single unit"] != self.JSON.Language.language_texts["no, title()"]:
@@ -492,6 +497,10 @@ class Add_A_New_Media(Watch_History):
 
 		self.media["States"]["Media item list"] = self.Input.Yes_Or_No(text)
 
+		self.first_time = True
+
+		from copy import deepcopy
+
 		if self.media["States"]["Media item list"] == True:
 			# Delete the unused folders
 			self.Folder.Delete(self.dictionary["Media"]["Item"]["folders"]["watched"]["root"])
@@ -503,7 +512,7 @@ class Add_A_New_Media(Watch_History):
 				"folders": {
 					"root": self.media["folders"]["root"] + self.dictionary["Media type"]["Subfolders"]["Plural"] + "/"
 				},
-				"Number": 1
+				"Number": 0
 			}
 
 			self.Folder.Create(self.media["Items"]["folders"]["root"])
@@ -523,7 +532,10 @@ class Add_A_New_Media(Watch_History):
 				self.media["Items"][name] = self.File.Contents(self.media["Items"]["folders"][name.lower()])["lines"]
 
 				# If the contents is not empty and the item type is "current"
-				if self.media["Items"][name] != [] and name == "Current":
+				if (
+					self.media["Items"][name] != [] and
+					name == "Current"
+				):
 					# Define the contents as the first line of the text file
 					self.media["Items"][name] = self.media["Items"][name][0]
 
@@ -535,6 +547,8 @@ class Add_A_New_Media(Watch_History):
 			self.media["States"]["First media item"] = True
 			self.media["States"]["Add more"] = True
 
+			add_text = self.language_texts["add_more"]
+
 			# Ask for the media information
 			while self.media["States"]["Add more"] == True:
 				media_item = self.Type_Media_Information(item = True)
@@ -545,10 +559,13 @@ class Add_A_New_Media(Watch_History):
 				# Add to media items list
 				self.media["Items"]["List"].append(media_item["Title"])
 
-				# Update the media items list file
-				self.File.Edit(self.media["Items"]["folders"]["list"], self.Text.From_List(self.media["Items"]["List"]), "w")
+				if self.media["States"]["First media item"] == True:
+					self.media["States"]["First media item"] = False
 
-				self.media["States"]["First media item"] = False
+				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.JSON.Language.language_texts["add_more"])
+
+			# Update the media items list file
+			self.File.Edit(self.media["Items"]["folders"]["list"], self.Text.From_List(self.media["Items"]["List"]), "w")
 
 			# Define the current media item as the first one
 			self.media["Items"]["Current"] = [

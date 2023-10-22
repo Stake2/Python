@@ -61,8 +61,15 @@ class File():
 		if self.switches["verbose"] == True or verbose == True:
 			import inspect
 
-			print()
-			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
+			method_ = inspect.stack()[1][3]
+
+			space = self.JSON.Language.space_text
+
+			if method_ == "Open":
+				space = ""
+
+			print(space)
+			print(self.module["name"] + "." + method_ + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 

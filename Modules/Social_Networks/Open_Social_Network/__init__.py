@@ -33,12 +33,15 @@ class Open_Social_Network(Social_Networks):
 		if self.open_social_networks == False and social_network_parameter == None:
 			self.social_network_list = [None]
 
-		i = 0
+		self.i = 0
 		for social_network in self.social_network_list:
-			if len(self.social_network_list) > 1 and self.custom_link_backup != None:
-				self.custom_link = self.custom_link_backup[i]
+			if (
+				len(self.social_network_list) > 1 and
+				self.custom_link_backup != None
+			):
+				self.custom_link = self.custom_link_backup[self.i]
 
-			if i == 1:
+			if self.i == 1:
 				print()
 
 			self.social_network_link = self.custom_link
@@ -55,14 +58,17 @@ class Open_Social_Network(Social_Networks):
 			if self.open_social_networks == True:
 				print()
 
-			if i == 0 and unblock == True:
+			if self.i == 0 and unblock == True:
 				self.Unlock_Social_Network()
 
 			self.Open_Social_Network()
 
-			i += 1
+			self.i += 1
 
-		if social_network_parameter != None and self.second_space == True:
+		if (
+			social_network_parameter != None and
+			self.second_space == True
+		):
 			print()
 
 	def Define_Social_Network(self, social_network):
@@ -74,7 +80,16 @@ class Open_Social_Network(Social_Networks):
 			self.social_network_list = [self.social_network["Name"]]
 
 	def Unlock_Social_Network(self):
-		Unblock(websites = self.social_network_list)
+		unblock_websites = False
+
+		if unblock_websites == True:
+			Unblock(websites = self.social_network_list)
+
+		if (
+			unblock_websites == False and
+			self.i == 0
+		):
+			print()
 
 	def Define_Link_Type(self):
 		if self.option_info != None:
