@@ -2,16 +2,17 @@
 
 class Run():
 	def __init__(self):
-		if hasattr(self, "register_time") == False:
-			self.register_time = True
-
 		from Food_Time.Food_Time import Food_Time as Food_Time
 
-		setattr(Food_Time, "register_time", self.register_time)
+		# If the self object (Run) has the "arguments" dictionary
+		# Add it to the module sub-class
+		if hasattr(self, "arguments") == True:
+			setattr(Food_Time, "arguments", self.arguments)
 
 		self.Food_Time = Food_Time()
 
-separate_arguments = [
+# Define the custom arguments for the module
+custom_arguments = [
 	"set",
 	"check"
 ]

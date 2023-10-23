@@ -36,7 +36,7 @@ class Database(object):
 		from Utility.JSON import JSON as JSON
 		from Utility.Text import Text as Text
 
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.File = File()
 		self.Folder = Folder()

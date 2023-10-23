@@ -5,7 +5,7 @@ class API():
 		from Utility.Global_Switches import Global_Switches as Global_Switches
 
 		# Global Switches dictionary
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.switches.update({
 			"file": {
@@ -18,8 +18,8 @@ class API():
 		})
 
 		if self.switches["testing"] == True:
-			for switch in self.switches["file"]:
-				self.switches["file"][switch] = False
+			for switch in self.switches["File"]:
+				self.switches["File"][switch] = False
 
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders

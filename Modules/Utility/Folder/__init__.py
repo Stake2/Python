@@ -7,7 +7,7 @@ class Folder():
 		from Utility.Global_Switches import Global_Switches as Global_Switches
 
 		# Global Switches dictionary
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.switches.update({
 			"folder": {

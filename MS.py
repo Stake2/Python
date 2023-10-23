@@ -1,15 +1,20 @@
 # Module_Selector.py
 
 import importlib
-import argparse
 import inspect
+
+# Import the "deepcopy" module
+from copy import deepcopy
 
 class Module_Selector():
 	def __init__(self):
+		# Defines the basic variables
 		self.Define_Basic_Variables()
 
+		# Import the "Define_Folders" module
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
+		# Define the module folders
 		Define_Folders(self)
 
 		self.Define_Texts()
@@ -35,12 +40,10 @@ class Module_Selector():
 		self.Global_Switches = Global_Switches()
 		self.switches = self.Global_Switches.switches
 
-		self.reset_switches = {
-			"testing": False,
-			"verbose": False,
-			"user_information": False,
-		}
+		# Copy the reset switches from the "Global_Switches" module
+		self.reset_switches = deepcopy(self.switches["Reset"])
 
+		# Import the Input and JSON Utility modules
 		from Utility.Input import Input as Input
 		from Utility.JSON import JSON as JSON
 
@@ -60,9 +63,14 @@ class Module_Selector():
 		self.dash_space = "-"
 
 	def Define_Parser(self):
-		# Define prefix
-		self.argparse = {
-			"prefix": "-",
+		# Import the "argparse" module
+		import argparse
+
+		# Define the "argument_parser" dictionary
+		# With the configuration for the ArgumentParser
+		# The default arguments, and the default options
+		self.argument_parser = {
+			"Prefix": "-",
 			"ArgumentParser": {
 				"prog": self.module["name"] + ".py",
 				"description": self.language_texts["description_executes_the_module_specified_in_the_optional_arguments"],
@@ -70,264 +78,572 @@ class Module_Selector():
 				"formatter_class": argparse.RawDescriptionHelpFormatter,
 				"add_help": False
 			},
-			"default_arguments": {
+			"Default arguments": {
 				"help": {
-					"list": ["help"],
-					"text_key": "shows_this_help_text_and_ends_the_program_execution",
-					"action": "help"
+					"List": ["help"],
+					"Text key": "shows_this_help_text_and_ends_the_program_execution",
+					"Action": "help"
 				},
-				"testing": ["testing"],
-				"verbose": ["verbose"],
+				"testing": [
+					"testing"
+				],
+				"verbose": [
+					"verbose"
+				],
 				"user_information": {
-					"list": ["user_information", "userinfo", "user"],
-					"text_key": "activates_the_displaying_of_user_information_on_the_language_class"
+					"List": [
+						"user_information",
+						"userinfo",
+						"user"
+					],
+					"Text key": "activates_the_displaying_of_user_information_on_the_language_class"
 				},
 				"module": {
-					"list": ["module"],
-					"text_key": "stores_the_module_to_be_executed",
-					"options": {
-						"action": "store",
-						"help": self.language_texts["stores_the_module_to_be_executed"]
+					"List": [
+						"module"
+					],
+					"Text key": "stores_the_module_to_be_executed",
+					"Options": {
+						"Action": "store",
+						"Help": self.language_texts["stores_the_module_to_be_executed"]
 					},
-					"language_text": False
+					"Language text": False
 				}
 			},
-			"default_options": {
-				"action": "store_true",
-				"help": self.language_texts["activates_the_{}_mode_of_the_modules"],
+			"Default options": {
+				"Action": "store_true",
+				"Help": self.language_texts["activates_the_{}_mode_of_the_modules"]
 			}
 		}
 
-		self.parser = argparse.ArgumentParser(**self.argparse["ArgumentParser"])
+		# Initiate the Argument Parser
+		self.argument_parser["Parser"] = argparse.ArgumentParser(**self.argument_parser["ArgumentParser"])
 
-		for argument in self.argparse["default_arguments"].values():
-			options = self.argparse["default_options"]
+		# Iterate through the default arguments list
+		for argument in self.argument_parser["Default arguments"].values():
+			# Get the default options dictionary
+			options = self.argument_parser["Default options"]
 
-			if "options" in argument:
-				options = argument["options"]
+			# If the argument has a custom options dictionary, use it
+			if "Options" in argument:
+				options = argument["Options"]
 
+			# Add the argument to the Argument Parser
 			self.Add_Argument(argument, options)
 
 	def Add_Argument(self, argument, options):
-		options = options.copy()
+		# Make a copy of the options dictionary to not modify it
+		options = deepcopy(options)
 
+		# If the type of argument is a list
+		# That means the argument contains only the key, not any additional info
 		if type(argument) == list:
+			# Get the argument key
 			argument = argument[0]
 
+			# Update the options with the argument key
+			# And help text gotten from the Language texts dictionary
 			options.update({
-				"list": [argument],
-				"help": options["help"].format(self.language_texts[argument + ", title()"])
+				"List": [argument],
+				"Help": options["Help"].format(self.language_texts[argument + ", title()"])
 			})
 
-		if type(argument) not in [list, str]:
-			if "text" not in argument:
-				options["help"] = self.language_texts[argument["text_key"]]
-
-			if "text" in argument:
-				options["help"] = argument["text"]
-
-			if "action" in argument:
-				options["action"] = argument["action"]
-
-			options["list"] = argument["list"]
-
-			if "{}" in options["help"]:
-				options["help"] = options["help"].format(argument["title"])
-
-			if "language_text" in argument:
-				options["language_text"] = argument["language_text"]
-
+		# If the type of argument is a dictionary
+		# That means the argument contains the key and additional info about the argument
+		# Such as a custom help text, custom action, and language text and key
 		if type(argument) == dict:
-			argument = argument["list"][0]
+			# If the "Is module" key is inside the argument
+			# And the argument is a module argument (True)
+			# Then define its text key as "executes_the_{}_module"
+			if (
+				"Is module" in argument and
+				argument["Is module"] == True
+			):
+				argument["Text key"] = "executes_the_{}_module"
 
-		# Add arguments per language
+			# if there is a custom help text of the argument, use it
+			if "Text" in argument:
+				options["Help"] = argument["Text"]
+
+			# If the "Text key" key is inside the argument
+			# Then use the help text from the Language texts dictionary, using the text key
+			if "Text key" in argument:
+				options["Help"] = self.language_texts[argument["Text key"]]
+
+			# Define the list of keys to get from the argument dictionary
+			keys = [
+				"Text",
+				"Action",
+				"List",
+				"Language text"
+			]
+
+			# If the title is not inside the argument dictionary
+			# And the "List" key is inside the dictionary
+			# Make a title from the first item on the key list, making the first letter uppercase
+			if (
+				"Title" not in argument and
+				"List" in argument
+			):
+				argument["Title"] = argument["List"][0].title()
+
+			# If the "List" key is not inside the argument dictionary
+			# And the "Title" key is inside the dictionary
+			# Make a new list with only the title
+			if (
+				"List" not in argument and
+				"Title" in argument
+			):
+				argument["List"] = [
+					argument["Title"].lower()
+				]
+
+			# Iterate through the keys list
+			for item in keys:
+				# If the item is inside the argument dictionary
+				if item in argument:
+					# Add it to the options dictionary
+					options[item] = argument[item]
+
+			# If the format characters are inside the help text, format them with the argument title
+			if "{}" in options["Help"]:
+				options["Help"] = options["Help"].format(argument["Title"])
+
+			# Transform the argument into its first key
+			# All variables from the argument dictionary have already been added to the options dictionary
+			# So it is safe to replace this variable now
+			argument = argument["List"][0]
+
+		# Add the arguments per language
+		# Not the English language, the other languages such as the user language (when it is not English)
 		for language in self.languages["small"]:
+			# If the language is not English
 			if language != "en":
+				# Define the text as the argument
 				text = argument
 
+				# If the argument is inside the texts dictionary
+				# Get the text from it
 				if argument in self.texts:
 					text = self.texts[argument]
 
+				# If the argument with the ", title()" text specifier is inside the texts dictionary
+				# Get the text from it
 				if argument + ", title()" in self.texts:
 					text = self.texts[argument + ", title()"]
 
+				# If the type of text (argument) is a dict
 				if type(text) == dict:
+					# If the language text is inside the text dictionary
+					# Get the language text from it
 					if language in text:
 						text = text[language].lower()
 
+					# Else, define the text as the text in the user language
 					else:
 						text = text[self.user_language].lower()
 
-				if text not in options["list"] and "language_text" not in options:
-					options["list"].append(text.replace(" ", ""))
+				# If the language text is not inside the options key list
+				# And "Language text" key is not inside the options dictionary
+				if (
+					text not in options["List"] and
+					"Language text" not in options
+				):
+					# Add the language text to the options key list
+					# And replace the spaces with nothing
+					options["List"].append(text.replace(" ", ""))
 
+					# If the first word of the text is not the same text
+					# (That means there are spaces on the text, such as a phrase)
+					# Then add the first word of the text to the list key
+					# (Arguments can not contain spaces)
 					if text.split(" ")[0] != text:
-						options["list"].append(text.split(" ")[0])
+						options["List"].append(text.split(" ")[0])
 
-		# Add prefix to options
+		# Replace each argument key of the list with the same key but with the prefix of the Argument Parser
 		i = 0
-		for item in options["list"]:
-			options["list"][i] = self.argparse["prefix"] + options["list"][i]
+		for item in options["List"].copy():
+			options["List"][i] = self.argument_parser["Prefix"] + options["List"][i]
 
 			i += 1
 
-		# Transform list of arguments into a tuple
-		tuple_ = tuple(options["list"])
+		# Transform the list of arguments into a tuple
+		# To be used correctly by the Argument Parser
+		tuple_ = tuple(options["List"])
 
-		# Remove list from options dictionary
-		options.pop("list")
+		# Remove the keys that can not be used by the Parser
+		unused_keys = [
+			"Language text",
+			"List",
+			"Text"
+		]
 
-		if "language_text" in options:
-			options.pop("language_text")
+		for key in unused_keys:
+			if key in options:
+				options.pop(key)
 
-		self.parser.add_argument(*tuple_, **options)
+		# Transform all keys in the "options" dictionary to lowercase
+		# For the parser to have the correct keys
+		dict_ = {}
+
+		for key, value in options.items():
+			dict_[key.lower()] = value
+
+		options = dict_
+
+		# Add the arguments to the parser, using the tuple of keys
+		# And the options, such as action, help, and text
+		self.argument_parser["Parser"].add_argument(*tuple_, **options)
 
 	def Get_Modules(self):
+		# Get the list of modules from the "Modules.json" file
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
-		# Iterate through usage modules list
+		# Iterate through the usage modules list
 		for title in self.modules["Usage"]["List"]:
-			self.modules["Usage"][title] = {
-				"title": title,
-				"key": title.lower(),
-				"list": [title.lower()],
-				"text_key": "executes_the_{}_module",
-				"module": importlib.import_module(title)
+			# Create the module dictionary with all its information
+			module = {
+				"Key": title.lower(),
+				"Title": title,
+				"List": [
+					title.lower()
+				],
+				"Module": importlib.import_module(title),
+				"Folders": {
+					"Texts": {
+						"root": self.folders["apps"]["module_files"]["root"] + title + "/"
+					}
+				},
+				"Is module": True
 			}
 
-			# Add custom argument names from module
-			if hasattr(self.modules["Usage"][title]["module"], "arguments") == True and type(self.modules["Usage"][title]["module"].arguments) == list:
-				arguments = self.modules["Usage"][title]["module"].arguments
+			# Define the "Texts.json" file of the module
+			module["Folders"]["Texts"]["Texts"] = module["Folders"]["Texts"]["root"] + "Texts.json"
 
+			# Add the alternate argument names from the module if they exist
+			if (
+				hasattr(module["Module"], "alternate_arguments") == True and
+				type(module["Module"].alternate_arguments) == list
+			):
+				# Get the list of alternate arguments
+				arguments = module["Module"].alternate_arguments
+
+				# Add them to the arguments list
 				for argument in arguments:
-					self.modules["Usage"][title]["list"].append(argument)
+					module["List"].append(argument)
 
-			self.Add_Argument(self.modules["Usage"][title], self.argparse["default_options"])
+			# Add the module argument to the Argument Parser, with the default options (such as action and help text)
+			self.Add_Argument(module, self.argument_parser["Default options"])
 
-			# Add separate arguments from module
-			if hasattr(self.modules["Usage"][title]["module"], "separate_arguments") == True:
-				separate_arguments = self.modules["Usage"][title]["module"].separate_arguments
+			# Add the custom arguments from the module if they exist
+			if hasattr(module["Module"], "custom_arguments") == True:
+				# Get the list of custom arguments
+				custom_arguments = module["Module"].custom_arguments
 
-				for key in separate_arguments:
+				# Create the key for the custom arguments inside the module dictionary
+				module["Custom arguments"] = {}
+
+				# Make the argument keys list
+				# (If the custom arguments is a list)
+				keys = custom_arguments
+
+				# If the custom arguments variable is a dictionary
+				if type(custom_arguments) == dict:
+					# Then get the dictionary keys
+					keys = custom_arguments.keys()
+
+				# Iterate through the custom arguments keys list
+				for key in keys:
+					# If the custom arguments variable is a dictionary
+					if type(custom_arguments) == dict:
+						# Get the argument dictionary from it
+						argument = custom_arguments[key]
+
+					# Make an argument dictionary containing the argument key list and text
 					dictionary = {
-						"list": [key],
-						"text": self.language_texts[self.modules["Usage"][title]["key"] + "." + key]
+						"Title": title.lower() + "." + key
 					}
 
-					if "{module}" in dictionary["text"]:
-						dictionary["text"] = dictionary["text"].replace("{module}", '"' + self.modules["Usage"][title]["title"] + '"')
+					# Read the "Texts.json" file of the module to get its texts
+					module["Texts"] = self.JSON.To_Python(module["Folders"]["Texts"]["Texts"])
 
-					self.Add_Argument(dictionary, self.argparse["default_options"])
+					# Get the text for the custom argument
+					dictionary["Text"] = module["Texts"][key][self.user_language]
 
-		# Add "Language" module argument
+					# If there is the "{module}" format text on the argument text
+					# Replace it with the module title
+					if "{module}" in dictionary["Text"]:
+						dictionary["Text"] = dictionary["Text"].replace("{module}", '"' + title + '"')
+
+					# If the custom arguments variable is a dictionary
+					if type(custom_arguments) == dict:
+						# Import each key from the argument dictionary if it is not already present
+						for argument_key in argument.keys():
+							if argument_key not in dictionary:
+								dictionary[argument_key] = argument[argument_key]
+
+					# Add the module argument to the Argument Parser, with the default options (such as action and help text)
+					self.Add_Argument(dictionary, self.argument_parser["Default options"])
+
+					# Add the custom argument dictionary to the "custom arguments" dictionary
+					module["Custom arguments"][key] = dictionary
+
+				# Remove the Texts dictionary because it will not be used anymore
+				module.pop("Texts")
+
+			# Define the module title key in the "Usage" modules dictionary as the local module dictionary
+			self.modules["Usage"][title] = module
+
+		# Add the "Language" module argument
 		dictionary = {
-			"title": "Language",
-			"list": ["language"],
-			"text_key": "executes_the_{}_module"
+			"List": [
+				"language"
+			],
+			"Is module": True
 		}
 
 		self.texts["language, title()"] = self.Language.texts["language, title()"]
 
-		self.Add_Argument(dictionary, self.argparse["default_options"])
+		# Add the module argument to the Argument Parser, with the default options (such as action and help text)
+		self.Add_Argument(dictionary, self.argument_parser["Default options"])
 
 	def Check_Arguments_And_Switches(self):
-		self.arguments = self.parser.parse_args()
+		# Get the arguments dictionary
+		self.arguments = self.argument_parser["Parser"].parse_args()
 
 		self.has_arguments = False
 
+		# Iterate through the arguments and states list
 		for argument, state in inspect.getmembers(self.arguments):
-			if argument not in list(self.switches["reset"].keys()):
-				if state == True or argument == "module" and state != None:
+			# If the argument is not in the switches list
+			# Then it must be a module or a custom argument of a module
+			if argument not in list(self.switches["Reset"].keys()):
+				# If the state of the argument is True
+				# Or the argument is the "module" argument
+				# And the state is not equal to None
+				if (
+					state == True or
+					argument == "module" and
+					state != None
+				):
+					# Then the Parser contains arguments
 					self.has_arguments = True
 
 		self.has_switches = False
 
-		for switch in list(self.switches["reset"].keys()):
-			if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
+		# Iterate through the switches list
+		for switch in list(self.switches["Reset"].keys()):
+			# If the arguments contain the switch and the state of the switch is True
+			if (
+				hasattr(self.arguments, switch) and
+				getattr(self.arguments, switch) == True
+			):
+				# Then the Parser contains arguments that are also switches
 				self.has_switches = True
 
 	def Select_Module(self):
+		# Define the show and select textes to select a module
 		show_text = self.language_texts["modules, title()"]
 		select_text = self.language_texts["select_a_module_from_the_list"]
 
-		option = self.Input.Select(self.modules["Usage"]["List"], show_text = show_text, select_text = select_text)["option"]
+		# Select the module
+		module = self.Input.Select(self.modules["Usage"]["List"], show_text = show_text, select_text = select_text)["option"]
 
-		self.Define_Module(option)
+		# Define the dictionary and information of the module
+		self.Define_Module(module)
 
 	def Check_Arguments(self):
+		# Iterate through the Usage modules list
 		for module in self.modules["Usage"]["List"]:
+			# Transform the module title into lowercase
 			module_lower = module.lower()
 
+			# Make a list of possible options for the module title
+			# The user could have written the module title as:
+			# "Module_Title" (normal), "module_title" (lower), "Module_title" (capitalize)
+			# 
+			# Or without an underscore:
+			# "Module Title" (normal), "module title" (lower), "Module title" (capitalize)
 			possible_options = [
 				module,
 				module.lower(),
-				module.upper(),
-				module.title(),
 				module.capitalize(),
+
+				module.replace("_", " "),
 				module.replace("_", " ").lower(),
-				module.replace("_", " ").upper(),
-				module.replace("_", " ").title(),
 				module.replace("_", " ").capitalize()
 			]
 
+			# If the arguments contain the lowercase version of the module
+			# And the module argument is True
+			# That means the user wrote the command as:
+			# python MS.py -Module_Title
+			# 
+			# Or if the arguments the "module" argument
+			# And the argument value is inside the possible module title options
+			# That means the user wrote the command as:
+			# python MS.py -module Module_Title
 			if (
-				hasattr(self.arguments, module_lower) and getattr(self.arguments, module_lower) == True or
-				hasattr(self.arguments, "module") and getattr(self.arguments, "module") in possible_options
+				hasattr(self.arguments, module_lower) and
+				getattr(self.arguments, module_lower) == True or
+				hasattr(self.arguments, "module") and
+				getattr(self.arguments, "module") in possible_options
 			):
+				# Define the module dictionary and its information
 				self.Define_Module(module)
 
-	def Define_Module(self, option):
-		self.module = {
-			"title": option,
-			"key": option.lower(),
-			"module": self.modules["Usage"][option]["module"]
-		}
+	def Define_Module(self, module):
+		# Define the module dictionary with its title, key, and module
+		self.module = self.modules["Usage"][module]
 
 	def Switch(self):
-		# Update Switches file if there are Switch arguments
+		# Update the "Switches.json" file if there are switch arguments
 		if self.has_switches == True:
-			self.switches["edited"] = self.switches["reset"].copy()
+			# Make a copy of the reset (default) switches and add it to the "edited" key
+			self.switches["edited"] = deepcopy(self.switches["Reset"])
 
-			for switch in self.switches["global"].keys():
-				if hasattr(self.arguments, switch) and getattr(self.arguments, switch) == True:
+			# Iterate through the global switches keys list
+			for switch in self.switches["Global"].keys():
+				# If the arguments list has the switch
+				# And the switch is True
+				if (
+					hasattr(self.arguments, switch) and
+					getattr(self.arguments, switch) == True
+				):
+					# Update the switch inside the edited switches dictionary
 					self.switches["edited"][switch] = getattr(self.arguments, switch)	
 
-			# Show global switches
+			# Show the global switches
 			self.Show_Global_Switches()
 
+			# If the "user_information" switch is on
+			# Execute the "Show_User_Information" method of the "Language" class
 			if self.switches["edited"]["user_information"] == True:
 				self.Language.Show_User_Information()
 
-			# Edit Switches.json file
+			# Edit the "Switches.json" file with the updated switches
 			self.Global_Switches.Switch(self.switches["edited"])
 
 	def Show_Global_Switches(self):
 		has_true_variables = False
 
-		for switch in self.switches["global"].keys():
-			if switch in self.switches["edited"] and self.switches["edited"][switch] == True:
+		# Iterate through the global switches keys list
+		for switch in self.switches["Global"].keys():
+			# If the switch is inside the edited switches dictionary
+			# And the switch is True
+			if (
+				switch in self.switches["edited"] and
+				self.switches["edited"][switch] == True
+			):
+				# Then at least one switch is True (activated)
 				has_true_variables = True
 
+		# If any switch is True (activated)
+		# Then show a first space and dash separator
 		if has_true_variables == True:
 			print()
 			print("-----")
 			print()
 
-		for switch in self.switches["global"].keys():
-			if switch in self.switches["edited"] and self.switches["edited"][switch] == True and switch != "user_information":
+		# Iterate through the global switches keys list
+		for switch in self.switches["Global"].keys():
+			# If the switch is inside the edited switches dictionary
+			# And the switch is True
+			# And the switch is not the "user_information" one
+			if (
+				switch in self.switches["edited"] and
+				self.switches["edited"][switch] == True and
+				switch != "user_information"
+			):
+				# Show the switch explanation text to the user
 				print(self.language_texts[switch + ", type: explanation"])
 
-		if has_true_variables == True and self.switches["edited"]["user_information"] == False:
+		# If any switch is True (activated)
+		# And the "user_information" is off
+		# Then show a final space and dash separator
+		# (If the "user_information" switch is on, it provides its own final separator)
+		if (
+			has_true_variables == True and
+			self.switches["edited"]["user_information"] == False
+		):
 			print()
 			print("-----")
 
 	def Run_Module(self, module):
-		if "title" in module and module["title"] != "Module_Selector":
-			if module["title"] == "Food_Time" and getattr(self.arguments, "check") == True:
-				setattr(self.module["module"].Run, "register_time", False)
+		# If the "Title" key is inside the module dictionary
+		# And the module is not the "Module_Selector" one
+		if (
+			"Title" in module and
+			module["Title"] != "Module_Selector"
+		):
+			# If the module has custom arguments
+			if "Custom arguments" in module:
+				# Define the "has custom key" switch
+				has_custom_key = False
 
-			self.module["module"].Run()
+				# Get the custom argument items (keys and values)
+				items = deepcopy(module["Custom arguments"]).items()
 
+				# Iterate through the keys and values
+				for key, argument in items:
+					# If the custom argument is inside the list of arguments
+					if hasattr(self.arguments, argument["Title"]) == True:
+						# Replace the "Title" key with the "Key" key, having the same value
+						key_value = {
+							"Key": module["Custom arguments"][key]["Title"]
+						}
+
+						module["Custom arguments"][key] = self.JSON.Add_Key_After_Key(module["Custom arguments"][key], key_value, after_key = "Title")
+
+						# Remove the old "Title" key
+						module["Custom arguments"][key].pop("Title")
+
+						# Get the value of the custom argument
+						# And add it to its dictionary inside the "custom arguments" dictionary
+						module["Custom arguments"][key]["Value"] = getattr(self.arguments, argument["Title"])
+
+						# If the argument does not contains a custom (renamed) key
+						if "Custom key" not in argument:
+							# Make a default custom key with the original key, in title mode
+							# Replace underscores with spaces, and remove the module title and the dot
+							custom_key = module["Custom arguments"][key]["Key"].replace(module["Key"] + ".", "")
+							custom_key = custom_key.title().replace("_", " ")
+
+							argument["Custom key"] = custom_key
+
+						# If the argument contains a custom (renamed) key
+						if "Custom key" in argument:
+							# Make a disposable dictionary
+							if "Disposable dictionary" not in module:
+								module["Disposable dictionary"] = {}
+
+							# Get the custom key
+							custom_key = argument["Custom key"]
+
+							# Copy the dictionary of the custom argument to the disposable dictionary
+							module["Disposable dictionary"][custom_key] = module["Custom arguments"][key]
+
+							# Define the "has_custom_key" switch as True
+							if has_custom_key == False:
+								has_custom_key = True
+
+				# If any custom argument has a custom key
+				if has_custom_key == True:
+					# Replace the "custom arguments" dictionary with the disposable one
+					# With the renamed/replaced keys
+					module["Custom arguments"] = module["Disposable dictionary"]
+
+					# Remove the disposable dictionary from the module dictionary
+					module.pop("Disposable dictionary")
+
+				# Add the arguments inside the "Run" class of the module
+				setattr(self.module["Module"].Run, "arguments", module["Custom arguments"])
+
+			# Run the selected module
+			self.module["Module"].Run()
+
+		# If the "language" argument is present in the arguments list
+		# Then run the "Create_Language_Text" method of the "Language" class
 		if getattr(self.arguments, "language") == True:
 			self.Language.Create_Language_Text()
 

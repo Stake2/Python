@@ -13,27 +13,37 @@ class Global_Switches():
 		Define_Folders(self, ["Switches"])
 
 		self.switches = {
-			"reset": {
+			"Reset": {
 				"testing": False,
 				"verbose": False,
-				"user_information": False
+				"user_information": False,
+				"Has active switches": False
 			},
-			"global": {},
-			"file": self.folders["apps"]["module_files"]["utility"][self.module["key"]]["switches"]
+			"Global": {},
+			"File": self.folders["apps"]["module_files"]["utility"][self.module["key"]]["switches"]
 		}
 
-		# Write into "Switches.json" file if it is empty
-		if self.Contents(self.switches["file"])["lines"] == []:
+		# Write into the "Switches.json" file if it is empty
+		if self.Contents(self.switches["File"])["lines"] == []:
 			self.Reset()
 
-		self.switches["global"] = self.JSON_To_Python(self.switches["file"])
+		self.switches["Global"] = self.JSON_To_Python(self.switches["File"])
 
-		self.switches["global"].update({
+		self.switches["Global"].update({
 			"file": {
 				"create": True,
 				"edit": True
 			}
 		})
+
+		self.switches["Global"]["Has active switches"] = False
+
+		for switch in self.switches["Global"]:
+			if (
+				switch in self.switches["Reset"] and
+				switch != self.switches["Reset"][switch]
+			):
+				self.switches["Global"]["Has active switches"] = True
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
@@ -74,7 +84,7 @@ class Global_Switches():
 			"lines_none": [None],
 			"string": "",
 			"size": 0,
-			"length": 0,
+			"length": 0
 		}
 
 		if self.Exist(file) == True:
@@ -102,12 +112,13 @@ class Global_Switches():
 			edit.close()
 
 	def Reset(self):
-		self.Edit(self.switches["file"], self.switches["reset"])
+		self.Edit(self.switches["File"], self.switches["Reset"])
 
 	def Switch(self, switches):
+		switch_keys = list(self.switches["Reset"].keys())
 
 		for switch in switches.copy():
-			if switch not in list(self.switches["reset"].keys()):
+			if switch not in switch_keys:
 				switches.pop(switch)
 
-		self.Edit(self.switches["file"], switches)
+		self.Edit(self.switches["File"], switches)

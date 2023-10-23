@@ -4,14 +4,27 @@ from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Play(GamePlayer):
 	def __init__(self, dictionary = {}, open_game = True):
+		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		if hasattr(self, "arguments") == True:
+			# Add it to the parent class
+			setattr(GamePlayer, "arguments", self.arguments)
+
 		super().__init__()
 
+		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		if hasattr(self, "arguments") == True:
+			# Parse the arguments
+			self.Parse_Arguments()
+
+		# Import the "importlib" module
 		import importlib
 
+		# Define the classes to be imported
 		classes = [
 			"Register"
 		]
 
+		# Import them
 		for title in classes:
 			class_ = getattr(importlib.import_module("."  + title, "GamePlayer"), title)
 			setattr(self, title, class_)
@@ -30,8 +43,16 @@ class Play(GamePlayer):
 	def Define_Game_Dictionary(self):
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
+			game = None
+
+			# If there is a game inside the arguments dictionary
+			# That means the module has been run by the "Module_Selector"
+			# And the game inside the arguments will be auto-selected
+			if "Game" in self.arguments:
+				game = self.arguments["Game"]["Value"]
+
 			# Ask the user to select a game type and game
-			self.dictionary = self.Select_Game_Type_And_Game()
+			self.dictionary = self.Select_Game_Type_And_Game(game = game)
 
 		self.game = self.dictionary["Game"]
 

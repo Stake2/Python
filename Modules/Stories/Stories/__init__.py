@@ -33,7 +33,7 @@ class Stories(object):
 		from Utility.JSON import JSON as JSON
 		from Utility.Text import Text as Text
 
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.File = File()
 		self.Folder = Folder()
@@ -608,7 +608,7 @@ class Stories(object):
 				colors += color
 
 			# If the "colors" string is equal to "###", that means it is the default story Theme dictionary
-			if colors == "###" and True == False:
+			if colors == "###":
 				import re
 
 				hex_color_regex = "^#[A-Fa-f0-9]{6}$"

@@ -234,11 +234,11 @@ class Create_New_Module(Python):
 	def Change_Global_Switches(self):
 		self.switches_file = self.Global_Switches.switches["file"]
 
-		self.switches["global"] = self.JSON.To_Python(self.switches_file)
-		self.switches["global"]["testing"] = True
-		self.switches["global"]["versbose"] = True
+		self.switches["Global"] = self.JSON.To_Python(self.switches_file)
+		self.switches["Global"]["testing"] = True
+		self.switches["Global"]["versbose"] = True
 
-		self.JSON.Edit(self.switches_file, self.switches["global"])
+		self.JSON.Edit(self.switches_file, self.switches["Global"])
 
 	def Show_Module_Info(self):
 		print(self.large_bar)

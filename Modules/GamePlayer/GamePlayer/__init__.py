@@ -36,9 +36,7 @@ class GamePlayer(object):
 		from Utility.JSON import JSON as JSON
 		from Utility.Text import Text as Text
 
-		self.Global_Switches = Global_Switches()
-
-		self.switches = self.Global_Switches.switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.File = File()
 		self.Folder = Folder()
@@ -77,6 +75,15 @@ class GamePlayer(object):
 
 		# Define the current year folder for easier typing
 		self.folders["play_history"]["current_year"] = self.folders["play_history"][self.current_year["Number"]]
+
+	def Parse_Arguments(self):
+		if self.switches["verbose"] == True:
+			print()
+			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
+			print()
+			self.JSON.Show(self.arguments)
+			print()
+			print(self.large_bar)
 
 	def Define_Types(self):
 		self.game_types = self.JSON.To_Python(self.folders["data"]["types"])
@@ -452,8 +459,12 @@ class GamePlayer(object):
 				i += 1
 
 		# Select the game type
-		if "option" not in dictionary and "number" not in dictionary:
+		if (
+			"option" not in dictionary and
+			"number" not in dictionary
+		):
 			dictionary["option"] = self.Input.Select(dictionary["List"]["en"], dictionary["List"][self.user_language], show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
+
 			dictionary["option"] = dictionary["option"].split(" (")[0]
 
 		if "number" in dictionary:
@@ -474,7 +485,7 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Select_Game(self, options = None):
+	def Select_Game(self, options = None, game_title = None):
 		from copy import deepcopy
 
 		dictionary = {}
@@ -501,8 +512,14 @@ class GamePlayer(object):
 			if "Game list (option)" in dictionary["Type"]:
 				language_options = dictionary["Type"]["Game list (option)"]
 
+			if game_title == None:
+				title = self.Input.Select(dictionary["Type"]["Game list"], language_options = language_options, show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
+
+			if game_title != None:
+				title = game_title
+
 			game.update({
-				"Title": self.Input.Select(dictionary["Type"]["Game list"], language_options = language_options, show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
+				"Title": title
 			})
 
 		# Define the game information folder
@@ -759,7 +776,7 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Select_Game_Type_And_Game(self, options = None):
+	def Select_Game_Type_And_Game(self, options = None, game = None):
 		dictionary = {
 			"Type": {
 				"Select": True,
@@ -780,10 +797,22 @@ class GamePlayer(object):
 			dictionary = self.Define_Options(dictionary, options)
 
 		if dictionary["Type"]["Select"] == True:
-			dictionary["Type"] = self.Select_Game_Type(dictionary["Type"])
+			if game == None:
+				dictionary["Type"] = self.Select_Game_Type(dictionary["Type"])
+
+			# If the game is not "None"
+			# The selected game must have come from the command line argument "- game"
+			if game != None: 
+				# Iterate through the game types
+				for game_type in self.game_types["Types"]["en"]:
+					# Get the game type dictionary
+					game_type = self.game_types[game_type]
+
+					if game in game_type["Game list"]:
+						dictionary["Type"] = game_type
 
 		if dictionary["Game"]["Select"] == True:
-			dictionary["Game"] = self.Select_Game(dictionary)["Game"]
+			dictionary["Game"] = self.Select_Game(dictionary, game)["Game"]
 
 		return dictionary
 
@@ -1174,10 +1203,11 @@ class GamePlayer(object):
 	def Show_Information(self, dictionary):
 		game = dictionary["Game"]
 
-		print()
-		print(self.large_bar)
-		print()
+		if self.switches["Has active switches"] == False:
+			print()
+			print(self.large_bar)
 
+		print()
 		print(self.language_texts["game_title"] + ":")
 
 		key = "Original"

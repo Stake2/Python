@@ -8,7 +8,7 @@ class Language():
 		from Utility.Global_Switches import Global_Switches as Global_Switches
 
 		# Global Switches dictionary
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.switches.update({
 			"folder": {
@@ -274,7 +274,10 @@ class Language():
 		length = contents["length"]
 
 		if self.Exist(file) == True:
-			if self.switches["file"]["edit"] == True and contents["string"] != text:
+			if (
+				self.switches["file"]["edit"] == True and
+				contents["string"] != text
+			):
 				edit = open(file, mode, encoding = "UTF8")
 				edit.write(text)
 				edit.close()

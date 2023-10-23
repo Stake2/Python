@@ -36,7 +36,10 @@ class Run():
 		module = importlib.import_module("." + option, self.__module__)
 		sub_class = getattr(module, option)()
 
-arguments = ["story"]
+# Define the alternate arguments for the module
+alternate_arguments = [
+	"story"
+]
 
 if __name__ == "__main__":
 	Run()

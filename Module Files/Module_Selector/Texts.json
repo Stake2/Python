@@ -63,14 +63,6 @@
 		"en": "Select a module from the list to execute it",
 		"pt": "Selecione um módulo da lista para executá-lo"
 	},
-	"food_time.set": {
-		"en": "Defines the time a meal was eaten using the {module} module",
-		"pt": "Define a hora em que uma refeição foi consumida usando o módulo {module}"
-	},
-	"food_time.check": {
-		"en": "Shows the time a meal was eaten using the {module} module",
-		"pt": "Mostra a hora em que uma refeição foi consumida usando o módulo {module}"
-	},
 	"stores_the_module_to_be_executed": {
 		"en": "Stores the module to be executed",
 		"pt": "Guarda o módulo a ser executado"

@@ -1237,6 +1237,10 @@
 		"en": "Space",
 		"pt": "Espaço"
 	},
+	"arguments, title()": {
+		"en": "Arguments",
+		"pt": "Argumentos"
+	},
 	"genders, type: dict": {
 		"en": {
 			"masculine": {

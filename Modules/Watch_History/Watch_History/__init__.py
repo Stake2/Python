@@ -40,7 +40,7 @@ class Watch_History(object):
 
 		self.Global_Switches = Global_Switches()
 
-		self.switches = self.Global_Switches.switches["global"]
+		self.switches = self.Global_Switches.switches["Global"]
 
 		self.API = API()
 		self.File = File()

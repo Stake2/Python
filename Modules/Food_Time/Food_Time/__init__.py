@@ -15,6 +15,14 @@ class Food_Time():
 
 		self.Define_Lists_And_Dictionaries()
 
+		# Set the default value of the "register" switch as on
+		self.register_time = True
+
+		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		if hasattr(self, "arguments") == True:
+			# Parse the arguments
+			self.Parse_Arguments()
+
 		self.registered_text = self.language_texts["times_taken_from_the_times_file"]
 
 		if self.register_time == True:
@@ -35,7 +43,7 @@ class Food_Time():
 		from Utility.JSON import JSON as JSON
 		from Utility.Text import Text as Text
 
-		self.switches = Global_Switches().switches["global"]
+		self.switches = Global_Switches().switches["Global"]
 
 		self.File = File()
 		self.Folder = Folder()
@@ -95,6 +103,33 @@ class Food_Time():
 					prefix = self.texts["this_is_the_time_that_you"][language] + " "
 
 					self.times[time_type]["Texts"][language] = prefix + self.texts[text_key][language]
+
+	def Parse_Arguments(self):
+		if self.switches["verbose"] == True:
+			print()
+			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
+			print()
+			self.JSON.Show(self.arguments)
+			print()
+			print(self.large_bar)
+
+		# Get the arguments from the "Module_Selector.py" module
+		for key, value in self.arguments.items():
+			# If the argument is "set" and it is True
+			if (
+				key == "set" and
+				value == True
+			):
+				# Then the meal times will be registered
+				self.register_time = True
+
+			# If the argument is "check" and it is True
+			if (
+				key == "check" and
+				value == True
+			):
+				# Then the meal times will not be registered
+				self.register_time = False
 
 	def Get_Time(self):
 		# Iterate through time types

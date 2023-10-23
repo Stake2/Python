@@ -47,5 +47,13 @@
 	"times_registered_into_the_times_file": {
 		"en": "Times registered into the times file",
 		"pt": "Horários registrados no arquivo de horários"
+	},
+	"set": {
+		"en": "Defines the time a meal was eaten using the {module} module",
+		"pt": "Define a hora em que uma refeição foi consumida usando o módulo {module}"
+	},
+	"check": {
+		"en": "Shows the time a meal was eaten using the {module} module",
+		"pt": "Mostra a hora em que uma refeição foi consumida usando o módulo {module}"
 	}
 }

@@ -281,7 +281,8 @@ class Update_Websites(Code):
 				if self.switches["testing"] == False:
 					self.File.Open(link)
 
-					self.Date.Sleep(4)
+			if key != list(self.websites["Update"].keys())[-1]:
+				input()
 
 		print()
 		print(self.large_bar)
