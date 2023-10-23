@@ -6,15 +6,24 @@ class Experience(Database):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		# Import the "importlib" module
 		import importlib
 
+		# Define the classes to be imported
 		classes = [
 			"Register"
 		]
 
+		# Import them
 		for title in classes:
-			class_ = getattr(importlib.import_module("."  + title, "Database"), title)
-			setattr(self, title, class_)
+			# Import the module
+			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class)
 
 		self.dictionary = dictionary
 

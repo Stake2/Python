@@ -449,7 +449,7 @@ class Comment_Writer(Watch_History):
 			if (
 				"Episode" in self.media and
 				"Titles" in self.media["Episode"] and
-				self.dictionary["Comment Writer"]["Comment"]["Titles"][self.media["Language"]] == self.media["Episode"]["Titles"][self.media["Language"]
+				self.dictionary["Comment Writer"]["Comment"]["Titles"][self.media["Language"]] == self.media["Episode"]["Titles"][self.media["Language"]]
 			):
 				# Add the "Entry" key to be removed from the Comment dictionary that will be used by the Register class
 				# To be added into the media Entry dictionary

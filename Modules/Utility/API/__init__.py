@@ -18,8 +18,8 @@ class API():
 		})
 
 		if self.switches["testing"] == True:
-			for switch in self.switches["File"]:
-				self.switches["File"][switch] = False
+			for switch in self.switches["file"]:
+				self.switches["file"][switch] = False
 
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders

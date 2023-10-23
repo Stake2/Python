@@ -154,7 +154,6 @@ class Create_New_Module(Python):
 	def Write_To_Files(self):
 		# Root code
 		self.root_code = self.root_code_template.replace("[module_name]", self.module_name)
-		self.root_code = self.root_code.replace("[classes]", self.classes_string)
 
 		self.File.Edit(self.root_python_file, self.root_code, "w")
 

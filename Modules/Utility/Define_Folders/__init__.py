@@ -49,6 +49,10 @@ class Define_Folders():
 					"root": self.folders["apps"]["root"] + "Modules/"
 				}
 
+				self.folders["apps"]["modules"]["modules"] = {
+					"root": self.folders["apps"]["modules"]["root"] + "Modules.json"
+				}
+
 			if hasattr(object_to_define, "folders") == True:
 				self.folders = getattr(object_to_define, "folders")
 

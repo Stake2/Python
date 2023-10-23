@@ -1,60 +1,112 @@
 # Christmas.py
 
+# Import the "importlib" module
+import importlib
+
 class Christmas():
 	def __init__(self):
-		self.Define_Basic_Variables()
-
-		# Define module folders
+		# Define the module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
 
-		# Import "Social_Networks" classes
-		from Social_Networks.Social_Networks import Social_Networks
-		from Social_Networks.Open_Social_Network import Open_Social_Network
+		self.Define_Basic_Variables()
 
-		self.Social_Networks = Social_Networks()
-		self.Social_Networks.Open_Social_Network = Open_Social_Network
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks",
+			"Social_Networks.Open_Social_Network",
+			"Years"
+		]
+
+		do_not_run = [
+			"Open_Social_Network"
+		]
+
+		# Import them
+		for title in classes:
+			module_title = title
+
+			if "." in module_title:
+				module_title = module_title.split(".")[0]
+				title = title.split(".")[1]
+
+			# Import the module
+			module = importlib.import_module("." + title, module_title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			if title not in do_not_run:
+				sub_class = sub_class()
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class)
 
 		self.Define_Texts()
 		self.Today_Is_Christmas()
-
-		from Years.Years import Years as Years
-
-		self.Years = Years()
 
 		self.Define_Folders()
 		self.Define_Files()
 		self.Define_Lists()
 
 	def Define_Basic_Variables(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		from copy import deepcopy
 
-		from Utility.File import File as File
-		from Utility.Folder import Folder as Folder
-		from Utility.Date import Date as Date
-		from Utility.Input import Input as Input
+		# Import the JSON module
 		from Utility.JSON import JSON as JSON
-		from Utility.Text import Text as Text
 
-		self.switches = Global_Switches().switches["Global"]
-
-		self.File = File()
-		self.Folder = Folder()
-		self.Date = Date()
-		self.Input = Input()
 		self.JSON = JSON()
-		self.Text = Text()
 
+		# Get the modules list
+		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+
+		# Create a list of the modules that will not be imported
+		remove_list = [
+			"Define_Folders",
+			"Language"
+		]
+
+		# Iterate through the Utility modules
+		for module_title in self.modules["Utility"]["List"]:
+			# If the module title is not inside the remove list
+			if module_title not in remove_list:
+				# Import the module
+				module = importlib.import_module("." + module_title, "Utility")
+
+				# Get the sub-class
+				sub_class = getattr(module, module_title)
+
+				# Add the sub-clas to the current module
+				setattr(self, module_title, sub_class())
+
+		# Make a backup of the module folders
+		self.module_folders = {}
+
+		for item in ["modules", "module_files"]:
+			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
+
+		# Restore the backup of the module folders
+		for item in ["modules", "module_files"]:
+			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
+
+		# Get the switches dictionary from the "Global Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Get the Languages dictionary
 		self.languages = self.JSON.Language.languages
 
+		# Get the user language and full user language
 		self.user_language = self.JSON.Language.user_language
 		self.full_user_language = self.JSON.Language.full_user_language
 
+		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
 
-		self.folders = self.Folder.folders
-
+		# Get the current date from the Date module
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -101,32 +153,36 @@ class Christmas():
 		self.alternative_social_networks_links = {
 			"Github": "https://github.com/Stake2/",
 			"DeviantArt": "https://www.deviantart.com/stake2/",
-			"YouTube": "https://www.youtube.com/c/TheStake2/",
+			"YouTube": "https://www.youtube.com/c/TheStake2/"
 		}
 
 		self.functions = {
 			"Open_File": self.Open_File,
-			"Open_Social_Network": self.Social_Networks.Open_Social_Network,
-			"Run_Script": self.Run_Script,
+			"Open_Social_Network": self.Open_Social_Network,
+			"Run_Script": self.Run_Script
 		}
 
 	def Open_File(self, key):
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
 			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
-			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt",
+			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt"
 		}
 
 		texts = {
 			"Foobar2000": self.language_texts["opening_{}"].format("Foobar2000"),
 			"Theme": self.language_texts["defining_{}"].format(self.language_texts["christmas_theme"]),
-			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title(), en - pt"] + ".txt"),
+			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title(), en - pt"] + ".txt")
 		}
 
 		file = files[key]
 		text = texts[key]
 
-		if self.switches["testing"] == False or self.switches["testing"] == True and key not in ["Foobar2000", "Theme"]:
+		if (
+			self.switches["testing"] == False or
+			self.switches["testing"] == True and
+			key not in ["Foobar2000", "Theme"]
+		):
 			self.File.Open(file)
 
 		if key != self.language_texts["texts, title(), en - pt"]:

@@ -9,16 +9,25 @@ class Watch_Media(Watch_History):
 	def __init__(self, dictionary = {}, run_as_module = False, open_media = True):
 		super().__init__()
 
+		# Import the "importlib" module
 		import importlib
 
+		# Define the classes to be imported
 		classes = [
 			"Comment_Writer",
 			"Register"
 		]
 
+		# Import them
 		for title in classes:
-			class_ = getattr(importlib.import_module("."  + title, "Watch_History"), title)
-			setattr(self, title, class_)
+			# Import the module
+			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class)
 
 		self.dictionary = dictionary
 		self.run_as_module = run_as_module

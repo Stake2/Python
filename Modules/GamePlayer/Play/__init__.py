@@ -26,8 +26,14 @@ class Play(GamePlayer):
 
 		# Import them
 		for title in classes:
-			class_ = getattr(importlib.import_module("."  + title, "GamePlayer"), title)
-			setattr(self, title, class_)
+			# Import the module
+			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class())
 
 		self.dictionary = dictionary
 		self.open_game = open_game
