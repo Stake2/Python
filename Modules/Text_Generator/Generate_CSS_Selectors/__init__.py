@@ -2,6 +2,11 @@
 
 class Generate_CSS_Selectors():
 	def __init__(self):
+		# Define the module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Basic_Variables()
 
 		self.json = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["colors"])
@@ -38,34 +43,68 @@ class Generate_CSS_Selectors():
 		self.Generate_And_Copy()
 
 	def Define_Basic_Variables(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		from copy import deepcopy
 
-		from Utility.File import File as File
-		from Utility.Folder import Folder as Folder
-		from Utility.Date import Date as Date
-		from Utility.Input import Input as Input
+		# Import the JSON module
 		from Utility.JSON import JSON as JSON
-		from Utility.Text import Text as Text
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().global_switches
-
-		self.File = File()
-		self.Folder = Folder()
-		self.Date = Date()
-		self.Input = Input()
 		self.JSON = JSON()
-		self.Text = Text()
 
+		# Get the modules list
+		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+
+		# Import the "importlib" module
+		import importlib
+
+		# Create a list of the modules that will not be imported
+		remove_list = [
+			"Define_Folders",
+			"Language",
+			"JSON"
+		]
+
+		# Iterate through the Utility modules
+		for module_title in self.modules["Utility"]["List"]:
+			# If the module title is not inside the remove list
+			if module_title not in remove_list:
+				# Import the module
+				module = importlib.import_module("." + module_title, "Utility")
+
+				# Get the sub-class
+				sub_class = getattr(module, module_title)
+
+				# Add the sub-clas to the current module
+				setattr(self, module_title, sub_class())
+
+		# Make a backup of the module folders
+		self.module_folders = {}
+
+		for item in ["modules", "module_files"]:
+			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
+
+		self.links = self.Folder.links
+
+		# Restore the backup of the module folders
+		for item in ["modules", "module_files"]:
+			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
+
+		# Get the switches dictionary from the "Global Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Get the Languages dictionary
 		self.languages = self.JSON.Language.languages
 
+		# Get the user language and full user language
 		self.user_language = self.JSON.Language.user_language
 		self.full_user_language = self.JSON.Language.full_user_language
 
+		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
 
-		self.folders = self.Folder.folders
-
+		# Get the current date from the Date module
 		self.date = self.Date.date
 
 	def Generate_CSS_Strings(self, selector, css_content):

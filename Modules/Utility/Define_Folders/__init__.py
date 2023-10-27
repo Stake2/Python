@@ -28,10 +28,15 @@ class Define_Folders():
 			if hasattr(object_to_define, "module") == True:
 				self.module = getattr(object_to_define, "module")
 
-			if hasattr(object_to_define, "folders") == False:
-				self.folders = {
-					"hard_drive_letter": os.path.normpath(pathlib.Path.home().drive) + "/",
-				}
+			if (
+				hasattr(object_to_define, "folders") == False or
+				hasattr(object_to_define, "folders") == True and
+				"apps" not in getattr(object_to_define, "folders")
+			):
+				if hasattr(self, "folders") == False:
+					self.folders = {
+						"hard_drive_letter": os.path.normpath(pathlib.Path.home().drive) + "/",
+					}
 
 				self.folders["apps"] = {
 					"root": self.folders["hard_drive_letter"] + "Apps/"

@@ -820,7 +820,7 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Select_Game_Type_And_Game(self, options = None, game = None):
+	def Select_Game_Type_And_Game(self, options = None, game_title = None):
 		dictionary = {
 			"Type": {
 				"Select": True,
@@ -841,22 +841,22 @@ class GamePlayer(object):
 			dictionary = self.Define_Options(dictionary, options)
 
 		if dictionary["Type"]["Select"] == True:
-			if game == None:
+			if game_title == None:
 				dictionary["Type"] = self.Select_Game_Type(dictionary["Type"])
 
 			# If the game is not "None"
 			# The selected game must have come from the command line argument "- game"
-			if game != None: 
+			if game_title != None: 
 				# Iterate through the game types
 				for game_type in self.game_types["Types"]["en"]:
 					# Get the game type dictionary
 					game_type = self.game_types[game_type]
 
-					if game in game_type["Game list"]:
+					if game_title in game_type["Game list"]:
 						dictionary["Type"] = game_type
 
 		if dictionary["Game"]["Select"] == True:
-			dictionary["Game"] = self.Select_Game(dictionary, game)["Game"]
+			dictionary["Game"] = self.Select_Game(dictionary, game_title)["Game"]
 
 		return dictionary
 

@@ -883,11 +883,13 @@ class Folder():
 		contents = {
 			"folder": {
 				"list": [],
-				"names": []
+				"names": [],
+				"dictionary": {}
 			},
 			"file": {
 				"list": [],
-				"names": []
+				"names": [],
+				"dictionary": {}
 			},
 			"dictionary": {},
 			"size": 0
@@ -1134,5 +1136,17 @@ class Folder():
 					i += 1
 
 				contents["size"] += os.stat(root_folder).st_size
+
+		i = 0
+		for folder in contents["folder"]["names"]:
+			contents["folder"]["dictionary"][folder] = contents["folder"]["list"][i]
+
+			i += 1
+
+		i = 0
+		for file in contents["file"]["names"]:
+			contents["file"]["dictionary"][file] = contents["file"]["list"][i]
+
+			i += 1
 
 		return contents

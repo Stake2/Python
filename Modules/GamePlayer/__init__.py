@@ -1,12 +1,5 @@
 # GamePlayer.py
 
-'''
-def Run():
-	from GamePlayer.Play import Play as Play
-
-	Play()
-'''
-
 class Run():
 	def __init__(self):
 		import os

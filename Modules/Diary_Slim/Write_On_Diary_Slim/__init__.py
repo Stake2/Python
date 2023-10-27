@@ -10,25 +10,34 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		self.option_info = option_info
 
-		self.Define_Slim_Texts()
+		self.Configure_Slim_Texts()
 		self.Select()
 		self.Define_Text_Variables()
 		self.Write()
 
+		# Open the current Diary Slim file
+		self.File.Open(self.current_year["File"])
+
 		print()
 		print(self.large_bar)
 
-	def Define_Slim_Texts(self):
-		self.date = self.Date.Now()
+	def Configure_Slim_Texts(self):
+		from copy import deepcopy
 
-		# Get slim texts
-		self.slim_texts = self.JSON.To_Python(self.folders["Diary Slim"]["Data"]["slim_texts"])
+		self.date = self.Date.Now()
 
 		# Get today task done text using weekday
 		self.today_task_done_text = self.File.Contents(self.folders["Diary Slim"]["Data"]["things_done_texts"])["lines"][self.date["Units"]["Week day"]]
 
+		default_dictionary = {
+			"Key": "",
+			"Folders": {},
+			"Files": {},
+			"Texts": {}
+		}
+
 		for language in self.languages["small"]:
-			# Iterate through state names
+			# Iterate through the state names
 			for state in self.states["names"]:
 				state = self.states[state]
 				state_texts = state["texts"]
@@ -37,28 +46,60 @@ class Write_On_Diary_Slim(Diary_Slim):
 				order = "first"
 
 				# If the current order text is first order, define the order as "second"
-				if state_texts["current"] != [] and state_texts["current"][0] == state_texts["first"][self.user_language]:
+				if (
+					state_texts["current"] != [] and
+					state_texts["current"][0] == state_texts["first"][self.user_language]
+				):
 					order = "second"
 
-				# Define "first" or "second" order text in language
+				# Define the "first" or "second" order text in language
 				text = self.JSON.Language.texts[order][language]
 
 				# If the current order text is the second order text, remove the order from slim texts
-				if state_texts["current"] != [] and state_texts["current"][0] == state_texts["second"][self.user_language] and state_name in self.slim_texts:
-					self.slim_texts[language].pop(state_name)
+				if (
+					state_texts["current"] != [] and
+					state_texts["current"][0] == state_texts["second"][self.user_language] and
+					state_name in self.slim_texts["Dictionary"]
+				):
+					self.slim_texts["Dictionary"].pop(state_name)
 
 				# If the current order text is empty, or the current order is not equal to the second order text, add state name to slim texts
-				if state_texts["current"] == [] or state_texts["current"] != [] and state_texts["current"][0] != state_texts["second"][self.user_language]:
-					self.slim_texts[language][state_name] = state_name + " (" + text + " " + self.JSON.Language.language_texts["state"] + ")"
+				if (
+					state_texts["current"] == [] or
+					state_texts["current"] != [] and
+					state_texts["current"][0] != state_texts["second"][self.user_language]
+				):
+					if state_name not in self.slim_texts["Dictionary"]:
+						self.slim_texts["Dictionary"][state_name] = deepcopy(default_dictionary)
+
+						self.slim_texts["Dictionary"][state_name]["Key"] = state_name
+
+					self.slim_texts["Dictionary"][state_name]["Texts"][language] = state["names"][language] + " (" + text + " " + self.JSON.Language.texts["state"][language] + ")"
 
 			# Add today done task to slim texts
 			if self.today_task_done_text != "":
 				if ", " not in self.today_task_done_text:
-					self.slim_texts[language]["Today task"] = self.today_task_done_text
+					self.slim_texts["Dictionary"]["Today task"] = deepcopy(default_dictionary)
+
+					self.slim_texts["Dictionary"]["Today task"]["Key"] = "Today task"
+					self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text
 
 				if ", " in self.today_task_done_text:
-					self.slim_texts[language]["First today task"] = self.today_task_done_text.split(", ")[0]
-					self.slim_texts[language]["Second today task"] = self.today_task_done_text.split(", ")[1]
+					items = [
+						"First",
+						"Second"
+					]
+
+					i = 0
+					for item in items:
+						key = item + " today task"
+
+						self.slim_texts["Dictionary"][key] = deepcopy(default_dictionary)
+
+						self.slim_texts["Dictionary"][key]["Key"] = key
+						self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text.split(", ")[i]
+
+						i += 1
 
 	def Remove_State_Text(self, text):
 		for state in self.states["names"]:
@@ -74,14 +115,74 @@ class Write_On_Diary_Slim(Diary_Slim):
 		return text
 
 	def Select(self):
-		self.text = {}
+		from copy import deepcopy
 
 		if self.option_info == None:
 			show_text = self.language_texts["texts_to_write"]
 			select_text = self.language_texts["select_a_text_to_write"]
 
-			# Ask for text
-			option_info = self.Input.Select(list(self.slim_texts[self.user_language].keys()), language_options = list(self.slim_texts[self.user_language].values()), show_text = show_text, select_text = select_text)
+			options = list(self.slim_texts["Dictionary"].keys())
+			language_options = []
+
+			for key in deepcopy(options):
+				dictionary = self.slim_texts["Dictionary"][key]
+
+				text = dictionary["Texts"][self.user_language]
+
+				if "Item" in dictionary:
+					text += "..."
+
+				language_options.append(text)
+
+			# Change the index of Slim texts if they have a custom index
+			for key in deepcopy(options):
+				dictionary = self.slim_texts["Dictionary"][key]
+
+				text = dictionary["Texts"][self.user_language]
+
+				if "Index" in dictionary:
+					index = dictionary["Index"]
+
+					if index == -1:
+						index = len(options) - 1
+
+					options.remove(key)
+					options.insert(index, key)
+
+					language_options.remove(text)
+					language_options.insert(index, text)
+
+			# Add the state texts to the end of the list
+			for state in self.states["names"]:
+				state = self.states[state]
+				state_texts = state["texts"]
+				state_name = state["names"][self.user_language]
+
+				if state_name in options:
+					options.remove(state_name)
+					options.append(state_name)
+
+					order = "first"
+
+					# If the current order text is first order, define the order as "second"
+					if (
+						state_texts["current"] != [] and
+						state_texts["current"][0] == state_texts["first"][self.user_language]
+					):
+						order = "second"
+
+					text = state["names"][self.user_language] + " (" +  self.JSON.Language.texts[order][self.user_language] + " " + self.JSON.Language.texts["state"][self.user_language] + ")"
+
+					language_options.remove(text)
+					language_options.append(text)
+
+			# Add the "today task" text to the end of the list
+			text = self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language]
+			language_options.remove(text)
+			language_options.append(text)
+
+			# Ask for the user to select the Slim text
+			option_info = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
 		if self.option_info != None:
 			print("---")
@@ -92,72 +193,103 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if self.option_info == None:
 			self.option_info = option_info
 
+		self.text = self.slim_texts["Dictionary"][self.option_info["option"]]
+
 	def Define_Text_Variables(self):
-		self.text["keys"] = {}
-
 		for language in self.languages["small"]:
-			self.text["keys"][language] = list(self.slim_texts[self.user_language].keys())[self.option_info["number"]]
-
-		self.text["key"] = self.text["keys"]["en"]
-
-		# Define language texts to write
-		self.text["texts"] = {}
-
-		for language in self.languages["small"]:
-			self.text["texts"][language] = self.slim_texts[language][self.text["key"]].replace("...", "")
+			self.text["Texts"][language] = self.text["Texts"][language].replace("...", "")
 
 		# If key in slim texts, ask for description of text
-		if self.text["key"] in self.slim_texts:
-			self.text_dictionary = self.slim_texts[self.text["key"]]
+		if "Item" in self.text:
+			# Define the singular name if it is not present
+			if "Singular name" not in self.text:
+				self.text["Singular name"] = self.text["Item"]
 
-			# Define explain_text if it is not present
-			if "explain_text" not in self.text_dictionary:
-				self.text_dictionary["explain_text"] = "say_what_you_did_on_the_{}"
+			# Define the plural name if it is not present
+			if "Plural name" not in self.text:
+				self.text["Plural name"] = self.text["Singular name"] + "s"
 
-			# Ask for text data if type_text is present on text dictionary
-			if "type_text" in self.text_dictionary:
-				self.text["data"] = {
-					self.user_language: self.Input.Type(self.language_texts[self.text_dictionary["type_text"]]),
-				}
+			# Define the explain text if it is not present
+			if "Explain text" not in self.text:
+				self.text["Explain text"] = "say_what_you_did_on_the_{}"
+
+			# Ask for the text data if it has a type text
+			if "Type text" in self.text:
+				print()
+				print(self.large_bar)
+				print()
+				print(self.text["Texts"][self.user_language] + ":")
+
+				self.text["Data"] = {}
+
+				if "Options" not in self.text:
+					self.text["Data"][self.user_language] = self.Input.Type(self.language_texts[self.text["Type text"]])
+
+				else:
+					options = self.text["Options"]
+
+					item = options["Show"]
+
+					if "_" not in item:
+						item += ", title()"
+
+					options["Show"] = self.JSON.Language.language_texts[item]
+
+					self.text["Data"][self.user_language] = self.Input.Select(options["List"], show_text = options["Show"])["option"]
 
 				for language in self.languages["small"]:
-					if language not in self.text["data"]:
-						self.text["data"][language] = self.text["data"][self.user_language]
+					if language not in self.text["Data"]:
+						self.text["Data"][language] = self.text["Data"][self.user_language]
 
-				# Split text data items, add commas between them, and add "and" text before the last item
-				if ", " in self.text["data"][self.user_language]:
+				# Split the text data items, add commas between them, and add "and" text before the last item
+				if ", " in self.text["Data"][self.user_language]:
 					for language in self.languages["small"]:
-						split = self.text["data"][language].split(", ")
+						split = self.text["Data"][language].split(", ")
 
-						self.text["data"][language] = ""
+						self.text["Data"][language] = ""
 
 						for item in split:
-							if item != split[0] and len(split) == 2:
-								self.text["data"][language] += " "
+							if (
+								item != split[0] and
+								len(split) == 2
+							):
+								self.text["Data"][language] += " "
 
 							if item == split[-1]:
-								self.text["data"][language] += self.JSON.Language.texts["and"][language] + " "
+								self.text["Data"][language] += self.JSON.Language.texts["and"][language] + " "
 
-							self.text["data"][language] += item
+							self.text["Data"][language] += item
 
-							if item != split[-1] and len(split) != 2:
-								self.text["data"][language] += ", "
+							if (
+								item != split[-1] and
+								len(split) != 2
+							):
+								self.text["Data"][language] += ", "
 
 						# Replace singular name with plural name on text
-						if "plural_item" in self.text_dictionary:
-							self.text["texts"][language] = self.text["texts"][language].replace(self.texts[self.text_dictionary["singular_name"]][language], self.texts[self.text_dictionary["plural_name"]][language])
+						if "Plural item" in self.text:
+							self.text["Texts"][language] = self.text["Texts"][language].replace(self.texts[self.text["Singular name"]][language], self.texts[self.text["Plural name"]][language])
 
-					self.text_dictionary["explain_text"] = "say_what_you_did_on_the_{}, plural"
-					self.text_dictionary["item"] = self.text_dictionary["plural_item"]
+					self.text["Explain text"] = "say_what_you_did_on_the_{}, plural"
 
-				# Add quotes to text data
+					self.text["Item"] = self.text["Plural item"]
+
+				# Add quotes to text data if the text uses quotes
 				else:
-					for language in self.languages["small"]:
-						self.text["data"][language] = '"' + self.text["data"][language] + '"'
+					if (
+						"Quotes" not in self.text or
+						"Quotes" in self.text and
+						self.text["Quotes"] == True
+					):
+						for language in self.languages["small"]:
+							self.text["Data"][language] = '"' + self.text["Data"][language] + '"'
 
 				# Add text data to text
 				for language in self.languages["small"]:
-					self.text["texts"][language] += " " + self.text["data"][language]
+					self.text["Texts"][language] += " " + self.text["Data"][language]
+
+			print()
+			print("---")
 
 			# Type task descriptions for the task
 			self.Type_Task_Descriptions()
@@ -165,7 +297,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def Type_Task_Descriptions(self):
 		# Define task dictionary with titles, descriptions, type, time, and files
 		self.task_dictionary = {
-			"Type": self.text["key"],
+			"Type": self.text["Key"],
 			"Task": {
 				"Titles": {},
 				"Descriptions": {}
@@ -179,7 +311,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		print()
 		print(self.language_texts["opening_the_description_files_for_you_to_type_on_them, type: explanation"])
 		print()
-		print(self.language_texts[self.text_dictionary["explain_text"]].format(self.language_texts[self.text_dictionary["item"]]) + ".")
+		print(self.language_texts[self.text["Explain text"]].format(self.language_texts[self.text["Item"]]) + ".")
 
 		# Add files to dictionary, create and open them
 		for language in self.languages["small"]:
@@ -217,7 +349,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Define task descriptions and make a backup of them
 		for language in self.languages["small"]:
-			self.task_dictionary["Task"]["Titles"][language] = self.text["texts"][language]
+			self.task_dictionary["Task"]["Titles"][language] = self.text["Texts"][language]
 
 			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "." + "\n\n"
 			self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
@@ -233,36 +365,35 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.File.Delete(self.task_dictionary["Files"][language])
 
 	def Write(self):
-		text_to_write = self.text["texts"][self.user_language]
+		text_to_write = self.text["Texts"][self.user_language]
 
 		# Register task and delete backup file if text key is in slim texts
-		if self.text["key"] in self.slim_texts:
-			self.Tasks = self
-
-			# Import the "Regsiter" class of the "Tasks" module
+		if "Item" in self.text:
+			# Import the "Register" class of the "Tasks" module
 			from Tasks.Register import Register as Register
 
-			self.Tasks.Register = Register
-
 			# Run the "Register" class
-			self.Tasks.Register(self.task_dictionary)
+			Register(self.task_dictionary)
 
 			# Delete the backup file
 			self.File.Delete(self.backup_file)
 
-		# Update state and define text to write if text key is in state names list
-		if self.text["key"] in self.states["names"]:
-			state_texts = self.states[self.text["key"]]["texts"]
+		# Update the state and define the text to write if the text key is in the state names list
+		if self.text["Key"] in self.states["names"]:
+			state_texts = self.states[self.text["Key"]]["texts"]
 
 			order = ""
 
 			if state_texts["current"] == []:
 				order = "first"
 
-			if state_texts["current"] != [] and state_texts["current"][0] == state_texts["first"][self.user_language]:
+			if (
+				state_texts["current"] != [] and
+				state_texts["current"][0] == state_texts["first"][self.user_language]
+			):
 				order = "second"
 
-			self.Update_State(self.text["key"], order)
+			self.Update_State(self.text["Key"], order)
 
 			text_to_write = state_texts[order][self.user_language]
 
@@ -270,7 +401,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if "." not in text_to_write[-1]:
 			text_to_write += "."
 
-		if self.text["key"] not in self.slim_texts:
+		if self.text["Key"] not in self.slim_texts:
 			print()
 
 			Write_On_Diary_Slim_Module(text_to_write)

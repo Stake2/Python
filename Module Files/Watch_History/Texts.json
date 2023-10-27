@@ -418,5 +418,17 @@
 	"add_more": {
 		"en": "Add more",
 		"pt": "Adicionar mais"
+	},
+	"things_watched_since_{}_until_{}": {
+		"en": "things watched since {} (until {})",
+		"pt": "coisas assistidas desde {} (até {})"
+	},
+	"things_watched_in": {
+		"en": "Things watched in",
+		"pt": "Coisas assistidas em"
+	},
+	"media_types_watched_in_all_years": {
+		"en": "Media types watched in all years",
+		"pt": "Tipos de mídia assistidos em todos os anos"
 	}
 }

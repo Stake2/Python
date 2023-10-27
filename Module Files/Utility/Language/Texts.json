@@ -1225,6 +1225,10 @@
 		"en": "Write",
 		"pt": "Escrever"
 	},
+	"writing, title()": {
+		"en": "Writing",
+		"pt": "Escrevendo"
+	},
 	"post, title()": {
 		"en": "Post",
 		"pt": "Postar"
@@ -1240,6 +1244,34 @@
 	"arguments, title()": {
 		"en": "Arguments",
 		"pt": "Argumentos"
+	},
+	"colors, title()": {
+		"en": "Colors",
+		"pt": "Cores"
+	},
+	"name, title()": {
+		"en": "Name",
+		"pt": "Nome"
+	},
+	"color_name": {
+		"en": "Color name",
+		"pt": "Nome da cor"
+	},
+	"code, title()": {
+		"en": "Code",
+		"pt": "Código"
+	},
+	"key, title()": {
+		"en": "Key",
+		"pt": "Chave"
+	},
+	"drawing_program": {
+		"en": "Drawing program",
+		"pt": "Programa de desenho"
+	},
+	"drawing_programs": {
+		"en": "Drawing programs",
+		"pt": "Programas de desenho"
 	},
 	"genders, type: dict": {
 		"en": {

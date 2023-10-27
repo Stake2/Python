@@ -51,9 +51,6 @@ class Register(Tasks):
 
 		self.Show_Information(self.dictionary)
 
-		# Re-initiate the root class to update files
-		super().__init__()
-
 	def Select_Task_Type(self):
 		options = self.task_types["Plural"]["en"]
 		language_options = self.task_types["Plural"][self.user_language]

@@ -235,7 +235,7 @@ class Watch_History(object):
 			}
 		})
 
-		# Read the root "Info.json" file
+		# Read the root "Info.json" file if it is not empty
 		if self.File.Contents(self.folders["media_info"]["info"])["lines"] != []:
 			info_dictionary = self.JSON.To_Python(self.folders["media_info"]["info"])
 

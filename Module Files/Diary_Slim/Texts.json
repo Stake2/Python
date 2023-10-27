@@ -1,4 +1,8 @@
 {
+	"diary_slim": {
+		"en": "Diary Slim",
+		"pt": "Diário Slim"
+	},
 	"creating_the_diary_slim_for_the_current_day": {
 		"pt": "Criando o Diário Slim para o dia atual",
 		"en": "Creating the Diary Slim for the current day"
@@ -59,9 +63,9 @@
 		"en": "my modules",
 		"pt": "os meus módulos"
 	},
-	"type_the_name_of_the_drawing_program": {
-		"en": "Type the name of the drawing program",
-		"pt": "Digite o nome do programa de desenho"
+	"select_the_drawing_program": {
+		"en": "Select the drawing program",
+		"pt": "Selecione o programa de desenho"
 	},
 	"type_how_much_course_classes_you_watched_(1_one)": {
 		"en": "Type how much course classes you watched (1, one)",

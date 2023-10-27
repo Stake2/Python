@@ -33,7 +33,7 @@ class Play(GamePlayer):
 			sub_class = getattr(module, title)
 
 			# Add the sub-clas to the current module
-			setattr(self, title, sub_class())
+			setattr(self, title, sub_class)
 
 		self.dictionary = dictionary
 		self.open_game = open_game
@@ -49,16 +49,16 @@ class Play(GamePlayer):
 	def Define_Game_Dictionary(self):
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
-			game = None
+			game_title = None
 
 			# If there is a game inside the arguments dictionary
 			# That means the module has been run by the "Module_Selector"
 			# And the game inside the arguments will be auto-selected
 			if "Game" in self.arguments:
-				game = self.arguments["Game"]["Value"]
+				game_title = self.arguments["Game"]["Value"]
 
 			# Ask the user to select a game type and game
-			self.dictionary = self.Select_Game_Type_And_Game(game = game)
+			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title)
 
 		self.game = self.dictionary["Game"]
 

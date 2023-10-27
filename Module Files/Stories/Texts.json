@@ -231,6 +231,10 @@
 		"en": "Write",
 		"pt": "Escrever"
 	},
+	"writing, title()": {
+		"en": "Writing",
+		"pt": "Escrevendo"
+	},
 	"revise, title()": {
 		"en": "Revise",
 		"pt": "Revisar"

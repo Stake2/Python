@@ -334,5 +334,5 @@ class Create_New_Diary_Slim(Diary_Slim):
 				# Write the header text into the Diary Slim file
 				Write_On_Diary_Slim_Module(text_to_write, add_time = False, check_file_length = False, check_diary_slim = check_diary_slim, verbose = verbose)
 
-		# Open the Diary Slim file
+		# Open the current Diary Slim file
 		self.File.Open(self.dictionary["File"])

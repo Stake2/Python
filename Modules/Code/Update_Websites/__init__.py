@@ -238,6 +238,7 @@ class Update_Websites(Code):
 
 		if len(self.websites["Update"]) == 1:
 			key = list(self.websites["Update"].keys())[0]
+
 			website = self.websites["Update"][key][self.user_language]
 
 			self.websites["Updated website"] = website
@@ -280,6 +281,8 @@ class Update_Websites(Code):
 
 				if self.switches["testing"] == False:
 					self.File.Open(link)
+
+				self.Date.Sleep(1)
 
 			if key != list(self.websites["Update"].keys())[-1]:
 				input()

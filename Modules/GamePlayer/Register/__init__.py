@@ -6,6 +6,8 @@ class Register(GamePlayer):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		print("Register():")
+
 		self.dictionary = dictionary
 
 		# Ask for the entry information
@@ -71,8 +73,8 @@ class Register(GamePlayer):
 		# Define the "dictionary" of the "Play" class as the local dictionary inside this "Register" class
 		setattr(self.Play, "dictionary", self.dictionary)
 
-		# Define session and time related keys inside the dictionary
-		self.Play.Register_The_Session()
+		# Run the Play class to define the session variables
+		self.Play()
 
 		# Get the dictionary from the "Play" class with the session and time related keys
 		self.dictionary = self.Play.dictionary

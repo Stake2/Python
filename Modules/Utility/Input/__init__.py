@@ -59,7 +59,13 @@ class Input():
 					list_.append(option.lower())
 					list_.append(option[0].lower())
 
+			if "\n" in option:
+				print()
+
 			print("[" + str(i + 1) + "]" + " - " + option)
+
+			if "\n" in option:
+				print()
 
 			numbers.append(i)
 			numbers.append(str(i))

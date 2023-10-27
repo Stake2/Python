@@ -7,12 +7,18 @@ class Diary_Slim():
 
 		Define_Folders(self)
 
+		# Basic methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
+
+		# Diary Slim related methods
+		self.Define_History()
+		self.Define_Story_Information()
+		self.Define_Current_Year()
+		self.Define_Slim_Texts()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -84,9 +90,15 @@ class Diary_Slim():
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.text_header_prototype = "- Diário Slim, {} -"
-		self.day_of_of_text = "Dia {} de {} de {}"
-		self.today_is_text_header_prototype = "Hoje é {}, " + self.day_of_of_text + "."
+		self.text_header_prototype = "- " + self.language_texts["diary_slim"] + ", {} -"
+
+		of_text = self.JSON.Language.language_texts["of, neutral"]
+
+		self.day_of_of_text = self.Date.language_texts["day, title()"] + " {} " + of_text + " {} " + of_text + " {}"
+
+		today_is_text = self.JSON.Language.language_texts["today_is"]
+
+		self.today_is_text_header_prototype = today_is_text + " {}, " + self.day_of_of_text + "."
 
 		self.template = {
 			"Numbers": {
@@ -176,8 +188,6 @@ class Diary_Slim():
 		}
 
 	def Define_Folders_And_Files(self):
-		from copy import deepcopy
-
 		# If there is no current year variable inside the self object, get the current year variable from the "Years" module
 		if hasattr(self, "current_year") == False:
 			self.current_year = {
@@ -227,8 +237,89 @@ class Diary_Slim():
 			self.folders["Diary Slim"]["Years"][name] = self.folders["Diary Slim"]["Years"]["root"] + name + ".json"
 			self.File.Create(self.folders["Diary Slim"]["Years"][name])
 
-		# Years folders and files
+		# ---------- #
 
+		# Slim texts folder
+		self.folders["Diary Slim"]["Data"]["Slim texts"] = {
+			"root": self.folders["Diary Slim"]["Data"]["root"] + "Slim texts/"
+		}
+
+		self.Folder.Create(self.folders["Diary Slim"]["Data"]["Slim texts"]["root"])
+
+		# Slim texts file
+		self.folders["Diary Slim"]["Data"]["Slim texts"]["Texts"] = self.folders["Diary Slim"]["Data"]["Slim texts"]["root"] + "Texts.json"
+		self.File.Create(self.folders["Diary Slim"]["Data"]["Slim texts"]["Texts"])
+
+		# ---------- #
+
+		# Data files
+		names = [
+			"Things to do",
+			"Things done texts"
+		]
+
+		for name in names:
+			key = name.lower().replace(" ", "_")
+
+			self.folders["Diary Slim"]["Data"][key] = self.folders["Diary Slim"]["Data"]["root"] + name + ".txt"
+			self.File.Create(self.folders["Diary Slim"]["Data"][key])
+
+		self.folders["apps"]["module_files"][self.module["key"]]["header"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Header.txt"
+		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["header"])
+
+	def Define_Lists_And_Dictionaries(self):
+		# Lists
+		self.diary_slim_header = self.File.Contents(self.folders["apps"]["module_files"][self.module["key"]]["header"])["string"]
+
+		# Dictionaries
+		self.states = {
+			"order_names": [
+				"first",
+				"second",
+				"current"
+			],
+			"names": [],
+			"folders": self.Folder.Contents(self.folders["Diary Slim"]["Data"]["State texts"]["root"])
+		}
+
+		i = 0
+		for state in self.states["folders"]["folder"]["names"]:
+			# Read state names
+			names = self.JSON.To_Python(self.states["folders"]["folder"]["list"][i] + "Names.json")
+			state = names[self.user_language]
+
+			# Add state name to names list
+			self.states["names"].append(state)
+
+			# Create state dictionary and sub-keys
+			self.states[state] = {}
+			self.states[state]["files"] = {}
+			self.states[state]["texts"] = {}
+
+			# Add state names file and dictionary
+			self.states[state]["files"]["names"] = self.states["folders"]["folder"]["list"][i] + "Names.json"
+			self.states[state]["names"] = names
+
+			# List orders of state, add file and list or dictionary to order dictionary
+			for order_name in self.states["order_names"]:
+				self.states[state]["files"][order_name] = self.states["folders"]["folder"]["list"][i] + order_name.capitalize() + "."
+
+				if order_name == "current":
+					self.states[state]["files"][order_name] += "txt"
+					function = self.File.Contents
+
+				if order_name != "current":
+					self.states[state]["files"][order_name] += "json"
+					function = self.JSON.To_Python
+
+				self.states[state]["texts"][order_name] = function(self.states[state]["files"][order_name])
+
+				if order_name == "current":
+					self.states[state]["texts"][order_name] = self.states[state]["texts"][order_name]["lines"]
+
+			i += 1
+
+	def Define_History(self):
 		# Define the default History dictionary
 		self.history = {
 			"Numbers": {
@@ -300,8 +391,7 @@ class Diary_Slim():
 		# Update the "History.json" file with the updated History dictionary
 		self.JSON.Edit(self.folders["Diary Slim"]["Years"]["History"], self.history)
 
-		# ---------- #
-
+	def Define_Story_Information(self):
 		# Story folders and files
 		names = [
 			"Information",
@@ -312,7 +402,7 @@ class Diary_Slim():
 			self.folders["Diary Slim"]["Story"][name] = self.folders["Diary Slim"]["Story"]["root"] + name + ".json"
 			self.File.Create(self.folders["Diary Slim"]["Story"][name])
 
-		# Define the default Information dictionary
+		# Define the default Story Information dictionary
 		self.information = {
 			"Titles": {},
 			"Chapters": {
@@ -320,10 +410,7 @@ class Diary_Slim():
 			},
 			"Status": {
 				"Number": 0,
-				"Names": {
-					"en": "Writing",
-					"pt": "Escrevendo"
-				}
+				"Names": self.JSON.Language.language_texts["writing, title()"]
 			},
 			"HEX color": "f1858d"
 		}
@@ -346,7 +433,8 @@ class Diary_Slim():
 		# Update the "Information.json" file with the updated Information dictionary
 		self.JSON.Edit(self.folders["Diary Slim"]["Story"]["Information"], self.information)
 
-		# ---------- #
+	def Define_Current_Year(self):
+		from copy import deepcopy
 
 		# Current year folder
 		self.folders["Diary Slim"]["current_year"] = self.folders["Diary Slim"]["Years"][self.current_year["Number"]]
@@ -382,76 +470,66 @@ class Diary_Slim():
 
 		self.current_year["File"] = self.Current_Diary_Slim()["File"]
 
-		# Slim texts file
-		self.folders["Diary Slim"]["Data"]["slim_texts"] = self.folders["Diary Slim"]["Data"]["root"] + "Slim texts.json"
-		self.File.Create(self.folders["Diary Slim"]["Data"]["slim_texts"])
-
-		# Data files
-		names = [
-			"Things to do",
-			"Things done texts"
-		]
-
-		for name in names:
-			key = name.lower().replace(" ", "_")
-
-			self.folders["Diary Slim"]["Data"][key] = self.folders["Diary Slim"]["Data"]["root"] + name + ".txt"
-			self.File.Create(self.folders["Diary Slim"]["Data"][key])
-
-		self.folders["apps"]["module_files"][self.module["key"]]["header"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Header.txt"
-		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["header"])
-
-	def Define_Lists_And_Dictionaries(self):
-		# Lists
-		self.diary_slim_header = self.File.Contents(self.folders["apps"]["module_files"][self.module["key"]]["header"])["string"]
-
-		# Dictionaries
-		self.states = {
-			"order_names": [
-				"first",
-				"second",
-				"current",
-			],
-			"names": [],
-			"folders": self.Folder.Contents(self.folders["Diary Slim"]["Data"]["State texts"]["root"]),
+	def Define_Slim_Texts(self):
+		# Define the default Slim texts dictionary
+		self.slim_texts = {
+			"List": [],
+			"Dictionary": {}
 		}
 
-		i = 0
-		for state in self.states["folders"]["folder"]["names"]:
-			# Read state names
-			names = self.JSON.To_Python(self.states["folders"]["folder"]["list"][i] + "Names.json")
-			state = names[self.user_language]
+		file = self.folders["Diary Slim"]["Data"]["Slim texts"]["Texts"]
 
-			# Add state name to names list
-			self.states["names"].append(state)
+		# Read the Slim "Texts.json" file if it is not empty
+		if self.File.Contents(file)["lines"] != []:
+			self.slim_texts = self.JSON.To_Python(file)
 
-			# Create state dictionary and sub-keys
-			self.states[state] = {}
-			self.states[state]["files"] = {}
-			self.states[state]["texts"] = {}
+		contents = self.Folder.Contents(self.folders["Diary Slim"]["Data"]["Slim texts"]["root"])
 
-			# Add state names file and dictionary
-			self.states[state]["files"]["names"] = self.states["folders"]["folder"]["list"][i] + "Names.json"
-			self.states[state]["names"] = names
+		# Get the Slim text folders
+		folders = contents["folder"]["dictionary"]
 
-			# List orders of state, add file and list or dictionary to order dictionary
-			for order_name in self.states["order_names"]:
-				self.states[state]["files"][order_name] = self.states["folders"]["folder"]["list"][i] + order_name.capitalize() + "."
+		# Define the Slim texts list
+		self.slim_texts["List"] = contents["folder"]["names"]
 
-				if order_name == "current":
-					self.states[state]["files"][order_name] += "txt"
-					function = self.File.Contents
+		# Iterate through the Slim text folders
+		for text, folder in folders.items():
+			# Create the Slim text dictionary
+			dictionary = {
+				"Key": text,
+				"Folders": {},
+				"Files": {},
+				"Texts": {}
+			}
 
-				if order_name != "current":
-					self.states[state]["files"][order_name] += "json"
-					function = self.JSON.To_Python
+			# Define the Slim root folder
+			dictionary["Folders"]["root"] = folder
 
-				self.states[state]["texts"][order_name] = function(self.states[state]["files"][order_name])
+			# Define the Slim data file
+			file = dictionary["Folders"]["root"] + "Data.json"
 
-				if order_name == "current":
-					self.states[state]["texts"][order_name] = self.states[state]["texts"][order_name]["lines"]
+			if self.File.Exist(file) == True:
+				dictionary["Files"]["Data"] = file
+				self.File.Create(dictionary["Files"]["Data"])
 
-			i += 1
+			# Define the Slim language text files
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
+
+				# Define and create the language text file
+				dictionary["Files"][language] = dictionary["Folders"]["root"] + full_language + ".txt"
+				self.File.Create(dictionary["Files"][language])
+
+				# Read the language text file
+				dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
+
+			# Read the "Data.json" file if it exists
+			if "Data" in dictionary["Files"]:
+				dictionary.update(self.JSON.To_Python(dictionary["Files"]["Data"]))
+
+			self.slim_texts["Dictionary"][text] = dictionary
+
+		# Update the Slim "Texts.json" file with the updated Slim texts dictionary
+		self.JSON.Edit(self.folders["Diary Slim"]["Data"]["Slim texts"]["Texts"], self.slim_texts)
 
 	def Update_State(self, selected_state = None, new_order = ""):
 		for state in self.states["names"]:

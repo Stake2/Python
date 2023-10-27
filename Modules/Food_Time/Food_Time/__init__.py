@@ -146,19 +146,19 @@ class Food_Time():
 			print(self.large_bar)
 
 		# Get the arguments from the "Module_Selector.py" module
-		for key, value in self.arguments.items():
-			# If the argument is "set" and it is True
+		for key, argument in self.arguments.items():
+			# If the argument is "Set" and it is True
 			if (
-				key == "set" and
-				value == True
+				key == "Set" and
+				argument["Value"] == True
 			):
 				# Then the meal times will be registered
 				self.register_time = True
 
-			# If the argument is "check" and it is True
+			# If the argument is "Check" and it is True
 			if (
-				key == "check" and
-				value == True
+				key == "Check" and
+				argument["Value"] == True
 			):
 				# Then the meal times will not be registered
 				self.register_time = False
