@@ -6,8 +6,6 @@ class Register(GamePlayer):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
-		print("Register():")
-
 		self.dictionary = dictionary
 
 		# Ask for the entry information

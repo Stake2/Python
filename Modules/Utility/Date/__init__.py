@@ -356,34 +356,57 @@ class Date():
 
 			i += 1
 
-		date = self.Make_Difference_Text(date)
+		date["Text"] = self.Make_Time_Text(date["Difference"])
 
 		return date
 
-	def Make_Difference_Text(self, date):
-		# Make the time difference texts per language
-		for key in date["Difference"]:
-			for language in self.languages["small"]:
-				if language not in date["Text"]:
-					date["Text"][language] = ""
+	def Make_Time_Text(self, date):
+		from copy import deepcopy
 
+		# Transform the text key into a dictionary if it is a string
+		if type(date["Text"]) == str:
+			date["Text"] = {}
+
+		# Define the keys and remove the "Text" key
+		keys = list(date.keys())
+		keys.remove("Text")
+
+		for language in self.languages["small"]:
+			date["Text"][language] = ""
+
+		# Make the time texts per language
+		for key in keys:
+			for language in self.languages["small"]:
 				# If the key is the last one and the number of time attributes is 2 or more than 2, add the "and " text
-				if key == list(date["Difference"].keys())[-1]:
-					if len(date["Difference"]) > 2 or len(date["Difference"]) == 2:
+				if key == keys[-1]:
+					if (
+						len(date) > 2 or
+						len(date) == 2
+					):
 						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
 
+				# Define the time text
+				text = self.texts[key.lower()][language]
+
+				if "Unit texts" in date:
+					text = date["Unit texts"][key][language]
+
 				# Add the number and the time text (plural or singular)
-				date["Text"][language] += str(date["Difference"][key]) + " " + date["Unit texts"][key][language]
+				date["Text"][language] += str(date[key]) + " " + text
 
 				# If the number of time attributes is equal to 2, add a space
-				if len(date["Difference"]) == 2:
+				if len(date) == 2:
 					date["Text"][language] += " "
 
-				# If the key is not the last one and the number of time attributes is more than 2, add the ", " text (comma)
-				if key != list(date["Difference"].keys())[-1] and len(date["Difference"]) > 2:
+				# If the key is not the last one
+				# And the number of time attributes is more than 2, add the ", " text (comma)
+				if (
+					key != keys[-1] and
+					len(date) > 2
+				):
 					date["Text"][language] += ", "
 
-		return date
+		return date["Text"]
 
 	def Number_Name_Generator(self):
 		self.numbers = {}

@@ -50,6 +50,8 @@ class Input():
 
 		numbers = []
 
+		text = ""
+
 		i = 0
 		for option in options:
 			if language_options != None:
@@ -59,18 +61,32 @@ class Input():
 					list_.append(option.lower())
 					list_.append(option[0].lower())
 
-			if "\n" in option:
-				print()
+			if (
+				"\n" in option and
+				text[-2] + text[-1] != "\n\n"
+			):
+				text += "\n"
 
-			print("[" + str(i + 1) + "]" + " - " + option)
+			text += "[" + str(i + 1) + "]" + " - " + option
 
-			if "\n" in option:
-				print()
+			if option != options[-1]:
+				text += "\n"
+
+			if (
+				"\n" in option and
+				text[-2] + text[-1] != "\n\n"
+			):
+				text += "\n"
 
 			numbers.append(i)
 			numbers.append(str(i))
 
 			i += 1
+
+		if text[-1] != "\n":
+			text += "\n"
+
+		print(text)
 
 		letters = []
 
@@ -80,8 +96,6 @@ class Input():
 
 		list_ += letters
 		list_ += numbers
-
-		print()
 
 		option = ""
 

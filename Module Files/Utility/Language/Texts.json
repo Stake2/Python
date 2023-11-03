@@ -76,6 +76,10 @@
         "en": "Type or paste the text",
         "pt": "Digite ou cole o texto"
     },
+	"texts, title()": {
+		"pt": "Textos",
+		"en": "Texts"
+	},
     "yes": {
         "en": "yes",
         "pt": "sim"
@@ -1013,6 +1017,14 @@
 		},
 		"en": "last"
 	},
+	"last, plural, masculine": {
+		"pt": "últimos",
+		"en": "last"
+	},
+	"last, plural, feminine": {
+		"pt": "últimas",
+		"en": "last"
+	},
 	"the_first": {
 		"pt": {
 			"masculine": "o primeiro",
@@ -1272,6 +1284,18 @@
 	"drawing_programs": {
 		"en": "Drawing programs",
 		"pt": "Programas de desenho"
+	},
+	"friends, title()": {
+		"en": "Friends",
+		"pt": "Amigos"
+	},
+	"media_list": {
+		"en": "Media list",
+		"pt": "Lista de mídia"
+	},
+	"social_networks": {
+		"en": "Social Networks",
+		"pt": "Redes Sociais"
 	},
 	"genders, type: dict": {
 		"en": {

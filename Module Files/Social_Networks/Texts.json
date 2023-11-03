@@ -7,7 +7,6 @@
 		"en": "Social Networks",
 		"pt": "Redes Sociais"
 	},
-	"social_networks, en - pt, title()": "Social Networks - Redes Sociais",
 	"social_network_information": {
 		"en": "Social Network information",
 		"pt": "Informações da Rede Social"
@@ -24,7 +23,6 @@
 		"en": "Information",
 		"pt": "Informação"
 	},
-	"information, en - pt, title()": "Information - Informação",
 	"information_item": {
 		"en": "Information item",
 		"pt": "Item de informação"
@@ -85,8 +83,6 @@
 		"en": "Numbers",
 		"pt": "Números"
 	},
-	"number, en - pt, title()": "Number - Número",
-	"year_numbers, en - pt, capitalize()": "Year numbers - Números de Ano",
 	"the": {
 		"en": "the",
 		"pt": {

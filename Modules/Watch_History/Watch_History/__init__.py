@@ -53,7 +53,8 @@ class Watch_History(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -116,10 +117,15 @@ class Watch_History(object):
 			self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"], lower_key = True)["dictionary"]
 
 		# Audiovisual Media Network root files
-		self.folders["audiovisual_media_network"]["watch_list"] = self.folders["audiovisual_media_network"]["root"] + "Watch List.txt"
+		self.folders["audiovisual_media_network"]["watch_list"] = self.folders["audiovisual_media_network"]["root"] + "Watch list.txt"
 
 		# Define the current year folder for easier typing
 		self.folders["watch_history"]["current_year"] = self.folders["watch_history"][self.current_year["Number"]]
+
+		# Define the "History" dictionary
+		self.history = {
+			"Folder": self.Folder.folders["notepad"]["networks"]["audiovisual_media_network"]["watch_history"]["root"]
+		}
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
@@ -256,6 +262,7 @@ class Watch_History(object):
 			self.media_types[plural_media_type] = {
 				"Singular": {},
 				"Plural": {},
+				"Gender": "",
 				"Genders": {},
 				"Folders": {},
 				"Subfolders": {},
@@ -285,6 +292,8 @@ class Watch_History(object):
 
 			if plural_media_type == self.texts["series, title()"]["en"]:
 				gender = "feminine"
+
+			self.media_types[plural_media_type]["Gender"] = gender
 
 			for language in self.languages["small"]:
 				self.media_types[plural_media_type]["Genders"][language] = deepcopy(self.media_types["Genders"][language][gender])
@@ -478,6 +487,12 @@ class Watch_History(object):
 		# Update the root "Info.json" file
 		self.JSON.Edit(self.folders["media_info"]["info"], info_dictionary)
 
+		# Add the entry types to the History dictionary
+		self.history["Types"] = self.media_types
+
+		# Define the types folder
+		self.history["Types folder"] = "Per Media Type"
+
 	def Define_Registry_Format(self):
 		from copy import deepcopy
 		import collections
@@ -515,7 +530,10 @@ class Watch_History(object):
 			"Comments": deepcopy(self.template)
 		}
 
-		if self.File.Contents(self.folders["watch_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["watch_history"]["history"])["Years"] != []:
+		if (
+			self.File.Contents(self.folders["watch_history"]["history"])["lines"] != [] and
+			self.JSON.To_Python(self.folders["watch_history"]["history"])["Years"] != []
+		):
 			# Get the History dictionary from the file
 			self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
 
@@ -2290,6 +2308,124 @@ class Watch_History(object):
 
 			for extension in self.dictionary["File extensions"]:
 				file = folder + file_name + execution
+
+	def Define_Title(self, title, language = None):
+		if language == None:
+			language = self.user_language
+
+		keys = [
+			"Original",
+			language,
+			"Romanized"
+		]
+
+		for title_key in keys:
+			if title_key in title:
+				key = title_key
+
+		title = title[key]
+
+		return title
+
+	def Define_Year_Summary_Data(self, entry, language):
+		import re
+
+		# Get the entry Media
+		item = self.Define_Title(entry["Media"], language)
+
+		# Add the ": " separator if the entry is a video
+		if entry["Type"] == "Videos":
+			item += ": "
+
+		# If the entry type is not "Videos"
+		else:
+			# Only add a space if there is an item or episode
+			if (
+				"Item" in entry or
+				"Episode" in entry
+			):
+				item += " "
+
+		# Add the item if it exists
+		if "Item" in entry:
+			item_title = self.Define_Title(entry["Item"], language)
+
+			# Add the item title if it is not already present in the item text
+			# And if the media type is not "Videos"
+			if (
+				item_title not in item and
+				entry["Type"] != "Videos"
+			):
+				item_separator = ""
+				episode_separator = " "
+
+				# If the "S[Any number two times]" text is found on the item title
+				if re.findall(r"S[0-9]{2}", item_title) != []:
+					# Define the episode separator as empty
+					episode_separator = ""
+
+				# If the "S[Any number two times]" text is not found on the item title
+				if re.findall(r"S[0-9]{2}", item_title) == []:
+					# Define the item separator as a dash and space
+					item_separator = "- "
+
+				add = True
+
+				# If the "Episode" key is present in the Entry dictionary
+				if "Episode" in entry:
+					# Get the episode title
+					episode_title = self.Define_Title(entry["Episode"]["Titles"], language)
+
+					# If the item title is inside the episode title
+					if item_title in episode_title:
+						# Then do not add the item title
+						add = False
+
+				# Add the item title if the "add" variable is True
+				if add == True:
+					# Add the item separator
+					item += item_separator
+
+					# Add the item title
+					item += item_title
+
+					# Only add the episode separator if there is an episode
+					if "Episode" in entry:
+						item += episode_separator
+
+		# Add the episode if it exists
+		if "Episode" in entry:
+			# Add a space if the entry does not have a "Item" key
+			# And if a space is not the last character in the item string
+			if (
+				"Item" not in entry and
+				item[-1] != " "
+			):
+				item += " "
+
+			episode_title = self.Define_Title(entry["Episode"]["Titles"], language)
+
+			item += episode_title
+
+		# Add the re-watched text if it exists
+		if (
+			"States" in entry and
+			"Re-watched" in entry["States"]
+		):
+			text = " (" + self.texts["re_watched, capitalize()"][language] + " "
+
+			text += str(entry["States"]["Re-watched"]["Times"]) + "x"
+
+			text += ")"
+
+			item += text
+
+		# Add the entry date
+		date = self.Date.From_String(entry["Date"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+		item += " (" + date + ")"
+
+		return item
 
 	def Show_Media_Information(self, dictionary):
 		media = dictionary["Media"]

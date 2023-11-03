@@ -255,8 +255,20 @@ class Folder():
 		}
 
 		# Mega "Notepad" Effort folders
-		for folder in ["Diary", "Diary Slim", "Food", "Networks", "Years"]:
-			key = folder.lower().replace(" ", "_")
+		folders = {
+			"Diary": "",
+			"Diary Slim": "",
+			"Food": "",
+			"Friends": self.JSON.Language.language_texts["friends, title()"],
+			"Networks": "",
+			"Years": ""
+		}
+
+		for key, folder in folders.items():
+			key = key.lower().replace(" ", "_")
+
+			if folder == "":
+				folder = self.Capitalize(key.replace("_", " "))
 
 			self.folders["mega"]["notepad"]["effort"][key] = {
 				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["root"], folder + "/")

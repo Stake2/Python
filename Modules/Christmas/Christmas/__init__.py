@@ -122,7 +122,10 @@ class Christmas():
 	def Today_Is_Christmas(self):
 		self.today_is_christmas = False
 
-		if self.date["Units"]["Day"] == self.christmas["Units"]["Day"] and self.date["Units"]["Month"] == self.christmas["Units"]["Month"]:
+		if (
+			self.date["Units"]["Day"] == self.christmas["Units"]["Day"] and
+			self.date["Units"]["Month"] == self.christmas["Units"]["Month"]
+		):
 			self.today_is_christmas = True
 
 		return self.today_is_christmas
@@ -130,7 +133,7 @@ class Christmas():
 	def Define_Folders(self):
 		self.current_year = self.Years.current_year
 
-		self.christmas_image_folder = self.folders["mega"]["image"]["root"] + self.language_texts["christmas, title(), en - pt"] + "/"
+		self.christmas_image_folder = self.folders["mega"]["image"]["root"] + self.language_texts["christmas, title()"] + "/"
 		self.Folder.Create(self.christmas_image_folder)
 
 	def Define_Files(self):
@@ -140,9 +143,9 @@ class Christmas():
 
 			self.objects_file = self.current_year["Folders"]["English"][self.texts["christmas, title()"]["en"]]["root"] + "Objects.txt"
 
-			self.things_to_watch_file = self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["watch, title(), en - pt"] + ".txt"
+			self.things_to_watch_file = self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["watch, title()"] + ".txt"
 
-			self.watch_list_file = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + "Watch List.txt"
+			self.watch_list_file = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + self.JSON.Language.language_texts["media_list"] + ".txt"
 
 			self.things_to_eat_file = self.current_year["Folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
 
@@ -165,14 +168,14 @@ class Christmas():
 	def Open_File(self, key):
 		files = {
 			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
-			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title(), en - pt"] + ".lnk",
-			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title(), en - pt"]]["root"] + self.language_texts["texts, title(), en - pt"] + ".txt"
+			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title()"] + ".lnk",
+			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["texts, title()"] + ".txt"
 		}
 
 		texts = {
 			"Foobar2000": self.language_texts["opening_{}"].format("Foobar2000"),
 			"Theme": self.language_texts["defining_{}"].format(self.language_texts["christmas_theme"]),
-			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title(), en - pt"] + ".txt")
+			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title()"] + ".txt")
 		}
 
 		file = files[key]
@@ -185,10 +188,10 @@ class Christmas():
 		):
 			self.File.Open(file)
 
-		if key != self.language_texts["texts, title(), en - pt"]:
+		if key != self.language_texts["texts, title()"]:
 			text += "..."
 
-		if key == self.language_texts["texts, title(), en - pt"]:
+		if key == self.language_texts["texts, title()"]:
 			text = "\n" + text
 
 		print(text)

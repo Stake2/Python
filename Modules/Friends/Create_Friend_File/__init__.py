@@ -4,7 +4,7 @@ from Friends.Friends import Friends as Friends
 
 class Create_Friend_File(Friends):
 	def __init__(self):
-		super().__init__(select_social_network = False)
+		super().__init__()
 
 		# Ask if the user wants to add Social Networks to an existing Friend folder
 		self.add_social_network = self.Input.Yes_Or_No(self.language_texts["add_social_network_to_friend_folder"])

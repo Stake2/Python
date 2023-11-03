@@ -110,6 +110,11 @@ class Tasks(object):
 
 		self.folders["task_history"]["current_year"] = self.folders["task_history"][str(self.date["Units"]["Year"])]
 
+		# Define the "History" dictionary
+		self.history = {
+			"Folder": self.folders["task_history"]["root"]
+		}
+
 	def Define_Types(self):
 		self.task_types = self.JSON.To_Python(self.folders["data"]["types"])
 
@@ -202,7 +207,10 @@ class Tasks(object):
 			"Task type": {}
 		}
 
-		if self.File.Contents(self.folders["task_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["task_history"]["history"])["Years"] != []:
+		if (
+			self.File.Contents(self.folders["task_history"]["history"])["lines"] != [] and
+			self.JSON.To_Python(self.folders["task_history"]["history"])["Years"] != []
+		):
 			# Get the History dictionary from file
 			self.dictionaries["History"] = self.JSON.To_Python(self.folders["task_history"]["history"])
 
@@ -323,6 +331,12 @@ class Tasks(object):
 					states_dictionary["Texts"][key][language] = text
 
 		return states_dictionary
+
+	def Define_Year_Summary_Data(self, entry, language):
+		# Get the entry title
+		item = entry["Titles"][language]
+
+		return item
 
 	def Show_Information(self, dictionary):
 		task = dictionary["Task"]

@@ -4,7 +4,7 @@
 import importlib
 
 class Friends(object):
-	def __init__(self, current_year = None, select_social_network = True, social_network = None, remove_social_networks_with_no_friends = False):
+	def __init__(self, current_year = None, select_social_network = False, social_network = None, remove_social_networks_with_no_friends = False):
 		# Define the module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
@@ -49,8 +49,8 @@ class Friends(object):
 		if remove_social_networks_with_no_friends == True:
 			self.all_friend_social_networks = []
 
-			for friend in self.friends:
-				self.friend_social_networks = self.friend_data[friend][self.Social_Networks.texts["social_networks"]["en"]]["List"]
+			for friend in self.friends_list:
+				self.friend_social_networks = self.friend_data[friend][self.JSON.Language.texts["social_networks"]["en"]]["List"]
 
 				self.all_friend_social_networks.extend(self.friend_social_networks)
 
@@ -131,26 +131,23 @@ class Friends(object):
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.friends_text_folder = self.folders["notepad"]["effort"]["root"] + self.texts["friends, en - pt, title()"] + "/"
-		self.Folder.Create(self.friends_text_folder)
-
-		self.friends_database_folder = self.friends_text_folder + "Database/"
+		self.friends_database_folder = self.folders["notepad"]["friends"]["root"] + "Database/"
 		self.Folder.Create(self.friends_database_folder)
 
-		self.friends_information_folder = self.friends_database_folder + self.texts["information, en - pt, title()"] + "/"
+		self.friends_information_folder = self.friends_database_folder + self.language_texts["information, title()"] + "/"
 		self.Folder.Create(self.friends_information_folder)
 
-		self.friends_year_numbers_folder = self.friends_database_folder + self.texts["year_numbers, en - pt, capitalize()"] + "/"
+		self.friends_year_numbers_folder = self.friends_database_folder + self.language_texts["year_numbers"] + "/"
 		self.Folder.Create(self.friends_year_numbers_folder)
 
-		self.friends_image_folder = self.folders["mega"]["image"]["root"] + self.texts["friends, en - pt, title()"] + "/"
+		self.friends_image_folder = self.folders["mega"]["image"]["root"] + self.language_texts["friends, title()"] + "/"
 		self.Folder.Create(self.friends_image_folder)
 
 		# Files
-		self.friends_file = self.friends_database_folder + self.texts["friends, en - pt, title()"] + ".txt"
-		self.File.Create(self.friends_file)
+		self.friends_list_file = self.friends_database_folder + self.language_texts["friends, title()"] + ".txt"
+		self.File.Create(self.friends_list_file)
 
-		self.friends_number_file = self.friends_database_folder + self.texts["number, en - pt, title()"] + ".txt"
+		self.friends_number_file = self.friends_database_folder + self.language_texts["number, title()"] + ".txt"
 		self.File.Create(self.friends_number_file)
 
 		self.information_items_file = self.friends_database_folder + self.texts["information_items"]["en"] + ".json"
@@ -158,6 +155,14 @@ class Friends(object):
 
 		self.information_file = self.friends_information_folder + self.JSON.Language.texts["information, title()"]["en"] + ".json"
 		self.File.Create(self.information_file)
+
+		self.friends_file = self.folders["notepad"]["friends"]["root"] + self.texts["friends, title()"]["en"] + ".json"
+		self.File.Create(self.friends_file)
+
+		# Define the "History" dictionary
+		self.history = {
+			"Folder": self.folders["notepad"]["friends"]["root"]
+		}
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
@@ -172,7 +177,10 @@ class Friends(object):
 			for file_type in file_types:
 				sub_key = file_type
 
-				if file_type == "social_network" and key != "language_singular":
+				if (
+					file_type == "social_network" and
+					key != "language_singular"
+				):
 					sub_key += "s"
 
 				if file_type != "social_network":
@@ -219,11 +227,11 @@ class Friends(object):
 			self.texts["name"]["en"],
 			self.texts["age"]["en"],
 			self.texts["hometown"]["en"],
-			self.texts["residence_place"]["en"],
+			self.texts["residence_place"]["en"]
 		]
 
 		# List Friend folders
-		self.friends_folders = self.Folder.Contents(self.friends_text_folder)["folder"]["names"]
+		self.friends_folders = self.Folder.Contents(self.folders["notepad"]["friends"]["root"])["folder"]["names"]
 
 		# Remove non-Friend folders from the above list
 		for item in ["Database", "Pre-Friends", "Archive"]:
@@ -234,12 +242,12 @@ class Friends(object):
 		self.friends_number = str(len(self.friends_folders))
 
 		# Writes the Friends to the Friends file
-		self.File.Edit(self.friends_file, self.Text.From_List(self.friends_folders), "w")
+		self.File.Edit(self.friends_list_file, self.Text.From_List(self.friends_folders), "w")
 
 		# Writes the number of Friends to the Friends number file
 		self.File.Edit(self.friends_number_file, self.friends_number, "w")
 
-		self.friends = self.friends_folders
+		self.friends_list = self.friends_folders
 
 		# Dictionaries
 		i = 0
@@ -261,7 +269,7 @@ class Friends(object):
 			self.texts["name"]["en"],
 			self.texts["gender"]["en"],
 			self.texts["birthday"]["en"],
-			self.texts["residence_place"]["en"],
+			self.texts["residence_place"]["en"]
 		]
 
 		# Define gender letters by information item in Portuguese
@@ -274,6 +282,53 @@ class Friends(object):
 				for item in self.gender_items:
 					self.gender_letters[item][information_item] = self.language_texts[item + ", feminine"]
 
+		# ---------- #
+
+		# Define the Friends dictionary
+		self.friends = {
+			"Numbers": {
+				"Total": 0,
+				"By year": {}
+			},
+			"List": []
+		}
+
+		# Get the total friends number
+		self.friends["Numbers"]["Total"] = len(self.friends_list)
+
+		# Get the friends list
+		self.friends["List"] = self.friends_list
+
+		# Get the friends known by year numbers
+		self.friends_information = self.JSON.To_Python(self.information_file)
+
+		for friend in self.friends_list:
+			information = self.friends_information[friend]
+
+			known_year = information["Date I met"].split("/")[-1]
+
+			# If the known year is not in the Friends Numbers dictionary
+			if known_year not in self.friends["Numbers"]["By year"]:
+				# Add it
+				self.friends["Numbers"]["By year"][known_year] = 1
+
+			# Else, add one to it
+			else:
+				self.friends["Numbers"]["By year"][known_year] += 1
+
+		# Check if all the years are inside the friends known by year list
+		for year in self.Date.Create_Years_List(function = str):
+			if year not in self.friends["Numbers"]["By year"]:
+				self.friends["Numbers"]["By year"][year] = 0
+
+		# Sort the known by year numbers keys
+		import collections
+
+		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
+
+		# Update the "Friends.json" file with the updated Friends dictionary
+		self.JSON.Edit(self.friends_file, self.friends)
+
 	def Define_Friend_Dictionaries(self):
 		self.friend_folders = {}
 		self.friend_files = {}
@@ -281,7 +336,7 @@ class Friends(object):
 		self.year_friends_numbers = {}
 
 		# Friends folders, files, and data dictionaries filling
-		for friend in self.friends:
+		for friend in self.friends_list:
 			self.friend_folders[friend] = {}
 			self.friend_files[friend] = {}
 			self.friend_data[friend] = {}
@@ -291,11 +346,11 @@ class Friends(object):
 			# Friends folders
 			self.friend_folders[friend]["Text"] = {}
 
-			self.friend_folders[friend]["Text"]["root"] = self.friends_text_folder + friend + "/"
+			self.friend_folders[friend]["Text"]["root"] = self.folders["notepad"]["friends"]["root"] + friend + "/"
 			self.Folder.Create(self.friend_folders[friend]["Text"]["root"])
 
-			self.friend_folders[friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]] = self.friend_folders[friend]["Text"]["root"] + self.Social_Networks.texts["social_networks, en - pt, title()"] + "/"
-			self.Folder.Create(self.friend_folders[friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]])
+			self.friend_folders[friend]["Text"][self.JSON.Language.texts["social_networks"]["en"]] = self.friend_folders[friend]["Text"]["root"] + self.JSON.Language.language_texts["social_networks"] + "/"
+			self.Folder.Create(self.friend_folders[friend]["Text"][self.JSON.Language.texts["social_networks"]["en"]])
 
 			# Image folders
 			self.friend_folders[friend]["Image"] = {}
@@ -303,8 +358,8 @@ class Friends(object):
 			self.friend_folders[friend]["Image"]["root"] = self.friends_image_folder + friend + "/"
 			self.Folder.Create(self.friend_folders[friend]["Image"]["root"])
 
-			self.friend_folders[friend]["Image"][self.Social_Networks.texts["social_networks"]["en"]] = self.friend_folders[friend]["Image"]["root"] + self.Social_Networks.texts["social_networks, en - pt, title()"] + "/"
-			self.Folder.Create(self.friend_folders[friend]["Image"][self.Social_Networks.texts["social_networks"]["en"]])
+			self.friend_folders[friend]["Image"][self.JSON.Language.texts["social_networks"]["en"]] = self.friend_folders[friend]["Image"]["root"] + self.JSON.Language.language_texts["social_networks"] + "/"
+			self.Folder.Create(self.friend_folders[friend]["Image"][self.JSON.Language.texts["social_networks"]["en"]])
 
 			# Friend file names iteration
 			for file_name in self.file_names["en"]:
@@ -312,38 +367,38 @@ class Friends(object):
 
 				text_folder = self.friend_folders[friend]["Text"]["root"]
 
-				if file_name == self.Social_Networks.texts["social_networks"]["en"]:
-					text_folder = self.friend_folders[friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]]
+				if file_name == self.JSON.Language.texts["social_networks"]["en"]:
+					text_folder = self.friend_folders[friend]["Text"][self.JSON.Language.texts["social_networks"]["en"]]
 					self.Folder.Create(text_folder)
 
-					file_name = self.Social_Networks.texts["social_networks, en - pt, title()"]
+					file_name = self.JSON.Language.language_texts["social_networks"]
 
 				# Friends files
 				self.friend_files[friend][key] = text_folder + file_name + ".txt"
 				self.File.Create(self.friend_files[friend][key])
 
-				if key == self.Social_Networks.texts["social_networks"]["en"]:
+				if key == self.JSON.Language.texts["social_networks"]["en"]:
 					social_networks = self.Folder.Contents(text_folder)["folder"]["names"]
 					self.File.Edit(self.friend_files[friend][key], self.Text.From_List(social_networks), "w")
 
 				# Friends data
-				if key == self.Social_Networks.texts["social_networks"]["en"]:
+				if key == self.JSON.Language.texts["social_networks"]["en"]:
 					self.friend_data[friend][key] = {}
 					self.friend_data[friend][key]["List"] = self.File.Contents(self.friend_files[friend][key])["lines"]
 
 					self.friend_data[friend][key]["Data"] = {}						
 
-				if key != self.Social_Networks.texts["social_networks"]["en"]:
+				if key != self.JSON.Language.texts["social_networks"]["en"]:
 					self.friend_data[friend][key] = self.File.Dictionary(self.friend_files[friend][key], next_line = True)
 
 			# Social Network folders and profile file creation
-			for social_network in self.friend_data[friend][self.Social_Networks.texts["social_networks"]["en"]]["List"]:
+			for social_network in self.friend_data[friend][self.JSON.Language.texts["social_networks"]["en"]]["List"]:
 				self.friend_files[friend][self.Social_Networks.texts["social_network"]["en"]][social_network] = {}
 
 				self.Select_Social_Network(social_network, True)
 
 				# Text folder
-				text_folder = self.friend_folders[friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]] + social_network + "/"
+				text_folder = self.friend_folders[friend]["Text"][self.JSON.Language.texts["social_networks"]["en"]] + social_network + "/"
 				self.Folder.Create(text_folder)
 
 				# Text profile file
@@ -351,7 +406,7 @@ class Friends(object):
 				self.File.Create(text_profile_file)
 
 				# Image folder
-				image_folder = self.friend_folders[friend]["Image"][self.Social_Networks.texts["social_networks"]["en"]] + social_network + "/"
+				image_folder = self.friend_folders[friend]["Image"][self.JSON.Language.texts["social_networks"]["en"]] + social_network + "/"
 				self.Folder.Create(image_folder)
 
 				# Image profile file
@@ -370,7 +425,7 @@ class Friends(object):
 						sub_image_folder = image_folder + folder + "/"
 						self.Folder.Create(sub_image_folder)
 
-			self.Folder.Copy(self.friend_folders[friend]["Text"]["root"], self.friend_folders[friend]["Image"]["root"])
+			#self.Folder.Copy(self.friend_folders[friend]["Text"]["root"], self.friend_folders[friend]["Image"]["root"])
 
 			# Definition of the year I met the Friend
 			self.year_i_met = self.friend_data[friend]["Information"]["Date I met"].split("/")[-1]
@@ -389,7 +444,7 @@ class Friends(object):
 			year_folder = self.friends_year_numbers_folder + year + "/"
 			self.Folder.Create(year_folder)
 
-			number_file = year_folder + self.texts["number, en - " + self.user_language + ", title()"] + ".txt"
+			number_file = year_folder + self.language_texts["number, title()"] + ".txt"
 			self.File.Create(number_file)
 
 			number = str(self.year_friends_numbers[year])
@@ -407,7 +462,7 @@ class Friends(object):
 			information_list = []
 
 			# Iterate through Friends list
-			for friend in self.friends:
+			for friend in self.friends_list:
 				# Add Friend key to information dictionary
 				if friend not in self.information:
 					self.information[friend] = {}
@@ -437,22 +492,22 @@ class Friends(object):
 
 	def Select_Friend(self, friends = None, select_text = None, first_space = True, second_space = True):
 		if friends != None:
-			self.friends = friends
+			self.friends_list = friends
 
 		show_text = self.language_texts["friends, title()"]
 
 		if select_text == None:
 			select_text = self.language_texts["select_one_friend"]
 
-		self.option_info = self.Input.Select(self.friends, show_text = show_text, select_text = select_text)
+		self.option_info = self.Input.Select(self.friends_list, show_text = show_text, select_text = select_text)
 
 		self.friend = self.option_info["option"]
 		self.friend_number = self.option_info["number"]
 
 		self.friend_information = self.File.Dictionary(self.friend_files[self.friend]["Information"], next_line = True)
 
-		if "List" in self.friend_data[self.friend][self.Social_Networks.texts["social_networks"]["en"]]:
-			self.friend_social_networks = self.friend_data[self.friend][self.Social_Networks.texts["social_networks"]["en"]]["List"]
+		if "List" in self.friend_data[self.friend][self.JSON.Language.texts["social_networks"]["en"]]:
+			self.friend_social_networks = self.friend_data[self.friend][self.JSON.Language.texts["social_networks"]["en"]]["List"]
 
 	def Select_Social_Network(self, social_network = None, select_social_network = True, social_networks = None, select_text = None):
 		if social_networks == None:

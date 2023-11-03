@@ -40,11 +40,11 @@ class Verify_Current_Year(Years):
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
 			self.files = {
-				"christmas, title()": self.current_year["Folders"][self.language_texts["christmas, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
-				"new_year": self.current_year["Folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt"
+				"christmas, title()": self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
+				"new_year": self.current_year["Folders"][self.language_texts["new_year"]]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt"
 			}
 
-			# Replace "{current_year}" with current Year number on Christmas Texts file
+			# Replace the current "{current_year}" text with current Year number on Christmas Texts file
 			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
 
 			if "{current_year}" in text_to_write:
@@ -61,15 +61,15 @@ class Verify_Current_Year(Years):
 			self.File.Edit(self.files["new_year"], text_to_write, "w")
 
 			# "Created In" file
-			self.created_in_file = self.current_year["Folder"] + self.language_texts["created_in, en - " + self.user_language] + ".txt"
+			self.created_in_file = self.current_year["Folder"] + self.language_texts["created_in"] + ".txt"
 			self.File.Edit(self.created_in_file, self.Date.Now()["strftime"], "w")
 
 			# "Edited In" file
-			self.edited_in_file = self.current_year["Folder"] + self.language_texts["edited_in, en - " + self.user_language] + ".txt"
+			self.edited_in_file = self.current_year["Folder"] + self.language_texts["edited_in"] + ".txt"
 			self.File.Edit(self.edited_in_file, self.Date.Now()["strftime"], "w")
 
 			# "New Year posts" folder
-			self.new_year_posts_folder = self.current_year["Folders"][self.language_texts["new_year, en - " + self.user_language]]["root"] + "Posts/"
+			self.new_year_posts_folder = self.current_year["Folders"][self.language_texts["new_year"]]["root"] + "Posts/"
 
 			# Social Networks posts files
 			for item in ["Instagram, Facebook", "Twitter", "WhatsApp"]:

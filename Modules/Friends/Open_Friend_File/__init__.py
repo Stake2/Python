@@ -8,7 +8,7 @@ import re
 
 class Open_Friend_File(Friends):
 	def __init__(self, run_as_module = False, social_network = None, open_social_network_file = None):
-		super().__init__(select_social_network = False, social_network = social_network, remove_social_networks_with_no_friends = True)
+		super().__init__(social_network = social_network, remove_social_networks_with_no_friends = True)
 
 		self.run_as_module = run_as_module
 

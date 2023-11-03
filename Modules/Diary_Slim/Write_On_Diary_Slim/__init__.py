@@ -36,6 +36,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Texts": {}
 		}
 
+		self.slim_texts["Dictionary"]["Today task"] = deepcopy(default_dictionary)
+		self.slim_texts["Dictionary"]["Today task"]["Key"] = "Today task"
+		self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = ""
+
 		for language in self.languages["small"]:
 			# Iterate through the state names
 			for state in self.states["names"]:
@@ -79,8 +83,6 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Add today done task to slim texts
 			if self.today_task_done_text != "":
 				if ", " not in self.today_task_done_text:
-					self.slim_texts["Dictionary"]["Today task"] = deepcopy(default_dictionary)
-
 					self.slim_texts["Dictionary"]["Today task"]["Key"] = "Today task"
 					self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text
 
@@ -124,7 +126,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 			options = list(self.slim_texts["Dictionary"].keys())
 			language_options = []
 
-			for key in deepcopy(options):
+			options_copy = deepcopy(options)
+
+			for key in options_copy:
 				dictionary = self.slim_texts["Dictionary"][key]
 
 				text = dictionary["Texts"][self.user_language]
@@ -134,14 +138,22 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				language_options.append(text)
 
+				if (
+					key == "Today task" and
+					text == ""
+				):
+					options.remove(key)
+					options_copy.remove(key)
+					language_options.remove(text)
+
 			# Change the index of Slim texts if they have a custom index
-			for key in deepcopy(options):
+			for key in options_copy:
 				dictionary = self.slim_texts["Dictionary"][key]
 
 				text = dictionary["Texts"][self.user_language]
 
 				if "Index" in dictionary:
-					index = dictionary["Index"]
+					index = dictionary["Index"] - 1
 
 					if index == -1:
 						index = len(options) - 1
@@ -173,13 +185,19 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 					text = state["names"][self.user_language] + " (" +  self.JSON.Language.texts[order][self.user_language] + " " + self.JSON.Language.texts["state"][self.user_language] + ")"
 
-					language_options.remove(text)
+					if text in language_options:
+						language_options.remove(text)
+
 					language_options.append(text)
 
 			# Add the "today task" text to the end of the list
 			text = self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language]
-			language_options.remove(text)
-			language_options.append(text)
+
+			if text in language_options:
+				language_options.remove(text)
+
+			if text != "":
+				language_options.append(text)
 
 			# Ask for the user to select the Slim text
 			option_info = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)

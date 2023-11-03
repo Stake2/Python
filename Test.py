@@ -7,6 +7,11 @@ from googleapiclient import discovery
 
 class Main():
 	def __init__(self):
+		# Define the module folders
+		from Utility.Define_Folders import Define_Folders as Define_Folders
+
+		Define_Folders(self)
+
 		self.Define_Basic_Variables()
 
 		methods = [
@@ -17,6 +22,8 @@ class Main():
 			"Add_Line_To_Files",
 			"Replace_Lines",
 			"Get_Video_Info",
+			"Get_Channel_Info",
+			"Get_Video_Images",
 			"Get_Playlist_IDs_And_Titles",
 			"Get_Channel_ID",
 			"Create_Playlist",
@@ -33,34 +40,67 @@ class Main():
 		method()
 
 	def Define_Basic_Variables(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		from copy import deepcopy
 
-		from Utility.API import API as API
-		from Utility.File import File as File
-		from Utility.Date import Date as Date
-		from Utility.Folder import Folder as Folder
-		from Utility.Input import Input as Input
+		# Import the JSON module
 		from Utility.JSON import JSON as JSON
-		from Utility.Text import Text as Text
 
-		self.Global_Switches = Global_Switches()
-		self.Global_Switches.Reset()
-
-		self.API = API()
-		self.File = File()
-		self.Date = Date()
-		self.Folder = Folder()
-		self.Input = Input()
 		self.JSON = JSON()
-		self.Text = Text()
 
-		self.app_settings = self.JSON.Language.app_settings
+		# Get the modules list
+		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+
+		# Import the "importlib" module
+		import importlib
+
+		# Create a list of the modules that will not be imported
+		remove_list = [
+			"Define_Folders",
+			"Language",
+			"JSON"
+		]
+
+		# Iterate through the Utility modules
+		for module_title in self.modules["Utility"]["List"]:
+			# If the module title is not inside the remove list
+			if module_title not in remove_list:
+				# Import the module
+				module = importlib.import_module("." + module_title, "Utility")
+
+				# Get the sub-class
+				sub_class = getattr(module, module_title)
+
+				# Add the sub-clas to the current module
+				setattr(self, module_title, sub_class())
+
+		# Make a backup of the module folders
+		self.module_folders = {}
+
+		for item in ["modules", "module_files"]:
+			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
+
+		# Restore the backup of the module folders
+		for item in ["modules", "module_files"]:
+			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
+
+		# Get the switches dictionary from the "Global Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Get the Languages dictionary
 		self.languages = self.JSON.Language.languages
 
+		# Get the user language and full user language
 		self.user_language = self.JSON.Language.user_language
 		self.full_user_language = self.JSON.Language.full_user_language
 
-		self.folders = self.Folder.folders
+		# Get the Sanitize method of the File class
+		self.Sanitize = self.File.Sanitize
+
+		# Get the current date from the Date module
+		self.date = self.Date.date
 
 	def Notepad_Theme(self):
 		self.File.Close("notepad++")
@@ -468,6 +508,86 @@ class Main():
 		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
 
 		self.JSON.Show(dict_)
+
+	def Get_Channel_Info(self):
+		username = self.Input.Type("Username")
+
+		youtube = {
+			"item": "search",
+			"parameters": {
+				"part": "id,snippet",
+				"type": "channel",
+				"q": username
+			}
+		}
+
+		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+
+		self.JSON.Show(dict_["Channel"])
+
+		self.Text.Copy(dict_["Channel"])
+
+		return dict_
+
+	def Get_Video_Images(self):
+		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
+
+		titles_file = folder + self.languages["full"]["pt"] + ".txt"
+		titles = self.File.Contents(titles_file)["lines"]
+
+		ids_file = folder + "IDs.txt"
+		ids = self.File.Contents(ids_file)["lines"]
+
+		youtube_link = "https://i.ytimg.com/vi/{}/{}default.jpg"
+
+		import wget
+		import requests
+
+		downloads_folder = self.folders["user"]["downloads"]["root"]
+
+		download_folder = downloads_folder + folder.split("/")[-3] + "/"
+		self.Folder.Create(download_folder)
+
+		i = 0
+		for id in ids:
+			title = titles[i]
+
+			print()
+			print("-----")
+			print()
+			print(str(i + 1) + "/" + str(len(ids)) + ":")
+			print()
+			print(title + ":")
+			print()
+
+			found_file = False
+
+			for quality in ["maxres", "hq"]:
+				link = youtube_link.format(id, quality)
+
+				print("\t" + link)
+
+				request = requests.get(link)
+
+				if (
+					found_file == False and
+					request.status_code == 200
+				):
+					file_name = self.Sanitize(title, restricted_characters = True) + ".jpg"
+
+					print()
+					print()
+
+					file = download_folder + file_name
+
+					if self.File.Exist(file) == False:
+						wget.download(link, file)
+
+					print()
+
+					found_file = True
+
+			i += 1
 
 	def Get_Playlist_IDs_And_Titles(self, ask_for_input = True):
 		id = self.Get_ID("playlist")

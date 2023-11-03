@@ -6,7 +6,7 @@ from Friends.Open_Friend_File import Open_Friend_File as Open_Friend_File
 
 class Show_Friend_Information(Friends):
 	def __init__(self):
-		super().__init__(select_social_network = False)
+		super().__init__()
 
 		self.Select_File_Type()
 		self.Create_Information_Items()
@@ -22,8 +22,8 @@ class Show_Friend_Information(Friends):
 
 			self.Social_Networks.texts["social_networks"]["en"]: {
 				"English": self.Social_Networks.texts["information_items, type: list"]["en"],
-				self.full_user_language: self.Social_Networks.texts["information_items, type: list"]["information_items, type: dict, en: " + self.user_language],
-			},
+				self.full_user_language: self.Social_Networks.texts["information_items, type: list"]["information_items, type: dict, en: " + self.user_language]
+			}
 		}
 
 		self.file_type = Open_Friend_File(run_as_module = True).file_type_dict["file_type"]

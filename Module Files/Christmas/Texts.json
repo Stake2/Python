@@ -3,7 +3,6 @@
 		"en": "Christmas",
 		"pt": "Natal"
 	},
-	"christmas, title(), en - pt": "Christmas - Natal",
 	"planning, title()": {
 		"en": "Planning",
 		"pt": "Planejamento"
@@ -72,7 +71,6 @@
 		"en": "Watch",
 		"pt": "Assistir"
 	},
-	"watch, title(), en - pt": "Watch - Assistir",
 	"eat": {
 		"en": "eat",
 		"pt": "comer"
@@ -125,7 +123,6 @@
 		"pt": "Seu Natal de {} está concluído, parabéns!",
 		"en": "Your Christmas of {} is finished, congratulations!"
 	},
-	"texts, title(), en - pt": "Texts - Textos",
 	"list": {
 		"en": "list",
 		"pt": "lista"

@@ -7,9 +7,10 @@ class System():
 		# Define module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
-		self.switches = {
-			"verbose": False
-		}
+		from Utility.Global_Switches import Global_Switches as Global_Switches
+
+		# Global Switches dictionary
+		self.switches = Global_Switches().switches["Global"]
 
 		Define_Folders(self)
 

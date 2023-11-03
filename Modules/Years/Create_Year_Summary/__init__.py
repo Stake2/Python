@@ -2,16 +2,28 @@
 
 from Years.Years import Years as Years
 
+# Import the "importlib" module
+import importlib
+
 class Create_Year_Summary(Years):
 	def __init__(self):
 		super().__init__(select_year = False)
 
 		self.Define_Year()
 
+		# Define the Summary dictionary
+		self.summary = {
+			"Is summary date": False,
+			"Date": self.summary_date
+		}
+
+		if self.switches["testing"] == True:
+			self.summary["Is summary date"] = True
+
 		if self.year != None:
 			self.Check_Day()
 
-			if self.today_is_summary_day == True:
+			if self.summary["Is summary date"] == True:
 				self.Define_Language_Folders_And_Files()
 				self.Define_Year_Data()
 				self.Define_Summary_Text()
@@ -19,264 +31,574 @@ class Create_Year_Summary(Years):
 				self.Show_Summary_Information()
 
 	def Define_Year(self):
+		# Get the years list
 		years_list = self.years["List"].copy()
 
-		for year in self.years:
-			english_files = self.years[year]["folders"][self.languages["full"]["en"]]
+		# Itearate through the years' list
+		for year in self.years["List"]:
+			# Get the English files dictionary
+			english_files = self.years[year]["Folders"][self.languages["full"]["en"]]
 
-			if self.texts["summary, title()"]["en"] in english_files and \
-			self.File.Contents(english_files[self.texts["summary, title()"]["en"]])["lines"] != []:
+			# If the "Summary" file in English exists
+			# And the summary file is not empty
+			if (
+				self.texts["summary, title()"]["en"] in english_files and
+				self.File.Contents(english_files[self.texts["summary, title()"]["en"]])["lines"] != []
+			):
+				# Remove the year from the years' list
+				# Because its summary file is already created and filled
 				years_list.remove(year)
 
+		# If the years' list is empty
+		# That means the user already created a summary for the current year
+		# And show that information to the user
 		if years_list == []:
 			print()
 			print("--------------------")
 			print()
 			print(self.language_texts["you_already_created_the_summary_for_this_year"] + ":")
-			print(self.date["Units"]["Year"])
+			print(self.current_year_number)
 			print()
 			print("--------------------")
 
+		# Define the local Year dictoinary as None
 		self.year = None
 
+		# If the years' list is not empty
 		if years_list != []:
+			# Define the local Year dictionary as the only year inside the years' list (the current year)
 			self.year = self.years[str(years_list[0])]
 
 	def Check_Day(self):
-		self.today_is_summary_day = False
+		# If the current day and month is the same as the summary day and month
+		if (
+			self.date["Units"]["Day"] == self.summary["Date"]["Units"]["Day"] and
+			self.date["Units"]["Month"] == self.summary["Date"]["Units"]["Month"]
+		):
+			# Then the current date is the summary date
+			self.summary["Is summary date"] = True
 
-		if self.date["Units"]["Day"] == self.summary_date["Day"] and self.date["Units"]["Month"] == self.summary_date["Month"]:
-			self.today_is_summary_day = True
+		# If the summary date is not today
+		if self.summary["Is summary date"] == False:
+			# Define the date text of the summary date
+			self.summary["Date text"] = self.language_texts["{} {} {}"].format(self.summary["Date"]["Units"]["Day"], self.summary["Date"]["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], self.current_year_number)
 
-		if self.today_is_summary_day == False:
-			day_month = self.language_texts["{} {} {}"].format(self.summary_date["Day"], self.summary_date["Timezone"]["Texts"]["Month name"], self.date["Units"]["Year"])
-			today = self.language_texts["{} {} {}"].format(self.date["Units"]["Day"], self.date["Timezone"]["Texts"]["Month name"], self.date["Units"]["Year"])
+			# Define the date text of today
+			today_date_text = self.language_texts["{} {} {}"].format(self.date["Units"]["Day"], self.date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], self.current_year_number)
 
 			print()
 			print("--------------------")
 			print()
-			print(self.language_texts["today_is_not_the_{}_run_this_program_again_when_it_is_today_is"].format(day_month) + ":")
-			print(today)
+			print(self.language_texts["executing_the_year_summary_creator"] + "...")
+			print()
+			print(self.language_texts["today_is_not_the_{}_run_this_program_again_when_it_is"].format(self.summary["Date text"]) + ".")
+			print()
+			print(self.JSON.Language.language_texts["today_is"] + ":")
+			print(today_date_text)
 			print()
 			print("--------------------")
 
 	def Define_Language_Folders_And_Files(self):
-		self.language_folders = {}
+		# Define the summary Files dictionary
+		self.summary["Files"] = {}
 
+		# Define the language folders dictionary of the summary
+		self.summary["Language folders"] = {}
+
+		# Add the language folders
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
-			self.language_folders[language] = self.year["Folders"][full_language]["root"]
+			self.summary["Language folders"][language] = {
+				"root": self.year["Folders"][full_language]["root"]
+			}
 
-		self.language_files = {}
-
+		# Define the summary files per language
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
 			summary_text = self.texts["summary, title()"][language]
 
-			self.language_files[language] = self.language_folders[language] + summary_text + ".txt"
-			self.File.Create(self.language_files[language])
+			# Define the summary file
+			file = self.summary["Language folders"][language]["root"] + summary_text + ".txt"
 
-			self.year["Folders"][full_language][summary_text] = self.language_files[language]
+			# Add the summary files to the summary Files dictionary
+			self.summary["Files"][language] = file
 
 	def Define_Year_Data(self):
-		self.File.Edit(self.year["Folders"][self.language_texts["edited_in, en - pt"]], self.Date.Now()["strftime"], "w")
+		# Update the "Edited in" date to now
+		self.date = self.Date.Now()
 
-		self.year_data = {
-			"header": {
-				"author, title()": self.author,
-				"created_in": self.File.Contents(self.year["Folders"][self.language_texts["created_in, en - pt"]])["lines"][0],
-				"edited_in": self.File.Contents(self.year["Folders"][self.language_texts["edited_in, en - pt"]])["lines"][0],
+		self.File.Edit(self.year["Folders"][self.language_texts["edited_in"]], self.date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"], "w")
+
+		# Define the summary header keys
+		self.summary["Header"] = {
+			"Author": self.author
+		}
+
+		# Define the created and edited in texts on the summary header
+		items = [
+			"Created",
+			"Edited"
+		]
+
+		for item in items:
+			item = item.lower() + "_in"
+
+			key = self.Text.Capitalize(item.replace("_", " "))
+
+			text = self.language_texts[item]
+
+			contents = self.File.Contents(self.year["Folders"][text])
+
+			self.summary["Header"][key] = contents["lines"][0]
+
+		# Define the classes to be imported
+		classes = [
+			"Tasks",
+			"GamePlayer",
+			"Watch_History",
+			"Friends"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class())
+
+		# Create the Summary Numbers dictionary
+		self.summary["Numbers"] = {
+			"Things done": 0
+		}
+
+		# Create the Summary Histories dictionary
+		self.summary["Histories"] = {}
+
+		# Define the classes, their keys, and numbers
+		classes = {
+			"Tasks": {
+				"Key": "",
+				"Numbers": {
+					"Productive things": ""
+				}
+			},
+			"Watch_History": {
+				"Key": "Entries",
+				"Numbers": {
+					"Watched things": "",
+					"Media comments": "Comments"
+				},
+				"Per type": True
+			},
+			"GamePlayer": {
+				"Key": "Sessions",
+				"Numbers": {
+					"Game sessions played": ""
+				}
+			},
+			"Friends": {
+				"Key": "",
+				"Numbers": {
+					"Known people": "By year"
+				}
 			}
 		}
 
-		self.year_numbers = {}
+		current_year = str(self.current_year_number)
 
-		from Tasks.Tasks import Tasks as Tasks
-		from GamePlayer.GamePlayer import GamePlayer as GamePlayer
-		from Friends.Friends import Friends as Friends
+		# Iterate through the classes
+		for key, sub_class in classes.items():
+			sub_class["Class"] = getattr(self, key)
 
-		# GamePlayer instantiate
-		self.Tasks = Tasks()
-		self.GamePlayer = GamePlayer()
+			# Get the History folder
+			history = {
+				"Class": key,
+				"Key": sub_class["Key"]
+			}
 
-		self.year_numbers["things_done_in_{year}"] = 0
+			# Update the local History dictionary with the keys inside the History dictionary of the class
+			history.update(sub_class["Class"].history)
 
-		# Tasks data
-		self.tasks = self.JSON.To_Python(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Tasks.json"])
-		self.task_times = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Times"])["lines"]
+			items = [
+				"Per type",
+				"Gender"
+			]
 
-		# Watch History data
-		self.watch_history_data = self.JSON.To_Python(self.episodes_file)
+			for item in items:
+				if item in sub_class:
+					history[item] = sub_class[item]
 
-		self.year_numbers["productive_things"] = self.File.Contents(self.Tasks.folders["Task History"][str(self.date["Units"]["Year"])]["Number"])["lines"][0]
-		self.year_numbers["watched_things"] = self.watch_history_data["Number"]
-		self.year_numbers["media_comments"] = self.watch_history_data["Comments"]
-		self.year_numbers["game_matches_played"] = self.GamePlayer.current_year_played_number
-		self.year_numbers["known_people"] = Friends(self.switches, select_social_network = False).current_year_friends_number
+			# If the year folder exists, define it as the history folder
+			folder = history["Folder"] + current_year + "/"
 
-		for data in self.year_numbers:
-			self.year_numbers["things_done_in_{year}"] += int(self.year_numbers[data])
+			if self.Folder.Exist(folder) == True:
+				history["Folder"] = folder
 
-		self.year_data["detailed"] = {}
-		self.year_data["detailed"]["productive_things"] = {}
+			if history["Key"] == "":
+				history["Key"] = key
 
-		for language in self.languages["small"]:
-			self.year_data["detailed"]["productive_things"][language] = self.tasks[language]
+			# Define the History entries file
+			history["Entries file"] = history["Folder"] + history["Key"] + ".json"
 
-			while len(self.year_data["detailed"]["productive_things"][language]) != 10:
-				self.year_data["detailed"]["productive_things"][language].pop(0)
+			# Read the Entries file
+			history["Entries"] = self.JSON.To_Python(history["Entries file"])
 
-		self.itens_per_type = 5
+			# Import the Numbers dictionary from the class dictionary
+			history["Numbers"] = sub_class["Numbers"]
 
-		self.year_data["detailed"]["watched_things"] = self.watch_history_data
+			# Define the Entries numbers variable for easier typing
+			numbers = history["Entries"]["Numbers"]
 
-		self.plural_media_types = self.JSON.To_Python(self.folders["apps"]["module_files"]["root"] + "Watch_History/Texts.json")["plural_media_types, type: list"]
+			# Iterate through the classes numbers
+			for key, number_key in history["Numbers"].items():
+				# If the number key is empty, define it as "Total"
+				if number_key == "":
+					number_key = "Total"
 
-		for key in self.year_data["detailed"]["watched_things"]:
-			if key in self.plural_media_types["en"]:
-				media_type_episodes = self.year_data["detailed"]["watched_things"][key]["Episodes"]
-				media_type_times = self.year_data["detailed"]["watched_things"][key]["Times"]
+				# Get the number from the Entries file
+				number = numbers[number_key]
 
-				while len(media_type_episodes) > self.itens_per_type:
-					media_type_episodes.pop(0)
-					media_type_times.pop(0)
+				# If the number is a dictionary
+				if type(numbers[number_key]) == dict:
+					# Get the number by year
+					number = number[current_year]
 
-		self.year_data["detailed"]["game_matches_played"] = {}
+				# Add the number to the summary numbers dictionary
+				history["Numbers"][key] = number
 
-		for language in self.languages["small"]:
-			self.year_data["detailed"]["game_matches_played"][language] = self.GamePlayer.current_year_played_time_language[language]
+			# Define the types list
+			history["Types list"] = [
+				"Normal"
+			]
 
-			while len(self.year_data["detailed"]["game_matches_played"][language]) != self.itens_per_type:
-				self.year_data["detailed"]["game_matches_played"][language].pop(0)
+			# Define Entries per type if they exists
+			if "Per type" in history:
+				# Define the types list as the English plural types of the class
+				history["Types list"] = history["Types"]["Plural"]["en"]
 
-	def Define_Summary_Text(self):
-		self.summary_text = {}
+				# Define the per type folders
+				history["Per type folders"] = {
+					"root": history["Folder"] + history["Types folder"] + "/"
+				}
 
-		i = 0
-		for language in self.languages["small"]:
-			self.summary_text[language] = ""
+				# Define the per type Entries dictionary
+				history["Entries per type"] = {}
 
-			self.summary_texts = self.texts["year_summary_texts, type: list"][language]
+				# Iterate through the English plural types list
+				for entry_type in history["Types list"]:
+					# Define the local folders dictionary
+					folders = {
+						"root": history["Per type folders"]["root"] + entry_type + "/"
+					}
 
-			# Header texts
-			for header_text in self.year_data["header"]:
-				self.summary_text[language] += self.texts[header_text][language] + ": " + self.year_data["header"][header_text]
-				self.summary_text[language] += "\n"
+					# Define the "Entries.json" file
+					folders["Entries"] = folders["root"] + "Entries.json"
 
-			self.summary_text[language] += "\n" + "-----" + "\n\n"
+					# Read the per type "Entries.json" file
+					history["Entries per type"][entry_type] = self.JSON.To_Python(folders["Entries"])
 
-			# Top numbers text
-			for summary_text in self.year_numbers:
-				summary_text_backup = summary_text
+					# Add the local folders dictionary to the per type folders dictionary
+					history["Per type folders"][entry_type] = folders
 
-				summary_text = self.texts[summary_text][language]
+			if "Dictionary" in history["Entries"]:
+				# Define the History Data dictionary
+				history["Data"] = {
+					"Number": 5,
+					"Text": {}
+				}
 
-				if "{year}" in summary_text:
-					summary_text = summary_text.replace("{year}", self.year["Number"])
+				# Iterate through the entry types list
+				for entry_type in history["Types list"]:
+					# Define the normal Entries root dictionary
+					entries = history["Entries"]
 
-				summary_text += ": "
+					# Define the Entries root dictionary per type if the entry type is not empty
+					if entry_type != "Normal":
+						entries = history["Entries per type"][entry_type]
 
-				if summary_text_backup in self.year_numbers:
-					summary_text += str(self.year_numbers[summary_text_backup])
+					# Get the Entries dictionary
+					entries = entries["Dictionary"]
 
-				if self.year["Number"] in summary_text:
-					summary_text += " (" + self.texts["the_sum_of_numbers_below"][language] + ")"
+					for language in self.languages["small"]:
+						# Define the empty language text key if it does not exist
+						if language not in history["Data"]["Text"]:
+							history["Data"]["Text"][language] = ""
 
-				if summary_text != self.summary_texts[-1]:
-					summary_text += "\n"
+						# Define the language entry type if the entry type is not "Normal"
+						if entry_type != "Normal":
+							type_dictionary = history["Types"][entry_type]
 
-				self.summary_text[language] += summary_text
+							language_entry_type = type_dictionary["Plural"][language]
 
-			self.summary_text[language] += "\n" + "-----" + "\n\n"
+							# Add the language entry type to the text variable
+							history["Data"]["Text"][language] += "\t" + language_entry_type
 
-			self.year_summary_detailed_texts = self.texts["year_summary_detailed_texts, type: list"][language]
+						# Define the entries list
+						local_entries = list(entries.values())
 
-			# Detailed texts
-			for summary_text in self.year_data["detailed"]:
-				self.summary_text[language] += self.texts[summary_text][language]
+						# Define the Entries dictionary with the entries number and list
+						local_entries = {
+							"Number": len(local_entries),
+							"List": local_entries
+						}
 
-				if summary_text not in ["productive_things", "watched_things"]:
-					number = self.itens_per_type
+						# Define the i and last number numbers
+						i = local_entries["Number"]
 
-				if summary_text == "productive_things":
-					number = 10
+						last_number = history["Data"]["Number"]
 
-				if summary_text != "watched_things":
-					self.summary_text[language] += " (" + self.texts["last, feminine"][language] + " " + self.Date.texts["number_names, type: list"][language][number] + ")"
+						# If the i number is lesser than the data number
+						if i < history["Data"]["Number"]:
+							# Define the i number as zero (0)
+							i = 0
 
-				self.summary_text[language] += ":\n"
+							last_number = local_entries["Number"]
 
-				if summary_text != "watched_things":
-					i = 1
-					for data in self.year_data["detailed"][summary_text][language]:
-						self.summary_text[language] += "\t" + str(i) + ". " + data
+						# If the i number is greater than or equal to the data number
+						if i >= history["Data"]["Number"]:
+							# While it is not equal to the entries number less the data number
+							while i != local_entries["Number"] - history["Data"]["Number"]:
+								# Remove one from the i number
+								i -= 1
 
-						if summary_text == "productive_things":
-							self.summary_text[language] += " (" + self.task_times[i] + ")"
+						# If the entry type is not "Normal"
+						if entry_type != "Normal":
+							# Add the "last [number]" text
+							gender = type_dictionary["Gender"]
 
-						if data != self.year_data["detailed"][summary_text][language][-1]:
-							self.summary_text[language] += "\n"
+							history["Data"]["Text"][language] += " (" + self.JSON.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][last_number] + ")"
 
-						i += 1
+							# Add a colon and line break
+							history["Data"]["Text"][language] += ":" + "\n"
 
-				if summary_text == "watched_things":
-					c = 0
-					for media_type in self.plural_media_types["en"]:
-						media_type_episodes = self.year_data["detailed"][summary_text][media_type]["Episodes"]
+						number = 1
+						# While the i variable is not equal to the entries number
+						while i != local_entries["Number"]:
+							entry = local_entries["List"][i]
 
-						language_media_type = self.plural_media_types[language][c]
+							# Define the entry text using the method of the current class
+							# This makes possible for classes that have a History to tell the "Years" module how they want their data to be shown on the year summary
+							entry_text = sub_class["Class"].Define_Year_Summary_Data(entry, language)
 
-						number_text = " (" + self.texts["last"][language] + " " + self.Date.texts["number_names, type: list"][language][len(media_type_episodes)]
+							entry_number = str(entry["Number"])
+							#entry_number = str(number)
 
-						if media_type != "Movies":
-							number_text += " " + self.texts["episodes"][language]
+							# Add the item number to the entry text
+							entry = entry_number + ". " + entry_text
 
-						number_text += ")"
+							# Define the tab variable
+							tab = "\t"
 
-						self.summary_text[language] += "\t" + language_media_type + number_text + ":\n"
+							# Define the tab variable as two tabs if the entry type is not "Normal"
+							if entry_type != "Normal":
+								tab = "\t\t"
 
-						i = 1
-						for data in media_type_episodes:
-							self.summary_text[language] += "\t\t" + str(i) + ". " + data
+							# Define the text
+							history["Data"]["Text"][language] += tab + entry + "\n"
 
-							self.summary_text[language] += " (" + self.year_data["detailed"][summary_text][media_type]["Times"][i - 1] + ")"
-
-							if data != media_type_episodes[-1]:
-								self.summary_text[language] += "\n"
-
+							number += 1
 							i += 1
 
-						if media_type != list(self.year_data["detailed"][summary_text].keys())[-1]:
-							self.summary_text[language] += "\n\n"
+						if entry_type != history["Types list"][-1]:
+							history["Data"]["Text"][language] += "\n"
 
-						c += 1
+			# Remove the "Entries" key as it is not needed anymore
+			history.pop("Entries")
 
-				if summary_text != "game_matches_played":
-					self.summary_text[language] += "\n\n"
+			if "Per type" in history:
+				# Remove the "Entries per type" key per type as they is not needed anymore
+				history.pop("Entries per type")
 
-			i += 1
+			# Add the History dictionary to the Summary dictionary
+			self.summary["Histories"][history["Class"]] = history
+
+		# Add all History numbers to the "Things done" number
+		for history in self.summary["Histories"].values():
+			for number in history["Numbers"].values():
+				self.summary["Numbers"]["Things done"] += number
+
+	def Define_Summary_Text(self):
+		# Define the summary Text dictionary
+		self.summary["Text"] = {}
+
+		# Define the classes that have detailed texts
+		self.summary["Detailed classes"] = [
+			"Tasks",
+			"Watch_History",
+			"GamePlayer"
+		]
+
+		# Iterate through the small languages list
+		for language in self.languages["small"]:
+			full_language = self.languages["full"][language]
+
+			# Define the language summary text
+			self.summary["Text"][language] = ""
+
+			# Add the header texts
+			for key in self.summary["Header"]:
+				text_key = key.lower().replace(" ", "_")
+
+				if "_" not in text_key:
+					text_key += ", title()"
+
+				# Define the texts dictionary to be used
+				texts = self.JSON.Language.texts
+
+				if text_key in self.texts:
+					texts = self.texts
+
+				# Add the header text to the language summary text
+				self.summary["Text"][language] += texts[text_key][language] + ": " + self.summary["Header"][key]
+
+				# Add a line break
+				self.summary["Text"][language] += "\n"
+
+			# Add a separator
+			self.summary["Text"][language] += "\n" + "-----" + "\n\n"
+
+			# Add the "This Year I" text if it exists and is not empty
+			folder = self.year["Folders"][full_language]
+
+			if self.texts["this_year_i"][language] in folder:
+				file = self.year["Folders"][full_language][self.texts["this_year_i"][language]]
+
+				contents = self.File.Contents(file)
+
+				if contents["lines"] != []:
+					# Add the "This Year I" text
+					self.summary["Text"][language] += contents["string"]
+
+					# Add a separator
+					self.summary["Text"][language] += "\n\n" + "-----" + "\n\n"
+
+			# Add the "Things done in {year}" text
+			text = self.texts["things_done_in"][language] + " " + str(self.current_year_number) + ": "
+
+			text += str(self.summary["Numbers"]["Things done"])
+
+			text += " (" + self.texts["the_sum_of_numbers_below"][language] + ")"
+
+			self.summary["Text"][language] += text + "\n"
+
+			# Iterate through the Histories dictionary
+			for key, history in self.summary["Histories"].items():
+				number_keys = list(history["Numbers"].keys())
+
+				# Iterate through the History Numbers dictionary
+				for number_key, number in history["Numbers"].items():
+					# Define the text key
+					text_key = number_key.lower().replace(" ", "_")
+
+					# Define the text with the number
+					text = self.texts[text_key][language] + ": " + str(number)
+
+					# Add a line break to the text
+					text += "\n"
+
+					# If the number is not zero
+					if number != 0:
+						# Add the text to the language summary text
+						self.summary["Text"][language] += text
+
+			# Add a separator
+			self.summary["Text"][language] += "\n" + "-----" + "\n\n"
+
+			# Get the Histories list
+			histories = list(self.summary["Histories"].keys())
+
+			# Iterate through the Histories dictionary
+			for key, history in self.summary["Histories"].items():
+				# If the History Class is not inside the detailed classes list
+				if history["Class"] not in self.summary["Detailed classes"]:
+					# Remove the History from the local Histories list
+					histories.remove(key)
+
+			# Iterate through the Histories dictionary
+			for key in histories:
+				# Define the local History dictionary
+				history = self.summary["Histories"][key]
+
+				# If the History Class is inside the detailed classes list
+				if history["Class"] in self.summary["Detailed classes"]:
+					# Define the History Numbers variable for easier typing
+					numbers = history["Numbers"]
+
+					# Define the keys and values
+					keys = list(numbers.keys())
+					values = list(numbers.values())
+
+					# Get the first number key and number
+					number_key, number = keys[0], values[0]
+
+					# Define the text key
+					text_key = number_key.lower().replace(" ", "_")
+
+					# Define the number text
+					text = self.texts[text_key][language]
+
+					# Define the History Data variable for easier typing
+					data = history["Data"]
+
+					# Only add the " (last [number])" text if the "per type" mode is not activated on the History
+					if "Per type" not in history:
+						gender = "feminine"
+
+						if "Gender" in history:
+							gender = history["Gender"]
+
+						text += " (" + self.JSON.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][data["Number"]] + ")"
+
+					# Add a colon and a line break
+					text += ":" + "\n"
+
+					# Add the History Data text
+					text += data["Text"][language]
+
+					# Add a line break if the History is not the last one
+					if history["Class"] != histories[-1]:
+						text += "\n"
+
+					# Add the detailed History text to the language summary text
+					self.summary["Text"][language] += text
+
+		# Iterate through the small languages list
+		for language in self.languages["small"]:
+			# Remove the last space if it exists
+			if self.summary["Text"][language][-1] == "\n":
+				self.summary["Text"][language] = self.summary["Text"][language][:-1]
 
 	def Write_Summary_To_Files(self):
 		for language in self.languages["small"]:
-			text_to_write = self.summary_text[language]
+			text = self.summary["Text"][language]
 
-			self.File.Edit(self.language_files[language], text_to_write, "w")
+			self.File.Edit(self.summary["Files"][language], text, "w")
 
 	def Show_Summary_Information(self):
+		# Show the inforamtion text
+		print()
 		print("--------------------")
 		print()
 		print(self.language_texts["the_summary_of_this_year_was_created"] + ":")
 		print(self.year["Number"])
 		print()
 
+		# Show the summary in the user language
 		print(self.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
 		print("____________________")
-		print(self.summary_text[self.user_language])
+		print()
+		print(self.summary["Text"][self.user_language])
+		print()
 		print("____________________")
 
-		self.File.Open(self.language_files[self.user_language])
+		# Open the user language summary file
+		self.File.Open(self.summary["Files"][self.user_language])
 
 		print()
 		print(self.language_texts["the_program_has_finished_the_creation_of_the_year_summary_for"] + " " + self.year["Number"] + ".")

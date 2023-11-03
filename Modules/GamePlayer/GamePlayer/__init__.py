@@ -120,6 +120,11 @@ class GamePlayer(object):
 		# Define the current year folder for easier typing
 		self.folders["play_history"]["current_year"] = self.folders["play_history"][self.current_year["Number"]]
 
+		# Define the "History" dictionary
+		self.history = {
+			"Folder": self.Folder.folders["notepad"]["networks"]["game_network"]["play_history"]["root"]
+		}
+
 	def Parse_Arguments(self):
 		if self.switches["verbose"] == True:
 			print()
@@ -1243,6 +1248,49 @@ class GamePlayer(object):
 			i += 1
 
 		return gaming_time
+
+	def Define_Title(self, title, language = None):
+		if language == None:
+			language = self.user_language
+
+		keys = [
+			"Original",
+			language,
+			"Romanized"
+		]
+
+		for title_key in keys:
+			if title_key in title:
+				key = title_key
+
+		title = title[key]
+
+		return title
+
+	def Define_Year_Summary_Data(self, entry, language):
+		# Get the language game type
+		game_type = self.game_types[entry["Type"]]["Type"][language]
+
+		# Define the item text, with the entry title with quotes
+		item = '"' + self.Define_Title(entry["Titles"], language) + '"'
+
+		# Add the game type with a comma, to the item text
+		#item += " (" + game_type + ")"
+
+		# Add a comma
+		item += ", "
+
+		# Add the session duration
+		session_duration = self.Date.Make_Time_Text(entry["Session duration"])[language]
+
+		item += self.Date.texts["duration, title()"][language] + ": " + session_duration + ", "
+
+		# Add the date
+		date = self.Date.texts["date, title()"][language] + ": " + self.Date.From_String(entry["Date"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+		item += date
+
+		return item
 
 	def Show_Information(self, dictionary):
 		game = dictionary["Game"]

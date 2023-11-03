@@ -59,41 +59,13 @@
 		"en": "Created in",
 		"pt": "Criado em"
 	},
-	"created_in, en - pt": "Created in - Criado em",
 	"edited_in": {
 		"en": "Edited in",
 		"pt": "Editado em"
 	},
-	"edited_in, en - pt": "Edited in - Editado em",
-	"year_summary_header_texts, type: list": {
-		"pt": [
-			"Autor",
-			"Criado em",
-			"Editado em"
-		],
-		"en": [
-			"Author",
-			"Created in",
-			"Edited in"
-		]
-	},
-	"year_summary_texts, type: list": {
-		"en": [
-			"Things done in {year}",
-			"Productive things",
-			"Watched things",
-			"Media comments",
-			"Game matches played",
-			"Known people"
-		],
-		"pt": [
-			"Coisas feitas em {year}",
-			"Coisas produtivas",
-			"Coisas assistidas",
-			"Comentários de mídia",
-			"Partidas de jogo jogadas",
-			"Pessoas conhecidas"
-		]
+	"things_done_in": {
+		"pt": "Coisas feitas em",
+		"en": "Things done in"
 	},
 	"things_done_in_{year}": {
 		"pt": "Coisas feitas em {year}",
@@ -111,25 +83,13 @@
 		"pt": "Comentários de mídia",
 		"en": "Media comments"
 	},
-	"game_matches_played": {
-		"pt": "Partidas de jogo jogadas",
-		"en": "Game matches played"
+	"game_sessions_played": {
+		"pt": "Sessões de jogo jogadas",
+		"en": "Game sessions played"
 	},
 	"known_people": {
 		"pt": "Pessoas conhecidas",
 		"en": "Known people"
-	},
-	"year_summary_detailed_texts, type: list": {
-		"pt": [
-			"Coisas produtivas",
-			"Coisas assistidas",
-			"Partidas de jogo jogadas"
-		],
-		"en": [
-			"Productive things",
-			"Watched things",
-			"Game matches played"
-		]
 	},
 	"the_summary_of_this_year_was_created": {
 		"pt": "O resumo deste Ano foi criado",
@@ -196,21 +156,17 @@
 		"pt": "Você já criou o resumo para este Ano",
 		"en": "You already created the summary for this Year"
 	},
-	"today_is_not_the_{}_run_this_program_again_when_it_is_today_is": {
-		"pt": "Hoje não é {}, execute este programa novamente quando for, hoje é",
-		"en": "Today is not the {}, run this program again when it is, today is"
+	"executing_the_year_summary_creator": {
+		"pt": "Executando o criador de resumo de ano",
+		"en": "Executing the year summary creator"
+	},
+	"today_is_not_the_{}_run_this_program_again_when_it_is": {
+		"pt": "Hoje não é {}, execute este programa novamente quando for",
+		"en": "Today is not the {}, run this program again when it is"
 	},
 	"the_sum_of_numbers_below": {
 		"pt": "a soma dos números abaixo",
 		"en": "the sum of numbers below"
-	},
-	"last": {
-		"pt": "últimos",
-		"en": "last"
-	},
-	"last, feminine": {
-		"pt": "últimas",
-		"en": "last"
 	},
 	"select_a_year_to_show_its_information": {
 		"pt": "Selecione um Ano para mostrar suas informações",
