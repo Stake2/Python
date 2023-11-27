@@ -2,5 +2,9 @@
    "copied_text": {
 		"en": "Copied text",
 		"pt": "Texto copiado"
+	},
+	"opening, title()": {
+		"en": "Opening",
+		"pt": "Abrindo"
 	}
 }

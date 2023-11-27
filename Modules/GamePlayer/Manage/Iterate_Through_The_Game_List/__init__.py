@@ -71,7 +71,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			"Format": "https://duckduckgo.com/?t=ffab&q={}"
 		}
 
-		self.File.Open(self.duckduckgo["Format"].format(self.game["Title"]))
+		self.System.Open(self.duckduckgo["Format"].format(self.game["Title"]))
 
 		self.Add_A_New_Game(self.dictionary)
 

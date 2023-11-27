@@ -356,7 +356,7 @@ class Date():
 
 			i += 1
 
-		date["Text"] = self.Make_Time_Text(date["Difference"])
+		date["Text"] = self.Make_Time_Text(date)
 
 		return date
 
@@ -368,8 +368,22 @@ class Date():
 			date["Text"] = {}
 
 		# Define the keys and remove the "Text" key
-		keys = list(date.keys())
-		keys.remove("Text")
+		keys = list(date["Difference"].keys())
+
+		# List the keys to remove
+		keys_to_remove = [
+			"Before",
+			"After",
+			"Object",
+			"Difference",
+			"Unit texts",
+			"Text"
+		]
+
+		# Remove the unused keys
+		for key in keys_to_remove:
+			if key in keys:
+				keys.remove(key)
 
 		for language in self.languages["small"]:
 			date["Text"][language] = ""
@@ -392,7 +406,7 @@ class Date():
 					text = date["Unit texts"][key][language]
 
 				# Add the number and the time text (plural or singular)
-				date["Text"][language] += str(date[key]) + " " + text
+				date["Text"][language] += str(date["Difference"][key]) + " " + text
 
 				# If the number of time attributes is equal to 2, add a space
 				if len(date) == 2:

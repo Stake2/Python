@@ -53,7 +53,7 @@ class Start_Christmas(Christmas):
 		print("-")
 		print()
 
-		self.File.Open(self.planning_file)
+		self.System.Open(self.planning_file)
 
 		self.planning_steps = ""
 

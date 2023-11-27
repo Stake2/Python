@@ -1,5 +1,7 @@
 # Social_Networks.py
 
+from copy import deepcopy
+
 class Social_Networks(object):
 	def __init__(self):
 		# Define the module folders
@@ -7,13 +9,17 @@ class Social_Networks(object):
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
+		# Folders, files, lists, and dictionaries methods
 		self.Define_Folders_And_Files()
-		self.Define_Lists_And_Dictionaries()
-		self.Define_Social_Network_Dictionaries()
+
+		# Class methods
+		self.Define_Information_Items_Dictionary()
+		self.Define_Social_Networks_Dictionary()
+		self.Define_Information_Items()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -32,6 +38,7 @@ class Social_Networks(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -86,235 +93,625 @@ class Social_Networks(object):
 		self.dash_space = "-"
 
 	def Define_Folders_And_Files(self):
-		# Folders
-		self.social_networks_text_folder = self.folders["notepad"]["effort"]["root"] + self.texts["social_networks"]["en"] + "/"
-		self.Folder.Create(self.social_networks_text_folder)
-
-		self.social_networks_database_folder = self.social_networks_text_folder + "Database/"
-		self.Folder.Create(self.social_networks_database_folder)
-
-		self.social_networks_image_folder = self.folders["mega"]["image"]["root"] + self.texts["social_networks"]["en"] + "/"
-		self.Folder.Create(self.social_networks_image_folder)
-
-		self.digital_identities_folder = self.social_networks_image_folder + "Digital identities/"
-		self.Folder.Create(self.digital_identities_folder)
-
-		# Files
-		self.social_networks_file = self.social_networks_database_folder + self.texts["social_networks"]["en"] + ".txt"
-		self.File.Create(self.social_networks_file)
-
-		self.social_networks_links_file = self.social_networks_database_folder + "Links.txt"
-		self.File.Create(self.social_networks_links_file)
-
-	def Define_Lists_And_Dictionaries(self):
-		# Lists
-		self.social_networks = {
-			"Names": self.File.Contents(self.social_networks_file)["lines"],
-			"Links": [],
-			"Information items": {},
+		# Define the "Social Networks" folder dictionary
+		self.folders["Social Networks"] = {
+			"Text": {
+				"root": self.folders["notepad"]["social_networks"]["root"]
+			},
+			"Image": {
+				"root": self.folders["mega"]["image"]["social_networks"]["root"]
+			}
 		}
 
-		for language in self.languages["small"]:
-			self.social_networks["Information items"][language] = []
+		# Social Networks text "Database" folder
+		self.folders["Social Networks"]["Text"]["Database"] = {
+			"root": self.folders["Social Networks"]["Text"]["root"] + "Database/"
+		}
 
-		self.file_names = {}
+		# Database "Information items.json" file
+		self.folders["Social Networks"]["Text"]["Database"]["Information items"] = self.folders["Social Networks"]["Text"]["Database"]["root"] + self.JSON.Language.texts["information_items"]["en"] + ".json"
+		self.File.Create(self.folders["Social Networks"]["Text"]["Database"]["Information items"])
 
-		file_name_keys = ["information", "information_item", "image_folder", "profile", "setting"]
+		# Social Networks image "Digital Identities" folder
+		self.folders["Social Networks"]["Image"]["Digital Identities"] = {
+			"root": self.folders["Social Networks"]["Image"]["root"] + self.JSON.Language.language_texts["digital_identities"] + "/"
+		}
 
-		for key in ["en", "language", "language_singular"]:
-			self.file_names[key] = []
+		self.Folder.Create(self.folders["Social Networks"]["Image"]["Digital Identities"]["root"])
 
-			for file_name_key in file_name_keys:
-				sub_key = file_name_key
+		# "Social Networks.json" file
+		self.folders["Social Networks"]["Text"]["Social Networks"] = self.folders["Social Networks"]["Text"]["root"] + self.JSON.Language.texts["social_networks"]["en"] + ".json"
+		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks"])
 
-				if key != "language_singular" and sub_key != "information":
-					sub_key += "s"
+		# "Social Networks list.txt" file
+		self.folders["Social Networks"]["Text"]["Social Networks list"] = self.folders["Social Networks"]["Text"]["root"] + self.language_texts["social_networks_list"] + ".txt"
+		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks list"])
 
-				if file_name_key in ["information", "profile", "setting"]:
-					sub_key += ", title()"
+	def Define_Information_Items_Dictionary(self):
+		# Define the "Information items" dictionary
+		self.information_items = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Lists": {
+				"Exact match": [],
+				"Do not ask for item": []
+			},
+			"Genders": {
+				"Items": [
+					"The",
+					"This",
+					"Part of"
+				],
+				"Masculine": [],
+				"Feminine": []
+			},
+			"Formats": {},
+			"Additional items": {},
+			"Dictionary": {}
+		}
 
-				value = self.texts[sub_key]
+		# Read the "Information items.json" file if it is not empty
+		file = self.folders["Social Networks"]["Text"]["Database"]["Information items"]
 
-				if key == "en":
-					value = value["en"]
+		if self.File.Contents(file)["lines"] != []:
+			self.information_items = self.JSON.To_Python(file)
 
-				if key != "en":
-					value = value[self.user_language]
+	def Define_Social_Networks_Dictionary(self):
+		# Define the default "Social Networks" dictionary
+		self.social_networks = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {}
+		}
 
-				self.file_names[key].append(value)
+		# Read the "Social Networks.json" file if it is not empty
+		file = self.folders["Social Networks"]["Text"]["Social Networks"]
 
-		self.file_names["en"][-2] = self.texts["profile, title()"]["en"]
+		if self.File.Contents(file)["lines"] != []:
+			self.social_networks = self.JSON.To_Python(file)
 
-	def Define_Social_Network_Dictionaries(self):
-		# Dictionaries
-		self.texts["information_items, type: list"] = {}
+		# ---------- #
 
-		dict_keys = ["folders", "files", "data", "links"]
+		# Define the default "File names" dictionary
+		dictionary = {
+			"Names": [
+				"Information",
+				"Items",
+				"Profile",
+				"Settings",
+				"Image folders"
+			],
+			"Dictionary": {}
+		}
 
-		# Social Networks iteration
-		for social_network in self.social_networks["Names"]:
-			self.social_networks[social_network] = {}
-			self.social_networks[social_network]["Name"] = social_network
+		# Iterate through the file names list
+		for file_name in dictionary["Names"]:
+			# Create the file name dictionary
+			dict_ = {}
 
-			# Create dictionary keys
-			for item in dict_keys:
-				self.social_networks[social_network][item] = {}
+			# Define the text key
+			text_key = file_name.lower().replace(" ", "_")
 
-			# Text folder
-			self.social_networks[social_network]["folders"]["Text"] = self.social_networks_text_folder + social_network + "/"
-			self.Folder.Create(self.social_networks[social_network]["folders"]["Text"])
+			addon = ""
 
-			# Settings
-			settings = {
-				self.texts["image_folders"]["en"]: True,
+			if "_" not in text_key:
+				addon = ", title()"
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Define the language file name text
+				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+
+			if "s" not in text_key:
+				text_key += "s"
+
+			# Define the plural texts of the file name
+			dict_["Plural"] = {}
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				dict_["Plural"][language] = self.JSON.Language.texts[text_key + addon][language]
+
+			# Add the file name dictionary to the root "File names" dictionary
+			dictionary["Dictionary"][file_name] = dict_
+
+		# Define the "File names" key as the local "File names" dictionary
+		self.social_networks["File names"] = dictionary
+
+		# ---------- #
+
+		# Define the default "Link types" dictionary
+		dictionary = {
+			"Names": [
+				"Home",
+				"Profile"
+			],
+			"Dictionary": {}
+		}
+
+		# Iterate through the link types list
+		for link_type in dictionary["Names"]:
+			# Create the link type dictionary
+			dict_ = {}
+
+			# Define the text key
+			text_key = link_type.lower().replace(" ", "_")
+
+			addon = ""
+
+			if "_" not in text_key:
+				addon = ", title()"
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Define the language link type text
+				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+
+		# Define the "Link types" key as the local "Link types" dictionary
+		self.social_networks["Link types"] = dictionary
+
+		# ---------- #
+
+		# List the friend folders, populating the social networks list
+		self.social_networks["List"] = self.Folder.Contents(self.folders["Social Networks"]["Text"]["root"])["folder"]["names"]
+
+		# Remove the non-friend folders from the above list
+		to_remove = [
+			"4chan",
+			"Database",
+			"Google+",
+			"Plug DJ"
+		]
+
+		# Temporary
+		to_remove.extend([
+			"Derpibooru",
+			"Steam"
+		])
+
+		for item in to_remove:
+			if item in self.social_networks["List"]:
+				self.social_networks["List"].remove(item)
+
+		# Write the social networks list to the "Social Networks list.txt" file
+		text_to_write = self.Text.From_List(self.social_networks["List"])
+
+		self.File.Edit(self.folders["Social Networks"]["Text"]["Social Networks list"], text_to_write, "w")
+
+		# Get the number of social networks
+		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
+
+		# ---------- #
+
+		# Iterate through the social networks list
+		for social_network in self.social_networks["List"]:
+			# Create the "Social Network" dictionary
+			dictionary = {
+				"Name": social_network,
+				"Folders": {},
+				"Files": {},
+				"Information": {},
+				"Settings": {
+					"Create image folders": True
+				}
 			}
 
-			if self.File.Exist(self.social_networks[social_network]["folders"]["Text"] + "Settings.txt") == True:
-				settings = self.File.Dictionary(self.social_networks[social_network]["folders"]["Text"] + "Settings.txt", next_line = True)
+			# Define and create the social network folders and files
+			for item in ["Text", "Image"]:
+				# Define the item key inside the "Files" dictionary
+				dictionary["Files"][item] = {}
 
-			if settings[self.texts["image_folders"]["en"]] == True:
-				# Image folder
-				self.social_networks[social_network]["folders"]["Image"] = self.social_networks_image_folder + social_network + "/"
-				self.Folder.Create(self.social_networks[social_network]["folders"]["Image"])
+			# Define and create the social network folders and files
+			for item in ["Text", "Image"]:
+				folder = self.folders["Social Networks"][item]["root"] + social_network + "/"
 
-			# Social Network files
-			for file_name in self.file_names["en"]:
-				self.social_networks[social_network]["files"][file_name] = self.social_networks[social_network]["folders"]["Text"] + file_name + ".txt"
+				# Create the folders dictionary
+				dict_ = {
+					"root": folder
+				}
 
-				if file_name == self.texts["information_items"]["en"]:
-					self.social_networks[social_network]["files"][file_name] = self.social_networks[social_network]["files"][file_name].replace("txt", "json")
+				self.Folder.Create(dict_["root"])
 
-				# If the file name is not "Settings", create file
-				if file_name != self.texts["settings, title()"]["en"]:
-					self.File.Create(self.social_networks[social_network]["files"][file_name])
+				# Iterate through the friend file names
+				for key, file_name_dictionary in self.social_networks["File names"]["Dictionary"].items():
+					# Define the file name
+					file_name = file_name_dictionary
 
-				# If the file name is "Settings" and file does not exist, delete key from dictionary
-				if file_name == self.texts["settings, title()"]["en"] and self.File.Exist(self.social_networks[social_network]["folders"]["Text"] + file_name + ".txt") == False:
-					del self.social_networks[social_network]["files"][file_name]
+					if key == "Information":
+						file_name = file_name["Plural"]
 
-				# If file name in dictionary and file exists
-				if file_name in self.social_networks[social_network]["files"] and self.File.Exist(self.social_networks[social_network]["files"][file_name]) == True:
-					# If file uses dictionary format
-					if file_name in [self.JSON.Language.texts["information, title()"]["en"], self.texts["profile, title()"]["en"], self.texts["settings, title()"]["en"]]:
-						self.social_networks[social_network]["data"][file_name] = self.File.Dictionary(self.social_networks[social_network]["files"][file_name], next_line = True)
+					# Define the file name language
+					language = self.user_language
 
-					# If file uses list format
-					if file_name == self.texts["image_folders"]["en"]:
-						self.social_networks[social_network]["data"][file_name] = self.File.Contents(self.social_networks[social_network]["files"][file_name])["lines"]
+					if key == "Items":
+						language = "en"
 
-					# If file uses JSON format
-					if file_name == self.texts["information_items"]["en"]:
-						self.social_networks[social_network]["data"][file_name] = self.JSON.To_Python(self.social_networks[social_network]["files"][file_name])
+					file_name = file_name[language]
 
-			# Add information items to root information items key
-			for key in self.social_networks[social_network]["data"]["Information items"]:
-				# If type of information items key is list, add to list
-				self.social_networks[social_network]["data"]["Information items"] = self.JSON.To_Python(self.social_networks[social_network]["files"]["Information items"])
+					# Define the extension
+					extension = "txt"
 
-				for item in self.social_networks[social_network]["data"]["Information items"][key]:
-					if item not in self.social_networks["Information items"][key]:
-						self.social_networks["Information items"][key].append(item)
+					if key == "Items":
+						extension = "json"
 
-			# Add Social Network link to links list
-			self.social_networks["Links"].append(self.social_networks[social_network]["data"]["Information"]["Link"])
+					# Define the file
+					dict_[key] = dict_["root"] + file_name + "." + extension
 
-			# Social Network profile
-			self.social_networks[social_network]["profile"] = {}
-			self.social_networks[social_network]["profile"].update(self.social_networks[social_network]["data"]["Profile"])
+					# If the key is not "Settings" nor "Image folders"
+					# Or the key is "Image folders"
+					# And the "Create image folders" settings is True
+					if (
+						key not in ["Settings", "Image folders"] or
+						key == "Image folders" and
+						dictionary["Settings"]["Create image folders"] == True
+					):
+						# If the item is "Text"
+						if item == "Text":
+							# Create the file
+							self.File.Create(dict_[key])
 
-			for key in self.social_networks[social_network]["data"]["Information"]:
-				value = self.social_networks[social_network]["data"]["Information"][key]
+							# Add the file to the "Files" dictionary
+							dictionary["Files"][key] = dict_[key]
 
-				key = key.lower()
+						# Add the file to the "Files" dictionary
+						dictionary["Files"][item][key] = dict_[key]
 
-				if "link" in key and "{" in value:
-					link = value.split("{")[0]
-					information_key = value.split("{")[-1].split("}")[0]
+					# If the file is the settings file
+					# And the settings file exists
+					if (
+						key == "Settings" and
+						self.File.Exist(dict_[key]) == True
+					):
+						# Add the file to the "Files" dictionary
+						dictionary["Files"][item][key] = dict_[key]
+					
+						# Read the settings file
+						settings = self.File.Dictionary(dictionary["Files"]["Text"][key], next_line = True)
 
-					information = self.social_networks[social_network]["data"]["Profile"][information_key]
+						# Define a local empty dictionary
+						new_settings = {}
 
-					if information_key == "Number":
-						information = information.replace(" ", "").replace("-", "")
+						# Define the texts dictionary for easier typing
+						texts_dictionary = self.JSON.Language.texts
 
-					key = key.replace(" link", "")
+						# Iterate through the settings list
+						for setting in self.texts["settings, type: list"]:
+							# Get the English and language setting texts
+							english_text = texts_dictionary[setting]["en"]
 
-					self.social_networks[social_network]["profile"][key] = link + information
+							language_text = texts_dictionary[setting][self.user_language]
 
-			# Social Network normal, profile, and message links
-			for key in ["Link", "Profile", "Message"]:
-				item = key
+							# If the language setting is inside the Settings dictionary
+							if language_text in settings:
+								# Add the setting value to the Settings dictionary, with the English key
+								new_settings[english_text] = settings[language_text]
 
-				key = key.lower()
+						dictionary["Settings"] = new_settings
 
-				self.social_networks[social_network]["links"][key] = "None"
+				# Define the folders dictionary as the local folders dictionary
+				dictionary["Folders"][item] = dict_
 
-				if "Link" not in item:
-					item += " link"
+			# Add the keys of the "Text" folders dictionary to the root folders dictionary
+			dictionary["Folders"].update(dictionary["Folders"]["Text"])
 
-				# If item is in Social Network information, add it to the Social Networks links sub-dictionary
-				if item in self.social_networks[social_network]["data"]["Information"]:
-					self.social_networks[social_network]["links"][key] = self.social_networks[social_network]["data"]["Information"][item]
+			# Update the Social Network "Information" only with the data on the files inside the Text folder
+			# To get the most up-to-date information
 
-				if item in self.social_networks[social_network]:
-					self.social_networks[social_network][item] = self.social_networks[social_network]["links"][key]
+			# Get the information dictionary (translating the keys to English)
+			dictionary["Information"] = self.Information(file = dictionary["Files"]["Information"])
 
-		# Add information items list and dict to texts dictionary
-		self.texts["information_items, type: list"] = self.social_networks["Information items"]
+			# ---------- #
 
-		dict_ = {}
+			# Get the social network information items
+			items = self.JSON.To_Python(dictionary["Files"]["Items"])
 
-		i = 0
-		for information_item in self.texts["information_items, type: list"]["en"]:
-			key = information_item.lower().replace(" ", "_")
+			# Update the items list of the root information items with the local items list of the Social Network
+			for item in items["List"]:
+				if item not in self.information_items["List"]:
+					self.information_items["List"].append(item)
 
-			dict_[key] = {}
-			dict_[key]["en"] = information_item
+			# Update the "Exact match" list of the root information items with the "Exact match" list of the Social Network
+			list_ = []
 
-			for language in self.texts["information_items, type: list"]:
-				dict_[key][language] = self.texts["information_items, type: list"][language][i]
+			for item in items["Lists"]["Exact match"]:
+				if item not in self.information_items["Lists"]["Exact match"]:
+					list_.append(item)
 
-			i += 1
+			self.information_items["Lists"]["Exact match"][social_network] = list_
 
-		# Add information items to texts dictionary
-		self.texts.update(dict_)
+			# Update the gender lists of the root information items with the gender lists of the Social Network
+			for gender in ["Masculine", "Feminine"]:
+				for item in items["Genders"][gender]:
+					if item not in self.information_items["Genders"][gender]:
+						self.information_items["Genders"][gender].append(item)
 
-		# Add information items to texts JSON file
-		self.JSON.Edit(self.folders["apps"]["module_files"][self.module["key"]]["texts"], self.texts)
+			# Update the "Formats" dictionary of the root information items with the "Formats" dictionary of the Social Network
+			self.information_items["Formats"][social_network] = items["Formats"]
 
-		# Update Social Networks links file
-		self.File.Edit(self.social_networks_links_file, self.Text.From_List(self.social_networks["Links"]), "w")
+			if "Additional items" in items:
+				additional_items = {}
+				
+				# Iterate through the "Additional items" dictionary
+				for key, item in items["Additional items"].items():
+					if "{Social Network link}" in item:
+						item = item.replace("{Social Network link}", dictionary["Information"]["Link"])
 
-		# Gender letters
-		self.gender_letters = {}
-		self.user_name_items = {}
+					additional_items[key] = item
 
-		self.gender_items = ["the", "this", "part_of"]
+				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the Social Network
+				self.information_items["Additional items"][social_network] = additional_items
 
-		for item in self.gender_items:
-			self.gender_letters[item] = {}
+			if "Do not ask for item" in items["Lists"]:
+				# Update the "Do not ask for item" list of the root information items with the "Do not ask for item" list of the Social Network
+				self.information_items["Do not ask for item"].extend(items["Lists"]["Do not ask for item"])
 
-		i = 0
-		for information_item in self.texts["information_items, type: list"]["en"]:
-			for item in self.gender_items:
-				self.gender_letters[item][information_item] = self.language_texts[item + ", masculine"]
+			# Define the "Information items" dictionary of the Social Network as the local "Information items" dictionary
+			dictionary["Information items"] = items
 
-			if information_item in ["Nick and Tag", "Username", "Handle", "Contact name"]:
-				self.user_name_items[information_item] = self.texts["information_items, type: list"]["en"]
+			# ---------- #
 
-		# Create link types per language, home and profile
-		self.link_types = {}
+			# Get the user profile
+			dictionary["Profile"] = self.Information(file = dictionary["Files"]["Profile"])
 
+			# Get the image folders list from its file if it exists
+			if "Image folders" in dictionary["Files"]:
+				dictionary["Image folders"] = self.File.Contents(dictionary["Files"]["Image folders"])["lines"]
+
+			# ---------- #
+
+			# Copy the "Information" and "Profile" files of the Social Network text folder into the image folder
+			# If the lengths of the files are different
+			for file_name in ["Information", "Profile"]:
+				files = {}
+
+				for item in ["Text", "Image"]:
+					file = dictionary["Files"][item][file_name]
+
+					files[item] = {
+						"File": file,
+						"Size": self.File.Contents(file)["size"]
+					}
+
+				if files["Text"]["Size"] != files["Image"]["Size"]:
+					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
+
+			# Define the "Social Network" dictionary as the local "Social Network" dictionary
+			self.social_networks["Dictionary"][social_network] = dictionary
+
+	def Define_Information_Items(self):
+		# Define the local "Information items" dictionary as the "Information items" dictionary
+		dictionary = self.information_items
+
+		# Get the number of information items
+		dictionary["Numbers"]["Total"] = len(dictionary["List"])
+
+		# Reset the "Dictionary" key to be an empty dictionary
+		dictionary["Dictionary"] = {}
+
+		# Iterate through the information items list
+		for key in dictionary["List"]:
+			# Create the information item dictionary
+			dict_ = {}
+
+			# Define the text key
+			text_key = key.lower().replace(" ", "_")
+
+			addon = ""
+
+			if "_" not in text_key:
+				addon += ", title()"
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Define the correct texts dictionary
+				texts_dictionary = self.JSON.Language.texts
+
+				if text_key in self.texts:
+					texts_dictionary = self.texts
+
+				# Get the text
+				text = texts_dictionary[text_key + addon][language]
+
+				# Define the language information item inside the local "dict_" dictionary
+				dict_[language] = text
+
+				# If the language dictionary is not inside the "Lists" dictionary of the "Information items" dictionary
+				if language not in dictionary["Lists"]:
+					# Create it
+					dictionary["Lists"][language] = []
+
+				# If the text is not inside the language "Lists" dictionary of the "Information items" dictionary
+				if text not in dictionary["Lists"][language]:
+					# Add it
+					dictionary["Lists"][language].append(text)
+
+			# Define the plural versions of the information item
+			dict_["Plural"] = {}
+
+			# Update the text key
+			text_key_backup = text_key + addon
+
+			if "s" not in text_key[-1]:
+				text_key += "s"
+
+			text_key += addon
+
+			if text_key not in self.JSON.Language.texts:
+				text_key = text_key.replace(addon, "")
+				text_key = text_key[:-1]
+
+				text_key += addon + ", type: plural"
+
+			if text_key not in self.JSON.Language.texts:
+				text_key = text_key_backup
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				dict_["Plural"][language] = self.JSON.Language.texts[text_key][language]
+
+			# Define the "Genders" key"
+			dict_["Genders"] = {}
+
+			# Define the gender words of the information item
+			words = {}
+
+			for item in dictionary["Genders"]["Items"]:
+				text_key = item.lower().replace(" ", "_")
+
+				# Define the gender
+				if key in dictionary["Genders"]["Masculine"]:
+					gender = "masculine"
+
+				if key in dictionary["Genders"]["Feminine"]:
+					gender = "feminine"
+
+				words[item] = self.JSON.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+
+			# Update the gender "Words" dictionary inside the root information item dictionary
+			dict_["Genders"]["Words"] = words
+
+			# Define the format of the information item
+			dict_["Format"] = ""
+
+			if key in dictionary["Formats"]:
+				dict_["Format"] = dictionary["Formats"][key]
+
+			# Define the "States" dictionary of the information item
+			dict_["States"] = {
+				"Exact match": False,
+				"Ask for item": True
+			}
+
+			# Update the "Exact match" key
+			if key in dictionary["Lists"]["Exact match"]:
+				dict_["States"]["Exact match"] = True
+
+			# Update the "Ask for item" key
+			if (
+				"Do not ask for item" in dictionary["Lists"] and
+				key in dictionary["Lists"]["Do not ask for item"]
+			):
+				dict_["States"]["Ask for item"] = False
+
+			# Add the information item dictionary to the root "Information items" dictionary
+			dictionary["Dictionary"][key] = dict_
+
+		# Define the "Information items" dictionary as the local "Information items" dictionary
+		self.information_items = dictionary
+
+		# Iterate through the social networks list
+		for key in self.social_networks["Dictionary"]:
+			# Create the Local "Information items" dictionary using the Social Network "Information items" dictionary as a base
+			information_items = deepcopy(self.social_networks["Dictionary"][key]["Information items"])
+
+			# Create the "Dictionary" key
+			information_items["Dictionary"] = {}
+
+			# Iterate through the Social Network information items list
+			for item in self.social_networks["Dictionary"][key]["Information items"]["List"]:
+				# If the item is inside the root "Information items" dictionary
+				if item in self.information_items["Dictionary"]:
+					# Define the local item dictionary as the item dictionary inside the root "Information items" dictionary
+					information_items["Dictionary"][item] = self.information_items["Dictionary"][item]
+
+				if key in self.information_items["Additional items"]:
+					# Create the "Templates" key inside the "Information items" dictionary of the Social Network
+					information_items["Templates"] = self.information_items["Additional items"][key]
+
+			# Define the Social Network "Information items" dictionary as the Local "Information items" dictionary
+			self.social_networks["Dictionary"][key]["Information items"] = information_items
+
+			# Remove the unused keys of the Social Network "Information items" dictionary
+			to_remove = [
+				"Lists",
+				"Genders",
+				"Formats",
+				"Additional items"
+			]
+
+			for item in to_remove:
+				self.social_networks["Dictionary"][key]["Information items"].pop(item)
+
+			# Translate the keys of the "Information.txt" file to English
+			self.social_networks["Dictionary"][key]["Information"] = self.Information(file = self.social_networks["Dictionary"][key]["Files"]["Information"])
+
+			# Translate the keys of the "Profile.txt" file to English
+			self.social_networks["Dictionary"][key]["Profile"] = self.Information(file = self.social_networks["Dictionary"][key]["Files"]["Profile"])
+
+		# ---------- #
+
+		# Create a local Information items dictionary
+		local_dictionary = deepcopy(self.information_items)
+
+		# Iterate through the small languages list
 		for language in self.languages["small"]:
-			self.link_types[language] = []
-			self.link_types[language].append(self.texts["home, title()"][language])
-			self.link_types[language].append(self.texts["profile, title()"][language])
+			# Remove the language items lists
+			local_dictionary["Lists"].pop(language)
 
-		self.link_types_map = {
-			self.texts["home, title()"]["en"]: "Link",
-			self.texts["profile, title()"]["en"]: "Profile link",
-		}
+		# Update the "Information items.json" file with the updated and local "Information items" dictionary
+		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Database"]["Information items"], local_dictionary)
+
+		# ---------- #
+
+		# Create a local "Social Networks" dictionary
+		local_dictionary = deepcopy(self.social_networks)
+
+		# Define the root keys to remove
+		to_remove = [
+			"File names",
+			"Link types"
+		]
+
+		# Iterate through the "root keys to remove" list
+		for key in to_remove:
+			local_dictionary.pop(key)
+
+		# Define the social network keys to remove
+		to_remove = [
+			"Folders",
+			"Files",
+			"Settings"
+		]
+
+		# Iterate through the social networks list
+		for social_network in self.social_networks["List"]:
+			# Remove the unused social network keys
+			for key in to_remove:
+				local_dictionary["Dictionary"][social_network].pop(key)
+
+		# Update the "Social Networks.json" file with the updated and local "Social Networks" dictionary
+		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Social Networks"], local_dictionary)
+
+	def Information(self, information = None, file = None):
+		if file != None:
+			information = self.File.Dictionary(file, next_line = True)
+
+		dictionary = {}
+
+		for information_key, value in information.items():
+			correct_key = information_key
+
+			for key, information_item in self.information_items["Dictionary"].items():
+				if (
+					key == information_key or
+					information_key == information_item[self.user_language]
+				):
+					correct_key = key
+
+			dictionary[correct_key] = value
+
+		return dictionary
 
 	def Select_Social_Network(self, social_network = None, select_social_network = True, social_networks = None, show_text = None, select_text = None):
+		if social_networks != None:
+			social_networks = {
+				"List": social_networks
+			}
+
 		if social_networks == None:
 			social_networks = self.social_networks
 
@@ -326,21 +723,21 @@ class Social_Networks(object):
 
 		if select_social_network == True:
 			if social_network == None:
-				self.social_network = self.Input.Select(social_networks["Names"], show_text = show_text, select_text = select_text)["option"]
+				self.social_network = self.Input.Select(social_networks["List"], show_text = show_text, select_text = select_text)["option"]
 
 			if social_network != None:
 				self.social_network = social_network
 
-			if self.social_network in social_networks:
-				self.social_network = social_networks[self.social_network]
+			if self.social_network in self.social_networks["Dictionary"]:
+				self.social_network = self.social_networks["Dictionary"][self.social_network]
 
 				return self.social_network
 
 			else:
-				return {}
+				return None
 
 		else:
-			return {}
+			return None
 
 	def Type_Social_Network_Information(self):
 		print()
@@ -352,24 +749,24 @@ class Social_Networks(object):
 		self.social_network_information[self.social_network["Name"]] = {}
 
 		i = 0
-		for information_item in self.social_network["data"][self.texts["information_items"]["en"]]["en"]:
-			language_information_item = self.social_network["data"][self.texts["information_items"]["en"]][self.user_language][i]
+		for information_item in self.social_network["Data"][self.texts["information_items"]["en"]]["en"]:
+			language_information_item = self.social_network["Data"][self.texts["information_items"]["en"]][self.user_language][i]
 
 			information = self.Input.Type(language_information_item, next_line = True)
 
 			self.social_network_information[self.social_network["Name"]][information_item] = information
 
 			# Format Social Network link if information_item is present in Social Network data values
-			for social_network_information_item in list(self.social_network["data"]["Information"].values()):
+			for social_network_information_item in list(self.social_network["Data"]["Information"].values()):
 				if information_item in ["Profile link", "Message link", "Message ID"] and information_item in social_network_information_item:
 					information = social_network_information_item.replace("{" + information_item + "}", "") + information
 
-				if information_item in self.social_network["data"]["Information"]["Profile link"]:
-					link = self.social_network["data"]["Information"]["Profile link"]
+				if information_item in self.social_network["Data"]["Information"]["Profile link"]:
+					link = self.social_network["Data"]["Information"]["Profile link"]
 					self.social_network_information[self.social_network["Name"]]["Profile link"] = link.replace("{" + information_item + "}", "") + information
 
-				if information_item in self.social_network["data"]["Information"]["Message link"]:
-					link = self.social_network["data"]["Information"]["Message link"]
+				if information_item in self.social_network["Data"]["Information"]["Message link"]:
+					link = self.social_network["Data"]["Information"]["Message link"]
 					self.social_network_information[self.social_network["Name"]]["Message link"] = link.replace("{" + information_item + "}", "") + information
 
 			i += 1

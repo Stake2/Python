@@ -49,6 +49,9 @@ class Register(GamePlayer):
 		# Show the information about the game session
 		self.Show_Information(self.dictionary)
 
+		# Re-initiate the root class to update the files
+		del self.folders
+
 		super().__init__()
 
 	def Type_Entry_Information(self):
@@ -477,46 +480,76 @@ class Register(GamePlayer):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
-		self.social_networks = [
-			"WhatsApp",
-			"Instagram",
-			"Facebook",
+		# Define the "Social Networks" dictionary
+		self.social_networks = {
+			"List": [
+				"Discord",
+				"WhatsApp",
+				"Instagram",
+				"Facebook",
+				"Twitter"
+			],
+			"List text": ""
+		}
+
+		# Define the list text, with all the Social Networks separated by commas
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+
+		# Remove the "Discord" and "Twitter" Social Networks
+		self.social_networks["List"].remove("Discord")
+		self.social_networks["List"].remove("Twitter")
+
+		# Define the list text, with all the Social Networks separated by commas
+		# But without Twitter
+		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+
+		# Define the item text to be used
+		self.social_networks["Item text"] = self.language_texts["the_game_cover"]
+
+		# Define the "posted" template
+		self.social_networks["Template"] = self.language_texts["i_posted_the_played_game_text, type: template"] + "."
+
+		# Define the template items list
+		self.social_networks["Items"] = [
+			self.social_networks["Item text"],
+			"Discord",
+			self.social_networks["List text (without Discord and Twitter)"],
 			"Twitter"
 		]
 
-		self.social_networks_string = self.Text.From_List(self.social_networks, break_line = False, separator = ", ")
-		self.first_three_social_networks = ""
+		# Format the template with the items list
+		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
-		for social_network in self.social_networks:
-			if social_network != self.social_networks[-1]:
-				self.first_three_social_networks += social_network
+		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] + ")"
 
-				if social_network != "Facebook":
-					self.first_three_social_networks += ", "
-
-		self.twitter_social_network = self.social_networks[-1]
-
-		self.posted_on_social_networks_text_template = self.language_texts["i_posted_the_text_of_the_played_game_and_a_screenshot_on_the_status_of_{}_and_tweet_on_{}"] + "."
-
-		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.posted_on_social_networks_text_template.format(self.first_three_social_networks, self.twitter_social_network)
-
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks_string + ")"
+		# Show a separator
+		print()
+		print(self.large_bar)
 
 		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
 
-			# Define the Social Networks list
-			social_network_list = [
-				"WhatsApp",
-				"Twitter"
-			]
+			# Define the Social Networks dictionary
+			social_networks = {
+				"WhatsApp": None,
+				"Twitter": None,
+				"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762" # "#play-history" channel on my Discord server
+			}
 
-			# Open the Social Networks
-			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network_list, first_space = False, second_space = False)
+			# Open the Social Networks, one by one
+			for social_network, custom_link in social_networks.items():
+				# Define the second space variable
+				second_space = False
 
-			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"])
+				if social_network == "Discord":
+					second_space = True
+
+				# Open the current Social Network in the profile link, with maybe a custom link
+				Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network, custom_link = custom_link, first_space = False, second_space = second_space)
+
+			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"], first_space = False)
 
 			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 

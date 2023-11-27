@@ -1,35 +1,35 @@
 {
 	"folders, title()": {
-        "en": "Folders",
-        "pt": "Pastas"
-    },
-    "your_{}_is": {
-        "pt": "Seu {} é",
-        "en": "Your {} is"
-    },
-    "custom": {
-        "en": "custom",
-        "pt": {
-            "masculine": "personalizado",
-            "feminine": "personalizada"
-        }
-    },
-    "language": {
-        "pt": "idioma",
-        "en": "language"
-    },
-    "languages": {
-        "pt": "idiomas",
-        "en": "languages"
-    },
-    "language_with_country": {
-        "pt": "idioma com país",
-        "en": "language with country"
-    },
-    "full_language": {
-        "pt": "idioma completo",
-        "en": "full language"
-    },
+		"en": "Folders",
+		"pt": "Pastas"
+	},
+	"your_{}_is": {
+		"pt": "Seu {} é",
+		"en": "Your {} is"
+	},
+	"custom": {
+		"en": "custom",
+		"pt": {
+			"masculine": "personalizado",
+			"feminine": "personalizada"
+		}
+	},
+	"language": {
+		"pt": "idioma",
+		"en": "language"
+	},
+	"languages": {
+		"pt": "idiomas",
+		"en": "languages"
+	},
+	"language_with_country": {
+		"pt": "idioma com país",
+		"en": "language with country"
+	},
+	"full_language": {
+		"pt": "idioma completo",
+		"en": "full language"
+	},
 	"original_title": {
 		"en": "Original title",
 		"pt": "Título original"
@@ -38,56 +38,56 @@
 		"en": "Original language",
 		"pt": "Idioma original"
 	},
-    "class": {
-        "pt": "classe",
-        "en": "class"
-    },
-    "folder": {
-        "en": "folder",
-        "pt": "pasta"
-    },
-    "file": {
-        "en": "file",
-        "pt": "arquivo"
-    },
-    "created": {
-        "en": "created",
-        "pt": {
-            "masculine": "criado",
-            "feminine": "criada"
-        }
-    },
+	"class": {
+		"pt": "classe",
+		"en": "class"
+	},
+	"folder": {
+		"en": "folder",
+		"pt": "pasta"
+	},
+	"file": {
+		"en": "file",
+		"pt": "arquivo"
+	},
+	"created": {
+		"en": "created",
+		"pt": {
+			"masculine": "criado",
+			"feminine": "criada"
+		}
+	},
 	"edit, title()": {
-        "en": "Edit",
-        "pt": "Editar"
-    },
-    "edited": {
-        "en": "edited",
-        "pt": {
-            "masculine": "editado",
-            "feminine": "editada"
-        }
-    },
-    "settings": {
-        "en": "settings",
-        "pt": "configurações"
-    },
-    "type_or_paste_the_text": {
-        "en": "Type or paste the text",
-        "pt": "Digite ou cole o texto"
-    },
+		"en": "Edit",
+		"pt": "Editar"
+	},
+	"edited": {
+		"en": "edited",
+		"pt": {
+			"masculine": "editado",
+			"feminine": "editada"
+		}
+	},
+	"settings": {
+		"en": "settings",
+		"pt": "configurações"
+	},
+	"type_or_paste_the_text": {
+		"en": "Type or paste the text",
+		"pt": "Digite ou cole o texto"
+	},
 	"texts, title()": {
 		"pt": "Textos",
 		"en": "Texts"
 	},
-    "yes": {
-        "en": "yes",
-        "pt": "sim"
-    },
-    "no": {
-        "en": "no",
-        "pt": "não"
-    },
+	"yes": {
+		"en": "yes",
+		"pt": "sim"
+	},
+	"no": {
+		"en": "no",
+		"pt": "não"
+	},
 	"options": {
 		"pt": "opções",
 		"en": "options"
@@ -95,10 +95,6 @@
 	"options, title()": {
 		"pt": "Opções",
 		"en": "Options"
-	},
-	"number, title()": {
-		"en": "Number",
-		"pt": "Número"
 	},
 	"item": {
 		"en": "item",
@@ -120,321 +116,321 @@
 		"en": "Select an item from the list",
 		"pt": "Selecione um item da lista"
 	},
-    "yes_or_no": {
-        "en": "yes or no",
-        "pt": "sim ou não"
-    },
-    "select_one_{}_(number_or_word)": {
-        "en": "Select one {} (number or word)",
-        "pt": {
-            "masculine": "Selecione um {} (número ou palavra)",
-            "feminine": "Selecione uma {} (número ou palavra)"
-        }
-    },
-    "you_selected_this_option": {
-        "en": "You selected this option",
-        "pt": "Você selecionou essa opção"
-    },
-    "press_enter_when_you_finish_reading_the_info_summary": {
-        "en": "Press Enter when you finish reading the info summary",
-        "pt": "Pressione Enter quando você terminar de ler o resumo de informações"
-    },
-    "finish_selection": {
-        "en": "Finish selection",
-        "pt": "Terminar seleção"
-    },
-    "list": {
-        "en": "list",
-        "pt": "lista"
-    },
-    "custom_language": {
-        "en": "custom language",
-        "pt": "idioma personalizado"
-    },
-    "this_folder_already_exists": {
-        "en": "This folder already exists",
-        "pt": "Esta pasta já existe"
-    },
-    "this_folder_does_not_exists": {
-        "en": "This folder does not exists",
-        "pt": "Esta pasta não existe"
-    },
-    "this_file_already_exists": {
-        "en": "This file already exists",
-        "pt": "Este arquivo já existe"
-    },
-    "this_file_does_not_exists": {
-        "en": "This file does not exists",
-        "pt": "Este arquivo não existe"
-    },
-    "select_{}_or_{}_(number_or_word)": {
-        "en": "Select Yes or No (number or word)",
-        "pt": "Selecione Sim ou Não (número ou palavra)"
-    },
-    "your_{}_is, title()": {
-        "pt": "Seu {} É",
-        "en": "Your {} Is"
-    },
-    "custom, title(), masculine": {
-        "pt": "personalizado"
-    },
-    "custom, title(), feminine": {
-        "pt": "personalizada"
-    },
-    "custom, title()": {
-        "pt": "personalizado",
-        "en": "Custom"
-    },
-    "language, title()": {
-        "pt": "Idioma",
-        "en": "Language"
-    },
-    "languages, title()": {
-        "pt": "Idiomas",
-        "en": "Languages"
-    },
-    "language_with_country, title()": {
-        "pt": "Idioma Com País",
-        "en": "Language With Country"
-    },
-    "full_language, title()": {
-        "pt": "Idioma Completo",
-        "en": "Full Language"
-    },
-    "class, title()": {
-        "pt": "Classe",
-        "en": "Class"
-    },
-    "folder, title()": {
-        "pt": "Pasta",
-        "en": "Folder"
-    },
-    "file, title()": {
-        "pt": "Arquivo",
-        "en": "File"
-    },
-    "created, title(), masculine": {
-        "pt": "criado"
-    },
-    "created, title(), feminine": {
-        "pt": "criada"
-    },
-    "created, title()": {
-        "pt": "criado",
-        "en": "Created"
-    },
-    "edited, title(), masculine": {
-        "pt": "editado"
-    },
-    "edited, title(), feminine": {
-        "pt": "editada"
-    },
-    "edited, title()": {
-        "pt": "editado",
-        "en": "Edited"
-    },
-    "settings, title()": {
-        "pt": "Configurações",
-        "en": "Settings"
-    },
-    "type_or_paste_the_text, title()": {
-        "pt": "Digite Ou Cole O Texto",
-        "en": "Type Or Paste The Text"
-    },
-    "yes, title()": {
-        "pt": "Sim",
-        "en": "Yes"
-    },
-    "no, title()": {
-        "pt": "Não",
-        "en": "No"
-    },
-    "yes_or_no, title()": {
-        "pt": "Sim Ou Não",
-        "en": "Yes Or No"
-    },
-    "select_one_{}_(number_or_word), title(), masculine": {
-        "pt": "Selecione um {} (número ou palavra)"
-    },
-    "select_one_{}_(number_or_word), title(), feminine": {
-        "pt": "Selecione uma {} (número ou palavra)"
-    },
-    "select_one_{}_(number_or_word), title()": {
-        "pt": "Selecione um {} (número ou palavra)",
-        "en": "Select One {} (Number Or Word)"
-    },
-    "you_selected_this_option, title()": {
-        "pt": "Você Selecionou Essa Opção",
-        "en": "You Selected This Option"
-    },
-    "press_enter_when_you_finish_reading_the_info_summary, title()": {
-        "pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
-        "en": "Press Enter When You Finish Reading The Info Summary"
-    },
-    "finish_selection, title()": {
-        "pt": "Terminar Seleção",
-        "en": "Finish Selection"
-    },
-    "list, title()": {
-        "pt": "Lista",
-        "en": "List"
-    },
-    "custom_language, title()": {
-        "pt": "Idioma Personalizado",
-        "en": "Custom Language"
-    },
-    "this_folder_already_exists, title()": {
-        "pt": "Esta Pasta Já Existe",
-        "en": "This Folder Already Exists"
-    },
-    "this_folder_does_not_exists, title()": {
-        "pt": "Esta Pasta Não Existe",
-        "en": "This Folder Does Not Exists"
-    },
-    "this_file_already_exists, title()": {
-        "pt": "Este Arquivo Já Existe",
-        "en": "This File Already Exists"
-    },
-    "this_file_does_not_exists, title()": {
-        "pt": "Este Arquivo Não Existe",
-        "en": "This File Does Not Exists"
-    },
-    "select_{}_or_{}_(number_or_word), title()": {
-        "pt": "Selecione Sim Ou Não (Número Ou Palavra)",
-        "en": "Select Yes Or No (Number Or Word)"
-    },
-    "your_{}_is, title()": {
-        "pt": "Seu {} É",
-        "en": "Your {} Is"
-    },
-    "custom, title(), masculine, title()": {
-        "pt": "Personalizado"
-    },
-    "custom, title(), feminine, title()": {
-        "pt": "Personalizada"
-    },
-    "custom, title()": {
-        "pt": "Personalizado",
-        "en": "Custom"
-    },
-    "language, title()": {
-        "pt": "Idioma",
-        "en": "Language"
-    },
-    "languages, title()": {
-        "pt": "Idiomas",
-        "en": "Languages"
-    },
-    "language_with_country, title()": {
-        "pt": "Idioma Com País",
-        "en": "Language With Country"
-    },
-    "full_language, title()": {
-        "pt": "Idioma Completo",
-        "en": "Full Language"
-    },
-    "class, title()": {
-        "pt": "Classe",
-        "en": "Class"
-    },
-    "folder, title()": {
-        "pt": "Pasta",
-        "en": "Folder"
-    },
-    "file, title()": {
-        "pt": "Arquivo",
-        "en": "File"
-    },
-    "created, title(), masculine, title()": {
-        "pt": "Criado"
-    },
-    "created, title(), feminine, title()": {
-        "pt": "Criada"
-    },
-    "created, title()": {
-        "pt": "Criado",
-        "en": "Created"
-    },
-    "edited, title(), masculine, title()": {
-        "pt": "Editado"
-    },
-    "edited, title(), feminine, title()": {
-        "pt": "Editada"
-    },
-    "edited, title()": {
-        "pt": "Editado",
-        "en": "Edited"
-    },
-    "settings, title()": {
-        "pt": "Configurações",
-        "en": "Settings"
-    },
-    "type_or_paste_the_text, title()": {
-        "pt": "Digite Ou Cole O Texto",
-        "en": "Type Or Paste The Text"
-    },
-    "yes, title()": {
-        "pt": "Sim",
-        "en": "Yes"
-    },
-    "no, title()": {
-        "pt": "Não",
-        "en": "No"
-    },
-    "yes_or_no, title()": {
-        "pt": "Sim Ou Não",
-        "en": "Yes Or No"
-    },
-    "select_one_{}_(number_or_word), title(), masculine, title()": {
-        "pt": "Selecione Um {} (Número Ou Palavra)"
-    },
-    "select_one_{}_(number_or_word), title(), feminine, title()": {
-        "pt": "Selecione Uma {} (Número Ou Palavra)"
-    },
-    "select_one_{}_(number_or_word), title()": {
-        "pt": "Selecione Um {} (Número Ou Palavra)",
-        "en": "Select One {} (Number Or Word)"
-    },
-    "you_selected_this_option, title()": {
-        "pt": "Você Selecionou Essa Opção",
-        "en": "You Selected This Option"
-    },
-    "press_enter_when_you_finish_reading_the_info_summary, title()": {
-        "pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
-        "en": "Press Enter When You Finish Reading The Info Summary"
-    },
-    "finish_selection, title()": {
-        "pt": "Terminar Seleção",
-        "en": "Finish Selection"
-    },
-    "list, title()": {
-        "pt": "Lista",
-        "en": "List"
-    },
-    "custom_language, title()": {
-        "pt": "Idioma Personalizado",
-        "en": "Custom Language"
-    },
-    "this_folder_already_exists, title()": {
-        "pt": "Esta Pasta Já Existe",
-        "en": "This Folder Already Exists"
-    },
-    "this_folder_does_not_exists, title()": {
-        "pt": "Esta Pasta Não Existe",
-        "en": "This Folder Does Not Exists"
-    },
-    "this_file_already_exists, title()": {
-        "pt": "Este Arquivo Já Existe",
-        "en": "This File Already Exists"
-    },
-    "this_file_does_not_exists, title()": {
-        "pt": "Este Arquivo Não Existe",
-        "en": "This File Does Not Exists"
-    },
-    "select_{}_or_{}_(number_or_word), title()": {
-        "pt": "Selecione Sim Ou Não (Número Ou Palavra)",
-        "en": "Select Yes Or No (Number Or Word)"
-    },
+	"yes_or_no": {
+		"en": "yes or no",
+		"pt": "sim ou não"
+	},
+	"select_one_{}_(number_or_word)": {
+		"en": "Select one {} (number or word)",
+		"pt": {
+			"masculine": "Selecione um {} (número ou palavra)",
+			"feminine": "Selecione uma {} (número ou palavra)"
+		}
+	},
+	"you_selected_this_option": {
+		"en": "You selected this option",
+		"pt": "Você selecionou essa opção"
+	},
+	"press_enter_when_you_finish_reading_the_info_summary": {
+		"en": "Press Enter when you finish reading the info summary",
+		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
+	},
+	"finish_selection": {
+		"en": "Finish selection",
+		"pt": "Terminar seleção"
+	},
+	"list": {
+		"en": "list",
+		"pt": "lista"
+	},
+	"custom_language": {
+		"en": "custom language",
+		"pt": "idioma personalizado"
+	},
+	"this_folder_already_exists": {
+		"en": "This folder already exists",
+		"pt": "Esta pasta já existe"
+	},
+	"this_folder_does_not_exists": {
+		"en": "This folder does not exists",
+		"pt": "Esta pasta não existe"
+	},
+	"this_file_already_exists": {
+		"en": "This file already exists",
+		"pt": "Este arquivo já existe"
+	},
+	"this_file_does_not_exists": {
+		"en": "This file does not exists",
+		"pt": "Este arquivo não existe"
+	},
+	"select_{}_or_{}_(number_or_word)": {
+		"en": "Select Yes or No (number or word)",
+		"pt": "Selecione Sim ou Não (número ou palavra)"
+	},
+	"your_{}_is, title()": {
+		"pt": "Seu {} É",
+		"en": "Your {} Is"
+	},
+	"custom, title(), masculine": {
+		"pt": "personalizado"
+	},
+	"custom, title(), feminine": {
+		"pt": "personalizada"
+	},
+	"custom, title()": {
+		"pt": "personalizado",
+		"en": "Custom"
+	},
+	"language, title()": {
+		"pt": "Idioma",
+		"en": "Language"
+	},
+	"languages, title()": {
+		"pt": "Idiomas",
+		"en": "Languages"
+	},
+	"language_with_country, title()": {
+		"pt": "Idioma Com País",
+		"en": "Language With Country"
+	},
+	"full_language, title()": {
+		"pt": "Idioma Completo",
+		"en": "Full Language"
+	},
+	"class, title()": {
+		"pt": "Classe",
+		"en": "Class"
+	},
+	"folder, title()": {
+		"pt": "Pasta",
+		"en": "Folder"
+	},
+	"file, title()": {
+		"pt": "Arquivo",
+		"en": "File"
+	},
+	"created, title(), masculine": {
+		"pt": "criado"
+	},
+	"created, title(), feminine": {
+		"pt": "criada"
+	},
+	"created, title()": {
+		"pt": "criado",
+		"en": "Created"
+	},
+	"edited, title(), masculine": {
+		"pt": "editado"
+	},
+	"edited, title(), feminine": {
+		"pt": "editada"
+	},
+	"edited, title()": {
+		"pt": "editado",
+		"en": "Edited"
+	},
+	"settings, title()": {
+		"pt": "Configurações",
+		"en": "Settings"
+	},
+	"type_or_paste_the_text, title()": {
+		"pt": "Digite Ou Cole O Texto",
+		"en": "Type Or Paste The Text"
+	},
+	"yes, title()": {
+		"pt": "Sim",
+		"en": "Yes"
+	},
+	"no, title()": {
+		"pt": "Não",
+		"en": "No"
+	},
+	"yes_or_no, title()": {
+		"pt": "Sim Ou Não",
+		"en": "Yes Or No"
+	},
+	"select_one_{}_(number_or_word), title(), masculine": {
+		"pt": "Selecione um {} (número ou palavra)"
+	},
+	"select_one_{}_(number_or_word), title(), feminine": {
+		"pt": "Selecione uma {} (número ou palavra)"
+	},
+	"select_one_{}_(number_or_word), title()": {
+		"pt": "Selecione um {} (número ou palavra)",
+		"en": "Select One {} (Number Or Word)"
+	},
+	"you_selected_this_option, title()": {
+		"pt": "Você Selecionou Essa Opção",
+		"en": "You Selected This Option"
+	},
+	"press_enter_when_you_finish_reading_the_info_summary, title()": {
+		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+		"en": "Press Enter When You Finish Reading The Info Summary"
+	},
+	"finish_selection, title()": {
+		"pt": "Terminar Seleção",
+		"en": "Finish Selection"
+	},
+	"list, title()": {
+		"pt": "Lista",
+		"en": "List"
+	},
+	"custom_language, title()": {
+		"pt": "Idioma Personalizado",
+		"en": "Custom Language"
+	},
+	"this_folder_already_exists, title()": {
+		"pt": "Esta Pasta Já Existe",
+		"en": "This Folder Already Exists"
+	},
+	"this_folder_does_not_exists, title()": {
+		"pt": "Esta Pasta Não Existe",
+		"en": "This Folder Does Not Exists"
+	},
+	"this_file_already_exists, title()": {
+		"pt": "Este Arquivo Já Existe",
+		"en": "This File Already Exists"
+	},
+	"this_file_does_not_exists, title()": {
+		"pt": "Este Arquivo Não Existe",
+		"en": "This File Does Not Exists"
+	},
+	"select_{}_or_{}_(number_or_word), title()": {
+		"pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+		"en": "Select Yes Or No (Number Or Word)"
+	},
+	"your_{}_is, title()": {
+		"pt": "Seu {} É",
+		"en": "Your {} Is"
+	},
+	"custom, title(), masculine, title()": {
+		"pt": "Personalizado"
+	},
+	"custom, title(), feminine, title()": {
+		"pt": "Personalizada"
+	},
+	"custom, title()": {
+		"pt": "Personalizado",
+		"en": "Custom"
+	},
+	"language, title()": {
+		"pt": "Idioma",
+		"en": "Language"
+	},
+	"languages, title()": {
+		"pt": "Idiomas",
+		"en": "Languages"
+	},
+	"language_with_country, title()": {
+		"pt": "Idioma Com País",
+		"en": "Language With Country"
+	},
+	"full_language, title()": {
+		"pt": "Idioma Completo",
+		"en": "Full Language"
+	},
+	"class, title()": {
+		"pt": "Classe",
+		"en": "Class"
+	},
+	"folder, title()": {
+		"pt": "Pasta",
+		"en": "Folder"
+	},
+	"file, title()": {
+		"pt": "Arquivo",
+		"en": "File"
+	},
+	"created, title(), masculine, title()": {
+		"pt": "Criado"
+	},
+	"created, title(), feminine, title()": {
+		"pt": "Criada"
+	},
+	"created, title()": {
+		"pt": "Criado",
+		"en": "Created"
+	},
+	"edited, title(), masculine, title()": {
+		"pt": "Editado"
+	},
+	"edited, title(), feminine, title()": {
+		"pt": "Editada"
+	},
+	"edited, title()": {
+		"pt": "Editado",
+		"en": "Edited"
+	},
+	"settings, title()": {
+		"pt": "Configurações",
+		"en": "Settings"
+	},
+	"type_or_paste_the_text, title()": {
+		"pt": "Digite Ou Cole O Texto",
+		"en": "Type Or Paste The Text"
+	},
+	"yes, title()": {
+		"pt": "Sim",
+		"en": "Yes"
+	},
+	"no, title()": {
+		"pt": "Não",
+		"en": "No"
+	},
+	"yes_or_no, title()": {
+		"pt": "Sim Ou Não",
+		"en": "Yes Or No"
+	},
+	"select_one_{}_(number_or_word), title(), masculine, title()": {
+		"pt": "Selecione Um {} (Número Ou Palavra)"
+	},
+	"select_one_{}_(number_or_word), title(), feminine, title()": {
+		"pt": "Selecione Uma {} (Número Ou Palavra)"
+	},
+	"select_one_{}_(number_or_word), title()": {
+		"pt": "Selecione Um {} (Número Ou Palavra)",
+		"en": "Select One {} (Number Or Word)"
+	},
+	"you_selected_this_option, title()": {
+		"pt": "Você Selecionou Essa Opção",
+		"en": "You Selected This Option"
+	},
+	"press_enter_when_you_finish_reading_the_info_summary, title()": {
+		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+		"en": "Press Enter When You Finish Reading The Info Summary"
+	},
+	"finish_selection, title()": {
+		"pt": "Terminar Seleção",
+		"en": "Finish Selection"
+	},
+	"list, title()": {
+		"pt": "Lista",
+		"en": "List"
+	},
+	"custom_language, title()": {
+		"pt": "Idioma Personalizado",
+		"en": "Custom Language"
+	},
+	"this_folder_already_exists, title()": {
+		"pt": "Esta Pasta Já Existe",
+		"en": "This Folder Already Exists"
+	},
+	"this_folder_does_not_exists, title()": {
+		"pt": "Esta Pasta Não Existe",
+		"en": "This Folder Does Not Exists"
+	},
+	"this_file_already_exists, title()": {
+		"pt": "Este Arquivo Já Existe",
+		"en": "This File Already Exists"
+	},
+	"this_file_does_not_exists, title()": {
+		"pt": "Este Arquivo Não Existe",
+		"en": "This File Does Not Exists"
+	},
+	"select_{}_or_{}_(number_or_word), title()": {
+		"pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+		"en": "Select Yes Or No (Number Or Word)"
+	},
 	"type_the_text_in_{}": {
 		"pt": "Digite o texto em {}",
 		"en": "Type the text in {}"
@@ -609,10 +605,6 @@
 		"en": "Time zone",
 		"pt": "Fuso horário"
 	},
-	"username, title()": {
-		"en": "Username",
-		"pt": "Nome de usuário"
-	},
 	"art, title()": {
 		"en": "Art",
 		"pt": "Arte"
@@ -645,13 +637,217 @@
 		"en": "Information",
 		"pt": "Informação"
 	},
-	"information, title(), plural": {
+	"informations, title()": {
 		"en": "Information",
 		"pt": "Informações"
 	},
 	"developer, title()": {
 		"en": "Developer",
 		"pt": "Desenvolvedor"
+	},
+	"information_item": {
+		"en": "Information item",
+		"pt": "Item de informação"
+	},
+	"information_items": {
+		"en": "Information items",
+		"pt": "Itens de informação"
+	},
+	"name, title()": {
+		"en": "Name",
+		"pt": "Nome"
+	},
+	"names, title()": {
+		"en": "Names",
+		"pt": "Nomes"
+	},
+	"age, title()": {
+		"pt": "Idade",
+		"en": "Age"
+	},
+	"ages, title()": {
+		"pt": "Idades",
+		"en": "Ages"
+	},
+	"gender, title()": {
+		"pt": "Gênero",
+		"en": "Gender"
+	},
+	"genders, title()": {
+		"pt": "Gêneros",
+		"en": "Genders"
+	},
+	"sexuality, title()": {
+		"pt": "Sexualidade",
+		"en": "Sexuality"
+	},
+	"sexuality, title(), type: plural": {
+		"pt": "Sexualidades",
+		"en": "Sexualities"
+	},
+	"birthday, title()": {
+		"pt": "Aniversário",
+		"en": "Birthday"
+	},
+	"birthdays, title()": {
+		"pt": "Aniversários",
+		"en": "Birthdays"
+	},
+	"height, title()": {
+		"pt": "Altura",
+		"en": "Height"
+	},
+	"heights, title()": {
+		"pt": "Alturas",
+		"en": "Heights"
+	},
+	"hometown, title()": {
+		"pt": "Cidade natal",
+		"en": "Hometown"
+	},
+	"hometowns, title()": {
+		"pt": "Cidades natais",
+		"en": "Hometowns"
+	},
+	"residence_place": {
+		"pt": "Local de residência",
+		"en": "Residence place"
+	},
+	"residence_places": {
+		"pt": "Locais de residência",
+		"en": "Residence places"
+	},
+	"origin_social_network": {
+		"pt": "Rede Social de Origem",
+		"en": "Origin Social Network"
+	},
+	"origin_social_networks": {
+		"pt": "Redes Sociais de Origem",
+		"en": "Origin Social Networks"
+	},
+	"username, title()": {
+		"en": "Username",
+		"pt": "Nome de usuário"
+	},
+	"usernames, title()": {
+		"en": "Usernames",
+		"pt": "Nomes de usuário"
+	},
+	"profile, title()": {
+		"en": "Profile",
+		"pt": "Perfil"
+	},
+	"profiles, title()": {
+		"en": "Profiles",
+		"pt": "Perfis"
+	},
+	"home, title()": {
+		"en": "Home",
+		"pt": "Início"
+	},
+	"originally, title()": {
+		"en": "Originally",
+		"pt": "Originalmente"
+	},
+	"id, title()": {
+		"en": "ID",
+		"pt": "ID"
+	},
+	"ids, title()": {
+		"en": "IDs",
+		"pt": "IDs"
+	},
+	"message_id": {
+		"en": "Message ID",
+		"pt": "ID de mensagem"
+	},
+	"message_ids": {
+		"en": "Message IDs",
+		"pt": "IDs de mensagem"
+	},
+	"message_link": {
+		"en": "Message link",
+		"pt": "Link de mensagem"
+	},
+	"message_links": {
+		"en": "Message links",
+		"pt": "Links de mensagem"
+	},
+	"profile_id": {
+		"en": "Profile ID",
+		"pt": "ID de perfil"
+	},
+	"profile_ids": {
+		"en": "Profile IDs",
+		"pt": "IDs de perfil"
+	},
+	"profile_link": {
+		"en": "Profile link",
+		"pt": "Link de perfil"
+	},
+	"profile_links": {
+		"en": "Profile links",
+		"pt": "Links de perfil"
+	},
+	"pronouns, title()": {
+		"en": "Pronouns",
+		"pt": "Pronomes"
+	},
+	"member_since": {
+		"en": "Member since",
+		"pt": "Membro desde"
+	},
+	"contact_name": {
+		"en": "Contact name",
+		"pt": "Nome de contato"
+	},
+	"contact_names": {
+		"en": "Contact names",
+		"pt": "Nomes de contato"
+	},
+	"handle, title()": {
+		"en": "Handle",
+		"pt": "Arroba"
+	},
+	"handles, title()": {
+		"en": "Handles",
+		"pt": "Arrobas"
+	},
+	"social_network": {
+		"en": "Social Network",
+		"pt": "Rede Social"
+	},
+	"social_networks": {
+		"en": "Social Networks",
+		"pt": "Redes Sociais"
+	},
+	"digital_identities": {
+		"en": "Digital Identities",
+		"pt": "Identidades Digitais"
+	},
+	"date_i_met": {
+		"pt": "Data que eu conheci",
+		"en": "Date I met"
+	},
+	"date_i_met, type: plural": {
+		"pt": "Datas que eu conheci",
+		"en": "Dates I met"
+	},
+	"image_folders": {
+		"en": "Image folders",
+		"pt": "Pastas de imagens"
+	},
+	"create_image_folders": {
+		"en": "Create image folders",
+		"pt": "Criar pastas de imagens"
+	},
+	"setting, title()": {
+		"en": "Setting",
+		"pt": "Configuração"
+	},
+	"settings, title()": {
+		"en": "Settings",
+		"pt": "Configurações"
 	},
 	"developers, title()": {
 		"en": "Developers",
@@ -681,6 +877,22 @@
 		"en": "Distributors",
 		"pt": "Distribuidores"
 	},
+	"creator, title()": {
+		"en": "Creator",
+		"pt": "Criador"
+	},
+	"creators, title()": {
+		"en": "Creators",
+		"pt": "Criadores"
+	},
+	"company, title()": {
+		"en": "Company",
+		"pt": "Empresa"
+	},
+	"company, title(), type: plural": {
+		"en": "Companies",
+		"pt": "Empresas"
+	},
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
@@ -688,10 +900,6 @@
 	"directors, title()": {
 		"en": "Directors",
 		"pt": "Diretores"
-	},
-	"handle, title()": {
-		"en": "Handle",
-		"pt": "Arroba"
 	},
 	"completed": {
 		"en": "completed",
@@ -815,6 +1023,10 @@
 	"images, title()": {
 		"en": "Images",
 		"pt": "Imagens"
+	},
+	"pictures, title()": {
+		"en": "Pictures",
+		"pt": "Fotos"
 	},
 	"shortcut, title()": {
 		"en": "Shortcut",
@@ -995,6 +1207,10 @@
 		"en": "Number",
 		"pt": "Número"
 	},
+	"numbers, title()": {
+		"en": "Numbers",
+		"pt": "Números"
+	},
 	"episodic, title()": {
 		"en": "Episodic",
 		"pt": "Episódica"
@@ -1143,9 +1359,9 @@
 		"pt": "Diferença de texto"
 	},
 	"text, title()": {
-        "en": "Text",
-        "pt": "Texto"
-    },
+		"en": "Text",
+		"pt": "Texto"
+	},
 	"background, title()": {
 		"en": "Background",
 		"pt": "Fundo"
@@ -1261,10 +1477,6 @@
 		"en": "Colors",
 		"pt": "Cores"
 	},
-	"name, title()": {
-		"en": "Name",
-		"pt": "Nome"
-	},
 	"color_name": {
 		"en": "Color name",
 		"pt": "Nome da cor"
@@ -1293,9 +1505,13 @@
 		"en": "Media list",
 		"pt": "Lista de mídia"
 	},
-	"social_networks": {
-		"en": "Social Networks",
-		"pt": "Redes Sociais"
+	"memories, title()": {
+		"en": "Memories",
+		"pt": "Memórias"
+	},
+	"date, title()": {
+		"pt": "Data",
+		"en": "Date"
 	},
 	"genders, type: dict": {
 		"en": {
@@ -1306,6 +1522,7 @@
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
+				"part_of": "part of",
 				"or": "or",
 				"first": "first",
 				"last": "last",
@@ -1318,6 +1535,7 @@
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
+				"part_of": "part of",
 				"or": "or",
 				"first": "first",
 				"last": "last",
@@ -1332,6 +1550,7 @@
 				"a": "um",
 				"of": "do",
 				"of_the": "do",
+				"part_of": "parte do",
 				"or": "ou",
 				"first": "primeiro",
 				"last": "último",
@@ -1344,23 +1563,49 @@
 				"a": "uma",
 				"of": "da",
 				"of_the": "da",
+				"part_of": "parte da",
 				"or": "ou",
 				"first": "primeira",
 				"last": "última",
 				"in": "em"
 			}
 		}
-    },
+	},
 	"gender_items": [
-        "the",
-        "these",
-        "this",
-        "a",
-        "of",
-        "of_the",
+		"the",
+		"these",
+		"this",
+		"a",
+		"of",
+		"of_the",
+		"part_of",
 		"or",
-        "first",
-        "last",
+		"first",
+		"last",
 		"in"
-    ]
+	],
+	"gender, type: list": {
+		"en": [
+			"Feminine",
+			"Masculine"
+		],
+		"pt": [
+			"Feminino",
+			"Masculino"
+		]
+	},
+	"sexuality, type: list": {
+		"en": [
+			"Straight",
+			"Homosexual",
+			"Bisexual",
+			"Pansexual"
+		],
+		"pt": [
+			"Heterossexual",
+			"Homossexual",
+			"Bissexual",
+			"Pansexual"
+		]
+	}
 }

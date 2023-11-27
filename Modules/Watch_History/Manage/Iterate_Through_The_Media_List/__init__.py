@@ -195,7 +195,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					titles_file = self.dictionary["Media"]["Item"]["folders"]["titles"]["root"] + full_language + ".txt"
 
 					# Open it for user to fill it with titles
-					self.File.Open(titles_file)
+					self.System.Open(titles_file)
 
 				# Wait for the user input (meaning the user finished filling the titles file)
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
@@ -281,7 +281,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				print(self.date_dictionary["file"])
 
 				# Open it on the text editor
-				self.File.Open(self.date_dictionary["file"], open = True)
+				self.System.Open(self.date_dictionary["file"], open = True)
 
 				# And end the program execution
 				quit()
@@ -370,7 +370,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 				):
 					# Open MyAnimeList search page with media (item) title parameter
-					self.File.Open("https://myanimelist.net/search/all?q={}&cat=anime".format(title))
+					self.System.Open("https://myanimelist.net/search/all?q={}&cat=anime".format(title))
 
 					print()
 					print("\t\t" + media_dictionary["title"] + ":")

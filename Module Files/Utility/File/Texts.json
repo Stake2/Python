@@ -19,6 +19,14 @@
         "en": "File name",
         "pt": "Nome de arquivo"
     },
+	"file_names": {
+        "en": "File names",
+        "pt": "Nome de arquivo"
+    },
+	"select_one_file_name": {
+        "en": "Select one file name",
+        "pt": "Selecione um nome de arquivo"
+    },
     "folder": {
         "en": "folder",
         "pt": "file"

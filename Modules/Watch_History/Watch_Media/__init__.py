@@ -58,7 +58,7 @@ class Watch_Media(Watch_History):
 				}
 			}
 
-			self.show_non_watching_media = True
+			self.show_non_watching_media = False
 
 			if self.show_non_watching_media == True:
 				non_watching_statuses = [
@@ -762,7 +762,7 @@ class Watch_Media(Watch_History):
 
 	def Open_Media_Unit(self):
 		# Open media unit with its executor
-		self.File.Open(self.media["Episode"]["unit"])
+		self.System.Open(self.media["Episode"]["unit"])
 
 	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
 	def Create_Discord_Status(self):

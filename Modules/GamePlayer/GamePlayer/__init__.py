@@ -1295,9 +1295,9 @@ class GamePlayer(object):
 	def Show_Information(self, dictionary):
 		game = dictionary["Game"]
 
-		if self.switches["Has active switches"] == False:
-			print()
-			print(self.large_bar)
+		# Show a separator
+		print()
+		print(self.large_bar)
 
 		print()
 		print(self.language_texts["game_title"] + ":")

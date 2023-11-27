@@ -120,7 +120,7 @@ class Create_Diary_File(Project_Zomboid):
 		self.File.Edit(self.survival_diary_file, self.diary_header, "w")
 
 	def Open_File(self):
-		self.File.Open(self.survival_diary_file)
+		self.System.Open(self.survival_diary_file)
 
 	def Show_Information(self):
 		print()

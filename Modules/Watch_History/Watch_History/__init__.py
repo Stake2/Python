@@ -53,8 +53,8 @@ class Watch_History(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language",
-			"JSON"
+			"JSON",
+			"Language"
 		]
 
 		# Iterate through the Utility modules
@@ -2520,7 +2520,7 @@ class Watch_History(object):
 						media_episode_text += " " + text
 
 			if media["Item"]["Type"][self.user_language] not in series_type_list:
-				of_the_text = self.media_types["Genders"][self.user_language]["masculine"]["of_the"] + " " + media["Item"]["Type"][self.user_language]
+				of_the_text = self.media_types["Genders"][self.user_language]["masculine"]["of_the"] + " " + media["Item"]["Type"][self.user_language].lower()
 
 			media_episode_text = media_episode_text.format(of_the_text)
 

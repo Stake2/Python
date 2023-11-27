@@ -7,6 +7,10 @@
 		"en": "Social Networks",
 		"pt": "Redes Sociais"
 	},
+	"social_networks_list": {
+		"en": "Social Networks list",
+		"pt": "Lista de Redes Sociais"
+	},
 	"social_network_information": {
 		"en": "Social Network information",
 		"pt": "Informações da Rede Social"
@@ -15,22 +19,6 @@
 		"en": "Social Networks information",
 		"pt": "Informações das Redes Sociais"
 	},
-	"information": {
-		"en": "information",
-		"pt": "informação"
-	},
-	"information, title()": {
-		"en": "Information",
-		"pt": "Informação"
-	},
-	"information_item": {
-		"en": "Information item",
-		"pt": "Item de informação"
-	},
-	"information_items": {
-		"en": "Information items",
-		"pt": "Itens de informação"
-	},
 	"image_folder": {
 		"en": "Image folder",
 		"pt": "Pasta de imagem"
@@ -38,78 +26,6 @@
 	"image_folders": {
 		"en": "Image folders",
 		"pt": "Pastas de imagem"
-	},
-	"home, title()": {
-		"en": "Home",
-		"pt": "Início"
-	},
-	"profile": {
-		"en": "profile",
-		"pt": "perfil"
-	},
-	"profile, title()": {
-		"en": "Profile",
-		"pt": "Perfil"
-	},
-	"profiles": {
-		"en": "profiles",
-		"pt": "perfis"
-	},
-	"profiles, title()": {
-		"en": "Profiles",
-		"pt": "Perfis"
-	},
-	"setting": {
-		"en": "setting",
-		"pt": "configuração"
-	},
-	"setting, title()": {
-		"en": "Setting",
-		"pt": "Configuração"
-	},
-	"settings": {
-		"en": "settings",
-		"pt": "configurações"
-	},
-	"settings, title()": {
-		"en": "Settings",
-		"pt": "Configurações"
-	},
-	"number, title()": {
-		"en": "Number",
-		"pt": "Número"
-	},
-	"numbers, title()": {
-		"en": "Numbers",
-		"pt": "Números"
-	},
-	"the": {
-		"en": "the",
-		"pt": {
-			"masculine": "o",
-			"feminine": "a"
-		}
-	},
-	"this": {
-		"en": "this",
-		"pt": {
-			"masculine": "este",
-			"feminine": "esta"
-		}
-	},
-	"of": {
-		"en": "of",
-		"pt": {
-			"masculine": "do",
-			"feminine": "da"
-		}
-	},
-	"part_of": {
-		"en": "part of",
-		"pt": {
-			"masculine": "parte do",
-			"feminine": "parte da"
-		}
 	},
 	"select_one_social_network_to_use": {
 		"en": "Select one Social Network to use",
@@ -135,74 +51,7 @@
 		"pt": "Por favor digite as informações do perfil da Rede Social",
 		"en": "Please type the Social Network profile information"
 	},
-	"information_items, type: list": {
-		"pt": [
-			"Originalmente",
-			"Arroba",
-			"ID",
-			"Membro Discord desde",
-			"Nome de usuário",
-			"Link de perfil",
-			"Link de mensagem",
-			"ID de mensagem",
-			"Nome de contato",
-			"Número"
-		],
-		"en": [
-			"Originally",
-			"Handle",
-			"ID",
-			"Discord member since",
-			"Username",
-			"Profile link",
-			"Message link",
-			"Message ID",
-			"Contact name",
-			"Number"
-		]
-	},
-	"nick_and_tag": {
-		"en": "Nick and Tag",
-		"pt": "Nick e Tag"
-	},
-	"id": {
-		"en": "ID",
-		"pt": "ID"
-	},
-	"username": {
-		"en": "Username",
-		"pt": "Nome de usuário"
-	},
-	"profile_link": {
-		"en": "Profile link",
-		"pt": "Link de perfil"
-	},
-	"message_link": {
-		"en": "Message link",
-		"pt": "Link de mensagem"
-	},
-	"handle": {
-		"en": "Handle",
-		"pt": "Arroba"
-	},
-	"message_id": {
-		"en": "Message ID",
-		"pt": "ID de mensagem"
-	},
-	"contact_name": {
-		"en": "Contact name",
-		"pt": "Nome de contato"
-	},
-	"number": {
-		"en": "Number",
-		"pt": "Número"
-	},
-	"originally": {
-		"en": "Originally",
-		"pt": "Originalmente"
-	},
-	"discord_member_since": {
-		"en": "Discord member since",
-		"pt": "Membro Discord desde"
-	}
+	"settings, type: list": [
+		"create_image_folders"
+	]
 }

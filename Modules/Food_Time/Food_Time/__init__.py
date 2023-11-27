@@ -239,7 +239,7 @@ class Food_Time():
 				self.timer_url += "&"
 
 		# Open formatted timer URL with parameters
-		#self.File.Open(self.timer_url)
+		#self.System.Open(self.timer_url)
 
 		# Define scheduled task to play alarm sound when the "Will be hungry" time is reached
 		self.parameters = {

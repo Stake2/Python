@@ -26,16 +26,20 @@ class System():
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Verbose(self, text, item, verbose = True):
+		import inspect
+
+		verbose_text = "\n" + \
+		self.module["name"] + "." + inspect.stack()[1][3] + "():" + "\n" + \
+		"\t" + text + ":" + "\n" + \
+		"\t" + item
+
 		if (
 			self.switches["verbose"] == True and
 			verbose == True
 		):
-			import inspect
+			print(verbose_text)
 
-			print()
-			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
-			print("\t" + text + ":")
-			print("\t" + item)
+		return verbose_text
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
@@ -50,17 +54,19 @@ class System():
 
 		return path
 
-	def Open(self, item, open = False):
+	def Open(self, item, open = False, verbose = True):
 		if "https" not in item:
 			item = self.Sanitize(item)
 
-		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
+		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose)
 
 		if (
 			self.switches["testing"] == False or
 			open == True
 		):
 			os.startfile(item)
+
+		return verbose_text
 
 	def Close(self, program):
 		import psutil
@@ -70,5 +76,7 @@ class System():
 
 	def Open_Link(self, link):
 		import webbrowser
+
+		self.Verbose(self.language_texts["opening, title()"], link, verbose = True)
 
 		webbrowser.open(link)

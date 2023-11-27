@@ -134,7 +134,7 @@ class Convert_History(Diary_Slim):
 								self.year["Year"]["Months"][month["Formats"]["Diary Slim"]]["Diary Slims"][day]["Data"]["Sleep times"].pop(item)
 
 							elif ":" not in string:
-								self.File.Open(day_file)
+								self.System.Open(day_file)
 								input()
 
 					if has_data == False:

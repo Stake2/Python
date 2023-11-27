@@ -223,4 +223,4 @@ class SproutGigs():
 			print(self.category["info"]["link"])
 
 			if self.switches["testing"] == False:
-				self.File.Open(self.category["info"]["link"])
+				self.System.Open(self.category["info"]["link"])

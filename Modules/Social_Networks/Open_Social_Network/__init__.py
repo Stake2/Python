@@ -5,32 +5,38 @@ from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 from Block_Websites.Unblock import Unblock as Unblock
 
 class Open_Social_Network(Social_Networks):
-	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, unblock = True, first_space = True, second_space = True):
+	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, unblock = False, first_space = True, second_space = True):
 		super().__init__()
 
 		self.open_social_networks = open_social_networks
 		self.option_info = option_info
 		self.custom_link = custom_link
+		self.unblock = unblock
 		self.first_space = first_space
 		self.second_space = second_space
 
-		if first_space == True:
+		if self.first_space == True:
 			print()
 
 		self.social_network_list = []
 
 		if social_network_parameter != None:
-			self.open_social_networks = False
+			self.open_social_networks = True
 
 		if type(social_network_parameter) == str:
-			self.social_network_list = [social_network_parameter]
+			self.social_network_list = [
+				social_network_parameter
+			]
 
 		if type(social_network_parameter) == list:
 			self.social_network_list = social_network_parameter
 
 		self.custom_link_backup = self.custom_link
 
-		if self.open_social_networks == False and social_network_parameter == None:
+		if (
+			self.open_social_networks == False and
+			social_network_parameter == None
+		):
 			self.social_network_list = [None]
 
 		self.i = 0
@@ -40,9 +46,6 @@ class Open_Social_Network(Social_Networks):
 				self.custom_link_backup != None
 			):
 				self.custom_link = self.custom_link_backup[self.i]
-
-			if self.i == 1:
-				print()
 
 			self.social_network_link = self.custom_link
 
@@ -57,11 +60,23 @@ class Open_Social_Network(Social_Networks):
 
 			if self.open_social_networks == True:
 				print()
+				print(self.large_bar)
+				print()
 
-			if self.i == 0 and unblock == True:
+			if (
+				self.i == 0 and
+				self.unblock == True
+			):
 				self.Unlock_Social_Network()
 
 			self.Open_Social_Network()
+
+			if (
+				self.i == len(self.social_network_list) - 1 and
+				second_space == True
+			):
+				print()
+				print(self.large_bar)
 
 			self.i += 1
 
@@ -101,7 +116,11 @@ class Open_Social_Network(Social_Networks):
 		show_text = self.language_texts["link_types"]
 		select_text = self.language_texts["select_one_link_type_to_open"]
 
-		if self.open_social_networks == False and self.option_info == None and self.custom_link == None:
+		if (
+			self.open_social_networks == False and
+			self.option_info == None and
+			self.custom_link == None
+		):
 			option_info = self.Input.Select(self.link_types["en"], language_options = self.link_types[self.user_language], show_text = show_text, select_text = select_text)
 
 		if self.custom_link != None:
@@ -122,13 +141,13 @@ class Open_Social_Network(Social_Networks):
 
 	def Define_Social_Network_Link(self):
 		if self.custom_link == None:
-			if self.link_type_key in self.social_network["data"]["Information"]:
-				self.social_network_link = self.social_network["data"]["Information"][self.link_type_key]
+			if self.link_type_key in self.social_network["Data"]["Information"]:
+				self.social_network_link = self.social_network["Data"]["Information"][self.link_type_key]
 
-			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
+			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["Data"]["Information"]:
 				self.user_information = {}
 
-				self.social_network_link = self.social_network["data"]["Profile"][self.link_type_key]
+				self.social_network_link = self.social_network["Data"]["Profile"][self.link_type_key]
 
 				added_user_information = False
 
@@ -145,8 +164,8 @@ class Open_Social_Network(Social_Networks):
 
 						added_user_information = True
 
-		if "Program file" in self.social_network["data"]["Information"]:
-			self.social_network_link = self.social_network["data"]["Information"]["Program file"]
+		if "Program file" in self.social_network["Data"]["Information"]:
+			self.social_network_link = self.social_network["Data"]["Information"]["Program file"]
 
 			self.language_texts["opening_{}_on_its_{}_page_with_this_link"] = self.language_texts["opening_{}_on_its_{}_page_with_this_link"].split(" {}")[0] + " {}"
 
@@ -154,11 +173,11 @@ class Open_Social_Network(Social_Networks):
 		print(self.language_texts["opening_{}_on_its_{}_page_with_this_link"].format(self.social_network["Name"], self.language_link_type.lower()) + ":")
 		print("\t" + self.social_network_link)
 
-		if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["data"]["Information"]:
+		if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["Data"]["Information"]:
 			for key in self.user_information:
 				print()
 				print("\t" + key + ":")
 				print("\t\t" + self.user_information[key])
 
-		if self.switches["testing"] == False:
-			self.File.Open(self.social_network_link)
+		# Open the Social Network
+		self.System.Open(self.social_network_link)

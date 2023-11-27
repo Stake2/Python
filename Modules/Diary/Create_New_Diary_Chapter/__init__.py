@@ -17,7 +17,7 @@ class Create_New_Diary_Chapter(Diary):
 		self.File.Create(self.new_diary_chapter_file)
 
 		# Open the new Diary file
-		self.File.Open(self.new_diary_chapter_file)
+		self.System.Open(self.new_diary_chapter_file)
 
 		# Update Diary number file
 		text_to_write = str(self.diary_number)

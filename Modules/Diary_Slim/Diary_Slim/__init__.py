@@ -548,13 +548,35 @@ class Diary_Slim():
 			if state == selected_state or state == None or selected_state == None:
 				self.File.Edit(current_state_file, new_order, "w")
 
-	def Current_Diary_Slim(self, current_year = None, date = None):
+	def Current_Diary_Slim(self, current_year = None, date = None, current_diary_slim = True):
 		if current_year == None:
 			current_year = self.current_year
 
 		if date == None:
 			date = self.date
 
+		# Get the Diary Slim dictionary
+		dictionary = self.Make_Diary_Slim_Dictionary(current_year, date)
+
+		# If the current Diary Slim file does not exist
+		# And the current Diary Slim needs to be retrieved
+		if (
+			self.File.Exist(dictionary["File"]) == False and
+			current_diary_slim == True
+		):
+			# Get the most recent month and the most recent Diary Slim
+			most_recent_month = list(self.current_year["Year"]["Months"].values())[-1]
+			most_recent_diary_slim = list(most_recent_month["Diary Slims"].values())[-1]
+
+			# Create the custom date of the most recent Diary Slim
+			date = self.Date.From_String(most_recent_diary_slim["Formats"]["DD-MM-YYYY"], format = "%d-%m-%Y")
+
+			# Get the Diary Slim dictionary of the last Diary Slim file
+			dictionary = self.Make_Diary_Slim_Dictionary(current_year, date)
+
+		return dictionary
+
+	def Make_Diary_Slim_Dictionary(self, current_year, date):
 		dictionary = {}
 
 		# Define the month folder name

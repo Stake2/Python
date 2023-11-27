@@ -598,7 +598,7 @@ class Create_Year_Summary(Years):
 		print("____________________")
 
 		# Open the user language summary file
-		self.File.Open(self.summary["Files"][self.user_language])
+		self.System.Open(self.summary["Files"][self.user_language])
 
 		print()
 		print(self.language_texts["the_program_has_finished_the_creation_of_the_year_summary_for"] + " " + self.year["Number"] + ".")

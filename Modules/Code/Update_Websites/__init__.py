@@ -21,7 +21,10 @@ class Update_Websites(Code):
 		self.Open_And_Close_XAMPP(open = True)
 		self.Update_Website()
 
-		if self.update_one_website == False and self.create_website_list_to_update == False:
+		if (
+			self.update_one_website == False and
+			self.create_website_list_to_update == False
+		):
 			self.update_more_websites = True
 
 			i = 0
@@ -45,8 +48,9 @@ class Update_Websites(Code):
 					self.Open_And_Close_XAMPP(close = True)
 
 		if (
-			self.update_one_website == True or \
-			self.update_one_website == False and self.create_website_list_to_update == True
+			self.update_one_website == True or
+			self.update_one_website == False and
+			self.create_website_list_to_update == True
 		):
 			self.Open_And_Close_XAMPP(close = True)
 
@@ -184,8 +188,12 @@ class Update_Websites(Code):
 
 		while dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
 			print()
+			print(self.large_bar)
+			print()
 			print(self.JSON.Language.language_texts["list, title()"] + ":")
-			self.JSON.Show(websites["Select list"])
+
+			for website in websites["Select list"]:
+				print("\t" + website)
 
 			# Select website from the list and return its number
 			dictionary = self.Input.Select(websites["List"]["en"], language_options = websites["List"][self.user_language], show_text = self.show_text, select_text = self.select_text)
@@ -213,7 +221,7 @@ class Update_Websites(Code):
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
 			if self.switches["testing"] == False:
-				self.File.Open(self.folders["root"]["xampp"]["xampp-control"])
+				self.System.Open(self.folders["root"]["xampp"]["xampp-control"])
 
 				self.Date.Sleep(4)
 
@@ -280,12 +288,12 @@ class Update_Websites(Code):
 				print(self.languages["full_translated"][language][self.user_language])
 
 				if self.switches["testing"] == False:
-					self.File.Open(link)
+					self.System.Open(link)
 
 				self.Date.Sleep(1)
 
 			if key != list(self.websites["Update"].keys())[-1]:
-				input()
+				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 		print()
 		print(self.large_bar)

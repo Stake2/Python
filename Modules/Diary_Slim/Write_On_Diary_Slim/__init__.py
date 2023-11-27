@@ -16,7 +16,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.Write()
 
 		# Open the current Diary Slim file
-		self.File.Open(self.current_year["File"])
+		self.System.Open(self.current_year["File"])
 
 		print()
 		print(self.large_bar)
@@ -339,7 +339,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.File.Create(self.task_dictionary["Files"][language])
 
 			if self.File.Exist(self.task_dictionary["Files"][language]) == True:
-				self.File.Open(self.task_dictionary["Files"][language])
+				self.System.Open(self.task_dictionary["Files"][language])
 
 		# Create text with all languages translated to user language
 		languages_text = ""
@@ -419,7 +419,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if "." not in text_to_write[-1]:
 			text_to_write += "."
 
-		if self.text["Key"] not in self.slim_texts:
+		if "Item" not in self.text:
 			print()
 
 			Write_On_Diary_Slim_Module(text_to_write)

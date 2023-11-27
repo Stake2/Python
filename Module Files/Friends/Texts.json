@@ -25,33 +25,9 @@
 		"en": "Friends",
 		"pt": "Amigos"
 	},
-	"information": {
-		"en": "information",
-		"pt": "informação"
-	},
-	"information, title()": {
-		"en": "Information",
-		"pt": "Informação"
-	},
-	"information_item": {
-		"en": "Information item",
-		"pt": "Item de informação"
-	},
-	"information_items": {
-		"en": "Information items",
-		"pt": "Itens de informação"
-	},
-	"year, title()": {
-		"en": "Year",
-		"pt": "Ano"
-	},
-	"number, title()": {
-		"en": "Number",
-		"pt": "Número"
-	},
-	"numbers, title()": {
-		"en": "Numbers",
-		"pt": "Números"
+	"friends_list": {
+		"en": "Friends list",
+		"pt": "Lista de amigos"
 	},
 	"year_numbers": {
 		"en": "Year numbers",
@@ -77,10 +53,6 @@
 		"pt": "Digite {}",
 		"en": "Type {}"
 	},
-	"profile, title()": {
-		"en": "Profile",
-		"pt": "Perfil"
-	},
 	"select_one_friend": {
 		"en": "Select one Friend",
 		"pt": "Selecione um Amigo"
@@ -97,113 +69,37 @@
 		"pt": "Este Amigo já existia na lista de Amigos",
 		"en": "This Friend already existed on the Friends list"
 	},
-	"file_types": {
-		"pt": "Tipos de arquivos",
-		"en": "File types"
-	},
-	"select_one_file_type": {
-		"pt": "Selecione um tipo de arquivo",
-		"en": "Select one file type"
-	},
 	"found_{}": {
 		"pt": "Encontrado {}",
 		"en": "Found {}"
 	},
 	"on_the_friend_{}_file_below": {
-		"pt": "No arquivo de {} de Amigo abaixo",
-		"en": "On the Friend {} file below"
+		"pt": "No arquivo de {} de amigo abaixo",
+		"en": "On the friend {} file below"
 	},
 	"could_not_find_{}_in_friend_{}_files": {
-		"pt": "Não foi possível encontrar {} nos arquivos de {} de Amigo",
-		"en": "Could not find {} in Friend {} files"
+		"pt": "Não foi possível encontrar {} nos arquivos de {} de amigo",
+		"en": "Could not find {} in friend {} files"
 	},
 	"executing_the_method_to_select_a_friend_{}_file": {
-		"pt": "Executando o método para selecionar um arquivo de {} de Amigo",
-		"en": "Executing the method to select a Friend {} file"
-	},
-	"name": {
-		"en": "Name",
-		"pt": "Nome"
-	},
-	"age": {
-		"en": "Age",
-		"pt": "Idade"
-	},
-	"gender": {
-		"en": "Gender",
-		"pt": "Gênero"
-	},
-	"sexuality": {
-		"en": "Sexuality",
-		"pt": "Sexualidade"
-	},
-	"birthday": {
-		"en": "Birthday",
-		"pt": "Aniversário"
-	},
-	"height": {
-		"en": "Height",
-		"pt": "Altura"
-	},
-	"hometown": {
-		"en": "Hometown",
-		"pt": "Localidade natal"
-	},
-	"residence_place": {
-		"en": "Residence place",
-		"pt": "Local de residência"
-	},
-	"origin_social_network": {
-		"en": "Origin Social Network",
-		"pt": "Rede Social de Origem"
-	},
-	"date_i_met": {
-		"en": "Date I met",
-		"pt": "Data que conheci"
-	},
-	"the": {
-		"en": "the",
-		"pt": {
-			"masculine": "o",
-			"feminine": "a"
-		}
-	},
-	"this": {
-		"en": "this",
-		"pt": {
-			"masculine": "este",
-			"feminine": "esta"
-		}
-	},
-	"of": {
-		"en": "of",
-		"pt": {
-			"masculine": "do",
-			"feminine": "da"
-		}
-	},
-	"part_of": {
-		"en": "part of",
-		"pt": {
-			"masculine": "parte do",
-			"feminine": "parte da"
-		}
+		"pt": "Executando o método para selecionar um arquivo de {} de amigo",
+		"en": "Executing the method to select a friend {} file"
 	},
 	"not_filled": {
 		"en": "Not filled",
 		"pt": "Não preenchido"
 	},
 	"select_a_friend_from_the_list_of_found_friends": {
-		"pt": "Selecione um Amigo da lista de Amigos encontrados",
-		"en": "Select a Friend from the list of found Friends"
+		"pt": "Selecione um amigo da lista de amigos encontrados",
+		"en": "Select a friend from the list of found friends"
 	},
 	"opening_this_{}_friend_file": {
-		"pt": "Abrindo este arquivo de {} de Amigo",
-		"en": "Opening this {} Friend file"
+		"pt": "Abrindo este arquivo de {} de amigo",
+		"en": "Opening this {} friend file"
 	},
 	"of_the_social_network": {
-		"pt": "da Rede Social",
-		"en": "of the Social Network"
+		"pt": "da rede social",
+		"en": "of the social network"
 	},
 	"select_a_social_network_to_add_it_to_the_friend_folder": {
 		"pt": "Selecione uma Rede Social para adicionar ela à pasta do Amigo",
@@ -232,91 +128,5 @@
 	"type_the_additional_information": {
 		"pt": "Digite a informação adicional",
 		"en": "Type the additional information"
-	},
-	"gender, type: list": {
-		"en": [
-			"Feminine",
-			"Masculine"
-		],
-		"pt": [
-			"Feminino",
-			"Masculino"
-		]
-	},
-	"sexuality, type: list": {
-		"en": [
-			"Straight",
-			"Homosexual",
-			"Bisexual"
-		],
-		"pt": [
-			"Heterossexual",
-			"Homossexual",
-			"Bissexual"
-		]
-	},
-	"information_items, type: list": {
-		"en": [
-			"Name",
-			"Age",
-			"Gender",
-			"Sexuality",
-			"Birthday",
-			"Height",
-			"Hometown",
-			"Residence place",
-			"Origin Social Network",
-			"Date I met"
-		],
-		"pt": [
-			"Nome",
-			"Idade",
-			"Gênero",
-			"Sexualidade",
-			"Aniversário",
-			"Altura",
-			"Localidade natal",
-			"Local de residência",
-			"Rede Social de Origem",
-			"Data que conheci"
-		],
-		"plural": {
-			"en": [
-				"Names",
-				"Ages",
-				"Genders",
-				"Sexualities",
-				"Birthdays",
-				"Heights",
-				"Hometowns",
-				"Residence places",
-				"Origin Social Networks",
-				"Dates I met"
-			],
-			"pt": [
-				"Nomes",
-				"Idades",
-				"Gêneros",
-				"Sexualidades",
-				"Aniversários",
-				"Alturas",
-				"Localidades natais",
-				"Locais de residência",
-				"Redes Sociais de Origem",
-				"Datas que conheci"
-			]
-		},
-		"formats": [
-			"",
-			"[0-9]{2}; 18",
-			"",
-			"",
-			"[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}; 01/01/2001",
-			"[0-9]\\,[0-9]{2}; 1,70",
-			".* \\- .* \\- .*; São Paulo - São Paulo - Brasil",
-			".* \\- .* \\- .*; São Paulo - São Paulo - Brasil",
-			"",
-			"[0-9]{2}:[0-9]{2} [0-9]{2}\\/[0-9]{2}\\/[0-9]{4}; 01/01/2001"
-		]
 	}
 }

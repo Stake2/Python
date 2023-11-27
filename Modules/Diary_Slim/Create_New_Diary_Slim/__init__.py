@@ -13,7 +13,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		if "Date" not in self.dictionary:
 			self.dictionary["Date"] = self.Date.Now()
 
-		self.current_diary_slim = self.Current_Diary_Slim(date = self.dictionary["Date"])
+		self.current_diary_slim = self.Current_Diary_Slim(date = self.dictionary["Date"], current_diary_slim = False)
 
 		if "File" not in self.dictionary:
 			self.dictionary["File"] = self.current_diary_slim["File"]
@@ -156,6 +156,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		if self.dictionary["Yesterday"] not in diary_slims_list:
 			# Define the days list
 			days_list = list(range(1, self.date["Units"]["Month days"] + 1))
+
 			diary_slims_dictionary = {}
 
 			# Iterate through the days list
@@ -169,7 +170,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 				# If the day text is not inside the Diary Slims list
 				# And the day is less than the current day
-				if day_text not in diary_slims_list and day < int(units["Day"]):
+				if (
+					day_text not in diary_slims_list and
+					day < int(units["Day"])
+				):
 					# Create the day dictionary
 					diary_slims_dictionary[day_text] = {
 						"Day text": day_text,
@@ -325,14 +329,14 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# If the file is empty
 			if self.current_day_file_text == "":
 				verbose = None
-				check_diary_slim = True
+				current_diary_slim = True
 
 				if "Check" in self.dictionary:
 					verbose = False
-					check_diary_slim = False
+					current_diary_slim = False
 
 				# Write the header text into the Diary Slim file
-				Write_On_Diary_Slim_Module(text_to_write, add_time = False, check_file_length = False, check_diary_slim = check_diary_slim, verbose = verbose)
+				Write_On_Diary_Slim_Module(text_to_write, add_time = False, check_file_length = False, current_diary_slim = current_diary_slim, verbose = verbose)
 
 		# Open the current Diary Slim file
-		self.File.Open(self.dictionary["File"])
+		self.System.Open(self.dictionary["File"])

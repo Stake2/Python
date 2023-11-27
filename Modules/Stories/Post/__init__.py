@@ -96,7 +96,7 @@ class Post(Stories):
 
 	def Define_Chapter(self):
 		if self.switches["testing"] == False:
-			self.File.Open(self.story["Folders"]["Information"]["Chapter status"])
+			self.System.Open(self.story["Folders"]["Information"]["Chapter status"])
 
 		# Remove chapter titles that were posted before the last posted chapter title
 		self.chapter_titles = self.story["Information"]["Chapters"]["Titles"][self.user_language].copy()
@@ -185,7 +185,7 @@ class Post(Stories):
 
 				# Open Sony Vegas file
 				if self.switches["testing"] == False:
-					self.File.Open(self.cover_type["sony_vegas_file"])
+					self.System.Open(self.cover_type["sony_vegas_file"])
 
 				# Copy language titles and move language covers
 				if self.run_as_module == False:

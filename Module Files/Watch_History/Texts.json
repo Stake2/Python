@@ -143,9 +143,9 @@
 		"en": "Episode list",
 		"pt": "Lista de episódio"
 	},
-	"a_screenshot_of_the_episode": {
-		"en": "a screenshot of the episode",
-		"pt": "uma print do episódio"
+	"the_episode_cover": {
+		"en": "the episode cover",
+		"pt": "a capa do episódio"
 	},
 	"a_summary_video": {
 		"en": "a summary video",
@@ -315,9 +315,9 @@
 		"pt": "Acabei de assistir {}",
 		"en": "I just finished watching {}"
 	},
-	"i_posted_the_watched_text_and_{}_on_the_status_of_{}_and_tweet_on_{}": {
-		"pt": "Postei o texto de assistido e {} no status do {}, e tweet no {}",
-		"en": "I posted the watched text and {} on the status of {}, and tweet on {}"
+	"i_posted_the_watched_text, type: template": {
+		"pt": "Postei o texto de assistido e {} no meu servidor no {}, no status do {}, e tweet no {}",
+		"en": "I posted the watched text and {} on my server on {}, on the status of {}, and tweet on {}"
 	},
 	"press_enter_to_copy_the_watched_text": {
 		"pt": "Pressione Enter para copiar o texto de assistido",

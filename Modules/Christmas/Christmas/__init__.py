@@ -186,7 +186,7 @@ class Christmas():
 			self.switches["testing"] == True and
 			key not in ["Foobar2000", "Theme"]
 		):
-			self.File.Open(file)
+			self.System.Open(file)
 
 		if key != self.language_texts["texts, title()"]:
 			text += "..."
@@ -259,7 +259,7 @@ class Christmas():
 				print("\t" + link)
 
 				if self.switches["testing"] == False:
-					self.File.Open(link)
+					self.System.Open(link)
 
 				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
 
@@ -287,7 +287,7 @@ class Christmas():
 				self.script_file = file
 
 		if self.switches["testing"] == False and script_name != "GamePlayer":
-			self.File.Open(self.script_file)
+			self.System.Open(self.script_file)
 
 		if script_name == "Watch_History":
 			files = {
@@ -298,7 +298,7 @@ class Christmas():
 
 			for text in files:
 				file = files[text]
-				self.File.Open(file)
+				self.System.Open(file)
 
 				lines = self.File.Contents(file)["lines"]
 

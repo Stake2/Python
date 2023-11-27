@@ -86,7 +86,7 @@ class Comment_Writer(Watch_History):
 				# (Because for remote media, the episode is already opened)
 				if self.media["States"]["Remote"] == False:
 					# Open remote episode link
-					self.File.Open(self.media["Episode"]["Remote"]["Link"])
+					self.System.Open(self.media["Episode"]["Remote"]["Link"])
 
 				# Wait for the user to finish posting the comment on the episode link
 				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
@@ -263,6 +263,9 @@ class Comment_Writer(Watch_History):
 		if len(self.media["Comment"]["Text"]["Lines"]) >= 4:
 			# Replace the time text in the comment with the comment time
 			self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# Update the backup file to update the comment time
+		self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media["Comment"]["Text"]["String"], "w")
 
 	def Write_Comment_To_Files(self):
 		from copy import deepcopy

@@ -92,7 +92,7 @@ class Text():
 
 		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
-	def From_List(self, list_, break_line = True, separator = ""):
+	def From_List(self, list_, break_line = True, separator = "", and_text = False):
 		string = ""
 
 		i = 0
@@ -105,6 +105,12 @@ class Text():
 
 				if break_line == True:
 					string += "\n"
+
+			if (
+				i == len(list_) - 2 and
+				and_text == True
+			):
+				string += self.JSON.Language.language_texts["and"] + " "
 
 			i += 1
 
@@ -186,5 +192,7 @@ class Text():
 
 	def Open_Link(self, link):
 		import webbrowser
+
+		self.Verbose(self.language_texts["opening, title()"], link, verbose = True)
 
 		webbrowser.open(link)

@@ -195,14 +195,23 @@ class Input():
 			print()
 			print(self.language_texts["you_selected_this_option"] + ":")
 
-			if language_options != None and str(option) != dictionary["language_option"]:
+			if (
+				language_options != None and
+				str(option) != dictionary["language_option"]
+			):
 				print("\t" + dictionary["language_option"])
 				print("\t" + str(option))
 
-			if language_options == None or str(option) == dictionary["language_option"]:
-				print(str(option))
+			if (
+				language_options == None or
+				str(option) == dictionary["language_option"]
+			):
+				print("\t" + str(option))
 
-			if function == True and type(option) in [function, type]:
+			if (
+				function == True and
+				type(option) in [function, type]
+			):
 				option()
 
 		return dictionary

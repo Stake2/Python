@@ -50,6 +50,11 @@ class Register(Watch_History):
 		if "Defined title" not in self.dictionary:
 			self.Show_Information()
 
+		# Re-initiate the root class to update the files
+		del self.folders
+
+		super().__init__()
+
 	def Type_Entry_Information(self):
 		# To-Do: Make this method
 		pass
@@ -917,51 +922,75 @@ class Register(Watch_History):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
-		self.social_networks = [
-			"WhatsApp",
-			"Instagram",
-			"Facebook",
+		# Define the "Social Networks" dictionary
+		self.social_networks = {
+			"List": [
+				"Discord",
+				"WhatsApp",
+				"Instagram",
+				"Facebook",
+				"Twitter"
+			],
+			"List text": ""
+		}
+
+		# Define the list text, with all the Social Networks separated by commas
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+
+		# Remove the "Discord" and "Twitter" Social Networks
+		self.social_networks["List"].remove("Discord")
+		self.social_networks["List"].remove("Twitter")
+
+		# Define the list text, with all the Social Networks separated by commas
+		# But without Twitter
+		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+
+		# Define the item text to be used
+		self.social_networks["Item text"] = self.language_texts["the_episode_cover"]
+
+		if self.media["States"]["Series media"] == False:
+			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.language_texts["movie"])
+
+		# Define the "posted" template
+		self.social_networks["Template"] = self.language_texts["i_posted_the_watched_text, type: template"] + "."
+
+		# Define the template items list
+		self.social_networks["Items"] = [
+			self.social_networks["Item text"],
+			"Discord",
+			self.social_networks["List text (without Discord and Twitter)"],
 			"Twitter"
 		]
 
-		self.social_networks_string = self.Text.From_List(self.social_networks, break_line = False, separator = ", ")
-		self.first_three_social_networks = ""
+		# Format the template with the items list
+		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
-		for social_network in self.social_networks:
-			if social_network != self.social_networks[-1]:
-				self.first_three_social_networks += social_network
-
-				if social_network != "Facebook":
-					self.first_three_social_networks += ", "
-
-		self.twitter_social_network = self.social_networks[-1]
-
-		text = self.language_texts["a_screenshot_of_the_episode"]
-
-		if self.media["States"]["Series media"] == False:
-			text = text.replace(self.language_texts["a_screenshot_of_the_episode"], self.language_texts["movie"])
-
-		self.posted_on_social_networks_text_template = self.language_texts["i_posted_the_watched_text_and_{}_on_the_status_of_{}_and_tweet_on_{}"] + "."
-
-		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.posted_on_social_networks_text_template.format(text, self.first_three_social_networks, self.twitter_social_network)
-
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks_string + ")"
+		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] + ")"
 
 		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
 
-			# Define the Social Networks list
-			social_network_list = [
-				"WhatsApp",
-				"Twitter"
-			]
+			# Define the Social Networks dictionary
+			social_networks = {
+				"WhatsApp": None,
+				"Twitter": None,
+				"Discord": "https://discord.com/channels/311004778777935872/641352970352459776"  # "#watch-history" channel on my Discord server
+			}
 
-			# Open the Social Networks
-			Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network_list, first_space = False, second_space = False)
+			# Open the Social Networks, one by one
+			for social_network, custom_link in social_networks.items():
+				# Define the second space variable
+				second_space = False
 
-			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"])
+				if social_network == "Discord":
+					second_space = True
+
+				# Open the current Social Network in the profile link, with maybe a custom link
+				Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network, custom_link = custom_link, first_space = False, second_space = second_space)
+
+			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"], first_space = False)
 
 			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 
@@ -990,6 +1019,3 @@ class Register(Watch_History):
 			self.dictionary["header_text"] = self.dictionary["header_text"].replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"])
 
 		self.Show_Media_Information(self.dictionary)
-
-		# Re-initiate the root class to update files
-		super().__init__()

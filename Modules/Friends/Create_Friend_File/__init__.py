@@ -31,7 +31,7 @@ class Create_Friend_File(Friends):
 		self.Write_To_Files()
 
 		# Defines the information and fills the Friend-related dictionaries
-		super().__init__(select_social_network = False)
+		super().__init__()
 
 		self.Show_Information()
 
@@ -44,17 +44,17 @@ class Create_Friend_File(Friends):
 		self.friend_information = {}
 
 		i = 0
-		for information_item in self.texts["information_items, type: list"]["en"]:
+		for information_item in self.information_items["en"]:
 			key = information_item.lower().replace(" ", "_")
 
-			language_information_item = self.texts["information_items, type: list"][self.user_language][i]
-			language_information_item_format = self.texts["information_items, type: list"][information_item]
+			language_information_item = self.information_items[self.user_language][i]
+			language_information_item_format = self.information_items[information_item]
 
 			if key + ", type: list" not in self.language_texts and information_item != self.texts["origin_social_network"]["en"]:
 				friend_information = self.Input.Type(language_information_item, accept_enter = True, next_line = True, regex = language_information_item_format)
 
 			if key + ", type: list" in self.language_texts:
-				plural_text = self.texts["information_items, type: list"]["plural"][self.user_language][i]
+				plural_text = self.information_items["plural"][self.user_language][i]
 
 				friend_information = self.Input.Select(self.texts[key + ", type: list"]["en"], language_options = self.language_texts[key + ", type: list"], show_text = plural_text, select_text = language_information_item)["option"]
 
@@ -100,65 +100,63 @@ class Create_Friend_File(Friends):
 		self.friend_files[self.friend] = {}
 
 		self.friend_folders[self.friend] = {
-			"Text": {
-				
-			},
-			"Image": {
-				
-			}
+			"Text": {},
+			"Image": {}
 		}
 
-		# Define text folder
-		self.friend_folders[self.friend]["Text"]["root"] = self.friends_text_folder + self.friend + "/"
+		# Define the text folder
+		self.friend_folders[self.friend]["Text"]["root"] = self.folders["Friends"]["Text"]["root"] + self.friend + "/"
 		self.Folder.Create(self.friend_folders[self.friend]["Text"]["root"])
 
-		# Define image folder
-		self.friend_folders[self.friend]["Image"]["root"] = self.friends_image_folder + self.friend + "/"
+		# Define the image folder
+		self.friend_folders[self.friend]["Image"]["root"] = self.folders["Friends"]["Image"]["root"] + self.friend + "/"
 		self.Folder.Create(self.friend_folders[self.friend]["Image"]["root"])
 
+		# Define the Social Networks folder
+		self.friend_folders[self.friend]["Text"]["Social Networks"] = self.friend_folders[self.friend]["Text"]["root"] + self.Social_Networks.language_texts["social_networks, title()"] + "/"
+		self.Folder.Create(self.friend_folders[self.friend]["Text"]["Social Networks"])
+
 		# Friend file names iteration
-		# file_names["en"] = ["Information", "Social Networks"]
-		for file_name in self.file_names["en"]:
-			key = file_name
+		for key, dict_ in self.friends["File names"]["Dictionary"].items():
+			file_name = dict_["Plural"][self.user_language]
 
-			# Define Social Networks folder
-			self.friend_folders[self.friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]] = self.friend_folders[self.friend]["Text"]["root"] + self.Social_Networks.texts["social_networks, en - pt, title()"] + "/"
-			self.Folder.Create(self.friend_folders[self.friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]])
+			folder = self.friend_folders[self.friend]["Text"]["root"]
 
-			self.friend_files[self.friend][key] = self.friend_folders[self.friend]["Text"]["root"] + file_name + ".txt"
+			if file_name == "Social Networks":
+				folder = self.friend_folders[self.friend]["Text"]["Social Networks"]
 
-			if file_name == self.Social_Networks.texts["social_networks"]["en"]:
-				self.friend_files[self.friend][key] = self.friend_folders[self.friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]] + self.Social_Networks.texts["social_networks, en - pt, title()"] + ".txt"
+			self.friend_files[self.friend][key] = folder + file_name + ".txt"
 
 			self.File.Create(self.friend_files[self.friend][key])
 
 	def Write_To_Files(self):
 		# Friend file names iteration
-		# file_names["en"] = ["Information", "Social Networks"]
-		for file_name in self.file_names["en"]:
-			key = file_name
+		for key, dict_ in self.friends["File names"]["Dictionary"].items():
+			file_name = dict_["Plural"][self.user_language]
+
 			file = self.friend_files[self.friend][key]
 
-			if file_name == self.JSON.Language.texts["information, title()"]["en"]:
+			if file_name == "Information":
 				self.File.Edit(file, self.Text.From_Dictionary(self.friend_information, next_line = True), "w")
 
-			if file_name == self.Social_Networks.texts["social_networks"]["en"]:
+			if file_name == "Social Networks":
 				for social_network in self.friend_social_networks:
 					social_network_information = self.friend_social_networks[social_network]
 
-					folder = self.friend_folders[self.friend]["Text"][self.Social_Networks.texts["social_networks"]["en"]] + social_network + "/"
+					folder = self.friend_folders[self.friend]["Text"]["Social Networks"] + social_network + "/"
 					self.Folder.Create(folder)
 
-					file = folder + self.texts["profile, title()"]["en"] + ".txt"
+					file = folder + self.JSON.Language.texts["profile, title()"]["en"] + ".txt"
 					self.File.Create(file)
 
 					self.File.Edit(file, self.Text.From_Dictionary(social_network_information, next_line = True), "w")
 
-		# Transform list of Friend Social Networks into a string and write it into the "Social Networks" file
+		# Transform the list of Friend Social Networks into a string and write it into the "Social Networks" file
 		text_to_write = self.Text.From_List(list(self.friend_social_networks.keys()))
-		self.File.Edit(self.friend_files[self.friend][self.Social_Networks.texts["social_networks"]["en"]], text_to_write, "w")
 
-		# Copy contents of text folder into image folder
+		self.File.Edit(self.friend_files[self.friend]["Social Networks"], text_to_write, "w")
+
+		# Copy the contents of the text folder into the image folder
 		self.File.Copy(self.friend_folders[self.friend]["Text"]["root"], self.friend_folders[self.friend]["Image"]["root"])
 
 		if self.switches["verbose"] == True:
@@ -187,7 +185,7 @@ class Create_Friend_File(Friends):
 		for information_item in self.friend_information:
 			information = self.friend_information[information_item]
 
-			print("\t" + self.texts["information_items, type: list"][self.user_language][i] + ":")
+			print("\t" + self.information_items[self.user_language][i] + ":")
 			print("\t" + information)
 
 			if information != list(self.friend_information.keys())[-1]:

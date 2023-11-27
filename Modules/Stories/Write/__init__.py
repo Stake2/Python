@@ -35,8 +35,8 @@ class Write(Stories):
 		self.Open_Obsidian()
 
 		if self.switches["testing"] == False:
-			self.File.Open("https://app.grammarly.com/")
-			self.File.Open("https://translate.google.com/")
+			self.System.Open("https://app.grammarly.com/")
+			self.System.Open("https://translate.google.com/")
 
 		self.Finish_Writing()
 
@@ -251,7 +251,7 @@ class Write(Stories):
 
 		# Open Obsidian bat
 		if self.switches["testing"] == False:
-			self.File.Open(self.obsidian["bat"])
+			self.System.Open(self.obsidian["bat"])
 
 	def Finish_Writing(self):
 		# Ask to start counting writing time

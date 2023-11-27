@@ -395,21 +395,31 @@ class Help_With_Programming(Code):
 				if language_name in tool_data:
 					language_tool_name = tool_data[language_name]
 
-			Open = self.File.Open
+			Open = self.System.Open
 
 			if self.language_texts["function, title()"] in tool_data:
 				Open = self.basic_functions[tool_data[self.language_texts["function, title()"]]]
 
 			self.text_to_print = self.language_texts["{}_the_programming_tool"].format(language_mode_text) + ' "' + language_tool_name + '"'
 
-			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data or mode == "open":
+			if (
+				mode == "close" and
+				Open == self.System.Open and
+				self.language_texts["close_tool"] not in tool_data or
+				mode == "open"
+			):
 				print()
 				print(self.text_to_print + "...")
 				print()
 				print(self.language_texts["path, title()"] + ":")
 				print(tool_path)
 
-			if mode == "close" and Open == self.File.Open and self.language_texts["close_tool"] not in tool_data and self.switches["testing"] == False:
+			if (
+				mode == "close" and
+				Open == self.System.Open and
+				self.language_texts["close_tool"] not in tool_data and
+				self.switches["testing"] == False
+			):
 				for program in programs_to_close:
 					self.File.Close(program)
 

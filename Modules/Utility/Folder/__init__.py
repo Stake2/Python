@@ -103,11 +103,11 @@ class Folder():
 				"root": self.folders["root"]["root"] + name + "/"
 			}
 
-		if "media_folder" in self.app_settings:
-			self.folders["root"]["media"]["root"] = self.app_settings["media_folder"]
+		if "Media folder" in self.app_settings:
+			self.folders["root"]["media"]["root"] = self.app_settings["Media folder"]
 
-		if "game_folder" in self.app_settings:
-			self.folders["root"]["games"]["root"] = self.app_settings["game_folder"]
+		if "Game folder" in self.app_settings:
+			self.folders["root"]["games"]["root"] = self.app_settings["Game folder"]
 
 		# "Apps" folders
 		self.folders["apps"] = self.folders["root"]["apps"]
@@ -260,6 +260,7 @@ class Folder():
 			"Diary Slim": "",
 			"Food": "",
 			"Friends": self.JSON.Language.language_texts["friends, title()"],
+			"Social_Networks": self.JSON.Language.language_texts["social_networks"],
 			"Networks": "",
 			"Years": ""
 		}
@@ -413,10 +414,10 @@ class Folder():
 				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
 
 		# Mega "Notepad" Years folders
-		starting_year = 2021
-		current_year = self.date["Units"]["Year"] + 1
+		starting_year = 2018
+		current_year = self.date["Units"]["Year"]
 
-		for item in range(starting_year, current_year):
+		for item in range(starting_year, current_year + 1):
 			key = str(item).lower().replace(" ", "_")
 
 			self.folders["mega"]["notepad"]["effort"]["years"][key] = {
@@ -445,6 +446,8 @@ class Folder():
 
 		# Mega "Image" folders
 		folders = {
+			"Friends": self.JSON.Language.language_texts["friends, title()"],
+			"Social_Networks": self.JSON.Language.language_texts["social_networks"],
 			"Years": self.Date.language_texts["years, title()"]
 		}
 
@@ -893,19 +896,24 @@ class Folder():
 			folder_name = folder.split("/")[-2]
 
 		contents = {
-			"folder": {
-				"list": [],
-				"names": [],
-				"dictionary": {}
-			},
-			"file": {
-				"list": [],
-				"names": [],
-				"dictionary": {}
-			},
+			"folder": {},
+			"file": {},
 			"dictionary": {},
 			"size": 0
 		}
+
+		# Create the folder and file keys
+		for key in ["folder", "file"]:
+			# Iterate through the sub-keys
+			for sub_key in ["list", "names", "dictionary"]:
+				# Define the value (list or dictionary)
+				value = []
+
+				if sub_key == "dictionary":
+					value = {}
+
+				# Create the sub-key
+				contents[key][sub_key] = value
 
 		contents["dictionary"]["root"] = folder
 
@@ -929,7 +937,10 @@ class Folder():
 			for file in files:
 				file_name = files[i].split(".")[0]
 
-				if len(files[i].split(".")) not in [0, 1] and files[i].count(".") > 1:
+				if (
+					len(files[i].split(".")) not in [0, 1] and
+					files[i].count(".") > 1
+				):
 					file_name = ""
 
 					for item in files[i].split("."):
@@ -954,11 +965,17 @@ class Folder():
 
 			# Root folder on dictionary if slash count of root folder is equal to folder plus one slash or equal to folder
 			# Add subfolders
-			if folder.count("/") + 1 == root_folder.count("/") or folder.count("/") == root_folder.count("/"):
+			if (
+				folder.count("/") + 1 == root_folder.count("/") or
+				folder.count("/") == root_folder.count("/")
+			):
 				if lower_key == True:
 					root_folder_name = root_folder_name.lower().replace(" ", "_")
 
-				if root_folder_name not in contents["dictionary"] and root_folder_name != folder_name:
+				if (
+					root_folder_name not in contents["dictionary"] and
+					root_folder_name != folder_name
+				):
 					contents["dictionary"][root_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name]:
@@ -969,7 +986,10 @@ class Folder():
 				for file in files:
 					file_name = files[i].split("/")[-1].split(".")[0]
 
-					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+					if (
+						len(files[i].split(".")) not in [0, 1] and
+						files[i].split("/")[-1].count(".") > 1
+					):
 						file_name = ""
 
 						for item in files[i].split("/")[-1].split("."):
@@ -987,7 +1007,10 @@ class Folder():
 						contents["dictionary"][file_name] = files[i]
 
 					# Add file if root_folder_name key is not string
-					if root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name]) != str:
+					if (
+						root_folder_name in contents["dictionary"] and
+						type(contents["dictionary"][root_folder_name]) != str
+					):
 						contents["dictionary"][root_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
@@ -1009,19 +1032,27 @@ class Folder():
 					root_folder_name = root_folder_name.lower().replace(" ", "_")
 					sub_sub_folder_name = sub_sub_folder_name.lower().replace(" ", "_")
 
-				# Add sub-sub-folder to dictionary
-				if root_folder_name in contents["dictionary"] and sub_sub_folder_name not in contents["dictionary"][root_folder_name] and sub_sub_folder_name != folder_name and type(contents["dictionary"][root_folder_name]) != str:
+				# Add the sub-sub-folder to dictionary
+				if (
+					root_folder_name in contents["dictionary"] and
+					sub_sub_folder_name not in contents["dictionary"][root_folder_name] and
+					sub_sub_folder_name != folder_name and
+					type(contents["dictionary"][root_folder_name]) != str
+				):
 					contents["dictionary"][root_folder_name][sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
 						contents["dictionary"][root_folder_name][sub_sub_folder_name]["root"] = self.Sanitize(root_folder)
 
-				# Add sub-sub-sub-files to dictionary
+				# Add the sub-sub-sub-files to dictionary
 				i = 0
 				for file in files:
 					file_name = files[i].split("/")[-1].split(".")[0]
 
-					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+					if (
+						len(files[i].split(".")) not in [0, 1] and
+						files[i].split("/")[-1].count(".") > 1
+					):
 						file_name = ""
 
 						for item in files[i].split("/")[-1].split("."):
@@ -1035,7 +1066,12 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if type(contents["dictionary"]) != str and root_folder_name in contents["dictionary"] and type(contents["dictionary"][root_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
+					if (
+						type(contents["dictionary"]) != str and
+						root_folder_name in contents["dictionary"] and
+						type(contents["dictionary"][root_folder_name]) != str and
+						type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str
+					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
@@ -1060,7 +1096,11 @@ class Folder():
 					sub_sub_sub_folder_name = sub_sub_sub_folder_name.lower().replace(" ", "_")
 
 				# Add sub-sub-sub-folder to dictionary
-				if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str:
+				if (
+					root_folder_name in contents["dictionary"] and
+					sub_sub_folder_name in contents["dictionary"][root_folder_name] and
+					type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str
+				):
 					contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]:
@@ -1071,7 +1111,10 @@ class Folder():
 				for file in files:
 					file_name = files[i].split("/")[-1].split(".")[0]
 
-					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+					if (
+						len(files[i].split(".")) not in [0, 1] and
+						files[i].split("/")[-1].count(".") > 1
+					):
 						file_name = ""
 
 						for item in files[i].split("/")[-1].split("."):
@@ -1085,9 +1128,13 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and \
-					sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name] and \
-					type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str and type(contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]) != str:
+					if (
+						root_folder_name in contents["dictionary"] and
+						sub_sub_folder_name in contents["dictionary"][root_folder_name] and
+						sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name] and
+						type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str and
+						type(contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name]) != str
+					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
@@ -1114,7 +1161,11 @@ class Folder():
 					sub_sub_sub_sub_folder_name = sub_sub_sub_sub_folder_name.lower().replace(" ", "_")
 
 				# Add sub-sub-sub-folder to dictionary
-				if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
+				if (
+					root_folder_name in contents["dictionary"] and
+					sub_sub_folder_name in contents["dictionary"][root_folder_name] and
+					sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]
+				):
 					contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name] = {}
 
 					if "root" not in contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name]:
@@ -1125,7 +1176,10 @@ class Folder():
 				for file in files:
 					file_name = files[i].split("/")[-1].split(".")[0]
 
-					if len(files[i].split(".")) not in [0, 1] and files[i].split("/")[-1].count(".") > 1:
+					if (
+						len(files[i].split(".")) not in [0, 1] and
+						files[i].split("/")[-1].count(".") > 1
+					):
 						file_name = ""
 
 						for item in files[i].split("/")[-1].split("."):
@@ -1139,7 +1193,11 @@ class Folder():
 						file_name = file_name.lower().replace(" ", "_").replace(".", "")
 
 					# Add file if root_folder_name key is not string
-					if root_folder_name in contents["dictionary"] and sub_sub_folder_name in contents["dictionary"][root_folder_name] and sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]:
+					if (
+						root_folder_name in contents["dictionary"] and
+						sub_sub_folder_name in contents["dictionary"][root_folder_name] and
+						sub_sub_sub_folder_name in contents["dictionary"][root_folder_name][sub_sub_folder_name]
+					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name][file_name] = files[i]
 
 					if os.path.isfile(files[i]) == True:
@@ -1149,16 +1207,13 @@ class Folder():
 
 				contents["size"] += os.stat(root_folder).st_size
 
-		i = 0
-		for folder in contents["folder"]["names"]:
-			contents["folder"]["dictionary"][folder] = contents["folder"]["list"][i]
+		for item in ["folder", "file"]:
+			i = 0
+			for key in contents[item]["names"]:
+				key = key.split(".")[0]
 
-			i += 1
+				contents[item]["dictionary"][key] = contents[item]["list"][i]
 
-		i = 0
-		for file in contents["file"]["names"]:
-			contents["file"]["dictionary"][file] = contents["file"]["list"][i]
-
-			i += 1
+				i += 1
 
 		return contents

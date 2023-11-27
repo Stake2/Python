@@ -119,9 +119,9 @@
 		"en": "Post on the Social Networks",
 		"pt": "Postar nas Redes Sociais"
 	},
-	"i_posted_the_text_of_the_played_game_and_a_screenshot_on_the_status_of_{}_and_tweet_on_{}": {
-		"pt": "Postei o texto do jogo jogado e uma print no status do {}, e tweet no {}",
-		"en": "I posted the text of the played game and a screenshot on the status of {}, and tweet on {}"
+	"i_posted_the_played_game_text, type: template": {
+		"pt": "Postei o texto de jogo jogado e {} no meu servidor no {}, no status do {}, e tweet no {}",
+		"en": "I posted the text of the played game and {} on my server on {}, on the status of {}, and tweet on {}"
 	},
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",
@@ -134,5 +134,9 @@
 	"game": {
 		"en": "Selects a game to be opened by the {module} module",
 		"pt": "Seleciona um jogo a ser aberto pelo módulo {module}"
+	},
+	"the_game_cover": {
+		"en": "the game cover",
+		"pt": "a capa do jogo"
 	}
 }

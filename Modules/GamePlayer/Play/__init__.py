@@ -39,6 +39,7 @@ class Play(GamePlayer):
 		self.open_game = open_game
 
 		self.Define_Game_Dictionary()
+
 		self.Show_Information(self.dictionary)
 
 		if self.open_game == True:
@@ -87,11 +88,11 @@ class Play(GamePlayer):
 	def Open_Game(self):
 		if self.switches["testing"] == False:
 			if "Bat" in self.game["Files"]:
-				self.File.Open(self.game["Files"]["Bat"])
+				self.System.Open(self.game["Files"]["Bat"])
 
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
 
-			self.File.Open(self.game["Files"]["Shortcut"])
+			self.System.Open(self.game["Files"]["Shortcut"])
 
 	def Register_The_Session(self):
 		print()
