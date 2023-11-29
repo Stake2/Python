@@ -61,13 +61,13 @@
 		"pt": "Por favor digite as informações do Amigo",
 		"en": "Please type the information of the Friend"
 	},
-	"you_added_this_friend_to_the_friends_list": {
-		"pt": "Você adicionou este Amigo à lista de Amigos",
-		"en": "You added this Friend to the Friends list"
+	"you_added_this_friend_to_the_friends_database": {
+		"pt": "Você adicionou este Amigo ao banco de dados de Amigos",
+		"en": "You added this Friend to the Friends database"
 	},
-	"this_friend_already_existed_on_the_friends_list": {
-		"pt": "Este Amigo já existia na lista de Amigos",
-		"en": "This Friend already existed on the Friends list"
+	"this_friend_already_existed_on_the_friends_database": {
+		"pt": "Este Amigo já existia no banco de dados de Amigos",
+		"en": "This Friend already existed on the Friends database"
 	},
 	"found_{}": {
 		"pt": "Encontrado {}",
@@ -121,9 +121,13 @@
 		"pt": "Adicionar mais Redes Sociais",
 		"en": "Add more Social Networks"
 	},
-	"add_additional_information_about_origin_social_network": {
-		"pt": "Adicionar informação adicional a Rede Social de Origem",
-		"en": "Add additional information about Origin Social Network"
+	"the_social_network_is_already_present, type: explanation": {
+		"pt": "A Rede Social já está presente na lista de Redes Sociais do Amigo.\nPor favor selecione outra Rede Social",
+		"en": "The Social Network is already present in the Social Networks list of the Friend.\nPlease select another Social Network"
+	},
+	"add_additional_information_about_the_origin_social_network": {
+		"pt": "Adicionar informação adicional sobre a Rede Social de Origem",
+		"en": "Add additional information about the Origin Social Network"
 	},
 	"type_the_additional_information": {
 		"pt": "Digite a informação adicional",

@@ -583,7 +583,10 @@ class Folder():
 		return os.path.split(path)
 
 	def Verbose(self, text, item, verbose = False):
-		if self.switches["verbose"] == True or verbose == True:
+		if (
+			self.switches["verbose"] == True or
+			verbose == True
+		):
 			import inspect
 
 			print(self.JSON.Language.space_text)
@@ -617,7 +620,10 @@ class Folder():
 		if self.Exist(folder) == True:
 			return False
 
-		if self.switches["folder"]["create"] == True and self.Exist(folder) == False:
+		if (
+			self.switches["folder"]["create"] == True and
+			self.Exist(folder) == False
+		):
 			os.mkdir(folder)
 
 			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["created"], folder)

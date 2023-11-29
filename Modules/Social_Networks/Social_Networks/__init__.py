@@ -136,6 +136,7 @@ class Social_Networks(object):
 			"List": [],
 			"Lists": {
 				"Exact match": [],
+				"Remove from search": [],
 				"Do not ask for item": []
 			},
 			"Genders": {
@@ -162,7 +163,8 @@ class Social_Networks(object):
 		# Define the default "Social Networks" dictionary
 		self.social_networks = {
 			"Numbers": {
-				"Total": 0
+				"Total": 0,
+				"By year": {}
 			},
 			"List": [],
 			"Dictionary": {}
@@ -267,12 +269,6 @@ class Social_Networks(object):
 			"Plug DJ"
 		]
 
-		# Temporary
-		to_remove.extend([
-			"Derpibooru",
-			"Steam"
-		])
-
 		for item in to_remove:
 			if item in self.social_networks["List"]:
 				self.social_networks["List"].remove(item)
@@ -285,7 +281,14 @@ class Social_Networks(object):
 		# Get the number of social networks
 		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
 
+		# Reset the numbers on the "By year" dictionary to zero
+		for year in self.social_networks["Numbers"]["By year"]:
+			self.social_networks["Numbers"]["By year"][year] = 0
+
 		# ---------- #
+
+		# Reset the Social Networks dictionary
+		self.social_networks["Dictionary"] = {}
 
 		# Iterate through the social networks list
 		for social_network in self.social_networks["List"]:
@@ -409,6 +412,9 @@ class Social_Networks(object):
 			# Get the social network information items
 			items = self.JSON.To_Python(dictionary["Files"]["Items"])
 
+			# Update the number of information items
+			items["Numbers"]["Total"] = len(items["List"])
+
 			# Update the items list of the root information items with the local items list of the Social Network
 			for item in items["List"]:
 				if item not in self.information_items["List"]:
@@ -445,9 +451,23 @@ class Social_Networks(object):
 				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the Social Network
 				self.information_items["Additional items"][social_network] = additional_items
 
+			# If the "Do not ask for item" list exists
 			if "Do not ask for item" in items["Lists"]:
 				# Update the "Do not ask for item" list of the root information items with the "Do not ask for item" list of the Social Network
-				self.information_items["Do not ask for item"].extend(items["Lists"]["Do not ask for item"])
+				for item in items["Lists"]["Do not ask for item"]:
+					if item not in self.information_items["Lists"]["Do not ask for item"]:
+						self.information_items["Lists"]["Do not ask for item"].append(item)
+
+			# Iterate through the information items list
+			for item in items["List"]:
+				# If the item is "Profile link"
+				# Or "Message link"
+				if item in ["Profile link", "Message link"]:
+					if item not in self.information_items["Lists"]["Do not ask for item"]:
+						self.information_items["Lists"]["Do not ask for item"].append(item)
+
+			# Update the "Items.json" file of the Social Network
+			self.JSON.Edit(dictionary["Files"]["Items"], items)
 
 			# Define the "Information items" dictionary of the Social Network as the local "Information items" dictionary
 			dictionary["Information items"] = items
@@ -481,6 +501,31 @@ class Social_Networks(object):
 
 			# Define the "Social Network" dictionary as the local "Social Network" dictionary
 			self.social_networks["Dictionary"][social_network] = dictionary
+
+		# Iterate through the social networks list
+		for social_network in self.social_networks["List"]:
+			# Get the Social Network dictionary
+			social_network = self.social_networks["Dictionary"][social_network]
+
+			# Get the Social Network Information dictionary
+			information = self.Information(social_network["Information"])
+
+			# Get the release year
+			release_year = information["Release"].split("/")[-1]
+
+			# If the release year is not in the Social Networks "Numbers" dictionary
+			if release_year not in self.social_networks["Numbers"]["By year"]:
+				# Add it
+				self.social_networks["Numbers"]["By year"][release_year] = 1
+
+			# Else, add one to it
+			else:
+				self.social_networks["Numbers"]["By year"][release_year] += 1
+
+		import collections
+
+		# Sort the met by year numbers keys
+		self.social_networks["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.social_networks["Numbers"]["By year"].items())))
 
 	def Define_Information_Items(self):
 		# Define the local "Information items" dictionary as the "Information items" dictionary
@@ -575,7 +620,10 @@ class Social_Networks(object):
 			dict_["Genders"]["Words"] = words
 
 			# Define the format of the information item
-			dict_["Format"] = ""
+			dict_["Format"] = {
+				"Regex": "",
+				"Example": ""
+			}
 
 			if key in dictionary["Formats"]:
 				dict_["Format"] = dictionary["Formats"][key]
@@ -583,19 +631,19 @@ class Social_Networks(object):
 			# Define the "States" dictionary of the information item
 			dict_["States"] = {
 				"Exact match": False,
-				"Ask for item": True
+				"Ask for information": True
 			}
 
 			# Update the "Exact match" key
 			if key in dictionary["Lists"]["Exact match"]:
 				dict_["States"]["Exact match"] = True
 
-			# Update the "Ask for item" key
+			# Update the "Ask for information" key
 			if (
 				"Do not ask for item" in dictionary["Lists"] and
 				key in dictionary["Lists"]["Do not ask for item"]
 			):
-				dict_["States"]["Ask for item"] = False
+				dict_["States"]["Ask for information"] = False
 
 			# Add the information item dictionary to the root "Information items" dictionary
 			dictionary["Dictionary"][key] = dict_
@@ -644,6 +692,13 @@ class Social_Networks(object):
 
 		# ---------- #
 
+		import collections
+
+		# Sort the dictionary keys
+		self.information_items["Lists"]["Exact match"] = dict(collections.OrderedDict(sorted(self.information_items["Lists"]["Exact match"].items())))
+		self.information_items["Formats"] = dict(collections.OrderedDict(sorted(self.information_items["Formats"].items())))
+		self.information_items["Additional items"] = dict(collections.OrderedDict(sorted(self.information_items["Additional items"].items())))
+
 		# Create a local Information items dictionary
 		local_dictionary = deepcopy(self.information_items)
 
@@ -656,6 +711,9 @@ class Social_Networks(object):
 		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Database"]["Information items"], local_dictionary)
 
 		# ---------- #
+
+		# Sort the dictionary keys
+		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
 		# Create a local "Social Networks" dictionary
 		local_dictionary = deepcopy(self.social_networks)
@@ -683,12 +741,18 @@ class Social_Networks(object):
 			for key in to_remove:
 				local_dictionary["Dictionary"][social_network].pop(key)
 
+			# Remove the "Dictionary" key of the "Information items" dictionary
+			local_dictionary["Dictionary"][social_network]["Information items"].pop("Dictionary")
+
 		# Update the "Social Networks.json" file with the updated and local "Social Networks" dictionary
 		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Social Networks"], local_dictionary)
 
-	def Information(self, information = None, file = None):
+	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
 		if file != None:
 			information = self.File.Dictionary(file, next_line = True)
+
+		if information_items == None:
+			information_items = self.information_items
 
 		dictionary = {}
 
@@ -696,22 +760,22 @@ class Social_Networks(object):
 			correct_key = information_key
 
 			for key, information_item in self.information_items["Dictionary"].items():
+				language_key = information_item[self.user_language]
+
 				if (
 					key == information_key or
 					information_key == information_item[self.user_language]
 				):
 					correct_key = key
 
+					if to_user_language == True:
+						correct_key = language_key
+
 			dictionary[correct_key] = value
 
 		return dictionary
 
-	def Select_Social_Network(self, social_network = None, select_social_network = True, social_networks = None, show_text = None, select_text = None):
-		if social_networks != None:
-			social_networks = {
-				"List": social_networks
-			}
-
+	def Select_Social_Network(self, social_network = None, social_networks = None, select_social_network = True, show_text = None, select_text = None):
 		if social_networks == None:
 			social_networks = self.social_networks
 
@@ -739,37 +803,105 @@ class Social_Networks(object):
 		else:
 			return None
 
-	def Type_Social_Network_Information(self):
+	def Type_Social_Network_Information(self, first_separator = True):
+		if first_separator == True:
+			# Show a separator
+			print()
+			print(self.large_bar)
+
+		# Define the information text
+		information_text = self.language_texts["please_type_the_social_network_profile_information"] + ' "{}":'
+
+		# Format the information text
+		information_text = information_text.format(self.social_network["Name"])
+
+		# Show the information text
+		print()
+		print(information_text)
+
+		# Define the Social Network Profile dictionary
+		self.social_network["Profile"] = {}
+
+		# Define the test information dictionary for testing
+		test_information = {
+			"Discord": {
+				"Username": "Cavalo Louco (Nome)",
+				"Handle": "cavalo_louco_arroba",
+				"Originally": "Cavalo Louco#1773",
+				"ID": "1000000000000000000",
+				"Message ID": "1000000000000000000",
+				"Member since": "01/01/2016",
+				"Pronouns": "Gato / Preto"
+			},
+			"Facebook": {
+				"Username": "Cavalo Louco (Nome)",
+				"Handle": "cavalo.louco.19",
+				"ID": "100000000000000",
+				"Member since": "01/01/2003"
+			}
+		}
+
+		# Iterate through the Information items dictionary
+		for key, information_item in self.social_network["Information items"]["Dictionary"].items():
+			# If the information item is not inside the "Remove from search" list
+			if key not in self.information_items["Lists"]["Remove from search"]:
+				# Get the language information item
+				language_information_item = information_item[self.user_language]
+
+				# If the user needs to type the information
+				if information_item["States"]["Ask for information"] == True:
+					# Define the "accept_enter" variable
+					accept_enter = False
+
+					if information_item["Format"]["Regex"] == "":
+						accept_enter = True
+
+					# Get the information item format
+					item_format = None
+
+					if key in self.information_items["Formats"][self.social_network["Name"]]:
+						item_format = self.information_items["Formats"][self.social_network["Name"]][key]
+
+					if (
+						self.switches["testing"] == False or
+						self.switches["testing"] == True and
+						self.social_network["Name"] not in test_information
+					):
+						# Ask the user for the information
+						information = self.Input.Type(language_information_item, accept_enter = accept_enter, next_line = True, regex = item_format)
+
+					if (
+						self.switches["testing"] == True and
+						self.social_network["Name"] in test_information
+					):
+						information = test_information[self.social_network["Name"]][key]
+
+				# If the information item is inside the "Additional items" dictionary
+				if key in self.information_items["Additional items"][self.social_network["Name"]]:
+					# Get the additional item template of the information item
+					additional_item = self.information_items["Additional items"][self.social_network["Name"]][key]
+
+					# Get the format information item
+					format_item = additional_item.split("{")[1].split("}")[0]
+
+					# Remove the format item from the additional item template
+					additional_item = additional_item.replace(format_item, "")
+
+					# Define the information with the formatted additional item template
+					information = additional_item.format(self.social_network["Profile"][format_item])
+
+				if (
+					self.switches["testing"] == True and
+					self.social_network["Name"] in test_information
+				):
+					print()
+					print(language_information_item + ":")
+					print(information)
+
+				# Add the information to the Social Network "Information" dictionary, with the information item key
+				self.social_network["Profile"][key] = information
+
 		print()
 		print("-----")
-		print()
-		print(self.language_texts["please_type_the_social_network_profile_information"] + ":")
 
-		self.social_network_information = {}
-		self.social_network_information[self.social_network["Name"]] = {}
-
-		i = 0
-		for information_item in self.social_network["Data"][self.texts["information_items"]["en"]]["en"]:
-			language_information_item = self.social_network["Data"][self.texts["information_items"]["en"]][self.user_language][i]
-
-			information = self.Input.Type(language_information_item, next_line = True)
-
-			self.social_network_information[self.social_network["Name"]][information_item] = information
-
-			# Format Social Network link if information_item is present in Social Network data values
-			for social_network_information_item in list(self.social_network["Data"]["Information"].values()):
-				if information_item in ["Profile link", "Message link", "Message ID"] and information_item in social_network_information_item:
-					information = social_network_information_item.replace("{" + information_item + "}", "") + information
-
-				if information_item in self.social_network["Data"]["Information"]["Profile link"]:
-					link = self.social_network["Data"]["Information"]["Profile link"]
-					self.social_network_information[self.social_network["Name"]]["Profile link"] = link.replace("{" + information_item + "}", "") + information
-
-				if information_item in self.social_network["Data"]["Information"]["Message link"]:
-					link = self.social_network["Data"]["Information"]["Message link"]
-					self.social_network_information[self.social_network["Name"]]["Message link"] = link.replace("{" + information_item + "}", "") + information
-
-			i += 1
-
-		print()
-		print("-----")
+		return self.social_network

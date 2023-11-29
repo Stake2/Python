@@ -164,7 +164,8 @@ class Friends(object):
 			"List": [],
 			"Lists": {
 				"Exact match": [],
-				"Select": []
+				"Select": [],
+				"Do not ask for item": []
 			},
 			"Genders": {
 				"Items": [
@@ -255,7 +256,10 @@ class Friends(object):
 			dict_["Genders"] = {}
 
 			# Define the format of the information item
-			dict_["Format"] = ""
+			dict_["Format"] = {
+				"Regex": "",
+				"Example": ""
+			}
 
 			if key in dictionary["Formats"]:
 				dict_["Format"] = dictionary["Formats"][key]
@@ -263,13 +267,22 @@ class Friends(object):
 			# Define the "States" dictionary of the information item
 			dict_["States"] = {
 				"Exact match": False,
-				"Select": False
+				"Select": False,
+				"Ask for information": True
 			}
 
+			# If the information item is inside the "Do not ask for item" list
+			if key in dictionary["Lists"]["Do not ask for item"]:
+				dict_["States"]["Ask for information"] = False
+
+			# Create a local copy of the "States" dictionary
+			states = deepcopy(dict_["States"])
+			states.pop("Ask for information")
+
 			# Iterate through the state keys
-			for state in dict_["States"]:
+			for state in states:
 				# Update the value of the key to True
-				if state in dictionary["Lists"][state]:
+				if key in dictionary["Lists"][state]:
 					dict_["States"][state] = True
 
 			# Add the information item dictionary to the root "Information items" dictionary
@@ -380,8 +393,11 @@ class Friends(object):
 			"Database"
 		]
 
+		# Iterate through the "items to remove" list
 		for item in to_remove:
+			# If the item is inside the Friends list
 			if item in self.friends["List"]:
+				# Remove it
 				self.friends["List"].remove(item)
 
 		# Write the friends list to the "Friends list.txt" file
@@ -392,54 +408,16 @@ class Friends(object):
 		# Get the number of friends
 		self.friends["Numbers"]["Total"] = len(self.friends["List"])
 
-		# Check if all the years are inside the friends met by year list
-		for year in self.Date.Create_Years_List(function = str):
+		# Reset the numbers on the "By year" dictionary to zero
+		for year in self.friends["Numbers"]["By year"]:
 			self.friends["Numbers"]["By year"][year] = 0
 
-			if year not in self.friends["Met by year"]:
-				self.friends["Met by year"][year] = []
-
-		# Iterate through the friends list
-		for friend in self.friends["List"]:
-			# Get the Friend dictionary
-			friend = self.friends["Dictionary"][friend]
-
-			# Get the Friend Information dictionary
-			information = self.Information(friend["Information"])
-
-			# Get the met year
-			met_year = information["Date I met"].split("/")[-1]
-
-			# If the met year is not in the Friends "Numbers" dictionary
-			if met_year not in self.friends["Numbers"]["By year"]:
-				# Add it
-				self.friends["Numbers"]["By year"][met_year] = 1
-
-			# Else, add one to it
-			else:
-				self.friends["Numbers"]["By year"][met_year] += 1
-
-			# If the met year is not in the Friends "Met by year" dictionary
-			if met_year not in self.friends["Met by year"]:
-				# Add it
-				self.friends["Met by year"][met_year] = [
-					friend["Name"]
-				]
-
-			# Else, add the friend to the existing met by year list
-			else:
-				if friend["Name"] not in self.friends["Met by year"][met_year]:
-					self.friends["Met by year"][met_year].append(friend["Name"])
+		# ---------- #
 
 		import collections
 
-		# Sort the met by year numbers keys
-		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
-
-		# Sort the met by year lists keys
-		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
-
-		# ---------- #
+		# Reset the Friends dictionary
+		self.friends["Dictionary"] = {}
 
 		# Iterate through the friends list
 		for friend in self.friends["List"]:
@@ -452,12 +430,12 @@ class Friends(object):
 				"Social Networks": {}
 			}
 
-			# Define and create the friend folders and files
+			# Iterate through the folder type list
 			for item in ["Text", "Image"]:
 				# Define the item key inside the "Files" dictionary
 				dictionary["Files"][item] = {}
 
-			# Define and create the friend folders and files
+			# Iterate through the folder type list
 			for item in ["Text", "Image"]:
 				folder = self.folders["Friends"][item]["root"] + friend + "/"
 
@@ -574,6 +552,24 @@ class Friends(object):
 
 			# ---------- #
 
+			# Make a local copy of the Friend "Information" dictionary
+			information = deepcopy(dictionary["Information"])
+
+			# Remove the "Places" key
+			information.pop("Places")
+
+			# Translate the keys to the user language
+			information = self.Information(information, to_user_language = True)
+
+			# Iterate through the folder type list
+			for item in ["Text", "Image"]:
+				# Write to the "Information.txt" file
+				text_to_write = self.Text.From_Dictionary(information, next_line = True)
+
+				self.File.Edit(dictionary["Files"][item]["Information"], text_to_write, "w")
+
+			# ---------- #
+
 			# List the Social Networks
 			social_networks_list = self.Folder.Contents(dictionary["Folders"]["Social Networks"]["root"])["folder"]["names"]
 
@@ -589,6 +585,9 @@ class Friends(object):
 
 			# Create a "Social Networks" information dictionary
 			dictionary["Social Networks"] = {
+				"Numbers": {
+					"Total": 0
+				},
 				"List": social_networks_list,
 				"Dictionary": {}
 			}
@@ -612,6 +611,12 @@ class Friends(object):
 
 			# ---------- #
 
+			# Sort the Social Networks list
+			dictionary["Social Networks"]["List"] = sorted(dictionary["Social Networks"]["List"], key = str.lower)
+
+			# Sort the Social Networks dictionary
+			dictionary["Social Networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Social Networks"]["Dictionary"].items())))
+
 			# Social Network folders and profile file creation
 			for social_network in dictionary["Social Networks"]["List"]:
 				# Update the "self.social_network" variable
@@ -630,8 +635,12 @@ class Friends(object):
 						"root": dictionary["Folders"][item]["Social Networks"]["root"] + social_network + "/"
 					}
 
+					self.Folder.Create(dict_["root"])
+
 					# Create the "Profile.txt" file
 					dict_["Profile"] = dict_["root"] + self.JSON.Language.language_texts["profile, title()"] + ".txt"
+
+					self.File.Create(dict_["Profile"])
 
 					# Add the profile file to the "Files" dictionary
 					dictionary["Files"]["Social Networks"][social_network] = {
@@ -669,8 +678,117 @@ class Friends(object):
 	
 						self.Folder.Create(folder)
 
+			# Update the number of Social Networks
+			dictionary["Social Networks"]["Numbers"]["Total"] = len(dictionary["Social Networks"]["List"])
+
 			# Define the "Friend" dictionary as the local "Friend" dictionary
 			self.friends["Dictionary"][friend] = dictionary
+
+		# ---------- #
+
+		# Iterate through the friends list
+		for friend in self.friends["List"]:
+			# Get the Friend dictionary
+			friend = self.friends["Dictionary"][friend]
+
+			# Get the Friend Information dictionary
+			information = self.Information(friend["Information"])
+
+			# Get the met year
+			met_year = information["Date I met"].split("/")[-1]
+
+			# If the met year is not in the Friends "Numbers" dictionary
+			if met_year not in self.friends["Numbers"]["By year"]:
+				# Add it
+				self.friends["Numbers"]["By year"][met_year] = 1
+
+			# Else, add one to it
+			else:
+				self.friends["Numbers"]["By year"][met_year] += 1
+
+			# If the met year is not in the Friends "Met by year" dictionary
+			if met_year not in self.friends["Met by year"]:
+				# Add it
+				self.friends["Met by year"][met_year] = [
+					friend["Name"]
+				]
+
+			# Else, add the friend to the existing met by year list
+			else:
+				if friend["Name"] not in self.friends["Met by year"][met_year]:
+					self.friends["Met by year"][met_year].append(friend["Name"])
+
+			# Remove the friend from other "Met by year" lists
+			for year, list_ in self.friends["Met by year"].items():
+				# If the year is not the meat year
+				# And the friend is inside the list
+				if (
+					year != met_year and
+					friend["Name"] in list_
+				):
+					self.friends["Met by year"][year].remove(friend["Name"])
+
+		# Iterate through the year numbers inside the "By year" dictionary
+		for year in self.friends["Numbers"]["By year"].copy():
+			# If the year is before "2018"
+			# And a "Met by year" list of the year does not exist
+			if (
+				int(year) < 2018 and
+				year not in self.friends["Met by year"]
+			):
+				# Remove its key
+				self.friends["Numbers"]["By year"].pop(year)
+
+		# Iterate through the year lists inside the "Met by year" dictionary
+		for year, list_ in self.friends["Met by year"].copy().items():
+			# Iterate through the friends inside the year list
+			for friend in list_:
+				# If the Friend is not inside the year list
+				if friend not in self.friends["List"]:
+					# Remove the Friend
+					self.friends["Met by year"][year].remove(friend)
+
+		# Iterate through the year lists inside the "Met by year" dictionary
+		for year, list_ in self.friends["Met by year"].copy().items():
+			# If the year list is empty
+			if list_ == []:
+				# Remove it
+				self.friends["Met by year"].pop(year)
+
+		# Sort the met by year numbers keys
+		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
+
+		# Sort the met by year lists keys
+		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
+
+		# Sort the Friends list
+		self.friends["List"] = sorted(self.friends["List"], key = str.lower)
+
+		# Sort the Friends dictionary
+		self.friends["Dictionary"] = dict(collections.OrderedDict(sorted(self.friends["Dictionary"].items())))
+
+		# ---------- #
+
+		# List the folders inside the Friends image folder
+		image_folders = self.Folder.Contents(self.folders["Friends"]["Image"]["root"])["folder"]["dictionary"]
+
+		# Remove the non-friend folders from the above list
+		to_remove = [
+			"Archive",
+			"Rubbish"
+		]
+
+		# Iterate through the "items to remove" list
+		for item in to_remove:
+			# If the item is inside the image folders dictionary
+			if item in image_folders:
+				# Remove it
+				image_folders.pop(item)
+
+		# Iterate through the image folders dictionary
+		for key, folder in image_folders.items():
+			if key not in self.friends["List"]:
+				self.Folder.Delete(folder)
 
 		# ---------- #
 
@@ -695,7 +813,7 @@ class Friends(object):
 		# Update the "Friends.json" file with the updated and local "Friends" dictionary
 		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
 
-	def Information(self, information = None, file = None, information_items = None):
+	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
 		if file != None:
 			information = self.File.Dictionary(file, next_line = True)
 
@@ -708,11 +826,16 @@ class Friends(object):
 			correct_key = ""
 
 			for key, information_item in information_items["Dictionary"].items():
+				language_key = information_item[self.user_language]
+
 				if (
 					key == information_key or
 					information_key == information_item[self.user_language]
 				):
 					correct_key = key
+
+					if to_user_language == True:
+						correct_key = language_key
 
 			dictionary[correct_key] = value
 
@@ -762,10 +885,10 @@ class Friends(object):
 
 		return self.friend
 
-	def Select_Social_Network(self, social_network = None, select_social_network = True, social_networks = None, select_text = None):
+	def Select_Social_Network(self, social_network = None, social_networks = None, select_social_network = True,  select_text = None):
 		if social_networks == None:
-			social_networks = self.social_networks
+			social_networks = self.Social_Networks.social_networks
 
-		self.social_network = self.Social_Networks.Select_Social_Network(social_network = social_network, select_social_network = select_social_network, social_networks = social_networks, select_text = select_text)
+		self.social_network = self.Social_Networks.Select_Social_Network(social_network = social_network, social_networks = social_networks, select_social_network = select_social_network, select_text = select_text)
 
 		return self.social_network

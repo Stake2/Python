@@ -475,6 +475,14 @@
 		"en": "Empty",
 		"pt": "Vazio"
 	},
+	"length, title()": {
+		"en": "Length",
+		"pt": "Comprimento"
+	},
+	"example, title()": {
+        "pt": "Exemplo",
+        "en": "Example"
+    },
 	"{}_time": {
 		"en": "{} time",
 		"pt": "{} vez"
@@ -717,6 +725,10 @@
 		"pt": "Locais de residência",
 		"en": "Residence places"
 	},
+	"hometowns, title()": {
+		"pt": "Cidades natais",
+		"en": "Hometowns"
+	},
 	"origin_social_network": {
 		"pt": "Rede Social de Origem",
 		"en": "Origin Social Network"
@@ -821,6 +833,22 @@
 		"en": "Social Networks",
 		"pt": "Redes Sociais"
 	},
+	"social_network_information": {
+		"en": "Social Network information",
+		"pt": "Informações da Rede Social"
+	},
+	"social_networks_information": {
+		"en": "Social Networks information",
+		"pt": "Informações das Redes Sociais"
+	},
+	"added_social_network_information": {
+		"en": "Added Social Network information",
+		"pt": "Informações da Rede Social adicionada"
+	},
+	"added_social_networks_information": {
+		"en": "Added Social Networks information",
+		"pt": "Informações das Redes Sociais adicionadas"
+	},
 	"digital_identities": {
 		"en": "Digital Identities",
 		"pt": "Identidades Digitais"
@@ -832,6 +860,14 @@
 	"date_i_met, type: plural": {
 		"pt": "Datas que eu conheci",
 		"en": "Dates I met"
+	},
+	"year_i_met": {
+		"pt": "Ano que eu conheci",
+		"en": "Year I met"
+	},
+	"year_i_met, type: plural": {
+		"pt": "Anos que eu conheci",
+		"en": "Years I met"
 	},
 	"image_folders": {
 		"en": "Image folders",
@@ -892,6 +928,38 @@
 	"company, title(), type: plural": {
 		"en": "Companies",
 		"pt": "Empresas"
+	},
+	"release, title()": {
+		"en": "Release",
+		"pt": "Lançamento"
+	},
+	"releases, title()": {
+		"en": "Releases",
+		"pt": "Lançamentos"
+	},
+	"written_in": {
+		"en": "Written in",
+		"pt": "Escrito em"
+	},
+	"opening_link": {
+		"en": "Opening link",
+		"pt": "Link de abertura"
+	},
+	"engine, title()": {
+		"en": "Engine",
+		"pt": "Motor"
+	},
+	"engines, title()": {
+		"en": "Engines",
+		"pt": "Motores"
+	},
+	"operating_system": {
+		"en": "Operating system",
+		"pt": "Sistema operacional"
+	},
+	"operating_systems": {
+		"en": "Operating systems",
+		"pt": "Sistemas operacionais"
 	},
 	"director, title()": {
 		"en": "Director",

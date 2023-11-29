@@ -26,10 +26,14 @@ class Create_New_Diary_Slim(Diary_Slim):
 		if "Check" in self.dictionary:
 			text = self.language_texts["skipped_diary_slim_day"]
 
-		units = self.dictionary["Date"]["Timezone"]["DateTime"]["Units"]
+		date = self.dictionary["Date"]
+
+		units = date["Timezone"]["DateTime"]["Units"]
 
 		self.today_is_text = text + ":" + "\n" + \
-		self.day_of_of_text.replace("Dia ", "").format(units["Day"], self.dictionary["Date"]["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], units["Year"])
+		date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + "\n" + \
+		"\n" + \
+		self.day_of_of_text.format(units["Day"], date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], units["Year"]) + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
 
 		print(self.large_bar)
 		print()

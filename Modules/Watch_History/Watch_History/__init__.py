@@ -2795,8 +2795,6 @@ class Watch_History(object):
 
 				print(text + ".")
 
-			# If the user finished watching, ask for input before ending execution
+			# Show a final separator
 			print()
 			print(self.large_bar)
-
-			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

@@ -252,7 +252,12 @@ class Input():
 		if text == None:
 			text = self.language_texts["type_or_paste_the_text"]
 
-		if add_colon == True and ":" not in text[-1] and text[-2] + text[-1] != ": ":
+		if (
+			add_colon == True and
+			":" not in text[-1] and
+			text[-2] + text[-1] != ": " and
+			text[-1] != "\n"
+		):
 			text += ": "
 
 		if type(text) == dict:
@@ -268,28 +273,52 @@ class Input():
 
 			local_text = ""
 
+		if type(regex) == str:
+			split = regex.split("; ")
+
+			regex = {
+				"Regex": split[0],
+				"Example": split[1]
+			}
+
 		if accept_enter == True:
 			typed = input(local_text)
 
 		if accept_enter == False:
 			typed = ""
 
+			i = 0
 			while typed == "":
+				if i != 0:
+					print()
+					print(text)
+
 				typed = input(local_text)
 
-		if typed != "" and regex != None:
-			split_ = regex.split("; ")
-			search = re.search(split_[0], typed)
+				if i == 0:
+					i += 1
+
+		if (
+			regex != None and
+			regex["Regex"] != ""
+		):
+			search = re.search(regex["Regex"], typed)
 
 			while search == None:
-				text_ = text
+				new_text = text
 
 				if ": " in text:
-					text_ = text_.replace(": ", ":\n" + self.language_texts["example"] + ' "' + split_[1] + '": ')
+					example_text = self.JSON.Language.language_texts["example, title()"] + ': "' + regex["Example"] + '", ' + \
+					self.JSON.Language.language_texts["length, title()"] + ": " + str(len(regex["Example"]))
 
-				typed = self.Type(text_, accept_enter, next_line, first_space = first_space)
+					new_text = new_text.replace(": ", " (" + example_text + "):")
 
-				search = re.search(split_[0], typed)
+					if next_line == True:
+						new_text += "\n"
+
+				typed = self.Type(new_text, next_line, accept_enter = False, first_space = first_space)
+
+				search = re.search(regex["Regex"], typed)
 
 		return typed
 

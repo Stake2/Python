@@ -80,3 +80,23 @@ class System():
 		self.Verbose(self.language_texts["opening, title()"], link, verbose = True)
 
 		webbrowser.open(link)
+
+	def Variable_Name(self, variable):
+		import inspect
+
+		callers_local_vars = inspect.currentframe().f_back.f_locals.items()
+
+		variable_name = [variable_name for variable_name, variable_value in callers_local_vars if variable_value is variable]
+
+		print()
+		print("-----")
+		print()
+		print("Name:")
+		print(variable_name)
+		print()
+		print("Type:")
+		print(type(variable))
+		print()
+		print("-----")
+
+		return variable_name

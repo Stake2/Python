@@ -79,10 +79,6 @@
         "pt": "Digite As Linhas De Texto",
         "en": "Type The Lines Of Text"
     },
-	"example": {
-        "pt": "Exemplo",
-        "en": "Example"
-    },
 	"finish_keywords, type: list": {
 		"en": [
 			"f",
