@@ -8,82 +8,199 @@ class Start_Christmas(Christmas):
 	def __init__(self):
 		super().__init__()
 
+		# Define the "Start Christmas" dictionary
+		self.start_christmas = {
+			"Dates": {
+				"Today": self.date,
+				"Christmas": self.christmas["Date"]
+			},
+			"Files": {
+				"Planning": self.year_texts["Folders"]["Christmas"]["Planning"][self.user_language],
+				"Objects": self.year_texts["Folders"]["Christmas"]["Planning"]["Objects"]
+			},
+			"Dictionaries": {}
+		}
+
+		# Read the dictionary files
+		for key, file in self.start_christmas["Files"].items():
+			# Read the language planning file using the "Dictionary" method of the "File" class
+			if key == "Planning":
+				dictionary = self.File.Dictionary(file, next_line = True)
+
+			# Read the objects using the "To_Python" method of the "JSON" class
+			if key == "Objects":
+				dictionary = self.JSON.To_Python(file)
+
+			self.start_christmas[key] = dictionary
+
+		# Show a separator
 		print()
 		print(self.large_bar)
 		print()
 
-		if self.today_is_christmas == False:
-			self.months_left = abs((self.date["Units"]["Year"] - self.christmas["Units"]["Year"]) * 12 + self.date["Units"]["Month"] - self.christmas["Units"]["Month"])
-			self.days_left = abs(abs((self.date["Object"] - self.christmas["Object"]).days - 1) - (self.months_left * monthrange(self.date["Units"]["Year"], self.date["Units"]["Month"])[1]))
+		# Define today as "24 of December" for testing purposes
+		if self.switches["testing"] == True:
+			self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 24))
 
-			print(self.language_texts["today_is_not_christmas_day_wait_until"] + " " + self.christmas["Formats"]["DD/MM/YYYY"] + ".")
+		# Define the date and Christmas date units for easier typing
+		date = self.start_christmas["Dates"]["Today"]
+		date_units = date["Units"]
 
-			print()
-			print(self.language_texts["current_date"] + ":")
-			print(self.date["Formats"]["DD/MM/YYYY"])
+		christmas_date = self.start_christmas["Dates"]["Christmas"]
+		christmas_date_units = christmas_date["Units"]
 
-			print()
-			print(self.language_texts["christmas_date"] + ":")
-			print(self.christmas["Formats"]["DD/MM/YYYY"])
+		# If today is "24 of December"
+		if (
+			date_units["Day"] == christmas_date_units["Day"] - 1 and
+			date_units["Month"] == christmas_date_units["Month"]
+		):
+			# It is acceptable to be Christmas (almost midnight)
+			self.christmas["States"]["Today is Christmas"] = True
 
-			if self.months_left != 0:
-				print()
-				print(self.Text.By_Number(self.months_left, self.language_texts["month_left"], self.language_texts["months_left"]) + ":")
-				print(str(self.months_left) + " " + self.Text.By_Number(self.months_left, self.language_texts["month"], self.language_texts["months"]))
+		# Show the current date text
+		print(self.JSON.Language.language_texts["today_is"] + ":")
 
-			if self.days_left != 0:
-				print()
-				print(self.Text.By_Number(self.days_left, self.language_texts["day_left"], self.language_texts["days_left"]) + ":")
-				print(str(self.days_left) + " " + self.Text.By_Number(self.days_left, self.language_texts["day"], self.language_texts["days"]))
+		date_text = date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
 
-		if self.today_is_christmas == True:
-			self.Execute_Steps()
+		print("\t" + date_text)
+		print()
 
+		# If today is not Christmas day
+		if self.christmas["States"]["Today is Christmas"] == False:
+			# Define the items left dictionary
+			items_left = {
+				"Months": (date_units["Year"] - christmas_date_units["Year"]) * 12 + (date_units["Month"] - christmas_date_units["Month"])
+			}
+
+			# Define the number of days left
+			items_left["Days"] = abs((date["Object"] - christmas_date["Object"]).days - 1) - (items_left["Months"] * monthrange(date_units["Year"], date_units["Month"])[1])
+
+			# Get the absolute value of each item
+			for key in items_left:
+				items_left[key] = abs(items_left[key])
+
+			# Show that today is not Christmas day
+			print(self.language_texts["today_is_not_christmas_day_wait_until"] + ":")
+
+			# Show the Christmas date text
+			date_text = christmas_date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
+
+			print("\t" + date_text)
+
+			# Define the texts dictionary and function for easier typing
+			texts_dictionary = self.Date.language_texts
+			Function = self.Text.By_Number
+
+			# Iterate through the items left dictionary
+			for item in items_left:
+				# Define the text key
+				text_key = item.lower()
+
+				# Define the number of items left
+				number = items_left[item]
+
+				# If the number is not zero
+				if number != 0:
+					# Define the items list
+					items = [
+						number,
+						texts_dictionary[text_key[:-1] + "_left"],
+						texts_dictionary[text_key + "_left"]
+					]
+
+					# Create the number text (singular or plural)
+					number_text = Function(*items)
+
+					# Show it, along with the number of items left
+					print()
+					print(number_text + ":")
+					print("\t" + str(number) + " " + number_text.lower())
+
+		# If today is Christmas day
+		if self.christmas["States"]["Today is Christmas"] == True:
+			# Execute Christmas steps
+			self.Execute_Christmas()
+
+			# Show the text of a finished Christmas
 			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.date["Units"]["Year"]))
 
+		# Show a final separator
 		print()
-		print(self.large_bar)
+		print("----------")
 
-	def Execute_Steps(self):
-		self.planning = self.File.Contents(self.planning_file)["lines"]
-		self.objects = self.File.Contents(self.objects_file)["lines"]
-
-		print(self.language_texts["starting_{}_of_{}..."].format(self.language_texts["christmas, title()"], self.date["Units"]["Year"]))
+	def Execute_Christmas(self):
+		# Show the "Starting Christmas" information text
+		print(self.language_texts["starting_{}_of_{}..."].format(self.JSON.Language.language_texts["christmas, title()"], self.date["Units"]["Year"]))
 		print()
 		print("-")
 		print()
 
-		self.System.Open(self.planning_file)
+		# Open the language planning file
+		self.System.Open(self.start_christmas["Files"]["Planning"], verbose = False)
 
-		self.planning_steps = ""
+		# Define the list of keys
+		keys = list(self.start_christmas["Planning"].keys())
 
+		# Iterate through the Christmas steps
 		i = 0
-		for text in self.planning:
-			object = self.objects[i]
-
-			text_backup = text
-
+		for key, text in self.start_christmas["Planning"].items():
+			# Define the step text
 			text = str(i + 1) + ". " + text
 
-			if object != "None":
-				function = self.functions[object.split(": ")[0]]
-				object_data = object.split(": ")[1]
+			# Show it
+			print(text)
 
-				print(text + ".")
+			# Define the "ask_for_input" variable as True by default
+			ask_for_input = True
 
-			if object == "None":
-				self.Input.Type(text, first_space = False)
+			# If the step does not have an object
+			if key not in self.start_christmas["Objects"]:
+				print()
 
-			if object != "None":
-				function(object_data)
+			# If the step haves an object
+			if key in self.start_christmas["Objects"]:
+				# Get the object dictionary
+				object = self.start_christmas["Objects"][key]
 
+				# Get the function dictionary of the object
+				dictionary = self.christmas["Functions"][object["Function"]]
+
+				# Get the value
+				value = object["Value"]
+
+				# If the function has a values dictionary
+				# And the local value is inside that values dictionary
+				if (
+					"Values" in dictionary and
+					value in dictionary["Values"]
+				):
+					# Get the value from the values dictionary
+					value = dictionary["Values"][value]
+
+				# Run the function with the value
+				dictionary["Function"](value)
+
+				if "Ask for input" in dictionary:
+					# Update the "ask_for_input" variable with the value inside the function dictionary
+					ask_for_input = dictionary["Ask for input"]
+
+			# If the program needs to ask for user input before continuing to the next step
+			if ask_for_input == True:
+				# Define the type text for easier typing
+				type_text = self.JSON.Language.language_texts["continue, title()"]
+
+				# Define the first space variable
+				first_space = False
+
+				if key in self.start_christmas["Objects"]:
+					first_space = True
+
+				# Ask for user input before continuing to the next step
+				self.Input.Type(type_text, first_space = first_space)
+
+			# Show a separator
 			print()
 			print("-----")
 			print()
-
-			self.planning_steps += text
-
-			if text != self.planning[-1]:
-				self.planning_steps += "\n"
 
 			i += 1

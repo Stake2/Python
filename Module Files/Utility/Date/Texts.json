@@ -224,6 +224,14 @@
 		"en": "Days",
 		"pt": "Dias"
 	},
+	"day_left": {
+		"en": "Day left",
+		"pt": "Dia restante"
+	},
+	"days_left": {
+		"en": "Days left",
+		"pt": "Dias restantes"
+	},
 	"month": {
 		"en": "month",
 		"pt": "mês"
@@ -240,6 +248,18 @@
 		"en": "Months",
 		"pt": "Meses"
 	},
+	"months, title()": {
+		"en": "Months",
+		"pt": "Meses"
+	},
+	"month_left": {
+		"en": "Month left",
+		"pt": "Mês restante"
+	},
+	"months_left": {
+		"en": "Months left",
+		"pt": "Meses restantes"
+	},
 	"year": {
 		"en": "year",
 		"pt": "ano"
@@ -255,6 +275,10 @@
 	"years, title()": {
 		"en": "Years",
 		"pt": "Anos"
+	},
+	"years_list": {
+		"en": "Years list",
+		"pt": "Lista de Anos"
 	},
 	"hour": {
 		"en": "hour",
@@ -336,6 +360,10 @@
 		"en": "End date",
 		"pt": "Data final"
 	},
+	"current_date": {
+		"en": "Current date",
+		"pt": "Data atual"
+	},
 	"current_time": {
 		"en": "Current time",
 		"pt": "Horário atual"
@@ -399,6 +427,14 @@
 	"{}_time": {
 		"en": "{} time",
 		"pt": "Tempo de {}"
+	},
+	"{} {} {}": {
+		"pt": "{} de {} de {}",
+		"en": "{} {}, {}"
+	},
+	"{}, {} {} {}": {
+		"pt": "{}, {} de {} de {}",
+		"en": "{}, {} {}, {}"
 	},
 	"date_and_time_texts, type: dict": {
 		"short_time": "t",

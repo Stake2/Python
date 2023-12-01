@@ -88,7 +88,9 @@ class Folder():
 		}
 
 		for name in folder_names:
-			key = name.lower().replace(" ", "_")
+			key = name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+
+			name_backup = name
 
 			# If the user language is "Portuguese"
 			# And the folder name is inside the Portuguese folder names dictionary
@@ -99,27 +101,53 @@ class Folder():
 				# Rename the current folder name to its respective Portuguese folder name
 				name = portuguese_folder_names[name]
 
+			if name == "Mega":
+				key = name
+
 			self.folders["root"][key] = {
 				"root": self.folders["root"]["root"] + name + "/"
 			}
 
+			# Define the folder dictionary inside the root "Folders" dictionary
+			self.folders[key] = {
+				"root": self.folders["root"]["root"] + name + "/"
+			}
+
+			# Define the folder dictionary inside the root "Folders" dictionary
+			self.folders[name_backup] = self.folders[key]
+
 		if "Media folder" in self.app_settings:
 			self.folders["root"]["media"]["root"] = self.app_settings["Media folder"]
+			self.folders["Media"]["root"] = self.app_settings["Media folder"]
 
 		if "Game folder" in self.app_settings:
 			self.folders["root"]["games"]["root"] = self.app_settings["Game folder"]
+			self.folders["Games"]["root"] = self.app_settings["Game folder"]
 
-		# "Apps" folders
-		self.folders["apps"] = self.folders["root"]["apps"]
+		# "Program files (x86) folders
+		folder_names = [
+			"foobar2000"
+		]
+
+		for folder in folder_names:
+			self.folders["Program Files (x86)"][folder] = {
+				"root": self.folders["Program Files (x86)"]["root"] + folder + "/"
+			}
 
 		# "Apps" sub folders
 		for folder in ["Module files", "Modules", "Shortcuts"]:
 			key = folder.lower().replace(" ", "_")
 
+			folder_backup = folder
+
 			if folder == "Shortcuts":
 				folder = self.JSON.Language.language_texts["shortcuts, title()"]
 
 			self.folders["apps"][key] = {
+				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
+			}
+
+			self.folders["Apps"][folder_backup] = {
 				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
 			}
 
@@ -129,27 +157,24 @@ class Folder():
 
 		self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
 
-		self.folders["apps"]["shortcuts"]["white_shortcuts"] = os.path.join(self.folders["apps"]["shortcuts"]["root"], "Ícone Branco/")
+		self.folders["apps"]["shortcuts"]["white_shortcuts"] = self.folders["apps"]["shortcuts"]["root"] + self.JSON.Language.language_texts["whites, title()"]
+
+		self.folders["Apps"]["Shortcuts"]["White"] = self.folders["apps"]["shortcuts"]["root"] + self.JSON.Language.language_texts["whites, title()"]
 
 		# Jogos (Games) folders
-		self.folders["games"] = self.folders["root"]["games"]
+		folders = {
+			"Shortcuts": self.JSON.Language.language_texts["shortcuts, title()"],
+			"Folders": self.JSON.Language.language_texts["folders, title()"]
+		}
 
-		for folder in ["Shortcuts", "Folders"]:
-			key = folder.lower().replace(" ", "_")
-
-			if key == "shortcuts":
-				folder = self.JSON.Language.language_texts["shortcuts, title()"]
-
-			if key == "folders":
-				folder = self.JSON.Language.language_texts["folders, title()"]
-
-			self.folders["games"][key] = {
-				"root": os.path.join(self.folders["games"]["root"], folder + "/")
+		for key, folder in folders.items():
+			self.folders["Games"][key] = {
+				"root": self.folders["Games"]["root"] + folder + "/"
 			}
 
 		# User folders
 		self.folders["user"] = {
-			"root": self.Sanitize(os.path.join(self.folders["root"]["users"], pathlib.Path.home().name + "/"))
+			"root": self.Sanitize(self.folders["root"]["users"] + pathlib.Path.home().name + "/")
 		}
 
 		# "User" sub folders
@@ -196,8 +221,6 @@ class Folder():
 			"Sony Vegas"
 		]
 
-		self.folders["art"] = self.folders["root"]["art"]
-
 		for folder in folders:
 			key = folder.lower().replace(" ", "_")
 
@@ -224,11 +247,6 @@ class Folder():
 		# XAMPP folder
 		self.folders["root"]["xampp"]["xampp-control"] = self.folders["root"]["xampp"]["root"] + "xampp-control.exe"
 
-		# Mega folders
-		self.folders["mega"] = {
-			"root": self.folders["root"]["mega"]["root"]
-		}
-
 		# Mega subfolders
 		folders = [
 			"Notepad",
@@ -245,43 +263,52 @@ class Folder():
 			if key == "notepad":
 				folder = self.JSON.Language.language_texts["notepad, title()"]
 
-			self.folders["mega"][key] = {
-				"root": os.path.join(self.folders["mega"]["root"], folder + "/")
+				key = "Notepad"
+
+			if key == "image":
+				key = "Image"
+
+			self.folders["Mega"][key] = {
+				"root": self.folders["Mega"]["root"] + folder + "/"
 			}
+
+		# Mega "Image" dictionary
+		self.folders["Image"] = self.folders["Mega"]["Image"]
 
 		# Mega "Notepad" folders
-		self.folders["mega"]["notepad"]["effort"] = {
-			"root": os.path.join(self.folders["mega"]["notepad"]["root"], self.JSON.Language.language_texts["effort, title()"] + "/")
-		}
+		self.folders["Notepad"] = self.folders["Mega"]["Notepad"]
 
-		# Mega "Notepad" Effort folders
+		# Mega "Notepad" folders
 		folders = {
-			"Diary": "",
-			"Diary Slim": "",
-			"Food": "",
+			"Diary": self.JSON.Language.language_texts["diary, title()"],
+			"Diary Slim": self.JSON.Language.language_texts["diary_slim"],
 			"Friends": self.JSON.Language.language_texts["friends, title()"],
-			"Social_Networks": self.JSON.Language.language_texts["social_networks"],
-			"Networks": "",
-			"Years": ""
+			"Social Networks": self.JSON.Language.language_texts["social_networks"],
+			"Data Networks": self.JSON.Language.language_texts["data_networks"],
+			"Years": self.Date.language_texts["years, title()"],
 		}
 
-		for key, folder in folders.items():
-			key = key.lower().replace(" ", "_")
-
+		for name, folder in folders.items():
 			if folder == "":
-				folder = self.Capitalize(key.replace("_", " "))
+				folder = name
 
-			self.folders["mega"]["notepad"]["effort"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["root"], folder + "/")
+			self.folders["Notepad"][name] = {
+				"root": self.folders["Notepad"]["root"] + folder + "/"
 			}
 
-		# Mega "Notepad" Effort Networks folders
-		for network in ["Audiovisual Media Network", "Database Network", "Game Network", "Productive Network"]:
+		# Mega "Notepad" Data Networks folders
+		networks = {
+			"Audiovisual Media": self.JSON.Language.language_texts["audiovisual_media"],
+			"Database": self.JSON.Language.language_texts["database, title()"],
+			"Games": self.JSON.Language.language_texts["games, title()"],
+			"Productivity": self.JSON.Language.language_texts["productivity, title()"]
+		}
+
+		for network, folder in networks.items():
 			# Network dictionary
 			network = {
 				"Title": network,
-				"Key": network.lower().replace(" ", "_"),
-				"Info": "",
+				"Information": "",
 				"History": "",
 				"Type": "Entry",
 				"Entries": "Entries",
@@ -290,52 +317,69 @@ class Folder():
 				]
 			}
 
-			self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"]["root"], network["Title"] + "/")
+			dictionary = {
+				"root": self.folders["Notepad"]["Data Networks"]["root"] + folder + "/"
 			}			
 
-			# "Audiovisual Media Network" subfolders
-			if network["Title"] == "Audiovisual Media Network":
+			starting_year = 2023
+
+			# "Audiovisual Media" network subfolders
+			if network["Title"] == "Audiovisual Media":
 				network["Subfolders"].append("Comments")
 
 				network.update({
-					"Info": "Media",
+					"Information": "Media",
 					"History": "Watch",
 					"Type": "Media"
 				})
 
-			# "Database Network" subfolders
-			if network["Title"] == "Database Network":
+				starting_year = 2018
+
+			# "Database" network subfolders
+			if network["Title"] == "Database":
 				network.update({
-					"Info": None,
+					"Information": None,
 					"History": None,
 					"Type": None
 				})
 
-			# "Game Network" subfolders
-			if network["Title"] == "Game Network":
+			# "Games" network subfolders
+			if network["Title"] == "Games":
 				network.update({
-					"Info": None,
+					"Information": None,
 					"History": "Play",
 					"Type": "Game",
 					"Entries": "Sessions"
 				})
 
-			# "Productive Network" subfolders
-			if network["Title"] == "Productive Network":
+				starting_year = 2021
+
+			# "Productivity" network subfolders
+			if network["Title"] == "Productivity":
 				network.update({
 					"History": "Task",
 					"Type": "Task",
 					"Entries": "Tasks"
 				})
 
+				starting_year = 2018
+
 			# Network subfolder items
-			for item in ["Info", "History"]:
+			for item in ["Information", "History"]:
 				if network[item] != "":
 					item_name = item
 
-					if item == "Info" and network["Title"] in ["Database Network", "Game Network"]:
+					if (
+						item == "Information" and
+						network["Title"] in ["Database", "Games"]
+					):
 						item_name = "Information"
+
+					if (
+						item == "Information" and
+						network["Title"] == "Audiovisual Media"
+					):
+						item_name = "information"
 
 					if network[item] != None:
 						network[item] = network[item] + " " + item_name
@@ -345,73 +389,86 @@ class Folder():
 
 					network["Subfolders"].append(network[item])
 
-					network[item] = network[item].lower().replace(" ", "_")
-
 			for sub_folder in network["Subfolders"]:
-				key = sub_folder.lower().replace(" ", "_")
+				key = sub_folder
 
-				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][key] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["root"], sub_folder + "/")
+				text_key = sub_folder.lower().replace(" ", "_")
+
+				if "_" not in text_key:
+					text_key += ", title()"
+
+				if (
+					text_key in self.JSON.Language.language_texts and
+					sub_folder in ["Media information", "Comments"]
+				):
+					sub_folder = self.JSON.Language.language_texts[text_key]
+
+				dictionary[key] = {
+					"root": dictionary["root"] + sub_folder + "/"
 				}
 
-			if network["Title"] == "Audiovisual Media Network":
-				# "Audiovisual Media Network/Comments" folders
+			if network["Title"] == "Audiovisual Media":
+				# "Audiovisual Media/Comments" folders
 				for item in ["Backups"]:
-					key = item.lower().replace(" ", "_")
-
-					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["comments"][key] = {
-						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["comments"]["root"], item + "/")
+					dictionary["Comments"][item] = {
+						"root": dictionary["Comments"]["root"] + item + "/"
 					}
 
-				# "Audiovisual Media Network/Watch History" folders
+				dictionary["Comments"]["Comments"] = dictionary["Comments"]["root"] + "Comments.json"
+
+				# "Audiovisual Media/Watch History" folders
 				for item in ["Movies"]:
-					key = item.lower().replace(" ", "_")
-
-					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
-						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], item + "/")
+					dictionary[network["History"]][item] = {
+						"root": dictionary[network["History"]]["root"] + item + "/"
 					}
 
-			if network["Info"] != "":
-				# Network "Info" folders and files
-				for item in ["Info.json"]:
-					key = item.lower().replace(" ", "_").replace(".json", "")
+			if network["Information"] != "":
+				# Network "Information" folders and files
+				for item in ["Information.json"]:
+					key = item.replace(".json", "")
 
-					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["Info"]][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["Info"]]["root"], item)
+					dictionary[network["Information"]][key] = dictionary[network["Information"]]["root"] + item
 
 			# Network "Data" folders and files
 			for item in ["Types.json"]:
-				key = item.lower().replace(" ", "_").replace(".json", "")
+				key = item.replace(".json", "")
 
-				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["data"][key] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]]["data"]["root"], item)
+				dictionary["Data"][key] = dictionary["Data"]["root"] + item
 
 			# "Network History" "History" file
-			self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["history"] = os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], "History.json")
+			dictionary[network["History"]]["History"] = dictionary[network["History"]]["root"] + "History.json"
 
 			# "Network History" year folders
-			for item in [self.date["Units"]["Year"]]:
-				key = str(item).lower().replace(" ", "_")
+			current_year = self.date["Units"]["Year"]
 
-				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key] = {
-					"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]]["root"], str(item) + "/")
+			if network["Type"] != None:
+				network["Type"] = " " + network["Type"] + " "
+
+			if network["Type"] == None:
+				network["Type"] = " "
+
+			for item in range(starting_year, current_year + 1):
+				item = str(item)
+
+				dictionary[network["History"]][item] = {
+					"root": dictionary[network["History"]]["root"] + str(item) + "/"
 				}
 
-				if network["Type"] != None:
-					network["Type"] = " " + network["Type"] + " "
-
-				if network["Type"] == None:
-					network["Type"] = " "
-
 				# Per Type folder
-				for item in ["Per" + network["Type"] + "Type"]:
-					self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key][item] = {
-						"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"], str(item) + "/")
-					}
+				folder = "Per" + network["Type"] + "Type"
 
-				# Entries.json file
-				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key][network["Entries"].lower()] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + network["Entries"] + ".json"
+				dictionary[network["History"]][item][folder] = {
+					"root": dictionary[network["History"]][item]["root"] + folder + "/"
+				}
 
-				# Entry list.txt file
-				self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["entry_list"] = self.folders["mega"]["notepad"]["effort"]["networks"][network["Key"]][network["History"]][key]["root"] + "Entry list.txt"
+				# "Entries.json" file
+				dictionary[network["History"]][item][network["Entries"]] = dictionary[network["History"]][item]["root"] + network["Entries"] + ".json"
+
+				# "Entry list.txt" file
+				dictionary[network["History"]][item]["Entry list"] = dictionary[network["History"]][item]["root"] + "Entry list.txt"
+
+			# Define the Network "Folders" dictionary as the local "Folders" dictionary
+			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
 		# Mega "Notepad" Years folders
 		starting_year = 2018
@@ -420,8 +477,8 @@ class Folder():
 		for item in range(starting_year, current_year + 1):
 			key = str(item).lower().replace(" ", "_")
 
-			self.folders["mega"]["notepad"]["effort"]["years"][key] = {
-				"root": os.path.join(self.folders["mega"]["notepad"]["effort"]["years"]["root"], str(item) + "/")
+			self.folders["Notepad"]["Years"][key] = {
+				"root": self.folders["Notepad"]["Years"]["root"] + str(item) + "/"
 			}
 
 			if key == str(self.date["Units"]["Year"]):
@@ -429,89 +486,81 @@ class Folder():
 				for language in self.languages["small"]:
 					full_language = self.languages["full"][language]
 
-					self.folders["mega"]["notepad"]["effort"]["years"][key][full_language] = {
-						"root": self.folders["mega"]["notepad"]["effort"]["years"][key]["root"] + full_language + "/"
+					self.folders["Notepad"]["Years"][key][full_language] = {
+						"root": self.folders["Notepad"]["Years"][key]["root"] + full_language + "/"
 					}
 
-				self.folders["mega"]["notepad"]["effort"]["years"]["current_year"] = self.folders["mega"]["notepad"]["effort"]["years"][key]
-
-		# "Notepad" folders dictionary
-		self.folders["notepad"] = {}
-
-		for key in self.folders["mega"]["notepad"]:
-			self.folders["notepad"][key] = self.folders["mega"]["notepad"][key]
-
-		for key in self.folders["mega"]["notepad"]["effort"]:
-			self.folders["notepad"][key] = self.folders["mega"]["notepad"]["effort"][key]
+				self.folders["Notepad"]["Years"]["current_year"] = self.folders["Notepad"]["Years"][key]
 
 		# Mega "Image" folders
 		folders = {
+			"Christmas": self.JSON.Language.language_texts["christmas, title()"],
 			"Friends": self.JSON.Language.language_texts["friends, title()"],
-			"Social_Networks": self.JSON.Language.language_texts["social_networks"],
+			"Social Networks": self.JSON.Language.language_texts["social_networks"],
 			"Years": self.Date.language_texts["years, title()"]
 		}
 
-		for key, folder in folders.items():
-			key = key.lower().replace(" ", "_")
-
-			if folder == "":
-				folder = self.Capitalize(key)
-
-			self.folders["mega"]["image"][key] = {
-				"root": os.path.join(self.folders["mega"]["image"]["root"], folder + "/")
+		for name, folder in folders.items():
+			self.folders["Image"][name] = {
+				"root": self.folders["Image"]["root"] + folder + "/"
 			}
 
-		# Mega "Image" Years folders
+		# Mega Image Christmas folders
+		folders = {
+			"Theme": self.JSON.Language.language_texts["theme, title()"]
+		}
+
+		for name, folder in folders.items():
+			self.folders["Image"]["Christmas"][name] = {
+				"root": self.folders["Image"]["Christmas"]["root"] + folder + "/"
+			}
+
+		# Mega Image "Years" folders
 		folders = {
 			"Images": self.JSON.Language.language_texts["images, title()"]
 		}
 
-		for key, folder in folders.items():
-			key = key.lower().replace(" ", "_")
-
-			if folder == "":
-				folder = self.Capitalize(key)
-
-			self.folders["mega"]["image"]["years"][key] = {
-				"root": os.path.join(self.folders["mega"]["image"]["years"]["root"], folder + "/")
+		for name, folder in folders.items():
+			self.folders["Image"]["Years"][name] = {
+				"root": self.folders["Image"]["Years"]["root"] + folder + "/"
 			}
 
 		# Mega "PHP" folders
 		for item in ["JSON"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["php"][key] = {
-				"root": os.path.join(self.folders["mega"]["php"]["root"], item + "/")
+			self.folders["Mega"]["php"][key] = {
+				"root": os.path.join(self.folders["Mega"]["php"]["root"], item + "/")
 			}
 
 		# Mega "PHP" JSON files
 		for item in ["Colors", "URL", "Websites"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["php"]["json"][key] = os.path.join(self.folders["mega"]["php"]["json"]["root"], item + ".json")
+			self.folders["Mega"]["php"]["json"][key] = os.path.join(self.folders["Mega"]["php"]["json"]["root"], item + ".json")
 
 		# Mega Obsidian's Vaults folders
 		for item in ["Creativity"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["obsidian_s_vaults"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["root"], item + "/")
+			self.folders["Mega"]["obsidian_s_vaults"][key] = {
+				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["root"], item + "/")
 			}
 
 		# Mega Obsidian's Vaults/Creativity folders
 		for item in ["Literature"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["obsidian_s_vaults"]["creativity"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["root"], item + "/")
+			self.folders["Mega"]["obsidian_s_vaults"]["creativity"][key] = {
+				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["root"], item + "/")
 			}
 
 		# Mega Obsidian's Vaults/Creativity/Literature folders
 		for item in ["Stories"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"][key] = {
-				"root": os.path.join(self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/")
+			self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"][key] = {
+				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/")
 			}
 
 		# Mega Websites folders and files
@@ -519,26 +568,23 @@ class Folder():
 			key = item.lower().replace(" ", "_").replace(".json", "")
 
 			if "." in item:
-				self.folders["mega"]["websites"][key] = os.path.join(self.folders["mega"]["websites"]["root"], item)
+				self.folders["Mega"]["websites"][key] = os.path.join(self.folders["Mega"]["websites"]["root"], item)
 
 			else:
-				self.folders["mega"]["websites"][key] = {
-					"root": os.path.join(self.folders["mega"]["websites"]["root"], item + "/")
+				self.folders["Mega"]["websites"][key] = {
+					"root": os.path.join(self.folders["Mega"]["websites"]["root"], item + "/")
 				}
 
-		self.folders["mega"]["websites"]["images"]["story_covers"] = {
-			"root": self.folders["mega"]["websites"]["images"]["root"] + "Story Covers/"
+		self.folders["Mega"]["websites"]["images"]["story_covers"] = {
+			"root": self.folders["Mega"]["websites"]["images"]["root"] + "Story Covers/"
 		}
-
-		# "Media" folder
-		self.folders["media"] = self.folders["root"]["media"]
 
 		# Get website subdomain
 		self.website = {}
 		self.links = {}
 
-		if self.File.Exist(self.folders["mega"]["websites"]["website"]) == True:
-			self.website = self.JSON.To_Python(self.folders["mega"]["websites"]["website"])
+		if self.File.Exist(self.folders["Mega"]["websites"]["website"]) == True:
+			self.website = self.JSON.To_Python(self.folders["Mega"]["websites"]["website"])
 
 			# Create links dictionary with Stake2 Website link
 			self.links = {
@@ -567,7 +613,10 @@ class Folder():
 		if restricted_characters == False:
 			path = os.path.normpath(path).replace("\\", "/")
 
-			if os.path.splitext(path)[-1] == "" and "/" not in path[-1]:
+			if (
+				os.path.splitext(path)[-1] == "" and
+				"/" not in path[-1]
+			):
 				path += "/"
 
 		if restricted_characters == True:
@@ -631,7 +680,7 @@ class Folder():
 			return True
 
 		else:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]), folder, verbose = True)
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]), folder)
 
 			return False
 

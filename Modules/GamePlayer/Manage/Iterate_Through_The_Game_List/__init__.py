@@ -89,7 +89,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			self.year = {
 				"Number": self.year,
 				"folders": {
-					"root": self.folders["play_history"]["root"] + self.year + "/"
+					"root": self.folders["Play History"]["root"] + self.year + "/"
 				}
 			}
 

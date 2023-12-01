@@ -335,7 +335,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
 
-			self.task_dictionary["Files"][language] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + full_language + ".txt"
+			self.task_dictionary["Files"][language] = self.folders["Notepad"]["Diary Slim"]["root"] + full_language + ".txt"
 			self.File.Create(self.task_dictionary["Files"][language])
 
 			if self.File.Exist(self.task_dictionary["Files"][language]) == True:
@@ -362,7 +362,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(languages_text))
 
 		# Create backup file
-		self.backup_file = self.folders["mega"]["notepad"]["effort"]["diary_slim"]["root"] + "Descriptions backup.txt"
+		self.backup_file = self.folders["Notepad"]["Diary Slim"]["root"] + "Descriptions backup.txt"
 		self.File.Create(self.backup_file)
 
 		# Define task descriptions and make a backup of them

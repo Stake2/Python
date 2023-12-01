@@ -6,24 +6,18 @@ import importlib
 from copy import deepcopy
 
 class Friends(object):
-	def __init__(self, current_year = None, social_network = None, remove_social_networks_with_no_friends = False):
+	def __init__(self):
 		# Define the module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
 
-		if current_year != None:
-			self.date["Units"]["Year"] = current_year
-
-		if social_network != None:
-			self.social_network = social_network
-
-		# Import classes method
-		self.Import_Classes()
-
 		# Module related methods
 		self.Define_Basic_Variables()
 		self.Define_Texts()
+
+		# Import classes method
+		self.Import_Classes()
 
 		# Folders and files method
 		self.Define_Folders_And_Files()
@@ -31,26 +25,6 @@ class Friends(object):
 		# Class methods
 		self.Define_Information_Items()
 		self.Define_Friends_Dictionary()
-
-	def Import_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Social_Networks"
-		]
-
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			# Add the sub-clas to the current module
-			setattr(self, title, sub_class())
-
-		# Create the Social Networks dictionary
-		self.social_networks = self.Social_Networks.social_networks
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -120,16 +94,38 @@ class Friends(object):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
+	def Import_Classes(self):
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class())
+
+		# Create the Social Networks dictionary
+		self.social_networks = self.Social_Networks.social_networks
+
 	def Define_Folders_And_Files(self):
 		# Define the "Friends" folder dictionary
 		self.folders["Friends"] = {
 			"Text": {
-				"root": self.folders["notepad"]["friends"]["root"]
+				"root": self.folders["Notepad"]["Friends"]["root"]
 			},
 			"Image": {
-				"root": self.folders["mega"]["image"]["friends"]["root"]
+				"root": self.folders["Image"]["Friends"]["root"]
 			}
 		}
+
+		# ---------- #
 
 		# Friends text "Database" folder
 		self.folders["Friends"]["Text"]["Database"] = {
@@ -139,7 +135,7 @@ class Friends(object):
 		self.Folder.Create(self.folders["Friends"]["Text"]["Database"]["root"])
 
 		# Database "Information items.json" file
-		self.folders["Friends"]["Text"]["Database"]["Information items"] = self.folders["Friends"]["Text"]["Database"]["root"] + self.JSON.Language.texts["information_items"]["en"] + ".json"
+		self.folders["Friends"]["Text"]["Database"]["Information items"] = self.folders["Friends"]["Text"]["Database"]["root"] + "Information items.json"
 		self.File.Create(self.folders["Friends"]["Text"]["Database"]["Information items"])
 
 		# "Friends.json" file
@@ -150,8 +146,14 @@ class Friends(object):
 		self.folders["Friends"]["Text"]["Friends list"] = self.folders["Friends"]["Text"]["root"] + self.language_texts["friends_list"] + ".txt"
 		self.File.Create(self.folders["Friends"]["Text"]["Friends list"])
 
+		# ---------- #
+
 		# Define the "History" dictionary
 		self.history = {
+			"Key": "",
+			"Numbers": {
+				"Known people": "By year"
+			},
 			"Folder": self.folders["Friends"]["Text"]["root"]
 		}
 
@@ -341,6 +343,8 @@ class Friends(object):
 		if self.File.Contents(file)["lines"] != []:
 			self.friends = self.JSON.To_Python(file)
 
+		# ---------- #
+
 		# Define the default "File names" dictionary
 		dictionary = {
 			"Names": [
@@ -384,6 +388,8 @@ class Friends(object):
 		# Define the "File names" key as the local "File names" dictionary
 		self.friends["File names"] = dictionary
 
+		# ---------- #
+
 		# List the friend folders, populating the friends list
 		self.friends["List"] = self.Folder.Contents(self.folders["Friends"]["Text"]["root"])["folder"]["names"]
 
@@ -421,7 +427,7 @@ class Friends(object):
 
 		# Iterate through the friends list
 		for friend in self.friends["List"]:
-			# Create the "Friend" dictionary
+			# Create the local "Friend" dictionary
 			dictionary = {
 				"Name": friend,
 				"Folders": {},
@@ -435,8 +441,7 @@ class Friends(object):
 				# Define the item key inside the "Files" dictionary
 				dictionary["Files"][item] = {}
 
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
+				# Define the root folder
 				folder = self.folders["Friends"][item]["root"] + friend + "/"
 
 				# Create the folders dictionary
@@ -454,9 +459,7 @@ class Friends(object):
 				self.Folder.Create(dict_["Social Networks"]["root"])
 
 				# Iterate through the friend file names
-				for key in self.friends["File names"]["Dictionary"]:
-					file_name_dictionary = self.friends["File names"]["Dictionary"][key]
-
+				for key, file_name_dictionary in self.friends["File names"]["Dictionary"].items():
 					# Define the file name and folder
 					file_name = file_name_dictionary["Plural"][self.user_language]
 
@@ -472,6 +475,7 @@ class Friends(object):
 					folder_dictionary[key] = folder_dictionary["root"] + file_name + ".txt"
 					self.File.Create(folder_dictionary[key])
 
+					# Add the file to the "Files" dictionary
 					dictionary["Files"][item][key] = folder_dictionary[key]
 
 					# If the item is "Text"
@@ -480,6 +484,7 @@ class Friends(object):
 						if key == "Information":
 							dictionary["Files"][key] = folder_dictionary[key]
 
+						# Add the file to the "Files" dictionary
 						if key == "Social Networks":
 							dictionary["Files"][key] = {
 								"List": folder_dictionary[key]

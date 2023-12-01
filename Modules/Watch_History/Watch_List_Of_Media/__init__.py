@@ -17,13 +17,13 @@ class Watch_List_Of_Media(Watch_History):
 		self.media_title = ""
 		self.media_titles = [0]
 
-		if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True:
-			self.media_titles = self.File.Contents(self.folders["audiovisual_media_network"]["watch_list"])["lines"]
+		if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == True:
+			self.media_titles = self.File.Contents(self.folders["Audiovisual Media"]["Watch List"])["lines"]
 
 		self.i = 2
 		f = 0
 		while self.selected_option != self.finish_selection_text and self.media_title != self.media_titles[-1]:
-			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True and f < len(self.media_titles):
+			if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == True and f < len(self.media_titles):
 				self.media_title = self.media_titles[f]
 
 			self.option_info = self.Select_Media_To_Watch()
@@ -91,12 +91,12 @@ class Watch_List_Of_Media(Watch_History):
 			self.language_texts["re_watching, title()"]
 		]
 
-		if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
+		if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == False:
 			option_infos = [
 				self.Select_Media_Type()
 			]
 
-		if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True:
+		if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == True:
 			option_infos = []
 
 			i = 0
@@ -122,12 +122,12 @@ class Watch_List_Of_Media(Watch_History):
 				}
 			}
 
-			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == False:
+			if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == False:
 				option_info["Media type"]["Media list"] = media_list
 
 				option_info.update(self.Select_Media(option_info))
 
-			if self.File.Exist(self.folders["audiovisual_media_network"]["watch_list"]) == True:
+			if self.File.Exist(self.folders["Audiovisual Media"]["Watch List"]) == True:
 				if self.media_title in media_list:
 					option_info.update(self.Select_Media(option_info))
 

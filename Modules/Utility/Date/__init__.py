@@ -93,19 +93,24 @@ class Date():
 						"Day name": {},
 						"Day gender": {},
 						"Day": {},
-						"Month name": {}
+						"Month name": {},
+						"Month name with number": {}
 					},
 					"Formats": {
 						"YYYY-MM-DD": "",
 						"DD/MM/YYYY": "",
-						"DD-MM-YYYY": ""
+						"DD-MM-YYYY": "",
+						"[Day] [Month name] [Year]": "",
+						"[Day name], [Day] [Month name] [Year]": ""
 					}
 				}
 
 				formats = [
 					"%Y-%m-%d",
 					"%d/%m/%Y",
-					"%d-%m-%Y"
+					"%d-%m-%Y",
+					"",
+					""
 				]
 
 				# If the date type is "Time", define its unique object and its own unit, text, and format keys
@@ -171,6 +176,9 @@ class Date():
 						elif key == "Month name":
 							date[date_name][date_type]["Texts"][key][language] = self.texts["month_names, type: list"][language][date[date_name][date_type]["Units"]["Month"]]
 
+						elif key == "Month name with number":
+							date[date_name][date_type]["Texts"][key][language] = str(self.Text.Add_Leading_Zeroes(date[date_name][date_type]["Units"]["Month"])) + " - " + self.texts["month_names, type: list"][language][date[date_name][date_type]["Units"]["Month"]]
+
 						elif key == "Day gender":
 							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names_genders, type: list"][language][date[date_name][date_type]["Units"]["Week day"]]
 
@@ -183,6 +191,36 @@ class Date():
 					format_key = list(date[date_name][date_type]["Formats"].keys())[i]
 
 					date[date_name][date_type]["Formats"][format_key] = date[date_name]["Object"].strftime(format)
+
+					format_list = [
+						"[Day] [Month name] [Year]",
+						"[Day name], [Day] [Month name] [Year]"
+					]
+
+					for format_name in format_list:
+						if format_key == format_name:
+							date[date_name][date_type]["Formats"][format_key] = {}
+
+							template = self.texts["{} {} {}"]
+
+							date_shortcut = date[date_name][date_type]
+
+							if format_name == "[Day name], [Day] [Month name] [Year]":
+								template = self.texts["{}, {} {} {}"]
+
+							for language in self.languages["small"]:
+								items = []
+
+								if format_name == "[Day name], [Day] [Month name] [Year]":
+									items.append(date_shortcut["Texts"]["Day name"][language])
+
+								items.extend([
+									date[date_name][date_type]["Units"]["Day"],
+									date[date_name][date_type]["Texts"]["Month name"][language],
+									date[date_name][date_type]["Units"]["Year"]
+								])
+
+								date[date_name][date_type]["Formats"][format_key][language] = template[language].format(*items)
 
 					i += 1
 
@@ -364,8 +402,20 @@ class Date():
 		from copy import deepcopy
 
 		# Transform the text key into a dictionary if it is a string
-		if type(date["Text"]) == str:
+		if (
+			"Text" in date and
+			type(date["Text"]) == str
+		):
 			date["Text"] = {}
+
+		if "Difference" not in date:
+			date = {
+				"Text": {},
+				"Difference": date
+			}
+
+		for language in self.languages["small"]:
+			date["Text"][language] = ""
 
 		# Define the keys and remove the "Text" key
 		keys = list(date["Difference"].keys())
@@ -385,17 +435,14 @@ class Date():
 			if key in keys:
 				keys.remove(key)
 
-		for language in self.languages["small"]:
-			date["Text"][language] = ""
-
 		# Make the time texts per language
 		for key in keys:
 			for language in self.languages["small"]:
 				# If the key is the last one and the number of time attributes is 2 or more than 2, add the "and " text
 				if key == keys[-1]:
 					if (
-						len(date) > 2 or
-						len(date) == 2
+						len(keys) > 2 or
+						len(keys) == 2
 					):
 						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
 
@@ -409,14 +456,14 @@ class Date():
 				date["Text"][language] += str(date["Difference"][key]) + " " + text
 
 				# If the number of time attributes is equal to 2, add a space
-				if len(date) == 2:
+				if len(keys) == 2:
 					date["Text"][language] += " "
 
 				# If the key is not the last one
 				# And the number of time attributes is more than 2, add the ", " text (comma)
 				if (
 					key != keys[-1] and
-					len(date) > 2
+					len(keys) > 2
 				):
 					date["Text"][language] += ", "
 

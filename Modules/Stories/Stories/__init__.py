@@ -128,7 +128,7 @@ class Stories(object):
 		# Folders
 		self.stories = {
 			"Folders": {
-				"root": self.folders["mega"]["stories"]["root"]
+				"root": self.folders["Mega"]["stories"]["root"]
 			}
 		}
 
@@ -241,7 +241,7 @@ class Stories(object):
 		]
 
 		# List stories on stories folder
-		self.stories["List"] = self.Folder.Contents(self.folders["mega"]["stories"]["root"])["folder"]["names"]
+		self.stories["List"] = self.Folder.Contents(self.folders["Mega"]["stories"]["root"])["folder"]["names"]
 		self.stories["List"] = self.Folder.Remove_Folders(self.stories["List"], to_remove)
 
 		# Update stories list file with new story names
@@ -321,7 +321,7 @@ class Stories(object):
 
 			# Create the cover folders
 			folders = {
-				"Websites": self.folders["mega"]["websites"]["images"]["story_covers"],
+				"Websites": self.folders["Mega"]["websites"]["images"]["story_covers"],
 				"Photoshop": self.folders["art"]["photoshop"]["stories"],
 				"Sony Vegas": self.folders["art"]["sony_vegas"]["story_covers"]
 			}
@@ -341,7 +341,7 @@ class Stories(object):
 
 			# Add the "Obsidian's Vaults" folder
 			story["Folders"]["Obsidian's Vaults"] = {
-				"root": self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + story_title + "/"
+				"root": self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + story_title + "/"
 			}
 
 			self.Folder.Create(story["Folders"]["Obsidian's Vaults"]["root"])

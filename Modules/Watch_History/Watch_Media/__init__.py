@@ -114,19 +114,20 @@ class Watch_Media(Watch_History):
 				self.media["Item"]["Details"][self.language_texts["episode"].title()] = title
 
 				# Update the media "Details.txt" file
-				self.File.Edit(self.media["Item"]["folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
+				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 		# If the media watching status is inside the status list
 		# Or the media "Dates.txt" file is empty
 		# Or the media has a media item list and the media item "Dates.txt" file is empty
 		if (
 			self.media["Details"][self.JSON.Language.language_texts["status, title()"]] in plan_to_watch_status_list or
-			self.File.Contents(self.media["folders"]["dates"])["lines"] == [] or
-			self.media["States"]["Media item list"] == True and self.File.Contents(self.media["Item"]["folders"]["dates"])["lines"] == []
+			self.File.Contents(self.media["Folders"]["dates"])["lines"] == [] or
+			self.media["States"]["Media item list"] == True and
+			self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == []
 		):
 			# If the media "Dates.txt" file is empty
 			if (
-				self.File.Contents(self.media["folders"]["dates"])["lines"] == [] and
+				self.File.Contents(self.media["Folders"]["dates"])["lines"] == [] and
 				self.media["States"]["Re-watching"] == False
 			):
 				# Get the first watching time where the user started watching the media
@@ -136,14 +137,14 @@ class Watch_Media(Watch_History):
 				self.media["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
 				self.media["Dates"] += self.media["Started watching time"]
 
-				self.File.Edit(self.media["folders"]["dates"], self.media["Dates"], "w")
+				self.File.Edit(self.media["Folders"]["dates"], self.media["Dates"], "w")
 
 			# If the media has a media item list
 			# And the media item "Dates.txt" file is empty
 			# And the media is not being re-watched
 			if (
 				self.media["States"]["Media item list"] == True and
-				self.File.Contents(self.media["Item"]["folders"]["dates"])["lines"] == [] and
+				self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == [] and
 				self.media["States"]["Re-watching"] == False
 			):
 				# Gets the first watching time where the user started watching the media
@@ -153,7 +154,7 @@ class Watch_Media(Watch_History):
 				self.media["Item"]["Dates"] = self.language_texts["when_i_started_to_watch"] + ":\n"
 				self.media["Item"]["Dates"] += self.media["Item"]["Started watching time"]
 
-				self.File.Edit(self.media["Item"]["folders"]["dates"], self.media["Item"]["Dates"], "w")
+				self.File.Edit(self.media["Item"]["Folders"]["dates"], self.media["Item"]["Dates"], "w")
 
 			# If the media watching status is inside the status list
 			if self.media["Details"][self.JSON.Language.language_texts["status, title()"]] in plan_to_watch_status_list:
@@ -262,7 +263,7 @@ class Watch_Media(Watch_History):
 
 				if self.media["States"]["Single unit"] == False:
 					# Update media item details file
-					self.File.Edit(self.media["Item"]["folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
+					self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 			# Define media episode dictionary
 			self.media["Episode"].update({
@@ -656,15 +657,15 @@ class Watch_Media(Watch_History):
 
 			if self.media["States"]["Video"] == False and self.media["States"]["Dubbing"]["Has dubbing"] == True:
 				# Add dubbed text to the media folder if there is dub for the media and user wants to watch it dubbed
-				folder = self.media["Item"]["folders"]["media"]["root"] + self.media["Full language"] + "/"
+				folder = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Full language"] + "/"
 
 				if self.media["States"]["Dubbing"]["Watch dubbed"] == True or self.Folder.Exist(folder) == True:
-					self.media["Item"]["folders"]["media"]["root"] = folder
+					self.media["Item"]["Folders"]["Media"]["root"] = folder
 
-			self.Folder.Create(self.media["Item"]["folders"]["media"]["root"])
+			self.Folder.Create(self.media["Item"]["Folders"]["Media"]["root"])
 
 			# Add media episode to local media folder
-			self.media["Episode"]["unit"] = self.media["Item"]["folders"]["media"]["root"] + self.media["Episode"]["Sanitized"]
+			self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Episode"]["Sanitized"]
 
 			self.tried_files.append(self.media["Episode"]["unit"])
 
@@ -693,7 +694,7 @@ class Watch_Media(Watch_History):
 							file_name = self.Sanitize_Title(self.media["Episode"]["Titles"][language])
 
 							# Define the root episode file
-							self.media["Episode"]["unit"] = self.media["Item"]["folders"]["media"]["root"].replace(self.full_user_language + "/", "")
+							self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"].replace(self.full_user_language + "/", "")
 
 							self.tried_files.append(self.media["Episode"]["unit"])
 
@@ -815,14 +816,14 @@ class Watch_Media(Watch_History):
 
 	def Find_Media_file(self, file_name):
 		self.frequently_used_folders = [
-			self.Folder.folders["user"]["downloads"]["root"],
-			self.Folder.folders["user"]["downloads"]["videos"]["root"],
-			self.Folder.folders["user"]["downloads"]["mega"]["root"]
+			self.Folder.folders["User"]["downloads"]["root"],
+			self.Folder.folders["User"]["downloads"]["videos"]["root"],
+			self.Folder.folders["User"]["downloads"]["mega"]["root"]
 		]
 
 		old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
 
-		new_file = self.media["Item"]["folders"]["media"]["root"] + self.Sanitize(file_name, restricted_characters = True) + "."
+		new_file = self.media["Item"]["Folders"]["Media"]["root"] + self.Sanitize(file_name, restricted_characters = True) + "."
 
 		text = self.language_texts["please_select_a_file_that_is_in_the_format"] + " "
 
@@ -842,7 +843,7 @@ class Watch_Media(Watch_History):
 
 				old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
 
-				new_file = self.media["Item"]["folders"]["media"]["root"] + file_name + "."
+				new_file = self.media["Item"]["Folders"]["Media"]["root"] + file_name + "."
 
 		self.moved_succesfully = False
 

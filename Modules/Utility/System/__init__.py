@@ -34,7 +34,7 @@ class System():
 		"\t" + item
 
 		if (
-			self.switches["verbose"] == True and
+			self.switches["verbose"] == True or
 			verbose == True
 		):
 			print(verbose_text)
@@ -44,6 +44,12 @@ class System():
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
 			path = os.path.normpath(path).replace("\\", "/")
+
+			if (
+				os.path.splitext(path)[-1] == "" and
+				"/" not in path[-1]
+			):
+				path += "/"
 
 		if restricted_characters == True:
 			self.restricted_characters_list = [":", "?", '"', "\\", "/", "|", "*", "<", ">"]

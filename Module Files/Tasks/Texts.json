@@ -19,6 +19,10 @@
 		"en": "Task types",
 		"pt": "Tipos de tarefa"
 	},
+	"task_title": {
+		"en": "Task title",
+		"pt": "Título da tarefa"
+	},
 	"times, title()": {
 		"en": "Times",
 		"pt": "Tempos"
@@ -38,10 +42,6 @@
 	"show_task_description": {
 		"en": "Show task description",
 		"pt": "Mostrar descrição da tarefa"
-	},
-	"can_be_long": {
-		"en": "can be long",
-		"pt": "pode ser longa"
 	},
 	"select_a_task_type": {
 		"en": "Select a task type",
@@ -74,10 +74,6 @@
 	"task_type_number": {
 		"en": "Task type number",
 		"pt": "Número de tipo de tarefa"
-	},
-	"done_tasks": {
-		"en": "Done tasks",
-		"pt": "Tarefas feitas"
 	},
 	"completed_tasks": {
 		"en": "Completed tasks",

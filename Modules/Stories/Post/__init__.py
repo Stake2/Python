@@ -344,15 +344,24 @@ class Post(Stories):
 			full_language = self.languages["full"][language]
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			# Open Wattpad on story page
+			# Open Wattpad on the story page
 			wattpad_link = self.story["Information"]["Wattpad"]["links"][language]
 
-			self.Open_Social_Network(social_network_parameter = "Wattpad", custom_link = wattpad_link, first_space = False)
+			social_networks = {
+				"List": [
+					"Wattpad"
+				],
+				"Custom links": {
+					"Wattpad": wattpad_link
+				}
+			}
 
-			# Copy chapter title
+			self.Open_Social_Network(social_networks)
+
+			# Copy the chapter title
 			self.Copy_Title(language, post_chapter = True)
 
-			# Copy chapter text
+			# Copy the chapter text
 			self.Copy_Chapter_Text(language, full_language)
 
 			print()

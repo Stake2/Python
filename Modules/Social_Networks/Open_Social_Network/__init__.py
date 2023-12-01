@@ -2,142 +2,212 @@
 
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 
-from Block_Websites.Unblock import Unblock as Unblock
-
 class Open_Social_Network(Social_Networks):
-	def __init__(self, open_social_networks = False, option_info = None, social_network_parameter = None, custom_link = None, unblock = False, first_space = True, second_space = True):
+	def __init__(self, social_networks = None):
 		super().__init__()
 
-		self.open_social_networks = open_social_networks
-		self.option_info = option_info
-		self.custom_link = custom_link
-		self.unblock = unblock
-		self.first_space = first_space
-		self.second_space = second_space
+		# Define the root dictionary
+		self.dictionary = {
+			"Social Networks": {
+				"Numbers": {
+					"Total": 0,
+					"Iteration": 1
+				},
+				"List": [],
+				"Dictionary": {}
+			},
+			"Link type": self.social_networks["Link types"]["Dictionary"]["Profile"],
+			"States": {
+				"Select Social Network": True,
+				"Type": "Profile",
+				"First separator": True
+			},
+			"Spaces": {
+				"First": True,
+				"Second": False
+			}
+		}
 
-		if self.first_space == True:
-			print()
+		# If the "Social Networks" parameter is "None"
+		if social_networks == None:
+			# Select the Social Network
+			self.Select_Social_Network()
 
-		self.social_network_list = []
-
-		if social_network_parameter != None:
-			self.open_social_networks = True
-
-		if type(social_network_parameter) == str:
-			self.social_network_list = [
-				social_network_parameter
+			# Add the selected Social Network to the Social Networks list
+			self.dictionary["Social Networks"]["List"] = [
+				self.social_network["Name"]
 			]
 
-		if type(social_network_parameter) == list:
-			self.social_network_list = social_network_parameter
+		# If the "Social Networks" parameter is not "None"
+		if social_networks != None:
+			# If the type of the Social Networks parameter is a list
+			if type(social_networks) == list:
+				# Define the local list of Social Networks as the "Social Networks" parameter dictionary
+				self.dictionary["Social Networks"]["List"] = social_networks
 
-		self.custom_link_backup = self.custom_link
+			# If the type of the Social Networks parameter is a dictionary
+			if type(social_networks) == dict:
+				# If the parameter list of Social Networks is not empty
+				if social_networks["List"] != []:
+					# Define the local list of Social Networks as the "List" dictionary inside the "Social Networks" parameter dictionary
+					self.dictionary["Social Networks"]["List"] = social_networks["List"]
 
-		if (
-			self.open_social_networks == False and
-			social_network_parameter == None
-		):
-			self.social_network_list = [None]
+				# If the "Custom links" key is present inside the "Social Networks" parameter dictionary
+				if "Custom links" in social_networks:
+					# Define the "Custom links" key as the "Custom links" dictionary inside the "Social Networks" parameter dictionary
+					self.dictionary["Social Networks"]["Custom links"] = social_networks["Custom links"]
 
-		self.i = 0
-		for social_network in self.social_network_list:
+				# If the "Type" key is inside the "Social Networks" parameter dictionary
+				if "Type" in social_networks:
+					# Update the "Link type" key of the root dictionary
+					# With the "Link type" dictionary of the same name
+					self.dictionary["Link type"] = self.social_networks["Link types"][social_networks["Type"]]
+
+				# If the "States" key is inside the "Social Networks" parameter dictionary
+				if "States" in social_networks:
+					# Update the "First separator" key of the "States" dictionary inside the root dictionary
+					# With the "First separator" key of the dictionary of the same name
+					self.dictionary["States"]["First separator"] = social_networks["States"]["First separator"]
+
+				# If the "Spaces" key is present inside the "Social Networks" parameter dictionary
+				if "Spaces" in social_networks:
+					# Iterate through the list of spaces
+					for space in ["First", "Second"]:
+						# If the space key is present inside the "Social Networks" parameter dictionary
+						if space in social_networks["Spaces"]:
+							# Update the space key of the "Spaces" dictionary inside the root dictionary
+							# With the new value as the space key inside the "Social Networks" parameter dictionary
+							self.dictionary["Spaces"][space] = social_networks["Spaces"][space]
+
+		# Get the number of social networks
+		self.dictionary["Social Networks"]["Numbers"]["Total"] = len(self.dictionary["Social Networks"]["List"])
+
+		# Iterate through the "Social Networks" list
+		for social_network in self.dictionary["Social Networks"]["List"]:
+			# Get the "Social Network" dictionary
+			social_network = self.social_networks["Dictionary"][social_network]
+
+			# If the current Social Network is inside the root "Social Networks" dictionary
+			if social_network["Name"] in self.social_networks["Dictionary"]:
+				# Add it to the local "Social Networks" dictionary
+				self.dictionary["Social Networks"]["Dictionary"][social_network["Name"]] = social_network
+
+		# Open the Social Networks
+		self.Open_Social_Networks()
+
+	def Open_Social_Networks(self):
+		# Iterate through the list of Social Networks to open
+		for key, social_network in self.dictionary["Social Networks"]["Dictionary"].items():
+			# Update the "self.social_network" variable
+			self.Select_Social_Network(social_network)
+
+			# Define the default link to open as the Social Network link
+			self.social_network["Link to open"] = self.social_network["Information"]["Link"]
+
+			# If the Social Network contains an "Opening link", use it
+			if "Opening link" in self.social_network["Information"]:
+				self.social_network["Link to open"] = self.social_network["Information"]["Opening link"]
+
+			# If the link type is "Profile"
+			# And the Social Network profiile contains a "Profile link", use it
 			if (
-				len(self.social_network_list) > 1 and
-				self.custom_link_backup != None
+				self.dictionary["Link type"]["en"] == "Profile" and
+				"Profile link" in self.social_network["Profile"]
 			):
-				self.custom_link = self.custom_link_backup[self.i]
+				self.social_network["Link to open"] = self.social_network["Profile"]["Profile link"]
 
-			self.social_network_link = self.custom_link
-
-			self.Define_Social_Network(social_network)
-
-			self.link_type = None
-			self.link_type_key = None
-			self.language_link_type = "link"
-
-			self.Define_Link_Type()
-			self.Define_Social_Network_Link()
-
-			if self.open_social_networks == True:
-				print()
-				print(self.large_bar)
-				print()
-
+			# If there is a "Custom links" dictionary inside the "Social Networks" dictionary of the root dictionary
+			# And the current Social Network of the loop contains a custom link
 			if (
-				self.i == 0 and
-				self.unblock == True
+				"Custom links" in self.dictionary["Social Networks"] and
+				self.social_network["Name"] in self.dictionary["Social Networks"]["Custom links"]
 			):
-				self.Unlock_Social_Network()
+				# Use it
+				self.social_network["Link to open"] = self.dictionary["Social Networks"]["Custom links"][social_network["Name"]]
 
+			# Show information about the opening of the Social Network link
+			self.Show_Information()
+
+			# Open the Social Network link
 			self.Open_Social_Network()
 
-			if (
-				self.i == len(self.social_network_list) - 1 and
-				second_space == True
-			):
-				print()
+			# Add to the "Iteration" number
+			self.dictionary["Social Networks"]["Numbers"]["Iteration"] += 1
+
+	def Show_Information(self):
+		print()
+
+		# If there is only one Social Network to open
+		# Or there are more than one Social Network to open
+		# And the current Social Network is the first one
+		if (
+			self.dictionary["Social Networks"]["Numbers"]["Total"] == 1 or
+			self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2 and
+			self.social_network["Name"] == self.dictionary["Social Networks"]["List"][0]
+		):
+			# If the "First separator" state is True
+			if self.dictionary["States"]["First separator"] == True:
+				# Show a separator
 				print(self.large_bar)
+				print()
 
-			self.i += 1
+		# If there are more than one Social Network to open
+		if self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2:
+			# Get the current and total numbers
+			# And store them in short variables for easier typing
+			current_number = self.dictionary["Social Networks"]["Numbers"]["Iteration"]
+			total_number = self.dictionary["Social Networks"]["Numbers"]["Total"]
 
-		if (
-			social_network_parameter != None and
-			self.second_space == True
-		):
+			# Make the number text
+			text = str(current_number) + "/" + str(total_number)
+
+			if self.social_network["Name"] != self.dictionary["Social Networks"]["List"][0]:
+				print("-")
+				print()
+
+			# Show the "Social Networks" and the "[Current number]/[Total number]" texts
+			print(self.JSON.Language.language_texts["social_networks"] + ":")
+			print("\t" + text)
 			print()
 
-	def Define_Social_Network(self, social_network):
-		select_text = self.language_texts["select_one_social_network_to_open"]
-
-		self.social_network = self.Select_Social_Network(social_network = social_network, select_text = select_text)
-
-		if social_network == None:
-			self.social_network_list = [self.social_network["Name"]]
-
-	def Unlock_Social_Network(self):
-		unblock_websites = False
-
-		if unblock_websites == True:
-			Unblock(websites = self.social_network_list)
-
-		if (
-			unblock_websites == False and
-			self.i == 0
-		):
+			# Show the "Social Network" text and the Social Network name
+			print(self.JSON.Language.language_texts["social_network"] + ":")
+			print("\t" + self.social_network["Name"])
 			print()
 
-	def Define_Link_Type(self):
-		if self.option_info != None:
-			option_info = {
-				"option": self.texts[self.option_info["type"] + ", title()"]["en"],
-				"language_option": self.language_texts[self.option_info["type"] + ", title()"],
-			}
+		# Define the text template
+		template = self.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
 
-		show_text = self.language_texts["link_types"]
-		select_text = self.language_texts["select_one_link_type_to_open"]
+		# Define the text template items
+		items = [
+			self.social_network["Name"],
+			self.dictionary["Link type"][self.user_language].lower()
+		]
 
+		# Format the text template with the items
+		text = template.format(*items)
+
+		print(text + ":")
+		print("\t" + self.social_network["Link to open"])
+
+		# If the link type is "Profile"
+		if self.dictionary["Link type"]["en"] == "Profile":
+			# To-Do: Show information about the link, splitting the template link
+			variable = True
+
+		# If there are more than one Social Network to open
+		# And the current Social Network is the last one
 		if (
-			self.open_social_networks == False and
-			self.option_info == None and
-			self.custom_link == None
+			self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2 and
+			self.social_network["Name"] == self.dictionary["Social Networks"]["List"][-1]
 		):
-			option_info = self.Input.Select(self.link_types["en"], language_options = self.link_types[self.user_language], show_text = show_text, select_text = select_text)
+			# Show a separator
+			print()
+			print(self.large_bar)
 
-		if self.custom_link != None:
-			option_info = {
-				"option": "",
-				"language_option": ""
-			}
-
-		self.link_type = option_info["option"]
-
-		if self.custom_link == None:
-			self.language_link_type = option_info["language_option"]
-
-		self.link_type_key = ""
-
-		if self.custom_link == None:
-			self.link_type_key = self.link_types_map[self.link_type]
+	def Open_Social_Network(self):
+		# Open the Social Network link
+		self.System.Open(self.social_network["Link to open"], verbose = False)
 
 	def Define_Social_Network_Link(self):
 		if self.custom_link == None:
@@ -168,16 +238,3 @@ class Open_Social_Network(Social_Networks):
 			self.social_network_link = self.social_network["Data"]["Information"]["Program file"]
 
 			self.language_texts["opening_{}_on_its_{}_page_with_this_link"] = self.language_texts["opening_{}_on_its_{}_page_with_this_link"].split(" {}")[0] + " {}"
-
-	def Open_Social_Network(self):
-		print(self.language_texts["opening_{}_on_its_{}_page_with_this_link"].format(self.social_network["Name"], self.language_link_type.lower()) + ":")
-		print("\t" + self.social_network_link)
-
-		if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["Data"]["Information"]:
-			for key in self.user_information:
-				print()
-				print("\t" + key + ":")
-				print("\t\t" + self.user_information[key])
-
-		# Open the Social Network
-		self.System.Open(self.social_network_link)

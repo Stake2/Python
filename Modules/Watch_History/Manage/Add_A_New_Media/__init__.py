@@ -35,8 +35,8 @@ class Add_A_New_Media(Watch_History):
 
 		if self.media["States"]["Media item list"] == True:
 			# Remove "folders" key from the Media dictionary
-			if "folders" in self.dictionary["Media"]:
-				self.dictionary["Media"].pop("folders")
+			if "Folders" in self.dictionary["Media"]:
+				self.dictionary["Media"].pop("Folders")
 
 			self.media = self.dictionary["Media"]
 
@@ -450,30 +450,30 @@ class Add_A_New_Media(Watch_History):
 					media["Details"][text] = separator
 
 		# Create the media (item) folders
-		media["folders"] = {
-			"root": self.dictionary["Media type"]["Folders"]["media_info"]["root"] + self.Sanitize(self.media["Title"], restricted_characters = True) + "/"
+		media["Folders"] = {
+			"root": self.dictionary["Media type"]["Folders"]["Media information"]["root"] + self.Sanitize(self.media["Title"], restricted_characters = True) + "/"
 		}
 
-		self.Folder.Create(media["folders"]["root"])
+		self.Folder.Create(media["Folders"]["root"])
 
 		if self.item == True:
-			media["folders"]["root"] += self.dictionary["Media type"]["Subfolders"]["Plural"] + "/" + self.Sanitize_Title(media["Title"]) + "/"
-			self.Folder.Create(media["folders"]["root"])
+			media["Folders"]["root"] += self.dictionary["Media type"]["Subfolders"]["Plural"] + "/" + self.Sanitize_Title(media["Title"]) + "/"
+			self.Folder.Create(media["Folders"]["root"])
 
 		# Create the media (item) details file
-		media["folders"]["details"] = media["folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
-		self.File.Create(media["folders"]["details"])
+		media["Folders"]["details"] = media["Folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
+		self.File.Create(media["Folders"]["details"])
 
 		# Write into the media (item) details file
-		self.File.Edit(media["folders"]["details"], self.Text.From_Dictionary(media["Details"]), "w")
+		self.File.Edit(media["Folders"]["details"], self.Text.From_Dictionary(media["Details"]), "w")
 
 		# Remove the "folders" dictionary to let "Select_Media" create it
-		media.pop("folders")
+		media.pop("Folders")
 
 		return media
 
 	def Add_To_The_Database(self):
-		self.dictionary["Media type"]["JSON"] = self.JSON.To_Python(self.dictionary["Media type"]["Folders"]["media_info"]["info"])
+		self.dictionary["Media type"]["JSON"] = self.JSON.To_Python(self.dictionary["Media type"]["Folders"]["Media information"]["Information"])
 
 		# Add to the titles list
 		self.dictionary["Media type"]["JSON"]["Titles"].append(self.media["Title"])
@@ -487,7 +487,7 @@ class Add_A_New_Media(Watch_History):
 		self.dictionary["Media type"]["JSON"]["Number"] = len(self.dictionary["Media type"]["JSON"]["Titles"])
 
 		# Edit the "Info.json" file with the new dictionary
-		self.JSON.Edit(self.dictionary["Media type"]["Folders"]["media_info"]["info"], self.dictionary["Media type"]["JSON"])
+		self.JSON.Edit(self.dictionary["Media type"]["Folders"]["Media information"]["Information"], self.dictionary["Media type"]["JSON"])
 
 	def Add_Media_Items(self):
 		# Ask if the media has media items
@@ -503,19 +503,19 @@ class Add_A_New_Media(Watch_History):
 
 		if self.media["States"]["Media item list"] == True:
 			# Delete the unused folders
-			self.Folder.Delete(self.dictionary["Media"]["Item"]["folders"]["watched"]["root"])
-			self.Folder.Delete(self.dictionary["Media"]["Item"]["folders"]["comments"]["root"])
-			self.Folder.Delete(self.dictionary["Media"]["Item"]["folders"]["titles"]["root"])
+			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["watched"]["root"])
+			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["comments"]["root"])
+			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"])
 
 			# Define the media items dictionary with the folders and number keys
 			self.media["Items"] = {
-				"folders": {
-					"root": self.media["folders"]["root"] + self.dictionary["Media type"]["Subfolders"]["Plural"] + "/"
+				"Folders": {
+					"root": self.media["Folders"]["root"] + self.dictionary["Media type"]["Subfolders"]["Plural"] + "/"
 				},
 				"Number": 0
 			}
 
-			self.Folder.Create(self.media["Items"]["folders"]["root"])
+			self.Folder.Create(self.media["Items"]["Folders"]["root"])
 
 			# Iterate through item type keys
 			for name in ["List", "Current"]:
@@ -525,11 +525,11 @@ class Add_A_New_Media(Watch_History):
 					key = "Plural"
 
 				# Define the item type text file
-				self.media["Items"]["folders"][name.lower()] = self.media["Items"]["folders"]["root"] + self.dictionary["Media type"]["Subfolders"][key] + ".txt"
-				self.File.Create(self.media["Items"]["folders"][name.lower()])
+				self.media["Items"]["Folders"][name.lower()] = self.media["Items"]["Folders"]["root"] + self.dictionary["Media type"]["Subfolders"][key] + ".txt"
+				self.File.Create(self.media["Items"]["Folders"][name.lower()])
 
 				# Get the contents of the text file
-				self.media["Items"][name] = self.File.Contents(self.media["Items"]["folders"][name.lower()])["lines"]
+				self.media["Items"][name] = self.File.Contents(self.media["Items"]["Folders"][name.lower()])["lines"]
 
 				# If the contents is not empty and the item type is "current"
 				if (
@@ -565,7 +565,7 @@ class Add_A_New_Media(Watch_History):
 				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.JSON.Language.language_texts["add_more"])
 
 			# Update the media items list file
-			self.File.Edit(self.media["Items"]["folders"]["list"], self.Text.From_List(self.media["Items"]["List"]), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"]), "w")
 
 			# Define the current media item as the first one
 			self.media["Items"]["Current"] = [
@@ -573,6 +573,6 @@ class Add_A_New_Media(Watch_History):
 			]
 
 			# Update the current media item file
-			self.File.Edit(self.media["Items"]["folders"]["current"], self.Text.From_List(self.media["Items"]["Current"]), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"]), "w")
 
-			self.dictionary["Media"].pop("folders")
+			self.dictionary["Media"].pop("Folders")

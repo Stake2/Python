@@ -35,9 +35,9 @@
 		"en": "Select one link type to open",
 		"pt": "Selecione um tipo de link para abrir"
 	},
-	"opening_{}_on_its_{}_page_with_this_link": {
-		"pt": "Abrindo {} em sua página de {}, com este link",
-		"en": "Opening {} on its {} page, with this link"
+	"opening_the_social_network_{}_on_its_{}_page_with_this_link": {
+		"pt": "Abrindo a Rede Social \"{}\" em sua página de {}, com este link",
+		"en": "Opening the Social Network \"{}\" on its {} page, with this link"
 	},
 	"please_type_the_social_network_profile_information": {
 		"pt": "Por favor digite as informações do perfil da Rede Social",

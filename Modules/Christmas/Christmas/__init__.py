@@ -10,45 +10,19 @@ class Christmas():
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
-		# Define the classes to be imported
-		classes = [
-			"Social_Networks",
-			"Social_Networks.Open_Social_Network",
-			"Years"
-		]
-
-		do_not_run = [
-			"Open_Social_Network"
-		]
-
-		# Import them
-		for title in classes:
-			module_title = title
-
-			if "." in module_title:
-				module_title = module_title.split(".")[0]
-				title = title.split(".")[1]
-
-			# Import the module
-			module = importlib.import_module("." + title, module_title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			if title not in do_not_run:
-				sub_class = sub_class()
-
-			# Add the sub-clas to the current module
-			setattr(self, title, sub_class)
-
 		self.Define_Texts()
-		self.Today_Is_Christmas()
 
+		# Import classes method
+		self.Import_Classes()
+
+		# Folders, lists, and dictionaries methods
 		self.Define_Folders()
-		self.Define_Files()
-		self.Define_Lists()
+		self.Define_Lists_And_Dictionaries()
+
+		# Class methods
+		self.Today_Is_Christmas()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -64,6 +38,7 @@ class Christmas():
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -117,201 +92,279 @@ class Christmas():
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-		self.christmas = self.Date.From_String("25/12/" + str(self.date["Units"]["Year"]))
+	def Import_Classes(self):
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks",
+			"Social_Networks.Open_Social_Network",
+			"Years"
+		]
 
-	def Today_Is_Christmas(self):
-		self.today_is_christmas = False
+		do_not_run = [
+			"Open_Social_Network"
+		]
 
-		if (
-			self.date["Units"]["Day"] == self.christmas["Units"]["Day"] and
-			self.date["Units"]["Month"] == self.christmas["Units"]["Month"]
-		):
-			self.today_is_christmas = True
+		# Import them
+		for title in classes:
+			module_title = title
 
-		return self.today_is_christmas
+			if "." in module_title:
+				module_title = module_title.split(".")[0]
+
+				title = title.split(".")[1]
+
+			# Import the module
+			module = importlib.import_module("." + title, module_title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			if title not in do_not_run:
+				sub_class = sub_class()
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class)
 
 	def Define_Folders(self):
-		self.current_year = self.Years.current_year
+		self.current_year = self.Years.years["Current year"]
 
-		self.christmas_image_folder = self.folders["mega"]["image"]["root"] + self.language_texts["christmas, title()"] + "/"
-		self.Folder.Create(self.christmas_image_folder)
+		self.year_texts = self.Years.years["Texts"]
 
-	def Define_Files(self):
-		if self.full_user_language in self.current_year["Folders"]:
-			self.planning_file = self.current_year["Folders"][self.full_user_language][self.language_texts["christmas, title()"]]
-			self.planning_file = self.planning_file[self.language_texts["planning, title()"]]
-
-			self.objects_file = self.current_year["Folders"]["English"][self.texts["christmas, title()"]["en"]]["root"] + "Objects.txt"
-
-			self.things_to_watch_file = self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["watch, title()"] + ".txt"
-
-			self.watch_list_file = self.folders["notepad"]["networks"]["audiovisual_media_network"]["root"] + self.JSON.Language.language_texts["media_list"] + ".txt"
-
-			self.things_to_eat_file = self.current_year["Folders"][self.full_user_language][self.language_texts["christmas, title()"]]["root"] + self.language_texts["eat, title()"] + ".txt"
-
-	def Define_Lists(self):
-		self.twitter_scheduled_text = "Twitter Scheduled"
-		self.twitter_scheduled_link = "https://twitter.com/compose/tweet/unsent/scheduled"
-
-		self.alternative_social_networks_links = {
-			"Github": "https://github.com/Stake2/",
-			"DeviantArt": "https://www.deviantart.com/stake2/",
-			"YouTube": "https://www.youtube.com/c/TheStake2/"
+	def Define_Lists_And_Dictionaries(self):
+		# Define the root "Social Networks" dictionary
+		self.social_networks = {
+			"Numbers": {
+				"Total": 0,
+				"Iteration": 1
+			},
+			"List": [],
+			"Custom links": {
+				"Twitter": "https://twitter.com/compose/tweet/unsent/scheduled"
+			},
+			"States": {
+				"First separator": False
+			}
 		}
 
-		self.functions = {
-			"Open_File": self.Open_File,
-			"Open_Social_Network": self.Open_Social_Network,
-			"Run_Script": self.Run_Script
+		# Define the root "Christmas" dictionary
+		self.christmas = {
+			"States": {
+				"Today is Christmas": False
+			},
+			"Date": self.Date.From_String("25/12/" + str(self.date["Units"]["Year"])),
+			"Folders": {
+				"Year screenshots": self.current_year["Folders"]["Image"]["Christmas"]["Screenshots"]["root"],
+				"Year pictures": self.current_year["Folders"]["Image"]["Christmas"]["Pictures"]["root"],
+			},
+			"Files": {
+				"Christmas theme": self.folders["Image"]["Christmas"]["Theme"]["root"] + self.JSON.Language.language_texts["christmas, title()"] + ".lnk",
+				"Texts": self.current_year["Folders"]["Christmas"]["Merry Christmas"]["Texts"]
+			},
+			"Programs": {
+				"Foobar2000": self.folders["Program Files (x86)"]["root"] + "foobar2000.exe"
+			},
+			"Social Network links": {
+				"YouTube": "https://www.youtube.com/@Stake2_/",
+				"DeviantArt": "https://www.deviantart.com/stake2"
+			}
 		}
 
-	def Open_File(self, key):
-		files = {
-			"Foobar2000": "C:/Program Files (x86)/foobar2000/foobar2000.exe",
-			"Theme": self.christmas_image_folder + "Theme/" + self.language_texts["christmas, title()"] + ".lnk",
-			"Texts - Textos": self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["texts, title()"] + ".txt"
+		self.christmas["Functions"] = {
+			"Open_Folder": {
+				"Function": self.System.Open,
+				"Values": self.christmas["Folders"]
+			},
+			"Open_File": {
+				"Function": self.System.Open,
+				"Values": self.christmas["Files"]
+			},
+			"Open_Program": {
+				"Function": self.System.Open,
+				"Values": self.christmas["Programs"]
+			},
+			"Open_Module": {
+				"Function": self.Open_Module,
+				"Ask for input": False
+			},
+			"Open_Social_Network": {
+				"Function": self.Open_Social_Networks,
+				"Ask for input": False
+			}
 		}
 
-		texts = {
-			"Foobar2000": self.language_texts["opening_{}"].format("Foobar2000"),
-			"Theme": self.language_texts["defining_{}"].format(self.language_texts["christmas_theme"]),
-			"Texts - Textos": self.language_texts["opening_this_file_{}"].format(self.language_texts["texts, title()"] + ".txt")
-		}
-
-		file = files[key]
-		text = texts[key]
-
+	def Today_Is_Christmas(self):
 		if (
-			self.switches["testing"] == False or
-			self.switches["testing"] == True and
-			key not in ["Foobar2000", "Theme"]
+			self.date["Units"]["Day"] == self.christmas["Date"]["Units"]["Day"] and
+			self.date["Units"]["Month"] == self.christmas["Date"]["Units"]["Month"]
 		):
-			self.System.Open(file)
+			self.christmas["States"]["Today is Christmas"] = True
 
-		if key != self.language_texts["texts, title()"]:
-			text += "..."
+		return self.christmas["States"]["Today is Christmas"]
 
-		if key == self.language_texts["texts, title()"]:
-			text = "\n" + text
+	def Open_Social_Networks(self, parameter):
+		if parameter == "Twitter":
+			self.social_networks["List"] = [
+				"Twitter"
+			]
 
-		print(text)
+		if parameter == "All":
+			self.social_networks["List"] = sorted(self.Social_Networks.social_networks["List"], key = str.lower)
+			self.social_networks["List"].remove("Twitter")
+			self.social_networks["List"].remove("Habitica")
 
-	def Open_Social_Network(self, social_network):
-		social_network_link = None
+			self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"]) + 2
 
-		social_network_backup = social_network
-
-		social_networks = [""]
-		self.option_info = None
-
-		if social_network == self.twitter_scheduled_text:
-			# Unblock Twitter
-			import Block_Websites
-
-			Block_Websites.Unblock(websites = self.Social_Networks.social_networks["Names"], time = 60)
-
-			social_network_link = self.twitter_scheduled_link
-			social_networks = ["Twitter"]
-
-		if social_network_backup != self.twitter_scheduled_text:
-			social_networks = sorted(self.Social_Networks.social_networks["Names"], key = str.lower)
-			social_networks.remove("Habitica")
-
-			self.option_info = {"type": "profile"}
-
-		if social_network_backup != self.twitter_scheduled_text:
-			self.social_networks_len = str(len(social_networks) + 3)
+			print()
 
 		i = 1
-		for social_network in social_networks:
-			if social_network_backup != self.twitter_scheduled_text:
-				if social_network == social_networks[0]:
+		for social_network in self.social_networks["List"]:
+			if parameter == "All":
+				# Get the total numbers
+				# And store it in a short variable for easier typing
+				total_number = self.social_networks["Numbers"]["Total"]
+
+				# Make the number text
+				text = str(i) + "/" + str(total_number)
+
+				if social_network != self.social_networks["List"][0]:
+					print("---")
 					print()
 
-				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
+				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
+				print(self.JSON.Language.language_texts["social_networks"] + ":")
+				print("\t" + text)
 				print()
 
-			Open_Social_Network(option_info = self.option_info, social_network_parameter = social_network, custom_link = social_network_link, unblock = False, first_space = False, second_space = False)
+				# Show the "Social Network" text and the Social Network name
+				print(self.JSON.Language.language_texts["social_network"] + ":")
+				print("\t" + social_network)
+
+			self.social_networks["List"] = [
+				social_network
+			]
+
+			self.Open_Social_Network(self.social_networks)
 
 			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
 
-			if social_network_backup != self.twitter_scheduled_text:
-				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
+			if parameter == "All":
+				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + ' "' + social_network + '"'
 
 			self.Input.Type(text)
 
-			if social_network_backup != self.twitter_scheduled_text:
-				print()
-				print("-")
+			if parameter == "All":
 				print()
 
-			i += 1
+				i += 1
 
-		if social_network_backup != self.twitter_scheduled_text:
-			social_networks = ["YouTube"]
+		if parameter == "All":
+			social_networks = [
+				"YouTube",
+				"DeviantArt"
+			]
+
+			print("---")
+			print()
 
 			for social_network in social_networks:
-				link = self.alternative_social_networks_links[social_network]
+				link = self.christmas["Social Network links"][social_network]
 
-				print(str(i) + "/" + self.social_networks_len + ": " + social_network)
+				# Get the total numbers
+				# And store it in a short variable for easier typing
+				total_number = self.social_networks["Numbers"]["Total"]
+
+				# Make the number text
+				text = str(i) + "/" + str(total_number)
+
+				if social_network != social_networks[0]:
+					print("---")
+					print()
+
+				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
+				print(self.JSON.Language.language_texts["social_networks"] + ":")
+				print("\t" + text)
 				print()
-				print(self.language_texts["opening_{}"].format(social_network) + ":")
+
+				# Show the "Social Network" text and the Social Network name
+				print(self.JSON.Language.language_texts["social_network"] + ":")
+				print("\t" + social_network)
+
+				# Define the text template
+				template = self.Social_Networks.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
+
+				# Define the text template items
+				items = [
+					social_network,
+					self.JSON.Language.language_texts["profile, title()"]
+				]
+
+				# Format the text template with the items
+				text = template.format(*items)
+
+				print()
+				print(text + ":")
 				print("\t" + link)
 
 				if self.switches["testing"] == False:
 					self.System.Open(link)
 
-				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + " " + social_network
+				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + ' "' + social_network + '"'
 
 				self.Input.Type(text)
 
 				if social_network != social_networks[-1]:
 					print()
-					print("-")
-					print()
 
 				i += 1
 
-	def Run_Script(self, script_name):
-		files = self.Folder.Contents(self.folders["apps"]["shortcuts"]["white_shortcuts"])["file"]["list"]
+	def Open_Module(self, module):
+		self.press_enter_text = self.JSON.Language.language_texts["press_enter_when_you"] + " {}"
 
-		self.press_enter_text = self.language_texts["press_enter_when_you"] + " {}"
-
-		script_texts = {
+		texts = {
 			"Watch_History": self.language_texts["press_enter_when_you_finish_watching_all_of_the_christmas_episodes"],
 			"GamePlayer": self.language_texts["press_enter_when_you_finish_spending_time_with_monika_on_the_game"] + ' "Monika After Story"',
 		}
 
-		for file in files:
-			if "1 Apps.lnk" in file:
-				self.script_file = file
+		if module != "GamePlayer":
+			files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["White"])["file"]["list"]
 
-		if self.switches["testing"] == False and script_name != "GamePlayer":
-			self.System.Open(self.script_file)
+			for file in files:
+				if "Apps.lnk" in file:
+					apps = file
 
-		if script_name == "Watch_History":
-			files = {
-				self.language_texts["watch"]: self.things_to_watch_file,
-				self.language_texts["watch"] + " (" + self.language_texts["list"] + ")": self.watch_list_file,
-				self.language_texts["eat"]: self.things_to_eat_file,
+			self.System.Open(apps, verbose = False)
+
+		if module == "Watch_History":
+			text_files = {
+				"Watch": self.current_year["Folders"]["Christmas"]["Planning"]["Watch"],
+				"Eat": self.current_year["Folders"]["Christmas"]["Planning"]["Eat"]
 			}
 
-			for text in files:
-				file = files[text]
-				self.System.Open(file)
+			for key in text_files:
+				# Get the file
+				file = text_files[key]
 
+				# Open it
+				self.System.Open(file, verbose = False)
+
+				# Get the file lines
 				lines = self.File.Contents(file)["lines"]
 
+				# Define the file information text
+				text = self.JSON.Language.language_texts[key.lower() + ", title()"].lower()
+
 				print()
-				print(self.language_texts["to, title()"] + " " + text + ":")
+				print(self.JSON.Language.language_texts["to, title()"] + " " + text + ":")
+
+				tab = "\t"
 
 				if lines == []:
-					print("1. " + self.language_texts["nothing, title()"])
+					print(tab + "[" + self.JSON.Language.language_texts["nothing, title()"] + "]")
 
 				i = 1
 				for line in lines:
-					print(str(i) + ". " + line)
+					print(tab + str(i) + ". " + line)
 
 					i += 1
 
-		self.Input.Type(script_texts[script_name])
+		self.Input.Type(texts[module])

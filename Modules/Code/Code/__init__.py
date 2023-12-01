@@ -87,7 +87,7 @@ class Code(object):
 		self.code_footer = "\n" + self.large_bar + "\n"
 
 	def Define_Folders(self):
-		self.programming_network_folder = self.folders["notepad"]["effort"]["networks"]["root"] + "Programming Network/"
+		self.programming_network_folder = self.folders["Notepad"]["Data Networks"]["root"] + self.JSON.Language.language_texts["programming, title()"] + "/"
 		self.Folder.Create(self.programming_network_folder)
 
 		self.programming_network_file_names = [

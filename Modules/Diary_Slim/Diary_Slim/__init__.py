@@ -7,16 +7,18 @@ class Diary_Slim():
 
 		Define_Folders(self)
 
-		# Basic methods
+		# Module related methods
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
+		# Folders, files, lists, and dictionaries methods
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
 
-		# Diary Slim related methods
+		# Class methods
 		self.Define_History()
 		self.Define_Story_Information()
+		self.Define_Templates()
 		self.Define_Current_Year()
 		self.Define_Slim_Texts()
 
@@ -37,6 +39,7 @@ class Diary_Slim():
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -90,103 +93,6 @@ class Diary_Slim():
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
-		self.text_header_prototype = "- " + self.language_texts["diary_slim"] + ", {} -"
-
-		of_text = self.JSON.Language.language_texts["of, neutral"]
-
-		self.day_of_of_text = self.Date.language_texts["day, title()"] + " {} " + of_text + " {} " + of_text + " {}"
-
-		today_is_text = self.JSON.Language.language_texts["today_is"]
-
-		self.today_is_text_header_prototype = today_is_text + " {}, " + self.day_of_of_text + "."
-
-		self.template = {
-			"Numbers": {
-				"Months": 12,
-				"Days": 152
-			},
-			"Months": {
-				"06 - Junho": {
-					"Numbers": {
-						"Year": 2023,
-						"Month": 6,
-						"Days": 30,
-						"Diary Slims": 0
-					},
-					"Names": {
-						"pt": "Junho",
-						"en": "June"
-					},
-					"Formats": {
-						"Diary Slim": "06 - Junho"
-					},
-					"Diary Slims": {
-						"02 Sexta-Feira, 02-06-2023": {
-							"Day": 2,
-							"Names": {
-								"pt": "Sexta-Feira",
-								"en": "Friday"
-							},
-							"Formats": {
-								"DD-MM-YYYY": "02-06-2023"
-							},
-							"Creation time": {
-								"HH:MM": "08:27",
-								"Hours": 8,
-								"Minutes": 27
-							},
-							"Data": {
-								"Sleep times": {
-									"Slept": "23:55",
-									"Woke up": "08:25"
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		self.templates = {
-			"Year": {
-				"Numbers": {
-					"Year": 0,
-					"Months": 0,
-					"Days": 0,
-					"Diary Slims": 0
-				},
-				"Months": {}
-			},
-			"Month": {
-				"Numbers": {
-					"Year": self.date["Units"]["Year"],
-					"Month": self.date["Units"]["Month"],
-					"Days": self.date["Units"]["Month days"],
-					"Diary Slims": 0
-				},
-				"Names": self.date["Texts"]["Month name"],
-				"Formats": {
-					"Diary Slim": str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language]
-				},
-				"Diary Slims": {}
-			},
-			"Day": {
-				"Day": 0,
-				"Names": {},
-				"Formats": {
-					"DD-MM-YYYY": ""
-				},
-				"Creation time": {
-					"HH:MM": "",
-					"Hours": 0,
-					"Minutes": 0
-				},
-				"Data": {
-					"Sleep times": {}
-				}
-			}
-		}
-
 	def Define_Folders_And_Files(self):
 		# If there is no current year variable inside the self object, get the current year variable from the "Years" module
 		if hasattr(self, "current_year") == False:
@@ -195,7 +101,7 @@ class Diary_Slim():
 			}
 
 		# Folders
-		self.folders["Diary Slim"] = self.folders["mega"]["notepad"]["effort"]["diary_slim"]
+		self.folders["Diary Slim"] = self.folders["Notepad"]["Diary Slim"]
 
 		# Subfolders
 		names = [
@@ -433,6 +339,94 @@ class Diary_Slim():
 		# Update the "Information.json" file with the updated Information dictionary
 		self.JSON.Edit(self.folders["Diary Slim"]["Story"]["Information"], self.information)
 
+	def Define_Templates(self):
+		self.template = {
+			"Numbers": {
+				"Months": 12,
+				"Days": 152
+			},
+			"Months": {
+				"06 - Junho": {
+					"Numbers": {
+						"Year": 2023,
+						"Month": 6,
+						"Days": 30,
+						"Diary Slims": 0
+					},
+					"Names": {
+						"pt": "Junho",
+						"en": "June"
+					},
+					"Formats": {
+						"Diary Slim": "06 - Junho"
+					},
+					"Diary Slims": {
+						"02 Sexta-Feira, 02-06-2023": {
+							"Day": 2,
+							"Names": {
+								"pt": "Sexta-Feira",
+								"en": "Friday"
+							},
+							"Formats": {
+								"DD-MM-YYYY": "02-06-2023"
+							},
+							"Creation time": {
+								"HH:MM": "08:27",
+								"Hours": 8,
+								"Minutes": 27
+							},
+							"Data": {
+								"Sleep times": {
+									"Slept": "23:55",
+									"Woke up": "08:25"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		self.templates = {
+			"Year": {
+				"Numbers": {
+					"Year": 0,
+					"Months": 0,
+					"Days": 0,
+					"Diary Slims": 0
+				},
+				"Months": {}
+			},
+			"Month": {
+				"Numbers": {
+					"Year": self.date["Units"]["Year"],
+					"Month": self.date["Units"]["Month"],
+					"Days": self.date["Units"]["Month days"],
+					"Diary Slims": 0
+				},
+				"Names": self.date["Texts"]["Month name"],
+				"Formats": {
+					"Diary Slim": self.date["Texts"]["Month name with number"][self.user_language]
+				},
+				"Diary Slims": {}
+			},
+			"Day": {
+				"Day": 0,
+				"Names": {},
+				"Formats": {
+					"DD-MM-YYYY": ""
+				},
+				"Creation time": {
+					"HH:MM": "",
+					"Hours": 0,
+					"Minutes": 0
+				},
+				"Data": {
+					"Sleep times": {}
+				}
+			}
+		}
+
 	def Define_Current_Year(self):
 		from copy import deepcopy
 
@@ -447,7 +441,7 @@ class Diary_Slim():
 
 		# Define the year Month dictionary
 		self.current_year["Month"] = {
-			"Name": str(self.Text.Add_Leading_Zeroes(self.date["Units"]["Month"])) + " - " + self.date["Texts"]["Month name"][self.user_language],
+			"Name": self.date["Texts"]["Month name with number"][self.user_language],
 			"Folder": "",
 			"File": "",
 			"Dictionary": {}
@@ -545,7 +539,11 @@ class Diary_Slim():
 
 			# Write the new order if the state is equal to the selected state
 			# If the state is equal to none, or if the selected state is equal to none
-			if state == selected_state or state == None or selected_state == None:
+			if (
+				state == selected_state or
+				state == None or
+				selected_state == None
+			):
 				self.File.Edit(current_state_file, new_order, "w")
 
 	def Current_Diary_Slim(self, current_year = None, date = None, current_diary_slim = True):
@@ -579,11 +577,22 @@ class Diary_Slim():
 	def Make_Diary_Slim_Dictionary(self, current_year, date):
 		dictionary = {}
 
+		datetime = date["Timezone"]["DateTime"]
+		units = datetime["Units"]
+		texts = datetime["Texts"]
+		formats = datetime["Formats"]
+
 		# Define the month folder name
-		dictionary["Month folder name"] = str(self.Text.Add_Leading_Zeroes(date["Timezone"]["DateTime"]["Units"]["Month"])) + " - " + date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
+		dictionary["Month folder name"] = texts["Month name with number"][self.user_language]
 
 		# Define the current day
-		dictionary["Day"] = "{} {}, {}".format(self.Text.Add_Leading_Zeroes(date["Timezone"]["DateTime"]["Units"]["Day"]), date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language], date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"])
+		items = [
+			self.Text.Add_Leading_Zeroes(units["Day"]),
+			texts["Day name"][self.user_language],
+			formats["DD-MM-YYYY"]
+		]
+
+		dictionary["Day"] = "{} {}, {}".format(*items)
 
 		# Define the year and month folder
 		dictionary["Year folder"] = self.folders["Diary Slim"]["Years"]["root"] + current_year["Number"] + "/"

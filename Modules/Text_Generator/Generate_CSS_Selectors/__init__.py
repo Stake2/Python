@@ -9,7 +9,7 @@ class Generate_CSS_Selectors():
 
 		self.Define_Basic_Variables()
 
-		self.json = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["colors"])
+		self.json = self.JSON.To_Python(self.folders["Mega"]["php"]["json"]["colors"])
 		self.colors = self.json["names"]
 		self.hex = self.json["hex"]
 

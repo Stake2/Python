@@ -46,6 +46,10 @@
 		"en": "folder",
 		"pt": "pasta"
 	},
+	"image_folder": {
+		"pt": "Pasta de imagem",
+		"en": "Image folder"
+	},
 	"file": {
 		"en": "file",
 		"pt": "arquivo"
@@ -79,6 +83,18 @@
 	"texts, title()": {
 		"pt": "Textos",
 		"en": "Texts"
+	},
+	"diary, title()": {
+		"pt": "Diário",
+		"en": "Diary"
+	},
+	"diary_slim": {
+		"pt": "Diário Slim",
+		"en": "Diary Slim"
+	},
+	"data_networks": {
+		"pt": "Redes de Dados",
+		"en": "Data Networks"
 	},
 	"yes": {
 		"en": "yes",
@@ -131,6 +147,10 @@
 		"en": "You selected this option",
 		"pt": "Você selecionou essa opção"
 	},
+	"press_enter_when_you": {
+		"en": "Press Enter when you",
+		"pt": "Pressione Enter quando você"
+	},
 	"press_enter_when_you_finish_reading_the_info_summary": {
 		"en": "Press Enter when you finish reading the info summary",
 		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
@@ -139,9 +159,9 @@
 		"en": "Finish selection",
 		"pt": "Terminar seleção"
 	},
-	"list": {
-		"en": "list",
-		"pt": "lista"
+	"list, title()": {
+		"en": "List",
+		"pt": "Lista"
 	},
 	"custom_language": {
 		"en": "custom language",
@@ -475,6 +495,10 @@
 		"en": "Empty",
 		"pt": "Vazio"
 	},
+	"nothing, title()": {
+		"en": "Nothing",
+		"pt": "Nada"
+	},
 	"length, title()": {
 		"en": "Length",
 		"pt": "Comprimento"
@@ -490,6 +514,10 @@
 	"{}_times": {
 		"en": "{} times",
 		"pt": "{} vezes"
+	},
+	"{}_information": {
+		"pt": "Informações de {}",
+		"en": "{} information"
 	},
 	"type, title()": {
 		"en": "Type",
@@ -510,6 +538,14 @@
 	"firsts_of_the_year": {
 		"pt": "Primeiros do Ano",
 		"en": "Firsts of the Year"
+	},
+	"this_year_i": {
+		"pt": "Este Ano Eu",
+		"en": "This Year I"
+	},
+	"this_year_i_(post)": {
+		"pt": "Este Ano Eu (post)",
+		"en": "This Year I (post)"
 	},
 	"when, title()": {
 		"en": "When",
@@ -941,9 +977,21 @@
 		"en": "Written in",
 		"pt": "Escrito em"
 	},
+	"opening, title()": {
+		"en": "Opening",
+		"pt": "Abrindo"
+	},
+	"opening_this_file": {
+		"en": "Opening this file",
+		"pt": "Abrindo este arquivo"
+	},
 	"opening_link": {
 		"en": "Opening link",
 		"pt": "Link de abertura"
+	},
+	"defining, title()": {
+		"en": "Defining",
+		"pt": "Definindo"
 	},
 	"engine, title()": {
 		"en": "Engine",
@@ -1048,9 +1096,33 @@
 		"en": "Media",
 		"pt": "Mídias"
 	},
+	"watched_media": {
+		"en": "Watched media",
+		"pt": "Mídia assistida"
+	},
+	"media_information": {
+		"en": "Media information",
+		"pt": "Informações de mídia"
+	},
+	"audiovisual_media": {
+		"en": "Audiovisual Media",
+		"pt": "Mídia Audiovisual"
+	},
+	"watch, title()": {
+		"en": "Watch",
+		"pt": "Assistir"
+	},
 	"games, title()": {
 		"en": "Games",
 		"pt": "Jogos"
+	},
+	"database, title()": {
+		"en": "Database",
+		"pt": "Banco de Dados"
+	},
+	"productivity, title()": {
+		"en": "Productivity",
+		"pt": "Produtividade"
 	},
 	"and_also": {
 		"en": "and also",
@@ -1076,6 +1148,54 @@
 		"en": "Christmas",
 		"pt": "Natal"
 	},
+	"christmas_date": {
+		"en": "Christmas date",
+		"pt": "Data do Natal"
+	},
+	"merry_christmas": {
+		"en": "Merry Christmas",
+		"pt": "Feliz Natal"
+	},
+	"new_year": {
+		"pt": "Ano Novo",
+		"en": "New Year"
+	},
+	"happy_new_year": {
+		"en": "Happy New Year",
+		"pt": "Feliz Ano Novo"
+	},
+	"created_in": {
+		"en": "Created in",
+		"pt": "Criado em"
+	},
+	"edited_in": {
+		"en": "Edited in",
+		"pt": "Editado em"
+	},
+	"summary, title()": {
+		"pt": "Resumo",
+		"en": "Summary"
+	},
+	"summary_in": {
+		"pt": "Resumo em",
+		"en": "Summary in"
+	},
+	"objects, title()": {
+		"pt": "Objetos",
+		"en": "Objects"
+	},
+	"planning, title()": {
+		"en": "Planning",
+		"pt": "Planejamento"
+	},
+	"post_planning": {
+		"en": "Post planning",
+		"pt": "Planejamento dos posts"
+	},
+	"theme, title()": {
+		"en": "Theme",
+		"pt": "Tema"
+	},
 	"videos, title()": {
 		"en": "Videos",
 		"pt": "Vídeos"
@@ -1096,6 +1216,10 @@
 		"en": "Pictures",
 		"pt": "Fotos"
 	},
+	"screenshots, title()": {
+		"en": "Screenshots",
+		"pt": "Prints"
+	},
 	"shortcut, title()": {
 		"en": "Shortcut",
 		"pt": "Atalho"
@@ -1103,6 +1227,10 @@
 	"shortcuts, title()": {
 		"en": "Shortcuts",
 		"pt": "Atalhos"
+	},
+	"whites, title()": {
+		"en": "White",
+		"pt": "Brancos"
 	},
 	"on_hold, title()": {
 		"en": "On hold",
@@ -1577,9 +1705,52 @@
 		"en": "Memories",
 		"pt": "Memórias"
 	},
-	"date, title()": {
-		"pt": "Data",
-		"en": "Date"
+	"to, title()": {
+		"en": "To",
+		"pt": "Para"
+	},
+	"eat, title()": {
+		"en": "Eat",
+		"pt": "Comer"
+	},
+	"things_done_in": {
+		"pt": "Coisas feitas em",
+		"en": "Things done in"
+	},
+	"done_tasks": {
+		"en": "Done tasks",
+		"pt": "Tarefas feitas"
+	},
+	"productive_things": {
+		"en": "Productive things",
+		"pt": "Coisas produtivas"
+	},
+	"game_sessions": {
+		"en": "Game sessions",
+		"pt": "Sessões de jogo"
+	},
+	"game_sessions_played": {
+		"en": "Game sessions played",
+		"pt": "Sessões de jogo jogadas"
+	},
+	"watched_things": {
+		"en": "Watched things",
+		"pt": "Coisas assistidas"
+	},
+	"media_comments": {
+		"en": "Media comments",
+		"pt": "Comentários de mídia"
+	},
+	"known_people": {
+		"en": "Known people",
+		"pt": "Pessoas conhecidas"
+	},
+	"can_be_long": {
+		"en": "can be long",
+		"pt": {
+			"masculine": "pode ser longo",
+			"feminine": "pode ser longa"
+		}
 	},
 	"genders, type: dict": {
 		"en": {

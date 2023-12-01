@@ -31,6 +31,7 @@ class Diary():
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -86,17 +87,17 @@ class Diary():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.diary_chapters_folder = self.folders["mega"]["notepad"]["effort"]["diary"]["root"] + "Chapters/"
+		self.diary_chapters_folder = self.folders["Notepad"]["Diary"]["root"] + "Chapters/"
 		self.Folder.Create(self.diary_chapters_folder)
 
 		# Files
-		self.diary_file = self.folders["mega"]["notepad"]["effort"]["diary"]["root"] + "Diary.txt"
+		self.diary_file = self.folders["Notepad"]["Diary"]["root"] + "Diary.txt"
 		self.File.Create(self.diary_file)
 
-		self.diary_number_file = self.folders["mega"]["notepad"]["effort"]["diary"]["root"] + "Number.txt"
+		self.diary_number_file = self.folders["Notepad"]["Diary"]["root"] + "Number.txt"
 		self.File.Create(self.diary_number_file)
 
-		self.current_diary_file = self.folders["mega"]["notepad"]["effort"]["diary"]["root"] + "Current File.txt"
+		self.current_diary_file = self.folders["Notepad"]["Diary"]["root"] + "Current File.txt"
 		self.File.Create(self.current_diary_file)
 
 	def Define_Lists_And_Dictionaries(self):

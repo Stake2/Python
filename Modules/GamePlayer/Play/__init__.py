@@ -75,7 +75,7 @@ class Play(GamePlayer):
 			self.Change_Status(self.dictionary, self.language_texts["playing, title()"])
 
 		# If the game "Dates.txt" file is empty
-		if self.File.Contents(self.game["folders"]["dates"])["lines"] == []:
+		if self.File.Contents(self.game["Folders"]["dates"])["lines"] == []:
 			# Get the first playing time where the user started playing the game
 			self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
@@ -83,7 +83,7 @@ class Play(GamePlayer):
 			self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
 			self.game["Dates"] += self.game["Started playing time"]
 
-			self.File.Edit(self.game["folders"]["dates"], self.game["Dates"], "w")
+			self.File.Edit(self.game["Folders"]["dates"], self.game["Dates"], "w")
 
 	def Open_Game(self):
 		if self.switches["testing"] == False:

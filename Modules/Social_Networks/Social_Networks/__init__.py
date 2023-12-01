@@ -96,12 +96,14 @@ class Social_Networks(object):
 		# Define the "Social Networks" folder dictionary
 		self.folders["Social Networks"] = {
 			"Text": {
-				"root": self.folders["notepad"]["social_networks"]["root"]
+				"root": self.folders["Notepad"]["Social Networks"]["root"]
 			},
 			"Image": {
-				"root": self.folders["mega"]["image"]["social_networks"]["root"]
+				"root": self.folders["Image"]["Social Networks"]["root"]
 			}
 		}
+
+		# ---------- #
 
 		# Social Networks text "Database" folder
 		self.folders["Social Networks"]["Text"]["Database"] = {
@@ -109,8 +111,18 @@ class Social_Networks(object):
 		}
 
 		# Database "Information items.json" file
-		self.folders["Social Networks"]["Text"]["Database"]["Information items"] = self.folders["Social Networks"]["Text"]["Database"]["root"] + self.JSON.Language.texts["information_items"]["en"] + ".json"
+		self.folders["Social Networks"]["Text"]["Database"]["Information items"] = self.folders["Social Networks"]["Text"]["Database"]["root"] + "Information items.json"
 		self.File.Create(self.folders["Social Networks"]["Text"]["Database"]["Information items"])
+
+		# "Social Networks.json" file
+		self.folders["Social Networks"]["Text"]["Social Networks"] = self.folders["Social Networks"]["Text"]["root"] + "Social Networks.json"
+		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks"])
+
+		# "Social Networks list.txt" file
+		self.folders["Social Networks"]["Text"]["Social Networks list"] = self.folders["Social Networks"]["Text"]["root"] + self.language_texts["social_networks_list"] + ".txt"
+		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks list"])
+
+		# ---------- #
 
 		# Social Networks image "Digital Identities" folder
 		self.folders["Social Networks"]["Image"]["Digital Identities"] = {
@@ -118,14 +130,6 @@ class Social_Networks(object):
 		}
 
 		self.Folder.Create(self.folders["Social Networks"]["Image"]["Digital Identities"]["root"])
-
-		# "Social Networks.json" file
-		self.folders["Social Networks"]["Text"]["Social Networks"] = self.folders["Social Networks"]["Text"]["root"] + self.JSON.Language.texts["social_networks"]["en"] + ".json"
-		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks"])
-
-		# "Social Networks list.txt" file
-		self.folders["Social Networks"]["Text"]["Social Networks list"] = self.folders["Social Networks"]["Text"]["root"] + self.language_texts["social_networks_list"] + ".txt"
-		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks list"])
 
 	def Define_Information_Items_Dictionary(self):
 		# Define the "Information items" dictionary
@@ -180,7 +184,7 @@ class Social_Networks(object):
 
 		# Define the default "File names" dictionary
 		dictionary = {
-			"Names": [
+			"List": [
 				"Information",
 				"Items",
 				"Profile",
@@ -191,7 +195,7 @@ class Social_Networks(object):
 		}
 
 		# Iterate through the file names list
-		for file_name in dictionary["Names"]:
+		for file_name in dictionary["List"]:
 			# Create the file name dictionary
 			dict_ = {}
 
@@ -228,7 +232,10 @@ class Social_Networks(object):
 
 		# Define the default "Link types" dictionary
 		dictionary = {
-			"Names": [
+			"Numbers": {
+				"Total": 0,
+			},
+			"List": [
 				"Home",
 				"Profile"
 			],
@@ -236,7 +243,7 @@ class Social_Networks(object):
 		}
 
 		# Iterate through the link types list
-		for link_type in dictionary["Names"]:
+		for link_type in dictionary["List"]:
 			# Create the link type dictionary
 			dict_ = {}
 
@@ -252,6 +259,12 @@ class Social_Networks(object):
 			for language in self.languages["small"]:
 				# Define the language link type text
 				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+
+			# Add the file name dictionary to the root "Link types" dictionary
+			dictionary["Dictionary"][link_type] = dict_
+
+		# Get the number of link types
+		dictionary["Numbers"]["Total"] = len(dictionary["List"])
 
 		# Define the "Link types" key as the local "Link types" dictionary
 		self.social_networks["Link types"] = dictionary
@@ -273,7 +286,7 @@ class Social_Networks(object):
 			if item in self.social_networks["List"]:
 				self.social_networks["List"].remove(item)
 
-		# Write the social networks list to the "Social Networks list.txt" file
+		# Write the Social Networks list to the "Social Networks list.txt" file
 		text_to_write = self.Text.From_List(self.social_networks["List"])
 
 		self.File.Edit(self.folders["Social Networks"]["Text"]["Social Networks list"], text_to_write, "w")
@@ -292,7 +305,7 @@ class Social_Networks(object):
 
 		# Iterate through the social networks list
 		for social_network in self.social_networks["List"]:
-			# Create the "Social Network" dictionary
+			# Create the local "Social Network" dictionary
 			dictionary = {
 				"Name": social_network,
 				"Folders": {},
@@ -308,8 +321,7 @@ class Social_Networks(object):
 				# Define the item key inside the "Files" dictionary
 				dictionary["Files"][item] = {}
 
-			# Define and create the social network folders and files
-			for item in ["Text", "Image"]:
+				# Define the root folder
 				folder = self.folders["Social Networks"][item]["root"] + social_network + "/"
 
 				# Create the folders dictionary
@@ -724,7 +736,7 @@ class Social_Networks(object):
 			"Link types"
 		]
 
-		# Iterate through the "root keys to remove" list
+		# Iterate through the "root keys to remove" list and remove the keys
 		for key in to_remove:
 			local_dictionary.pop(key)
 
@@ -790,6 +802,9 @@ class Social_Networks(object):
 				self.social_network = self.Input.Select(social_networks["List"], show_text = show_text, select_text = select_text)["option"]
 
 			if social_network != None:
+				if type(social_network) == dict:
+					social_network = social_network["Name"]
+
 				self.social_network = social_network
 
 			if self.social_network in self.social_networks["Dictionary"]:

@@ -20,7 +20,7 @@ class Convert_History(Tasks):
 		self.Register = Register
 
 		# Get the History dictionary to update the entries number
-		self.dictionaries["History"] = self.JSON.To_Python(self.folders["task_history"]["history"])
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["Task History"]["History"])
 
 		self.years_list = range(2018, 2022 + 1)
 
@@ -35,7 +35,7 @@ class Convert_History(Tasks):
 			self.year = {
 				"Number": self.year,
 				"Folders": {
-					"root": self.folders["task_history"]["root"] + self.year + "/"
+					"root": self.folders["Task History"]["root"] + self.year + "/"
 				},
 				"Entries dictionary": deepcopy(self.template),
 				"Lists": {}
@@ -60,7 +60,7 @@ class Convert_History(Tasks):
 
 			for task_type in self.year["Entries dictionary"]["Numbers"]["Per Task Type"]:
 				self.year["Folders"][task_type] = {
-					"root": self.year["Folders"]["per_task_type"]["root"] + task_type + "/"
+					"root": self.year["Folders"]["Per Task Type"]["root"] + task_type + "/"
 				}
 
 				self.Folder.Create(self.year["Folders"][task_type]["root"])

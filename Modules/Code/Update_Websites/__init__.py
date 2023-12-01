@@ -92,7 +92,7 @@ class Update_Websites(Code):
 			"mysql"
 		]
 
-		self.websites = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["websites"])
+		self.websites = self.JSON.To_Python(self.folders["Mega"]["php"]["json"]["websites"])
 		self.websites["Update"] = {}
 
 		for language in self.languages["small"]:
@@ -103,7 +103,7 @@ class Update_Websites(Code):
 
 		self.websites["List"]["General"] = self.websites["List"]["en"]
 
-		self.websites["URL"] = self.JSON.To_Python(self.folders["mega"]["php"]["json"]["url"])
+		self.websites["URL"] = self.JSON.To_Python(self.folders["Mega"]["php"]["json"]["url"])
 
 	def Select_Website(self):
 		self.websites["Numbers"] = []

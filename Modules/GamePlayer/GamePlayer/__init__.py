@@ -10,34 +10,17 @@ class GamePlayer(object):
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
-		# Import the "importlib" module
-		import importlib
+		# Import classes method
+		self.Import_Classes()
 
-		# Define the classes to be imported
-		classes = [
-			"Years",
-			"Christmas"
-		]
-
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			# Add the sub-clas to the current module
-			setattr(self, title, sub_class())
-
-		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
-
+		# Folders and files method
 		self.Define_Folders_And_Files()
 
+		# Class methods
 		self.Define_Types()
 		self.Define_Registry_Format()
 
@@ -55,6 +38,7 @@ class GamePlayer(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -108,21 +92,47 @@ class GamePlayer(object):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
+	def Import_Classes(self):
+		# Import the "importlib" module
+		import importlib
+
+		# Define the classes to be imported
+		classes = [
+			"Years",
+			"Christmas"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-clas to the current module
+			setattr(self, title, sub_class())
+
+		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
+
 	def Define_Folders_And_Files(self):
 		# If there is no current year variable inside the self object, get the current year variable from the "Years" module
 		if hasattr(self, "current_year") == False:
-			self.current_year = self.Years.current_year
+			self.current_year = self.Years.years["Current year"]
 
-		# List the contents of the root folder of the "Game Network"
-		if self.folders == self.Folder.folders:
-			self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["game_network"]["root"], lower_key = True)["dictionary"]
+		# Replace the "self.folders" folder dictionary with the "Games" network folder dictionary
+		self.folders = self.folders["Notepad"]["Data Networks"]["Games"]
 
 		# Define the current year folder for easier typing
-		self.folders["play_history"]["current_year"] = self.folders["play_history"][self.current_year["Number"]]
+		self.folders["Play History"]["Current year"] = self.folders["Play History"][self.current_year["Number"]]
 
 		# Define the "History" dictionary
 		self.history = {
-			"Folder": self.Folder.folders["notepad"]["networks"]["game_network"]["play_history"]["root"]
+			"Key": "Sessions",
+			"Numbers": {
+				"Game sessions played": ""
+			},
+			"Folder": self.Folder.folders["Notepad"]["Data Networks"]["Games"]["Play History"]["root"]
 		}
 
 	def Parse_Arguments(self):
@@ -130,12 +140,14 @@ class GamePlayer(object):
 			print()
 			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
 			print()
+
 			self.JSON.Show(self.arguments)
+
 			print()
 			print(self.large_bar)
 
 	def Define_Types(self):
-		self.game_types = self.JSON.To_Python(self.folders["data"]["types"])
+		self.game_types = self.JSON.To_Python(self.folders["Data"]["Types"])
 
 		self.game_types.update({
 			"Genders": self.JSON.Language.texts["genders, type: dict"],
@@ -150,12 +162,12 @@ class GamePlayer(object):
 		if self.game_types["Game list"]["Number"] != 0:
 			self.game_types["Game list"]["Number"] = 0
 
-		# Read the root "Info.json" file
-		if self.File.Contents(self.folders["information"]["info"])["lines"] != []:
-			info_dictionary = self.JSON.To_Python(self.folders["information"]["info"])
+		# Read the root "Information.json" file
+		if self.File.Contents(self.folders["Information"]["Information"])["lines"] != []:
+			info_dictionary = self.JSON.To_Python(self.folders["Information"]["Information"])
 
-		# If the root "Info.json" file is empty, add a default JSON dictionary inside it
-		if self.File.Contents(self.folders["information"]["info"])["lines"] == []:
+		# If the root "Information.json" file is empty, add a default JSON dictionary inside it
+		if self.File.Contents(self.folders["Information"]["Information"])["lines"] == []:
 			info_dictionary = {
 				"Types": self.game_types["Types"],
 				"Number": 0,
@@ -190,66 +202,64 @@ class GamePlayer(object):
 
 			# Create type folders
 			for root_folder in ["Information", "Play History", "Shortcuts"]:
-				root_key = root_folder.lower().replace(" ", "_")
-
 				# "Game Information" folder
 				if root_folder == "Information":
-					self.folders[root_key][key] = {
-						"root": self.folders[root_key]["root"] + language_type + "/"
+					self.folders[root_folder][key] = {
+						"root": self.folders[root_folder]["root"] + language_type + "/"
 					}
 
-					self.Folder.Create(self.folders[root_key][key]["root"])
+					self.Folder.Create(self.folders[root_folder][key]["root"])
 
 				# "Play History Per Game Type" folder
 				if root_folder == "Play History":
-					self.folders[root_key]["current_year"]["per_game_type"][key] = {
-						"root": self.folders[root_key]["current_year"]["per_game_type"]["root"] + game_type + "/"
+					self.folders[root_folder]["Current year"]["Per Game Type"][key] = {
+						"root": self.folders[root_folder]["Current year"]["Per Game Type"]["root"] + game_type + "/"
 					}
 
-					self.Folder.Create(self.folders[root_key]["current_year"]["per_game_type"][key]["root"])
+					self.Folder.Create(self.folders[root_folder]["Current year"]["Per Game Type"][key]["root"])
 
 					# Create "Sessions.json" file
-					self.folders[root_key]["current_year"]["per_game_type"][key]["sessions"] = self.folders[root_key]["current_year"]["per_game_type"][key]["root"] + "Sessions.json"
-					self.File.Create(self.folders[root_key]["current_year"]["per_game_type"][key]["sessions"])
+					self.folders[root_folder]["Current year"]["Per Game Type"][key]["Sessions"] = self.folders[root_folder]["Current year"]["Per Game Type"][key]["root"] + "Sessions.json"
+					self.File.Create(self.folders[root_folder]["Current year"]["Per Game Type"][key]["Sessions"])
 
 					# Create "Entry list.txt" file
-					self.folders[root_key]["current_year"]["per_game_type"][key]["entry_list"] = self.folders[root_key]["current_year"]["per_game_type"][key]["root"] + "Entry list.txt"
-					self.File.Create(self.folders[root_key]["current_year"]["per_game_type"][key]["entry_list"])
+					self.folders[root_folder]["Current year"]["Per Game Type"][key]["Entry list"] = self.folders[root_folder]["Current year"]["Per Game Type"][key]["root"] + "Entry list.txt"
+					self.File.Create(self.folders[root_folder]["Current year"]["Per Game Type"][key]["Entry list"])
 
 					# Create "Files" folder 
-					self.folders[root_key]["current_year"]["per_game_type"][key]["files"] = {
-						"root": self.folders[root_key]["current_year"]["per_game_type"][key]["root"] + "Files/"
+					self.folders[root_folder]["Current year"]["Per Game Type"][key]["Files"] = {
+						"root": self.folders[root_folder]["Current year"]["Per Game Type"][key]["root"] + "Files/"
 					}
 
-					self.Folder.Create(self.folders[root_key]["current_year"]["per_game_type"][key]["files"]["root"])
+					self.Folder.Create(self.folders[root_folder]["Current year"]["Per Game Type"][key]["Files"]["root"])
 
 				# "Shortcuts" folder
 				if root_folder == "Shortcuts":
-					self.folders[root_key] = {
+					self.folders[root_folder] = {
 						key: {
-							"root": self.Folder.folders["games"]["shortcuts"]["root"] + self.Sanitize(language_type) + "/"
+							"root": self.Folder.folders["Games"]["Shortcuts"]["root"] + self.Sanitize(language_type) + "/"
 						}
 					}
 
-					self.Folder.Create(self.folders[root_key][key]["root"])
+					self.Folder.Create(self.folders[root_folder][key]["root"])
 
 			# Define game type folders and files
 			self.game_types[game_type]["Folders"] = {
-				"information": self.folders["information"][key],
-				"per_game_type": self.folders["play_history"]["current_year"]["per_game_type"][key],
-				"shortcuts": self.folders["shortcuts"][key]
+				"Information": self.folders["Information"][key],
+				"Per Game Type": self.folders["Play History"]["Current year"]["Per Game Type"][key],
+				"Shortcuts": self.folders["Shortcuts"][key]
 			}
 
-			# Define the "Info.json" file
-			self.game_types[game_type]["Folders"]["information"]["info"] = self.game_types[game_type]["Folders"]["information"]["root"] + "Info.json"
-			self.File.Create(self.game_types[game_type]["Folders"]["information"]["info"])
+			# Define the "Information.json" file
+			self.game_types[game_type]["Folders"]["Information"]["Information"] = self.game_types[game_type]["Folders"]["Information"]["root"] + "Information.json"
+			self.File.Create(self.game_types[game_type]["Folders"]["Information"]["Information"])
 
-			# Read the "Info.json" file
-			if self.File.Contents(self.game_types[game_type]["Folders"]["information"]["info"])["lines"] != []:
-				self.game_types[game_type]["JSON"] = self.JSON.To_Python(self.game_types[game_type]["Folders"]["information"]["info"])
+			# Read the "Information.json" file
+			if self.File.Contents(self.game_types[game_type]["Folders"]["Information"]["Information"])["lines"] != []:
+				self.game_types[game_type]["JSON"] = self.JSON.To_Python(self.game_types[game_type]["Folders"]["Information"]["Information"])
 
-			# If the "Info.json" file is empty, add a default JSON dictionary inside it
-			if self.File.Contents(self.game_types[game_type]["Folders"]["information"]["info"])["lines"] == []:
+			# If the "Information.json" file is empty, add a default JSON dictionary inside it
+			if self.File.Contents(self.game_types[game_type]["Folders"]["Information"]["Information"])["lines"] == []:
 				# Define the default JSON dictionary
 				self.game_types[game_type]["JSON"] = {
 					"Number": 0,
@@ -271,8 +281,8 @@ class GamePlayer(object):
 			for english_status in self.texts["statuses, type: list"]["en"]:
 				self.game_types[game_type]["JSON"]["Status"][english_status] = sorted(self.game_types[game_type]["JSON"]["Status"][english_status], key = str.lower)
 
-			# Edit the "Info.json" file with the new dictionary
-			self.JSON.Edit(self.game_types[game_type]["Folders"]["information"]["info"], self.game_types[game_type]["JSON"])
+			# Edit the "Information.json" file with the new dictionary
+			self.JSON.Edit(self.game_types[game_type]["Folders"]["Information"]["Information"], self.game_types[game_type]["JSON"])
 
 			# Check the status of the game list
 			# Add the game inside the correct status list if it is not there already
@@ -327,13 +337,13 @@ class GamePlayer(object):
 			i += 1
 
 		# Write the game types dictionary into the "Types.json" file
-		self.JSON.Edit(self.folders["data"]["types"], self.game_types)
+		self.JSON.Edit(self.folders["Data"]["Types"], self.game_types)
 
-		# Update the game list inside the root "Info.json" dictionary
+		# Update the game list inside the root "Information.json" dictionary
 		info_dictionary.update(self.game_types["Game list"])
 
-		# Update the root "Info.json" file
-		self.JSON.Edit(self.folders["information"]["info"], info_dictionary)
+		# Update the root "Information.json" file
+		self.JSON.Edit(self.folders["Information"]["Information"], info_dictionary)
 
 	def Define_Registry_Format(self):
 		from copy import deepcopy
@@ -360,9 +370,12 @@ class GamePlayer(object):
 			"Played": deepcopy(self.template)
 		}
 
-		if self.File.Contents(self.folders["play_history"]["history"])["lines"] != [] and self.JSON.To_Python(self.folders["play_history"]["history"])["Years"] != []:
+		if (
+			self.File.Contents(self.folders["Play History"]["History"])["lines"] != [] and
+			self.JSON.To_Python(self.folders["Play History"]["History"])["Years"] != []
+		):
 			# Get the History dictionary from file
-			self.dictionaries["History"] = self.JSON.To_Python(self.folders["play_history"]["history"])
+			self.dictionaries["History"] = self.JSON.To_Python(self.folders["Play History"]["History"])
 
 		# If the current year is not inside the "History" years list, add it to the list
 		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
@@ -375,11 +388,14 @@ class GamePlayer(object):
 			year = str(year)
 
 			# Get the year folder and the entries file
-			year_folder = self.folders["play_history"]["root"] + year + "/"
+			year_folder = self.folders["Play History"]["root"] + year + "/"
 			entries_file = year_folder + "Sessions.json"
 
 			# If the file exists and it is not empty
-			if self.File.Exist(entries_file) == True and self.File.Contents(entries_file)["lines"] != []:
+			if (
+				self.File.Exist(entries_file) == True and
+				self.File.Contents(entries_file)["lines"] != []
+			):
 				# Add the number of lines of the file to the local number of entries
 				sessions += self.JSON.To_Python(entries_file)["Numbers"]["Total"]
 
@@ -397,14 +413,17 @@ class GamePlayer(object):
 		self.dictionaries["History"]["Numbers"]["Sessions"] = sessions
 
 		# Update the "History.json" file with the new History dictionary
-		self.JSON.Edit(self.folders["play_history"]["history"], self.dictionaries["History"])
+		self.JSON.Edit(self.folders["Play History"]["History"], self.dictionaries["History"])
 
 		# Create the "Per Game Type" key inside the "Numbers" dictionary of the "Sessions" dictionary
 		self.dictionaries["Sessions"]["Numbers"]["Per Game Type"] = {}
 
 		# If the "Sessions.json" is not empty and has entries, get the Sessions dictionary from it
-		if self.File.Contents(self.folders["play_history"]["current_year"]["sessions"])["lines"] != [] and self.JSON.To_Python(self.folders["play_history"]["current_year"]["sessions"])["Entries"] != []:
-			self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["sessions"])
+		if (
+			self.File.Contents(self.folders["Play History"]["Current year"]["Sessions"])["lines"] != [] and
+			self.JSON.To_Python(self.folders["Play History"]["Current year"]["Sessions"])["Entries"] != []
+		):
+			self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Sessions"])
 
 		# Iterate through the English game types list
 		for game_type in self.game_types["Types"]["en"]:
@@ -414,8 +433,11 @@ class GamePlayer(object):
 			self.dictionaries["Game type"][game_type] = deepcopy(self.template)
 
 			# If the game type "Sessions.json" is not empty, get the game type Sessions dictionary from it
-			if self.File.Contents(self.folders["play_history"]["current_year"]["per_game_type"][key]["sessions"])["lines"] != [] and self.JSON.To_Python(self.folders["play_history"]["current_year"]["per_game_type"][key]["sessions"])["Entries"] != []:
-				self.dictionaries["Game type"][game_type] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["per_game_type"][key]["sessions"])
+			if (
+				self.File.Contents(self.folders["Play History"]["Current year"]["Per Game Type"][key]["Sessions"])["lines"] != [] and
+				self.JSON.To_Python(self.folders["Play History"]["Current year"]["Per Game Type"][key]["Sessions"])["Entries"] != []
+			):
+				self.dictionaries["Game type"][game_type] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Per Game Type"][key]["Sessions"])
 
 			# Add the game type number to the root numbers per game type if it does not exist in there
 			if game_type not in self.dictionaries["Sessions"]["Numbers"]["Per Game Type"]:
@@ -426,10 +448,10 @@ class GamePlayer(object):
 				self.dictionaries["Sessions"]["Numbers"]["Per Game Type"][game_type] = self.dictionaries["Game type"][game_type]["Numbers"]["Total"]
 
 			# Update the per game type "Sessions.json" file with the updated per game type Sessions dictionary
-			self.JSON.Edit(self.folders["play_history"]["current_year"]["per_game_type"][key]["sessions"], self.dictionaries["Game type"][game_type])
+			self.JSON.Edit(self.folders["Play History"]["Current year"]["Per Game Type"][key]["Sessions"], self.dictionaries["Game type"][game_type])
 
 		# Update the "Sessions.json" file with the updated Sessions dictionary
-		self.JSON.Edit(self.folders["play_history"]["current_year"]["sessions"], self.dictionaries["Sessions"])
+		self.JSON.Edit(self.folders["Play History"]["Current year"]["Sessions"], self.dictionaries["Sessions"])
 
 	def Get_Game_List(self, dictionary, status = None):
 		'''
@@ -456,8 +478,8 @@ class GamePlayer(object):
 		if type(status_list) == str:
 			status_list = [status_list]
 
-		# Get the game type "Info.json" file and read it
-		dictionary["JSON"] = self.JSON.To_Python(dictionary["Folders"]["information"]["info"])
+		# Get the game type "Information.json" file and read it
+		dictionary["JSON"] = self.JSON.To_Python(dictionary["Folders"]["Information"]["Information"])
 
 		# Define the empty game list
 		game_list = []
@@ -496,7 +518,7 @@ class GamePlayer(object):
 			dictionary = self.Define_Options(dictionary, options)
 
 		# Get the game type game numbers
-		numbers = self.JSON.To_Python(self.folders["information"]["info"])["Numbers"]
+		numbers = self.JSON.To_Python(self.folders["Information"]["Information"])["Numbers"]
 
 		# Add the number of game inside each game type text
 		i = 0
@@ -523,7 +545,10 @@ class GamePlayer(object):
 		dictionary.update(self.game_types[dictionary["option"]])
 
 		# Get the status from the options dictionary
-		if options != None and "Status" in options:
+		if (
+			options != None and
+			"Status" in options
+		):
 			dictionary["Status"] = options["Status"]
 
 		# Get the game list using the correct status
@@ -572,13 +597,13 @@ class GamePlayer(object):
 			})
 
 		# Define the game information folder
-		game["folders"] = {
-			"root": dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(game["Title"]) + "/"
+		game["Folders"] = {
+			"root": dictionary["Type"]["Folders"]["Information"]["root"] + self.Sanitize_Title(game["Title"]) + "/"
 		}
 
 		# Create the folders
-		for key in game["folders"]:
-			folder = game["folders"][key]
+		for key in game["Folders"]:
+			folder = game["Folders"][key]
 
 			if "root" in folder:
 				folder = folder["root"]
@@ -612,18 +637,18 @@ class GamePlayer(object):
 			if ".json" not in file_name:
 				file_name = texts_list[key + ", title()"] + ".txt"
 
-			game["folders"][key] = game["folders"]["root"] + file_name
-			self.File.Create(game["folders"][key])
+			game["Folders"][key] = game["Folders"]["root"] + file_name
+			self.File.Create(game["Folders"][key])
 
-		if self.File.Contents(game["folders"][game["Information"]["Key"]])["lines"] != []:
-			game["Information"]["Dictionary"] = self.JSON.To_Python(game["folders"][game["Information"]["Key"]])
+		if self.File.Contents(game["Folders"][game["Information"]["Key"]])["lines"] != []:
+			game["Information"]["Dictionary"] = self.JSON.To_Python(game["Folders"][game["Information"]["Key"]])
 
 		# Create the "Played" folder
-		game["folders"]["played"] = {
-			"root": game["folders"]["root"] + self.JSON.Language.language_texts["played, title()"] + "/"
+		game["Folders"]["played"] = {
+			"root": game["Folders"]["root"] + self.JSON.Language.language_texts["played, title()"] + "/"
 		}
 
-		self.Folder.Create(game["folders"]["played"]["root"])
+		self.Folder.Create(game["Folders"]["played"]["root"])
 
 		# Create the "Played" files
 		files = [
@@ -639,22 +664,25 @@ class GamePlayer(object):
 			if self.language_texts["gaming_time"] in file:
 				key = "gaming_time"
 
-			game["folders"]["played"][key] = game["folders"]["played"]["root"] + file
-			self.File.Create(game["folders"]["played"][key])
+			game["Folders"]["played"][key] = game["Folders"]["played"]["root"] + file
+			self.File.Create(game["Folders"]["played"][key])
 
 		# Create the "Files" folder file inside the "Played" folder
-		game["folders"]["played"]["files"] = {
-			"root": game["folders"]["played"]["root"] + self.File.language_texts["files, title()"] + "/"
+		game["Folders"]["played"]["files"] = {
+			"root": game["Folders"]["played"]["root"] + self.File.language_texts["files, title()"] + "/"
 		}
 
-		self.Folder.Create(game["folders"]["played"]["files"]["root"])
+		self.Folder.Create(game["Folders"]["played"]["files"]["root"])
 
 		# Define the "Played" dictionary as the template
 		self.dictionaries["Played"] = deepcopy(self.template)
 
 		# Get the "Played" dictionary from file if the dictionary is not empty and has entries
-		if self.File.Contents(game["folders"]["played"]["entries"])["lines"] != [] and self.JSON.To_Python(game["folders"]["played"]["entries"])["Entries"] != []:
-			self.dictionaries["Played"] = self.JSON.To_Python(game["folders"]["played"]["entries"])
+		if (
+			self.File.Contents(game["Folders"]["played"]["entries"])["lines"] != [] and
+			self.JSON.To_Python(game["Folders"]["played"]["entries"])["Entries"] != []
+		):
+			self.dictionaries["Played"] = self.JSON.To_Python(game["Folders"]["played"]["entries"])
 
 		# Update the number of entries with the length of the entries list
 		self.dictionaries["Played"]["Numbers"]["Total"] = len(self.dictionaries["Played"]["Entries"])
@@ -663,7 +691,7 @@ class GamePlayer(object):
 		game["Played"] = deepcopy(self.dictionaries["Played"])
 
 		# Write the default or file dictionary into the "Played.json" file
-		self.JSON.Edit(game["folders"]["played"]["entries"], self.dictionaries["Played"])
+		self.JSON.Edit(game["Folders"]["played"]["entries"], self.dictionaries["Played"])
 
 		# Define the "Time" dictionary as a template
 		game["Time"] = {
@@ -679,24 +707,24 @@ class GamePlayer(object):
 		}
 
 		# Get the "Time" dictionary from file if the dictionary is not empty
-		if self.File.Contents(game["folders"]["played"]["time"])["lines"] != []:
-			game["Time"] = self.JSON.To_Python(game["folders"]["played"]["time"])
+		if self.File.Contents(game["Folders"]["played"]["time"])["lines"] != []:
+			game["Time"] = self.JSON.To_Python(game["Folders"]["played"]["time"])
 
 		# Write the default or file dictionary into the "Time.json" file
-		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
+		self.JSON.Edit(game["Folders"]["played"]["time"], game["Time"])
 
 		gaming_time = self.Make_Gaming_Time_Text(game)
 
 		# Write the gaming time into the gaming time file
 		if gaming_time != "":
-			self.File.Edit(game["folders"]["played"]["gaming_time"], gaming_time, "w")
+			self.File.Edit(game["Folders"]["played"]["gaming_time"], gaming_time, "w")
 
 		# Define the game details
 		if "Details" not in game:
-			game["Details"] = self.File.Dictionary(game["folders"]["details"])
+			game["Details"] = self.File.Dictionary(game["Folders"]["details"])
 
 		# Edit the game details file with the details above (or the one that already existed in the dictionary)
-		self.File.Edit(game["folders"]["details"], self.Text.From_Dictionary(game["Details"]), "w")
+		self.File.Edit(game["Folders"]["details"], self.Text.From_Dictionary(game["Details"]), "w")
 
 		# Define the default game language as the user language
 		game["Language"] = self.full_user_language
@@ -745,7 +773,10 @@ class GamePlayer(object):
 			game["States"]["Christmas"] = True
 
 		# Define Re-playing state for Re-playing status
-		if self.JSON.Language.language_texts["status, title()"] in game["Details"] and game["Details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]:
+		if (
+			self.JSON.Language.language_texts["status, title()"] in game["Details"] and
+			game["Details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]
+		):
 			game["States"]["Re-playing"] = True
 
 		game["States"]["First game session in year"] = False
@@ -762,7 +793,7 @@ class GamePlayer(object):
 
 		# Define game files
 		game["Files"] = {
-			"Shortcut": dictionary["Type"]["Folders"]["shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True),
+			"Shortcut": dictionary["Type"]["Folders"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True),
 			"Shortcut path": ""
 		}
 
@@ -792,7 +823,7 @@ class GamePlayer(object):
 			game["Files"]["Bat"] = file
 
 		# Create the local game folder
-		root_folder = self.Folder.folders["games"]["folders"]["root"]
+		root_folder = self.Folder.folders["Games"]["Folders"]["root"]
 
 		if self.Folder.language_texts["root_folder"] in game["Details"]:
 			root_folder += game["Details"][self.Folder.language_texts["root_folder"]] + "/"
@@ -805,11 +836,12 @@ class GamePlayer(object):
 		if self.Folder.language_texts["folder, title()"] in game["Details"]:
 			game_folder = game["Details"][self.Folder.language_texts["folder, title()"]]
 
-		game["folders"]["local"] = root_folder + game_folder + "/"
+		game["Folders"]["local"] = root_folder + game_folder + "/"
 
 		if (
 			self.Folder.language_texts["create_folder"] not in game["Details"] or 
-			self.Folder.language_texts["create_folder"] in game["Details"] and self.Input.Define_Yes_Or_No(game["Details"][self.Folder.language_texts["create_folder"]]) == False
+			self.Folder.language_texts["create_folder"] in game["Details"] and
+			self.Input.Define_Yes_Or_No(game["Details"][self.Folder.language_texts["create_folder"]]) == False
 		):
 			if (
 				game["Platform"]["en"] not in ["Console", "Mobile", "Super Nintendo", "Nintendo 64"] and
@@ -818,10 +850,10 @@ class GamePlayer(object):
 				"steam://" not in game["Files"]["Shortcut path"] and
 				"https://" not in game["Files"]["Shortcut path"]
 			):
-				self.Folder.Create(game["folders"]["local"])
+				self.Folder.Create(game["Folders"]["local"])
 
 			else:
-				game["folders"]["local"] = ""
+				game["Folders"]["local"] = ""
 
 		return dictionary
 
@@ -931,7 +963,10 @@ class GamePlayer(object):
 	def Define_Options(self, dictionary, options):
 		for key in options:
 			if type(options[key]) == dict:
-				if key in dictionary and dictionary[key] != {}:
+				if (
+					key in dictionary and
+					dictionary[key] != {}
+				):
 					for sub_key in dictionary[key]:
 						if sub_key in options[key]:
 							dictionary[key][sub_key] = options[key][sub_key]
@@ -940,7 +975,10 @@ class GamePlayer(object):
 						if sub_key not in dictionary[key]:
 							dictionary[key][sub_key] = options[key][sub_key]
 
-				if key not in dictionary or dictionary[key] == {}:
+				if (
+					key not in dictionary or
+					dictionary[key] == {}
+				):
 					dictionary[key] = options[key]
 
 			if type(options[key]) in [str, list]:
@@ -951,8 +989,8 @@ class GamePlayer(object):
 	def Define_Game_Titles(self, dictionary):
 		game = dictionary["Game"]
 
-		if self.File.Exist(game["folders"]["details"]) == True:
-			game["Details"] = self.File.Dictionary(game["folders"]["details"])
+		if self.File.Exist(game["Folders"]["details"]) == True:
+			game["Details"] = self.File.Dictionary(game["Folders"]["details"])
 
 			# Define titles key
 			game["Titles"] = {
@@ -973,7 +1011,10 @@ class GamePlayer(object):
 
 				game["Titles"]["ja"] = game["Details"][self.JSON.Language.language_texts["title, title()"]]
 
-			if " (" in game["Titles"]["Original"] and " (" not in game["Titles"]["Language"]:
+			if (
+				" (" in game["Titles"]["Original"] and
+				" (" not in game["Titles"]["Language"]
+			):
 				game["Titles"]["Language"] = game["Titles"]["Language"] + " (" + game["Titles"]["Original"].split(" (")[-1]
 
 				if self.user_language in game["Titles"]:
@@ -991,7 +1032,10 @@ class GamePlayer(object):
 			if self.user_language in game["Titles"]:
 				game["Titles"]["Language"] = game["Titles"][self.user_language]
 
-			if self.user_language not in game["Titles"] and "Romanized" in game["Titles"]:
+			if (
+				self.user_language not in game["Titles"] and
+				"Romanized" in game["Titles"]
+			):
 				game["Titles"]["Language"] = game["Titles"]["Romanized"]
 
 			# Sanitize game title
@@ -1000,7 +1044,10 @@ class GamePlayer(object):
 		return dictionary
 
 	def Sanitize_Title(self, title):
-		if len(title) > 1 and title[0] + title[1] == ": ":
+		if (
+			len(title) > 1 and
+			title[0] + title[1] == ": "
+		):
 			title = title[2:]
 
 		if ". " in title:
@@ -1019,17 +1066,23 @@ class GamePlayer(object):
 		if status in self.texts["statuses, type: list"][self.user_language]:
 			return_english = True
 
-		w = 0
+		s = 0
 		for english_status in self.texts["statuses, type: list"]["en"]:
 			# Return the user language status
-			if return_english == False and english_status == status:
-				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
+			if (
+				return_english == False and
+				english_status == status
+			):
+				status_to_return = self.texts["statuses, type: list"][self.user_language][s]
 
 			# Return the English status
-			if return_english == True and status == self.texts["statuses, type: list"][self.user_language][w]:
+			if (
+				return_english == True and
+				status == self.texts["statuses, type: list"][self.user_language][s]
+			):
 				status_to_return = english_status
 
-			w += 1
+			s += 1
 
 		return status_to_return
 
@@ -1041,14 +1094,17 @@ class GamePlayer(object):
 		dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]] = status
 
 		# Update the game details file
-		self.File.Edit(dictionary["Game"]["folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["Details"]), "w")
+		self.File.Edit(dictionary["Game"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["Details"]), "w")
 
 		self.Check_Status(dictionary)
 
 	def Check_Status(self, dictionary):
 		game_type = dictionary
 
-		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+		if (
+			"Type" in dictionary and
+			"JSON" in dictionary["Type"]
+		):
 			game_type = dictionary["Type"]
 
 			self.language_status = dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]]
@@ -1056,7 +1112,7 @@ class GamePlayer(object):
 			# Get the English status from the language status of the game details
 			status = self.Get_Language_Status(self.language_status)
 
-		dictionary["JSON"] = self.JSON.To_Python(game_type["Folders"]["information"]["info"])
+		dictionary["JSON"] = self.JSON.To_Python(game_type["Folders"]["Information"]["Information"])
 
 		# Update the number of games
 		dictionary["JSON"]["Number"] = len(dictionary["JSON"]["Titles"])
@@ -1066,17 +1122,26 @@ class GamePlayer(object):
 
 		titles = []
 
-		if "Type" in dictionary and "JSON" not in dictionary["Type"]:
+		if (
+			"Type" in dictionary and
+			"JSON" not in dictionary["Type"]
+		):
 			titles.extend(dictionary["JSON"]["Titles"])
 
-		if "Type" in dictionary and "JSON" in dictionary["Type"]:
+		if (
+			"Type" in dictionary and
+			"JSON" in dictionary["Type"]
+		):
 			titles.append(dictionary["Game"]["Title"])
 
 		# Iterate through the statuses list
 		for playing_status in self.texts["statuses, type: list"]["en"]:
 			for data_title in titles:
-				if "Type" in dictionary and "JSON" not in dictionary["Type"]:
-					folder = game_type["Folders"]["information"]["root"] + self.Sanitize_Title(data_title) + "/"
+				if (
+					"Type" in dictionary and
+					"JSON" not in dictionary["Type"]
+				):
+					folder = game_type["Folders"]["Information"]["root"] + self.Sanitize_Title(data_title) + "/"
 					details_file = folder + self.JSON.Language.language_texts["details, title()"] + ".txt"
 					details = self.File.Dictionary(details_file)
 
@@ -1087,19 +1152,25 @@ class GamePlayer(object):
 
 				# If the game status is equal to the playing status
 				# And the game is not in the correct status list, add it to the list
-				if status == playing_status and data_title not in dictionary["JSON"]["Status"][playing_status]:
+				if (
+					status == playing_status and
+					data_title not in dictionary["JSON"]["Status"][playing_status]
+				):
 					dictionary["JSON"]["Status"][playing_status].append(data_title)
 
 				# If the game status is not equal to the playing status
 				# And the game is in the wrong playing status list, remove it from the list
-				if status != playing_status and data_title in dictionary["JSON"]["Status"][playing_status]:
+				if (
+					status != playing_status and
+					data_title in dictionary["JSON"]["Status"][playing_status]
+				):
 					dictionary["JSON"]["Status"][playing_status].remove(data_title)
 
 			# Sort the games list
 			dictionary["JSON"]["Status"][playing_status] = sorted(dictionary["JSON"]["Status"][playing_status], key = str.lower)
 
-		# Update the game type "Info.json" file
-		self.JSON.Edit(game_type["Folders"]["information"]["info"], dictionary["JSON"])
+		# Update the game type "Information.json" file
+		self.JSON.Edit(game_type["Folders"]["Information"]["Information"], dictionary["JSON"])
 
 		return dictionary
 
@@ -1160,13 +1231,13 @@ class GamePlayer(object):
 			game["Time"][key + " time"] = self.Date.To_String(game["Time"][key + " time"], utc = True)
 
 		# Update the "Time.json" file
-		self.JSON.Edit(game["folders"]["played"]["time"], game["Time"])
+		self.JSON.Edit(game["Folders"]["played"]["time"], game["Time"])
 
 		gaming_time = self.Make_Gaming_Time_Text(game)
 
 		# Write the gaming time into the gaming time file
 		if gaming_time != "":
-			self.File.Edit(game["folders"]["played"]["gaming_time"], gaming_time, "w")
+			self.File.Edit(game["Folders"]["played"]["gaming_time"], gaming_time, "w")
 
 		return game
 
@@ -1218,7 +1289,11 @@ class GamePlayer(object):
 			# If the time key is not the first one and not the last one
 			if key != list(times.keys())[0].capitalize():
 				# If the number of times is more than one and not two, add a comma
-				if len(times) > 1 and len(times) != 2 and gaming_time[-1] + gaming_time[-2] not in [" ,", ", "]:
+				if (
+					len(times) > 1 and
+					len(times) != 2 and
+					gaming_time[-1] + gaming_time[-2] not in [" ,", ", "]
+				):
 					gaming_time += ", "
 
 				# If the number of times is two, add the " and " text
@@ -1226,7 +1301,10 @@ class GamePlayer(object):
 					gaming_time += " " + self.JSON.Language.language_texts["and"] + " "
 
 			# If the time key is the last one and the number of times is more or equal to two, add the ", and " text
-			if key == list(times.keys())[-1].capitalize() and len(times) > 2:
+			if (
+				key == list(times.keys())[-1].capitalize() and
+				len(times) > 2
+			):
 				if gaming_time[-1] + gaming_time[-2] != " ,":
 					gaming_time += ", "
 
@@ -1268,6 +1346,8 @@ class GamePlayer(object):
 		return title
 
 	def Define_Year_Summary_Data(self, entry, language):
+		from copy import deepcopy
+
 		# Get the language game type
 		game_type = self.game_types[entry["Type"]]["Type"][language]
 
@@ -1281,9 +1361,12 @@ class GamePlayer(object):
 		item += ", "
 
 		# Add the session duration
-		session_duration = self.Date.Make_Time_Text(entry["Session duration"])[language]
+		duration = deepcopy(entry["Session duration"])
+		duration.pop("Text")
 
-		item += self.Date.texts["duration, title()"][language] + ": " + session_duration + ", "
+		duration = self.Date.Make_Time_Text(duration)[language]
+
+		item += self.Date.texts["duration, title()"][language] + ": " + duration + ", "
 
 		# Add the date
 		date = self.Date.texts["date, title()"][language] + ": " + self.Date.From_String(entry["Date"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
@@ -1346,19 +1429,19 @@ class GamePlayer(object):
 		for item in platforms:
 			print(item)
 
-		if game["folders"]["local"] == "":
+		if game["Folders"]["local"] == "":
 			print()
 			print(self.Folder.language_texts["folder, title()"] + ":")
-			print("\t" + game["folders"]["root"])
+			print("\t" + game["Folders"]["root"])
 
-		if game["folders"]["local"] != "":
+		if game["Folders"]["local"] != "":
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
-			print("\t" + self.JSON.Language.language_texts["information, title(), plural"] + ":")
-			print("\t" + game["folders"]["root"])
+			print("\t" + self.JSON.Language.language_texts["informations, title()"] + ":")
+			print("\t" + game["Folders"]["root"])
 			print()
 			print("\t" + self.JSON.Language.language_texts["local, title()"] + ":")
-			print("\t" + game["folders"]["local"])
+			print("\t" + game["Folders"]["local"])
 
 		if game["Files"]["Shortcut"] != "":
 			print()
@@ -1389,7 +1472,10 @@ class GamePlayer(object):
 					print("\t" + value)
 
 			# If there are states, show them
-			if "States" in dictionary and dictionary["States"]["Texts"] != {}:
+			if (
+				"States" in dictionary and
+				dictionary["States"]["Texts"] != {}
+			):
 				print()
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 

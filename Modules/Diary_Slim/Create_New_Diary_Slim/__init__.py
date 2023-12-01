@@ -30,10 +30,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 		units = date["Timezone"]["DateTime"]["Units"]
 
+		self.dictionary["Today is text"] = self.Date.language_texts["day, title()"].lower() + " " + date["Formats"]["[Day] [Month name] [Year]"][self.user_language]
+
 		self.today_is_text = text + ":" + "\n" + \
-		date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + "\n" + \
-		"\n" + \
-		self.day_of_of_text.format(units["Day"], date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], units["Year"]) + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
+		"\t" + date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + ", " + \
+		self.dictionary["Today is text"] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
 
 		print(self.large_bar)
 		print()
@@ -43,7 +44,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		self.Define_Slim_File()
 
 		if self.dictionary["Diary Slim exists"] == False:
-			text = self.language_texts["creating_the_diary_slim_for_the_current_day"]
+			text = self.language_texts["creating_a_diary_slim_for_the_current_day"]
 
 			if "Check" in self.dictionary:
 				text = self.language_texts["creating_the_skipped_diary_slim"]
@@ -53,7 +54,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 			if "Check" not in self.dictionary:
 				print()
 
-		if self.dictionary["Diary Slim exists"] == True and "Check" not in self.dictionary:
+		if (
+			self.dictionary["Diary Slim exists"] == True and
+			"Check" not in self.dictionary
+		):
 			print(self.File.language_texts["the_file_{}_opening_it"].format(self.File.language_texts["already_existed"]) + "...")
 
 		if self.dictionary["Diary Slim exists"] == False:
@@ -73,9 +77,17 @@ class Create_New_Diary_Slim(Diary_Slim):
 		units = self.dictionary["Date"]["Timezone"]["DateTime"]["Units"]
 		texts = self.dictionary["Date"]["Timezone"]["DateTime"]["Texts"]
 
-		self.dictionary["Today is"] = self.today_is_text_header_prototype.format(texts["Day name"][self.user_language], units["Day"], texts["Month name"][self.user_language], units["Year"])
+		template = self.JSON.Language.language_texts["today_is"] + " {}."
 
-		self.dictionary["Text header"] = self.text_header_prototype.format(self.current_diary_slim["Day"])
+		item = texts["Day name"][self.user_language] + ", " + self.dictionary["Today is text"]
+
+		self.dictionary["Today is"] = template.format(item)
+
+		template = "- " + self.language_texts["diary_slim"] + ", {} -"
+
+		item = self.current_diary_slim["Day"]
+
+		self.dictionary["Text header"] = template.format(item)
 
 		type_text = self.JSON.Language.language_texts["type_the_time_that_you_{}"]
 
@@ -138,7 +150,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 			if "Check" not in self.dictionary:
 				self.Check_Diary_Slims()
 
-				if "Checked" in self.dictionary:
+				if (
+					"Checked" in self.dictionary and
+					self.date["Units"]["Day"] != 1
+				):
 					print()
 					print(self.today_is_text)
 					print()
@@ -146,10 +161,12 @@ class Create_New_Diary_Slim(Diary_Slim):
 	def Check_Diary_Slims(self):
 		# Define today
 		today_date = self.date
+
 		self.dictionary["Today"] = self.Current_Diary_Slim(date = today_date)["Day"]
 
 		# Define yesterday
 		yesterday_date = self.Date.Now(self.date["Object"] - self.Date.Timedelta(days = 1))
+
 		self.dictionary["Yesterday"] = self.Current_Diary_Slim(date = yesterday_date)["Day"]
 
 		# Define the Diary Slims list for a more organized code

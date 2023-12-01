@@ -23,17 +23,17 @@ class Comment_Writer(Watch_History):
 		if self.write_comment != False:
 			self.dictionary["Comment Writer"]["States"]["Write"] = self.write_comment
 
-		self.folders["comments"]["backups"]["backup"] = self.folders["comments"]["backups"]["root"] + "Backup.txt"
+		self.folders["Comments"]["Backups"]["Backup"] = self.folders["Comments"]["Backups"]["root"] + "Backup.txt"
 
 		# If the backup file exists, it is not a new comment and the user is going to write the comment
-		if self.File.Exist(self.folders["comments"]["backups"]["backup"]) == True:
+		if self.File.Exist(self.folders["Comments"]["Backups"]["Backup"]) == True:
 			self.dictionary["Comment Writer"]["States"]["New"] = False
 
 			self.dictionary["Comment Writer"]["States"]["Write"] = True
 
 		# If the backup file does not exist, ask the user if it wants to write a comment
 		if (
-			self.File.Exist(self.folders["comments"]["backups"]["backup"]) == False and
+			self.File.Exist(self.folders["Comments"]["Backups"]["Backup"]) == False and
 			self.dictionary["Comment Writer"]["States"]["Write"] == False
 		):
 			self.dictionary["Comment Writer"]["States"]["Write"] = self.Input.Yes_Or_No(self.language_texts["write_a_comment"])
@@ -43,7 +43,7 @@ class Comment_Writer(Watch_History):
 
 			# Create backup file
 			if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
-				self.File.Create(self.folders["comments"]["backups"]["backup"])
+				self.File.Create(self.folders["Comments"]["Backups"]["Backup"])
 
 			# Run methods
 			self.Define_Files()
@@ -136,19 +136,19 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["File name"] += self.media["Episode"]["re_watched"]["text"]
 
 		# Media folder comment file
-		self.media["Item"]["folders"]["comments"]["files"]["comment"] = self.media["Item"]["folders"]["comments"]["files"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
-		self.File.Create(self.media["Item"]["folders"]["comments"]["files"]["comment"])
+		self.media["Item"]["Folders"]["comments"]["files"]["comment"] = self.media["Item"]["Folders"]["comments"]["files"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
+		self.File.Create(self.media["Item"]["Folders"]["comments"]["files"]["comment"])
 
 		# Read the "Comments.json" file to get the Comments dictionary
-		self.dictionaries["Root comments"] = self.JSON.To_Python(self.folders["comments"]["comments"])
+		self.dictionaries["Root comments"] = self.JSON.To_Python(self.folders["Comments"]["Comments"])
 
 		# Read the selected media "Comments.json" file to get the media comments dictionary
-		self.dictionaries["Comments"] = self.JSON.To_Python(self.media["Item"]["folders"]["comments"]["comments"])
+		self.dictionaries["Comments"] = self.JSON.To_Python(self.media["Item"]["Folders"]["comments"]["comments"])
 
 	def Write_Comment(self):
 		# If backup is true and the comment is not a new one, get the comment from the backup file
 		if self.dictionary["Comment Writer"]["States"]["Backup"] == True and self.dictionary["Comment Writer"]["States"]["New"] == False:
-			text = self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
+			text = self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])["string"]
 
 			self.media["Comment"]["Text"]["String"] += text
 			self.media["Comment"]["Text"]["Lines"].append(text)
@@ -214,7 +214,7 @@ class Comment_Writer(Watch_History):
 
 			# If backup is true, backup comment to file
 			if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
-				self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media["Comment"]["Text"]["String"], "a", next_line = False)
+				self.File.Edit(self.folders["Comments"]["Backups"]["Backup"], self.media["Comment"]["Text"]["String"], "a", next_line = False)
 
 			# Add comment to show text
 			show_text += "\n" + self.media["Comment"]["Text"]["String"]
@@ -225,14 +225,14 @@ class Comment_Writer(Watch_History):
 
 		# If the comment is not a new one, load already written comment from backup file
 		if self.dictionary["Comment Writer"]["States"]["New"] == False:
-			show_text += "\n" + self.File.Contents(self.folders["comments"]["backups"]["backup"])["string"]
+			show_text += "\n" + self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])["string"]
 
 		# Ask for the user to write the comment
-		dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["comments"]["backups"]["backup"])
+		dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["Comments"]["Backups"]["Backup"])
 
 		# Get the comment from the backup file
 		# (The user may have edited the comment inside the backup file)
-		contents = self.File.Contents(self.folders["comments"]["backups"]["backup"])
+		contents = self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])
 
 		# If the number of lines inside the backup file are different from the lines inside the comment text dictionary
 		# And the number of lines inside the backup file are not zero
@@ -265,14 +265,14 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Time]", self.media["Comment"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# Update the backup file to update the comment time
-		self.File.Edit(self.folders["comments"]["backups"]["backup"], self.media["Comment"]["Text"]["String"], "w")
+		self.File.Edit(self.folders["Comments"]["Backups"]["Backup"], self.media["Comment"]["Text"]["String"], "w")
 
 	def Write_Comment_To_Files(self):
 		from copy import deepcopy
 
 		# Delete the backup file
 		if self.dictionary["Comment Writer"]["States"]["Backup"] == True:
-			self.File.Delete(self.folders["comments"]["backups"]["backup"])
+			self.File.Delete(self.folders["Comments"]["Backups"]["Backup"])
 
 		# Add to the total comment number
 		self.dictionaries["Root comments"]["Numbers"]["Total"] += 1
@@ -287,7 +287,7 @@ class Comment_Writer(Watch_History):
 		self.dictionaries["Root comments"]["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(self.date["Units"]["Year"])] += 1
 
 		# Update the root "Comments.json" file to update the numbers
-		self.JSON.Edit(self.folders["comments"]["comments"], self.dictionaries["Root comments"])
+		self.JSON.Edit(self.folders["Comments"]["Comments"], self.dictionaries["Root comments"])
 
 		self.key = self.media["Comment"]["File name"]
 
@@ -391,7 +391,7 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
 
 		# Write the comment into the media folder comment file
-		self.File.Edit(self.media["Item"]["folders"]["comments"]["files"]["comment"], self.media["Comment"]["Text"]["String"], "w")
+		self.File.Edit(self.media["Item"]["Folders"]["comments"]["files"]["comment"], self.media["Comment"]["Text"]["String"], "w")
 
 		# Get the states dictionary
 		states_dictionary = self.Define_States_Dictionary(self.dictionary)["States"]
@@ -464,4 +464,4 @@ class Comment_Writer(Watch_History):
 				self.dictionary["Comment Writer"]["Comment"].pop(key)
 
 		# Update the media "Comments.json" file
-		self.JSON.Edit(self.media["Item"]["folders"]["comments"]["comments"], self.dictionaries["Comments"])
+		self.JSON.Edit(self.media["Item"]["Folders"]["comments"]["comments"], self.dictionaries["Comments"])

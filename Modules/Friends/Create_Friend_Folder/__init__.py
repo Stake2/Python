@@ -1,11 +1,11 @@
-# Create_Friend_File.py
+# Create_Friend_Folder.py
 
 from Friends.Friends import Friends as Friends
 
 from copy import deepcopy
 import collections
 
-class Create_Friend_File(Friends):
+class Create_Friend_Folder(Friends):
 	def __init__(self):
 		super().__init__()
 

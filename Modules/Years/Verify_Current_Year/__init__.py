@@ -13,24 +13,19 @@ class Verify_Current_Year(Years):
 		print("-----")
 		print()
 
-		folder_list = self.Folder.Contents(self.current_year["Folder"])["folder"]["list"]
+		folder_list = self.Folder.Contents(self.years["Current year"]["Folders"]["Text"]["root"])["folder"]["list"]
 
 		# Creates the new Year text and image folder, copies the Year template files to the text folder, and edits some of them
 		if folder_list == []:
-			# Copy the "Year Texts" folder to the current Year folder
-			self.Folder.Copy(self.years["year_texts"]["root"], self.current_year["Folder"])
+			# Copy the Year texts folder to the current Year folder
+			self.Folder.Copy(self.years["Texts"]["Folders"]["root"], self.years["Current year"]["Folders"]["Text"]["root"])
 
-			# Copy the "Year Images" folder to the current Year Image folder
-			self.Folder.Copy(self.folders["mega"]["image"]["years"]["images"]["root"], self.current_year["Image folder"])
-
-			# Re-define folders (re-read directory)
-			self.current_year["Folders"] = self.Folder.Contents(self.current_year["Folder"])["dictionary"]
+			# Copy the Year images folder to the current Year Image folder
+			self.Folder.Copy(self.folders["Image"]["Years"]["Images"]["root"], self.years["Current year"]["Folders"]["Image"]["root"])
 
 			# "This Year I (post)" file
 			for language in self.languages["small"]:
-				full_language = self.languages["full"][language]
-
-				self.this_year_i_post_file = self.current_year["Folders"][full_language][self.texts["this_year_i_post"][language]]
+				self.this_year_i_post_file = self.years["Current year"]["Folders"][language][self.JSON.Language.texts["this_year_i_post"][language]]
 
 				text_to_write = self.File.Contents(self.this_year_i_post_file)["string"]
 
@@ -40,40 +35,41 @@ class Verify_Current_Year(Years):
 				self.File.Edit(self.this_year_i_post_file, text_to_write, "w")
 
 			self.files = {
-				"christmas, title()": self.current_year["Folders"][self.language_texts["christmas, title()"]]["root"] + self.language_texts["texts, en - " + self.user_language] + ".txt",
-				"new_year": self.current_year["Folders"][self.language_texts["new_year"]]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt"
+				"Christmas": self.years["Current year"]["Folders"]["Text"]["Christmas"]["Merry Christmas"]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt",
+				"New Year": self.years["Current year"]["Folders"]["New Year"]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt"
 			}
 
 			# Replace the current "{current_year}" text with current Year number on Christmas Texts file
-			text_to_write = self.File.Contents(self.files["christmas, title()"])["string"]
+			text_to_write = self.File.Contents(self.files["Christmas"])["string"]
 
 			if "{current_year}" in text_to_write:
 				text_to_write = text_to_write.replace("{current_year}", str(self.date["Units"]["Year"]))
 
-			self.File.Edit(self.files["christmas, title()"], text_to_write, "w")
+			self.File.Edit(self.files["Christmas"], text_to_write, "w")
 
-			# Replace the "{current_year}" text with the current Year number on the "New Year Texts" file
-			text_to_write = self.File.Contents(self.files["new_year"])["string"]
+			# Replace the "{next_year}" text with the next Year number on the New Year "Texts" file
+			text_to_write = self.File.Contents(self.files["New Year"])["string"]
 
 			if "{next_year}" in text_to_write:
 				text_to_write = text_to_write.replace("{next_year}", str(self.date["Units"]["Year"] + 1))
 
-			self.File.Edit(self.files["new_year"], text_to_write, "w")
+			self.File.Edit(self.files["New Year"], text_to_write, "w")
+
+			date = self.Date.Now()
 
 			# "Created In" file
-			self.created_in_file = self.current_year["Folder"] + self.language_texts["created_in"] + ".txt"
-			self.File.Edit(self.created_in_file, self.Date.Now()["strftime"], "w")
+			self.created_in_file = self.years["Current year"]["Folders"]["Text"]["root"] + self.JSON.Language.language_texts["created_in"] + ".txt"
+			self.File.Edit(self.created_in_file, date["Timezone"]["Formats"]["HH:MM DD/MM/YYYY"], "w")
+
+			date = self.Date.Now()
 
 			# "Edited In" file
-			self.edited_in_file = self.current_year["Folder"] + self.language_texts["edited_in"] + ".txt"
-			self.File.Edit(self.edited_in_file, self.Date.Now()["strftime"], "w")
-
-			# "New Year posts" folder
-			self.new_year_posts_folder = self.current_year["Folders"][self.language_texts["new_year"]]["root"] + "Posts/"
+			self.edited_in_file = self.years["Current year"]["Folders"]["Text"]["root"] + self.JSON.Language.language_texts["edited_in"] + ".txt"
+			self.File.Edit(self.edited_in_file, date["Timezone"]["Formats"]["HH:MM DD/MM/YYYY"], "w")
 
 			# Social Networks posts files
 			for item in ["Instagram, Facebook", "Twitter", "WhatsApp"]:
-				file = self.new_year_posts_folder + item + ".txt"
+				file = self.years["Current year"]["Folders"]["Text"]["Summary"]["root"] + item + ".txt"
 
 				text_to_write = self.File.Contents(file)["string"]
 
@@ -89,8 +85,10 @@ class Verify_Current_Year(Years):
 		if folder_list == []:
 			text_to_show = self.language_texts["the_current_year_did_not_existed_in_the_years_folder"]
 
+		tab = "\t"
+
 		print(text_to_show + ":")
-		print(self.date["Units"]["Year"])
+		print(tab + str(self.date["Units"]["Year"]))
 		print()
 
 		text_to_show = self.language_texts["this_is_its_year_folder"]
@@ -99,11 +97,11 @@ class Verify_Current_Year(Years):
 			text_to_show = self.language_texts["its_year_folder_was_created"]
 
 		print(text_to_show + ":")
-		print(self.current_year["Folder"])
+		print(tab + self.years["Current year"]["Folders"]["Text"]["root"])
 		print()
 
-		print(self.language_texts["image_folder"] + ":")
-		print(self.current_year["Image folder"])
+		print(self.JSON.Language.language_texts["image_folder"] + ":")
+		print(tab + self.years["Current year"]["Folders"]["Image"]["root"])
 
 		if folder_list == []:
 			print()
@@ -111,7 +109,12 @@ class Verify_Current_Year(Years):
 			for item in self.files:
 				file = self.files[item]
 
-				language_text = self.language_texts[item]
+				text_key = item.lower().replace(" ", "_")
+
+				if "_" not in text_key:
+					text_key += ", title()"
+
+				language_text = self.JSON.Language.language_texts[text_key]
 
 				print(self.language_texts["{}_texts"].format(language_text) + ":")
 

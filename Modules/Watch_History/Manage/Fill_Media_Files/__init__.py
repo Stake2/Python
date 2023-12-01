@@ -102,7 +102,7 @@ class Fill_Media_Files(Watch_History):
 		if self.media["States"]["Video"] == True and self.media["States"]["Media item list"] == True:
 			print()
 			print(self.JSON.Language.language_texts["ids_file"] + ":")
-			print(self.media["Item"]["folders"]["titles"]["ids"])
+			print(self.media["Item"]["Folders"]["titles"]["ids"])
 
 		if self.media["States"]["Video"] == False:
 			self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total"] = ""
@@ -354,7 +354,7 @@ class Fill_Media_Files(Watch_History):
 		# Write into "IDs.txt" file
 		text = self.Text.From_List(self.media["Item"]["Episodes"]["ids"])
 
-		self.File.Edit(self.media["Item"]["folders"]["titles"]["ids"], text)
+		self.File.Edit(self.media["Item"]["Folders"]["titles"]["ids"], text)
 
 		# Show IDs
 		print(self.JSON.Language.language_texts["ids, title()"] + ":")
@@ -396,7 +396,7 @@ class Fill_Media_Files(Watch_History):
 			self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language] = video["Title"]
 
 		# Add the video ID to the IDs list
-		self.File.Edit(self.media["Item"]["folders"]["titles"]["ids"], video_id, "a")
+		self.File.Edit(self.media["Item"]["Folders"]["titles"]["ids"], video_id, "a")
 
 		# Write into language titles file
 		for language in self.languages["small"]:
@@ -424,7 +424,7 @@ class Fill_Media_Files(Watch_History):
 			self.media["Item"]["Details"] = self.JSON.Add_Key_After_Key(self.media["Item"]["Details"], key_value, after_key = self.language_texts["episodes, title()"])
 
 		# Update the media item details file
-		self.File.Edit(self.media["Item"]["folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
+		self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 		print()
 		print("-----")

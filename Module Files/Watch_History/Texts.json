@@ -371,10 +371,6 @@
 		"en": "Christmas special {}",
 		"pt": "{} especial de Natal"
 	},
-	"watched_media": {
-		"en": "Watched media",
-		"pt": "Mídia assistida"
-	},
 	"list_of_media_to_watch": {
 		"en": "List of media to watch",
 		"pt": "Lista de mídia para assistir"

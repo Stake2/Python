@@ -52,6 +52,7 @@ class Database(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"JSON",
 			"Language"
 		]
 
@@ -106,16 +107,16 @@ class Database(object):
 		self.dash_space = "-"
 
 	def Define_Folders_And_Files(self):
-		self.current_year = self.Years.current_year
+		self.current_year = self.Years.years["Current year"]
 
 		# Folders dictionary
-		self.folders = self.Folder.Contents(self.folders["notepad"]["networks"]["database_network"]["root"], lower_key = True)["dictionary"]
+		self.folders = self.Folder.Contents(self.folders["Notepad"]["Data Networks"]["Database"]["root"], lower_key = True)["dictionary"]
 
 		# Define the current year folder for easier typing
 		self.folders["history"]["current_year"] = self.folders["history"][str(self.date["Units"]["Year"])]
 
 	def Define_Types(self):
-		self.types = self.JSON.To_Python(self.folders["data"]["types"])
+		self.types = self.JSON.To_Python(self.folders["Data"]["types"])
 
 		self.types.update({
 			"Genders": self.JSON.Language.texts["genders, type: dict"],
@@ -130,12 +131,12 @@ class Database(object):
 		if self.types["Data list"]["Number"] != 0:
 			self.types["Data list"]["Number"] = 0
 
-		# Read the root "Info.json" file
-		if self.File.Contents(self.folders["information"]["info"])["lines"] != []:
-			info_dictionary = self.JSON.To_Python(self.folders["information"]["info"])
+		# Read the root "Information.json" file
+		if self.File.Contents(self.folders["Information"]["Information"])["lines"] != []:
+			info_dictionary = self.JSON.To_Python(self.folders["Information"]["Information"])
 
-		# If the root "Info.json" file is empty, add a default JSON dictionary inside it
-		if self.File.Contents(self.folders["information"]["info"])["lines"] == []:
+		# If the root "Information.json" file is empty, add a default JSON dictionary inside it
+		if self.File.Contents(self.folders["Information"]["Information"])["lines"] == []:
 			info_dictionary = {
 				"Types": self.game_types["Plural"],
 				"Number": 0,
@@ -208,20 +209,20 @@ class Database(object):
 
 			# Define type folders and files
 			self.types[plural_type]["Folders"] = {
-				"information": self.folders["information"][key],
+				"information": self.folders["Information"][key],
 				"per_type": self.folders["history"]["current_year"]["per_type"][key]
 			}
 
-			# Define the "Info.json" file
-			self.types[plural_type]["Folders"]["information"]["info"] = self.types[plural_type]["Folders"]["information"]["root"] + "Info.json"
-			self.File.Create(self.types[plural_type]["Folders"]["information"]["info"])
+			# Define the "Information.json" file
+			self.types[plural_type]["Folders"]["Information"]["Information"] = self.types[plural_type]["Folders"]["information"]["root"] + "Information.json"
+			self.File.Create(self.types[plural_type]["Folders"]["Information"]["Information"])
 
-			# Read the "Info.json" file
-			if self.File.Contents(self.types[plural_type]["Folders"]["information"]["info"])["lines"] != []:
-				self.types[plural_type]["JSON"] = self.JSON.To_Python(self.types[plural_type]["Folders"]["information"]["info"])
+			# Read the "Information.json" file
+			if self.File.Contents(self.types[plural_type]["Folders"]["Information"]["Information"])["lines"] != []:
+				self.types[plural_type]["JSON"] = self.JSON.To_Python(self.types[plural_type]["Folders"]["Information"]["Information"])
 
-			# If the "Info.json" file is empty, add a default JSON dictionary inside it
-			if self.File.Contents(self.types[plural_type]["Folders"]["information"]["info"])["lines"] == []:
+			# If the "Information.json" file is empty, add a default JSON dictionary inside it
+			if self.File.Contents(self.types[plural_type]["Folders"]["Information"]["Information"])["lines"] == []:
 				# Define the default JSON dictionary
 				self.types[plural_type]["JSON"] = {
 					"Number": 0,
@@ -243,8 +244,8 @@ class Database(object):
 			for english_status in self.texts["statuses, type: list"]["en"]:
 				self.types[plural_type]["JSON"]["Status"][english_status] = sorted(self.types[plural_type]["JSON"]["Status"][english_status], key = str.lower)
 
-			# Edit the "Info.json" file with the new dictionary
-			self.JSON.Edit(self.types[plural_type]["Folders"]["information"]["info"], self.types[plural_type]["JSON"])
+			# Edit the "Information.json" file with the new dictionary
+			self.JSON.Edit(self.types[plural_type]["Folders"]["Information"]["Information"], self.types[plural_type]["JSON"])
 
 			# Check the status of the data list
 			# Add the data inside the correct status list if it is not there already
@@ -307,13 +308,13 @@ class Database(object):
 			i += 1
 
 		# Write the types dictionary into the "Types.json" file
-		self.JSON.Edit(self.folders["data"]["types"], self.types)
+		self.JSON.Edit(self.folders["Data"]["types"], self.types)
 
-		# Update the data list inside the root "Info.json" dictionary
+		# Update the data list inside the root "Information.json" dictionary
 		info_dictionary.update(self.types["Data list"])
 
-		# Update the root "Info.json" file
-		self.JSON.Edit(self.folders["information"]["info"], info_dictionary)
+		# Update the root "Information.json" file
+		self.JSON.Edit(self.folders["Information"]["Information"], info_dictionary)
 
 	def Define_Registry_Format(self):
 		from copy import deepcopy
@@ -434,7 +435,7 @@ class Database(object):
 		if type(status_list) == str:
 			status_list = [status_list]
 
-		# Get the data type "Info.json" file and read it
+		# Get the data type "Information.json" file and read it
 		dictionary["JSON"] = self.JSON.To_Python(dictionary["Folders"]["information"]["info"])
 
 		# Define the empty data list
@@ -474,7 +475,7 @@ class Database(object):
 			dictionary = self.Define_Options(dictionary, options)
 
 		# Get the data type data numbers
-		numbers = self.JSON.To_Python(self.folders["information"]["info"])["Numbers"]
+		numbers = self.JSON.To_Python(self.folders["Information"]["Information"])["Numbers"]
 
 		# Add the number of data inside each data type text
 		i = 0
@@ -963,7 +964,7 @@ class Database(object):
 			# Sort the data list
 			dictionary["JSON"]["Status"][experiencing_status] = sorted(dictionary["JSON"]["Status"][experiencing_status], key = str.lower)
 
-		# Update the data type "Info.json" file
+		# Update the data type "Information.json" file
 		self.JSON.Edit(data_type["Folders"]["information"]["info"], dictionary["JSON"])
 
 		return dictionary

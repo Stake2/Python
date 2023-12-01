@@ -1,52 +1,4 @@
 {
-	"christmas, title()": {
-		"en": "Christmas",
-		"pt": "Natal"
-	},
-	"planning, title()": {
-		"en": "Planning",
-		"pt": "Planejamento"
-	},
-	"current_date": {
-		"en": "Current date",
-		"pt": "Data atual"
-	},
-	"christmas_date": {
-		"en": "Christmas date",
-		"pt": "Data do Natal"
-	},
-	"day": {
-		"en": "day",
-		"pt": "dia"
-	},
-	"days": {
-		"en": "days",
-		"pt": "dias"
-	},
-	"day_left": {
-		"en": "Day left",
-		"pt": "Dia restante"
-	},
-	"days_left": {
-		"en": "Days left",
-		"pt": "Dias restantes"
-	},
-	"month": {
-		"en": "month",
-		"pt": "mês"
-	},
-	"months": {
-		"en": "months",
-		"pt": "meses"
-	},
-	"month_left": {
-		"en": "Month left",
-		"pt": "Mês restante"
-	},
-	"months_left": {
-		"en": "Months left",
-		"pt": "Meses restantes"
-	},
 	"today_is_not_christmas_day_wait_until": {
 		"pt": "Hoje não é dia de Natal, espere até",
 		"en": "Today is not Christmas day, wait until"
@@ -55,49 +7,9 @@
 		"en": "Starting {} of {}...",
 		"pt": "Iniciando {} de {}..."
 	},
-	"to, title()": {
-		"en": "To",
-		"pt": "Para"
-	},
-	"nothing, title()": {
-		"en": "Nothing",
-		"pt": "Nada"
-	},
-	"watch": {
-		"en": "watch",
-		"pt": "assistir"
-	},
-	"watch, title()": {
-		"en": "Watch",
-		"pt": "Assistir"
-	},
-	"eat": {
-		"en": "eat",
-		"pt": "comer"
-	},
-	"eat, title()": {
-		"en": "Eat",
-		"pt": "Comer"
-	},
-	"opening_{}": {
-		"en": "Opening {}",
-		"pt": "Abrindo {}"
-	},
-	"opening_this_file_{}": {
-		"en": "Opening this file:\n{}",
-		"pt": "Abrindo este arquivo:\n{}"
-	},
-	"defining_{}": {
-		"en": "Defining {}",
-		"pt": "Definindo {}"
-	},
-	"christmas_theme": {
-		"en": "Christmas theme",
-		"pt": "tema de Natal"
-	},
-	"press_enter_when_you": {
-		"en": "Press Enter when you",
-		"pt": "Pressione Enter quando você"
+	"defining_the_christmas_theme": {
+		"en": "Defining the Christmas theme",
+		"pt": "Definindo o tema de Natal"
 	},
 	"opening_this_website_to_change_the_profile_picture": {
 		"pt": "Abrindo este site para mudar a foto de perfil",
@@ -122,9 +34,5 @@
 	"your_christmas_of_{}_is_finished_congratulations!": {
 		"pt": "Seu Natal de {} está concluído, parabéns!",
 		"en": "Your Christmas of {} is finished, congratulations!"
-	},
-	"list": {
-		"en": "list",
-		"pt": "lista"
 	}
 }

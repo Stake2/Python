@@ -85,11 +85,15 @@ class Register(GamePlayer):
 
 		# Re-read the dictionaries because somehow, someway, the "Played" dictionary is empty even after getting it from the "Played" file
 		# And also to ensure that the dictionaries are up to date
-		self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["sessions"])
-		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["play_history"]["current_year"]["per_game_type"][self.game_type.lower().replace(" ", "_")]["sessions"])
-		self.dictionaries["Played"] = self.JSON.To_Python(self.game["folders"]["played"]["entries"])
-		self.game["Played"] = self.JSON.To_Python(self.game["folders"]["played"]["entries"])
+		self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Sessions"])
 
+		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Per Game Type"][self.game_type.lower().replace(" ", "_")]["Sessions"])
+
+		self.dictionaries["Played"] = self.JSON.To_Python(self.game["Folders"]["played"]["entries"])
+
+		self.game["Played"] = self.JSON.To_Python(self.game["Folders"]["played"]["entries"])
+
+		# Define the "First game session in year" state
 		self.game["States"]["First game session in year"] = False
 
 		if self.dictionaries["Sessions"]["Numbers"]["Total"] == 0:
@@ -165,18 +169,18 @@ class Register(GamePlayer):
 				dict_["Dictionary"][self.key] = self.dictionaries["Sessions"]["Dictionary"][self.key].copy()
 
 		# Update the "Entries.json" file
-		self.JSON.Edit(self.folders["play_history"]["current_year"]["sessions"], self.dictionaries["Sessions"])
+		self.JSON.Edit(self.folders["Play History"]["Current year"]["Sessions"], self.dictionaries["Sessions"])
 
 		# Update the type "Entries.json" file
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_game_type"]["sessions"], self.dictionaries["Game type"][self.game_type])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Per Game Type"]["Sessions"], self.dictionaries["Game type"][self.game_type])
 
 		# Update the game "Played.json" file
-		self.JSON.Edit(self.game["folders"]["played"]["entries"], self.dictionaries["Played"])
+		self.JSON.Edit(self.game["Folders"]["played"]["entries"], self.dictionaries["Played"])
 
 		# Add to the root, type, and game "Entry list.txt" files
-		self.File.Edit(self.folders["play_history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
-		self.File.Edit(self.dictionary["Type"]["Folders"]["per_game_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
-		self.File.Edit(self.game["folders"]["played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.folders["Play History"]["Current year"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.dictionary["Type"]["Folders"]["Per Game Type"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.game["Folders"]["played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [entry number]
@@ -201,7 +205,7 @@ class Register(GamePlayer):
 		# [Number. Type (Time)]
 
 		# Define the entry file
-		folder = self.dictionary["Type"]["Folders"]["per_game_type"]["files"]["root"]
+		folder = self.dictionary["Type"]["Folders"]["Per Game Type"]["Files"]["root"]
 		file = folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 		self.File.Create(file)
 
@@ -216,7 +220,7 @@ class Register(GamePlayer):
 		self.File.Edit(file, self.dictionary["Entry"]["Text"]["General"], "w")
 
 		# Write the entry text into the "Played" entry file
-		file = self.game["folders"]["played"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		file = self.game["Folders"]["played"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 		self.File.Create(file)
 		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
@@ -332,66 +336,65 @@ class Register(GamePlayer):
 			full_language = self.languages["full"][language]
 
 			# Folder names
-			root_folder = self.texts["game_sessions"][language]
+			root_folder = self.JSON.Language.texts["game_sessions"][language]
 			type_folder = self.dictionary["Type"]["Type"][language]
 
 			# Entries folder
-			folder = self.current_year["Folders"][full_language]["root"]
+			folder = self.current_year["Folders"][language]["root"]
 
-			self.current_year["Folders"][full_language][root_folder] = {
+			self.current_year["Folders"][language]["Game sessions"] = {
 				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][full_language][root_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][language]["Game sessions"]["root"])
 
 			# Game type folder
-			folder = self.current_year["Folders"][full_language][root_folder]["root"]
+			folder = self.current_year["Folders"][language]["Game sessions"]["root"]
 
-			self.current_year["Folders"][full_language][root_folder][type_folder] = {
+			self.current_year["Folders"][language]["Game sessions"][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][full_language][root_folder][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][language]["Game sessions"][type_folder]["root"])
 
 			# Session file
-			folder = self.current_year["Folders"][full_language][root_folder][type_folder]["root"]
+			folder = self.current_year["Folders"][language]["Game sessions"][type_folder]["root"]
 			file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
-			self.current_year["Folders"][full_language][root_folder][type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["Folders"][language]["Game sessions"][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["Folders"][full_language][root_folder][type_folder][file_name])
+			self.File.Create(self.current_year["Folders"][language]["Game sessions"][type_folder][file_name])
 
-			self.File.Edit(self.current_year["Folders"][full_language][root_folder][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+			self.File.Edit(self.current_year["Folders"][language]["Game sessions"][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
-			firsts_of_the_year_text = self.JSON.Language.texts["firsts_of_the_year"][language]
-			subfolder_name = self.texts["game_sessions"][language]
+			subfolder_name = self.JSON.Language.texts["game_sessions"][language]
 
-			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text]["root"]
+			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
 
-			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name] = {
+			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name] = {
 				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"])
+			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"])
 
 			# Firsts Of The Year game type folder
-			folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name]["root"]
+			folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"]
 			type_folder = self.dictionary["Type"]["Type"][language]
 
-			self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder] = {
+			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder]["root"])
 
 			# First game type session in year file
 			if self.game["States"]["First game type session in year"] == True:
-				folder = self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder]["root"]
+				folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder]["root"]
 
-				self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name])
+				self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name])
 
-				self.File.Edit(self.current_year["Folders"][full_language][firsts_of_the_year_text][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Game_Status(self):
 		self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])
@@ -411,7 +414,7 @@ class Register(GamePlayer):
 		# Gets the date that the user started and finished playing the game and writes it to the game dates text file
 		if self.game["States"]["Completed game"] == True:
 			# Gets the game dates from the game dates file
-			self.game["dates"] = self.File.Dictionary(self.game["folders"]["dates"], next_line = True)
+			self.game["dates"] = self.File.Dictionary(self.game["Folders"]["dates"], next_line = True)
 
 			key = self.language_texts["when_i_started_to_play"]
 
@@ -428,13 +431,13 @@ class Register(GamePlayer):
 			self.game["Formatted datetime template"] = "\n\n" + template.format(self.game["Time spent playing"])
 
 			# Read the game dates file
-			self.game["Finished playing text"] = self.File.Contents(self.game["folders"]["dates"])["string"]
+			self.game["Finished playing text"] = self.File.Contents(self.game["Folders"]["dates"])["string"]
 
 			# Add the time template to the game dates text
 			self.game["Finished playing text"] += self.game["Formatted datetime template"]
 
 			# Update the game dates text file
-			self.File.Edit(self.game["folders"]["dates"], self.game["Finished playing text"], "w")
+			self.File.Edit(self.game["Folders"]["dates"], self.game["Finished playing text"], "w")
 
 			text = self.game_types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["game, title()"].lower()
 
@@ -533,23 +536,20 @@ class Register(GamePlayer):
 
 			# Define the Social Networks dictionary
 			social_networks = {
-				"WhatsApp": None,
-				"Twitter": None,
-				"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762" # "#play-history" channel on my Discord server
+				"List": [
+					"WhatsApp",
+					"Twitter",
+					"Discord"
+				],
+				"Custom links": {
+					"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762" # "#play-history" channel on my Discord server
+				}
 			}
 
 			# Open the Social Networks, one by one
-			for social_network, custom_link in social_networks.items():
-				# Define the second space variable
-				second_space = False
+			Open_Social_Network(social_networks)
 
-				if social_network == "Discord":
-					second_space = True
-
-				# Open the current Social Network in the profile link, with maybe a custom link
-				Open_Social_Network(option_info = {"type": "profile"}, social_network_parameter = social_network, custom_link = custom_link, first_space = False, second_space = second_space)
-
-			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"], first_space = False)
+			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"])
 
 			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 

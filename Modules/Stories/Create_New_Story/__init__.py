@@ -180,7 +180,7 @@ class Create_New_Story(Stories):
 			self.File.Edit(self.stories[self.story_title]["Folders"]["Information"]["Synopsis"][full_language], text_to_write, "w")
 
 		# Create Obsidian's Vaults folder
-		self.stories[self.story_title]["Folders"]["Obsidian's Vaults"] = self.folders["mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + self.story_titles["en"] + "/"
+		self.stories[self.story_title]["Folders"]["Obsidian's Vaults"] = self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + self.story_titles["en"] + "/"
 		self.Folder.Create(self.stories[self.story_title]["Folders"]["Obsidian's Vaults"])
 
 		self.story = self.stories[self.story_title]

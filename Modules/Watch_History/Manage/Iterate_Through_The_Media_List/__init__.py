@@ -172,17 +172,17 @@ class Iterate_Through_The_Media_List(Watch_History):
 		# (If a media type was removed from the list, the comments number will be wrong)
 		#if media_types_to_remove == []:
 			# Update the root "Comments.json" file
-			#self.JSON.Edit(self.folders["comments"]["comments"], self.comments_number)
+			#self.JSON.Edit(self.folders["Comments"]["Comments"], self.comments_number)
 
 	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary and is not a single unit media item
 		# And the watching status is not "Plan to watch" or "Completed"
 		if (
-			"titles" in self.dictionary["Media"]["Item"]["folders"] and
+			"titles" in self.dictionary["Media"]["Item"]["Folders"] and
 			self.dictionary["Media"]["Details"][self.JSON.Language.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.JSON.Language.language_texts["completed, title()"]]
 		):
 			# Define the titles file to check its contents
-			titles_file = self.dictionary["Media"]["Item"]["folders"]["titles"]["root"] + self.languages["full"]["en"] + ".txt"
+			titles_file = self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.languages["full"]["en"] + ".txt"
 
 			# If the titles file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
@@ -192,7 +192,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					full_language = self.languages["full"][language]
 
 					# Define the language titles file
-					titles_file = self.dictionary["Media"]["Item"]["folders"]["titles"]["root"] + full_language + ".txt"
+					titles_file = self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + full_language + ".txt"
 
 					# Open it for user to fill it with titles
 					self.System.Open(titles_file)
@@ -215,8 +215,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 			# Get the details file and details for the media (item)
 			self.date_dictionary = {
-				"file": media_dictionary["folders"]["details"],
-				"Details": self.File.Dictionary(media_dictionary["folders"]["details"])
+				"file": media_dictionary["Folders"]["details"],
+				"Details": self.File.Dictionary(media_dictionary["Folders"]["details"])
 			}
 
 			ask = False
@@ -288,7 +288,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 	def Count_Comments_Number(self):
 		# Get comments dictionary from file
-		comments = self.JSON.To_Python(self.dictionary["Media"]["Item"]["folders"]["comments"]["comments"])
+		comments = self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"])
 
 		# If the entries list is not empty
 		if comments["Entries"] != []:
@@ -394,7 +394,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					id = self.dictionary["Media"]["Details"]["ID"]
 
 					# Get anime information from "Anime.json" file
-					media_dictionary["Information"]["Dictionary"] = self.JSON.To_Python(self.dictionary["Media"]["folders"]["anime"])
+					media_dictionary["Information"]["Dictionary"] = self.JSON.To_Python(self.dictionary["Media"]["Folders"]["anime"])
 
 					# Do not get information from MyAnimeList
 					get_information_from_mal = False
@@ -512,13 +512,13 @@ class Iterate_Through_The_Media_List(Watch_History):
 					media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.JSON.Language.language_texts["link, title()"])
 
 				# Update media (item) details file
-				self.File.Edit(media_dictionary["folders"]["details"], self.Text.From_Dictionary(media_dictionary["Details"]), "w")
+				self.File.Edit(media_dictionary["Folders"]["details"], self.Text.From_Dictionary(media_dictionary["Details"]), "w")
 
 				if media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"]["Episode list"] == {}:
 					media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"].pop("Episode list")
 
 				# Write anime details into media "[Anime]/[Season].json" file
-				self.JSON.Edit(media_dictionary["folders"][media_dictionary["Information"]["Key"]], media_dictionary["Information"]["Dictionary"])
+				self.JSON.Edit(media_dictionary["Folders"][media_dictionary["Information"]["Key"]], media_dictionary["Information"]["Dictionary"])
 
 	def Format_Anime_Information(self, media_dictionary, information):
 		new_information = {
@@ -838,7 +838,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			if item_type == "Item":
 				media_dictionary = self.dictionary["Media"]["Item"]
 
-			if self.File.Contents(media_dictionary["folders"][media_dictionary["Information"]["Key"]])["lines"] == []:
+			if self.File.Contents(media_dictionary["Folders"][media_dictionary["Information"]["Key"]])["lines"] == []:
 				# Remove special characters from media (item) title
 				title = media_dictionary["title"]
 
@@ -856,10 +856,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 				media_dictionary["Information"]["Dictionary"] = self.Format_Media_Information(media_dictionary, media_dictionary["Information"]["Dictionary"])
 
 				# Update media (item) details file
-				self.File.Edit(media_dictionary["folders"]["details"], self.Text.From_Dictionary(media_dictionary["Details"]), "w")
+				self.File.Edit(media_dictionary["Folders"]["details"], self.Text.From_Dictionary(media_dictionary["Details"]), "w")
 
 				# Write media details into media "[Information file name].json" file
-				self.JSON.Edit(media_dictionary["folders"][media_dictionary["Information"]["Key"]], media_dictionary["Information"]["Dictionary"])
+				self.JSON.Edit(media_dictionary["Folders"][media_dictionary["Information"]["Key"]], media_dictionary["Information"]["Dictionary"])
 
 		# --- Videos --- #
 		# To-Do: Add title and titles to "Channel.json" and "Playlist.json"
@@ -1115,11 +1115,11 @@ class Iterate_Through_The_Media_List(Watch_History):
 				new_information.pop(item)
 
 	def Move_Folder(self):
-		old_folder = self.media["folders"]["media"]["root"]
+		old_folder = self.media["Folders"]["Media"]["root"]
 
 		media_type_key = self.dictionary["Media type"]["Plural"]["en"].lower().replace(" ", "_")
 
-		new_folder = self.folders["media"][media_type_key]["root"] + self.media["Titles"]["Sanitized"] + "/"
+		new_folder = self.folders["Media"][media_type_key]["root"] + self.media["Titles"]["Sanitized"] + "/"
 
 		if self.Folder.Exist(old_folder) == True and self.Folder.Exist(new_folder) == False and self.media_item_number == 0:
 			self.Folder.Create(new_folder)
@@ -1136,7 +1136,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			self.Folder.Move(old_folder, new_folder)
 
 		# Delete the empty old folders
-		old_folder = self.Folder.folders["root"]["media"]["root"] + self.media["Titles"]["Sanitized"] + "/"
+		old_folder = self.Folder.folders["Media"]["root"] + self.media["Titles"]["Sanitized"] + "/"
 
 		import os
 

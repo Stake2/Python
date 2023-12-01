@@ -167,5 +167,5 @@ class Add_A_New_Data(Database):
 		# Update the number of data inside the json dictionary
 		self.dictionary["Type"]["JSON"]["Number"] = len(self.dictionary["Type"]["JSON"]["Titles"])
 
-		# Edit the "Info.json" file with the new dictionary
+		# Edit the "Information.json" file with the new dictionary
 		self.JSON.Edit(self.dictionary["Type"]["Folders"]["information"]["info"], self.dictionary["Type"]["JSON"])

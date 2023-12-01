@@ -1,124 +1,15 @@
 {
-	"year": {
-		"pt": "ano",
-		"en": "year"
-	},
-	"year, title()": {
-		"pt": "Ano",
-		"en": "Year"
-	},
-	"years": {
-		"pt": "anos",
-		"en": "years"
-	},
-	"years, title()": {
-		"pt": "Anos",
-		"en": "Years"
-	},
-	"new_year": {
-		"pt": "Ano Novo",
-		"en": "New Year"
-	},
-	"christmas, title()": {
-		"pt": "Natal",
-		"en": "Christmas"
-	},
-	"summary, title()": {
-		"pt": "Resumo",
-		"en": "Summary"
-	},
-	"this_year_i": {
-		"pt": "Este Ano Eu",
-		"en": "This Year I"
-	},
-	"this_year_i_post": {
-		"pt": "Este Ano Eu (post)",
-		"en": "This Year I (post)"
-	},
-	"information, title()": {
-		"pt": "Informação",
-		"en": "Information"
-	},
-	"informations, title()": {
-		"pt": "Informações",
-		"en": "Information"
-	},
-	"{}_information": {
-		"pt": "Informações de {}",
-		"en": "{} information"
-	},
 	"data_files": {
 		"pt": "Arquivos de dados",
 		"en": "Data files"
-	},
-	"author, title()": {
-		"en": "Author",
-		"pt": "Autor"
-	},
-	"created_in": {
-		"en": "Created in",
-		"pt": "Criado em"
-	},
-	"edited_in": {
-		"en": "Edited in",
-		"pt": "Editado em"
-	},
-	"things_done_in": {
-		"pt": "Coisas feitas em",
-		"en": "Things done in"
-	},
-	"things_done_in_{year}": {
-		"pt": "Coisas feitas em {year}",
-		"en": "Things done in {year}"
-	},
-	"productive_things": {
-		"pt": "Coisas produtivas",
-		"en": "Productive things"
-	},
-	"watched_things": {
-		"pt": "Coisas assistidas",
-		"en": "Watched things"
-	},
-	"media_comments": {
-		"pt": "Comentários de mídia",
-		"en": "Media comments"
-	},
-	"game_sessions_played": {
-		"pt": "Sessões de jogo jogadas",
-		"en": "Game sessions played"
-	},
-	"known_people": {
-		"pt": "Pessoas conhecidas",
-		"en": "Known people"
 	},
 	"the_summary_of_this_year_was_created": {
 		"pt": "O resumo deste Ano foi criado",
 		"en": "The summary of this Year was created"
 	},
-	"summary_in": {
-		"pt": "Resumo em",
-		"en": "Summary in"
-	},
 	"the_program_has_finished_the_creation_of_the_year_summary_for": {
 		"pt": "O programa concluiu a criação do resumo de Ano para",
 		"en": "The program has finished the creation of the Year summary for"
-	},
-	"planning_of_posts": {
-		"pt": "Planejamento dos posts",
-		"en": "Planning of posts"
-	},
-	"tweets, title()": "Tweets",
-	"watch, title()": {
-		"pt": "Assistir",
-		"en": "Watch"
-	},
-	"texts, title()": {
-		"pt": "Textos",
-		"en": "Texts"
-	},
-	"images, title()": {
-		"pt": "Imagens",
-		"en": "Images"
 	},
 	"_(primary_folder)": {
 		"pt": " (Pasta primária)",
@@ -140,29 +31,21 @@
 		"pt": "Selecione um Ano para criar seu resumo",
 		"en": "Select a Year to create its summary"
 	},
-	"26_of_december": {
-		"pt": "26 de Dezembro",
-		"en": "26 of December"
-	},
-	"{} of {}": {
-		"pt": "{} de {}",
-		"en": "{} of {}"
-	},
-	"{} {} {}": {
-		"pt": "{} de {} de {}",
-		"en": "{} {} {}"
-	},
 	"you_already_created_the_summary_for_this_year": {
 		"pt": "Você já criou o resumo para este Ano",
 		"en": "You already created the summary for this Year"
 	},
 	"executing_the_year_summary_creator": {
-		"pt": "Executando o criador de resumo de ano",
-		"en": "Executing the year summary creator"
+		"pt": "Executando o criador de resumo de Ano",
+		"en": "Executing the Year summary creator"
 	},
-	"today_is_not_the_{}_run_this_program_again_when_it_is": {
+	"show_year_summary": {
+		"en": "Show year summary",
+		"pt": "Mostrar resumo do ano"
+	},
+	"today_is_not_{}_run_this_program_again_when_it_is": {
 		"pt": "Hoje não é {}, execute este programa novamente quando for",
-		"en": "Today is not the {}, run this program again when it is"
+		"en": "Today is not {}, run this program again when it is"
 	},
 	"the_sum_of_numbers_below": {
 		"pt": "a soma dos números abaixo",
@@ -171,10 +54,6 @@
 	"select_a_year_to_show_its_information": {
 		"pt": "Selecione um Ano para mostrar suas informações",
 		"en": "Select a Year to show its information"
-	},
-	"empty, title()": {
-		"en": "Empty",
-		"pt": "Vazio"
 	},
 	"the_current_year_did_not_existed_in_the_years_folder": {
 		"pt": "O Ano atual não existia na pasta de Anos",
@@ -191,10 +70,6 @@
 	"this_is_its_year_folder": {
 		"pt": "Esta é sua pasta de Ano",
 		"en": "This is its Year folder"
-	},
-	"image_folder": {
-		"pt": "Pasta de imagem",
-		"en": "Image folder"
 	},
 	"{}_texts": {
 		"pt": "Textos de \"{}\"",

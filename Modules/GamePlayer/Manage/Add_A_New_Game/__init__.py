@@ -219,24 +219,24 @@ class Add_A_New_Game(GamePlayer):
 			self.game["Details"][self.JSON.Language.language_texts["status, title()"]] = self.game["Status"]
 
 		# Create the game folders
-		self.game["folders"] = {
-			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize_Title(self.game["Title"]) + "/"
+		self.game["Folders"] = {
+			"root": self.dictionary["Type"]["Folders"]["Information"]["root"] + self.Sanitize_Title(self.game["Title"]) + "/"
 		}
 
-		self.Folder.Create(self.game["folders"]["root"])
+		self.Folder.Create(self.game["Folders"]["root"])
 
 		# Create the game details file
-		self.game["folders"]["details"] = self.game["folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
-		self.File.Create(self.game["folders"]["details"])
+		self.game["Folders"]["details"] = self.game["Folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
+		self.File.Create(self.game["Folders"]["details"])
 
 		# Write into the game details file
-		self.File.Edit(self.game["folders"]["details"], self.Text.From_Dictionary(self.game["Details"]), "w")
+		self.File.Edit(self.game["Folders"]["details"], self.Text.From_Dictionary(self.game["Details"]), "w")
 
 		# Remove the "folders" dictionary to let "Select_Data" create it
 		self.game.pop("folders")
 
 	def Add_To_The_Database(self):
-		self.dictionary["Type"]["JSON"] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["information"]["info"])
+		self.dictionary["Type"]["JSON"] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["Information"]["info"])
 
 		# Add to the titles list
 		self.dictionary["Type"]["JSON"]["Titles"].append(self.game["Title"])
@@ -249,5 +249,5 @@ class Add_A_New_Game(GamePlayer):
 		# Update the number of game inside the json dictionary
 		self.dictionary["Type"]["JSON"]["Number"] = len(self.dictionary["Type"]["JSON"]["Titles"])
 
-		# Edit the "Info.json" file with the new dictionary
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["information"]["info"], self.dictionary["Type"]["JSON"])
+		# Edit the "Information.json" file with the new dictionary
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Information"]["info"], self.dictionary["Type"]["JSON"])

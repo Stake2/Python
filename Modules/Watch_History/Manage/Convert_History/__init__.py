@@ -32,11 +32,11 @@ class Convert_History(Watch_History):
 
 		# Create the Watched dictionary
 		self.watched = {
-			"Entries file": self.dictionary["Media"]["Item"]["folders"]["watched"]["entries"],
-			"Entries": self.JSON.To_Python(self.dictionary["Media"]["Item"]["folders"]["watched"]["entries"]),
-			"Entry list": self.File.Contents(self.dictionary["Media"]["Item"]["folders"]["watched"]["entry_list"])["lines"],
-			"Files": self.dictionary["Media"]["Item"]["folders"]["watched"]["files"],
-			"Correct titles file": self.dictionary["Media"]["Item"]["folders"]["watched"]["root"] + "Correct titles.txt"
+			"Entries file": self.dictionary["Media"]["Item"]["Folders"]["watched"]["entries"],
+			"Entries": self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["watched"]["entries"]),
+			"Entry list": self.File.Contents(self.dictionary["Media"]["Item"]["Folders"]["watched"]["entry_list"])["lines"],
+			"Files": self.dictionary["Media"]["Item"]["Folders"]["watched"]["files"],
+			"Correct titles file": self.dictionary["Media"]["Item"]["Folders"]["watched"]["root"] + "Correct titles.txt"
 		}
 
 		self.watched["Correct titles"] = self.File.Contents(self.watched["Correct titles file"])["lines"]
@@ -121,9 +121,9 @@ class Convert_History(Watch_History):
 
 			if year not in year_dictionary:
 				year_dictionary[year] = {
-					"Entries file": self.folders["watch_history"][year]["entries"],
+					"Entries file": self.folders["Watch History"][year]["entries"],
 					"Entries": "",
-					"Media type Entries file": self.folders["watch_history"][year]["per_media_type"][media_type_key]["entries"],
+					"Media type Entries file": self.folders["Watch History"][year]["per_media_type"][media_type_key]["entries"],
 					"Media type Entries": ""
 				}
 
@@ -166,11 +166,11 @@ class Convert_History(Watch_History):
 						"Normal": year_entry["Entry"],
 						"Sanitized": year_entry["Entry"].replace(":", ";").replace("/", "-")
 					},
-					"current_year": self.Years.years[year]
+					"Current year": self.Years.years["Dictionary"][year]
 				}
 
 				# Update the episode title in the year Entry file
-				per_media_type_folder = self.folders["watch_history"][year]["per_media_type"][media_type_key]["files"]["root"]
+				per_media_type_folder = self.folders["Watch History"][year]["per_media_type"][media_type_key]["files"]["root"]
 				year_entry_file = per_media_type_folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 				# Get the Entry file lines
@@ -188,11 +188,11 @@ class Convert_History(Watch_History):
 					full_language = self.languages["full"][language]
 
 					# Get the root and type folder
-					root_folder = self.texts["watched_media"][language]
+					root_folder = self.JSON.Language.texts["watched_media"][language]
 					type_folder = self.dictionary["Media type"]["Plural"][language]
 
 					# Get the type folder inside the root folder which is inside the year language folder
-					folder = self.dictionary["Entry"]["current_year"]["folders"][full_language][root_folder][type_folder]["root"]
+					folder = self.dictionary["Entry"]["current_year"]["Folders"][full_language][root_folder][type_folder]["root"]
 					file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
 
 					# Get the year Entry file per language
@@ -255,7 +255,7 @@ class Convert_History(Watch_History):
 
 		# Get the Comments dictionary
 		self.comments = {
-			"Comments": self.JSON.To_Python(self.dictionary["Media"]["Item"]["folders"]["comments"]["comments"])
+			"Comments": self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"])
 		}
 
 	def By_File(self):
@@ -275,7 +275,7 @@ class Convert_History(Watch_History):
 		self.Register = Register
 
 		# Get the History dictionary to update the entries number
-		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["Watch History"]["History"])
 
 		self.year = str(self.date["Units"]["Year"])
 
@@ -283,7 +283,7 @@ class Convert_History(Watch_History):
 		self.year = {
 			"Number": self.year,
 			"Folders": {
-				"root": self.folders["watch_history"]["root"] + self.year + "/"
+				"root": self.folders["Watch History"]["root"] + self.year + "/"
 			},
 			"Entries": self.dictionaries["Entries"]
 		}
@@ -503,7 +503,7 @@ class Convert_History(Watch_History):
 		self.Register = Register
 
 		# Get the History dictionary to update the entries number
-		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["Watch History"]["History"])
 
 		self.years_list = range(2018, self.date["Units"]["Year"] + 1)
 
@@ -516,7 +516,7 @@ class Convert_History(Watch_History):
 			self.year = {
 				"Number": self.year,
 				"Folders": {
-					"root": self.folders["watch_history"]["root"] + self.year + "/"
+					"root": self.folders["Watch History"]["root"] + self.year + "/"
 				},
 				"Entries dictionary": deepcopy(self.template),
 				"Lists": {}
@@ -627,10 +627,10 @@ class Convert_History(Watch_History):
 						"Media list": self.Get_Media_List(self.media_types[plural_media_type], self.texts["statuses, type: list"]["en"])
 					}
 
-				remove_list = self.File.Contents(self.Folder.folders["apps"]["root"] + "Test.txt")["lines"]
+				remove_list = self.File.Contents(self.Folder.folders["Apps"]["root"] + "Test.txt")["lines"]
 
 				self.old_history = {
-					"current_year": self.Years.years[self.year["Number"]],
+					"Current year": self.Years.years["Dictionary"][self.year["Number"]],
 					"Folders": self.year["Folders"],
 					"old_history": {
 						"Number": self.year["Number"]
@@ -711,7 +711,7 @@ class Convert_History(Watch_History):
 									# Select media and define its variables, returning the media dictionary (without asking user to select the media)
 									self.dictionary = self.Select_Media(self.dictionary)
 
-									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["per_media_type"], str(self.date["Units"]["Year"]), self.year["Number"])
+									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["Per Media Type"], str(self.date["Units"]["Year"]), self.year["Number"])
 
 						if self.dictionary != {}:
 							self.dictionary["Old history"] = self.old_history
@@ -1087,8 +1087,8 @@ class Convert_History(Watch_History):
 			from Watch_History.Watch_History import Watch_History as Watch_History
 
 			self.old_history = {
-				"current_year": self.Years.years[self.year["Number"]],
-				"folders": self.year["Folders"],
+				"Current year": self.Years.years["Dictionary"][self.year["Number"]],
+				"Folders": self.year["Folders"],
 				"old_history": {
 					"Number": self.year["Number"]
 				},
@@ -1107,7 +1107,7 @@ class Convert_History(Watch_History):
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
 		# Update the "History.json" file with the new History dictionary
-		self.JSON.Edit(self.folders["watch_history"]["history"], self.dictionaries["History"])
+		self.JSON.Edit(self.folders["Watch History"]["History"], self.dictionaries["History"])
 
 	def Fix_Comment_Dictionaries(self):
 		# Fix Comment dictionaries that exist on the "Comments.json" file of media
@@ -1119,7 +1119,7 @@ class Convert_History(Watch_History):
 		switches_dictionary = deepcopy(self.switches)
 
 		# Get the History dictionary to update the entries number
-		self.dictionaries["History"] = self.JSON.To_Python(self.folders["watch_history"]["history"])
+		self.dictionaries["History"] = self.JSON.To_Python(self.folders["Watch History"]["History"])
 
 		self.years_list = range(2018, self.date["Units"]["Year"] + 1)
 
@@ -1134,7 +1134,7 @@ class Convert_History(Watch_History):
 			self.year = {
 				"Number": self.year,
 				"Folders": {
-					"root": self.folders["watch_history"]["root"] + self.year + "/"
+					"root": self.folders["Watch History"]["root"] + self.year + "/"
 				},
 				"Entries": deepcopy(self.template),
 				"Media type entries": {}
@@ -1275,7 +1275,7 @@ class Convert_History(Watch_History):
 						if "Watched" not in self.medias[self.media_title]:
 							# Create the Watched dictionary
 							self.medias[self.media_title]["Watched"] = {
-								"Entries file": self.medias[self.media_title]["Media"]["Item"]["folders"]["watched"]["entries"]
+								"Entries file": self.medias[self.media_title]["Media"]["Item"]["Folders"]["watched"]["entries"]
 							}
 
 					# Define the media variable for easier typing
@@ -1289,7 +1289,7 @@ class Convert_History(Watch_History):
 					self.medias[self.media_title]["Watched"]["Entries"] = self.JSON.To_Python(self.medias[self.media_title]["Watched"]["Entries file"])
 
 					# Read the "Comments.json" file to get the Comments dictionary
-					self.comments = self.JSON.To_Python(self.medias[self.media_title]["Media"]["Item"]["folders"]["comments"]["comments"])
+					self.comments = self.JSON.To_Python(self.medias[self.media_title]["Media"]["Item"]["Folders"]["comments"]["comments"])
 
 					# Show the "Comments" header
 					print()

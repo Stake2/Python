@@ -359,9 +359,17 @@ class Input():
 		print()
 
 		if line_options["next_line"] == True:
-			print(show_text + ":")
+			text = show_text
 
-		if length == None and line_options["show_finish_text"] == True:
+			if ":" not in text:
+				text += ":"
+
+			print(text)
+
+		if (
+			length == None and
+			line_options["show_finish_text"] == True
+		):
 			print("--------------------")
 			print()
 			print("(" + self.language_texts["to_finish_typing_please_type_one_of_the_texts_below"] + ":")
@@ -380,9 +388,18 @@ class Input():
 		line = ""
 
 		i = 0
-		while line not in finish_keywords and contents["length"] != length:
-			if line_options["next_line"] == True or line_options["enumerate"] == True:
-				if line_options["enumerate"] == True and i == 0:
+		while (
+			line not in finish_keywords and
+			contents["length"] != length
+		):
+			if (
+				line_options["next_line"] == True or
+				line_options["enumerate"] == True
+			):
+				if (
+					line_options["enumerate"] == True and
+					i == 0
+				):
 					print(show_text)
 
 				type_text = ""
@@ -393,13 +410,23 @@ class Input():
 				if length != None:
 					type_text += "/" + str(length)
 
-				if line_options["enumerate"] == True and line_texts == [] or length != None and line_texts == []:
+				if (
+					line_options["enumerate"] == True and
+					line_texts == [] and
+					":" not in type_text or
+					length != None and
+					line_texts == [] and
+					":" not in type_text
+				):
 					type_text += ": "
 
 				if line_texts != []:
 					type_text += " " + line_texts[i] + ": "
 
-			if line_options["next_line"] == False and line_options["enumerate"] == False:
+			if (
+				line_options["next_line"] == False and
+				line_options["enumerate"] == False
+			):
 				if line_options["print"] == False:
 					if line == "":
 						type_text = show_text
@@ -407,7 +434,10 @@ class Input():
 					if line != "":
 						type_text = ""
 
-				if line == "" and line_options["print"] == True:
+				if (
+					line == "" and
+					line_options["print"] == True
+				):
 					if line_options["show_finish_text"] == True:
 						print()
 
@@ -419,22 +449,39 @@ class Input():
 
 			if line not in finish_keywords:
 				if line != "":
-					if "capitalize" in line_options and line_options["capitalize"] == True:
+					if (
+						"capitalize" in line_options and
+						line_options["capitalize"] == True
+					):
 						line = self.Capitalize(line)
 
-					if line_options["dots"] == True and line[-1] not in last_text_items:
+					if (
+						line_options["dots"] == True and
+						line[-1] not in last_text_items
+					):
 						line += "."
 
-				if "enumerate_text" in line_options and line_options["enumerate_text"] == True:
+				if (
+					"enumerate_text" in line_options and
+					line_options["enumerate_text"] == True
+				):
 					line = str(contents["length"] + 1) + ": " + line
 
-				if accept_enter == False and line != "" or accept_enter == True:
+				if (
+					accept_enter == False and
+					line != "" or
+					accept_enter == True
+				):
 					contents["lines"].append(line)
 
 					if backup_file != None:
 						self.File.Edit(backup_file, line, "a")
 
-					if length == None or length != None and contents["length"] != length - 1:
+					if (
+						length == None or
+						length != None and
+						contents["length"] != length - 1
+					):
 						line += "\n"
 
 					contents["string"] += line
@@ -443,7 +490,10 @@ class Input():
 
 			i += 1
 
-		if contents["string"] != "" and "\n" in contents["string"][-1]:
+		if (
+			contents["string"] != "" and
+			"\n" in contents["string"][-1]
+		):
 			contents["string"] = contents["string"][:-1]
 
 		if show_text_parameter == None:
