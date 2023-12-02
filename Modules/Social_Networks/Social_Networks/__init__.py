@@ -52,7 +52,7 @@ class Social_Networks(object):
 				# Get the sub-class
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-clas to the current module
+				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
 		# Make a backup of the module folders
@@ -141,9 +141,10 @@ class Social_Networks(object):
 			"Lists": {
 				"Exact match": [],
 				"Remove from search": [],
-				"Do not ask for item": []
+				"Do not ask for item": [],
+				"Select": []
 			},
-			"Genders": {
+			"Gender": {
 				"Items": [
 					"The",
 					"This",
@@ -443,9 +444,9 @@ class Social_Networks(object):
 
 			# Update the gender lists of the root information items with the gender lists of the Social Network
 			for gender in ["Masculine", "Feminine"]:
-				for item in items["Genders"][gender]:
-					if item not in self.information_items["Genders"][gender]:
-						self.information_items["Genders"][gender].append(item)
+				for item in items["Gender"][gender]:
+					if item not in self.information_items["Gender"][gender]:
+						self.information_items["Gender"][gender].append(item)
 
 			# Update the "Formats" dictionary of the root information items with the "Formats" dictionary of the Social Network
 			self.information_items["Formats"][social_network] = items["Formats"]
@@ -552,7 +553,9 @@ class Social_Networks(object):
 		# Iterate through the information items list
 		for key in dictionary["List"]:
 			# Create the information item dictionary
-			dict_ = {}
+			dict_ = {
+				"Name": key
+			}
 
 			# Define the text key
 			text_key = key.lower().replace(" ", "_")
@@ -610,26 +613,32 @@ class Social_Networks(object):
 			for language in self.languages["small"]:
 				dict_["Plural"][language] = self.JSON.Language.texts[text_key][language]
 
-			# Define the "Genders" key"
-			dict_["Genders"] = {}
+			# Define the "Gender" key
+			dict_["Gender"] = {
+				"Text": "",
+				"Words": {}
+			}
 
 			# Define the gender words of the information item
 			words = {}
 
-			for item in dictionary["Genders"]["Items"]:
+			for item in dictionary["Gender"]["Items"]:
 				text_key = item.lower().replace(" ", "_")
 
 				# Define the gender
-				if key in dictionary["Genders"]["Masculine"]:
+				if key in dictionary["Gender"]["Masculine"]:
 					gender = "masculine"
 
-				if key in dictionary["Genders"]["Feminine"]:
+				if key in dictionary["Gender"]["Feminine"]:
 					gender = "feminine"
 
 				words[item] = self.JSON.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
 
+				# Define the gender inside the "Gender" dictionary
+				dict_["Gender"]["Text"] = gender
+
 			# Update the gender "Words" dictionary inside the root information item dictionary
-			dict_["Genders"]["Words"] = words
+			dict_["Gender"]["Words"] = words
 
 			# Define the format of the information item
 			dict_["Format"] = {
@@ -688,7 +697,7 @@ class Social_Networks(object):
 			# Remove the unused keys of the Social Network "Information items" dictionary
 			to_remove = [
 				"Lists",
-				"Genders",
+				"Gender",
 				"Formats",
 				"Additional items"
 			]
@@ -840,17 +849,17 @@ class Social_Networks(object):
 		# Define the test information dictionary for testing
 		test_information = {
 			"Discord": {
-				"Username": "Cavalo Louco (Nome)",
-				"Handle": "cavalo_louco_arroba",
-				"Originally": "Cavalo Louco#1773",
+				"Username": "Cavala Louca (Nome)",
+				"Handle": "cavala_louca_arroba",
+				"Originally": "Cavala Louca#1773",
 				"ID": "1000000000000000000",
 				"Message ID": "1000000000000000000",
 				"Member since": "01/01/2016",
-				"Pronouns": "Gato / Preto"
+				"Pronouns": "Cavala / Marrom"
 			},
 			"Facebook": {
-				"Username": "Cavalo Louco (Nome)",
-				"Handle": "cavalo.louco.19",
+				"Username": "Cavala Louca (Nome)",
+				"Handle": "cavala.louca.19",
 				"ID": "100000000000000",
 				"Member since": "01/01/2003"
 			}
@@ -883,7 +892,7 @@ class Social_Networks(object):
 						self.social_network["Name"] not in test_information
 					):
 						# Ask the user for the information
-						information = self.Input.Type(language_information_item, accept_enter = accept_enter, next_line = True, regex = item_format)
+						information = self.Input.Type(language_information_item, accept_enter = accept_enter, next_line = True, tab = "\t", regex = item_format)
 
 					if (
 						self.switches["testing"] == True and

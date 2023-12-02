@@ -44,7 +44,7 @@ class Project_Zomboid(object):
 				# Get the sub-class
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-clas to the current module
+				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
 		# Make a backup of the module folders

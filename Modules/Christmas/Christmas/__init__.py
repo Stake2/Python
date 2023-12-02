@@ -52,7 +52,7 @@ class Christmas():
 				# Get the sub-class
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-clas to the current module
+				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
 		# Make a backup of the module folders
@@ -122,7 +122,7 @@ class Christmas():
 			if title not in do_not_run:
 				sub_class = sub_class()
 
-			# Add the sub-clas to the current module
+			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
 
 	def Define_Folders(self):

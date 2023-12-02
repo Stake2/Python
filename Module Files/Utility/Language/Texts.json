@@ -1745,6 +1745,10 @@
 		"en": "Known people",
 		"pt": "Pessoas conhecidas"
 	},
+	"search, title()": {
+		"en": "Search",
+		"pt": "Pesquisa"
+	},
 	"can_be_long": {
 		"en": "can be long",
 		"pt": {
@@ -1823,7 +1827,7 @@
 		"last",
 		"in"
 	],
-	"gender, type: list": {
+	"genders, type: list": {
 		"en": [
 			"Feminine",
 			"Masculine"
@@ -1833,7 +1837,7 @@
 			"Masculino"
 		]
 	},
-	"sexuality, type: list": {
+	"sexualities, type: list": {
 		"en": [
 			"Straight",
 			"Homosexual",

@@ -11,10 +11,10 @@
 		}
 	},
 	"the_friend": {
-		"en": "the Friend",
+		"en": "the friend",
 		"pt": {
-			"masculine": "o Amigo",
-			"feminine": "a Amiga"
+			"masculine": "o amigo",
+			"feminine": "a amiga"
 		}
 	},
 	"friends": {
@@ -35,15 +35,15 @@
 	},
 	"friend_information": {
 		"en": "Friend information",
-		"pt": "Informações do Amigo"
+		"pt": "Informações do amigo"
 	},
 	"search_for_friend_{}_file": {
-		"pt": "Pesquisar por arquivo de {} de Amigo",
-		"en": "Search for Friend {} file"
+		"pt": "Pesquisar por um arquivo de {} de amigo",
+		"en": "Search for a friend {} file"
 	},
-	"select_the_information": {
-		"pt": "Selecione a informação",
-		"en": "Select the information"
+	"select_the_information_item": {
+		"pt": "Selecione o item de informação",
+		"en": "Select the information item"
 	},
 	"select_one_information_item": {
 		"pt": "Selecione um item de informação",
@@ -54,20 +54,20 @@
 		"en": "Type {}"
 	},
 	"select_one_friend": {
-		"en": "Select one Friend",
-		"pt": "Selecione um Amigo"
+		"en": "Select one friend",
+		"pt": "Selecione um amigo"
 	},
 	"please_type_the_information_of_the_friend": {
-		"pt": "Por favor digite as informações do Amigo",
-		"en": "Please type the information of the Friend"
+		"pt": "Por favor digite as informações do amigo",
+		"en": "Please type the information of the friend"
 	},
 	"you_added_this_friend_to_the_friends_database": {
-		"pt": "Você adicionou este Amigo ao banco de dados de Amigos",
-		"en": "You added this Friend to the Friends database"
+		"pt": "Você adicionou este amigo ao banco de dados de Amigos",
+		"en": "You added this friend to the Friends database"
 	},
 	"this_friend_already_existed_on_the_friends_database": {
-		"pt": "Este Amigo já existia no banco de dados de Amigos",
-		"en": "This Friend already existed on the Friends database"
+		"pt": "Este amigo já existia no banco de dados de Amigos",
+		"en": "This friend already existed on the Friends database"
 	},
 	"found_{}": {
 		"pt": "Encontrado {}",
@@ -98,12 +98,12 @@
 		"en": "Opening this {} friend file"
 	},
 	"of_the_social_network": {
-		"pt": "da rede social",
-		"en": "of the social network"
+		"pt": "da Rede Social",
+		"en": "of the Social Network"
 	},
 	"select_a_social_network_to_add_it_to_the_friend_folder": {
-		"pt": "Selecione uma Rede Social para adicionar ela à pasta do Amigo",
-		"en": "Select a Social Network to add it to the Friend folder"
+		"pt": "Selecione uma Rede Social para adicionar ela à pasta do amigo",
+		"en": "Select a Social Network to add it to the friend folder"
 	},
 	"select_one_social_network_to_open_its_profile_file": {
 		"pt": "Selecione uma Rede Social para abrir seu arquivo de perfil",
@@ -114,16 +114,16 @@
 		"en": "Select the Social Network where you met {}"
 	},
 	"add_social_network_to_friend_folder": {
-		"pt": "Adicionar Rede Social à pasta de Amigo",
-		"en": "Add Social Network to Friend folder"
+		"pt": "Adicionar Rede Social à pasta de amigo",
+		"en": "Add Social Network to friend folder"
 	},
 	"add_more_social_networks": {
 		"pt": "Adicionar mais Redes Sociais",
 		"en": "Add more Social Networks"
 	},
 	"the_social_network_is_already_present, type: explanation": {
-		"pt": "A Rede Social já está presente na lista de Redes Sociais do Amigo.\nPor favor selecione outra Rede Social",
-		"en": "The Social Network is already present in the Social Networks list of the Friend.\nPlease select another Social Network"
+		"pt": "A Rede Social já está presente na lista de Redes Sociais do amigo.\nPor favor selecione outra Rede Social",
+		"en": "The Social Network is already present in the Social Networks list of the friend.\nPlease select another Social Network"
 	},
 	"add_additional_information_about_the_origin_social_network": {
 		"pt": "Adicionar informação adicional sobre a Rede Social de Origem",
@@ -132,5 +132,13 @@
 	"type_the_additional_information": {
 		"pt": "Digite a informação adicional",
 		"en": "Type the additional information"
+	},
+	"custom_social_network": {
+		"en": "Custom Social Network",
+		"pt": "Rede Social personalizada"
+	},
+	"custom_origin_social_network": {
+		"en": "Custom origin Social Network",
+		"pt": "Rede Social de origem personalizada"
 	}
 }

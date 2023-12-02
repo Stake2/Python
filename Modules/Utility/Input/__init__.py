@@ -248,7 +248,7 @@ class Input():
 
 		return option
 
-	def Type(self, text = None, add_colon = True, accept_enter = True, next_line = False, regex = None, first_space = True):
+	def Type(self, text = None, add_colon = True, accept_enter = True, next_line = False, tab = "", regex = None, first_space = True):
 		if text == None:
 			text = self.language_texts["type_or_paste_the_text"]
 
@@ -256,7 +256,8 @@ class Input():
 			add_colon == True and
 			":" not in text[-1] and
 			text[-2] + text[-1] != ": " and
-			text[-1] != "\n"
+			text[-1] != "\n" and
+			text[-1] != "\t"
 		):
 			text += ": "
 
@@ -282,7 +283,7 @@ class Input():
 			}
 
 		if accept_enter == True:
-			typed = input(local_text)
+			typed = input(tab + local_text)
 
 		if accept_enter == False:
 			typed = ""
@@ -293,7 +294,7 @@ class Input():
 					print()
 					print(text)
 
-				typed = input(local_text)
+				typed = input(tab + local_text)
 
 				if i == 0:
 					i += 1
@@ -308,13 +309,20 @@ class Input():
 				new_text = text
 
 				if ": " in text:
-					example_text = self.JSON.Language.language_texts["example, title()"] + ': "' + regex["Example"] + '", ' + \
-					self.JSON.Language.language_texts["length, title()"] + ": " + str(len(regex["Example"]))
+					example_text = self.JSON.Language.language_texts["example, title()"] + ': "' + regex["Example"] + '"'
+
+					try:
+						int(regex["Example"])
+
+						example_text += ", " + self.JSON.Language.language_texts["length, title()"] + ": " + str(len(regex["Example"]))
+
+					except ValueError:
+						pass
 
 					new_text = new_text.replace(": ", " (" + example_text + "):")
 
 					if next_line == True:
-						new_text += "\n"
+						new_text += "\n" + tab
 
 				typed = self.Type(new_text, next_line, accept_enter = False, first_space = first_space)
 

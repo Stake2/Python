@@ -32,7 +32,7 @@ class Play(GamePlayer):
 			# Get the sub-class
 			sub_class = getattr(module, title)
 
-			# Add the sub-clas to the current module
+			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
 
 		self.dictionary = dictionary

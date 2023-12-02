@@ -13,17 +13,8 @@ class Open_Friend_File(Friends):
 
 		# Define the root dictionary, with the "Search" and "States" dictionaries
 		self.dictionary = {
-			"Search": {
-				"Information item": {},
-				"Information items": self.information_items,
-				"Genders": {
-					"Words": {}
-				},
-				"Found": {},
-				"First space": False
-			},
 			"States": {
-				"Selected a friend": False,
+				"Selected a Friend": False,
 				"Found file": False,
 				"Found multiple files": False,
 				"Search": False
@@ -65,18 +56,19 @@ class Open_Friend_File(Friends):
 				print(self.large_bar)
 
 			# Select a friend
-			self.Select_Friend()
+			# And also update the "Selected a Friend" state in the "States" dictionary
+			self.dictionary["States"] = self.Select_Friend(states = self.dictionary["States"])["States"]
 
 			# If the file name is "Social Network"
 			if self.file_name["en"] == "Social Network":
 				# List the Friend Social Networks list
-				social_networks = self.friend["Social Networks"]["List"]
+				social_networks = self.friend["Social Networks"]
 
 				# Define the select text
 				select_text = self.language_texts["select_one_social_network_to_open_its_profile_file"]
 
 				# Select a Friend Social Network
-				self.Select_Social_Network(social_networks = social_networks, select_text = select_text)
+				self.social_network = self.Select_Social_Network(social_networks = social_networks, select_text = select_text)
 
 			# Define the friend file
 			self.Define_Friend_File()
@@ -88,53 +80,38 @@ class Open_Friend_File(Friends):
 			self.Open_Friend_File()
 
 	def Search_Friend_File(self):
-		# Define the Social Network Information items to be selected
+		# Define the "Search" dictionary
+		self.dictionary["Search"] = {
+			"Information item": {},
+			"Information items": self.information_items,
+			"Found": {},
+			"First space": False
+		}
+
+		# If the file name in English is "Social Network"
 		if self.file_name["en"] == "Social Network":
+			# Define the Social Network Information items to be selected
 			self.dictionary["Search"]["Information items"] = self.Social_Networks.information_items
 
 			self.dictionary["Search"]["First space"] = True
 
-		# Define the Information items to be selected
-		options = self.dictionary["Search"]["Information items"]["Lists"]["en"]
+		# Add the "Accept enter" key to the Information items dictionary
+		self.dictionary["Search"]["Information items"]["Accept enter"] = False
 
-		# Remove the information items that wish to be removed
-		if "Remove from search" in self.dictionary["Search"]["Information items"]["Lists"]:
-			for item in self.dictionary["Search"]["Information items"]["Lists"]["Remove from search"]:
-				options.remove(item)
+		# Select the information item and get its dictionary
+		dictionary = self.Select_Information_Item(self.dictionary["Search"]["Information items"])
 
-		language_options = []
+		# Define the information item dictionary
+		self.information_item = dictionary["Item"]
 
-		for option in options:
-			option = self.dictionary["Search"]["Information items"]["Dictionary"][option][self.user_language]
-
-			language_options.append(option)
-
-		# Show a separator
-		print()
-		print(self.large_bar)
-
-		# Define the show and select text
-		show_text = self.JSON.Language.language_texts["information_items"]
-		select_text = self.language_texts["select_the_information"]
-
-		option = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
-
-		# Get the information item dictionary
-		self.dictionary["Search"]["Information item"] = self.dictionary["Search"]["Information items"]["Dictionary"][option]
+		# Define the search query
+		self.dictionary["Search"]["Query"] = dictionary["Information"]
 
 		# Update the "Exact match" key of the States dictionary
-		self.dictionary["States"]["Exact match"] = self.dictionary["Search"]["Information item"]["States"]["Exact match"]
+		self.dictionary["States"]["Exact match"] = self.information_item["States"]["Exact match"]
 
-		# Iterate through the gender words of the information item
-		for key, item in self.dictionary["Search"]["Information item"]["Genders"]["Words"].items():
-			# Add the gender item inside the genders "Words" dictionary
-			self.dictionary["Search"]["Genders"]["Words"][key] = item
-
-		# Type the selected Friend or Social Network information
-		type_text = self.language_texts["type_{}"].format(self.dictionary["Search"]["Genders"]["Words"]["The"] + " " + self.dictionary["Search"]["Information item"][self.user_language].lower())
-
-		# Ask the user for the search query
-		self.dictionary["Search"]["Query"] = self.Input.Type(type_text)
+		# Update the "Information item" inside the "Search" dictionary
+		self.dictionary["Search"]["Information item"] = self.information_item
 
 		# Define a basic Social Networks list
 		social_networks_list = [
@@ -171,19 +148,19 @@ class Open_Friend_File(Friends):
 				self.dictionary["Search"]["Results"] = []
 
 				# If the information item is inside the Friend/Social Network Information dictionary
-				if self.dictionary["Search"]["Information item"]["en"] in friend["Information"]:
+				if self.information_item["Name"] in friend["Information"]:
 					# If the search needs an exact match
 					if self.dictionary["States"]["Exact match"] == True:
 						# Search using Regex
-						self.dictionary["Search"]["Results"] = re.findall(r"\b" + self.dictionary["Search"]["Query"] + r"\b", friend["Information"][self.dictionary["Search"]["Information item"]["en"]], re.IGNORECASE)
+						self.dictionary["Search"]["Results"] = re.findall(r"\b" + self.dictionary["Search"]["Query"] + r"\b", friend["Information"][self.information_item["Name"]], re.IGNORECASE)
 
 					# If the search does not need an exact match
 					if self.dictionary["States"]["Exact match"] == False:
 						# If the selected information item is inside the Information dictionary
 						# And the search query is inside the selected information
 						if (
-							self.dictionary["Search"]["Information item"]["en"] in friend["Information"] and
-							self.dictionary["Search"]["Query"] in friend["Information"][self.dictionary["Search"]["Information item"]["en"]]
+							self.information_item["Name"] in friend["Information"] and
+							self.dictionary["Search"]["Query"] in friend["Information"][self.information_item["Name"]]
 						):
 							# Append the search query to the results list
 							self.dictionary["Search"]["Results"].append(self.dictionary["Search"]["Query"])
@@ -192,10 +169,19 @@ class Open_Friend_File(Friends):
 					if self.dictionary["Search"]["Results"] != []:
 						# Add the friend name to the found friends
 						# With the friend file as the value
-						self.dictionary["Search"]["Found"][friend["Name"]] = {
+						dictionary = {
+							"Name": friend["Name"],
 							"File": friend["File"],
 							"Social Network": social_network
 						}
+
+						# If the information item is "Origin Social Network"
+						if self.information_item["Name"] == "Origin Social Network":
+							# Define the "Social Network" key inside the local Friend dictionary as the search query
+							dictionary["Social Network"] = self.dictionary["Search"]["Query"]
+
+						# Define the root Friend dictionary as the local Friend dictionary
+						self.dictionary["Search"]["Found"][friend["Name"]] = dictionary
 
 						# Define the Friend dictionary as the local Friend dictionary
 						self.friend = friend
@@ -237,7 +223,7 @@ class Open_Friend_File(Friends):
 		# And the user selected a friend
 		if (
 			self.file_name["en"] == "Social Network" and
-			self.dictionary["States"]["Selected a friend"] == True
+			self.dictionary["States"]["Selected a Friend"] == True
 		):
 			# Get the Social Network profile file
 			self.friend["File"] = self.friend["Files"]["Social Networks"][self.social_network["Name"]]["Profile"]
@@ -252,7 +238,7 @@ class Open_Friend_File(Friends):
 			self.dictionary["States"]["Search"] == True
 		):
 			# Update the language information item to add the Social Network name
-			self.dictionary["Search"]["Information item"][self.user_language] = self.dictionary["Search"]["Information item"][self.user_language].lower() + " " + self.language_texts["of_the_social_network"] + ' "' + self.social_network["Name"] + '"'
+			self.information_item[self.user_language] = self.information_item[self.user_language].lower() + " " + self.language_texts["of_the_social_network"] + ' "' + self.social_network["Name"] + '"'
 
 		# Define the local file name
 		file_name = self.file_name
@@ -279,19 +265,45 @@ class Open_Friend_File(Friends):
 		# If the friend file was found and the user selected a friend
 		if (
 			self.dictionary["States"]["Found file"] == True and
-			self.dictionary["States"]["Selected a friend"] == True
+			self.dictionary["States"]["Selected a Friend"] == True
 		):
 			# Add the friend file to the show text
 			show_text += "\t" + self.friend["File"]
 
 		if self.dictionary["States"]["Found file"] == True:
-			# Define the friend text
+			# Define the Friend text
 			friend_text = self.language_texts["friend, title()"] + ":" + "\n" + \
 			"\t" + self.friend["Name"]
 
 			# Show the "Friend" text and name
 			print(friend_text)
-			print()
+
+			# If the file name is "Social Network"
+			if self.file_name["en"] == "Social Network":
+				# If the "Search" key is not present in the root dictionary
+				# Or it is present
+				# And the information item is not "Origin Social Network"
+				if (
+					"Search" not in self.dictionary or
+					"Search" in self.dictionary and
+					self.dictionary["Search"]["Information item"]["Name"] != "Origin Social Network"
+				):
+					# Define the Social Network text
+					social_network_text = self.JSON.Language.language_texts["social_network"] + ":" + "\n" + \
+					"\t" + self.social_network["Name"]
+
+					# Show the "Social Network" text and name
+					print()
+					print(social_network_text)
+
+		# Show the search query if the user searched for a Friend file
+		if self.dictionary["States"]["Search"] == True:
+			# If the Friend file was found, show a space
+			if self.dictionary["States"]["Found file"] == True:
+				print()
+
+			print(self.JSON.Language.language_texts["search, title()"] + ":")
+			print("\t" + self.dictionary["Search"]["Query"])
 
 		# If the user searched for a friend
 		# And did not selected a friend
@@ -299,7 +311,7 @@ class Open_Friend_File(Friends):
 		# And multiple friend files were found
 		if (
 			self.dictionary["States"]["Search"] == True and
-			self.dictionary["States"]["Selected a friend"] == False or
+			self.dictionary["States"]["Selected a Friend"] == False or
 			self.dictionary["States"]["Search"] == True and
 			self.dictionary["States"]["Found multiple files"] == True
 		):
@@ -309,7 +321,7 @@ class Open_Friend_File(Friends):
 			"[Additional information]"
 
 			# Define the local information item
-			information_item = self.dictionary["Search"]["Information item"][self.user_language]
+			information_item = self.information_item[self.user_language]
 
 			if self.file_name["en"] != "Social Network":
 				# Transform the information item into lowercase
@@ -330,10 +342,10 @@ class Open_Friend_File(Friends):
 				items = []
 
 				# Define the exact match item
-				item = self.dictionary["Search"]["Genders"]["Words"]["Part of"]
+				item = self.information_item["Gender"]["Words"]["Part of"]
 
 				if self.dictionary["States"]["Exact match"] == True:
-					item = self.dictionary["Search"]["Genders"]["Words"]["This"]
+					item = self.information_item["Gender"]["Words"]["This"]
 
 				# Add it
 				items.append(item)
@@ -357,7 +369,7 @@ class Open_Friend_File(Friends):
 
 				# Define the list of items to be used to format the text template
 				items = [
-					self.dictionary["Search"]["Genders"]["Words"]["This"] + " " + information_item,
+					self.information_item["Gender"]["Words"]["This"] + " " + information_item,
 					file_name,
 					self.dictionary["Search"]["Query"],
 					file_name
@@ -367,6 +379,7 @@ class Open_Friend_File(Friends):
 			show_text = template.format(*items)
 
 		# Show the information text
+		print()
 		print(show_text)
 
 		# Show the verbose text if the file was found

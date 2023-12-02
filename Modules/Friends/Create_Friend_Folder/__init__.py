@@ -72,22 +72,27 @@ class Create_Friend_Folder(Friends):
 				},
 				"List": [],
 				"Dictionary": {}
+			},
+			"Gender": {
+				"Text": "",
+				"Words": {}
 			}
 		}
 
 		# Define the test information dictionary for testing
-		test_information = {
-			"Name": "Cavalo Louco",
+		self.dictionary["Test information"] = {
+			"Name": "Cavala Louca",
 			"Age": "21",
-			"Gender": "Masculino",
+			"Gender": "Feminino",
 			"Sexuality": "Heterossexual",
 			"Birthday": "10/10/2002",
 			"Height": "[Vazio]",
 			"Hometown": "São Paulo - São Paulo - Brasil",
 			"Residence place": "São Paulo - São Paulo - Brasil",
-			"Origin Social Network": "Discord",
 			"Date I met": "01/01/2023",
-			"Additional information of Origin Social Network": 'Servidor: "Servidor dos Cavalos Loucos"'
+			"Origin Social Network": "Custom Social Network",
+			"Custom Social Network": "Rede Social dos Cavalos Loucos",
+			"Additional information of Origin Social Network": 'Grupo: "Cavalos Loucos por Anime"'
 		}
 
 		# Iterate through the Information items dictionary
@@ -95,112 +100,36 @@ class Create_Friend_Folder(Friends):
 			# Get the language information item
 			language_information_item = information_item[self.user_language]
 
-			# If the information does not need to be selected
-			# And the information item is not "Origin Social Network"
-			if (
-				information_item["States"]["Select"] == False and
-				key != "Origin Social Network"
-			):
-				# Define the default information value
-				information = ""
-
-				# Define the "accept_enter" variable
-				accept_enter = False
-
-				if information_item["Format"]["Regex"] == "":
-					accept_enter = True
-
-				if information_item["States"]["Ask for information"] == True:
-					if self.switches["testing"] == False:
-						# Ask the user for the information of the Friend
-						# Defining the "accept_enter" variable as the above value
-						# Asking for input in the next line, to make it easier to read (next_line = True)
-						# And forcing the format of the information item Regex, if it is not empty (regex = [Format])
-						information = self.Input.Type(language_information_item, accept_enter = accept_enter, next_line = True, regex = information_item["Format"])
-
-						if information == "":
-							information = "[{}]".format(self.JSON.Language.language_texts["empty, title()"])
-
-					if self.switches["testing"] == True:
-						information = test_information[key]
-
-			# If the information needs to be selected
-			if information_item["States"]["Select"] == True:
-				# Define the text key for the list of options to select
-				text_key = key.lower().replace(" ", "_") + ", type: list"
-
-				# Define the "Options" dictionary
-				options = {
-					"English": self.JSON.Language.texts[text_key]["en"],
-					"Language": self.JSON.Language.language_texts[text_key],
-				}
-
-				if self.switches["testing"] == False:
-					# Ask the user to select an item from the list of options
-					information = self.Input.Select(options["English"], language_options = options["Language"], show_text = language_information_item, select_text = language_information_item)["language_option"]
-
-				else:
-					information = test_information[key]
-
 			# If the information item is "Origin Social Network"
 			if key == "Origin Social Network":
-				# Get the Friend gender in the user language
-				gender = self.friend["Information"]["Gender"]
+				# Define the "Friend" dictionary inside the "Information item" dictionary
+				# With the Friend gender
+				information_item["Friend"] = {
+					"Gender": self.friend["Information"]["Gender"]
+				}
 
-				# Translate the gender to English
-				i = 0
-				for item in self.JSON.Language.language_texts["gender, type: list"]:
-					# If the current gender is the same as the Friend gender
-					if item == gender:
-						# Get the English gender
-						gender = self.JSON.Language.texts["gender, type: list"]["en"][i]
+			# Define the "Test information" dictionary inside the "Information item" dictionary
+			information_item["Test information"] = self.dictionary["Test information"]
 
-					i += 1
+			# Define the type text
+			type_text = None
 
-				# Define "the friend" and select text
-				the_friend_text = self.language_texts["the_friend" + ", " + gender.lower()]
+			# If the information does not need to be selected
+			if information_item["States"]["Select"] == False:
+				# Define the type text as the information item in the user language
+				type_text = language_information_item
 
-				select_text = self.language_texts["select_the_social_network_where_you_met_{}"].format(the_friend_text)
+			# Select the information using the "Select_Information_Item" root method
+			information = self.Select_Information_Item(information_item = information_item, type_text = type_text)["Information"]
 
-				if self.switches["testing"] == False:
-					# Ask for the user to select the Social Network
-					information = self.Select_Social_Network(select_text = select_text)["Name"]
-
-				else:
-					information = test_information[key]
-
-				# Define the question text
-				question = self.language_texts["add_additional_information_about_the_origin_social_network"]
-
-				if self.switches["testing"] == False:
-					# Ask if the user wants to add additional information about the Origin Social Network
-					add_additional_information = self.Input.Yes_Or_No(question = question)
-
-				if self.switches["testing"] == True:
-					add_additional_information = True
-
-				# If the user wants to add additional information
-				if add_additional_information == True:
-					# Define the type text
-					type_text = self.language_texts["type_the_additional_information"]
-
-					if self.switches["testing"] == False:
-						# Ask for the additional information
-						text = self.Input.Type(type_text)
-
-					else:
-						text = test_information["Additional information of Origin Social Network"]
-
-					# Add the information
-					information += " - " + text
-
+			# Show the information item and information if the "testing" switch is True
 			if (
 				self.switches["testing"] == True and
 				information != ""
 			):
 				print()
 				print(language_information_item + ":")
-				print(information)
+				print("\t" + information)
 
 			# If the information is not equal to an empty string
 			if information != "":
@@ -281,10 +210,17 @@ class Create_Friend_Folder(Friends):
 		# Add Social Networks to an existing Friend or the newly added Friend
 		while self.dictionary["States"]["Add more Social Networks"] == True:
 			# Add the Social Network
-			self.Add_Social_Network()
+			self.added_social_network = self.Add_Social_Network()
 
-			# Ask if the user wants to add more Social Networks
-			self.dictionary["States"]["Add more Social Networks"] = self.Input.Yes_Or_No(self.language_texts["add_more_social_networks"])
+			if self.switches["testing"] == False:
+				# Ask if the user wants to add more Social Networks
+				self.dictionary["States"]["Add more Social Networks"] = self.Input.Yes_Or_No(self.language_texts["add_more_social_networks"])
+
+			if (
+				self.switches["testing"] == True and
+				self.friend["Social Networks"]["List"] == ["Discord", "Facebook"]
+			):
+				self.dictionary["States"]["Add more Social Networks"] = False
 
 		# Sort the Social Networks list
 		self.friend["Social Networks"]["List"] = sorted(self.friend["Social Networks"]["List"], key = str.lower)
@@ -304,14 +240,16 @@ class Create_Friend_Folder(Friends):
 		# If the Social Networks list of the Friend is empty
 		if self.friend["Social Networks"]["List"] == []:
 			# Define the first Social Network to be added as the origin Social Network
-			social_network = self.friend["Information"]["Origin Social Network"].split(" - ")[0]
+			variable = self.friend["Information"]["Origin Social Network"].split(" - ")[0]
+
+			# If the origin Social Network is inside the Social Networks list
+			if variable in self.social_networks["List"]:
+				# Define the "social_network" as the origin Social Network
+				social_network = variable
 
 			first_separator = False
 
-		if (
-			True == False and
-			self.switches["testing"] == True
-		):
+		if self.switches["testing"] == True:
 			if "Discord" not in self.friend["Social Networks"]["List"]:
 				social_network = "Discord"
 
@@ -321,8 +259,8 @@ class Create_Friend_Folder(Friends):
 			):
 				social_network = "Facebook"
 
-		# Select the Social Network
-		self.Select_Social_Network(social_network = social_network, social_networks = self.social_networks_copy, select_text = select_text)
+		# Select the Social Network and get its dictionary
+		self.social_network = self.Select_Social_Network(social_network = social_network, social_networks = self.social_networks_copy, select_text = select_text)
 
 		# If the Social Network is not inside the list of Social Networks of the Friend
 		if self.social_network["Name"] not in self.friend["Social Networks"]["List"]:
@@ -351,6 +289,14 @@ class Create_Friend_Folder(Friends):
 
 				# Add the Social Network to the "New Social Networks" dictionary
 				self.dictionary["New Social Networks"]["Dictionary"][self.social_network["Name"]] = deepcopy(self.social_network["Profile"])
+
+			# Return the "Added Social Network" variable as True
+			return True
+
+		# If the Social Network is inside the list of Social Networks of the Friend
+		if self.social_network["Name"] in self.friend["Social Networks"]["List"]:
+			# Return the "Added Social Network" variable as False
+			return False
 
 	def Define_Friend_Folders_And_Files(self):
 		# If the Friend already existed in the Friends database
@@ -454,7 +400,7 @@ class Create_Friend_Folder(Friends):
 		# Social Network folders and profile file creation
 		for social_network in self.friend["Social Networks"]["List"]:
 			# Update the "self.social_network" variable
-			self.Select_Social_Network(social_network)
+			self.social_network = self.Select_Social_Network(social_network)
 
 			# Create the empty "dict_" dictionary for the social network folders
 			dict_ = {}
@@ -686,23 +632,10 @@ class Create_Friend_Folder(Friends):
 		# Iterate through the Social Networks list
 		two_tabs = "\t\t"
 
-		# Make a local copy Information item dictionary
-		information_items = deepcopy(self.Social_Networks.information_items["Dictionary"])
-
-		# Iterate through the Social Networks list
-		for social_network in self.friend["Social Networks"]["List"]:
-			# Define the "information" variable for easier typing
-			information = self.friend["Social Networks"]["Dictionary"][social_network]
-
-			# Iterate through the Information item keys list
-			for key in information_items.copy():
-				if key not in information:
-					information_items.pop(key)
-
 		# Iterate through the Social Networks list
 		for social_network in social_networks["List"]:
 			# Update the "self.social_network" variable
-			self.Select_Social_Network(social_network)
+			self.social_network = self.Select_Social_Network(social_network)
 
 			# Show the Social Network name
 			print()
@@ -711,8 +644,11 @@ class Create_Friend_Folder(Friends):
 			# Define the "information" variable for easier typing
 			information = social_networks["Dictionary"][social_network]
 
-			# Iterate through the Information items dictionary
-			for key, information_item in information_items.items():
+			# List the keys of the "Information items" dictionary
+			keys = list(self.social_network["Information items"]["Dictionary"].keys())
+
+			# Iterate through the "Information items" dictionary
+			for key, information_item in self.social_network["Information items"]["Dictionary"].items():
 				# Define the language information item
 				language_information_item = information_item[self.user_language]
 
@@ -720,7 +656,7 @@ class Create_Friend_Folder(Friends):
 				current_information = information[key]
 
 				# If the information item is not the first one
-				if key != list(information_items.keys())[0]:
+				if key != keys[0]:
 					# Show a space
 					print()
 
