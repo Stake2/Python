@@ -421,7 +421,7 @@ class Help_With_Programming(Code):
 				self.switches["testing"] == False
 			):
 				for program in programs_to_close:
-					self.File.Close(program)
+					self.System.Close(program)
 
 			if mode == "open" and self.switches["testing"] == False:
 				Open(tool_path)

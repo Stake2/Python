@@ -239,7 +239,7 @@ class Post(Stories):
 
 				# Close Sony Vegas after updating the chapter cover in the specified cover type
 				if self.switches["testing"] == False:
-					self.File.Close("vegas110")
+					self.System.Close("vegas110")
 
 	def Copy_Title(self, language, post_chapter = False):
 		type_text = self.language_texts["press_enter_to_copy_the_chapter_title_and_paste_it_on_the_vegas_title_media"]

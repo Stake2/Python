@@ -228,7 +228,7 @@ class Update_Websites(Code):
 		if close == True:
 			if self.switches["testing"] == False:
 				for program in self.xampp_programs:
-					self.File.Close(program)
+					self.System.Close(program)
 
 	def Update_Website(self, open = True, close = True):
 		text = self.language_texts["updating_this_website"]
@@ -305,4 +305,4 @@ class Update_Websites(Code):
 				git_bat_file = file
 
 		if self.switches["testing"] == False:
-			self.Text.Open_Link(git_bat_file)
+			self.System.Open_Link(git_bat_file)

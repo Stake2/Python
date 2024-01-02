@@ -110,9 +110,7 @@ class Code(object):
 			self.Folder.Create(self.programming_language_folders[programming_language])
 
 		self.basic_functions = {
-			"self.System.Open": self.System.Open,
-			"self.Text.Open_Link": self.Text.Open_Link,
-			"self.File.Close": self.File.Close
+			"System.Open_Link": self.System.Open_Link
 		}
 
 		self.programming_mode_item_names = [

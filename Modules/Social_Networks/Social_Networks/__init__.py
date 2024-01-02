@@ -849,19 +849,6 @@ class Social_Networks(object):
 		# Define the test information dictionary for testing
 		test_information = {
 			"Discord": {
-				"Username": "PinkyCatt",
-				"Handle": "pinkycatt",
-				"Originally": "PinkyCatt#0232",
-				"ID": "979200403415654420",
-				"Message ID": "1016099289216340008",
-				"Member since": "25/05/2022",
-				"Pronouns": "Ela/dela"
-			}
-		}
-
-		# Define the test information dictionary for testing
-		test_information = {
-			"Discord": {
 				"Username": "Username of Discord",
 				"Handle": "handle_of_discord",
 				"Originally": "Originally#0001",

@@ -433,7 +433,7 @@ class Write(Stories):
 
 	def Close_Obsidian(self):
 		# Close Obsidian
-		self.File.Close("Obsidian")
+		self.System.Close("Obsidian")
 
 		# Delete lnk file
 		self.File.Delete(self.obsidian["lnk"])
