@@ -61,7 +61,10 @@ class System():
 		return path
 
 	def Open(self, item, open = False, verbose = True):
-		if "https" not in item:
+		if (
+			"http" not in item and
+			"https" not in item
+		):
 			item = self.Sanitize(item)
 
 		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose)

@@ -106,15 +106,15 @@ class Watch_Media(Watch_History):
 				titles = self.media["Item"]["Episodes"]["Titles"][self.user_language]
 
 			# If the current episode is equal to the last episode
-			if self.media["Item"]["Details"][self.language_texts["episode"].title()] == titles[-1]:
-				# Get the first episode title
-				title = titles[0]
-
-				# Define the episode in the details as the first episode
-				self.media["Item"]["Details"][self.language_texts["episode"].title()] = title
-
-				# Update the media "Details.txt" file
-				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
+			#if self.media["Item"]["Details"][self.language_texts["episode"].title()] == titles[-1]:
+			#	# Get the first episode title
+			#	title = titles[0]
+			#
+			#	# Define the episode in the details as the first episode
+			#	self.media["Item"]["Details"][self.language_texts["episode"].title()] = title
+			#
+			#	# Update the media "Details.txt" file
+			#	self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 		# If the media watching status is inside the status list
 		# Or the media "Dates.txt" file is empty

@@ -452,7 +452,7 @@ class Friends(object):
 
 		# Remove the non-friend folders from the above list
 		to_remove = [
-			"Archive",
+			"Arquivo",
 			"Database"
 		]
 
@@ -470,6 +470,10 @@ class Friends(object):
 
 		# Get the number of friends
 		self.friends["Numbers"]["Total"] = len(self.friends["List"])
+
+		# Add all years since 2018 to the "By year" list
+		for year in self.Date.Create_Years_List(function = str):
+			self.friends["Numbers"]["By year"][year] = 0
 
 		# Reset the numbers on the "By year" dictionary to zero
 		for year in self.friends["Numbers"]["By year"]:
@@ -821,6 +825,10 @@ class Friends(object):
 				# Remove it
 				self.friends["Met by year"].pop(year)
 
+			else:
+				# Sort the list
+				self.friends["Met by year"][year] = sorted(self.friends["Met by year"][year], key = str.lower)
+
 		# Sort the met by year numbers keys
 		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
 
@@ -840,7 +848,7 @@ class Friends(object):
 
 		# Remove the non-friend folders from the above list
 		to_remove = [
-			"Archive",
+			"Arquivo",
 			"Rubbish"
 		]
 
@@ -979,7 +987,7 @@ class Friends(object):
 			# Define the information item dictionary as the option dictionary
 			information_item = option
 
-		# Define the default information variable
+		# Define the default information value
 		information = ""
 
 		# If the "type_information" is True
@@ -1010,9 +1018,6 @@ class Friends(object):
 				if "Accept enter" in information_items:
 					# Update the "accept_enter" variable with its value
 					accept_enter = information_items["Accept enter"]
-
-				# Define the default information value
-				information = ""
 
 				# If the information needs to be requested from the user:
 				if information_item["States"]["Ask for information"] == True:
@@ -1152,6 +1157,16 @@ class Friends(object):
 
 						# Add the additional information
 						information += " - " + text
+
+		# Show the information item and information if the "testing" switch is True
+		if (
+			self.switches["testing"] == True and
+			information != "" and
+			information_item["Test information"] != {}
+		):
+			print()
+			print(information_item[self.user_language] + ":")
+			print("\t" + information)
 
 		# Return the dictionary with the Information item dictionary and the information text
 		return {

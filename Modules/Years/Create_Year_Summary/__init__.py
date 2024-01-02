@@ -7,7 +7,7 @@ import importlib
 
 class Create_Year_Summary(Years):
 	def __init__(self):
-		super().__init__(select_year = False)
+		super().__init__()
 
 		# Define the Summary dictionary
 		self.summary = {
@@ -16,14 +16,19 @@ class Create_Year_Summary(Years):
 			"States": {
 				"Is summary date": False
 			},
-			"Date": self.years["Summary"]["Date"]
+			"Date": self.years["Summary"]["Date"],
+			"Days": [
+				29,
+				30,
+				31
+			]
 		}
 
 		# Define the year
 		self.Define_The_Year()
 
-		if self.switches["testing"] == True:
-			self.summary["States"]["Is summary date"] = True
+		#if self.switches["testing"] == True:
+		#	self.summary["States"]["Is summary date"] = True
 
 		if self.year != None:
 			self.Check_Day()
@@ -85,11 +90,8 @@ class Create_Year_Summary(Years):
 			self.year = self.years["Dictionary"][current_year]
 
 	def Check_Day(self):
-		# If the current day and month is the same as the summary day and month
-		if (
-			self.date["Units"]["Day"] == self.summary["Date"]["Units"]["Day"] and
-			self.date["Units"]["Month"] == self.summary["Date"]["Units"]["Month"]
-		):
+		# If the current day is in the list of allowed days to create the year summary
+		if self.date["Units"]["Day"] in self.summary["Days"]:
 			# Then the current date is the summary date
 			self.summary["States"]["Is summary date"] = True
 
@@ -121,17 +123,45 @@ class Create_Year_Summary(Years):
 			print(self.language_texts["executing_the_year_summary_creator"] + "...")
 			print()
 
-			# Show the information and summary date
-			template = self.language_texts["today_is_not_{}_run_this_program_again_when_it_is"]
-
-			text = template.format(self.summary["Texts"]["Summary"])
+			# Show the information text
+			text = self.language_texts["today_is_not_an_allowed_day_to_create, type: explanation"]
 
 			print(text + ".")
 			print()
 
+			# Show the allowed days list
+			print(self.language_texts["allowed_days"] + ":")
+
+			for day in self.summary["Days"]:
+				december = self.summary["Date"]["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
+				year = self.years["Current year"]["Number"]
+
+				# Define the list of items
+				items = [
+					day, # Day number
+					december, # Month name in the user language
+					year # Current year number
+				]
+
+				text = template.format(*items)
+
+				# Remove the " of [year]" text
+				remove = " " + self.JSON.Language.language_texts["of, neutral"] + " " + str(year)
+
+				text = text.replace(remove, "")
+
+				# Remove the ", [year]" text
+				remove = ", " + str(year)
+
+				text = text.replace(remove, "")
+
+				print("\t" + text)
+
+			print()
+
 			# Show the date of today
 			print(self.JSON.Language.language_texts["today_is"] + ":")
-			print(self.summary["Texts"]["Today"])
+			print("\t" + self.summary["Texts"]["Today"])
 			print()
 			print("--------------------")
 
@@ -431,19 +461,23 @@ class Create_Year_Summary(Years):
 				# Add a line break
 				self.summary["Text"][language] += "\n"
 
+				if key == "Author":
+					# Add another line break
+					self.summary["Text"][language] += "\n"
+
 			# Add a separator
 			self.summary["Text"][language] += "\n" + "-----" + "\n\n"
 
-			# Add the "This Year I" text if it exists and is not empty
+			# Add the "Goodbye" text if it exists and is not empty
 			folder = self.year["Folders"][language]
 
-			if "This Year I" in folder:
-				file = self.year["Files"][language]["This Year I"]
+			if "Goodbye" in folder:
+				file = self.year["Files"][language]["Goodbye"]
 
 				contents = self.File.Contents(file)
 
 				if contents["lines"] != []:
-					# Add the "This Year I" text
+					# Add the "Goodbye" text
 					self.summary["Text"][language] += contents["string"]
 
 					# Add a separator

@@ -4,7 +4,7 @@ from Years.Years import Years as Years
 
 class Show_Year_Information(Years):
 	def __init__(self):
-		super().__init__(select_year = False)
+		super().__init__()
 
 		self.Select_The_Year()
 		self.Show_Information()

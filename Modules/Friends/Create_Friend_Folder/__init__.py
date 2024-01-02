@@ -12,6 +12,7 @@ class Create_Friend_Folder(Friends):
 		# Define the root dictionary
 		self.dictionary = {
 			"States": {
+				"Add Social Networks": False,
 				"Add more Social Networks": True,
 				"Add Social Network to existing Friend": False,
 				"Friend already existed": False
@@ -45,13 +46,13 @@ class Create_Friend_Folder(Friends):
 		# Write to them
 		self.Write_To_Files()
 
-		# Run the root class to update the folders and files of all Friends
-		# And also the "Friends.json" file
-		super().__init__()
-
 		# Show the information about the newly added Friend
 		# Or the new Social Networks added to an existing friend
 		self.Show_Information()
+
+		# Run the root class to update the folders and files of all Friends
+		# And also the "Friends.json" file
+		super().__init__()
 
 	def Type_Friend_Information(self):
 		# Show a separator and the "Please type friend information" text
@@ -81,19 +82,21 @@ class Create_Friend_Folder(Friends):
 
 		# Define the test information dictionary for testing
 		self.dictionary["Test information"] = {
-			"Name": "Cavala Louca",
-			"Age": "21",
-			"Gender": "Feminino",
+			"Name": "Name of the Friend",
+			"Age": "18",
+			"Gender": "Masculino",
 			"Sexuality": "Heterossexual",
-			"Birthday": "10/10/2002",
-			"Height": "[Vazio]",
-			"Hometown": "São Paulo - São Paulo - Brasil",
-			"Residence place": "São Paulo - São Paulo - Brasil",
-			"Date I met": "01/01/2023",
-			"Origin Social Network": "Custom Social Network",
-			"Custom Social Network": "Rede Social dos Cavalos Loucos",
-			"Additional information of Origin Social Network": 'Grupo: "Cavalos Loucos por Anime"'
+			"Birthday": "01/01/2000",
+			"Height": "",
+			"Hometown": "? - California - United States",
+			"Residence place": "? - California - United States",
+			"Date I met": "12:00 01/01/2000",
+			"Origin Social Network": "Discord",
+			"Additional information of Origin Social Network": 'Server: "A server of Discord"'
 		}
+
+		# Reset the test information dictionary to test manually typing the information
+		#self.dictionary["Test information"] = {}
 
 		# Iterate through the Information items dictionary
 		for key, information_item in self.information_items["Dictionary"].items():
@@ -121,15 +124,6 @@ class Create_Friend_Folder(Friends):
 
 			# Select the information using the "Select_Information_Item" root method
 			information = self.Select_Information_Item(information_item = information_item, type_text = type_text)["Information"]
-
-			# Show the information item and information if the "testing" switch is True
-			if (
-				self.switches["testing"] == True and
-				information != ""
-			):
-				print()
-				print(language_information_item + ":")
-				print("\t" + information)
 
 			# If the information is not equal to an empty string
 			if information != "":
@@ -208,11 +202,25 @@ class Create_Friend_Folder(Friends):
 					self.social_networks_copy["List"].remove(social_network)
 
 		# Add Social Networks to an existing Friend or the newly added Friend
+		i = 0
 		while self.dictionary["States"]["Add more Social Networks"] == True:
 			# Add the Social Network
 			self.added_social_network = self.Add_Social_Network()
 
-			if self.switches["testing"] == False:
+			if i == 0:
+				# Ask the user if they want to add Social Networks to the Friend
+				self.dictionary["States"]["Add Social Networks"] = self.Input.Yes_Or_No(self.language_texts["add_social_networks"])
+
+				# If the user do not want to add Social Networks
+				if self.dictionary["States"]["Add Social Networks"] == False:
+					# Define the "Add more Social Networks" state as False
+					self.dictionary["States"]["Add more Social Networks"] = False
+
+			if (
+				self.dictionary["States"]["Add Social Networks"] == True and
+				self.switches["testing"] == False and
+				i != 0
+			):
 				# Ask if the user wants to add more Social Networks
 				self.dictionary["States"]["Add more Social Networks"] = self.Input.Yes_Or_No(self.language_texts["add_more_social_networks"])
 
@@ -221,6 +229,8 @@ class Create_Friend_Folder(Friends):
 				self.friend["Social Networks"]["List"] == ["Discord", "Facebook"]
 			):
 				self.dictionary["States"]["Add more Social Networks"] = False
+
+			i += 1
 
 		# Sort the Social Networks list
 		self.friend["Social Networks"]["List"] = sorted(self.friend["Social Networks"]["List"], key = str.lower)
@@ -248,16 +258,6 @@ class Create_Friend_Folder(Friends):
 				social_network = variable
 
 			first_separator = False
-
-		if self.switches["testing"] == True:
-			if "Discord" not in self.friend["Social Networks"]["List"]:
-				social_network = "Discord"
-
-			if (
-				"Discord" in self.friend["Social Networks"]["List"] and
-				"Facebook" not in self.friend["Social Networks"]["List"]
-			):
-				social_network = "Facebook"
 
 		# Select the Social Network and get its dictionary
 		self.social_network = self.Select_Social_Network(social_network = social_network, social_networks = self.social_networks_copy, select_text = select_text)
@@ -536,7 +536,8 @@ class Create_Friend_Folder(Friends):
 		# Define the keys to remove
 		to_remove = [
 			"Folders",
-			"Files"
+			"Files",
+			"Gender"
 		]
 
 		# Iterate through the friends list
@@ -662,6 +663,10 @@ class Create_Friend_Folder(Friends):
 
 				# Show the language information item and the current information
 				print(two_tabs + language_information_item + ":")
+
+				if current_information == "":
+					current_information = self.JSON.Language.language_texts["empty, title()"]
+
 				print(two_tabs + current_information)
 
 		# Show a final separator

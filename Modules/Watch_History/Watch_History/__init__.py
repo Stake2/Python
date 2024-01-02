@@ -843,50 +843,30 @@ class Watch_History(object):
 
 				media["Folders"].update({
 					"Media": {
-						"root": dictionary["Media"]["Folders"]["Media"]["root"]
+						"root": dictionary["Media type"]["Folders"]["Media"]["root"] + dictionary["Media"]["Titles"]["Sanitized"] + "/"
 					}
 				})
 
-				media_type_media_folder = dictionary["Media type"]["Folders"]["Media"]["root"] + dictionary["Media"]["Titles"]["Sanitized"] + "/"
-
-				if self.Folder.Exist(media_type_media_folder) == True:
-					media["Folders"]["Media"]["root"] = media_type_media_folder
-
 				if sanitized_title + "/" not in media["Folders"]["Media"]["root"]:
 					media["Folders"]["Media"]["root"] += self.Sanitize(sanitized_title, restricted_characters = True) + "/"
-
-				# Create the folders
-				for key in media["Folders"]:
-					if key != "details":
-						folder = media["Folders"][key]
-
-						if "root" in folder:
-							folder = folder["root"]
-
-						self.Folder.Create(folder)
 
 			if "Folders" not in media:
 				media["Folders"] = {
 					"root": dictionary["Media type"]["Folders"]["Media information"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
 					"Media": {
-						"root": self.Folder.folders["Media"]["root"] + self.Sanitize_Title(sanitized_title) + "/"
+						"root": dictionary["Media type"]["Folders"]["Media"]["root"] + self.Sanitize_Title(sanitized_title) + "/"
 					}
 				}
 
-				media_type_media_folder = dictionary["Media type"]["Folders"]["Media"]["root"] + self.Sanitize_Title(sanitized_title) + "/"
+			# Create the folders
+			for key in media["Folders"]:
+				if key != "details":
+					folder = media["Folders"][key]
 
-				if self.Folder.Exist(media_type_media_folder) == True:
-					media["Folders"]["Media"]["root"] = media_type_media_folder
+					if "root" in folder:
+						folder = folder["root"]
 
-				# Create the folders
-				for key in media["Folders"]:
-					if key != "details":
-						folder = media["Folders"][key]
-
-						if "root" in folder:
-							folder = folder["root"]
-
-						self.Folder.Create(folder)
+					self.Folder.Create(folder)
 
 			file_names = [
 				"Details",

@@ -113,6 +113,10 @@
 		"pt": "Selecione a Rede Social onde você conheceu {}",
 		"en": "Select the Social Network where you met {}"
 	},
+	"add_social_networks": {
+		"pt": "Adicionar Redes Sociais",
+		"en": "Add Social Networks"
+	},
 	"add_social_network_to_friend_folder": {
 		"pt": "Adicionar Rede Social à pasta de amigo",
 		"en": "Add Social Network to friend folder"

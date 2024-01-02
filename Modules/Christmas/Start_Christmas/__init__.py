@@ -87,9 +87,8 @@ class Start_Christmas(Christmas):
 
 			print("\t" + date_text)
 
-			# Define the texts dictionary and function for easier typing
+			# Define the texts dictionary for easier typing
 			texts_dictionary = self.Date.language_texts
-			Function = self.Text.By_Number
 
 			# Iterate through the items left dictionary
 			for item in items_left:
@@ -109,7 +108,7 @@ class Start_Christmas(Christmas):
 					]
 
 					# Create the number text (singular or plural)
-					number_text = Function(*items)
+					number_text = self.Text.By_Number(*items)
 
 					# Show it, along with the number of items left
 					print()
@@ -118,8 +117,8 @@ class Start_Christmas(Christmas):
 
 		# If today is Christmas day
 		if self.christmas["States"]["Today is Christmas"] == True:
-			# Execute Christmas steps
-			self.Execute_Christmas()
+			# Execute the Christmas steps
+			self.Execute_Christmas_Steps()
 
 			# Show the text of a finished Christmas
 			print(self.language_texts["your_christmas_of_{}_is_finished_congratulations!"].format(self.date["Units"]["Year"]))
@@ -128,7 +127,7 @@ class Start_Christmas(Christmas):
 		print()
 		print("----------")
 
-	def Execute_Christmas(self):
+	def Execute_Christmas_Steps(self):
 		# Show the "Starting Christmas" information text
 		print(self.language_texts["starting_{}_of_{}..."].format(self.JSON.Language.language_texts["christmas, title()"], self.date["Units"]["Year"]))
 		print()
@@ -168,14 +167,21 @@ class Start_Christmas(Christmas):
 				# Get the value
 				value = object["Value"]
 
-				# If the function has a values dictionary
+				# If the local value is not a dictionary
+				# And the function has a values dictionary
 				# And the local value is inside that values dictionary
 				if (
+					type(value) != dict and
 					"Values" in dictionary and
 					value in dictionary["Values"]
 				):
 					# Get the value from the values dictionary
 					value = dictionary["Values"][value]
+
+				# If the "Function" key is not inside the dictionary
+				if "Function" not in dictionary:
+					# Then define the function as the default "Open" function
+					dictionary["Function"] = self.Open
 
 				# Run the function with the value
 				dictionary["Function"](value)

@@ -43,9 +43,13 @@
 		"en": "Show year summary",
 		"pt": "Mostrar resumo do ano"
 	},
-	"today_is_not_{}_run_this_program_again_when_it_is": {
-		"pt": "Hoje não é {}, execute este programa novamente quando for",
-		"en": "Today is not {}, run this program again when it is"
+	"today_is_not_an_allowed_day_to_create, type: explanation": {
+		"pt": "Hoje não é um dia permitido para criar o resumo de ano, execute este programa novamente quando for",
+		"en": "Today is not an allowed day to create the year summary, run this program again when it is"
+	},
+	"allowed_days": {
+		"pt": "Dias permitidos",
+		"en": "Allowed days"
 	},
 	"the_sum_of_numbers_below": {
 		"pt": "a soma dos números abaixo",

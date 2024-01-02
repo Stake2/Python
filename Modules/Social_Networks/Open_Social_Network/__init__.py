@@ -208,33 +208,3 @@ class Open_Social_Network(Social_Networks):
 	def Open_Social_Network(self):
 		# Open the Social Network link
 		self.System.Open(self.social_network["Link to open"], verbose = False)
-
-	def Define_Social_Network_Link(self):
-		if self.custom_link == None:
-			if self.link_type_key in self.social_network["Data"]["Information"]:
-				self.social_network_link = self.social_network["Data"]["Information"][self.link_type_key]
-
-			if self.link_type == self.texts["profile, title()"]["en"] and self.link_type_key in self.social_network["Data"]["Information"]:
-				self.user_information = {}
-
-				self.social_network_link = self.social_network["Data"]["Profile"][self.link_type_key]
-
-				added_user_information = False
-
-				for user_name_item in self.user_name_items:
-					language_user_name_item = self.user_name_items[user_name_item]
-
-					if user_name_item in self.user_information and added_user_information == False:
-						self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
-
-						added_user_information = True
-
-					if language_user_name_item in list(self.user_information.keys()) and added_user_information == False:
-						self.language_link_type += ' "' + self.user_information[language_user_name_item] + '"'
-
-						added_user_information = True
-
-		if "Program file" in self.social_network["Data"]["Information"]:
-			self.social_network_link = self.social_network["Data"]["Information"]["Program file"]
-
-			self.language_texts["opening_{}_on_its_{}_page_with_this_link"] = self.language_texts["opening_{}_on_its_{}_page_with_this_link"].split(" {}")[0] + " {}"

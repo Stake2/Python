@@ -169,17 +169,28 @@ class Christmas():
 			}
 		}
 
+		# Define a local list of Social Networks
+		social_networks = [
+			"Discord",
+			"Instagram, Facebook",
+			"Twitter",
+			"Wattpad",
+			"WhatsApp"
+		]
+
+		# Iterate through the local Social Networks list
+		for key in social_networks:
+			# Define the file of the Social Network inside the "Files" dictionary of the "Christmas" dictionary
+			self.christmas["Files"][key] = self.year_texts["Folders"]["Christmas"]["Merry Christmas"]["Social Networks"][key]
+
 		self.christmas["Functions"] = {
 			"Open_Folder": {
-				"Function": self.System.Open,
 				"Values": self.christmas["Folders"]
 			},
 			"Open_File": {
-				"Function": self.System.Open,
 				"Values": self.christmas["Files"]
 			},
 			"Open_Program": {
-				"Function": self.System.Open,
 				"Values": self.christmas["Programs"]
 			},
 			"Open_Module": {
@@ -200,6 +211,21 @@ class Christmas():
 			self.christmas["States"]["Today is Christmas"] = True
 
 		return self.christmas["States"]["Today is Christmas"]
+
+	def Open(self, item):
+		# If the item is a string (folder, file, or program)
+		if type(item) == str:
+			self.System.Open(item, verbose = False)
+
+		# If the item is a dictionary (list of folders, files, or programs)
+		if type(item) == dict:
+			key = item["Key"]
+			items = item["List"]
+
+			for item in items:
+				item = self.christmas[key][item]
+
+				self.System.Open(item, verbose = False)
 
 	def Open_Social_Networks(self, parameter):
 		if parameter == "Twitter":

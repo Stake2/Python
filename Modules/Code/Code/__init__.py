@@ -112,7 +112,7 @@ class Code(object):
 		self.basic_functions = {
 			"self.System.Open": self.System.Open,
 			"self.Text.Open_Link": self.Text.Open_Link,
-			"self.File.Close": self.File.Close,
+			"self.File.Close": self.File.Close
 		}
 
 		self.programming_mode_item_names = [
@@ -121,11 +121,11 @@ class Code(object):
 			"First function",
 			"Final function",
 			"Setting file",
-			"Modes",
+			"Modes"
 		]
 
 		self.tool_sub_names = [
 			self.language_texts["programs_to_close"],
 			self.language_texts["function, title()"],
-			self.language_texts["close_tool"],
+			self.language_texts["close_tool"]
 		]

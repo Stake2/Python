@@ -92,6 +92,10 @@
 		"pt": "sites",
 		"en": "websites"
 	},
+	"website, title()": {
+		"pt": "Site",
+		"en": "Website"
+	},
 	"websites, title()": {
 		"pt": "Sites",
 		"en": "Websites"

@@ -144,11 +144,14 @@ class File():
 
 			return False
 
-		if self.switches["file"]["copy"] == True and self.Exist(source_file) == True:
+		if (
+			self.switches["file"]["copy"] == True and
+			self.Exist(source_file) == True
+		):
 			import shutil
 			shutil.copy(source_file, destination_file)
 
-			self.Verbose(self.language_texts["source_file"] + ":\n" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
+			self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
 
 			return True
 
@@ -176,7 +179,7 @@ class File():
 			import shutil
 			shutil.move(source_file, destination_file)
 
-			self.Verbose(self.language_texts["source_file"] + ":\n" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
+			self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
 
 			return True
 

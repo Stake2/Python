@@ -260,6 +260,7 @@ class Update_Websites(Code):
 				print("\t" + website_title)
 
 		# Open website links to update them
+		i = 1
 		for key in self.websites["Update"]:
 			website = self.websites["Update"][key]
 
@@ -270,30 +271,26 @@ class Update_Websites(Code):
 				print()
 				print(self.large_bar)
 				print()
+				print(self.language_texts["website, title()"] + ":")
+				print("\t" + str(i) + "/" + str(len(list(self.websites["Update"].keys()))))
+				print()
 				print(self.language_texts["updating_this_website"] + ":")
-				print(website[self.user_language])
+				print("\t" + website[self.user_language])
 
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 
 				link = website["links"][language]
 
-				print()
-				print("-")
-				print()
-				print(self.language_texts["website_link"] + ":")
-				print(link)
-				print()
-				print(self.JSON.Language.language_texts["language, title()"] + ":")
-				print(self.languages["full_translated"][language][self.user_language])
-
 				if self.switches["testing"] == False:
-					self.System.Open(link)
+					self.System.Open(link, verbose = False)
 
 				self.Date.Sleep(1)
 
 			if key != list(self.websites["Update"].keys())[-1]:
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+
+			i += 1
 
 		print()
 		print(self.large_bar)

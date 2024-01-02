@@ -31,7 +31,10 @@ class Register(GamePlayer):
 
 		self.Check_Game_Status()
 
-		if self.game["States"]["Re-playing"] == False and self.game["States"]["Completed game"] == True:
+		if (
+			self.game["States"]["Re-playing"] == False and
+			self.game["States"]["Completed game"] == True
+		):
 			self.Check_Game_Dates()
 
 		# Database related methods
@@ -466,7 +469,23 @@ class Register(GamePlayer):
 		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
 
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Input.Lines(self.JSON.Language.language_texts["description, title()"] + ":", line_options_parameter = {"print": True, "next_line": False, "show_finish_text": True})["string"]
+			# Define the type text
+			type_text = self.JSON.Language.language_texts["description, title()"] + ":"
+
+			# Define the keyword parameters dictionary
+			parameters = {
+				"line_options_parameter": {
+					"print": True,
+					"next_line": False,
+					"show_finish_text": True
+				}
+			}
+
+			# Ask the user to type a session description
+			self.dictionary["Entry"]["Diary Slim"]["Description"] = self.Input.Lines(type_text, **parameters)
+
+			# Add the session description to the "Diary Slim" text
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Description"]["string"]
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:

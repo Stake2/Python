@@ -3,10 +3,11 @@
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
 class Write_On_Diary_Slim_Module(Diary_Slim):
-	def __init__(self, text, time = None, add_time = True, show_text = True, add_dot = True, check_file_length = True, current_diary_slim = True, verbose = None):
+	def __init__(self, text, time = None, custom_date = None, add_time = True, show_text = True, add_dot = True, check_file_length = True, current_diary_slim = True, verbose = None):
 		super().__init__()
 
 		self.text = text
+		self.custom_date = custom_date
 		self.time = time
 		self.add_time = add_time
 		self.show_text = show_text
@@ -36,10 +37,8 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		if self.check_file_length == True:
 			text_to_append = "\n\n" + text_to_append
 
-		date = None
-
 		# Get the current year dictionary
-		current_year = self.Current_Diary_Slim(date = date, current_diary_slim = self.current_diary_slim)
+		current_year = self.Current_Diary_Slim(date = self.custom_date, current_diary_slim = self.current_diary_slim)
 
 		self.File.Edit(current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
 

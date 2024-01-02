@@ -474,23 +474,26 @@ class Folder():
 		starting_year = 2018
 		current_year = self.date["Units"]["Year"]
 
-		for item in range(starting_year, current_year + 1):
-			key = str(item).lower().replace(" ", "_")
+		create_year_folders = False
 
-			self.folders["Notepad"]["Years"][key] = {
-				"root": self.folders["Notepad"]["Years"]["root"] + str(item) + "/"
-			}
+		if create_year_folders == True:
+			for item in range(starting_year, current_year + 1):
+				key = str(item).lower().replace(" ", "_")
 
-			if key == str(self.date["Units"]["Year"]):
-				# Per language years folder
-				for language in self.languages["small"]:
-					full_language = self.languages["full"][language]
+				self.folders["Notepad"]["Years"][key] = {
+					"root": self.folders["Notepad"]["Years"]["root"] + str(item) + "/"
+				}
 
-					self.folders["Notepad"]["Years"][key][full_language] = {
-						"root": self.folders["Notepad"]["Years"][key]["root"] + full_language + "/"
-					}
+				if key == str(self.date["Units"]["Year"]):
+					# Per language years folder
+					for language in self.languages["small"]:
+						full_language = self.languages["full"][language]
 
-				self.folders["Notepad"]["Years"]["current_year"] = self.folders["Notepad"]["Years"][key]
+						self.folders["Notepad"]["Years"][key][full_language] = {
+							"root": self.folders["Notepad"]["Years"][key]["root"] + full_language + "/"
+						}
+
+					self.folders["Notepad"]["Years"]["current_year"] = self.folders["Notepad"]["Years"][key]
 
 		# Mega "Image" folders
 		folders = {

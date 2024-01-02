@@ -520,8 +520,12 @@ class Register(Watch_History):
 
 	def Check_Media_Status(self):
 		if self.media["States"]["Series media"] == True:
-			# If the media has a media item list and the episode title is the last one
-			if self.media["States"]["Media item list"] == True and self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1]:
+			# If the media has a media item list
+			# And the episode title is the last one
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1]
+			):
 				# And the media is not a YouTube channel
 				if self.media["States"]["Video"] == False:
 					# If the media item is the last media item, define the media as completed
@@ -576,8 +580,15 @@ class Register(Watch_History):
 				if self.media["States"]["Video"] == False:
 					self.media["States"]["Completed media item"] = True
 
-			# If the media has no media item list and the episode title is the last one, define the media as completed
-			if self.media["States"]["Media item list"] == False and self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] and self.media["States"]["Video"] == False:
+			# If the media has no media item list
+			# And the episode title is the last one
+			# And the media unit is not a video
+			if (
+				self.media["States"]["Media item list"] == False and
+				self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] and
+				self.media["States"]["Video"] == False
+			):
+				# Define the media as completed
 				self.media["States"]["Completed media"] = True
 
 		# If the media is a movie, define it as completed
@@ -585,7 +596,11 @@ class Register(Watch_History):
 			self.media["States"]["Completed media"] = True
 
 		# If the media and media item are not completed, get next episode number
-		if self.media["States"]["Completed media"] == False and self.media["States"]["Completed media item"] == False and len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) != 1:
+		if (
+			self.media["States"]["Completed media"] == False and
+			self.media["States"]["Completed media item"] == False and
+			len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) != 1
+		):
 			try:
 				# Get next episode language title
 				self.media["Episode"]["Next"] = self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][self.media["Episode"]["Number"]]
@@ -618,7 +633,11 @@ class Register(Watch_History):
 			self.Change_Status(self.dictionary)
 
 		# Check if the media item has a correspondent movie inside the movies folder
-		if self.media["States"]["Series media"] == True and "Type" in self.media["Item"] and self.media["Item"]["Type"][self.user_language] == self.language_texts["movie"]:
+		if (
+			self.media["States"]["Series media"] == True and
+			"Type" in self.media["Item"] and
+			self.media["Item"]["Type"][self.user_language] == self.language_texts["movie"]
+		):
 			self.movies = self.Get_Media_List(self.media_types[self.texts["movies, title()"]["en"]], self.texts["plan_to_watch, title()"]["en"])
 
 			for movie_title in self.movies:
@@ -699,7 +718,7 @@ class Register(Watch_History):
 								# Or is inside the item title and the year of the movie is the same as the year of the item
 								if (
 									item_title == self.media["Item"]["Title"] or
-									self.media["Item"]["Title"].split(" (")[0] in item_title and \
+									self.media["Item"]["Title"].split(" (")[0] in item_title and
 									self.media["Item"]["Details"][self.Date.language_texts["year, title()"]] == item_details[self.Date.language_texts["year, title()"]]
 								):
 									# Define the media prototype dictionary
@@ -769,7 +788,10 @@ class Register(Watch_History):
 			self.media["Item"]["Finished watching text"] = self.media["Item"]["Finished watching text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["the_item"][self.user_language])
 
 			# Add the time template to the Diary Slim text if the media is not completed
-			if self.media["States"]["Completed media"] == False and self.media["States"]["Single unit"] == False:
+			if (
+				self.media["States"]["Completed media"] == False and
+				self.media["States"]["Single unit"] == False
+			):
 				self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.media["Item"]["Finished watching text"]
 
 		# Gets the date that the user started and finished watching the media and writes it to the media dates text file
@@ -828,13 +850,19 @@ class Register(Watch_History):
 			# Add unit and "of the" text
 			self.watched_item_text = self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"] + " " + self.media["texts"]["unit"][self.user_language] + " " + text
 
-			if self.media["States"]["Single unit"] == False and self.media["States"]["Video"] == False:
+			if (
+				self.media["States"]["Single unit"] == False and
+				self.media["States"]["Video"] == False
+			):
 				# Replace "this" text with "the first" if the episode is the first one
 				if self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][0]:
 					self.watched_item_text = self.watched_item_text.replace(self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"], self.JSON.Language.language_texts["the_first, masculine"])
 
 				# Replace "this" text with "the last" if the episode is the last one
-				if self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] or len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) == 1:
+				if (
+					self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] or
+					len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) == 1
+				):
 					self.watched_item_text = self.watched_item_text.replace(self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"], self.JSON.Language.language_texts["the_last, masculine"])
 
 			if "Movie" in self.media["Episode"]["Titles"][self.media["Language"]]:
@@ -909,7 +937,11 @@ class Register(Watch_History):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["re_watched"]["text"]
 
 		# Add the episode link if it exists
-		if "Remote" in self.media["Episode"] and "Link" in self.media["Episode"]["Remote"] and self.media["Episode"]["Remote"]["Title"] != "Animes Vision":
+		if (
+			"Remote" in self.media["Episode"] and
+			"Link" in self.media["Episode"]["Remote"] and
+			self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
+		):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["Episode"]["Remote"]["Link"]
 
 		# Define the clean text to be used on the "Post_On_Social_Networks" method
@@ -958,6 +990,9 @@ class Register(Watch_History):
 
 		if self.media["States"]["Series media"] == False:
 			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.language_texts["movie"])
+
+		if self.media["States"]["Video"] == True:
+			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.JSON.Language.language_texts["video, title()"].lower())
 
 		# Define the "posted" template
 		self.social_networks["Template"] = self.language_texts["i_posted_the_watched_text, type: template"] + "."

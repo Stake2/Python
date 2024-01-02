@@ -535,6 +535,14 @@
 		"en": "Type number",
 		"pt": "Número de tipo"
 	},
+	"current_year": {
+		"en": "Current year",
+		"pt": "Ano atual"
+	},
+	"next_year": {
+		"en": "Next year",
+		"pt": "Próximo ano"
+	},
 	"firsts_of_the_year": {
 		"pt": "Primeiros do Ano",
 		"en": "Firsts of the Year"
@@ -543,9 +551,17 @@
 		"pt": "Este Ano Eu",
 		"en": "This Year I"
 	},
-	"this_year_i_(post)": {
+	"this_year_i_post": {
 		"pt": "Este Ano Eu (post)",
 		"en": "This Year I (post)"
+	},
+	"welcome, title()": {
+		"en": "Welcome",
+		"pt": "Bem-vindo"
+	},
+	"goodbye, title()": {
+		"en": "Goodbye",
+		"pt": "Adeus"
 	},
 	"when, title()": {
 		"en": "When",
@@ -1196,6 +1212,10 @@
 		"en": "Theme",
 		"pt": "Tema"
 	},
+	"video, title()": {
+		"en": "Video",
+		"pt": "Vídeo"
+	},
 	"videos, title()": {
 		"en": "Videos",
 		"pt": "Vídeos"
@@ -1755,6 +1775,14 @@
 			"masculine": "pode ser longo",
 			"feminine": "pode ser longa"
 		}
+	},
+	"date, title()": {
+		"pt": "Data",
+		"en": "Date"
+	},
+	"dates, title()": {
+		"pt": "Datas",
+		"en": "Dates"
 	},
 	"genders, type: dict": {
 		"en": {

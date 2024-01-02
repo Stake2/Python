@@ -849,21 +849,34 @@ class Social_Networks(object):
 		# Define the test information dictionary for testing
 		test_information = {
 			"Discord": {
-				"Username": "Cavala Louca (Nome)",
-				"Handle": "cavala_louca_arroba",
-				"Originally": "Cavala Louca#1773",
-				"ID": "1000000000000000000",
-				"Message ID": "1000000000000000000",
-				"Member since": "01/01/2016",
-				"Pronouns": "Cavala / Marrom"
-			},
-			"Facebook": {
-				"Username": "Cavala Louca (Nome)",
-				"Handle": "cavala.louca.19",
-				"ID": "100000000000000",
-				"Member since": "01/01/2003"
+				"Username": "PinkyCatt",
+				"Handle": "pinkycatt",
+				"Originally": "PinkyCatt#0232",
+				"ID": "979200403415654420",
+				"Message ID": "1016099289216340008",
+				"Member since": "25/05/2022",
+				"Pronouns": "Ela/dela"
 			}
 		}
+
+		# Define the test information dictionary for testing
+		test_information = {
+			"Discord": {
+				"Username": "Username of Discord",
+				"Handle": "handle_of_discord",
+				"Originally": "Originally#0001",
+				"ID": "100000000000000000",
+				"Message ID": "100000000000000000",
+				"Member since": "13/06/2015",
+				"Pronouns": ""
+			}
+		}
+
+		# Reset the test information dictionary to test manually typing the information
+		#test_information = {}
+
+		# Define the default information value
+		information = ""
 
 		# Iterate through the Information items dictionary
 		for key, information_item in self.social_network["Information items"]["Dictionary"].items():
@@ -896,9 +909,14 @@ class Social_Networks(object):
 
 					if (
 						self.switches["testing"] == True and
-						self.social_network["Name"] in test_information
+						self.social_network["Name"] in test_information and
+						key in test_information[self.social_network["Name"]]
 					):
 						information = test_information[self.social_network["Name"]][key]
+
+					# Define the information as "[Empty]" if it is empty
+					if information == "":
+						information = "[{}]".format(self.JSON.Language.language_texts["empty, title()"])
 
 				# If the information item is inside the "Additional items" dictionary
 				if key in self.information_items["Additional items"][self.social_network["Name"]]:
@@ -916,11 +934,12 @@ class Social_Networks(object):
 
 				if (
 					self.switches["testing"] == True and
+					test_information != {} and
 					self.social_network["Name"] in test_information
 				):
 					print()
 					print(language_information_item + ":")
-					print(information)
+					print("\t" + information)
 
 				# Add the information to the Social Network "Information" dictionary, with the information item key
 				self.social_network["Profile"][key] = information

@@ -136,15 +136,15 @@ class GamePlayer(object):
 		}
 
 	def Parse_Arguments(self):
-		if self.switches["verbose"] == True:
+		if (
+			self.switches["verbose"] == True and
+			"Active argument" in self.arguments
+		):
 			print()
 			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
 			print()
 
 			self.JSON.Show(self.arguments)
-
-			print()
-			print(self.large_bar)
 
 	def Define_Types(self):
 		self.game_types = self.JSON.To_Python(self.folders["Data"]["Types"])
@@ -1481,6 +1481,18 @@ class GamePlayer(object):
 
 				for key in dictionary["States"]["Texts"]:
 					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
+
+			# If there is a session description, show it
+			if "Description" in self.dictionary["Entry"]["Diary Slim"]:
+				print()
+				print(self.JSON.Language.language_texts["description, title()"] + ":")
+
+				# Define the "description" variable for easier typing and a more beautiful code
+				description = self.dictionary["Entry"]["Diary Slim"]["Description"]["lines"]
+
+				# Show the description lines
+				for line in description:
+					print("\t" + line)
 
 			# If the user finished playing, ask for input before ending execution
 			print()
