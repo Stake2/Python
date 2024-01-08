@@ -321,7 +321,7 @@ class Stories(object):
 
 			# Create the cover folders
 			folders = {
-				"Websites": self.folders["Mega"]["websites"]["images"]["story_covers"],
+				"Websites": self.folders["Mega"]["Websites"]["Images"]["Story Covers"],
 				"Photoshop": self.folders["art"]["photoshop"]["stories"],
 				"Sony Vegas": self.folders["art"]["sony_vegas"]["story_covers"]
 			}
@@ -341,7 +341,7 @@ class Stories(object):
 
 			# Add the "Obsidian's Vaults" folder
 			story["Folders"]["Obsidian's Vaults"] = {
-				"root": self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"]["stories"]["root"] + story_title + "/"
+				"root": self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["stories"]["root"] + story_title + "/"
 			}
 
 			self.Folder.Create(story["Folders"]["Obsidian's Vaults"]["root"])

@@ -1,9 +1,9 @@
-				<key name="Task32" modified="2022-02-08 14:24:07" build="210912">
-					<value name="Name" type="string" data="{Years}"/>
+				<key name="Task27" modified="2024-01-08 18:33:05" build="230724">
+					<value name="Name" type="string" data="{PHP}"/>
 					<value name="Flags" type="dword" data="00000004"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Active" type="long" data="0"/>
 					<value name="Count" type="long" data="1"/>
-					<value name="Cmd1" type="string" data="py C:\Apps\MS.py -years"/>
+					<value name="Cmd1" type="string" data="py C:\Apps\MS.py -php"/>
 				</key>

@@ -94,7 +94,7 @@ class Python(object):
 					<value name="Cmd1" type="string" data="[module_execution_line]"/>
 				</key>"""
 
-		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 25 -run {[Module]}'
+		self.conemu_bat_template = 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 12 -run {[Module]}'
 
 	def Define_Files(self):
 		self.folders["modules_file"] = self.folders["apps"]["modules"]["modules"]

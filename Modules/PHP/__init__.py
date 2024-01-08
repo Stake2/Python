@@ -1,4 +1,4 @@
-# Text_Generator.py
+# PHP.py
 
 class Run():
 	def __init__(self):

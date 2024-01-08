@@ -2864,15 +2864,6 @@ class Watch_History(object):
 				"States" in self.dictionary and
 				self.dictionary["States"]["States"] != {}
 			):
-				if (
-					"ID" in media["Episode"] or
-					"Next" in media["Episode"] or
-					media["States"]["Completed media"] == True or
-					media["States"]["Completed media item"] == True or
-					"Entry" in dictionary and "Dates" in dictionary["Entry"]
-				):
-					print()
-
 				print(self.JSON.Language.language_texts["states, title()"] + ":")
 
 				for key in self.dictionary["States"]["Texts"]:
@@ -2899,7 +2890,7 @@ class Watch_History(object):
 				items = [
 					self.media_types["Genders"][self.user_language]["feminine"]["this"].title(),
 					self.media_types["Genders"][self.user_language]["feminine"]["the"] + " " + self.media_types["Genders"][self.user_language]["feminine"]["first"] + " " + self.JSON.Language.language_texts["media, title()"].lower()
-					]
+				]
 
 				items.append(self.JSON.Language.language_texts["genders, type: dict, masculine"]["in"] + " " + self.current_year["Number"])
 

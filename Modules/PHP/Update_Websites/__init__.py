@@ -1,10 +1,14 @@
 # Update_Websites.py
 
-from Code.Code import Code as Code
+from PHP.PHP import PHP as PHP
 
-class Update_Websites(Code):
+class Update_Websites(PHP):
 	def __init__(self, update_one_website = False, module_website = None):
 		super().__init__()
+
+		# Show a space separator
+		print()
+		print(self.large_bar)
 
 		self.update_one_website = update_one_website
 		self.module_website = module_website
@@ -92,7 +96,7 @@ class Update_Websites(Code):
 			"mysql"
 		]
 
-		self.websites = self.JSON.To_Python(self.folders["Mega"]["php"]["json"]["websites"])
+		self.websites = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Websites"])
 		self.websites["Update"] = {}
 
 		for language in self.languages["small"]:
@@ -103,7 +107,7 @@ class Update_Websites(Code):
 
 		self.websites["List"]["General"] = self.websites["List"]["en"]
 
-		self.websites["URL"] = self.JSON.To_Python(self.folders["Mega"]["php"]["json"]["url"])
+		self.websites["URL"] = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
 
 	def Select_Website(self):
 		self.websites["Numbers"] = []
@@ -192,8 +196,12 @@ class Update_Websites(Code):
 			print()
 			print(self.JSON.Language.language_texts["list, title()"] + ":")
 
-			for website in websites["Select list"]:
-				print("\t" + website)
+			if websites["Select list"] != []:
+				for website in websites["Select list"]:
+					print("\t" + website)
+
+			else:
+				print("[" + self.JSON.Language.language_texts["empty, title(), feminine"] + "]")
 
 			# Select website from the list and return its number
 			dictionary = self.Input.Select(websites["List"]["en"], language_options = websites["List"][self.user_language], show_text = self.show_text, select_text = self.select_text)
@@ -298,7 +306,7 @@ class Update_Websites(Code):
 		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
 
 	def Open_Git_Console_Window(self):
-		files = self.Folder.Contents(self.folders["apps"]["shortcuts"]["root"])["file"]["list"]
+		files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["root"])["file"]["list"]
 
 		for file in files:
 			if "GitHub" in file:

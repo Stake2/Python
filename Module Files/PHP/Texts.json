@@ -1,0 +1,74 @@
+{
+	"general, title()": {
+		"pt": "Geral",
+		"en": "General"
+	},
+	"websites": {
+		"pt": "sites",
+		"en": "websites"
+	},
+	"website, title()": {
+		"pt": "Site",
+		"en": "Website"
+	},
+	"websites, title()": {
+		"pt": "Sites",
+		"en": "Websites"
+	},
+	"select_a_website_to_update_its_html_contents": {
+		"pt": "Selecione um site para atualizar seus conteúdos de HTML",
+		"en": "Select a website to update its HTML contents"
+	},
+	"select_a_website_to_add_it_to_the_list": {
+		"pt": "Selecione um site para adicioná-lo à lista",
+		"en": "Select a website to add it to the list"
+	},
+	"updating_this_website": {
+		"pt": "Atualizando este site",
+		"en": "Updating this website"
+	},
+	"updating_these_websites": {
+		"pt": "Atualizando estes sites",
+		"en": "Updating these websites"
+	},
+	"website_link": {
+		"pt": "Link do site",
+		"en": "Website link"
+	},
+	"press_enter_when_the_pages_finish_loading": {
+		"pt": "Pressione Enter quando as páginas terminarem de carregar",
+		"en": "Press Enter when the pages finish loading"
+	},
+	"update_more_websites": {
+		"pt": "Atualizar mais sites",
+		"en": "Update more websites"
+	},
+	"copy_and_paste_the_text": {
+		"pt": "Copie e cole o texto",
+		"en": "Copy and paste the text"
+	},
+	"create_website_list_to_update": {
+		"pt": "Criar lista de sites para atualizar",
+		"en": "Create website list to update"
+	},
+	"finish_selection": {
+		"pt": "Terminar seleção",
+		"en": "Finish selection"
+	},
+	"you_finished_updating_the_website": {
+		"pt": "Você terminou de atualizar o site",
+		"en": "You finished updating the website"
+	},
+	"you_finished_updating_these_websites": {
+		"pt": "Você terminou de atualizar estes sites",
+		"en": "You finished updating these websites"
+	},
+	"the_file_of_colors_was_not_modified": {
+		"pt": "O arquivo de cores não foi modificado",
+		"en": "The file of colors was not modified"
+	},
+	"the_file_of_colors_was_updated_with_new_contents": {
+		"pt": "O arquivo de cores foi atualizado com novos conteúdos",
+		"en": "The file of colors was updated with new contents"
+	}
+}

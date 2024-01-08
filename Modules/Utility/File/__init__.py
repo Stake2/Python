@@ -96,7 +96,10 @@ class File():
 		if self.Exist(file) == True:
 			return False
 
-		if self.switches["file"]["create"] == True and self.Exist(file) == False:
+		if (
+			self.switches["file"]["create"] == True and
+			self.Exist(file) == False
+		):
 			create = open(file, "w", encoding = "utf8")
 			create.close()
 

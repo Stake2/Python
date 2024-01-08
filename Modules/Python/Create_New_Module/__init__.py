@@ -7,278 +7,414 @@ class Create_New_Module(Python):
 		super().__init__()
 
 		self.Ask_For_Module_Info()
-		self.Define_Variables()
+		self.Create_Folders_And_Files()
 		self.Write_To_Files()
 		self.Create_Module_Bat()
 		self.Add_To_ConEmu_Tasks()
 		self.Add_To_Modules_List()
 		self.Change_Global_Switches()
-		self.Show_Module_Info()
+		self.Show_Module_Information()
 
 	def Ask_For_Module_Info(self):
-		# Module name
-		self.module_name = self.Input.Type(self.language_texts["type_the_name_of_the_new_python_module"]).title()
+		# Show a space and a five dash separator
+		print()
+		print(self.large_bar)
 
+		# Ask for the module name
+		self.module_name = self.Input.Type(self.language_texts["type_the_name_of_the_new_python_module"])
+
+		# Replace spaces with underscores on the module name
 		if " " in self.module_name:
 			self.module_name = self.module_name.replace(" ", "_")
 
+		# Get the module key
 		self.module["key"] = self.module_name.lower()
 
-		translated_language = ""
-
-		i = 1
-		for language in self.languages["small"]:
-			translated_language += self.languages["full_translated"][language][self.user_language]
-
-			if language != self.languages["small"][-1]:
-				translated_language += "\n"
-
-		self.translated_languages_language = []
-
-		for language in self.languages["small"]:
-			self.translated_languages_language.append(self.languages["full_translated"][language][self.user_language])
-
-		self.lines_text = self.language_texts["{}_lines_in_thar_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["small"])])
+		# ---------- #
 
 		# Module descriptions
+
+		# Make a list of the translated languages in the user language
+		self.translated_languages = []
+
+		for language in self.languages["small"]:
+			self.translated_languages.append(self.languages["full_translated"][language][self.user_language])
+
+		# Define the lines text, which shows the number of languages
+		self.lines_text = self.language_texts["{}_lines_in_this_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["small"])])
+
+		# Define the show text for the descriptions of the module
 		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
-		self.module_descriptions_prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages_language)["lines"]
+		# Show a five dash separator
+		print()
+		print(self.large_bar)
 
+		# Ask for the user to type the module descriptions in all languages
+		prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages)["lines"]
+
+		# Define and fill the module descriptions dictionary
 		self.module_descriptions = {}
 
+		# Iterate through the small languages list
 		i = 0
 		for language in self.languages["small"]:
-			self.module_descriptions[language] = self.module_descriptions_prototype[i]
+			# Get the language description
+			self.module_descriptions[language] = prototype[i]
 
-			if self.module_descriptions_prototype[i] == "" and language == "en":
+			# If the local language is "en" (English)
+			# And the English module description is empty
+			if (
+				language == "en" and
+				prototype[i] == ""
+			):
+				# Then define the module description in English as the module name 
 				self.module_descriptions[language] = self.Text.Title(self.module_name.replace("_", " "))
 
 			i += 1
 
+		# ---------- #
+
 		# Classes
-		self.translated_english_language = self.languages["full_translated"]["en"][self.user_language]
 
-		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], self.translated_english_language + ", " + self.language_texts["separated_by_lines"]) + ": "
+		# Get the English language in the user language
+		english_language = self.languages["full_translated"]["en"][self.user_language]
 
-		self.classes = self.Input.Lines(self.show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+		# Define the show text for the classes of the module
+		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], english_language + ", " + self.language_texts["separated_by_lines"]) + ": "
 
+		# Ask for the user to type the classes of the module
+		classes_list = self.Input.Lines(self.show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+
+		# Update the classes list
 		i = 0
-		for class_ in self.classes:
-			if "_" not in class_:
-				class_ = class_.title().replace(" ", "_")
+		for class_name in classes_list:
+			if " " in class_name:
+				classes_list[i] = class_name.replace(" ", "_")
 
-			self.classes[i] = class_
+		# Create the empty classes dictionary
+		self.classes = {
+			"List": classes_list,
+			"Dictionary": {}
+		}
+
+		# Iterate through the classes list
+		i = 0
+		for class_name in classes_list:
+			# Replace spaces with underscores on the class name
+			if " " in class_name:
+				class_name = class_name.replace(" ", "_")
+
+			# Create the class dictionary inside the classes dictionary
+			self.classes["Dictionary"][class_name] = {
+				"Name": class_name,
+				"Descriptions": {},
+				"Folder": {},
+				"File": {}
+			}
 
 			i += 1
+
+		# ---------- #
 
 		# Class descriptions
+
+		# Define and fill the module class descriptions dictionary
 		self.class_descriptions = {}
 
+		# Iterate through the small languages list
 		for language in self.languages["small"]:
+			# Get the translated language in the user language
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
+			# Define the show text, with the description of classes, separated by lines
 			self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions_of_classes"], translated_language + ", " + self.language_texts["separated_by_lines"]) + ":"
 
-			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+			# Ask for the descriptions of the classes
+			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes["List"]), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
+		# Iterate through the classes list
 		i = 0
-		for class_ in self.classes:
-			self.class_descriptions[class_] = {}
-
+		for class_name in self.classes["List"]:
+			# Add the class descriptions in all languages to the class descriptions dictionary
 			for language in self.languages["small"]:
-				self.class_descriptions[class_][language] = self.class_descriptions[language][i]
+				self.classes["Dictionary"][class_name]["Descriptions"][language] = self.class_descriptions[language][i]
 
 			i += 1
 
-		for language in self.languages["small"]:
-			del self.class_descriptions[language]
+		# Fill the class descriptions that are empty
+		for class_name in self.classes["List"]:
+			class_dictionary = self.classes["Dictionary"][class_name]
 
-		i = 0
-		for class_ in self.classes:
-			if self.class_descriptions[class_]["en"] == "":
-				self.class_descriptions[class_]["en"] = self.Text.Capitalize(self.classes[i].replace("_", " ").lower())
+			if class_dictionary["Descriptions"]["en"] == "":
+				class_dictionary["Descriptions"]["en"] = self.Text.Capitalize(class_name.replace("_", " ").lower())
 
-			i += 1
-
+		# Show a space separator
 		print()
 
-	def Define_Variables(self):
+	def Create_Folders_And_Files(self):
+		# Define and create the module folder
 		self.module_folder = self.folders["apps"]["modules"]["root"] + self.module_name + "/"
 		self.Folder.Create(self.module_folder)
 
+		# Define and create the root Python file
 		self.root_python_file = self.module_folder + "__init__.py"
 		self.File.Create(self.root_python_file)
 
+		# Define and create the descriptions file
 		self.descriptions_file = self.module_folder + "Descriptions.json"
 		self.File.Create(self.descriptions_file)
 
+		# Define and create the main class folder
 		self.main_class_folder = self.module_folder + self.module_name + "/"
 		self.Folder.Create(self.main_class_folder)
 
+		# Define and create the main class Python file
 		self.main_class_python_file = self.main_class_folder + "__init__.py"
 		self.File.Create(self.main_class_python_file)
 
+		# Define the module folder inside the "Module files" folder
 		self.folders["apps"]["module_files"][self.module["key"]] = {
-			"root": self.folders["apps"]["module_files"]["root"] + self.module_name + "/",
+			"root": self.folders["apps"]["module_files"]["root"] + self.module_name + "/"
 		}
 
+		# Create it
 		self.Folder.Create(self.folders["apps"]["module_files"][self.module["key"]]["root"])
 
+		# Define and create the "Texts.json" file inside the module folder that is inside the "Module files" folder
 		self.folders["apps"]["module_files"][self.module["key"]]["texts"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Texts.json"
 		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+
+		# ---------- #
 
 		self.class_folders = {}
 		self.class_files = {}
 
-		self.classes_string = ""
+		# Iterate through the classes in the classes list
+		for class_name in self.classes["List"]:
+			# Define and create the class folder
+			self.classes["Dictionary"][class_name]["Folder"] = self.module_folder + self.Sanitize(class_name, restricted_characters = True) + "/"
+			self.Folder.Create(self.classes["Dictionary"][class_name]["Folder"])
 
-		i = 0
-		for class_ in self.classes:
-			class_folder = self.module_folder + self.Sanitize(class_, restricted_characters = True) + "/"
-			self.Folder.Create(class_folder)
-
-			init_file = class_folder + "__init__.py"
-			self.File.Create(init_file)
-
-			self.class_folders[class_] = class_folder
-			self.class_files[class_] = init_file
-
-			self.classes_string += '"' + class_ + '"'
-
-			if class_ != list(self.classes)[-1]:
-				self.classes_string += ",\n"
-
-			i += 1
+			# Define and create the class Python init file
+			self.classes["Dictionary"][class_name]["File"] = self.classes["Dictionary"][class_name]["Folder"] + "__init__.py"
+			self.File.Create(self.classes["Dictionary"][class_name]["File"])
 
 	def Write_To_Files(self):
-		# Root code
+		# Format the root code template
 		self.root_code = self.root_code_template.replace("[module_name]", self.module_name)
 
+		# Write to the root "__init__.py" Python file
 		self.File.Edit(self.root_python_file, self.root_code, "w")
 
-		# Descriptions
-		self.descriptions = {**{"show_text": self.module_descriptions}, **self.class_descriptions}
+		# ---------- #
 
+		# Define the Descriptions dictionary
+		self.descriptions = {
+			"show_text": self.module_descriptions
+		}
+
+		# Iterate through the classes in the classes dictionary
+		for class_dictionary in self.classes["Dictionary"].values():
+			# Define the class name variable for easier typing
+			class_name = class_dictionary["Name"]
+
+			# Add the descriptions of the class to the root Descriptions dictionary
+			self.descriptions[class_name] = class_dictionary["Descriptions"]
+
+		# Write to the "Descriptions.json"
 		self.JSON.Edit(self.descriptions_file, self.descriptions)
 
-		# Main class code
-		self.main_class_code = self.main_class_code_template.replace("[]", self.module_name)
+		# ---------- #
 
+		# Format the main class code template
+		self.main_class_code = self.main_class_code_template.replace("[module_name]", self.module_name)
+
+		# Write to the main class Python file
 		self.File.Edit(self.main_class_python_file, self.main_class_code, "w")
 
-		# Sub class code
-		for class_ in self.classes:
-			class_file = self.class_files[class_]
+		# ---------- #
 
-			self.sub_class_code = self.sub_class_code_template.format(class_, self.module_name, self.module_name, self.module_name, self.module_name, class_, self.module_name)
+		# Iterate through the classes in the classes dictionary
+		for class_dictionary in self.classes["Dictionary"].values():
+			# Get the class file
+			file = class_dictionary["File"]
 
-			self.File.Edit(class_file, self.sub_class_code, "w")
+			# Format the sub-class code template
+			sub_class_code = self.sub_class_code_template.format(class_dictionary["Name"], self.module_name, self.module_name, self.module_name, self.module_name, class_dictionary["Name"], self.module_name)
 
-		# Texts.json
+			# Write to the class code file
+			self.File.Edit(file, sub_class_code, "w")
+
+		# ---------- #
+
+		# Write to the "Texts.json" file
 		self.File.Edit(self.folders["apps"]["module_files"][self.module["key"]]["texts"], "{\n\t\n}", "w")
 
 	def Create_Module_Bat(self):
-		self.bat_file = self.folders["apps"]["shortcuts"]["root"] + self.module_name + ".bat"
-		self.File.Create(self.bat_file)
+		# Define and create the module bat file
+		bat_file = self.folders["apps"]["shortcuts"]["root"] + self.module_name + ".bat"
+		self.File.Create(bat_file)
 
 		bat_text = self.conemu_bat_template
+
+		# Format the ConEmu bat template
+		# Adding the name of the module and the module folder name
 		bat_text = bat_text.replace("[Name]", self.module_name.replace("_", " "))
 		bat_text = bat_text.replace("[Module]", self.module_name.replace(" ", "_"))
 
-		self.File.Edit(self.bat_file, bat_text, "w")
+		# Write to the bat file
+		self.File.Edit(bat_file, bat_text, "w")
 
 	def Add_To_ConEmu_Tasks(self):
-		# Last task number file
-		self.last_task_number = self.File.Contents(self.last_task_number_file)["lines"][0]
+		# Get the last task number
+		last_task_number = self.File.Contents(self.last_task_number_file)["lines"][0]
 
-		self.next_task_number = str(int(self.last_task_number) + 1)
+		# Add one to it
+		next_task_number = str(int(last_task_number) + 1)
 
-		self.File.Edit(self.last_task_number_file, self.next_task_number, "w")
+		# Write to the "Last task number" file
+		self.File.Edit(self.last_task_number_file, next_task_number, "w")
 
-		# ----- #
-		# Last module XML file
+		# ---------- #
 
-		self.module_execution_line = "py C:\Apps\MS.py -{}".format(self.module_name.lower())
+		# Update the "Last module XML" file
 
-		self.next_module_xml = self.conemu_task_xml_template.replace("[Number]", self.next_task_number)
-		self.next_module_xml = self.next_module_xml.replace("[Module_Name]", self.module_name.replace(" ", "_"))
-		self.next_module_xml = self.next_module_xml.replace("[module_execution_line]", self.module_execution_line)
+		# Define the module execution line
+		module_execution_line = "py C:\Apps\MS.py -{}".format(self.module_name.lower())
 
-		self.File.Edit(self.last_module_xml_file, self.next_module_xml, "w")
+		# Format the ConEmu task XML template
+		# Updating the number of the task
+		# Adding the module name and execution line
+		next_module_xml = self.conemu_task_xml_template.replace("[Number]", next_task_number)
+		next_module_xml = next_module_xml.replace("[Module_Name]", self.module_name.replace(" ", "_"))
+		next_module_xml = next_module_xml.replace("[module_execution_line]", module_execution_line)
 
-		# ----- #
-		# ConEmu XML file
+		# Write to the "Last module XML" file
+		self.File.Edit(self.last_module_xml_file, next_module_xml, "w")
 
-		self.last_module_xml = self.File.Contents(self.last_module_xml_file)["string"]
+		# ---------- #
 
-		self.conemu_xml_text = self.File.Contents(self.conemu_xml_file)["string"]
+		# Update the "ConEmu XML" file
 
-		self.conemu_xml_text = self.conemu_xml_text.replace(self.last_module_xml, self.last_module_xml + "\n" + self.next_module_xml)
+		# Get the last module XML
+		last_module_xml = self.File.Contents(self.last_module_xml_file)["string"]
 
-		self.value_count_template = '<value name="Count" type="long" data="{}"/>'
+		# Read the text of the "ConEmu.xml" file
+		conemu_xml_text = self.File.Contents(self.conemu_xml_file)["string"]
 
-		self.conemu_xml_text = self.conemu_xml_text.replace(self.value_count_template.format(self.last_task_number), self.value_count_template.format(self.next_task_number))
+		# Update the ConEmu text to add the XML dictionary of the newly added module
+		conemu_xml_text = conemu_xml_text.replace(last_module_xml, last_module_xml + "\n" + next_module_xml)
 
-		self.File.Edit(self.conemu_xml_file, self.conemu_xml_text, "w")
+		# Update the value of the "Count" number, which is the number of tasks inside the ConEmu configuration file
+		value_count_template = '<value name="Count" type="long" data="{}"/>'
+
+		# Replace the number of tasks line inside the ConEmu text, with the new number of tasks
+		conemu_xml_text = conemu_xml_text.replace(value_count_template.format(last_task_number), value_count_template.format(next_task_number))
+
+		# Update the "ConEmu.xml" file
+		self.File.Edit(self.conemu_xml_file, conemu_xml_text, "w")
 
 	def Add_To_Modules_List(self):
+		# If the module name is not inside the list of usage modules
 		if self.module_name not in self.modules["Usage"]["List"]:
+			# Add it
 			self.modules["Usage"]["List"].append(self.module_name)
 
+		# Sort the list of utility modules
+		self.modules["Utility"]["List"] = sorted(self.modules["Utility"]["List"], key = str.lower)
+
+		# Sort the list of usage modules
 		self.modules["Usage"]["List"] = sorted(self.modules["Usage"]["List"], key = str.lower)
 
+		# Update the "Modules.json" file with the new Modules dictionary
 		self.JSON.Edit(self.folders["modules_file"], self.modules)
 
 	def Change_Global_Switches(self):
-		self.switches_file = self.Global_Switches.switches["file"]
+		# Get the switches file
+		self.switches_file = self.Global_Switches.switches["File"]
 
+		# Read it
 		self.switches["Global"] = self.JSON.To_Python(self.switches_file)
+
+		# Change the testing and verbose switches to True
 		self.switches["Global"]["testing"] = True
 		self.switches["Global"]["versbose"] = True
 
-		self.JSON.Edit(self.switches_file, self.switches["Global"])
+		# Switch the global switches, using the modified switches above
+		self.Global_Switches.Switch(self.switches["Global"])
 
-	def Show_Module_Info(self):
+	def Show_Module_Information(self):
+		# Show a five dash separator
 		print(self.large_bar)
 		print()
+
+		# Show the module name
 		print(self.language_texts["module_name"] + ":")
 		print("\t" + self.module_name)
 		print()
 
+		# Show the "Module descriptions" text and an opening bracket
 		print(self.language_texts["module_descriptions"] + " = {")
 
+		# Iterate through the small languages list
 		for language in self.languages["small"]:
+			# Get the translated language with quotes and a colon
 			translated_language = '"' + self.languages["full_translated"][language][self.user_language] + '": '
 
-			print("\t" + translated_language + '"' + self.module_descriptions[language] + '",')
+			# Define the text with the translated language and the module description
+			text = "\t" + translated_language + '"' + self.module_descriptions[language] + '"'
 
+			# If the language is not the last one
+			if language != self.languages["small"][-1]:
+				# Add a comma to the text
+				text += ","
+
+			# Show the translated language and module description text
+			print(text)
+
+		# Show the closing bracket and a space
 		print("}")
 		print()
 
+		# Show the "Classes and their descriptions" text
 		print(self.language_texts["classes_and_their_descriptions"] + ":")
 
-		format = "{}" + '"{}",'
+		# Define the template text
+		template = "{}" + '"{}"'
 
-		i = 0
-		for class_ in self.classes:
-			print("\t" + class_ + " = {")
+		# Iterate through the classes inside the classes dictionary
+		for class_dictionary in self.classes["Dictionary"].values():
+			# Define the class name variable for easier typing
+			class_name = class_dictionary["Name"]
 
+			# Show the name of the class and an opening bracket
+			print("\t" + class_name + " = {")
+
+			# Iterate through the small languages list
 			for language in self.languages["small"]:
+				# Get the translated language with quotes and a colon
 				translated_language = '"' + self.languages["full_translated"][language][self.user_language] + '": '
 
-				if class_ != self.classes[0]:
+				# If the class is not the first one
+				if class_name != self.classes["List"][0]:
+					# Show a space separator
 					print()
 	
-				print("\t\t" + format.format(translated_language, self.class_descriptions[class_][language]))
+				# Format the template text with the translated language and the class descriptions
+				text = "\t\t" + template.format(translated_language, class_dictionary["Descriptions"][language])
 
+				# If the language is not the last one
+				if language != self.languages["small"][-1]:
+					# Add a comma to the text
+					text += ","
+
+				# Show the formatted template
+				print(text)
+
+			# Show a closing bracket with a tab
 			print("\t" + "}")
 
-			i += 1
-
+		# Show space separators and a five dash separator
 		print()
- 
 		print(self.large_bar)
-		print()
-
-		input(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"] + ": ")

@@ -1,0 +1,14 @@
+{
+	"show_text": {
+		"pt": "Gerenciar sites em PHP",
+		"en": "Manage PHP websites"
+	},
+	"Update_Websites": {
+		"en": "Update websites",
+		"pt": "Atualizar sites"
+	},
+	"Update_CSS_Colors": {
+		"pt": "Atualizar cores CSS",
+		"en": "Update CSS colors"
+	}
+}

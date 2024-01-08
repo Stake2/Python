@@ -135,7 +135,13 @@ class Folder():
 			}
 
 		# "Apps" sub folders
-		for folder in ["Module files", "Modules", "Shortcuts"]:
+		folders = [
+			"Module files",
+			"Modules",
+			"Shortcuts"
+		]
+
+		for folder in folders:
 			key = folder.lower().replace(" ", "_")
 
 			folder_backup = folder
@@ -229,7 +235,19 @@ class Folder():
 			}
 
 		# Art "Photoshop" subfolders
-		for folder in ["Ana", "Games", "Media", "Operational System", "PHP", "Render", "Stake2", "Stories", "Websites"]:
+		folders = [
+			"Ana",
+			"Games",
+			"Media",
+			"Operational System",
+			"PHP",
+			"Render",
+			"Stake2",
+			"Stories",
+			"Websites"
+		]
+
+		for folder in folders:
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["art"]["photoshop"][key] = {
@@ -237,7 +255,12 @@ class Folder():
 			}
 
 		# Art "Sony Vegas" subfolders
-		for folder in ["Render", "Story Covers"]:
+		folders = [
+			"Render",
+			"Story Covers"
+		]
+
+		for folder in folders:
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["art"]["sony_vegas"][key] = {
@@ -269,6 +292,10 @@ class Folder():
 				key = "Image"
 
 			self.folders["Mega"][key] = {
+				"root": self.folders["Mega"]["root"] + folder + "/"
+			}
+
+			self.folders["Mega"][folder] = {
 				"root": self.folders["Mega"]["root"] + folder + "/"
 			}
 
@@ -529,69 +556,112 @@ class Folder():
 			}
 
 		# Mega "PHP" folders
-		for item in ["JSON"]:
+		folders = [
+			"JSON"
+		]
+
+		for item in folders:
 			key = item.lower().replace(" ", "_")
 
 			self.folders["Mega"]["php"][key] = {
-				"root": os.path.join(self.folders["Mega"]["php"]["root"], item + "/")
+				"root": self.folders["Mega"]["php"]["root"] + item + "/"
+			}
+
+			self.folders["Mega"]["PHP"][item] = {
+				"root": self.folders["Mega"]["PHP"]["root"] + item + "/"
 			}
 
 		# Mega "PHP" JSON files
-		for item in ["Colors", "URL", "Websites"]:
+		files = [
+			"Colors",
+			"URL",
+			"Websites"
+		]
+
+		for item in files:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["Mega"]["php"]["json"][key] = os.path.join(self.folders["Mega"]["php"]["json"]["root"], item + ".json")
+			self.folders["Mega"]["php"]["json"][key] = self.folders["Mega"]["php"]["json"]["root"] + item + ".json"
 
-		# Mega Obsidian's Vaults folders
+			self.folders["Mega"]["PHP"]["JSON"][item] = self.folders["Mega"]["PHP"]["JSON"]["root"] + item + ".json"
+
+		# Mega "Obsidian's Vaults" folders
 		for item in ["Creativity"]:
-			key = item.lower().replace(" ", "_")
-
-			self.folders["Mega"]["obsidian_s_vaults"][key] = {
-				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["root"], item + "/")
+			self.folders["Mega"]["Obsidian's Vaults"][item] = {
+				"root": self.folders["Mega"]["Obsidian's Vaults"]["root"] + item + "/"
 			}
 
-		# Mega Obsidian's Vaults/Creativity folders
+		# Mega "Obsidian's Vaults" Creativity folders
 		for item in ["Literature"]:
-			key = item.lower().replace(" ", "_")
-
-			self.folders["Mega"]["obsidian_s_vaults"]["creativity"][key] = {
-				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["root"], item + "/")
+			self.folders["Mega"]["Obsidian's Vaults"]["Creativity"][item] = {
+				"root": os.path.join(self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["root"], item + "/")
 			}
 
-		# Mega Obsidian's Vaults/Creativity/Literature folders
+		# Mega "Creativity" Literature folders
 		for item in ["Stories"]:
-			key = item.lower().replace(" ", "_")
-
-			self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"][key] = {
-				"root": os.path.join(self.folders["Mega"]["obsidian_s_vaults"]["creativity"]["literature"]["root"], item + "/")
+			self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"][item] = {
+				"root": os.path.join(self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["root"], item + "/")
 			}
 
 		# Mega Websites folders and files
-		for item in ["Website.json", "Images"]:
-			key = item.lower().replace(" ", "_").replace(".json", "")
-
-			if "." in item:
-				self.folders["Mega"]["websites"][key] = os.path.join(self.folders["Mega"]["websites"]["root"], item)
-
-			else:
-				self.folders["Mega"]["websites"][key] = {
-					"root": os.path.join(self.folders["Mega"]["websites"]["root"], item + "/")
-				}
-
-		self.folders["Mega"]["websites"]["images"]["story_covers"] = {
-			"root": self.folders["Mega"]["websites"]["images"]["root"] + "Story Covers/"
+		items = {
+			"Folders": [
+				"CSS",
+				"Images"
+			],
+			"Files": [
+				"Website"
+			],
+			"JSON": [
+				"Website"
+			]
 		}
 
-		# Get website subdomain
+		# Create the folders
+		for item in items["Folders"]:
+			key = item.lower().replace(" ", "_")
+
+			folder = self.folders["Mega"]["websites"]["root"] + item + "/"
+
+			self.folders["Mega"]["websites"][key] = {
+				"root": folder
+			}
+
+			self.folders["Mega"]["Websites"][item] = {
+				"root": self.folders["Mega"]["Websites"]["root"] + item + "/"
+			}
+
+		# Create the files
+		for item in items["Files"]:
+			file = self.folders["Mega"]["websites"]["root"] + item + "."
+
+			if item in items["JSON"]:
+				file += "json"
+
+			else:
+				file += ".txt"
+
+			self.folders["Mega"]["websites"][key] = file
+			self.folders["Mega"]["Websites"][item] = file
+
+		# "Colors.css" file inside the "CSS" folder
+		self.folders["Mega"]["Websites"]["CSS"]["Colors"] = self.folders["Mega"]["Websites"]["CSS"]["root"] + "Colors.css"
+
+		# "Story Covers" folder on the "Images" folder of the "Websites" folder
+		self.folders["Mega"]["Websites"]["Images"]["Story Covers"] = {
+			"root": self.folders["Mega"]["Websites"]["Images"]["root"] + "Story Covers/"
+		}
+
+		# Get the website subdomain
 		self.website = {}
 		self.links = {}
 
-		if self.File.Exist(self.folders["Mega"]["websites"]["website"]) == True:
-			self.website = self.JSON.To_Python(self.folders["Mega"]["websites"]["website"])
+		if self.File.Exist(self.folders["Mega"]["Websites"]["Website"]) == True:
+			self.website = self.JSON.To_Python(self.folders["Mega"]["Websites"]["Website"])
 
-			# Create links dictionary with Stake2 Website link
+			# Create the "Links" dictionary with the Stake2 Website link
 			self.links = {
-				"Stake2 Website": "https://" + self.website["subdomain"] + "." + self.website["netlify"] + "/"
+				"Stake2 Website": "https://" + self.website["Sub-domain"] + "." + self.website["Netlify"] + "/"
 			}
 
 	def Define_Texts(self):
@@ -683,7 +753,7 @@ class Folder():
 			return True
 
 		else:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]), folder)
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["folder, title()"], folder)
 
 			return False
 

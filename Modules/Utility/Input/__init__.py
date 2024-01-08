@@ -366,7 +366,10 @@ class Input():
 
 		print()
 
-		if line_options["next_line"] == True:
+		if (
+			line_options["next_line"] == True and
+			line_options["enumerate"] == False
+		):
 			text = show_text
 
 			if ":" not in text:
@@ -386,6 +389,13 @@ class Input():
 		if show_text_parameter == None:
 			print()
 			print("--------------------")
+
+		if (
+			length == None and
+			line_options["show_finish_text"] == True and
+			show_text_parameter != None
+		):
+			print()
 
 		contents = {
 			"lines": [],
@@ -412,6 +422,12 @@ class Input():
 
 				type_text = ""
 
+				if (
+					length != None and
+					length != 1
+				):
+					type_text += "\n"
+
 				if line_options["enumerate"] == True:
 					type_text += str(contents["length"] + 1)
 
@@ -429,7 +445,7 @@ class Input():
 					type_text += ": "
 
 				if line_texts != []:
-					type_text += " " + line_texts[i] + ": "
+					type_text += " - " + line_texts[i] + ":\n"
 
 			if (
 				line_options["next_line"] == False and

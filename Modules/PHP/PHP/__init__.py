@@ -1,6 +1,6 @@
-# [module_name].py
+# PHP.py
 
-class [module_name](object):
+class PHP(object):
 	def __init__(self):
 		# Define the module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
