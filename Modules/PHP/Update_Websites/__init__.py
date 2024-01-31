@@ -165,7 +165,7 @@ class Update_Websites(PHP):
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 
-				self.websites["Update"][website]["links"][language] = self.websites["URL"]["generate_template"].format(self.websites["Update"][website]["en"], full_language)
+				self.websites["Update"][website]["links"][language] = self.websites["URL"]["Generate"]["Templates"]["With language"].format(self.websites["Update"][website]["en"], full_language)
 
 	def Create_Websites_List(self):
 		# Define local websites dictionary
@@ -229,7 +229,7 @@ class Update_Websites(PHP):
 	def Open_And_Close_XAMPP(self, open = False, close = False):
 		if open == True:
 			if self.switches["testing"] == False:
-				self.System.Open(self.folders["root"]["xampp"]["xampp-control"])
+				self.System.Open(self.folders["XAMPP"]["XAMPP Control"])
 
 				self.Date.Sleep(4)
 
@@ -293,6 +293,11 @@ class Update_Websites(PHP):
 				if self.switches["testing"] == False:
 					self.System.Open(link, verbose = False)
 
+				if self.switches["verbose"] == True:
+					print()
+					print(self.JSON.Language.language_texts["link, title()"] + ":")
+					print("\t" + link)
+
 				self.Date.Sleep(1)
 
 			if key != list(self.websites["Update"].keys())[-1]:
@@ -313,4 +318,4 @@ class Update_Websites(PHP):
 				git_bat_file = file
 
 		if self.switches["testing"] == False:
-			self.System.Open_Link(git_bat_file)
+			self.System.Open_Link(git_bat_file, verbose = False)

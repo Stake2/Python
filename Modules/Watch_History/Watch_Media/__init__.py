@@ -9,6 +9,27 @@ class Watch_Media(Watch_History):
 	def __init__(self, dictionary = {}, run_as_module = False, open_media = True):
 		super().__init__()
 
+		# Import sub-classes method
+		self.Import_Sub_Classes()
+
+		self.dictionary = dictionary
+		self.run_as_module = run_as_module
+		self.open_media = open_media
+
+		self.Define_Media_Dictionary()
+		self.Define_Episode_Variables()
+
+		if self.media["States"]["Open media"] == True:
+			self.Define_Media_Unit()
+			self.Show_Information()
+
+			if "Defined title" not in self.dictionary:
+				self.Open_Media_Unit()
+				self.Create_Discord_Status()
+				self.Comment_On_Media()
+				self.Register_The_Media()
+
+	def Import_Sub_Classes(self):
 		# Import the "importlib" module
 		import importlib
 
@@ -28,23 +49,6 @@ class Watch_Media(Watch_History):
 
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
-
-		self.dictionary = dictionary
-		self.run_as_module = run_as_module
-		self.open_media = open_media
-
-		self.Define_Media_Dictionary()
-		self.Define_Episode_Variables()
-
-		if self.media["States"]["Open media"] == True:
-			self.Define_Media_Unit()
-			self.Show_Information()
-
-			if "Defined title" not in self.dictionary:
-				self.Open_Media_Unit()
-				self.Create_Discord_Status()
-				self.Comment_On_Media()
-				self.Register_The_Media()
 
 	def Define_Media_Dictionary(self):
 		# Select the media type and the media if the dictionary is empty
@@ -206,7 +210,7 @@ class Watch_Media(Watch_History):
 	def Define_Episode_Variables(self):
 		from copy import deepcopy
 
-		# Definition of episode to watch if the media is not series media
+		# Definition of the episode to watch if the media is not a series media
 		self.media["Episode"].update({
 			"Title": self.media["Titles"]["Original"],
 			"Titles": deepcopy(self.media["Titles"]),
@@ -218,7 +222,11 @@ class Watch_Media(Watch_History):
 		if self.media["States"]["Series media"] == True:
 			if self.media["States"]["Single unit"] == True:
 				for language in self.languages["small"]:
-					if language not in self.media["Episode"]["Titles"] or language in self.media["Titles"] and self.media["Episode"]["Titles"][language] == self.media["Titles"][language]:
+					if (
+						language not in self.media["Episode"]["Titles"] or
+						language in self.media["Titles"] and
+						self.media["Episode"]["Titles"][language] == self.media["Titles"][language]
+					):
 						self.media["Episode"]["Titles"][language] = self.Get_Media_Title(self.dictionary, language = language, item = True)
 
 					self.media["Item"]["Episodes"]["Titles"][language] = [
@@ -245,7 +253,10 @@ class Watch_Media(Watch_History):
 				after_key = self.Date.language_texts["start_date"]
 
 			# If "Episode" key is not present in media item details, define it as the first episode
-			if self.JSON.Language.language_texts["episode, title()"] not in self.media["Item"]["Details"] or self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] == "None":
+			if (
+				self.JSON.Language.language_texts["episode, title()"] not in self.media["Item"]["Details"] or
+				self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] == "None"
+			):
 				first_episode_title = ""
 
 				if language_titles != []:
@@ -464,8 +475,10 @@ class Watch_Media(Watch_History):
 				# If the item is the title and the ": " is inside the item title
 				# Or the item is the episode and the "S[Any number two times]" is found on the item title
 				if (
-					item_type == "Title" and self.media["Item"]["Title"][0] + self.media["Item"]["Title"][1] == ": " or
-					item_type == "Episode" and re.findall(r"S[0-9]{2}", self.media["Item"]["Title"]) != []
+					item_type == "Title" and
+					self.media["Item"]["Title"][0] + self.media["Item"]["Title"][1] == ": " or
+					item_type == "Episode" and
+					re.findall(r"S[0-9]{2}", self.media["Item"]["Title"]) != []
 				):
 					# The item or episode separator is defined as an empty string
 					self.media["Separators"][item_type] = ""
@@ -513,10 +526,6 @@ class Watch_Media(Watch_History):
 				watched_times = 1
 
 			if watched_times != 0:
-				#if watched_times != 1:
-				#	self.media["Episode"]["re_watched"]["times"] = watched_times + 1
-
-				#else:
 				self.media["Episode"]["re_watched"]["times"] = watched_times
 
 				self.media["Episode"]["re_watched"]["text"] = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(self.media["Episode"]["re_watched"]["times"]) + "x)"
@@ -655,11 +664,17 @@ class Watch_Media(Watch_History):
 		if self.media["States"]["Local"] == True:
 			self.tried_files = []
 
-			if self.media["States"]["Video"] == False and self.media["States"]["Dubbing"]["Has dubbing"] == True:
+			if (
+				self.media["States"]["Video"] == False and
+				self.media["States"]["Dubbing"]["Has dubbing"] == True
+			):
 				# Add dubbed text to the media folder if there is dub for the media and user wants to watch it dubbed
 				folder = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Full language"] + "/"
 
-				if self.media["States"]["Dubbing"]["Watch dubbed"] == True or self.Folder.Exist(folder) == True:
+				if (
+					self.media["States"]["Dubbing"]["Watch dubbed"] == True or
+					self.Folder.Exist(folder) == True
+				):
 					self.media["Item"]["Folders"]["Media"]["root"] = folder
 
 			self.Folder.Create(self.media["Item"]["Folders"]["Media"]["root"])

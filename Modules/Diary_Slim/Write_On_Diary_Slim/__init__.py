@@ -370,7 +370,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.task_dictionary["Task"]["Titles"][language] = self.text["Texts"][language]
 
 			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "." + "\n\n"
-			self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
+
+			if self.switches["testing"] == False:
+				self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
+
+			else:
+				self.task_dictionary["Task"]["Descriptions"][language] += "[" + self.JSON.Language.texts["description, title()"][language] + "]"
 
 			text = self.task_dictionary["Task"]["Descriptions"][language]
 

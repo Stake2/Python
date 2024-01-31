@@ -137,12 +137,12 @@ class Register(Database):
 		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_type"]["entries"], self.dictionaries["Entry type"][self.type])
 
 		# Update the data "Registered.json" file
-		self.JSON.Edit(self.data["folders"]["registered"]["entries"], self.dictionaries["Registered"])
+		self.JSON.Edit(self.data["Folders"]["Registered"]["entries"], self.dictionaries["Registered"])
 
 		# Add to the root, type, and data "Entry list.txt" files
 		self.File.Edit(self.folders["history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 		self.File.Edit(self.dictionary["Type"]["Folders"]["per_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
-		self.File.Edit(self.data["folders"]["registered"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.data["Folders"]["Registered"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [entry number]
@@ -176,7 +176,7 @@ class Register(Database):
 		self.File.Edit(file, self.dictionary["Entry"]["Text"]["General"], "w")
 
 		# Write the entry text into the "Registered" entry file
-		file = self.data["folders"]["registered"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		file = self.data["Folders"]["Registered"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 		self.File.Create(file)
 		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
@@ -351,7 +351,7 @@ class Register(Database):
 		# Gets the date that the user started and finished experiencing the data and writes it to the data dates text file
 		if self.data["States"]["Completed data"] == True:
 			# Gets the data dates from the data dates file
-			self.data["dates"] = self.File.Dictionary(self.data["folders"]["dates"], next_line = True)
+			self.data["dates"] = self.File.Dictionary(self.data["Folders"]["dates"], next_line = True)
 
 			key = self.language_texts["when_i_started_to_experience"]
 
@@ -368,13 +368,13 @@ class Register(Database):
 			self.data["Formatted datetime template"] = "\n\n" + template.format(self.data["Time spent experiencing"])
 
 			# Read the data dates file
-			self.data["Finished experiencing text"] = self.File.Contents(self.data["folders"]["dates"])["string"]
+			self.data["Finished experiencing text"] = self.File.Contents(self.data["Folders"]["dates"])["string"]
 
 			# Add the time template to the data dates text
 			self.data["Finished experiencing text"] += self.data["Formatted datetime template"]
 
 			# Update the data dates text file
-			self.File.Edit(self.data["folders"]["dates"], self.data["Finished experiencing text"], "w")
+			self.File.Edit(self.data["Folders"]["dates"], self.data["Finished experiencing text"], "w")
 
 			text = self.types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["data, title()"].lower()
 

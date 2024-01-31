@@ -415,6 +415,10 @@
 		"en": "Add more",
 		"pt": "Adicionar mais"
 	},
+	"media_being_watched": {
+		"en": "Media being watched",
+		"pt": "Mídia sendo assistida"
+	},
 	"things_watched_since_{}_until_{}": {
 		"en": "things watched since {} (until {})",
 		"pt": "coisas assistidas desde {} (até {})"
@@ -426,5 +430,17 @@
 	"media_types_watched_in_all_years": {
 		"en": "Media types watched in all years",
 		"pt": "Tipos de mídia assistidos em todos os anos"
+	},
+	"number_of_watched_times": {
+		"en": "Number of watched times",
+		"pt": "Número de vezes assistidas"
+	},
+	"first_watched_media_in_the_year": {
+		"en": "First watched media in the year",
+		"pt": "Primeira mídia assistida no ano"
+	},
+	"first_watched_media_per_media_type_in_the_year": {
+		"en": "First watched media per media type in the year",
+		"pt": "Primeira mídia assistida por tipo de mídia no ano"
 	}
 }

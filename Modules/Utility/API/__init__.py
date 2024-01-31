@@ -43,7 +43,7 @@ class API():
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
-		self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"] = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
+		self.token_file = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
 
 		self.client_secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"])
 
@@ -56,8 +56,18 @@ class API():
 
 		api["credentials"] = None
 
-		if self.File.Exist(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"]) == True:
-			api["credentials"] = Credentials.from_authorized_user_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["scopes"])
+		if self.switches["verbose"] == True:
+			print()
+			print("Credentials:")
+			self.JSON.Show(api["credentials"])
+
+		if self.File.Exist(self.token_file) == True:
+			api["credentials"] = Credentials.from_authorized_user_file(self.token_file, api["scopes"])
+
+			if self.switches["verbose"] == True:
+				print()
+				print("Credentials:")
+				self.JSON.Show(api["credentials"].to_json())
 
 		# If there are no (valid) credentials available, let the user log in
 		if not api["credentials"] or not api["credentials"].valid:
@@ -65,11 +75,21 @@ class API():
 				try:
 					api["credentials"].refresh(Request())
 
+					if self.switches["verbose"] == True:
+						print()
+						print("Credentials:")
+						print(api["credentials"].to_json())
+
 				except RefreshError:
 					print()
 
 					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 					api["credentials"] = api["flow"].run_local_server(port = 0)
+
+					if self.switches["verbose"] == True:
+						print()
+						print("Credentials:")
+						print(api["credentials"].to_json())
 
 			else:
 				print()
@@ -77,9 +97,14 @@ class API():
 				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 
+				if self.switches["verbose"] == True:
+					print()
+					print("Credentials:")
+					print(api["credentials"].to_json())
+
 			# Save the credentials for the next run
-			self.File.Create(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"])
-			self.JSON.Edit(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["token"], api["credentials"].to_json(), verbose = False)
+			self.File.Create(self.token_file)
+			self.JSON.Edit(self.token_file, api["credentials"].to_json())
 
 		# Define API dictionary
 		api.update({

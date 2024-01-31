@@ -424,20 +424,18 @@ class Main():
 						file_lines.append("[Finish]")
 
 	def Replace_Lines(self):
-		input()
-
-		lines = self.Text.Get_Clipboard().splitlines()
+		lines = list(self.Text.Get_Clipboard().splitlines())
 
 		i = 0
 		for line in lines:
-			if "$" not in line:
-				lines[i] = "n"
+			if "msgstr" not in line:
+				lines.remove(line)
 
 			i += 1
 
 		string = self.Text.From_List(lines)
 
-		self.Text.Copy(string)
+		self.Text.Copy(string, verbose = False)
 
 	def Reverse_Lines(self):
 		lines = self.Text.Get_Clipboard().splitlines()
@@ -787,106 +785,22 @@ class Main():
 		return add_to_playlist
 
 	def String_To_Date(self):
-		templates = {}
+		before = self.Date.From_String(self.Input.Type())
 
-		for key in self.Date.texts["date_and_time_texts, type: dict"].keys():
-			text_code = self.Date.texts["date_and_time_texts, type: dict"][key]
+		units = {
+			"years": 0,
+			"months": 0,
+			"days": 1,
+			"hours": 12,
+			"minutes": 32,
+			"seconds": 19
+		}
 
-			templates[key] = "<t:" + "{}:" + text_code + ">"
+		before["Object"] += self.Date.Relativedelta(**units)
 
-		dictionary = {}
+		before = self.Date.Now(before["Object"])
 
-		for key in self.Date.texts["date_and_time_texts, type: dict"].keys():
-			if key in self.Date.language_texts:
-				text = self.Date.language_texts[key]
-
-			else:
-				text = self.Date.language_texts[key + ", title()"]
-
-			template = templates[key]
-
-			date = self.Date.Now()
-
-			formatted_template = template.format(date["Formats"]["Unix"])
-
-			dictionary[text + ": " + formatted_template] = formatted_template
-
-		text_templates = "Há [] {}(s)", "Em [] {}(s)"
-
-		time_texts = ["segundo", "minuto", "hora", "dia"]
-
-		for time_text in time_texts:
-			template = text_templates[0].format(time_text)
-
-			dictionary[template] = template
-
-			template = text_templates[1].format(time_text)
-
-			dictionary[template] = template
-
-		dictionary["Data"] = "Data"
-		dictionary["Tempo"] = "Tempo"
-
-		dictionary[self.JSON.Language.language_texts["exit, title()"]] = "Exit"
-
-		options = list(dictionary.values())
-		language_options = list(dictionary.keys())
-
-		test = True
-
-		if test == True:
-			select = {
-				"option": ""
-			}
-
-			while select["option"] != "Exit":
-				select = self.Input.Select(options, language_options)
-
-				key = select["language_option"]
-
-				for time_text in time_texts:
-					if time_text == "segundo":
-						text_key = "seconds"
-
-					if time_text == "minuto":
-						text_key = "minutes"
-
-					if time_text == "hora":
-						text_key = "hours"
-
-					if time_text == "dia":
-						text_key = "days"
-
-					possible_options = [text_templates[0].format(time_text), text_templates[1].format(time_text)]
-
-					number = ""
-
-					if select["language_option"] in possible_options:
-						number = int(self.Input.Type(self.Date.language_texts[text_key + ", title()"]))
-
-					dict_ = {
-						text_key: number
-					}
-
-					if number != "":
-						timedelta = self.Date.Timedelta(**dict_)
-
-						if select["language_option"] == text_templates[0].format(time_text):
-							date = self.Date.Now(self.Date.Now()["Object"] - timedelta)
-
-						if select["language_option"] == text_templates[1].format(time_text):
-							date = self.Date.Now(self.Date.Now()["Object"] + timedelta)
-
-				dictionary[key] = templates["relative"].format(date["Formats"]["Unix"])
-
-				if select["option"] != "Exit":
-					select["option"] = dictionary[key]
-
-				self.Text.Copy(select["option"])
-
-			print()
-
-			self.JSON.Show(dictionary)
+		print(self.Date.To_String(before, utc = True))
 
 	def Tables(self):
 		link = ""

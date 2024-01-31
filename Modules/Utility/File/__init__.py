@@ -178,7 +178,10 @@ class File():
 
 			return False
 
-		if self.switches["file"]["move"] == True and self.Exist(source_file) == True:
+		if (
+			self.switches["file"]["move"] == True and
+			self.Exist(source_file) == True
+		):
 			import shutil
 			shutil.move(source_file, destination_file)
 
@@ -211,7 +214,10 @@ class File():
 		"\t" + verbose_text
 
 		if self.Exist(file) == True:
-			if self.switches["file"]["edit"] == True and contents["string"] != text:
+			if (
+				self.switches["file"]["edit"] == True and
+				contents["string"] != text
+			):
 				edit = open(file, mode, encoding = "UTF8")
 				edit.write(text)
 				edit.close()

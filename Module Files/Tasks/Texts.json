@@ -79,6 +79,14 @@
 		"en": "Completed tasks",
 		"pt": "Tarefas concluídas"
 	},
+	"completed_tasks_in": {
+		"en": "Completed tasks in",
+		"pt": "Tarefas concluídas em"
+	},
+	"task_types_completed_in_all_years": {
+		"en": "Task types completed in all years",
+		"pt": "Tipos de tarefas concluídas em todos os anos"
+	},
 	"first_task_in_year": {
 		"en": "First task in year",
 		"pt": "Primeira tarefa no ano"
@@ -86,5 +94,9 @@
 	"{}_task": {
 		"en": "{} task",
 		"pt": "tarefa de {}"
+	},
+	"productive_things_done_{}_until_{}": {
+		"en": "productive things done since {} (until {})",
+		"pt": "coisas produtivas feitas desde {} (até {})"
 	}
 }

@@ -6,6 +6,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def __init__(self):
 		super().__init__()
 
+		self.Iterate()
+
+	def Iterate(self):
 		# Define default comments number dictionary
 		self.comments_number = {
 			"Numbers": {

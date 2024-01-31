@@ -1,8 +1,8 @@
-# Update_CSS_colors.py
+# Update_CSS_Colors.py
 
 from PHP.PHP import PHP as PHP
 
-class Update_CSS_colors(PHP):
+class Update_CSS_Colors(PHP):
 	def __init__(self):
 		super().__init__()
 

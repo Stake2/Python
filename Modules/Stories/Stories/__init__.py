@@ -321,9 +321,9 @@ class Stories(object):
 
 			# Create the cover folders
 			folders = {
-				"Websites": self.folders["Mega"]["Websites"]["Images"]["Story Covers"],
-				"Photoshop": self.folders["art"]["photoshop"]["stories"],
-				"Sony Vegas": self.folders["art"]["sony_vegas"]["story_covers"]
+				"Websites": self.folders["Mega"]["Websites"]["Images"]["Story covers"],
+				"Photoshop": self.folders["Art"]["Photoshop"]["Stories"],
+				"Sony Vegas": self.folders["Art"]["Sony Vegas"]["Story covers"]
 			}
 
 			# Iterate through the cover folders dictionary to define and create them

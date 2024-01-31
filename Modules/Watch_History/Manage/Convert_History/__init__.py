@@ -32,11 +32,11 @@ class Convert_History(Watch_History):
 
 		# Create the Watched dictionary
 		self.watched = {
-			"Entries file": self.dictionary["Media"]["Item"]["Folders"]["watched"]["entries"],
-			"Entries": self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["watched"]["entries"]),
-			"Entry list": self.File.Contents(self.dictionary["Media"]["Item"]["Folders"]["watched"]["entry_list"])["lines"],
-			"Files": self.dictionary["Media"]["Item"]["Folders"]["watched"]["files"],
-			"Correct titles file": self.dictionary["Media"]["Item"]["Folders"]["watched"]["root"] + "Correct titles.txt"
+			"Entries file": self.dictionary["Media"]["Item"]["Folders"]["Watched"]["entries"],
+			"Entries": self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["entries"]),
+			"Entry list": self.File.Contents(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["entry_list"])["lines"],
+			"Files": self.dictionary["Media"]["Item"]["Folders"]["Watched"]["files"],
+			"Correct titles file": self.dictionary["Media"]["Item"]["Folders"]["Watched"]["root"] + "Correct titles.txt"
 		}
 
 		self.watched["Correct titles"] = self.File.Contents(self.watched["Correct titles file"])["lines"]
@@ -1275,7 +1275,7 @@ class Convert_History(Watch_History):
 						if "Watched" not in self.medias[self.media_title]:
 							# Create the Watched dictionary
 							self.medias[self.media_title]["Watched"] = {
-								"Entries file": self.medias[self.media_title]["Media"]["Item"]["Folders"]["watched"]["entries"]
+								"Entries file": self.medias[self.media_title]["Media"]["Item"]["Folders"]["Watched"]["entries"]
 							}
 
 					# Define the media variable for easier typing

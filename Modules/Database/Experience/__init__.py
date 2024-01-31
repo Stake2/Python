@@ -6,6 +6,15 @@ class Experience(Database):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		# Import sub-classes method
+		self.Import_Sub_Classes()
+
+		self.dictionary = dictionary
+
+		self.Define_Data_Dictionary()
+		self.Register_The_Data()
+
+	def Import_Sub_Classes(self):
 		# Import the "importlib" module
 		import importlib
 
@@ -25,11 +34,6 @@ class Experience(Database):
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
 
-		self.dictionary = dictionary
-
-		self.Define_Data_Dictionary()
-		self.Register_The_Data()
-
 	def Define_Data_Dictionary(self):
 		# Select the data type and the data if the dictionary is empty
 		if self.dictionary == {}:
@@ -47,7 +51,7 @@ class Experience(Database):
 		# If the game experiencing status is inside the status list
 		if self.data["Details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
 			# If the data "Dates.txt" file is empty
-			if self.File.Contents(self.data["folders"]["dates"])["lines"] == []:
+			if self.File.Contents(self.data["Folders"]["dates"])["lines"] == []:
 				# Get the first experiencing time where the user started experiencing the data
 				self.data["Started experiencing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
@@ -55,7 +59,7 @@ class Experience(Database):
 				self.data["Dates"] = self.language_texts["when_i_started_to_experience"] + ":\n"
 				self.data["Dates"] += self.data["Started experiencing time"]
 
-				self.File.Edit(self.data["folders"]["dates"], self.data["Dates"], "w")
+				self.File.Edit(self.data["Folders"]["dates"], self.data["Dates"], "w")
 
 			# Change the experiencing status to "Experiencing"
 			self.Change_Status(self.dictionary, self.language_texts["experiencing, title()"])

@@ -52,13 +52,13 @@ Modules:
 [7] - Food_Time
 [8] - Friends
 [9] - GamePlayer
-[10] - Project_Zomboid
-[11] - Python
-[12] - Social_Networks
-[13] - SproutGigs
-[14] - Stories
-[15] - Tasks
-[16] - Text_Generator
+[10] - PHP
+[11] - Project_Zomboid
+[12] - Python
+[13] - Social_Networks
+[14] - SproutGigs
+[15] - Stories
+[16] - Tasks
 [17] - Watch_History
 [18] - Years
 
@@ -71,16 +71,20 @@ It does that by opening a local server ([XAMPP](https://www.apachefriends.org/))
 And opening each one of the websites using the ``/generate`` route of the [PHP Index file](https://github.com/Stake2/PHP/blob/main/Index.php), in each supported language (currently ``General``, ``English``, and ``Portuguese``).<br>
 Then it opens a "Github" shortcut that opens the [ConEmu](https://conemu.github.io/) console program in the [Websites](https://github.com/Stake2/Websites) folder, for the user to execute ``git`` operations to push the website changes and generated HTML files to the [Websites Repository](https://github.com/Stake2/Websites).
 
-The ["Tasks.py"](https://github.com/Stake2/Python/tree/main/Modules/Tasks) Python module generates the JSON database files which are read by the ["Tasks.php"](https://github.com/Stake2/PHP/blob/main/Websites/Tasks/Generators/Tasks.php) HTML tab generator written in PHP.<br>
-In order to generate the "Tasks" tab on the [Tasks](https://thestake2.netlify.app/Tasks/) website.<br>
-And also generate the "Completed tasks" tabs on all year websites.
-
 The ["Watch_History.py"](https://github.com/Stake2/Python/tree/main/Modules/Watch_History) Python module generates the JSON database files which are read by the ["Watched.php"](https://github.com/Stake2/PHP/blob/main/Websites/Watch%20History/Generators/Watched.php) HTML tab generator written in PHP.<br>
-In order to generate the ["Watched things"](https://thestake2.netlify.app/Watch%20History/?tab=1) and ["Past registries"](https://thestake2.netlify.app/Watch%20History/?tab=3) tabs on the [Watch History](https://thestake2.netlify.app/Watch%20History/) website.<br>
+In order to generate the ["Watched things"](https://thestake2.netlify.app/Watch%20History/?tab=watched_things) and ["Past registries"](https://thestake2.netlify.app/Watch%20History/?tab=past_registries) tabs on the [Watch History](https://thestake2.netlify.app/Watch%20History/) website.<br>
 And also generate the "Watched things" tabs on all year websites.
 
+The ["GamePlayer.py"](https://github.com/Stake2/Python/tree/main/Modules/GamePlayer) Python module generates the JSON database files which are read by the ["Played.php"](https://github.com/Stake2/PHP/blob/main/Websites/Play%20History/Generators/Played.php) HTML tab generator written in PHP.<br>
+In order to generate the ["Game sessions played"](https://thestake2.netlify.app/Play%20History/?tab=game_sessions_played) and ["Past registries"](https://thestake2.netlify.app/Play%20History/?tab=past_registries) tabs on the [Play History](https://thestake2.netlify.app/Play%20History/) website.<br>
+And also generate the "Game sessions played" tabs on all year websites.
+
+The ["Tasks.py"](https://github.com/Stake2/Python/tree/main/Modules/Tasks) Python module generates the JSON database files which are read by the ["Tasks.php"](https://github.com/Stake2/PHP/blob/main/Websites/Tasks/Generators/Tasks.php) HTML tab generator written in PHP.<br>
+In order to generate the "Completed tasks" tab on the [Tasks](https://thestake2.netlify.app/Tasks/?tab=completed_tasks) website.<br>
+And also generate the "Completed tasks" tabs on all year websites.
+
 The ["Years.py"](https://github.com/Stake2/Python/tree/main/Modules/Years) Python module generates the year summary files read by the ["Summary.php"](https://github.com/Stake2/PHP/blob/main/Websites/Years/Generators/Summary.php) HTML tab generator written in PHP.<br>
-In order to generate "Summary" tabs on all year websites website.
+In order to generate the "Summary" tabs on all year websites website.
 
 [PHP: Connection of PHP files to Python modules](https://github.com/Stake2/PHP#connection-of-php-files-to-python-modules)
 

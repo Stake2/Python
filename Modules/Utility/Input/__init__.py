@@ -381,10 +381,12 @@ class Input():
 			length == None and
 			line_options["show_finish_text"] == True
 		):
+			keywords = str(finish_keywords).replace("'", '"').replace("[", "").replace("]", "")
+
 			print("--------------------")
 			print()
 			print("(" + self.language_texts["to_finish_typing_please_type_one_of_the_texts_below"] + ":")
-			print(str(finish_keywords).replace("'", '"').replace("[", "").replace("]", "") + ")")
+			print(keywords + ")")
 
 		if show_text_parameter == None:
 			print()
@@ -393,7 +395,9 @@ class Input():
 		if (
 			length == None and
 			line_options["show_finish_text"] == True and
-			show_text_parameter != None
+			show_text_parameter != None and
+			show_text_parameter[0] != "\n" and
+			line_options["show_finish_text"] == False
 		):
 			print()
 

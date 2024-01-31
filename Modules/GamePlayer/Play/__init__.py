@@ -16,6 +16,22 @@ class Play(GamePlayer):
 			# Parse the arguments
 			self.Parse_Arguments()
 
+		# Import sub-classes method
+		self.Import_Sub_Classes()
+
+		self.dictionary = dictionary
+		self.open_game = open_game
+
+		self.Define_Game_Dictionary()
+
+		self.Show_Information(self.dictionary)
+
+		if self.open_game == True:
+			self.Open_Game()
+
+		self.Register_The_Session()
+
+	def Import_Sub_Classes(self):
 		# Import the "importlib" module
 		import importlib
 
@@ -35,18 +51,6 @@ class Play(GamePlayer):
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
 
-		self.dictionary = dictionary
-		self.open_game = open_game
-
-		self.Define_Game_Dictionary()
-
-		self.Show_Information(self.dictionary)
-
-		if self.open_game == True:
-			self.Open_Game()
-
-		self.Register_The_Session()
-
 	def Define_Game_Dictionary(self):
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
@@ -59,7 +63,7 @@ class Play(GamePlayer):
 				game_title = self.arguments["Game"]["Value"]
 
 			# Ask the user to select a game type and game
-			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title)
+			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title, play = True)
 
 		self.game = self.dictionary["Game"]
 
@@ -92,7 +96,7 @@ class Play(GamePlayer):
 
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
 
-			self.System.Open(self.game["Files"]["Shortcut"])
+			self.System.Open(self.game["Files"]["Shortcut"]["File"])
 
 	def Register_The_Session(self):
 		# Show a separator
@@ -138,8 +142,10 @@ class Play(GamePlayer):
 		# Define the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
 
+		# Get the difference text
 		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]
 
+		# Get the time units of the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
 
 		# Register the finished playing time
@@ -151,7 +157,19 @@ class Play(GamePlayer):
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Text"][self.user_language])
 
 		# Calculate the gaming time
-		self.Calculate_Gaming_Time(self.dictionary)
+		self.dictionary["Game"] = self.Calculate_Gaming_Time(self.dictionary)
+
+		# If the game has sub-games
+		if self.game["States"]["Has sub-games"] == True:
+			# And the sub-game title is not the same as the game title
+			if self.game["Sub-game"]["Title"] != self.game["Title"]:
+				# Calculate the gaming time for the sub-game
+				self.dictionary["Game"]["Sub-game"] = self.Calculate_Gaming_Time(self.dictionary, item = True)
+
+			# And the sub-game title is the same as the game title
+			if self.game["Sub-game"]["Title"] == self.game["Title"]:
+				# Calculate the gaming time for the sub-game
+				self.dictionary["Game"]["Sub-game"] = self.Calculate_Gaming_Time(self.dictionary, item = True)
 
 		# Use the "Register" class to register the played game, and giving the dictionary to it
 		if self.Register != None:

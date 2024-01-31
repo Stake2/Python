@@ -103,7 +103,10 @@ class Add_A_New_Game(GamePlayer):
 			if date != "":
 				import re
 
-				if date_type == "end" and re.search("[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}", date) == None:
+				if (
+					date_type == "end" and
+					re.search("[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}", date) == None
+				):
 					date = self.Input.Type(text, next_line = True, accept_enter = False, regex = "[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}; " + self.Date.Now()["Formats"]["DD/MM/YYYY"])
 
 				self.game[date_type.title() + " date"] = date
@@ -199,7 +202,11 @@ class Add_A_New_Game(GamePlayer):
 		if "End date" in self.game:
 			self.game["Details"][self.Date.language_texts["end_date"]] = self.game["End date"]
 
-		if "Update" not in self.dictionary and "Language" in self.game and self.game["Language"] != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
+		if (
+			"Update" not in self.dictionary and
+			"Language" in self.game and
+			self.game["Language"] != "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
+		):
 			self.game["Details"][self.JSON.Language.language_texts["original_language"]] = self.game["Language"]
 
 		self.game["Details"][self.JSON.Language.language_texts["platform, title()"]] = self.game["Platform"][self.user_language]

@@ -163,6 +163,10 @@
 		"en": "List",
 		"pt": "Lista"
 	},
+	"current, title()": {
+		"en": "Current",
+		"pt": "Atual"
+	},
 	"custom_language": {
 		"en": "custom language",
 		"pt": "idioma personalizado"
@@ -1294,6 +1298,10 @@
 		"en": "Session duration",
 		"pt": "Duração da sessão"
 	},
+	"duration, title()": {
+		"en": "Duration",
+		"pt": "Duração"
+	},
 	"category, title()": {
 		"en": "Category",
 		"pt": "Categoria"
@@ -1709,6 +1717,14 @@
 		"en": "Key",
 		"pt": "Chave"
 	},
+	"drawing, title()": {
+		"en": "Drawing",
+		"pt": "Desenho"
+	},
+	"drawings, title()": {
+		"en": "Drawings",
+		"pt": "Desenhos"
+	},
 	"drawing_program": {
 		"en": "Drawing program",
 		"pt": "Programa de desenho"
@@ -1787,6 +1803,54 @@
 	"dates, title()": {
 		"pt": "Datas",
 		"en": "Dates"
+	},
+	"story": {
+		"en": "story",
+		"pt": "história"
+	},
+	"story, title()": {
+		"en": "Story",
+		"pt": "História"
+	},
+	"stories": {
+		"en": "stories",
+		"pt": "histórias"
+	},
+	"stories, title()": {
+		"en": "Stories",
+		"pt": "Histórias"
+	},
+	"operational_system": {
+		"en": "Operational System",
+		"pt": "Sistema Operacional"
+	},
+	"render, title()": {
+		"en": "Render",
+		"pt": "Renderização"
+	},
+	"story_covers": {
+		"en": "Story Covers",
+		"pt": "Capas de Histórias"
+	},
+	"covers, title()": {
+		"en": "Covers",
+		"pt": "Capas"
+	},
+	"websites, title()": {
+		"pt": "Sites",
+		"en": "Websites"
+	},
+	"years, title()": {
+		"pt": "Anos",
+		"en": "Years"
+	},
+	"console, title()": {
+		"pt": "Video game",
+		"en": "Console"
+	},
+	"mobile, title()": {
+		"pt": "Celular",
+		"en": "Mobile"
 	},
 	"genders, type: dict": {
 		"en": {

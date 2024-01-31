@@ -66,7 +66,7 @@ class Register(Watch_History):
 		self.media_type = self.dictionary["Media type"]["Plural"]["en"]
 
 		# Re-read the "Watched" file to get the most updated data
-		self.dictionaries["Watched"] = self.JSON.To_Python(self.media["Item"]["Folders"]["watched"]["entries"])
+		self.dictionaries["Watched"] = self.JSON.To_Python(self.media["Item"]["Folders"]["Watched"]["entries"])
 
 		# Re-read the "Entries" file to get the most updated data
 		if "Defined title" not in self.dictionary:
@@ -102,11 +102,18 @@ class Register(Watch_History):
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] = len(dict_["Entries"])
 
-		# Define local media and media item titles to remove some keys from them
+		# Define the local media and media item titles to remove some keys from them
 		media_titles = self.media["Titles"].copy()
 		item_titles = self.media["Item"]["Titles"].copy()
 
-		for dict_ in [media_titles, item_titles]:
+		# Define the list of titles to remove some keys
+		titles = [
+			media_titles,
+			item_titles
+		]
+
+		# Remove the keys
+		for dict_ in titles:
 			dict_.pop("Language")
 
 			for key in ["ja", "Sanitized"]:
@@ -115,7 +122,11 @@ class Register(Watch_History):
 
 			for language in self.languages["small"]:
 				if language in dict_:
-					if dict_["Original"] == dict_[language] or "Romanized" in dict_ and dict_["Romanized"] == dict_[language]:
+					if (
+						dict_["Original"] == dict_[language] or
+						"Romanized" in dict_ and
+						dict_["Romanized"] == dict_[language]
+					):
 						dict_.pop(language)
 
 		self.key = self.dictionary["Entry"]["Name"]["Normal"]
@@ -135,7 +146,9 @@ class Register(Watch_History):
 			"Date": self.dictionary["Entry"]["Dates"]["UTC"]
 		}
 
-		# Remove the media item dictionary if the media has not media item list, the media item title is the same as the media title, or the media is non-series media
+		# Remove the media item dictionary if the media does not contain a media item list,
+		# The media item title is the same as the media title,
+		# Or the media is non-series media
 		if (
 			self.media["States"]["Media item list"] == False or
 			self.media["States"]["Media item is media"] == True
@@ -143,15 +156,25 @@ class Register(Watch_History):
 			self.dictionaries["Entries"]["Dictionary"][self.key].pop("Item")
 
 		# Remove episode titles and number keys of dictionary if media is non-series media or single unit
-		if self.media["States"]["Series media"] == False or self.media["States"]["Single unit"] == True:
+		if (
+			self.media["States"]["Series media"] == False or
+			self.media["States"]["Single unit"] == True
+		):
 			self.dictionaries["Entries"]["Dictionary"][self.key].pop("Episode")
 
 		# Define episode number on dictionary if media is series media and not single unit and is episodic
-		if self.media["States"]["Series media"] == True and self.media["States"]["Single unit"] == False and self.media["States"]["Episodic"] == True:
+		if (
+			self.media["States"]["Series media"] == True and
+			self.media["States"]["Single unit"] == False and
+			self.media["States"]["Episodic"] == True
+		):
 			self.dictionaries["Entries"]["Dictionary"][self.key]["Episode"]["Number"] = self.media["Episode"]["Number"]
 
 		# Remove "Number" key from Episode dictionary is the media is non-episodic
-		if "Episode" in self.dictionaries["Entries"]["Dictionary"][self.key] and self.media["States"]["Episodic"] == False:
+		if (
+			"Episode" in self.dictionaries["Entries"]["Dictionary"][self.key] and
+			self.media["States"]["Episodic"] == False
+		):
 			self.dictionaries["Entries"]["Dictionary"][self.key]["Episode"].pop("Number")
 
 		# Add episode ID if the key is present inside the episode dictionary
@@ -204,7 +227,7 @@ class Register(Watch_History):
 		self.JSON.Edit(self.dictionary["Media type"]["Folders"]["Per Media Type"]["Entries"], self.dictionaries["Media type"][self.media_type])
 
 		# Update the media "Watched.json" file
-		self.JSON.Edit(self.media["Item"]["Folders"]["watched"]["entries"], self.dictionaries["Watched"])
+		self.JSON.Edit(self.media["Item"]["Folders"]["Watched"]["entries"], self.dictionaries["Watched"])
 
 		# Add to the "Entry list.txt" files
 		lines = self.File.Contents(self.folders["Watch History"]["Current year"]["Entry list"])["lines"]
@@ -217,10 +240,10 @@ class Register(Watch_History):
 		if self.dictionary["Entry"]["Name"]["Normal"] not in lines:
 			self.File.Edit(self.dictionary["Media type"]["Folders"]["Per Media Type"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
-		lines = self.File.Contents(self.media["Item"]["Folders"]["watched"]["entry_list"])["lines"]
+		lines = self.File.Contents(self.media["Item"]["Folders"]["Watched"]["entry_list"])["lines"]
 
 		if self.dictionary["Entry"]["Name"]["Normal"] not in lines:
-			self.File.Edit(self.media["Item"]["Folders"]["watched"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+			self.File.Edit(self.media["Item"]["Folders"]["Watched"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [Episode number]
@@ -266,7 +289,7 @@ class Register(Watch_History):
 		self.File.Edit(file, self.dictionary["Entry"]["Text"]["General"], "w")
 
 		# Define the Entry file inside the "Watched" folder of the media (item) folder
-		file = self.media["Item"]["Folders"]["watched"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		file = self.media["Item"]["Folders"]["Watched"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 		# Create the file
 		self.File.Create(file)
@@ -577,7 +600,10 @@ class Register(Watch_History):
 				# Update the media item details file
 				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
-				if self.media["States"]["Video"] == False:
+				if (
+					self.media["States"]["Video"] == False and
+					len(self.media["Items"]["List"]) != 1
+				):
 					self.media["States"]["Completed media item"] = True
 
 			# If the media has no media item list

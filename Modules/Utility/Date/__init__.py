@@ -271,7 +271,10 @@ class Date():
 
 				date[date_name]["DateTime"]["Formats"][format_key] = object.strftime(format)
 
-				if object.strftime("%Z") not in ["UTC", ""] and format_key == "YYYY-MM-DDTHH:MM:SSZ":
+				if (
+					object.strftime("%Z") not in ["UTC", ""] and
+					format_key == "YYYY-MM-DDTHH:MM:SSZ"
+				):
 					list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
 					list_.insert(22, ":")
 
@@ -446,8 +449,13 @@ class Date():
 					):
 						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
 
+				# Define the text key
+				text_key = key.lower()
+
+				text_key = self.Text.By_Number(date["Difference"][key], text_key, text_key[:-1])
+
 				# Define the time text
-				text = self.texts[key.lower()][language]
+				text = self.texts[text_key][language]
 
 				if "Unit texts" in date:
 					text = date["Unit texts"][key][language]
@@ -636,7 +644,10 @@ class Date():
 			texts["minutes"] = self.Text.By_Number(int(minute), language_texts["minute"], language_texts["minutes"])
 
 		# Seconds
-		if len(time) > 2 and second not in ["0", "00"]:
+		if (
+			len(time) > 2 and
+			second not in ["0", "00"]
+		):
 			texts["seconds"] = self.Text.By_Number(int(second), language_texts["second"], language_texts["seconds"])
 
 		text = ""
@@ -644,19 +655,33 @@ class Date():
 		if texts["hours"] != "":
 			text += self.Text.Remove_Leading_Zeroes(hour) + " " + texts["hours"]
 
-			if texts["minutes"] != "" and texts["seconds"] == "":
+			if (
+				texts["minutes"] != "" and
+				texts["seconds"] == ""
+			):
 				text += " " + self.JSON.Language.language_texts["and"] + " "
 
-		if texts["hours"] != "" and texts["minutes"] != "" and texts["seconds"] != "" and texts["seconds"] != "00":
+		if (
+			texts["hours"] != "" and
+			texts["minutes"] != "" and
+			texts["seconds"] != "" and
+			texts["seconds"] != "00"
+		):
 			text += ", "
 
 		if texts["minutes"] != "":
 			text += self.Text.Remove_Leading_Zeroes(minute) + " " + texts["minutes"]
 
-		if texts["minutes"] != "" and texts["seconds"] != "":
+		if (
+			texts["minutes"] != "" and 
+			texts["seconds"] != ""
+		):
 			text += " " + self.JSON.Language.language_texts["and"] + " "
 
-		if texts["seconds"] != "" and texts["seconds"] != "00":
+		if (
+			texts["seconds"] != "" and 
+			texts["seconds"] != "00"
+		):
 			text += self.Text.Remove_Leading_Zeroes(second) + " " + texts["seconds"]
 
 		if add_original_time == True:

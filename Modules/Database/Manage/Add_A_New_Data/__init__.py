@@ -137,18 +137,18 @@ class Add_A_New_Data(Database):
 		self.data["Details"][self.JSON.Language.language_texts["origin_type"]] = self.data["Origin type"]
 
 		# Create the data folders
-		self.data["folders"] = {
+		self.data["Folders"] = {
 			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize(self.data["Title"], restricted_characters = True) + "/"
 		}
 
-		self.Folder.Create(self.data["folders"]["root"])
+		self.Folder.Create(self.data["Folders"]["root"])
 
 		# Create the data details file
-		self.data["folders"]["details"] = self.data["folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
-		self.File.Create(self.data["folders"]["details"])
+		self.data["Folders"]["details"] = self.data["Folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
+		self.File.Create(self.data["Folders"]["details"])
 
 		# Write into the data details file
-		self.File.Edit(self.data["folders"]["details"], self.Text.From_Dictionary(self.data["Details"]), "w")
+		self.File.Edit(self.data["Folders"]["details"], self.Text.From_Dictionary(self.data["Details"]), "w")
 
 		# Remove the "folders" dictionary to let "Select_Data" create it
 		self.data.pop("folders")

@@ -92,9 +92,14 @@ class Register(GamePlayer):
 
 		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Per Game Type"][self.game_type.lower().replace(" ", "_")]["Sessions"])
 
-		self.dictionaries["Played"] = self.JSON.To_Python(self.game["Folders"]["played"]["entries"])
+		self.dictionaries["Played"] = self.JSON.To_Python(self.game["Folders"]["Played"]["entries"])
 
-		self.game["Played"] = self.JSON.To_Python(self.game["Folders"]["played"]["entries"])
+		# If the game has sub-games
+		if self.game["States"]["Has sub-games"] == True:
+			# Get the "Sub-game played" dictionary
+			self.dictionaries["Sub-game played"] = self.JSON.To_Python(self.game["Sub-game"]["Folders"]["Played"]["entries"])
+
+		self.game["Played"] = self.JSON.To_Python(self.game["Folders"]["Played"]["entries"])
 
 		# Define the "First game session in year" state
 		self.game["States"]["First game session in year"] = False
@@ -112,6 +117,11 @@ class Register(GamePlayer):
 			self.dictionaries["Game type"][self.game_type],
 			self.dictionaries["Played"]
 		]
+
+		# If the game has sub-games
+		if self.game["States"]["Has sub-games"] == True:
+			# Add the "Sub-game played" dictionary
+			dicts.append(self.dictionaries["Sub-game played"])
 
 		# Add one to the entry, game type entry, and root game type entry numbers
 		for dict_ in dicts:
@@ -133,30 +143,60 @@ class Register(GamePlayer):
 			if self.dictionary["Entry"]["Name"]["Normal"] not in dict_["Entries"]:
 				dict_["Entries"].append(self.dictionary["Entry"]["Name"]["Normal"])
 
-		# Define local game titles to remove some keys from them
+		# Define the local game and sub-game titles to remove some keys from them
 		game_titles = self.game["Titles"].copy()
-		game_titles.pop("Language")
 
-		for key in ["ja", "Sanitized"]:
-			if key in game_titles:
-				game_titles.pop(key)
+		# Define the list of titles to remove some keys
+		titles = [
+			game_titles
+		]
 
-		for language in self.languages["small"]:
-			if language in game_titles and game_titles["Original"] == game_titles[language]:
-				game_titles.pop(language)
+		if "Sub-game" in self.game:
+			sub_game_titles = self.game["Sub-game"]["Titles"].copy()
+
+			titles.append(sub_game_titles)
+
+		# Remove the keys
+		for dict_ in titles:
+			dict_.pop("Language")
+			dict_.pop("Language sanitized")
+
+			for key in ["ja", "Sanitized"]:
+				if key in dict_:
+					dict_.pop(key)
+
+			for language in self.languages["small"]:
+				if language in dict_:
+					if (
+						dict_["Original"] == dict_[language] or
+						"Romanized" in dict_ and
+						dict_["Romanized"] == dict_[language]
+					):
+						dict_.pop(language)
 
 		self.key = self.dictionary["Entry"]["Name"]["Normal"]
 
+		# Add the "Entry" dictionary to the "Entries" dictionary
 		self.dictionaries["Sessions"]["Dictionary"][self.key] = {
 			"Number": self.dictionaries["Sessions"]["Numbers"]["Total"],
 			"Type number": self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"],
 			"Entry": self.dictionary["Entry"]["Name"]["Normal"],
 			"Titles": game_titles,
+			"Sub-game": sub_game_titles,
 			"Type": self.game_type,
 			"Platform": self.game["Platform"]["en"],
 			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
 			"Session duration": self.dictionary["Entry"]["Session duration"]["Difference"]
 		}
+
+		# Remove the sub-game dictionary if the game does not contain sub-games
+		# Or the sub-game title is the same as the game title
+		if (
+			self.game["States"]["Has sub-games"] == False or
+			self.game["States"]["Has sub-games"] == True and
+			self.game["Sub-game"]["Title"] == self.game["Title"]
+		):
+			self.dictionaries["Sessions"]["Dictionary"][self.key].pop("Sub-game")
 
 		self.dictionaries["Sessions"]["Dictionary"][self.key]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Text"]["en"]
 
@@ -178,12 +218,21 @@ class Register(GamePlayer):
 		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Per Game Type"]["Sessions"], self.dictionaries["Game type"][self.game_type])
 
 		# Update the game "Played.json" file
-		self.JSON.Edit(self.game["Folders"]["played"]["entries"], self.dictionaries["Played"])
+		self.JSON.Edit(self.game["Folders"]["Played"]["entries"], self.dictionaries["Played"])
+
+		if self.game["States"]["Has sub-games"] == True:
+			# Update the sub-game "Played.json" file
+			self.JSON.Edit(self.game["Sub-game"]["Folders"]["Played"]["entries"], self.dictionaries["Sub-game played"])
 
 		# Add to the root, type, and game "Entry list.txt" files
 		self.File.Edit(self.folders["Play History"]["Current year"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 		self.File.Edit(self.dictionary["Type"]["Folders"]["Per Game Type"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
-		self.File.Edit(self.game["Folders"]["played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.game["Folders"]["Played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+
+		# If the game has sub-games
+		if self.game["States"]["Has sub-games"] == True:
+			# Add to the sub-game "Entry list.txt" file
+			self.File.Edit(self.game["Sub-game"]["Folders"]["Played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
 		# Number: [entry number]
@@ -191,6 +240,9 @@ class Register(GamePlayer):
 		# 
 		# Title:
 		# [Title]
+		# 
+		# Sub-game title:
+		# [Sub-game title]
 		# 
 		# Type:
 		# [Type]
@@ -223,10 +275,18 @@ class Register(GamePlayer):
 		self.File.Edit(file, self.dictionary["Entry"]["Text"]["General"], "w")
 
 		# Write the entry text into the "Played" entry file
-		file = self.game["Folders"]["played"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		file = self.game["Folders"]["Played"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 		self.File.Create(file)
 		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
+
+		# If the game has sub-games
+		if self.game["States"]["Has sub-games"] == True:
+			# Write the entry text into the sub-game "Played" entry file
+			file = self.game["Sub-game"]["Folders"]["Played"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+
+			self.File.Create(file)
+			self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
 
 	def Define_File_Text(self, language_parameter = None):
 		if language_parameter != "General":
@@ -237,13 +297,13 @@ class Register(GamePlayer):
 
 		full_language = self.languages["full"][language]
 
-		# Define entry text lines
+		# Define the entry text lines
 		lines = [
 			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Sessions"]["Numbers"]["Total"]),
 			self.JSON.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"])
 		]
 
-		# Add entry title lines
+		# Add the entry title lines
 		if language_parameter != "General":
 			text = self.JSON.Language.texts["title, title()"][language]
 
@@ -252,6 +312,18 @@ class Register(GamePlayer):
 
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
+		# If the game has sub-games
+		# And the sub-game title is not the same as the game title
+		if (
+			self.game["States"]["Has sub-games"] == True and
+			self.game["Sub-game"]["Title"] != self.game["Title"]
+		):
+			# Add the sub-game title
+			text = self.game["Sub-game type"]["Texts"]["Singular"][language]
+
+			lines.append(text + ":" + "\n" + "{}")
+
+		# Add the rest of the lines
 		lines.extend([
 			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
 			self.JSON.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
@@ -277,7 +349,7 @@ class Register(GamePlayer):
 		# Define items to be added to file text format
 		items = []
 
-		# Add entry titles to items list
+		# Add the entry titles to the items list
 		titles = []
 
 		key = "Original"
@@ -300,6 +372,15 @@ class Register(GamePlayer):
 			i += 1
 
 		items.append(self.Text.From_List(titles) + "\n")
+
+		# If the game has sub-games
+		# And the sub-game title is not the same as the game title
+		if (
+			self.game["States"]["Has sub-games"] == True and
+			self.game["Sub-game"]["Title"] != self.game["Title"]
+		):
+			# Add the sub-game title
+			items.append(self.game["Sub-game"]["Titles"]["Language sanitized"] + "\n")
 
 		# Add times to items list
 		times = ""
@@ -400,7 +481,40 @@ class Register(GamePlayer):
 				self.File.Edit(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Game_Status(self):
-		self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])
+		# Define the game type variable for easier typing
+		self.game_type = self.dictionary["Type"]["Type"]["en"]
+
+		# Define the "Ask if game was completed" state as True
+		self.game["States"]["Ask if game was completed"] = True
+
+		# Define the list of games that do not have an ending
+		game_types_without_ending = []
+
+		# Define the keys
+		keys = [
+			"FPS",
+			"Idle Clicker",
+			"MMO",
+			"Rhythm",
+			"RPG",
+			"Survival"
+		]
+
+		# Add the English game types
+		for key in keys:
+			game_type = self.game_types["Dictionary"][key]["Type"]["en"]
+
+			game_types_without_ending.append(game_type)
+
+		# If the game type is inside the above list
+		if self.game_type in game_types_without_ending:
+			# Define the "Ask if game was completed" state as False
+			self.game["States"]["Ask if game was completed"] = False
+
+		# If the state is True
+		if self.game["States"]["Ask if game was completed"] == True:
+			# Ask if the user completed the whole game
+			self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])
 
 		if self.game["States"]["Completed game"] == True:
 			# Update the status key in the game details
@@ -417,12 +531,12 @@ class Register(GamePlayer):
 		# Gets the date that the user started and finished playing the game and writes it to the game dates text file
 		if self.game["States"]["Completed game"] == True:
 			# Gets the game dates from the game dates file
-			self.game["dates"] = self.File.Dictionary(self.game["Folders"]["dates"], next_line = True)
+			self.game["Dates"] = self.File.Dictionary(self.game["Folders"]["dates"], next_line = True)
 
 			key = self.language_texts["when_i_started_to_play"]
 
 			# Get the started playing time
-			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["dates"][key]))
+			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["Dates"][key]))
 
 			# Define time spent playing using started playing time and finished playing time
 			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
@@ -450,14 +564,25 @@ class Register(GamePlayer):
 			self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.game["Finished playing text"]
 
 	def Define_Diary_Slim_Text(self):
+		# Define the list of items
 		items = [
 			self.dictionary["Type"]["Type"][self.user_language],
 			self.game["Titles"]["Language"],
 			self.dictionary["Entry"]["Session duration"]["Text"][self.user_language]
 		]
 
+		# Replace the title inside the items list if the game has sub-games
+		# And the sub-game title is not the game title
+		if (
+			self.game["States"]["Has sub-games"] == True and
+			self.game["Sub-game"]["Title"] != self.game["Title"]
+		):
+			items[1] = self.game["Sub-game"]["With game title"]
+
+		# Define the template
 		template = self.language_texts["i_played_the_{}_game_called_{}_for_{}"] + "."
 
+		# Format the template with the items
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(*items)
 
 		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]

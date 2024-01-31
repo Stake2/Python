@@ -280,8 +280,8 @@ class Post(Stories):
 		if self.run_as_module == False:
 			source_file_name += "00"
 
-		source_file = self.folders["art"]["sony_vegas"]["render"]["root"] + source_file_name + "." + self.cover_type["extension"]
-		destination_file = self.folders["art"]["sony_vegas"]["render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
+		source_file = self.folders["Art"]["Sony Vegas"]["Render"]["root"] + source_file_name + "." + self.cover_type["extension"]
+		destination_file = self.folders["Art"]["Sony Vegas"]["Render"]["root"] + str(self.story["chapter_number"]) + "." + self.cover_type["extension"]
 
 		print(source_file)
 		print(destination_file)
