@@ -3,8 +3,8 @@
 from Stories.Stories import Stories as Stories
 
 class Write(Stories):
-	def __init__(self, story = None):
-		super().__init__(story = story)
+	def __init__(self):
+		super().__init__()
 
 		self.register_task = False
 

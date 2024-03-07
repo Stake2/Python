@@ -4,43 +4,27 @@
 import importlib
 
 class Stories(object):
-	def __init__(self, story = None):
+	def __init__(self):
 		# Define the module folders
 		from Utility.Define_Folders import Define_Folders as Define_Folders
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
-		# Define the classes to be imported
-		classes = [
-			"Social_Networks"
-		]
+		# Import classes method
+		self.Import_Classes()
 
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			# Add the sub-class to the current module
-			setattr(self, title, sub_class())
-
-		self.story = story
-
-		self.Define_Social_Network_Variables()
+		# Folders, files, lists, and dictionaries methods
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
+
+		# Class methods
+		self.Define_Social_Network_Variables()
+		self.Cover_Folder_Name(1)
 		self.Define_Stories_Dictionary()
-
-		if hasattr(self, "Select_Story") == False:
-			from Stories.Select_Story import Select_Story as Select_Story
-
-			self.Select_Story = Select_Story
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -118,11 +102,38 @@ class Stories(object):
 		self.large_bar = "-----"
 		self.dash_space = "-"
 
+	def Import_Classes(self):
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-class to the current module
+			setattr(self, title, sub_class())
+
 	def Define_Social_Network_Variables(self):
+		# Get the "social_networks" variable from the "Social_Networks" module
 		self.social_networks = self.Social_Networks.social_networks
 
-		self.social_networks["Wattpad"]["profile"]["conversations"] = self.social_networks["Wattpad"]["profile"]["profile"] + "/conversations"
-		self.social_networks["Wattpad"]["links"]["myworks"] = self.social_networks["Wattpad"]["links"]["link"] + "myworks/"
+		# Define the "Wattpad" key for faster typing
+		self.social_networks["Wattpad"] = self.social_networks["Dictionary"]["Wattpad"]
+
+		# Define the additional links
+		self.social_networks["Wattpad"]["Profile"]["Links"] = {
+			"Conversations": self.social_networks["Wattpad"]["Profile"]["Links"]["Profile"] + "conversations/"
+		}
+
+		self.social_networks["Wattpad"]["Information"]["Links"] = {
+			"My works": self.social_networks["Wattpad"]["Information"]["Link"] + "myworks/"
+		}
 
 	def Define_Folders_And_Files(self):
 		# Folders
@@ -319,29 +330,9 @@ class Stories(object):
 					if self.File.Exist(item) == True:
 						self.File.Create(item)
 
-			# Create the cover folders
-			folders = {
-				"Websites": self.folders["Mega"]["Websites"]["Images"]["Story covers"],
-				"Photoshop": self.folders["Art"]["Photoshop"]["Stories"],
-				"Sony Vegas": self.folders["Art"]["Sony Vegas"]["Story covers"]
-			}
-
-			# Iterate through the cover folders dictionary to define and create them
-			for name in folders:
-				folder = folders[name]["root"]
-
-				cover_folder = folder + story_title + "/"
-
-				if self.Folder.Exist(cover_folder) == True:
-					story["Folders"]["Covers"][name] = {
-						"root": cover_folder
-					}
-
-					self.Folder.Create(cover_folder)
-
 			# Add the "Obsidian's Vaults" folder
 			story["Folders"]["Obsidian's Vaults"] = {
-				"root": self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["stories"]["root"] + story_title + "/"
+				"root": self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["Stories"]["root"] + story_title + "/"
 			}
 
 			self.Folder.Create(story["Folders"]["Obsidian's Vaults"]["root"])
@@ -459,6 +450,74 @@ class Stories(object):
 			# Define the story titles
 			story["Titles"] = story["Information"]["Titles"]
 
+			# Create the cover folders
+			folders = {
+				"Websites": self.folders["Mega"]["Websites"]["Images"],
+				"Photoshop": self.folders["Art"]["Photoshop"]["Stories"],
+				"Sony Vegas": self.folders["Art"]["Sony Vegas"]["Story covers"]
+			}
+
+			# Iterate through the cover folders dictionary to define and create them
+			for name in folders:
+				folder = folders[name]["root"]
+
+				cover_folder = folder
+
+				if name != "Photoshop":
+					cover_folder += story_title + "/"
+
+				if name == "Photoshop":
+					cover_folder += story["Titles"][self.user_language] + "/"
+
+				if self.Folder.Exist(cover_folder) == True:
+					story["Folders"]["Covers"][name] = {
+						"root": cover_folder
+					}
+
+					self.Folder.Create(cover_folder)
+
+			# Add the sub-folders of the "Websites" cover folder
+			sub_folders = [
+				"Chapters"
+			]
+
+			for folder in sub_folders:
+				story["Folders"]["Covers"]["Websites"][folder] = {
+					"root": story["Folders"]["Covers"]["Websites"]["root"] + folder + "/"
+				}
+
+			# Define the language folders
+			for language in self.languages["small"]:
+				full_language = self.languages["full"][language]
+
+				folder = story["Folders"]["Covers"]["Websites"]["root"] + full_language + "/"
+
+				if self.Folder.Exist(folder) == True:
+					story["Folders"]["Covers"]["Websites"][language] = {
+						"root": folder
+					}
+
+				if "Photoshop" in story["Folders"]["Covers"]:
+					folder = story["Folders"]["Covers"]["Photoshop"]["root"] + full_language + "/"
+
+					if self.Folder.Exist(folder) == True:
+						story["Folders"]["Covers"]["Photoshop"][language] = {
+							"root": folder
+						}
+
+			# Define the chapter folders
+			for language in self.languages["small"]:
+				if language in story["Folders"]["Covers"]["Websites"]:
+					root_folder = story["Folders"]["Covers"]["Websites"][language]["root"]
+
+					for folder_name in self.folder_names:
+						folder = root_folder + folder_name + "/"
+
+						if self.Folder.Exist(folder) == True:
+							story["Folders"]["Covers"]["Websites"][language][folder_name] = {
+								"root": folder
+							}
+
 			# Update the "Authors" key
 
 			# If the author is a list
@@ -559,6 +618,15 @@ class Stories(object):
 					information.pop(key)
 
 					information[key] = backup
+
+			# Add the "Last posted chapter" key
+			key_value = {
+				"Last posted chapter": story["Information"]["Chapters"]["Number"]
+			}
+
+			information["Chapters"] = self.JSON.Add_Key_After_Key(information["Chapters"], key_value, after_key = "Number")
+
+			story["Information"]["Chapters"] = self.JSON.Add_Key_After_Key(story["Information"]["Chapters"], key_value, after_key = "Number")
 
 			# Update the "Information.json" file
 			self.JSON.Edit(information_file, information)
@@ -668,7 +736,7 @@ class Stories(object):
 			story["Information"]["Website"]["Link"] = self.links["Stake2 Website"] + website_folder + "/"
 
 			# Add the story Wattpad link for each language
-			link = self.social_networks["Wattpad"]["links"]["myworks"]
+			link = self.social_networks["Wattpad"]["Information"]["Links"]["My works"]
 
 			for language in self.languages["small"]:
 				if language in story["Information"]["Wattpad"]:					
@@ -704,9 +772,11 @@ class Stories(object):
 		self.JSON.Edit(self.stories["Folders"]["Database"]["Stories"], self.stories)
 
 	def Cover_Folder_Name(self, chapter_number):
+		# Transform the chapter number into an int
 		chapter_number = int(chapter_number)
 
-		folder_names = []
+		# Define the empty folder names list
+		self.folder_names = []
 
 		# Create the list of numbers from 1 to 10
 		numbers = list(range(1, 10 + 1))
@@ -719,15 +789,17 @@ class Stories(object):
 			if int(number) == 1:
 				name = number + " - " + number + "0"
 
-				folder_names.append(name)
+				if name not in self.folder_names:
+					self.folder_names.append(name)
 
 			# "11 - 20" and so on
 			name = number + "1" + " - " + str(int(number) + 1) + "0"
 
-			folder_names.append(name)
+			if name not in self.folder_names:
+				self.folder_names.append(name)
 
 		# Iterate through the list of folder names
-		for item in folder_names:
+		for item in self.folder_names:
 			# Split the folder name
 			# (1, 10) for example
 			split = item.split(" - ")
@@ -740,24 +812,6 @@ class Stories(object):
 			# Define the folder name to return as the current folder name
 			if chapter_number in range_list:
 				folder_name = item
-
-		'''
-		# Old code
-		if int(number) <= 10:
-			folder_name = "1 - 10"
-
-		if int(number) >= 11 and int(number) <= 20:
-			folder_name = "11 - 20"
-
-		if int(number) >= 21 and int(number) <= 30:
-			folder_name = "21 - 30"
-
-		if int(number) >= 31 and int(number) <= 40:
-			folder_name = "31 - 40"
-
-		if int(number) >= 41 and int(number) <= 50:
-			folder_name = "41 - 50"
-		'''
 
 		return folder_name
 
@@ -785,3 +839,74 @@ class Stories(object):
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False)
+
+	def Select_Story(self, select_text_parameter = None, select_class = False):
+		from copy import deepcopy
+
+		show_text = self.language_texts["stories, title()"]
+
+		select_text = select_text_parameter
+
+		if select_text_parameter == None:
+			select_text = self.language_texts["select_a_story"]
+
+		class_name = type(self).__name__.lower()
+
+		if (
+			select_text_parameter == None and
+			issubclass(type(self), Stories) == True and
+			class_name in self.language_texts
+		):
+			select_text = self.language_texts["select_a_story_to"] + " " + self.language_texts[class_name]
+
+		stories = deepcopy(self.stories)
+
+		# Remove the stories with all chapters posted if the class is "Post"
+		if class_name == "post":
+			for story in deepcopy(self.stories["Titles"]["en"]):
+				story = stories[story]
+
+				post = story["Information"]["Chapter status"]["Post"]
+
+				if int(post) == len(story["Information"]["Chapters"]["Titles"][self.user_language]):
+					for language in self.languages["small"]:
+						stories["Titles"][language].remove(story["Information"]["Titles"][language])
+
+		self.option = self.Input.Select(stories["Titles"]["en"], language_options = stories["Titles"][self.user_language], show_text = show_text, select_text = select_text)["option"]
+
+		self.story = self.stories[self.option]
+
+		setattr(Stories, "story", self.story)
+
+		if select_class == True:
+			self.Select_Class()
+
+		return self.story
+
+	def Select_Class(self):
+		classes = [
+			"Write",
+			"Post",
+			"Manage"
+		]
+
+		class_descriptions = []
+
+		for class_ in classes:
+			class_description = self.JSON.Language.language_texts[class_.lower() + ", title()"]
+
+			class_descriptions.append(class_description)
+
+		# Select the class
+		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'
+
+		class_ = self.Input.Select(classes, language_options = class_descriptions, show_text = show_text, select_text = self.JSON.Language.language_texts["select_one_thing_to_do"])["option"]
+
+		# Get the module
+		module = importlib.import_module("." + class_, "Stories")
+
+		# Get the class
+		class_ = getattr(module, class_)
+
+		# Execute the class
+		class_(story = self.story)

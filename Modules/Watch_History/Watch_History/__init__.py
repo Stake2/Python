@@ -834,7 +834,7 @@ class Watch_History(object):
 		sanitized_title = self.Sanitize_Title(media["Title"])
 
 		if media["Title"] != "[" + self.JSON.Language.language_texts["finish_selection"] + "]":
-			# Define media info and local media folder
+			# Define the media information and local media folder
 			if "Folders" in media:
 				if "root" not in media["Folders"]:
 					media["Folders"].update({
@@ -857,6 +857,9 @@ class Watch_History(object):
 						"root": dictionary["Media type"]["Folders"]["Media"]["root"] + self.Sanitize_Title(sanitized_title) + "/"
 					}
 				}
+
+			# Create the root media folder
+			self.Folder.Create(media["Folders"]["Media"]["root"])
 
 			# If the item is the media, not a media item
 			if (
@@ -1542,7 +1545,7 @@ class Watch_History(object):
 				dictionary["Media"]["Item"]["Folders"]["titles"]["ids"] = dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.JSON.Language.language_texts["ids, title()"] + ".txt"
 				self.File.Create(dictionary["Media"]["Item"]["Folders"]["titles"]["ids"])
 
-			# Update "Playlist.json" file for video media type
+			# Update the "Playlist.json" file for the video media type
 			if (
 				dictionary["Media"]["States"]["Video"] == True and
 				dictionary["Media"]["States"]["Media item list"] == True
@@ -1561,36 +1564,62 @@ class Watch_History(object):
 					self.File.Contents(dictionary["Media"]["Item"]["Folders"]["playlist"])["lines"] == [] and
 					dictionary["Media"]["Item"]["Details"][self.JSON.Language.language_texts["origin_location"]] != "?"
 				):
-					# Get playlist information
+					# Get the playlist information
 					dictionary["Media"]["Item"]["Playlist"] = self.Get_YouTube_Information("playlist", dictionary["Media"]["Item"]["Details"][self.JSON.Language.language_texts["origin_location"]])
 
-					# Define playlist date variable
-					dictionary["Media"]["Item"]["Playlist"]["Date"] = self.Date.From_String(dictionary["Media"]["Item"]["Playlist"]["Date"])
+					if "Date" in dictionary["Media"]["Item"]["Playlist"]:
+						# Define the playlist date variable
+						dictionary["Media"]["Item"]["Playlist"]["Date"] = self.Date.From_String(dictionary["Media"]["Item"]["Playlist"]["Date"])
 
-					playlist_date = dictionary["Media"]["Item"]["Playlist"]["Date"]
+						# Get the playlist date
+						playlist_date = dictionary["Media"]["Item"]["Playlist"]["Date"]
 
-					# Get the first video date
-					if self.File.Contents(dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.JSON.Language.language_texts["ids, title()"] + ".txt")["lines"] != []:
-						video_id = self.File.Contents(dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.JSON.Language.language_texts["ids, title()"] + ".txt")["lines"][0]
-						video_date = self.Date.From_String(self.Get_YouTube_Information("video", video_id)["Date"])
+						# Define the IDs file
+						ids_file = dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.JSON.Language.language_texts["ids, title()"] + ".txt"
 
-						# If the first video date is older than playlist creation date
-						# Define the playlist time as the video date
-						if video_date["Object"] < playlist_date["Object"]:
-							dictionary["Media"]["Item"]["Playlist"]["Date"] = video_date
+						# Get the list of video IDs
+						ids_list = self.File.Contents(ids_file)["lines"]
 
-						# Update "Date" key of media item details
-						dictionary["Media"]["Item"]["Details"][self.Date.language_texts["start_date"]] = playlist_date["Formats"]["HH:MM DD/MM/YYYY"]
+						# If the list of IDs is not empty
+						if ids_list != []:
+							# Get the first video ID
+							first_video_id = ids_list[0]
 
-						# Update "Year" key of media item details
-						dictionary["Media"]["Item"]["Details"][self.Date.language_texts["year, title()"]] = dictionary["Media"]["Item"]["Playlist"]["Date"]["Units"]["Year"]
+							# Get the first video date
+							first_video_date = self.Date.From_String(self.Get_YouTube_Information("video", first_video_id)["Date"])
 
-						# Update media item details dictionary
-						self.File.Edit(dictionary["Media"]["Item"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Media"]["Item"]["Details"]), "w")
+							# If the first video date is older than playlist creation date
+							# Define the playlist time as the video date
+							if first_video_date["Object"] < playlist_date["Object"]:
+								dictionary["Media"]["Item"]["Playlist"]["Date"] = first_video_date
 
-					dictionary["Media"]["Item"]["Playlist"]["Date"] = playlist_date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+							# If the first video date is newer than playlist creation date
+							# Define the playlist time as the playlist date
+							if first_video_date["Object"] > playlist_date["Object"]:
+								dictionary["Media"]["Item"]["Playlist"]["Date"] = playlist_date
 
-					# Update "Playlist.json" file
+							# Update the "Start date" key of the media item details
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["start_date"]] = playlist_date["Formats"]["HH:MM DD/MM/YYYY"]
+
+							# Get the last video ID
+							last_video_id = ids_list[-1]
+
+							# Get the last video date
+							last_video_date = self.Date.From_String(self.Get_YouTube_Information("video", last_video_id)["Date"])
+
+							# Update the "End date" key of the media item details
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["end_date"]] = last_video_date["Formats"]["HH:MM DD/MM/YYYY"]
+
+							# Update "Year" key of media item details
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["year, title()"]] = dictionary["Media"]["Item"]["Playlist"]["Date"]["Units"]["Year"]
+
+							# Update media item details dictionary
+							self.File.Edit(dictionary["Media"]["Item"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Media"]["Item"]["Details"]), "w")
+
+						# Update the playlist date back to the correct (ISO) format
+						dictionary["Media"]["Item"]["Playlist"]["Date"] = playlist_date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+
+					# Update the "Playlist.json" file
 					self.JSON.Edit(dictionary["Media"]["Item"]["Folders"]["playlist"], dictionary["Media"]["Item"]["Playlist"])
 
 				if (

@@ -23,9 +23,9 @@
 		"en": "Story titles",
 		"pt": "Títulos de história"
 	},
-	"folder, title()": {
-		"en": "Folder",
-		"pt": "Pasta"
+	"website_image_folder": {
+		"en": "Website image folder",
+		"pt": "Pasta de imagens do site"
 	},
 	"chapter": {
 		"en": "chapter",
@@ -83,9 +83,9 @@
 		"en": "Social Network posting",
 		"pt": "postagem nas Redes Sociais"
 	},
-	"opening_the_vegas_file_of_chapter_covers, type: long": {
-		"en": "Opening the Vegas file of chapter covers in [{}] mode.\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
-		"pt": "Abrindo o arquivo Vegas de capas de capítulos em modo [{}].\nRenderize a capa em modo [{}] com o título do capítulo e com a extensão [{}]."
+	"opening_the_photoshop_file_of_chapter_covers, type: long": {
+		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
+		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}], em [{}].\nRenderize a capa em modo [{}] com o título do capítulo e com a extensão [{}]."
 	},
 	"press_enter_to_copy_the_chapter_title": {
 		"en": "Press Enter to copy the chapter title",
@@ -381,9 +381,9 @@
 		"en": "Finished copying the {}",
 		"pt": "Terminou de copiar os {}"
 	},
-	"manage_story": {
-		"en": "Manage story",
-		"pt": "Gerenciar história"
+	"manage_the_story": {
+		"en": "Manage the story",
+		"pt": "Gerenciar a história"
 	},
 	"what_to_do_with_the_story": {
 		"en": "What to do with the story",

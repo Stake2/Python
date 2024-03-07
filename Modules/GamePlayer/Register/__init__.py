@@ -151,6 +151,8 @@ class Register(GamePlayer):
 			game_titles
 		]
 
+		sub_game_titles = []
+
 		if "Sub-game" in self.game:
 			sub_game_titles = self.game["Sub-game"]["Titles"].copy()
 

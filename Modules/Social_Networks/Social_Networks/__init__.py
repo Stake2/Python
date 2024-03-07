@@ -20,6 +20,7 @@ class Social_Networks(object):
 		self.Define_Information_Items_Dictionary()
 		self.Define_Social_Networks_Dictionary()
 		self.Define_Information_Items()
+		self.Update_Social_Networks_File()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -457,7 +458,7 @@ class Social_Networks(object):
 				# Iterate through the "Additional items" dictionary
 				for key, item in items["Additional items"].items():
 					if "{Social Network link}" in item:
-						item = item.replace("{Social Network link}", dictionary["Information"]["Link"])
+						item = item.replace("{Social Network link}", dictionary["Information"]["Link"][:-1])
 
 					additional_items[key] = item
 
@@ -473,8 +474,7 @@ class Social_Networks(object):
 
 			# Iterate through the information items list
 			for item in items["List"]:
-				# If the item is "Profile link"
-				# Or "Message link"
+				# If the item is "Profile link" or "Message link"
 				if item in ["Profile link", "Message link"]:
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
 						self.information_items["Lists"]["Do not ask for item"].append(item)
@@ -489,6 +489,18 @@ class Social_Networks(object):
 
 			# Get the user profile
 			dictionary["Profile"] = self.Information(file = dictionary["Files"]["Profile"])
+
+			# Create the "Links" dictionary
+			dictionary["Profile"]["Links"] = {}
+
+			# Add links to the dictionary above
+			for link_type in ["Profile", "Message"]:
+				key = link_type + " link"
+
+				if key in dictionary["Profile"]:
+					link = dictionary["Profile"][key]
+
+					dictionary["Profile"]["Links"][link_type] = link
 
 			# Get the image folders list from its file if it exists
 			if "Image folders" in dictionary["Files"]:
@@ -711,6 +723,18 @@ class Social_Networks(object):
 			# Translate the keys of the "Profile.txt" file to English
 			self.social_networks["Dictionary"][key]["Profile"] = self.Information(file = self.social_networks["Dictionary"][key]["Files"]["Profile"])
 
+			# Create the "Links" dictionary
+			self.social_networks["Dictionary"][key]["Profile"]["Links"] = {}
+
+			# Add links to the dictionary above
+			for link_type in ["Profile", "Message"]:
+				link_key = link_type + " link"
+
+				if link_key in self.social_networks["Dictionary"][key]["Profile"]:
+					link = self.social_networks["Dictionary"][key]["Profile"][link_key]
+
+					self.social_networks["Dictionary"][key]["Profile"]["Links"][link_type] = link
+
 		# ---------- #
 
 		import collections
@@ -736,6 +760,7 @@ class Social_Networks(object):
 		# Sort the dictionary keys
 		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
+	def Update_Social_Networks_File(self):
 		# Create a local "Social Networks" dictionary
 		local_dictionary = deepcopy(self.social_networks)
 

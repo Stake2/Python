@@ -54,6 +54,10 @@
 		"en": "file",
 		"pt": "arquivo"
 	},
+	"with_file": {
+		"en": "With file",
+		"pt": "Com arquivo"
+	},
 	"created": {
 		"en": "created",
 		"pt": {
@@ -130,7 +134,11 @@
 	},
 	"select_an_item_from_the_list": {
 		"en": "Select an item from the list",
-		"pt": "Selecione um item da lista"
+		"pt": "Selecionar um item da lista"
+	},
+	"select_a_language": {
+		"en": "Select a language",
+		"pt": "Selecione um idioma"
 	},
 	"yes_or_no": {
 		"en": "yes or no",

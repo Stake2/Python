@@ -287,7 +287,7 @@ class Folder():
 		# Art "Sony Vegas" subfolders
 		folders = [
 			"Render",
-			"Story Covers"
+			"Story covers"
 		]
 
 		# Define the dictionary variable for easier typing
@@ -709,11 +709,6 @@ class Folder():
 
 		# "Colors.css" file inside the "CSS" folder
 		self.folders["Mega"]["Websites"]["CSS"]["Colors"] = self.folders["Mega"]["Websites"]["CSS"]["root"] + "Colors.css"
-
-		# "Story Covers" folder on the "Images" folder of the "Websites" folder
-		self.folders["Mega"]["Websites"]["Images"]["Story covers"] = {
-			"root": self.folders["Mega"]["Websites"]["Images"]["root"] + "Story covers/"
-		}
 
 		# Get the website subdomain
 		self.website = {}
@@ -1261,6 +1256,7 @@ class Folder():
 						type(contents["dictionary"]) != str and
 						root_folder_name in contents["dictionary"] and
 						type(contents["dictionary"][root_folder_name]) != str and
+						sub_sub_folder_name in contents["dictionary"][root_folder_name] and
 						type(contents["dictionary"][root_folder_name][sub_sub_folder_name]) != str
 					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]

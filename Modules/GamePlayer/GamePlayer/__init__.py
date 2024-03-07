@@ -851,11 +851,11 @@ class GamePlayer(object):
 				game["Gaming time"] = gaming_time
 
 			# Write the default or updated dictionary into the "Gaming time.json" file
-			self.JSON.Edit(folder["Gaming time"]["Gaming time"], game["Gaming time"])
+			self.JSON.Edit(folder["Gaming time"]["Gaming time"], gaming_time)
 
 			# Write the language gaming time into the language gaming time file if the text is not an empty string
-			if game["Gaming time"]["Text"][self.user_language] != "":
-				self.File.Edit(folder["Gaming time"]["Language gaming time"], game["Gaming time"]["Text"][self.user_language], "w")
+			if gaming_time["Text"][self.user_language] != "":
+				self.File.Edit(folder["Gaming time"]["Language gaming time"], gaming_time["Text"][self.user_language], "w")
 
 		# --------------- #
 
@@ -1067,17 +1067,39 @@ class GamePlayer(object):
 
 			# ------------------------------ #
 
+			# Define the "sub-game types" list
+			self.dictionaries["Sub-game types"] = [
+				"DLCs"
+			]
+
 			# Define the default key for the sub-game type
 			key = "DLCs"
 
 			# Get the sub-game type from the game details if it is present
 			if self.language_texts["sub_game_type"] in game["Details"]:
-				key = self.language_texts["sub_game_type"]
+				# Define the "Sub-game type" text key
+				text_key = self.language_texts["sub_game_type"]
 
-				key = game["Details"][key]
+				# Get the sub-game type key
+				key = game["Details"][text_key]
 
 				# Define the "Has sub-games" state as True
 				game["States"]["Has sub-games"] = True
+
+			# Else, try to find a folder which is named after one of the sub-game types
+			else:
+				# Get the list of folders
+				folders = self.Folder.Contents(game["Folders"]["root"])["folder"]["names"]
+
+				# Iterate through the list of folderse
+				for folder in folders:
+					# If the folder is inside the list of sub-game types
+					if folder in self.dictionaries["Sub-game types"]:
+						# Define the key as the folder name
+						key = folder
+
+						# Define the "Has sub-games" state as True
+						game["States"]["Has sub-games"] = True
 
 			# If the "Has sub-games" state is True
 			if game["States"]["Has sub-games"] == True:
@@ -1253,7 +1275,7 @@ class GamePlayer(object):
 			# If the title of the sub-game is not the same the as the game title
 			if sub_game["Title"] != game["Title"]:
 				# Select the sub-game to define its variables
-				sub_game = self.Select_Game(dictionary, define_item = True)
+				dict_ = self.Select_Game(dictionary, define_item = True)
 
 				if "Sub-game" in dictionary["Game"]:
 					# Update the sub-game variable
@@ -1311,9 +1333,11 @@ class GamePlayer(object):
 			}
 
 			# Select the game to define its variables
-			game["Sub-game"]["Folders"] = self.Select_Game(dictionary, define_item = True)["Game"]["Sub-game"]["Folders"]
+			dict_ = self.Select_Game(dictionary, define_item = True)["Game"]["Sub-game"]
 
-			self.JSON.Show(game["Sub-game"]["Folders"])
+			game["Sub-game"]["Folders"] = dict_["Folders"]
+
+			game["Sub-game"]["Gaming time"] = dict_["Gaming time"]
 
 		# Define the title as the game title in the user language
 		title = game["Titles"]["Language"]

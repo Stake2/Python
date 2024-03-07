@@ -40,6 +40,8 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		# Get the current year dictionary
 		current_year = self.Current_Diary_Slim(date = self.custom_date, current_diary_slim = self.current_diary_slim)
 
+		self.File.Create(current_year["File"])
+
 		self.File.Edit(current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
 
 		if self.switches["verbose"] == True:

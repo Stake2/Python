@@ -97,28 +97,28 @@ class Watch_Media(Watch_History):
 			# Define the "Re-watching" state as "True"
 			self.media["States"]["Re-watching"] = True
 
-		# If the media is series media and the media is being re-watched
+		# If the media is a series media
+		# And the "Select episode" key is inside the root dictionary
+		# And it is True
 		if (
 			self.media["States"]["Series media"] == True and
-			self.media["States"]["Re-watching"] == True
+			"Select episode" in self.dictionary and
+			self.dictionary["Select episode"] == True
 		):
-			# Change the episode of the media item to the first episode, for series media
-			if self.media["Language"] in self.media["Item"]["Episodes"]["Titles"]:
-				titles = self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]
+			# Get the episode titles
+			titles = self.media["Item"]["Episodes"]["Titles"][self.user_language]	
 
-			else:
-				titles = self.media["Item"]["Episodes"]["Titles"][self.user_language]
+			# Ask the user to select an episode
+			show_text = self.language_texts["episodes, title()"]
+			select_text = self.language_texts["episode, title()"]
 
-			# If the current episode is equal to the last episode
-			#if self.media["Item"]["Details"][self.language_texts["episode"].title()] == titles[-1]:
-			#	# Get the first episode title
-			#	title = titles[0]
-			#
-			#	# Define the episode in the details as the first episode
-			#	self.media["Item"]["Details"][self.language_texts["episode"].title()] = title
-			#
-			#	# Update the media "Details.txt" file
-			#	self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
+			episode = self.Input.Select(titles, show_text = show_text, select_text = select_text)["option"]
+
+			# Define the episode in the media (item) details
+			self.media["Item"]["Details"][self.language_texts["episode"].title()] = episode
+
+			# Update the media (item) "Details.txt" file
+			self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 		# If the media watching status is inside the status list
 		# Or the media "Dates.txt" file is empty

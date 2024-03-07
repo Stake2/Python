@@ -3,11 +3,10 @@
 from Watch_History.Watch_History import Watch_History as Watch_History
 
 class Comment_Writer(Watch_History):
-	def __init__(self, dictionary, write_comment = False):
+	def __init__(self, dictionary, add_comment = False):
 		super().__init__()
 
 		self.dictionary = dictionary
-		self.write_comment = write_comment
 
 		self.media = self.dictionary["Media"]
 
@@ -16,12 +15,13 @@ class Comment_Writer(Watch_History):
 				"Backup": True,
 				"New": True,
 				"Make": False,
-				"Write": False
+				"Write": False,
+				"Add": add_comment
 			}
 		}
 
-		if self.write_comment != False:
-			self.dictionary["Comment Writer"]["States"]["Write"] = self.write_comment
+		if self.dictionary["Comment Writer"]["States"]["Add"] != False:
+			self.dictionary["Comment Writer"]["States"]["Write"] = self.dictionary["Comment Writer"]["States"]["Add"]
 
 		self.folders["Comments"]["Backups"]["Backup"] = self.folders["Comments"]["Backups"]["root"] + "Backup.txt"
 
@@ -79,17 +79,22 @@ class Comment_Writer(Watch_History):
 				self.media["Episode"]["Remote"]["Link"] != "" and
 				self.remote_origins_dictionary[self.media["Episode"]["Remote"]["Title"]] == True
 			):
-				# Copy the comment text
-				self.Text.Copy(self.media["Comment"]["Text"]["String"])
+				if self.dictionary["Comment Writer"]["States"]["Add"] == False:
+					# Copy the comment text
+					self.Text.Copy(self.media["Comment"]["Text"]["String"])
 
 				# If the media is not a remote one, open the remote episode link
 				# (Because for remote media, the episode is already opened)
-				if self.media["States"]["Remote"] == False:
+				if (
+					self.media["States"]["Remote"] == False and
+					self.dictionary["Comment Writer"]["States"]["Add"] == False
+				):
 					# Open remote episode link
 					self.System.Open(self.media["Episode"]["Remote"]["Link"])
 
-				# Wait for the user to finish posting the comment on the episode link
-				self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
+				if self.dictionary["Comment Writer"]["States"]["Add"] == False:
+					# Wait for the user to finish posting the comment on the episode link
+					self.finished_posting_comment = self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_comment"])
 
 			self.Write_Comment_To_Files()
 
@@ -227,8 +232,32 @@ class Comment_Writer(Watch_History):
 		if self.dictionary["Comment Writer"]["States"]["New"] == False:
 			show_text += "\n" + self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])["string"]
 
-		# Ask for the user to write the comment
-		dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["Comments"]["Backups"]["Backup"])
+		# If the "Add comment" state is False
+		if self.dictionary["Comment Writer"]["States"]["Add"] == False:
+			# Ask for the user to write the comment
+			dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["Comments"]["Backups"]["Backup"])
+
+		# If the "Add comment" state is True
+		if self.dictionary["Comment Writer"]["States"]["Add"] == True:
+			# Create the "Comment.txt" file
+			comment_file = self.media["Item"]["Folders"]["comments"]["root"] + "Comment.txt"
+
+			self.File.Create(comment_file)
+
+			# Open it
+			self.System.Open(comment_file)
+
+			# Wait for user to add the comment text to the comment file above
+			self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+
+			# Update the dictionary with the updated contents of the comment file
+			dictionary = self.File.Contents(comment_file)
+
+			# Add the comment text to the backup file
+			self.File.Edit(self.folders["Comments"]["Backups"]["Backup"], dictionary["string"], "a")
+
+			# Delete the comment file
+			self.File.Delete(comment_file)
 
 		# Get the comment from the backup file
 		# (The user may have edited the comment inside the backup file)
@@ -366,6 +395,10 @@ class Comment_Writer(Watch_History):
 				if self.switches["testing"] == True:
 					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc=UgxuNs35fO-gFEDY7l14AaABAg"
 
+					print(self.language_texts["paste_the_comment_link_of_youtube"] + ":")
+					print(original_link)
+
+			# Parse the link to get the query string (parameters)
 			link = urlparse(original_link)
 			query = link.query
 			parameters = parse_qs(query)
@@ -382,13 +415,17 @@ class Comment_Writer(Watch_History):
 			# Convert the comment date to a string using the date time format
 			comment_date = self.Date.From_String(comment_information["Date"])
 
-			# Define comment time as comment published time gotten from YouTube API
+			# Define the comment time as the comment published time gotten from the YouTube API
 			self.dictionaries["Comments"]["Dictionary"][self.key]["Date"] = self.Date.To_String(comment_date, utc = True)
 
-			# Update time in comment file
+			# Update the time in comment file
 			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
 			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
 			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
+
+		# If the "Add comment" state is True
+		if self.dictionary["Comment Writer"]["States"]["Add"] == True:
+			self.Text.Copy(self.media["Comment"]["Text"]["String"])
 
 		# Write the comment into the media folder comment file
 		self.File.Edit(self.media["Item"]["Folders"]["comments"]["files"]["comment"], self.media["Comment"]["Text"]["String"], "w")
@@ -396,7 +433,7 @@ class Comment_Writer(Watch_History):
 		# Get the states dictionary
 		states_dictionary = self.Define_States_Dictionary(self.dictionary)["States"]
 
-		if self.write_comment == True:
+		if self.dictionary["Comment Writer"]["States"]["Add"] == True:
 			for key in ["First entry in year", "First media type entry in year"]:
 				if key in states_dictionary:
 					states_dictionary.pop(key)

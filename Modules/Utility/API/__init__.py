@@ -56,29 +56,18 @@ class API():
 
 		api["credentials"] = None
 
-		if self.switches["verbose"] == True:
-			print()
-			print("Credentials:")
-			self.JSON.Show(api["credentials"])
-
 		if self.File.Exist(self.token_file) == True:
 			api["credentials"] = Credentials.from_authorized_user_file(self.token_file, api["scopes"])
 
-			if self.switches["verbose"] == True:
-				print()
-				print("Credentials:")
-				self.JSON.Show(api["credentials"].to_json())
-
 		# If there are no (valid) credentials available, let the user log in
 		if not api["credentials"] or not api["credentials"].valid:
-			if api["credentials"] and api["credentials"].expired and api["credentials"].refresh_token:
+			if (
+				api["credentials"] and
+				api["credentials"].expired and
+				api["credentials"].refresh_token
+			):
 				try:
 					api["credentials"].refresh(Request())
-
-					if self.switches["verbose"] == True:
-						print()
-						print("Credentials:")
-						print(api["credentials"].to_json())
 
 				except RefreshError:
 					print()
@@ -86,21 +75,11 @@ class API():
 					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 					api["credentials"] = api["flow"].run_local_server(port = 0)
 
-					if self.switches["verbose"] == True:
-						print()
-						print("Credentials:")
-						print(api["credentials"].to_json())
-
 			else:
 				print()
 
 				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
-
-				if self.switches["verbose"] == True:
-					print()
-					print("Credentials:")
-					print(api["credentials"].to_json())
 
 			# Save the credentials for the next run
 			self.File.Create(self.token_file)
@@ -116,7 +95,10 @@ class API():
 		# Build API object
 		api["object"] = build(api["name"], api["version"], developerKey = api["key"], credentials = api["credentials"])
 
-		if "submethod" not in api or api["submethod"] == "":
+		if (
+			"submethod" not in api or
+			api["submethod"] == ""
+		):
 			api["submethod"] = "list"
 
 		if "method" not in api:
@@ -133,7 +115,10 @@ class API():
 					key: api["id"]
 				}
 
-			if api["item"] == "playlists" and api["submethod"] == "insert":
+			if (
+				api["item"] == "playlists" and
+				api["submethod"] == "insert"
+			):
 				api["parameters"] = {
 					"body": {
 						"snippet": {
@@ -146,7 +131,10 @@ class API():
 					}
 				}
 
-			if api["item"] == "playlistItems" and api["submethod"] == "insert":
+			if (
+				api["item"] == "playlistItems" and
+				api["submethod"] == "insert"
+			):
 				api["parameters"] = {
 					"body": {
 						"snippet": {
@@ -162,7 +150,10 @@ class API():
 		if "part" not in api["parameters"]:
 			api["parameters"]["part"] = ["snippet"]
 
-		if api["item"] == "playlists" and api["submethod"] == "insert":
+		if (
+			api["item"] == "playlists" and
+			api["submethod"] == "insert"
+		):
 			api["parameters"]["part"] = [
 				"snippet",
 				"status"
@@ -172,7 +163,10 @@ class API():
 			if api["item"] not in ["comments", "playlists"]:
 				api["parameters"]["maxResults"] = 1
 
-		if api["submethod"] == "insert" and "maxResults" in api["parameters"]:
+		if (
+			api["submethod"] == "insert" and
+			"maxResults" in api["parameters"]
+		):
 			api["parameters"].pop("maxResults")
 
 		# Get method, for example, "videos"
@@ -208,7 +202,10 @@ class API():
 			# Run request and get response
 			api["response"] = api["request"].execute()
 
-			if "pageInfo" in api["response"] and "totalResults" in api["response"]["pageInfo"]:
+			if (
+				"pageInfo" in api["response"] and
+				"totalResults" in api["response"]["pageInfo"]
+			):
 				api["Dictionary"]["Total Number"] = api["response"]["pageInfo"]["totalResults"]
 
 			if "items" not in api["response"]:
@@ -234,7 +231,10 @@ class API():
 				for name in ["channelId", "playlistId"]:
 					name_key = name.replace("Id", "").title()
 
-					if name in snippet and name_key not in api["Dictionary"]:
+					if (
+						name in snippet and
+						name_key not in api["Dictionary"]
+					):
 						item = {
 							"item": name.replace("Id", "") + "s",
 							"submethod": "list",
@@ -341,7 +341,10 @@ class API():
 
 					if snippet["defaultAudioLanguage"] not in self.JSON.Language.languages["full"]:
 						snippet["defaultAudioLanguage"] = snippet["defaultAudioLanguage"].split("-")[0]
-						
+
+					if snippet["defaultAudioLanguage"] not in self.JSON.Language.languages["full"]:
+						snippet["defaultAudioLanguage"] = "pt"
+
 					items[id]["Full language"] = self.JSON.Language.languages["full"][snippet["defaultAudioLanguage"]]
 
 				# Else, remove the "Language" key

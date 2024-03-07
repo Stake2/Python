@@ -65,12 +65,20 @@ class Register(Watch_History):
 	def Register_In_JSON(self):
 		self.media_type = self.dictionary["Media type"]["Plural"]["en"]
 
-		# Re-read the "Watched" file to get the most updated data
+		# Re-read the "Watched.json" file to get the most updated data
 		self.dictionaries["Watched"] = self.JSON.To_Python(self.media["Item"]["Folders"]["Watched"]["entries"])
 
-		# Re-read the "Entries" file to get the most updated data
+		# Re-read the "Entries.json" file to get the most updated data
 		if "Defined title" not in self.dictionary:
 			self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["Watch History"]["Current year"]["Entries"])
+
+		# If the "Dictionaries" variable is inside the root dictionary
+		if "Dictionaries" in self.dictionary:
+			# Define the local "dictionaries" variable as the variable inside the root dictionary
+			self.dictionaries = self.dictionary["Dictionaries"]
+
+			if "Watched" in self.dictionary:
+				self.dictionaries["Watched"] = self.dictionary["Watched"]
 
 		dicts = [
 			self.dictionaries["Entries"],

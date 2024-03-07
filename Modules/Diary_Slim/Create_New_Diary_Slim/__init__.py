@@ -320,7 +320,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 				# Ask for the user to type the time
 				if self.switches["testing"] == False:
-					typed = self.Input.Type(type_text, next_line = True)
+					typed = self.Input.Type(type_text, first_space = False, next_line = True)
 
 				if self.switches["testing"] == True:
 					typed = "10:00"

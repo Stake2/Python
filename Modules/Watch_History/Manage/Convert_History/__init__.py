@@ -2,14 +2,22 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
+# Import the "importlib" module
+import importlib
+
 class Convert_History(Watch_History):
 	def __init__(self):
 		super().__init__()
 
+		print()
+		print(self.large_bar)
+		print()
+		print(self.language_texts["convert_history"] + ":")
+
 		#self.Per_Media()
-		#self.By_File()
+		self.With_File()
 		#self.By_Year()
-		self.Fix_Comment_Dictionaries()
+		#self.Fix_Comment_Dictionaries()
 
 	def Per_Media(self):
 		from copy import deepcopy
@@ -258,21 +266,32 @@ class Convert_History(Watch_History):
 			"Comments": self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"])
 		}
 
-	def By_File(self):
+	def With_File(self):
 		from copy import deepcopy
 
 		# Copy the switches dictionary
 		switches_dictionary = deepcopy(self.switches)
 
-		# Import the Watch_Media class
-		from Watch_History.Watch_Media import Watch_Media as Watch_Media
+		# Define the classes to be imported
+		classes = [
+			"Watch_Media",
+			"Register"
+		]
 
-		self.Watch_Media = Watch_Media
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, self.__module__.split(".")[0])
 
-		# Import the Register class
-		from Watch_History.Register import Register as Register
+			# Get the sub-class
+			sub_class = getattr(module, title)
 
-		self.Register = Register
+			# Add the sub-class to the current module
+			setattr(self, title, sub_class)
+
+		# Show the "with_file" text
+		print(self.JSON.Language.language_texts["with_file"])
+		print()
 
 		# Get the History dictionary to update the entries number
 		self.dictionaries["History"] = self.JSON.To_Python(self.folders["Watch History"]["History"])
@@ -289,13 +308,157 @@ class Convert_History(Watch_History):
 		}
 
 		# Define the "Pre-entries.json" file
-		self.year["Folders"]["pre_entries"] = self.year["Folders"]["root"] + "Pre-entries.json"
+		self.year["Folders"]["Pre-entries"] = self.year["Folders"]["root"] + "Pre-entries.json"
 
 		# Read the "Pre-entries.json" file
-		self.year["Pre-entries"] = self.JSON.To_Python(self.year["Folders"]["pre_entries"])
+		self.year["Pre-entries"] = self.JSON.To_Python(self.year["Folders"]["Pre-entries"])
 
-		pre_entries_list = list(self.year["Pre-entries"].values())
+		# Define the Pre-entries dictionary template
+		self.pre_entries = {
+			"Items": {
+				"Media": "Media title",
+				"Item": "Media item",
+				"Type": "Media type"
+			},
+			"Entries": {
+				"1": {
+					"Item": "Media item",
+					"Title": "Episode title",
+					"Date": "01:20 01/03/2024"
+				}
+			}
+		}
+
+		# Get the pre-entries list
+		pre_entries_list = list(self.year["Pre-entries"]["Entries"].values())
+
+		# Define the item names list
+		item_names = ["Item", "Title", "Date"]
+
+		# Remove item names that are already defined
+		for item_name in item_names:
+			if item_name in self.year["Pre-entries"]["Items"]:
+				item_names.remove(item_name)
+
+		# Ask for the pre-entries if the list is empty
+		# Or if the "Fill file" switch is True
+		if (
+			pre_entries_list == [] or
+			"Switches" in self.year["Pre-entries"] and
+			"Fill file" in self.year["Pre-entries"]["Switches"] and
+			self.year["Pre-entries"]["Switches"]["Fill file"] == True
+		):
+			# Get the media dictionary if it exists
+			if "Media" in self.year["Pre-entries"]["Items"]:
+				# Define the default dictionary with the media type and media title
+				self.dictionary = {
+					"Media type": self.media_types["Videos"],
+					"Media": {
+						"Title": self.year["Pre-entries"]["Items"]["Media"]
+					}
+				}
+
+				# Select the media to define its variables
+				self.year["Media"] = self.Select_Media(self.dictionary)["Media"]
+
+			# Define the number of pre-entries
+			number = 1
+
+			# Define the "add_more" variable
+			title = ""
+
+			# While the variable above is True
+			while title != "stop":
+				# Show a dash and space separator, and the number
+				print(self.large_bar)
+				print()
+				print(self.JSON.Language.language_texts["number, title()"] + ":")
+				print("[" + str(number) + "/" + str(number) + "]")
+
+				# Define the empty entry dictionary
+				entry = {}
+
+				# Ask for the title and date of the entry
+				for item_name in item_names:
+					# If the "Media" key is inside the year dictionary
+					# And the item name is not "Item"
+					# Or the "Media" key is inside the year dictionary
+					if (
+						"Media" in self.year and
+						item_name != "Item" or
+						"Media" not in self.year
+					):
+						# Define the text key
+						text_key = item_name.lower() + ", title()"
+
+						# Get the language text
+						language_text = self.JSON.Language.language_texts[text_key]
+
+						ask_for_item = True
+
+						if (
+							item_name == "Date" and
+							entry["Title"] == "stop"
+						):
+							ask_for_item = False
+
+						if ask_for_item == True:
+							regex = None
+
+							if item_name == "Date":
+								regex = {
+									"Regex": "^([0-9]{2}:[0-9]{2} [0-9]{2}/[0-9]{2})$",
+									"Example": self.Date.Now()["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"][:-5]
+								}
+
+							# Ask for the entry item
+							value = self.Input.Type(language_text, next_line = True, regex = regex)
+
+							if item_name == "Date":
+								value += "/2024"
+
+					# If the "Media" key is inside the year dictionary
+					# And the item name is "Item"
+					if (
+						"Media" in self.year and
+						item_name == "Item"
+					):
+						# Get the media items list
+						media_items = self.year["Media"]["Items"]["List"]
+
+						# Ask the user to select a media item
+						show_text = self.JSON.Language.language_texts["items, title()"]
+						select_text = self.JSON.Language.language_texts["item, title()"]
+
+						value = self.Input.Select(media_items, show_text = show_text, select_text = select_text)["option"]
+
+					# Add the item value to the entry dictionary
+					entry[item_name] = value
+
+				# Define the value of the "title" variable
+				title = entry["Title"]
+
+				# Add the entry to the pre-entries list
+				pre_entries_list.append(entry)
+
+				# Add the entry to the Pre-entries dictionary
+				self.year["Pre-entries"]["Entries"][str(number)] = entry
+
+				# Add to the pre-entries number
+				number += 1
+
+				print()
+
+				# Update the "Pre-entries.json" file with the new pre-entries
+				self.JSON.Edit(self.year["Folders"]["Pre-entries"], self.year["Pre-entries"])
+
 		last_pre_entry = pre_entries_list[-1]
+
+		items = [
+			"Type",
+			"Media",
+			"Item"
+		]
 
 		# Iterate through the Entries list
 		e = 0
@@ -303,11 +466,16 @@ class Convert_History(Watch_History):
 			if entry["Title"] == last_pre_entry["Title"]:
 				print()
 
-			# Define the progress text with progress (current number and entries number)
-			# Media type, entry date and name
+			for item in items:
+				if item not in entry:
+					entry[item] = self.year["Pre-entries"]["Items"][item]
+
+			# Define the progress text with the progress (current number and entries number)
+			# Media type, entry date, and title
 			progress_text = "-----" + "\n" + \
 			"\n" + \
-			str(e + 1) + "/" + str(len(pre_entries_list)) + ":" + "\n" + "\n" + \
+			self.JSON.Language.language_texts["number, title()"] + ":" + "\n" + \
+			"[" + str(e + 1) + "/" + str(len(pre_entries_list)) + "]" + "\n" + "\n" + \
 			self.JSON.Language.language_texts["type, title()"] + ":" + "\n" + \
 			"[" + entry["Type"] + "]" + "\n" + \
 			"\n" + \
@@ -338,8 +506,12 @@ class Convert_History(Watch_History):
 			self.media = self.dictionary["Media"]
 
 			# Show the media title
-			print(self.JSON.Language.language_texts["media, title()"] + ":")
-			print("[" + self.media["Title"] + "]")
+			text = self.JSON.Language.language_texts["media, title()"] + ":" + "\n" + \
+			"[" + self.media["Title"] + "]"
+
+			progress_text += "\n" + text + "\n"
+
+			print(text)
 
 			# Define the media item dictionary
 			if "Item" in entry:
@@ -416,7 +588,10 @@ class Convert_History(Watch_History):
 						comment_entry = self.media["Episode"]["Titles"][self.media["Language"]]
 
 			# Comment file name for movies or single unit media items
-			if states_dictionary["Series media"] == False or states_dictionary["Single unit"] == True:
+			if (
+				states_dictionary["Series media"] == False or
+				states_dictionary["Single unit"] == True
+			):
 				comment_entry = self.JSON.Language.language_texts["comment, title()"]
 
 			# If the comment entry name exists inside the media Comments dictionary
@@ -443,43 +618,62 @@ class Convert_History(Watch_History):
 
 				self.dictionary["Comment Writer"]["Comment"] = entry["Comment"]
 
-				# Remove Comment dictionary from Entry dictionary if the date is empty and the "ID" key is not inside the Comment dictionary
-				# The Comment dictionary is only useful to be inside the Entry dictionary if it contains the date of the comment and/or the ID and Link of the comment
+				# Remove the Comment dictionary from the Entry dictionary if the date is empty
+				# And the "ID" key is not inside the Comment dictionary
+				# Or the Comment dictionary contains only the "Date" key
+				# And the comment date is the same as the entry date
+				# (The Comment dictionary is only useful to be inside of the Entry dictionary if it contains the date of the comment)
 				if (
-					entry["Comment"]["Date"] == "" and "ID" not in entry["Comment"] or \
-					list(entry["Comment"].keys()) == ["Date"] and entry["Comment"]["Date"] == entry["Date"]
+					entry["Comment"]["Date"] == "" and
+					"ID" not in entry["Comment"] or
+					list(entry["Comment"].keys()) == ["Date"] and
+					entry["Comment"]["Date"] == entry["Date"]
 				):
 					entry.pop("Comment")
+
 					self.dictionary["Comment Writer"].pop("Comment")
 
 				# Set the "Commented" state as True
 				states_dictionary["Commented"] = True
 
+			# Define the states dictionary
 			self.media["States"] = states_dictionary
 			self.dictionary["Media"]["States"] = states_dictionary
 
 			# Keep the original switches inside the "Switches.json" file before running the "Register" class
 			self.Global_Switches.Switch(switches_dictionary)
 
-			setattr(self.Register, "dictionaries", self.dictionaries)
-			setattr(self.Register, "self.dictionaries", self.dictionaries)
+			self.dictionary["Dictionaries"] = self.dictionaries
+
+			# Update the "dictionaries" variable
+			setattr(self.Register, "dictionaries", self.dictionary["Dictionaries"])
 
 			# Run the "Register" class to register the media unit
 			register = self.Register(self.dictionary)
 
-			self.dictionaries = getattr(register, "dictionaries")
+			# Get the updated "dictionaries" variable from the "Register" class
+			self.dictionary["Dictionaries"] = getattr(register, "dictionaries")
 
 			if progress_text[-1] == "\n":
 				progress_text = progress_text[:-1]
 
+			# Show the progress text
 			print()
 			print(progress_text)
 
-			if entry["Title"] != last_pre_entry["Title"] and self.switches["testing"] == True:
+			# If the entry title is not the last one
+			# And the testing switch is True
+			if (
+				entry["Title"] != last_pre_entry["Title"] and
+				self.switches["testing"] == True
+			):
+				# Ask for user input before continuing the conversion
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, feminine"].title() + " " + self.JSON.Language.language_texts["entry"] + ")")
 
+				# Show a space separator
 				print()
 
+			# Show a five dash separator if the entry is the last one
 			if entry["Title"] == last_pre_entry["Title"]:
 				print()
 				print("-----")

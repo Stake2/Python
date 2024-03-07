@@ -59,10 +59,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				#self.texts["animes, title()"]["en"],
-				#self.texts["cartoons, title()"]["en"],
-				#self.texts["series, title()"]["en"],
-				#self.texts["movies, title()"]["en"],
+				self.texts["animes, title()"]["en"],
+				self.texts["cartoons, title()"]["en"],
+				self.texts["series, title()"]["en"],
+				self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 
@@ -82,37 +82,41 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 					# Show the media title
 					print()
-					print("\t" + "---")
+					print("---")
 					print()
-					print("\t" + self.JSON.Language.language_texts["media, title()"] + ":")
-					print("\t" + "[" + self.dictionary["Media"]["Title"] + "]")
+					print(self.JSON.Language.language_texts["media, title()"] + ":")
+					print("[" + self.dictionary["Media"]["Title"] + "]")
 
-					# Select media and define its variables, returning the media dictionary (without asking user to select the media)
+					# Select the media and define its variables, returning the media dictionary (without asking user to select the media)
 					self.dictionary = self.Select_Media(self.dictionary)
 
-					# Define the media dictionary
+					# Define the "media" variable for easier typing
 					self.media = self.dictionary["Media"]
 
 					# Define the media items list as the media title for media without a media item list
 					self.media_items_list = [
-						self.dictionary["Media"]["Item"]["Title"]
+						self.media["Item"]["Title"]
 					]
 
 					# For media with the media item list, get the actual media items
-					if self.dictionary["Media"]["States"]["Media item list"] == True:
-						self.media_items_list = self.dictionary["Media"]["Items"]["List"]
+					if self.media["States"]["Media item list"] == True:
+						self.media_items_list = self.media["Items"]["List"]
 
 					# Iterate through the media items list
 					self.media_item_number = 0
 
 					for self.media_item in self.media_items_list:
-						# Define media item
+						# Define the media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
-						# Show media item title
-						print()
-						print("\t\t" + self.JSON.Language.language_texts["item"].title() + ":")
-						print("\t\t" + "[" + self.dictionary["Media"]["Item"]["Title"] + "]")
+						# Define the "media" variable for easier typing
+						self.media = self.dictionary["Media"]
+
+						# Show the media item title
+						if self.media["Item"]["Title"] != self.media["Title"]:
+							print()
+							print(self.JSON.Language.language_texts["item"].title() + ":")
+							print("[" + self.media["Item"]["Title"] + "]")
 
 						# Verify if empty episodes' titles files exist
 						#self.Check_Episodes_Titles()
@@ -134,9 +138,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 						#	self.Add_Last_Playlist_Date()
 
 						#if self.dictionary["Media type"]["Plural"]["en"] == self.texts["movies, title()"]["en"]:
-						#	if self.user_language in self.dictionary["Media"]["Item"]["Titles"]:
-						#		string += self.dictionary["Media"]["Item"]["Titles"][self.user_language]
-						#		string += " (" + self.dictionary["Media"]["Title"].split(" (")[-1] + "\n"
+						#	if self.user_language in self.media["Item"]["Titles"]:
+						#		string += self.media["Item"]["Titles"][self.user_language]
+						#		string += " (" + self.media["Title"].split(" (")[-1] + "\n"
 
 						# Watch the media for testing purposes
 						#if self.switches["testing"] == True:
@@ -151,13 +155,20 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 						self.media_item_number += 1
 
-					if self.switches["testing"] == True and self.media_title != media_list[-1]:
+					if (
+						self.switches["testing"] == True and
+						self.media_title != media_list[-1]
+					):
 						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 			#self.Text.Copy(string)
 			#input()
 
-			if self.switches["testing"] == True and plural_media_type != self.media_types["Plural"]["en"][-1] and plural_media_type not in media_types_to_remove:
+			if (
+				self.switches["testing"] == True and
+				plural_media_type != self.media_types["Plural"]["en"][-1] and
+				plural_media_type not in media_types_to_remove
+			):
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
 
 			i += 1

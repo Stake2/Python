@@ -598,6 +598,8 @@ class Main():
 		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
 
 		print()
+		self.JSON.Show(dict_)
+		print()
 
 		if ask_for_input == False:
 			from copy import deepcopy

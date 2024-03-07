@@ -135,6 +135,10 @@
 		"en": "episode",
 		"pt": "episódio"
 	},
+	"episode, title()": {
+		"en": "Episode",
+		"pt": "Episódio"
+	},
 	"episodes, title()": {
 		"en": "Episodes",
 		"pt": "Episódios"
@@ -243,13 +247,17 @@
 		"en": "Filling the files of titles and YouTube IDs",
 		"pt": "Preenchendo os arquivos de títulos e IDs do YouTube"
 	},
-	"finished_filling_the_files_of_titles": {
-		"en": "Finished filling the files of titles",
-		"pt": "Terminou de preencher os arquivos de títulos"
+	"you_finished_filling_the_files_of_titles": {
+		"en": "You finished filling the files of titles",
+		"pt": "Você terminou de preencher os arquivos de títulos"
 	},
-	"finished_filling_the_files_of_titles_and_youtube_ids": {
-		"en": "Finished filling the files of titles and YouTube IDs",
-		"pt": "Terminou de preencher os arquivos de títulos e IDs do YouTube"
+	"you_finished_filling_the_files_of_titles_and_youtube_ids": {
+		"en": "You finished filling the files of titles and YouTube IDs",
+		"pt": "Você terminou de preencher os arquivos de títulos e IDs do YouTube"
+	},
+	"skipping_this_title_as_it_was_already_translated": {
+		"en": "Skipping this title as it was already translated",
+		"pt": "Pulando este título porque já foi traduzido"
 	},
 	"starting_to_watch_the_list_of_media": {
 		"en": "Starting to watch the list of media",
@@ -442,5 +450,9 @@
 	"first_watched_media_per_media_type_in_the_year": {
 		"en": "First watched media per media type in the year",
 		"pt": "Primeira mídia assistida por tipo de mídia no ano"
+	},
+	"convert_history": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
 	}
 }

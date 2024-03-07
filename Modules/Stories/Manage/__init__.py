@@ -3,8 +3,9 @@
 from Stories.Stories import Stories as Stories
 
 class Manage(Stories):
-	def __init__(self, story = None):
-		super().__init__(story = story)
+	def __init__(self):
+		# Initiate the parent class
+		super().__init__()
 
 		import os
 		import importlib
@@ -27,8 +28,11 @@ class Manage(Stories):
 
 			self.class_descriptions.append(self.JSON.Language.Item(class_description))
 
+		# Select the story
+		self.story = self.Select_Story()
+
 		# Select the class
-		show_text = self.language_texts["manage_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'
+		show_text = self.language_texts["manage_the_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'
 
 		class_ = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = show_text, select_text = self.JSON.Language.language_texts["select_one_class_to_execute"])["option"]
 
@@ -42,4 +46,4 @@ class Manage(Stories):
 		setattr(class_, "story", self.story)
 
 		# Execute the class
-		class_(story = self.story)
+		class_()

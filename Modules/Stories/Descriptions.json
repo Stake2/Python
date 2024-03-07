@@ -15,6 +15,10 @@
 		"en": "Show story information",
 		"pt": "Mostrar informações de histórias"
 	},
+	"Manage": {
+		"en": "Manage",
+		"pt": "Gerenciar"
+	},
 	"Copy_Story_Titles": {
 		"en": "Copy story titles",
 		"pt": "Copiar títulos de histórias"

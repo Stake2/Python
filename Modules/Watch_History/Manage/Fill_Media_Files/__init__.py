@@ -69,8 +69,12 @@ class Fill_Media_Files(Watch_History):
 
 				method()
 
-		if list(methods.keys()) == ["Fill_Files"] or "Added media" in self.dictionary:
-			self.Define_Variables()
+		if self.media["States"]["Video"] == False:
+			if (
+				list(methods.keys()) == ["Fill_Files"] or
+				"Added media" in self.dictionary
+			):
+				self.Define_Variables()
 
 		# Select the media again to update the media files
 		self.dictionary = self.Select_Media(self.dictionary)
@@ -83,26 +87,34 @@ class Fill_Media_Files(Watch_History):
 
 	def Define_Variables(self):
 		print()
+		print(self.large_bar)
+		print()
 
 		key = "filling_the_titles_files"
 
-		if self.media["States"]["Video"] == True and self.media["States"]["Media item list"] == True:
+		if (
+			self.media["States"]["Video"] == True and
+			self.media["States"]["Media item list"] == True
+		):
 			key = "filling_the_files_of_titles_and_youtube_ids"
 
 		print(self.language_texts[key] + "...")
 
-		# Show episode titles' files per language
+		# Show the files of episode titles per language
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			print()
 			print(self.JSON.Language.language_texts["titles_file_in_{}"].format(translated_language) + ":")
-			print(self.dictionary["Fill episode titles"]["Episodes"]["Titles"]["Files"][language])
+			print("\t" + self.dictionary["Fill episode titles"]["Episodes"]["Titles"]["Files"][language])
 
-		if self.media["States"]["Video"] == True and self.media["States"]["Media item list"] == True:
+		if (
+			self.media["States"]["Video"] == True and
+			self.media["States"]["Media item list"] == True
+		):
 			print()
 			print(self.JSON.Language.language_texts["ids_file"] + ":")
-			print(self.media["Item"]["Folders"]["titles"]["ids"])
+			print("\t" + self.media["Item"]["Folders"]["titles"]["ids"])
 
 		if self.media["States"]["Video"] == False:
 			self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total"] = ""
@@ -126,8 +138,12 @@ class Fill_Media_Files(Watch_History):
 
 			# -------------------------------------------------------------- #
 
-			# If the media has a media list and the media item is not the first one in the list
-			if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Items"]["List"][0]:
+			# If the media has a media list
+			# And the media item is not the first one in the list
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["Item"]["Title"] != self.media["Items"]["List"][0]
+			):
 				self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"] = ""
 
 				# Define the error variable so the "while" works
@@ -156,13 +172,16 @@ class Fill_Media_Files(Watch_History):
 
 			self.Fill_Files()
 
-			print(self.language_texts["finished_filling_the_files_of_titles"] + ".")
+			print(self.language_texts["you_finished_filling_the_files_of_titles"] + ".")
 
-		if self.media["States"]["Video"] == True and self.media["States"]["Media item list"] == True:
+		if (
+			self.media["States"]["Video"] == True and
+			self.media["States"]["Media item list"] == True
+		):
 			self.Get_YouTube_IDs()
 
 			print()
-			print(self.language_texts["finished_filling_the_files_of_titles_and_youtube_ids"] + ".")
+			print(self.language_texts["you_finished_filling_the_files_of_titles_and_youtube_ids"] + ".")
 
 	def Replace_Text(self, text):
 		items_to_remove = [
@@ -188,7 +207,10 @@ class Fill_Media_Files(Watch_History):
 		return text
 
 	def Fill_Files(self):
-		if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Items"]["List"][0]:
+		if (
+			self.media["States"]["Media item list"] == True and
+			self.media["Item"]["Title"] != self.media["Items"]["List"][0]
+		):
 			total_number_text = str(self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"] + self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total"] - 1)
 
 		i = 1
@@ -260,51 +282,65 @@ class Fill_Media_Files(Watch_History):
 			print("---")
 			print()
 
-			if self.media["States"]["Media item list"] == True and self.media["Item"]["Title"] != self.media["Items"]["List"][0]:
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["Item"]["Title"] != self.media["Items"]["List"][0]
+			):
 				self.dictionary["Fill episode titles"]["Episodes"]["Numbers"]["Total of all media episodes"] += 1
 
 			i += 1
 
-		for language in self.languages["small"]:
-			# Define the translated language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+		if self.media["States"]["Video"] == False:
+			for language in self.languages["small"]:
+				# Define the translated language
+				translated_language = self.languages["full_translated"][language][self.user_language]
 
-			# Show language and episode titles
-			if language != self.languages["small"][0]:
-				print()
+				# Show language and episode titles
+				if language != self.languages["small"][0]:
+					print()
 
-			print(translated_language + ":")
+				print(translated_language + ":")
 
-			for title in self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language]:
-				print("\t" + title)
+				for title in self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language]:
+					print("\t" + title)
 
-			if language == self.languages["small"][-1]:
-				print()
+				if language == self.languages["small"][-1]:
+					print()
 
-			# Define the episode titles file
-			file = self.dictionary["Fill episode titles"]["Episodes"]["Titles"]["Files"][language]
+				# Define the episode titles file
+				file = self.dictionary["Fill episode titles"]["Episodes"]["Titles"]["Files"][language]
 
-			# Write the episode titles to the episode titles file
-			text = self.Text.From_List(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language])
+				# Write the episode titles to the episode titles file
+				text = self.Text.From_List(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language])
 
-			self.File.Edit(file, text, "w")
+				self.File.Edit(file, text, "w")
 
 	def Get_YouTube_IDs(self):
-		# Define the empty IDs list
-		self.media["Item"]["Episodes"]["ids"] = []
+		# If the IDs list is empty, get the video IDs and titles from the playlist
+		if self.media["Item"]["Episodes"]["Titles"]["IDs"] == []:
+			# Define the API dictionary
+			youtube = {
+				"item": "playlistItems",
+				"id": self.media["Item"]["Details"][self.JSON.Language.language_texts["origin_location"]]
+			}
 
-		# Define the API dictionary
-		youtube = {
-			"item": "playlistItems",
-			"id": self.media["Item"]["Details"][self.JSON.Language.language_texts["origin_location"]]
-		}
+			# Get the videos dictionary from the playlist
+			videos = self.Get_YouTube_Information(youtube)
 
-		# Get the videos dictionary from the playlist
-		videos = self.Get_YouTube_Information(youtube)
+		# Else, make a video dictionary with the existing IDs and titles
+		else:
+			videos = {}
 
-		print()
+			i = 0
+			for id in self.media["Item"]["Episodes"]["Titles"]["IDs"]:
+				videos[id] = {
+					"Title": self.media["Item"]["Episodes"]["Titles"][self.user_language][i],
+					"ID": id
+				}
 
-		# Remove private videos
+				i += 1
+
+		# Remove the private videos
 		i = 1
 		for id in videos.copy():
 			video = videos[id]
@@ -312,55 +348,98 @@ class Fill_Media_Files(Watch_History):
 			if video["Title"] == "Private video":
 				videos.pop(id)
 
-		i = 1
+		# Write the IDs into the IDs file
+		file = self.media["Item"]["Folders"]["titles"]["ids"]
+
+		self.File.Edit(file, self.Text.From_List(videos.keys()), "w")
+
+		# Get all video titles in the user language
+		titles = []
+
 		for id in videos:
 			video = videos[id]
 
-			# Add ID to IDs list
-			self.media["Item"]["Episodes"]["ids"].append(id)
+			titles.append(video["Title"])
 
-			# Show video number and progress
-			print(str(i) + "/" + str(len(list(videos.keys()))) + ":")
+		self.dictionary["Fill episode titles"]["Episodes"]["Titles"][self.user_language] = titles
+
+		# Write the user language video title into the user language file
+		file = self.media["Item"]["Folders"]["titles"][self.user_language]
+
+		self.File.Edit(file, self.Text.From_List(titles), "w")
+
+		i = 1
+		keys = list(videos.keys())
+
+		for id in videos:
+			video = videos[id]
+
+			# Add the video id to the IDs list
+			if id not in self.media["Item"]["Episodes"]["Titles"]["IDs"]:
+				self.media["Item"]["Episodes"]["Titles"]["IDs"].append(id)
+
+			print()
+			print(self.large_bar)
 			print()
 
-			# Add to language episode titles list
+			# Show video number and progress
+			print(self.JSON.Language.language_texts["number, title()"] + ":")
+			print("[" + str(i) + "/" + str(len(keys)) + "]")
+			print()
+
+			# Add to the language episode titles list
+			for language in self.languages["small"]:
+				# If the language is not the user language
+				if language != self.user_language:
+					# If the language title was not translated already
+					if len(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language]) < i:
+						# Define the translated language
+						translated_language = self.languages["full_translated"][language][self.user_language]
+
+						video["Title"] = self.Add_Missing_Titles(language, self.dictionary["Fill episode titles"]["Episodes"]["Titles"], video["Title"])
+
+						self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language].append(video["Title"])
+
+						# Write the language video title into the language file
+						file = self.media["Item"]["Folders"]["titles"][language]
+
+						self.File.Edit(file, video["Title"], "a")
+
+					# If it was translated, skip it
+					else:
+						print(self.JSON.Language.language_texts["title, title()"] + ":")
+						print("[" + video["Title"] + "]")
+						print("[" + self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language][i - 1] + "]")
+						print()
+
+						print(self.language_texts["skipping_this_title_as_it_was_already_translated"] + ".")
+
+			i += 1
+
+		print()
+		print(self.large_bar)		
+
+		# Show the language titles
+		if len(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][self.user_language]) < 10:
+			print()
+
 			for language in self.languages["small"]:
 				# Define the translated language
 				translated_language = self.languages["full_translated"][language][self.user_language]
 
-				video["Title"] = self.Add_Missing_Titles(language, self.dictionary["Fill episode titles"]["Episodes"]["Titles"], video["Title"])
+				# Show the titles
+				print(self.JSON.Language.language_texts["titles_in_{}"].format(translated_language) + ":")
 
-				self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language].append(video["Title"])
+				for title in self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language]:
+					print("\t" + title)
 
-			i += 1
+				print()
 
-		# Write into language titles file
-		for language in self.languages["small"]:
-			# Define the translated language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			# Show the IDs
+			print(self.JSON.Language.language_texts["ids, title()"] + ":")
 
-			text = self.Text.From_List(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language])
-
-			self.File.Edit(self.media["Item"]["Episodes"]["Titles"]["Files"][language], text)
-
-			# Show titles
-			print(self.JSON.Language.language_texts["titles_in_{}"].format(translated_language) + ":")
-
-			for title in self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language]:
-				print("\t" + title)
-
-			print()
-
-		# Write into "IDs.txt" file
-		text = self.Text.From_List(self.media["Item"]["Episodes"]["ids"])
-
-		self.File.Edit(self.media["Item"]["Folders"]["titles"]["ids"], text)
-
-		# Show IDs
-		print(self.JSON.Language.language_texts["ids, title()"] + ":")
-
-		for id in self.media["Item"]["Episodes"]["ids"]:
-			print("\t" + id)
+			for id in self.media["Item"]["Episodes"]["Titles"]["IDs"]:
+				print("\t" + id)
 
 	def Add_To_Videos_List(self):
 		video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
@@ -436,7 +515,7 @@ class Fill_Media_Files(Watch_History):
 		print("\t" + self.media["Item"]["Title"])
 		print()
 
-		# Show titles
+		# Show the video titles
 		for language in self.languages["small"]:
 			# Define the translated language
 			translated_language = self.languages["full_translated"][language][self.user_language]
@@ -445,12 +524,12 @@ class Fill_Media_Files(Watch_History):
 			print("\t" + self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language])
 			print()
 
-		# Show ID
+		# Show the video ID
 		print(self.JSON.Language.language_texts["id, upper()"] + ":")
 		print("\t" + video_id)
 		print()
 
-		# Show Date
+		# Show the video date
 		print(self.Date.language_texts["date, title()"] + ":")
 		print("\t" + video["Date"])
 
@@ -465,11 +544,14 @@ class Fill_Media_Files(Watch_History):
 			titles[language] = ""
 
 		if language != self.media["Language"]:
+			# Show the information text about translating the title
 			print(self.language_texts["please_translate_this_title_to_{}"].format(translated_language) + ":")
 			print("[" + title + "]")
 
+			# Copy the user language title
 			self.Text.Copy(title)
 
-			title = self.Input.Type(self.JSON.Language.language_texts["title, title()"] + ": ")
+			# Ask for the user to type or paste the translated title
+			title = self.Input.Type(self.JSON.Language.language_texts["title, title()"] + ": ", accept_enter = False)
 
 		return title
