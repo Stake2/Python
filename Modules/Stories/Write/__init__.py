@@ -11,7 +11,7 @@ class Write(Stories):
 		self.Select_Writing_Mode()
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		print(self.language_texts["story, title()"] + ":")
@@ -55,7 +55,7 @@ class Write(Stories):
 		if self.chapter["finished_writing"] == False:
 			print(self.task_dictionary["Task"]["Descriptions"][self.user_language])
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 	def Select_Writing_Mode(self):
 		options = self.language_texts["writing_modes, type: list"]
@@ -328,7 +328,7 @@ class Write(Stories):
 		print(self.chapter["time_difference"]["Text"][self.user_language])
 		print()
 
-		print(self.large_bar)
+		print(self.separators["5"])
 
 	def Rename_Chapter_Files(self):
 		# Ask for the new chapter titles

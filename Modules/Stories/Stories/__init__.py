@@ -99,8 +99,20 @@ class Stories(object):
 
 			i += 1
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Import_Classes(self):
 		# Define the classes to be imported
@@ -136,26 +148,26 @@ class Stories(object):
 		}
 
 	def Define_Folders_And_Files(self):
-		# Folders
+		# Define the root "Stories" dictionary
 		self.stories = {
 			"Folders": {
 				"root": self.folders["Mega"]["stories"]["root"]
 			}
 		}
 
-		# "Database" folder
+		# Define the "Database" folder
 		self.stories["Folders"]["Database"] = {
 			"root": self.stories["Folders"]["root"] + "Database/"
 		}
 
 		self.Folder.Create(self.stories["Folders"]["Database"]["root"])
 
-		# "Social Network post templates" folder
-		self.stories["Folders"]["Database"]["Social Network post templates"] = {
-			"root": self.stories["Folders"]["Database"]["root"] + "Social Network post templates/"
+		# Define the "Post templates" folder
+		self.stories["Folders"]["Database"]["Post templates"] = {
+			"root": self.stories["Folders"]["Database"]["root"] + "Post templates/"
 		}
 
-		self.Folder.Create(self.stories["Folders"]["Database"]["Social Network post templates"]["root"])
+		self.Folder.Create(self.stories["Folders"]["Database"]["Post templates"]["root"])
 
 		# Database files
 		for file_name in ["Author", "Stories list", "Stories.json"]:
@@ -168,12 +180,28 @@ class Stories(object):
 
 			self.File.Create(self.stories["Folders"]["Database"][key])
 
-		# Create the "Social Network post templates" files
-		for item in ["Wattpad", "Twitter, Facebook"]:
-			file_name = item
+		# Create the "Post templates" folders
 
-			self.stories["Folders"]["Database"]["Social Network post templates"][item] = self.stories["Folders"]["Database"]["Social Network post templates"]["root"] + file_name + ".json"
-			self.File.Create(self.stories["Folders"]["Database"]["Social Network post templates"][item])
+		# Define the root folder for faster typing
+		folder = self.stories["Folders"]["Database"]["Post templates"]
+
+		for folder_name in ["Wattpad", "Twitter, Facebook"]:
+			folder[folder_name] = {
+				"root": folder["root"] + folder_name + "/"
+			}
+
+			self.Folder.Create(folder[folder_name]["root"])
+
+		# Create the language files
+		for folder_name in ["Wattpad", "Twitter, Facebook"]:
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Get the full language
+				full_language = self.languages["full"][language]
+
+				# Define and create the language file
+				folder[folder_name][language] = folder[folder_name]["root"] + full_language + ".txt"
+				self.File.Create(folder[folder_name][language])
 
 	def Define_Lists_And_Dictionaries(self):
 		# Lists
@@ -244,8 +272,6 @@ class Stories(object):
 		# Lists
 		to_remove = [
 			"Database",
-			"Diary",
-			"Diary Slim",
 			"Izaque Sanvezzo",
 			"Others",
 			"Rubbish"
@@ -815,7 +841,7 @@ class Stories(object):
 
 		return folder_name
 
-	def Register(self, task_dictionary, register_task = True):
+	def Register_Task(self, task_dictionary, register_task = True):
 		# If the type is not inside the task dictionary, set it as "Stories"
 		if "Type" not in task_dictionary:
 			task_dictionary["Type"] = "Stories"
@@ -843,22 +869,30 @@ class Stories(object):
 	def Select_Story(self, select_text_parameter = None, select_class = False):
 		from copy import deepcopy
 
+		# Define the show text
 		show_text = self.language_texts["stories, title()"]
 
+		# Define the select text
 		select_text = select_text_parameter
 
 		if select_text_parameter == None:
 			select_text = self.language_texts["select_a_story"]
 
+		# Get the class name
 		class_name = type(self).__name__.lower()
 
+		# If the select text parameter is None
+		# And the current class is a sub-class of the "Stories" class
+		# And the class name is inside the language texts dictionary
 		if (
 			select_text_parameter == None and
 			issubclass(type(self), Stories) == True and
 			class_name in self.language_texts
 		):
+			# Change the select text to add the text of the current class
 			select_text = self.language_texts["select_a_story_to"] + " " + self.language_texts[class_name]
 
+		# Make a local copy of the "Stories" dictionary
 		stories = deepcopy(self.stories)
 
 		# Remove the stories with all chapters posted if the class is "Post"
@@ -908,5 +942,8 @@ class Stories(object):
 		# Get the class
 		class_ = getattr(module, class_)
 
+		# Add the "Story" variable to the class
+		setattr(class_, "story", self.story)
+
 		# Execute the class
-		class_(story = self.story)
+		class_()

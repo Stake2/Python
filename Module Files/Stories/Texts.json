@@ -43,6 +43,10 @@
 		"en": "Chapters",
 		"pt": "Capítulos"
 	},
+	"chapter_number": {
+		"en": "Chapter number",
+		"pt": "Número do capítulo"
+	},
 	"select_a_story": {
 		"en": "Select a story",
 		"pt": "Selecione uma história"
@@ -58,6 +62,10 @@
 	"you_skipped_the": {
 		"en": "You skipped the",
 		"pt": "Você pulou a"
+	},
+	"cover, title()": {
+		"en": "Cover",
+		"pt": "Capa"
 	},
 	"covers, title()": {
 		"en": "Covers",
@@ -87,13 +95,13 @@
 		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
 		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}], em [{}].\nRenderize a capa em modo [{}] com o título do capítulo e com a extensão [{}]."
 	},
+	"opening_the_photoshop_file_of_chapter_covers, type: long, plural": {
+		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender all of the [{}] covers in [{}] mode with the chapter titles and with the [{}] extension.",
+		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}], em [{}].\nRenderize todas as [{}] capas em modo [{}] com os títulos dos capítulos e com a extensão [{}]."
+	},
 	"press_enter_to_copy_the_chapter_title": {
 		"en": "Press Enter to copy the chapter title",
 		"pt": "Pressione Enter para copiar o título do capítulo"
-	},
-	"press_enter_to_copy_the_chapter_title_and_paste_it_on_the_vegas_title_media": {
-		"en": "Press Enter to copy the chapter title and paste it on the Vegas title media",
-		"pt": "Pressione Enter para copiar o título de capítulo e cole ele na mídia de título do Vegas"
 	},
 	"press_enter_to_copy_the_chapter_text": {
 		"en": "Press Enter to copy the chapter text",

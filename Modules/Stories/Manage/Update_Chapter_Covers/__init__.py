@@ -11,7 +11,7 @@ class Update_Chapter_Covers(Stories):
 
 		# Show the information text with the story title
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["updating_the_chapter_covers_of_this_story"] + ":")
 		print(self.story["Titles"][self.user_language])
@@ -21,7 +21,7 @@ class Update_Chapter_Covers(Stories):
 		self.Post(run_as_module = True)
 
 		# Show the finish text
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["finished_updating_the_chapter_covers"] + ".")
 

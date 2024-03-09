@@ -456,11 +456,11 @@ class Social_Networks(object):
 				additional_items = {}
 				
 				# Iterate through the "Additional items" dictionary
-				for key, item in items["Additional items"].items():
-					if "{Social Network link}" in item:
-						item = item.replace("{Social Network link}", dictionary["Information"]["Link"][:-1])
+				for key, additional_item in items["Additional items"].items():
+					if "{Social Network link}" in additional_item:
+						additional_item = additional_item.replace("{Social Network link}", dictionary["Information"]["Link"][:-1])
 
-					additional_items[key] = item
+					additional_items[key] = additional_item
 
 				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the Social Network
 				self.information_items["Additional items"][social_network] = additional_items
@@ -685,15 +685,15 @@ class Social_Networks(object):
 		self.information_items = dictionary
 
 		# Iterate through the social networks list
-		for key in self.social_networks["Dictionary"]:
+		for key, social_network in self.social_networks["Dictionary"].items():
 			# Create the Local "Information items" dictionary using the Social Network "Information items" dictionary as a base
-			information_items = deepcopy(self.social_networks["Dictionary"][key]["Information items"])
+			information_items = deepcopy(social_network["Information items"])
 
 			# Create the "Dictionary" key
 			information_items["Dictionary"] = {}
 
 			# Iterate through the Social Network information items list
-			for item in self.social_networks["Dictionary"][key]["Information items"]["List"]:
+			for item in social_network["Information items"]["List"]:
 				# If the item is inside the root "Information items" dictionary
 				if item in self.information_items["Dictionary"]:
 					# Define the local item dictionary as the item dictionary inside the root "Information items" dictionary
@@ -704,7 +704,7 @@ class Social_Networks(object):
 					information_items["Templates"] = self.information_items["Additional items"][key]
 
 			# Define the Social Network "Information items" dictionary as the Local "Information items" dictionary
-			self.social_networks["Dictionary"][key]["Information items"] = information_items
+			social_network["Information items"] = information_items
 
 			# Remove the unused keys of the Social Network "Information items" dictionary
 			to_remove = [
@@ -715,25 +715,50 @@ class Social_Networks(object):
 			]
 
 			for item in to_remove:
-				self.social_networks["Dictionary"][key]["Information items"].pop(item)
+				social_network["Information items"].pop(item)
 
 			# Translate the keys of the "Information.txt" file to English
-			self.social_networks["Dictionary"][key]["Information"] = self.Information(file = self.social_networks["Dictionary"][key]["Files"]["Information"])
+			social_network["Information"] = self.Information(file = social_network["Files"]["Information"])
 
 			# Translate the keys of the "Profile.txt" file to English
-			self.social_networks["Dictionary"][key]["Profile"] = self.Information(file = self.social_networks["Dictionary"][key]["Files"]["Profile"])
+			social_network["Profile"] = self.Information(file = social_network["Files"]["Profile"])
+
+			link_additional_items = []
 
 			# Create the "Links" dictionary
-			self.social_networks["Dictionary"][key]["Profile"]["Links"] = {}
+			social_network["Profile"]["Links"] = {}
 
 			# Add links to the dictionary above
 			for link_type in ["Profile", "Message"]:
 				link_key = link_type + " link"
 
-				if link_key in self.social_networks["Dictionary"][key]["Profile"]:
-					link = self.social_networks["Dictionary"][key]["Profile"][link_key]
+				if link_key in social_network["Profile"]:
+					link = social_network["Profile"][link_key]
 
-					self.social_networks["Dictionary"][key]["Profile"]["Links"][link_type] = link
+					social_network["Profile"]["Links"][link_type] = link
+
+				link_additional_items.append(link_key)
+
+			# Define the "profile" variable for faster typing
+			profile = social_network["Profile"]
+
+			# Iterate through the additional items dictionary
+			for sub_key, additional_item in self.information_items["Additional items"][key].items():
+				# If the additional item key is not inside the "link additional items" list
+				if sub_key not in link_additional_items:
+					# For each item inside the information items list
+					for item in information_items["List"]:
+						# If the item with brackets around is inside the additinal item (maybe a link with format strings)
+						if "{" + item + "}" in additional_item:
+							# Format the format string with the item data gotten from the user profile dictionary
+							additional_item = additional_item.replace("{" + item + "}", profile[item])
+
+					# Add the additional item to the "Links" dictionary if the additional item contains the Social Network link
+					if social_network["Information"]["Link"] in additional_item:
+						social_network["Profile"]["Links"][sub_key] = additional_item
+
+			# Update the root "Social Network" dictionary
+			self.social_networks["Dictionary"][key] = social_network
 
 		# ---------- #
 

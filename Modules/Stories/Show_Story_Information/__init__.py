@@ -9,7 +9,6 @@ class Show_Story_Information(Stories):
 		self.stories_list = stories_list
 
 		self.Show_Information()
-		self.Move_Chapter_Covers()
 
 	def Show_Information(self):
 		if self.stories_list == None:
@@ -24,7 +23,7 @@ class Show_Story_Information(Stories):
 			story = self.stories[story]
 
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 			print()
 
 			print(self.language_texts["story_title"] + ":")
@@ -103,54 +102,4 @@ class Show_Story_Information(Stories):
 					print()
 
 		print()
-		print(self.large_bar)
-
-	def Move_Chapter_Covers(self):
-		extensions = [
-			"png",
-			"jpg",
-			"jpeg"
-		]
-
-		chapter_number = 1
-		for chapter in self.story["Information"]["Chapters"]["Titles"][self.user_language]:
-			chapter = {
-				"Number": chapter_number,
-				"Number with zeroes": str(self.Text.Add_Leading_Zeroes(chapter_number)),
-				"Title": chapter,
-				"Folders": {},
-				"Files": {}
-			}
-
-			chapter["Folders"]["Chapters"] = {
-				"root": self.story["Folders"]["Covers"]["Websites"]["Chapters"]["root"] + chapter["Number with zeroes"] + "/"
-			}
-
-			folder_name = self.Cover_Folder_Name(chapter_number)
-
-			print()
-			print(self.large_bar)
-			print()
-			print(str(chapter_number) + ":")
-			print()
-
-			for language in self.languages["small"]:
-				full_language = self.languages["full"][language]
-
-				chapter["Folders"][language] = {
-					"root": self.story["Folders"]["Covers"]["Websites"][language][folder_name]["root"]
-				}
-
-				for extension in extensions:
-					old_file = chapter["Folders"][language]["root"] + chapter["Number with zeroes"] + "." + extension
-
-					if self.File.Exist(old_file) == True:
-						new_file = chapter["Folders"]["Chapters"]["root"] + full_language + "." + extension
-
-						self.File.Move(old_file, new_file)
-
-						chapter["Files"][language] = new_file
-
-			self.JSON.Show(chapter)
-
-			chapter_number += 1
+		print(self.separators["5"])

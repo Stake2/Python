@@ -11,10 +11,10 @@ class Copy_Chapter_Titles(Stories):
 			"Select language": False
 		}
 
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		# Ask the user if it wants to select a language
-		type_text = self.JSON.Language.language_texts["select_a_language"]
+		type_text = self.JSON.Language.language_texts["select_a_language, type: question"]
 
 		self.states["Select language"] = self.Input.Yes_Or_No(type_text)
 
@@ -41,7 +41,7 @@ class Copy_Chapter_Titles(Stories):
 
 			# Show the translated language
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 			print()
 			print(translated_language + ":")
 			print()
@@ -65,7 +65,7 @@ class Copy_Chapter_Titles(Stories):
 			# Show the chapter number
 			print("---")
 			print()
-			print(self.JSON.Language.language_texts["number, title()"] + ":")
+			print(self.language_texts["chapter_number"] + ":")
 			print("[" + str(i) + "/" + str(len(chapter_titles["en"])) + "]")
 			print()
 
@@ -78,7 +78,7 @@ class Copy_Chapter_Titles(Stories):
 				edited_title = str(i) + " - " + title
 
 				# Show the chapter title
-				print(self.JSON.Language.language_texts["title, title()"] + ":")
+				print(self.JSON.Language.texts["title_in_language"][language][self.user_language] + ":")
 				print("[" + edited_title + "]")
 
 				# Copy the chapter title with the chapter number
@@ -95,9 +95,9 @@ class Copy_Chapter_Titles(Stories):
 			i += 1
 
 		# Show the finish text with the story title
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["you_finished_copying_the_chapter_titles_of_this_story"] + ":")
 		print(self.story["Titles"][self.user_language])
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

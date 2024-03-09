@@ -448,20 +448,7 @@ class Friends(object):
 		# ---------- #
 
 		# List the friend folders, populating the friends list
-		self.friends["List"] = self.Folder.Contents(self.folders["Friends"]["Text"]["root"])["folder"]["names"]
-
-		# Remove the non-friend folders from the above list
-		to_remove = [
-			"Arquivo",
-			"Database"
-		]
-
-		# Iterate through the "items to remove" list
-		for item in to_remove:
-			# If the item is inside the Friends list
-			if item in self.friends["List"]:
-				# Remove it
-				self.friends["List"].remove(item)
+		self.friends["List"] = self.JSON.To_Python(self.folders["Friends"]["Text"]["Friends"])["List"]
 
 		# Write the friends list to the "Friends list.txt" file
 		text_to_write = self.Text.From_List(self.friends["List"])

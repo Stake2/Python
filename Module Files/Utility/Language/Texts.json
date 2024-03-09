@@ -136,9 +136,9 @@
 		"en": "Select an item from the list",
 		"pt": "Selecionar um item da lista"
 	},
-	"select_a_language": {
+	"select_a_language, type: question": {
 		"en": "Select a language",
-		"pt": "Selecione um idioma"
+		"pt": "Selecionar um idioma"
 	},
 	"yes_or_no": {
 		"en": "yes or no",
