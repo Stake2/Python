@@ -15,6 +15,7 @@ class Main():
 		self.Define_Basic_Variables()
 
 		methods = [
+			"Download_Minecraft_Assets",
 			"Notepad_Theme",
 			"XML",
 			"Remove_Dots_From_String",	
@@ -35,7 +36,14 @@ class Main():
 			"Play_Sound"
 		]
 
-		method_name = self.Input.Select(methods)["option"]
+		method_names = []
+
+		for method in methods:
+			method = method.replace("_", " ")
+
+			method_names.append(method)
+
+		method_name = self.Input.Select(methods, language_options = method_names)["option"]
 		method = getattr(self, method_name)
 		method()
 
@@ -101,6 +109,209 @@ class Main():
 
 		# Get the current date from the Date module
 		self.date = self.Date.date
+
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
+
+	def Download_Minecraft_Assets(self):
+		# Import the "requests" module
+		import requests
+
+		# Define the "Download" dictionary
+		self.download = {
+			"Folders": {
+				"root": self.folders["User"]["AppData"]["Roaming"]["root"] + ".minecraft/",
+				"Downloads": {
+					"root": self.folders["User"]["Downloads"]["root"] + "Minecraft/"
+				}
+			},
+			"Versions": [],
+			"Version": "",
+			"Link": "https://resources.download.minecraft.net/"
+		}
+
+		# Define the folders
+		folders = [
+			"Assets"
+		]
+
+		for folder in folders:
+			self.download["Folders"][folder] = {
+				"root": self.download["Folders"]["root"] + folder + "/"
+			}
+
+			self.Folder.Create(self.download["Folders"][folder]["root"])
+
+		# Define the sub-folders
+		folders = [
+			"Indexes",
+			"Objects"
+		]
+
+		for folder in folders:
+			self.download["Folders"]["Assets"][folder] = {
+				"root": self.download["Folders"]["Assets"]["root"] + folder + "/"
+			}
+
+			self.Folder.Create(self.download["Folders"]["Assets"][folder]["root"])
+
+		# Get the Minecraft versions
+		self.download["Versions"] = self.Folder.Contents(self.download["Folders"]["Assets"]["Indexes"]["root"])["file"]["names"]
+
+		self.download["Versions (options)"] = self.download["Versions"]
+
+		i = 0
+		for version in self.download["Versions"]:
+			if "." not in version:
+				version = version[0] + "." + version[1]
+
+				if len(version) == 3:
+					version += "0"
+
+				self.download["Versions (options)"][i] = version
+
+			i += 1
+
+		# Select the Minecraft version
+		self.download["Version"] = self.Input.Select(self.download["Versions"], language_options = self.download["Versions (options)"])["option"]
+
+		# Create the "Minecraft" folder
+		self.Folder.Create(self.download["Folders"]["Downloads"]["root"])
+
+		# Update the "Minecraft" folder
+		self.download["Folders"]["Downloads"]["root"] += self.download["Version"] + "/"
+		self.Folder.Create(self.download["Folders"]["Downloads"]["root"])
+
+		# Define the other folders
+		for folder in ["Extracted"]:
+			self.download["Folders"]["Downloads"][folder] = {
+				"root": self.download["Folders"]["Downloads"]["root"] + folder + "/"
+			}
+
+			#self.Folder.Create(self.download["Folders"]["Downloads"][folder]["root"])
+
+		# Define the indexes file name
+		file_name = self.download["Version"]
+
+		if "." in file_name:
+			split = self.download["Version"].split(".")
+
+			file_name = split[0] + "." + split[1]
+
+		# Get the indexes file
+		self.download["Indexes file"] = self.download["Folders"]["Assets"]["Indexes"]["root"] + file_name + ".json"
+
+		# Read the indexes file and get the indexes
+		self.download["Indexes"] = self.JSON.To_Python(self.download["Indexes file"])["objects"]
+
+		# Iterate through the indexes in the Indexes dictionary
+		i = 1
+		length = len(self.download["Indexes"].keys())
+
+		for key, index in self.download["Indexes"].items():
+			# Get the hash and mini-hash
+			hash = index["hash"]
+
+			mini_hash = hash[0] + hash[1]
+
+			# Create the mini-hash folder
+			assets_folder = self.download["Folders"]["Assets"]["Objects"]["root"] + mini_hash + "/"
+			self.Folder.Create(assets_folder)
+
+			# Create the "Extracted" folder
+			extracted_folder = self.download["Folders"]["Downloads"]["Extracted"]["root"]
+
+			# Get the sub-folders
+			sub_folders = key.split("/")
+			sub_folders.pop(-1)
+
+			# Create the sub-folders
+			for folder in sub_folders:
+				extracted_folder += folder + "/"
+				#self.Folder.Create(extracted_folder)
+
+			# Define the extracted file
+			extracted_file = extracted_folder + key.split("/")[-1]
+
+			# Define the link to download the object file
+			link = self.download["Link"] + mini_hash + "/" + hash
+
+			# Define the file path
+			file = assets_folder + hash
+
+			if self.File.Exist(file) == False:
+				# Show a five dash separator
+				print()
+				print(self.separators["5"])
+				print()
+
+				# Show the current asset number and total number
+				print(self.JSON.Language.language_texts["number, title()"] + ":")
+				print("[" + str(i) + "/" + str(length) + "]")
+				print()
+
+				# Show the asset key
+				print(self.JSON.Language.language_texts["key, title()"] + ":")
+				print("[" + key + "]")
+				print()
+
+				# Show the folder
+				print(self.JSON.Language.language_texts["folder, title()"] + ":")
+				print("[" + assets_folder + "]")
+				print()
+
+				# Show the link
+				print(self.JSON.Language.language_texts["link, title()"] + ":")
+				print("[" + link + "]")
+				print()
+
+				# Show the asset object file
+				print(self.JSON.Language.language_texts["file, title()"] + ":")
+				print("[" + file + "]")
+				print()
+
+				# Show the extracted and converted file
+				print(self.JSON.Language.language_texts["file, title()"] + " (2)" + ":")
+				print("[" + extracted_file + "]")
+
+			if self.File.Exist(file) == False:
+				# Download the object file
+				response = requests.get(link)
+
+				# Define the content variable
+				content = response.content
+
+				# Save the files
+				open(file, "wb").write(content)
+
+				#if self.File.Exist(extracted_file) == False:
+				#	open(extracted_file, "wb").write(content)
+
+				# Get the status code
+				code = response.status_code
+
+				# Show the code
+				print()
+				print(self.JSON.Language.language_texts["code, title()"] + ":")
+				print("[" + str(code) + "]")
+
+				# If the code is not "200"
+				if code != 200:
+					input()
+
+			i += 1
 
 	def Notepad_Theme(self):
 		self.File.Close("notepad++")

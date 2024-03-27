@@ -170,7 +170,13 @@ class Stories(object):
 		self.Folder.Create(self.stories["Folders"]["Database"]["Post templates"]["root"])
 
 		# Database files
-		for file_name in ["Author", "Stories list", "Stories.json"]:
+		names = [
+			"Author",
+			"Stories list",
+			"Stories.json"
+		]
+
+		for file_name in names:
 			key = file_name.split(".")[0]
 
 			self.stories["Folders"]["Database"][key] = self.stories["Folders"]["Database"]["root"] + file_name
@@ -185,7 +191,12 @@ class Stories(object):
 		# Define the root folder for faster typing
 		folder = self.stories["Folders"]["Database"]["Post templates"]
 
-		for folder_name in ["Wattpad", "Twitter, Facebook"]:
+		names = [
+			"Wattpad",
+			"Twitter, Facebook"
+		]
+
+		for folder_name in names:
 			folder[folder_name] = {
 				"root": folder["root"] + folder_name + "/"
 			}
@@ -193,7 +204,7 @@ class Stories(object):
 			self.Folder.Create(folder[folder_name]["root"])
 
 		# Create the language files
-		for folder_name in ["Wattpad", "Twitter, Facebook"]:
+		for folder_name in names:
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Get the full language

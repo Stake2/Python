@@ -1725,6 +1725,10 @@
 		"en": "Key",
 		"pt": "Chave"
 	},
+	"response, title()": {
+		"en": "Response",
+		"pt": "Resposta"
+	},
 	"drawing, title()": {
 		"en": "Drawing",
 		"pt": "Desenho"

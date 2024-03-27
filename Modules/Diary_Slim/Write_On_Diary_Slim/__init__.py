@@ -8,6 +8,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 	def __init__(self, option_info = None):
 		super().__init__()
 
+		# Define the option info variable using the parameter with the same name
 		self.option_info = option_info
 
 		self.Configure_Slim_Texts()
@@ -16,18 +17,20 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.Write()
 
 		# Open the current Diary Slim file
-		self.System.Open(self.current_year["File"])
+		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"])
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 	def Configure_Slim_Texts(self):
 		from copy import deepcopy
 
 		self.date = self.Date.Now()
 
-		# Get today task done text using weekday
-		self.today_task_done_text = self.File.Contents(self.folders["Diary Slim"]["Data"]["things_done_texts"])["lines"][self.date["Units"]["Week day"]]
+		# Get the "Today task done" text using the week day number
+		file = self.diary_slim["Folders"]["Data"]["Things done texts"]
+
+		self.today_task_done_text = self.File.Contents(file)["lines"][self.date["Units"]["Week day"]]
 
 		default_dictionary = {
 			"Key": "",
@@ -36,9 +39,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Texts": {}
 		}
 
-		self.slim_texts["Dictionary"]["Today task"] = deepcopy(default_dictionary)
-		self.slim_texts["Dictionary"]["Today task"]["Key"] = "Today task"
-		self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = ""
+		self.diary_slim["Texts"]["Dictionary"]["Today task"] = deepcopy(default_dictionary)
+		self.diary_slim["Texts"]["Dictionary"]["Today task"]["Key"] = "Today task"
+		self.diary_slim["Texts"]["Dictionary"]["Today task"]["Texts"][self.user_language] = ""
 
 		for language in self.languages["small"]:
 			# Iterate through the state names
@@ -63,9 +66,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 				if (
 					state_texts["current"] != [] and
 					state_texts["current"][0] == state_texts["second"][self.user_language] and
-					state_name in self.slim_texts["Dictionary"]
+					state_name in self.diary_slim["Texts"]["Dictionary"]
 				):
-					self.slim_texts["Dictionary"].pop(state_name)
+					self.diary_slim["Texts"]["Dictionary"].pop(state_name)
 
 				# If the current order text is empty, or the current order is not equal to the second order text, add state name to slim texts
 				if (
@@ -73,18 +76,18 @@ class Write_On_Diary_Slim(Diary_Slim):
 					state_texts["current"] != [] and
 					state_texts["current"][0] != state_texts["second"][self.user_language]
 				):
-					if state_name not in self.slim_texts["Dictionary"]:
-						self.slim_texts["Dictionary"][state_name] = deepcopy(default_dictionary)
+					if state_name not in self.diary_slim["Texts"]["Dictionary"]:
+						self.diary_slim["Texts"]["Dictionary"][state_name] = deepcopy(default_dictionary)
 
-						self.slim_texts["Dictionary"][state_name]["Key"] = state_name
+						self.diary_slim["Texts"]["Dictionary"][state_name]["Key"] = state_name
 
-					self.slim_texts["Dictionary"][state_name]["Texts"][language] = state["names"][language] + " (" + text + " " + self.JSON.Language.texts["state"][language] + ")"
+					self.diary_slim["Texts"]["Dictionary"][state_name]["Texts"][language] = state["names"][language] + " (" + text + " " + self.JSON.Language.texts["state"][language] + ")"
 
 			# Add today done task to slim texts
 			if self.today_task_done_text != "":
 				if ", " not in self.today_task_done_text:
-					self.slim_texts["Dictionary"]["Today task"]["Key"] = "Today task"
-					self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text
+					self.diary_slim["Texts"]["Dictionary"]["Today task"]["Key"] = "Today task"
+					self.diary_slim["Texts"]["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text
 
 				if ", " in self.today_task_done_text:
 					items = [
@@ -96,10 +99,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 					for item in items:
 						key = item + " today task"
 
-						self.slim_texts["Dictionary"][key] = deepcopy(default_dictionary)
+						self.diary_slim["Texts"]["Dictionary"][key] = deepcopy(default_dictionary)
 
-						self.slim_texts["Dictionary"][key]["Key"] = key
-						self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text.split(", ")[i]
+						self.diary_slim["Texts"]["Dictionary"][key]["Key"] = key
+						self.diary_slim["Texts"]["Dictionary"]["Today task"]["Texts"][self.user_language] = self.today_task_done_text.split(", ")[i]
 
 						i += 1
 
@@ -123,13 +126,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 			show_text = self.language_texts["texts_to_write"]
 			select_text = self.language_texts["select_a_text_to_write"]
 
-			options = list(self.slim_texts["Dictionary"].keys())
+			options = list(self.diary_slim["Texts"]["Dictionary"].keys())
 			language_options = []
 
 			options_copy = deepcopy(options)
 
 			for key in options_copy:
-				dictionary = self.slim_texts["Dictionary"][key]
+				dictionary = self.diary_slim["Texts"]["Dictionary"][key]
 
 				text = dictionary["Texts"][self.user_language]
 
@@ -148,7 +151,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			# Change the index of Slim texts if they have a custom index
 			for key in options_copy:
-				dictionary = self.slim_texts["Dictionary"][key]
+				dictionary = self.diary_slim["Texts"]["Dictionary"][key]
 
 				text = dictionary["Texts"][self.user_language]
 
@@ -191,7 +194,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 					language_options.append(text)
 
 			# Add the "today task" text to the end of the list
-			text = self.slim_texts["Dictionary"]["Today task"]["Texts"][self.user_language]
+			text = self.diary_slim["Texts"]["Dictionary"]["Today task"]["Texts"][self.user_language]
 
 			if text in language_options:
 				language_options.remove(text)
@@ -211,7 +214,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		if self.option_info == None:
 			self.option_info = option_info
 
-		self.text = self.slim_texts["Dictionary"][self.option_info["option"]]
+		self.text = self.diary_slim["Texts"]["Dictionary"][self.option_info["option"]]
 
 	def Define_Text_Variables(self):
 		for language in self.languages["small"]:
@@ -234,7 +237,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Ask for the text data if it has a type text
 			if "Type text" in self.text:
 				print()
-				print(self.large_bar)
+				print(self.separators["5"])
 				print()
 				print(self.text["Texts"][self.user_language] + ":")
 

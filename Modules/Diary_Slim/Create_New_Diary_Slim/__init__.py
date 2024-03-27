@@ -8,39 +8,54 @@ class Create_New_Diary_Slim(Diary_Slim):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		# Define the dictionary as the dictionary parameter
 		self.dictionary = dictionary
 
-		# Create the "Texts" key
+		# Create the "Texts" key in the dictionary
 		self.dictionary["Texts"] = {}
 
+		# If the "Date" dictionary is not present inside the root dictionary
 		if "Date" not in self.dictionary:
+			# Get a new "Date" dictionary from now
 			self.dictionary["Date"] = self.Date.Now()
 
+		# Get the "curreny Diary Slim" dictionary
 		self.current_diary_slim = self.Current_Diary_Slim(date = self.dictionary["Date"], current_diary_slim = False)
 
+		# If the "File" key is not inside the dictionary
 		if "File" not in self.dictionary:
+			# Get the new Diary Slim file from the "current Diary Slim" dictionary
 			self.dictionary["File"] = self.current_diary_slim["File"]
 
+		# If the "Check" key is not inside the dictionary, show a space separator
 		if "Check" not in self.dictionary:
 			print()
 
+		# Define the first text to show as the "Today is" text
 		text = self.JSON.Language.language_texts["today_is"]
 
+		# If the "Check" key is inside
 		if "Check" in self.dictionary:
+			# Define the first text to show as the "Skipped Diary Slim day" text
 			text = self.language_texts["skipped_diary_slim_day"]
 
+		# Define the "Date" and "Units" variables for easier typing
 		date = self.dictionary["Date"]
-
 		units = date["Timezone"]["DateTime"]["Units"]
 
+		# Define the "Today is text" key with the day and date format text
 		self.dictionary["Today is text"] = self.Date.language_texts["day, title()"].lower() + " " + date["Formats"]["[Day] [Month name] [Year]"][self.user_language]
 
+		# Define the root "Today is text" that is going to be shown to the user
 		self.today_is_text = text + ":" + "\n" + \
 		"\t" + date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + ", " + \
 		self.dictionary["Today is text"] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
 
-		print(self.large_bar)
+		# Show a five dash space separator
+		print(self.separators["5"])
 		print()
+
+		# Show the today is text
 		print(self.today_is_text)
 		print()
 
@@ -71,7 +86,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 		if "Check" not in self.dictionary:
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		if (
 			"Checked" in self.dictionary and
@@ -124,7 +139,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		print()
 
 		# Format the header template
-		self.dictionary["Header"] = self.diary_slim_header.format(self.dictionary["Sleeping time"], self.dictionary["Waking time"])
+		self.dictionary["Header"] = self.diary_slim["Header"].format(self.dictionary["Sleeping time"], self.dictionary["Waking time"])
 
 		if "Check" in self.dictionary:
 			self.dictionary["Header"] = self.dictionary["Header"].splitlines()[0]
@@ -199,7 +214,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		self.dictionary["Yesterday"] = self.Current_Diary_Slim(date = yesterday_date, current_diary_slim = False)["Day"]
 
 		# Define the Diary Slims list for a more organized code
-		diary_slims_list = list(self.current_month["Month"]["Diary Slims"].keys())
+		diary_slims_list = list(self.current_month["Dictionary"]["Diary Slims"].keys())
 
 		# If yesterday is not inside the Diary Slims list
 		# Then the user skipped a Diary Slim
@@ -277,12 +292,12 @@ class Create_New_Diary_Slim(Diary_Slim):
 					self.object = self.Create_New_Diary_Slim(dictionary)
 
 					# Update the local year and month variables here with the new variables from the object
-					self.current_year = self.object.current_year
+					self.diary_slim["Current year"] = self.object.current_year
 					self.current_month = self.object.current_month
 
 					print()
 
-				print(self.large_bar)
+				print(self.separators["5"])
 
 			self.dictionary["Checked"] = True
 
@@ -379,33 +394,33 @@ class Create_New_Diary_Slim(Diary_Slim):
 			key = self.current_diary_slim["Day"]
 
 			# Add to the "Diary Slims" dictionary inside the Month dictionary
-			self.current_month["Month"]["Diary Slims"][key] = day
+			self.current_month["Dictionary"]["Diary Slims"][key] = day
 
 			# Update the month "Diary Slims" number inside the Month dictionary
-			self.current_month["Month"]["Numbers"]["Diary Slims"] = len(list(self.current_month["Month"]["Diary Slims"].keys()))
+			self.current_month["Dictionary"]["Numbers"]["Diary Slims"] = len(list(self.current_month["Dictionary"]["Diary Slims"].keys()))
 
 			# Edit the "Month.json" file with the new Month dictionary
-			self.JSON.Edit(self.current_month["File"], self.current_month["Month"])
+			self.JSON.Edit(self.current_month["File"], self.current_month["Dictionary"])
 
 			# ----- #
 
 			# Edit the Year dictionary
 
 			# Update the Month dictionary inside the Year dictionary
-			self.current_year["Year"]["Months"][self.current_month["Name"]] = self.current_month["Month"]
+			self.diary_slim["Current year"]["Year"]["Months"][self.current_month["Name"]] = self.current_month["Dictionary"]
 
 			# Update the "Months" number inside the Year dictionary
-			self.current_year["Year"]["Numbers"]["Months"] = len(list(self.current_year["Year"]["Months"].keys()))
+			self.diary_slim["Current year"]["Year"]["Numbers"]["Months"] = len(list(self.diary_slim["Current year"]["Year"]["Months"].keys()))
 
 			# Update the Year "Diary Slims" number inside the Year dictionary
-			self.current_year["Year"]["Numbers"]["Diary Slims"] = 0
+			self.diary_slim["Current year"]["Year"]["Numbers"]["Diary Slims"] = 0
 
 			# Iterate through the Months list to add to the Year "Diary Slims" number
-			for month in self.current_year["Year"]["Months"].values():
-				self.current_year["Year"]["Numbers"]["Diary Slims"] += month["Numbers"]["Diary Slims"]
+			for month in self.diary_slim["Current year"]["Year"]["Months"].values():
+				self.diary_slim["Current year"]["Year"]["Numbers"]["Diary Slims"] += month["Numbers"]["Diary Slims"]
 
 			# Edit the "Year.json" file with the new Year dictionary
-			self.JSON.Edit(self.folders["Diary Slim"]["current_year"]["year"], self.current_year["Year"])
+			self.JSON.Edit(self.diary_slim["Current year"]["Folders"]["Year"], self.diary_slim["Current year"]["Year"])
 
 		# ----- #
 
@@ -414,7 +429,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			if "Check" in self.dictionary:
 				print()
 
-			print(self.large_bar)
+			print(self.separators["5"])
 
 			if "Check" not in self.dictionary:
 				print()

@@ -25,9 +25,9 @@ class Convert_History(Diary_Slim):
 				"Year": deepcopy(self.templates["Year"])
 			}
 
-			self.year["Folders"] = self.folders["Diary Slim"]["Years"][self.year["Number"]]
+			self.year["Folders"] = self.diary_slim["Folders"]["Years"][self.year["Number"]]
 			self.year["Folders"]["old"] = {
-				"root": self.folders["Diary Slim"]["root"] + self.year["Number"] + "/"
+				"root": self.diary_slim["Folders"]["root"] + self.year["Number"] + "/"
 			}
 
 			print()
@@ -166,4 +166,4 @@ class Convert_History(Diary_Slim):
 				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
 		# Update the "History.json" file with the new History dictionary
-		self.JSON.Edit(self.folders["Diary Slim"]["Years"]["History"], self.history)
+		self.JSON.Edit(self.diary_slim["Folders"]["Years"]["History"], self.history)

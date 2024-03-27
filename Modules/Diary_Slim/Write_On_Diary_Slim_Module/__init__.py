@@ -37,12 +37,14 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		if self.check_file_length == True:
 			text_to_append = "\n\n" + text_to_append
 
-		# Get the current year dictionary
-		current_year = self.Current_Diary_Slim(date = self.custom_date, current_diary_slim = self.current_diary_slim)
+		# Get the current Diary Slim dictionary
+		current_diary_slim = self.Current_Diary_Slim(date = self.custom_date, current_diary_slim = self.current_diary_slim)
 
-		self.File.Create(current_year["File"])
+		# Create the file
+		self.File.Create(current_diary_slim["File"])
 
-		self.File.Edit(current_year["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
+		# Edit the file with the new text
+		self.File.Edit(current_diary_slim["File"], text_to_append, "a", next_line = False, verbose = self.verbose)
 
 		if self.switches["verbose"] == True:
 			print()

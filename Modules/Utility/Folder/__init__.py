@@ -193,12 +193,20 @@ class Folder():
 			"root": self.Sanitize(self.folders["root"]["users"] + pathlib.Path.home().name + "/")
 		}
 
+		self.folders["User"] = {
+			"root": self.Sanitize(self.folders["root"]["users"] + pathlib.Path.home().name + "/")
+		}
+
 		# "User" sub folders
 		for folder in ["AppData", "Downloads", "Pictures", "Videos"]:
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"][key] = {
-				"root": os.path.join(self.folders["user"]["root"], folder + "/")
+				"root": self.folders["user"]["root"] + folder + "/"
+			}
+
+			self.folders["User"][folder] = {
+				"root": self.folders["User"]["root"] + folder + "/"
 			}
 
 		# "Downloads" folders
@@ -210,11 +218,17 @@ class Folder():
 		for key, folder in folders.items():
 			key = key.lower().replace(" ", "_")
 
+			folder_title = folder
+
 			if folder == "":
 				folder = self.Capitalize(key)
 
 			self.folders["user"]["downloads"][key] = {
-				"root": os.path.join(self.folders["user"]["downloads"]["root"], folder + "/")
+				"root": self.folders["user"]["downloads"]["root"] + folder + "/"
+			}
+
+			self.folders["User"]["Downloads"][folder_title] = {
+				"root": self.folders["user"]["downloads"]["root"] + folder + "/"
 			}
 
 		# "AppData" folders
@@ -222,7 +236,11 @@ class Folder():
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"]["appdata"][key] = {
-				"root": os.path.join(self.folders["user"]["appdata"]["root"], folder + "/")
+				"root": self.folders["user"]["appdata"]["root"] + folder + "/"
+			}
+
+			self.folders["User"]["AppData"][folder] = {
+				"root": self.folders["user"]["appdata"]["root"] + folder + "/"
 			}
 
 		self.folders["appdata"] = self.folders["user"]["appdata"]
@@ -588,6 +606,7 @@ class Folder():
 		# Mega "Image" folders
 		folders = {
 			"Christmas": self.JSON.Language.language_texts["christmas, title()"],
+			"Diary": self.JSON.Language.language_texts["diary, title()"],
 			"Friends": self.JSON.Language.language_texts["friends, title()"],
 			"Social Networks": self.JSON.Language.language_texts["social_networks"],
 			"Years": self.Date.language_texts["years, title()"]

@@ -159,15 +159,15 @@ class Open_Social_Network(Social_Networks):
 			total_number = self.dictionary["Social Networks"]["Numbers"]["Total"]
 
 			# Make the number text
-			text = str(current_number) + "/" + str(total_number)
+			number_text = str(current_number) + "/" + str(total_number)
 
 			if self.social_network["Name"] != self.dictionary["Social Networks"]["List"][0]:
 				print("-")
 				print()
 
 			# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-			print(self.JSON.Language.language_texts["social_networks"] + ":")
-			print("\t" + text)
+			print(self.JSON.Language.language_texts["number, title()"] + ":")
+			print("\t" + number_text)
 			print()
 
 			# Show the "Social Network" text and the Social Network name
