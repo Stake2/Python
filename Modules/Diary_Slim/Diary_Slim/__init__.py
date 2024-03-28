@@ -18,11 +18,21 @@ class Diary_Slim():
 		self.Define_Lists_And_Dictionaries()
 
 		# Class methods
+
+		# Define the template dictionaries
 		self.Define_Templates()
+
+		# Define the History of Diary Slim
 		self.Define_History()
+
+		# Define the story information and dictionary
 		self.Define_Story_Information()
+
+		# Define the current year dictionary
 		self.Define_Current_Year()
-		self.Define_Slim_Texts()
+
+		# Define the Diary Slim texts
+		self.Define_Diary_Slim_Texts()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -172,19 +182,6 @@ class Diary_Slim():
 			# Create it
 			self.Folder.Create(self.diary_slim["Folders"]["Data"][name]["root"])
 
-		# Define the "Data" files
-		names = [
-			"Things to do",
-			"Things done texts"
-		]
-
-		for name in names:
-			# Define the file
-			self.diary_slim["Folders"]["Data"][name] = self.diary_slim["Folders"]["Data"]["root"] + name + ".txt"
-
-			# Create it
-			self.File.Create(self.diary_slim["Folders"]["Data"][name])
-
 		# Define the "Header" files
 		for language in self.languages["small"]:
 			# Get the full language
@@ -196,7 +193,7 @@ class Diary_Slim():
 			# Create it
 			self.File.Create(self.diary_slim["Folders"]["Data"]["Header"][language])
 
-		# Define the "Slim texts" files
+		# Define the Diary Slim "Texts" files
 		names = [
 			"Texts"
 		]
@@ -226,98 +223,25 @@ class Diary_Slim():
 
 		self.diary_slim["Header"] = self.File.Contents(file)["string"]
 
-		# Dictionaries
-		self.states = {
-			"order_names": [
-				"first",
-				"second",
-				"current"
-			],
-			"names": [],
-			"folders": self.Folder.Contents(self.diary_slim["Folders"]["Data"]["State texts"]["root"])
-		}
-
-		i = 0
-		for state in self.states["folders"]["folder"]["names"]:
-			# Read state names
-			names = self.JSON.To_Python(self.states["folders"]["folder"]["list"][i] + "Names.json")
-			state = names[self.user_language]
-
-			# Add state name to names list
-			self.states["names"].append(state)
-
-			# Create state dictionary and sub-keys
-			self.states[state] = {}
-			self.states[state]["files"] = {}
-			self.states[state]["texts"] = {}
-
-			# Add state names file and dictionary
-			self.states[state]["files"]["names"] = self.states["folders"]["folder"]["list"][i] + "Names.json"
-			self.states[state]["names"] = names
-
-			# List orders of state, add file and list or dictionary to order dictionary
-			for order_name in self.states["order_names"]:
-				self.states[state]["files"][order_name] = self.states["folders"]["folder"]["list"][i] + order_name.capitalize() + "."
-
-				if order_name == "current":
-					self.states[state]["files"][order_name] += "txt"
-					function = self.File.Contents
-
-				if order_name != "current":
-					self.states[state]["files"][order_name] += "json"
-					function = self.JSON.To_Python
-
-				self.states[state]["texts"][order_name] = function(self.states[state]["files"][order_name])
-
-				if order_name == "current":
-					self.states[state]["texts"][order_name] = self.states[state]["texts"][order_name]["lines"]
-
-			i += 1
-
 	def Define_Templates(self):
 		self.template = {
 			"Numbers": {
 				"Months": 12,
-				"Days": 152
+				"Days": self.date["Units"]["Year days"]
 			},
 			"Months": {
-				"06 - Junho": {
+				self.date["Texts"]["Month name with number"][self.user_language]: {
 					"Numbers": {
-						"Year": 2023,
-						"Month": 6,
-						"Days": 30,
+						"Year": self.date["Units"]["Year"],
+						"Month": self.date["Units"]["Month"],
+						"Days": self.date["Units"]["Month days"],
 						"Diary Slims": 0
 					},
-					"Names": {
-						"pt": "Junho",
-						"en": "June"
-					},
+					"Names": self.date["Texts"]["Month name"],
 					"Formats": {
-						"Diary Slim": "06 - Junho"
+						"Diary Slim": self.date["Texts"]["Month name with number"][self.user_language]
 					},
-					"Diary Slims": {
-						"02 Sexta-Feira, 02-06-2023": {
-							"Day": 2,
-							"Names": {
-								"pt": "Sexta-Feira",
-								"en": "Friday"
-							},
-							"Formats": {
-								"DD-MM-YYYY": "02-06-2023"
-							},
-							"Creation time": {
-								"HH:MM": "08:27",
-								"Hours": 8,
-								"Minutes": 27
-							},
-							"Data": {
-								"Sleep times": {
-									"Slept": "23:55",
-									"Woke up": "08:25"
-								}
-							}
-						}
-					}
+					"Diary Slims": {}
 				}
 			}
 		}
@@ -668,13 +592,14 @@ class Diary_Slim():
 		# Return the dictionary
 		return dictionary
 
-	def Define_Slim_Texts(self):
-		# Define the default Slim texts dictionary
+	def Define_Diary_Slim_Texts(self):
+		# Define the default Diary Slim texts dictionary
 		self.diary_slim["Texts"] = {
 			"Numbers": {
 				"Total": 0
 			},
 			"List": [],
+			"Options": {},
 			"Dictionary": {}
 		}
 
@@ -684,7 +609,20 @@ class Diary_Slim():
 		# If the "Texts.json" file is not empty
 		if self.File.Contents(file)["lines"] != []:
 			# Get the filled "Texts" dictionary from its file
-			self.diary_slim["Texts"] = self.JSON.To_Python(file)
+			dictionary = self.JSON.To_Python(file)
+
+			# If the "Options" key is not inside the local file dictionary
+			if "Options" not in dictionary:
+				# Add the "Options" dictionary to the local dictionary
+				# After the "List" key
+				key_value = {
+					"Options": self.diary_slim["Texts"]["Options"]
+				}
+
+				dictionary = self.JSON.Add_Key_After_Key(dictionary, key_value, after_key = "List")
+
+			# Define the root "Texts" dictionary as the local file dictionary
+			self.diary_slim["Texts"] = dictionary
 
 		# Get the sub-folders of the "Texts" folder
 		contents = self.Folder.Contents(self.diary_slim["Folders"]["Data"]["Texts"]["root"])
@@ -713,6 +651,10 @@ class Diary_Slim():
 			# Define the text "Data.json" file
 			dictionary["Files"]["Data"] = dictionary["Folders"]["root"] + "Data.json"
 
+			# Read the "Data.json" file if it exists
+			if self.File.Exist(dictionary["Files"]["Data"]) == True:
+				dictionary.update(self.JSON.To_Python(dictionary["Files"]["Data"]))
+
 			# Define the language text files
 			for language in self.languages["small"]:
 				# Get the full language
@@ -725,33 +667,71 @@ class Diary_Slim():
 				# Read the language text file and add its contents to the "Texts" dictionary
 				dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
 
-			# Read the "Data.json" file if it exists
-			if self.File.Exist(dictionary["Files"]["Data"]) == True:
-				dictionary.update(self.JSON.To_Python(dictionary["Files"]["Data"]))
+				# Add "..." (three dots) if the "Item" key is present inside the "Data" dictionary
+				if "Item" in dictionary:
+					dictionary["Texts"][language] += "..."
+
+			# Move the "Data" file key to the end
+			file = dictionary["Files"]["Data"]
+
+			dictionary["Files"].pop("Data")
+
+			dictionary["Files"]["Data"] = file
+
+			# If the "Item" key is inside the text dictionary
+			if "Item" in dictionary:
+				# Define the "Descriptions" dictionary if it is not already present
+				if "Descriptions" not in dictionary:
+					dictionary["Descriptions"] = {}
+
+				# If the singular name is not present inside the "Descriptions" dictionary
+				if "Singular" not in dictionary["Descriptions"]:
+					# Define it as the item
+					dictionary["Descriptions"]["Singular"] = dictionary["Item"]
+
+				# If the plural name is not present inside the "Descriptions" dictionary
+				if "Plural" not in dictionary["Descriptions"]:
+					# Define it as the singular name plus an "s"
+					dictionary["Descriptions"]["Plural"] = dictionary["Descriptions"]["Singular"] + "s"
+
+				# Define the explain text if it is not present
+				if "Explanation text" not in dictionary:
+					dictionary["Explanation text"] = "say_what_you_did_on_the_{}"
+
+			# Define the "Quotes" key if it is not already present
+			if "Quotes" not in dictionary:
+				dictionary["Quotes"] = True
 
 			# Add the Diary Slim "Text" dictionary to the root "Texts" dictionary
 			self.diary_slim["Texts"]["Dictionary"][text] = dictionary
 
+		# Add the "Keys" key inside the "Options" dictionary
+		self.diary_slim["Texts"]["Options"]["Keys"] = []
+
+		# Create empty language lists inside the "Options" dictionary
+		for language in self.languages["small"]:
+			self.diary_slim["Texts"]["Options"][language] = []
+
+		# Iterate through the keys inside the Diary Slim Texts dictionary
+		for key, dictionary in self.diary_slim["Texts"]["Dictionary"].items():
+			# Add the key
+			self.diary_slim["Texts"]["Options"]["Keys"].append(key)
+
+			# Add the English text
+			english_text = dictionary["Texts"]["en"]
+
+			self.diary_slim["Texts"]["Options"]["en"].append(english_text)
+
+			# Add the user language text
+			language_text = dictionary["Texts"][self.user_language]
+
+			self.diary_slim["Texts"]["Options"][self.user_language].append(language_text)
+
+		# Make a copy of the "Texts" dictionary
+		texts_copy = deepcopy(self.diary_slim["Texts"])
+
+		# Remove the "Options" key
+		texts_copy.pop("Options")
+
 		# Update the "Texts.json" file with the updated Diary Slim "Texts" dictionary
-		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Texts"]["Texts"], self.diary_slim["Texts"])
-
-	def Update_State(self, selected_state = None, new_order = ""):
-		for state in self.states["names"]:
-			state_texts = self.states[state]["texts"]
-
-			# Define current state file
-			current_state_file = self.states[state]["files"]["current"]
-			string = self.File.Contents(current_state_file)["string"]
-
-			# If new order is not empty, get the order from state_texts dictionary
-			if new_order != "":
-				new_order = state_texts[new_order][self.user_language]
-
-			# Write the new order if the state is equal to the selected state
-			# If the state is equal to none, or if the selected state is equal to none
-			if (
-				state == selected_state or
-				state == None or
-				selected_state == None
-			):
-				self.File.Edit(current_state_file, new_order, "w")
+		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Texts"]["Texts"], texts_copy)

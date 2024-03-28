@@ -115,6 +115,7 @@ class Unblock(Block_Websites):
 			if website_to_unlock != []:
 				print()
 				print(self.JSON.Language.language_texts["list, title()"] + ":")
+
 				self.JSON.Show(website_to_unlock)
 
 			# Select website from the list

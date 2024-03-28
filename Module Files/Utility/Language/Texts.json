@@ -163,6 +163,10 @@
 		"en": "Press Enter when you finish reading the info summary",
 		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
 	},
+	"multi_selection": {
+		"en": "Multiselection",
+		"pt": "Seleção múltipla"
+	},
 	"finish_selection": {
 		"en": "Finish selection",
 		"pt": "Terminar seleção"
