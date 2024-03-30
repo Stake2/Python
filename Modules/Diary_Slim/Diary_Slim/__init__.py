@@ -221,7 +221,7 @@ class Diary_Slim():
 		# Get the "Diary Slim" header in the user language
 		file = self.diary_slim["Folders"]["Data"]["Header"][self.user_language]
 
-		self.diary_slim["Header"] = self.File.Contents(file)["string"]
+		self.diary_slim["Header template"] = self.File.Contents(file)["string"]
 
 	def Define_Templates(self):
 		self.template = {
