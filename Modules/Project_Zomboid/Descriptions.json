@@ -1,10 +1,14 @@
 {
 	"show_text": {
-		"en": "Manage Project Zomboid game",
-		"pt": "Gerenciar jogo Project Zomboid"
+		"en": "Manage the game \"Project Zomboid\"",
+		"pt": "Gerenciar o jogo \"Project Zomboid\""
 	},
-	"Create_Diary_File": {
-		"en": "Create diary file",
-		"pt": "Criar arquivo de diário"
+	"Create_Survival_Diary_File": {
+		"en": "Create a survival diary file",
+		"pt": "Criar um arquivo de diário de sobrevivência"
+	},
+	"Add_A_New_Survivor": {
+		"en": "Add a new survivor",
+		"pt": "Adicionar um novo sobrevivente"
 	}
 }

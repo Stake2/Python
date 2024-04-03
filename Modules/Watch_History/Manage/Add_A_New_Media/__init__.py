@@ -83,7 +83,7 @@ class Add_A_New_Media(Watch_History):
 			]
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		text = self.language_texts["type_the_media_information_(some_items_can_be_left_empty_by_pressing_enter)"]

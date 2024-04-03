@@ -87,7 +87,7 @@ class Fill_Media_Files(Watch_History):
 
 	def Define_Variables(self):
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		key = "filling_the_titles_files"
@@ -379,7 +379,7 @@ class Fill_Media_Files(Watch_History):
 				self.media["Item"]["Episodes"]["Titles"]["IDs"].append(id)
 
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 			print()
 
 			# Show video number and progress
@@ -417,7 +417,7 @@ class Fill_Media_Files(Watch_History):
 			i += 1
 
 		print()
-		print(self.large_bar)		
+		print(self.separators["5"])		
 
 		# Show the language titles
 		if len(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][self.user_language]) < 10:

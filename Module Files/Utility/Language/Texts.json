@@ -1160,6 +1160,20 @@
 		"en": "Productivity",
 		"pt": "Produtividade"
 	},
+	"other, title()": {
+		"en": "Other",
+		"pt": {
+			"masculine": "Outro",
+			"feminine": "Outra"
+		}
+	},
+	"others, title()": {
+		"en": "Others",
+		"pt": {
+			"masculine": "Outros",
+			"feminine": "Outras"
+		}
+	},
 	"and_also": {
 		"en": "and also",
 		"pt": "e também"
@@ -1867,6 +1881,30 @@
 	"mobile, title()": {
 		"pt": "Celular",
 		"en": "Mobile"
+	},
+	"game_multiverse_bubble": {
+		"pt": "Bolha de Multiverso de Jogos",
+		"en": "Game Multiverse Bubble"
+	},
+	"city, title()": {
+		"en": "City",
+		"pt": "Cidade"
+	},
+	"cities, title()": {
+		"en": "Cities",
+		"pt": "Cidades"
+	},
+	"survivor, title()": {
+		"en": "Survivor",
+		"pt": "Sobrevivente"
+	},
+	"survivors, title()": {
+		"en": "Survivors",
+		"pt": "Sobreviventes"
+	},
+	"it_is": {
+		"en": "it is",
+		"pt": "é"
 	},
 	"genders, type: dict": {
 		"en": {

@@ -436,6 +436,10 @@
 		"pt": "{}, {} de {} de {}",
 		"en": "{}, {} {}, {}"
 	},
+	"today_is_day_{} {} {}, {}": {
+		"pt": "Hoje é dia {} de {} de {}, {}",
+		"en": "Today is day {} {} {}, {}"
+	},
 	"date_and_time_texts, type: dict": {
 		"short_time": "t",
 		"long_time": "T",

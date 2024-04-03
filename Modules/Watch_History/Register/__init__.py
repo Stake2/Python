@@ -1071,7 +1071,7 @@ class Register(Watch_History):
 			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 	def Write_On_Diary_Slim(self):
@@ -1081,7 +1081,7 @@ class Register(Watch_History):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False)
+		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False, current_diary_slim = False)
 
 	def Show_Information(self):
 		self.dictionary["header_text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ": "

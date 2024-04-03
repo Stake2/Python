@@ -397,10 +397,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 			second_date = self.date["Timezone"]["DateTime"]["Formats"]["DD-MM-YYYY"]
 
 			# If the "Checked for skipped Diary Slim" state is True
-			# Or the date inside the root dictionary is not the same as the current date
+			# And the date inside the root dictionary is not the same as the current date
 			# Then it means that the creation of some Diary Slims were skipped
 			if (
-				self.states["Skipped Diary Slims"]["Checked"] == True or
+				self.states["Skipped Diary Slims"]["Checked"] == True and
 				first_date != second_date
 			):
 				# Define the type text for the custom creation time of the file

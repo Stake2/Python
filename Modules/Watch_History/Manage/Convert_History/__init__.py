@@ -10,7 +10,7 @@ class Convert_History(Watch_History):
 		super().__init__()
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["convert_history"] + ":")
 
@@ -370,7 +370,7 @@ class Convert_History(Watch_History):
 			# While the variable above is True
 			while title != "stop":
 				# Show a dash and space separator, and the number
-				print(self.large_bar)
+				print(self.separators["5"])
 				print()
 				print(self.JSON.Language.language_texts["number, title()"] + ":")
 				print("[" + str(number) + "/" + str(number) + "]")
@@ -1395,7 +1395,7 @@ class Convert_History(Watch_History):
 
 					# Show the current and total entry number
 					print()
-					print(self.large_bar)
+					print(self.separators["5"])
 					print()
 					print(str(e + 1) + "/" + str(len(self.year["Entries"]["Dictionary"].keys())) + ":")
 
@@ -1644,7 +1644,7 @@ class Convert_History(Watch_History):
 										self.JSON.Show(entry)
 
 										print()
-										print(self.large_bar)
+										print(self.separators["5"])
 
 										# If the keys list does not contain only the "Entry" key
 										if keys != ["Entry"]:
@@ -1703,7 +1703,7 @@ class Convert_History(Watch_History):
 											print('Removendo o dicionário "Comment" do dicionário da Entrada.')
 
 										print()
-										print(self.large_bar)
+										print(self.separators["5"])
 
 									if entry_backup != entry:
 										found_comments.append("Comment")
@@ -1720,17 +1720,17 @@ class Convert_History(Watch_History):
 						print("Aviso:")
 						print("Comentário não encontrado.")
 						input()
-						print(self.large_bar)
+						print(self.separators["5"])
 
 					if found_comments == []:
 						print()
-						print(self.large_bar)
+						print(self.separators["5"])
 						print()
 						print("Pulado:")
 						print("O dicionário de Entrada original e editado são iguais, nada a ser alterado.")
 						print("Os dados do comentário estão corretos.")
 						print()
-						print(self.large_bar)
+						print(self.separators["5"])
 
 					# Show "Continue" text on testing mode to pause between entries
 					if self.switches["testing"] == True:

@@ -375,6 +375,10 @@
 		"en": "Watch dubbed",
 		"pt": "Assistir dublado"
 	},
+	"watched_dubbed": {
+		"en": "Watched dubbed",
+		"pt": "Assistiu dublado"
+	},
 	"christmas_special_{}": {
 		"en": "Christmas special {}",
 		"pt": "{} especial de Natal"

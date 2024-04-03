@@ -401,9 +401,13 @@ class Watch_Media(Watch_History):
 				# Add code to link
 				self.media["Episode"]["Remote"]["Link"] += self.dictionary["Media type"]["Plural"]["pt"].lower() + "/" + self.media["Episode"]["Remote"]["origin_location"] + "/"
 
-				# Add dubbed text
+				# Add the "Dubbed" text to the episode link
 				if self.media["States"]["Dubbing"]["Has dubbing"] == True and self.media["States"]["Dubbing"]["Watch dubbed"] == True:
-					self.media["Episode"]["Remote"]["Link"] = self.media["Episode"]["Remote"]["Link"].replace(self.media["Episode"]["Remote"]["origin_location"], self.media["Episode"]["Remote"]["origin_location"] + "-" + self.JSON.Language.texts["dubbed"]["pt"].lower())
+					origin_location = self.media["Episode"]["Remote"]["origin_location"]
+
+					dubbed_origin_location = self.media["Episode"]["Remote"]["origin_location"] + "-" + self.JSON.Language.texts["dubbed, title()"]["pt"].lower()
+
+					self.media["Episode"]["Remote"]["Link"] = self.media["Episode"]["Remote"]["Link"].replace(origin_location, dubbed_origin_location)
 
 				# Add episode number
 				self.media["Episode"]["Remote"]["Link"] += "episodio-" + str(self.Text.Add_Leading_Zeroes(self.media["Episode"]["Number"])) + "/"
@@ -669,7 +673,7 @@ class Watch_Media(Watch_History):
 				self.media["States"]["Dubbing"]["Has dubbing"] == True
 			):
 				# Add dubbed text to the media folder if there is dub for the media and user wants to watch it dubbed
-				folder = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Full language"] + "/"
+				folder = self.media["Item"]["Folders"]["Media"]["root"] + self.full_user_language + "/"
 
 				if (
 					self.media["States"]["Dubbing"]["Watch dubbed"] == True or
@@ -687,9 +691,15 @@ class Watch_Media(Watch_History):
 			file_exists = self.File_Exists(self.media["Episode"]["unit"])
 
 			# If the media has dubbing and no "Watch dubbed" setting was found
-			if self.JSON.Language.language_texts["dubbing, title()"] in self.media["Details"] and self.found_watch_dubbed_setting == False:
+			if (
+				self.JSON.Language.language_texts["dubbing, title()"] in self.media["Details"] and
+				self.found_watch_dubbed_setting == False
+			):
 				# If the file exists and the "Dubbed" text is inside the file, define the "Watch dubbed" state as True
-				if file_exists == True and self.JSON.Language.texts["dubbed, title()"][self.user_language] in self.media["Episode"]["unit"]:
+				if (
+					file_exists == True and
+					self.JSON.Language.texts["dubbed, title()"][self.user_language] in self.media["Episode"]["unit"]
+				):
 					self.media["States"]["Dubbing"]["Watch dubbed"] = True
 
 				# If the user language episode file does not exist

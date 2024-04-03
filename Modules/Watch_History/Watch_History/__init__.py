@@ -91,8 +91,20 @@ class Watch_History(object):
 
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Import_Classes(self):
 		# Define the classes to be imported
@@ -1300,7 +1312,7 @@ class Watch_History(object):
 					title = media_item
 
 				if (
-					watch == True and
+					watch == False and
 					len(dictionary["Media"]["Items"]["List"]) == 1
 				):
 					print()
@@ -2067,7 +2079,7 @@ class Watch_History(object):
 					text = ""
 
 					if key != "Re-watched":
-						# Make text key
+						# Define the text key
 						text_key = key.lower().replace(" ", "_")
 
 						# If a underscore does not exist inside the text key, the text key is a word, then add the ", title()" text
@@ -2650,7 +2662,7 @@ class Watch_History(object):
 			header_text = dictionary["header_text"]
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		# Show congratulations text if the user finished the media
 		if (
@@ -3037,6 +3049,6 @@ class Watch_History(object):
 
 			# If the user finished watching, ask for input before ending execution
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

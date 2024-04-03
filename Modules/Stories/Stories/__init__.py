@@ -2,6 +2,7 @@
 
 # Import the "importlib" module
 import importlib
+from copy import deepcopy
 
 class Stories(object):
 	def __init__(self):
@@ -181,7 +182,7 @@ class Stories(object):
 
 			self.stories["Folders"]["Database"][key] = self.stories["Folders"]["Database"]["root"] + file_name
 
-			if "json" not in file_name:
+			if ".json" not in file_name:
 				self.stories["Folders"]["Database"][key] += ".txt"
 
 			self.File.Create(self.stories["Folders"]["Database"][key])
@@ -278,22 +279,27 @@ class Stories(object):
 
 	def Define_Stories_Dictionary(self):
 		import collections
-		from copy import deepcopy
 
-		# Lists
-		to_remove = [
-			"Database",
-			"Izaque Sanvezzo",
-			"Others",
-			"Rubbish"
-		]
+		# Define the "New version" variable
+		new_version = True
 
-		# List stories on stories folder
-		self.stories["List"] = self.Folder.Contents(self.folders["Mega"]["stories"]["root"])["folder"]["names"]
-		self.stories["List"] = self.Folder.Remove_Folders(self.stories["List"], to_remove)
+		if new_version == True:
+			self.stories["List"] = self.File.Contents(self.stories["Folders"]["Database"]["Stories list"])["lines"]
 
-		# Update stories list file with new story names
-		self.File.Edit(self.stories["Folders"]["Database"]["Stories list"], self.Text.From_List(self.stories["List"]), "w")
+		if new_version == False:
+			folders_to_remove = [
+				"Database",
+				"Izaque Sanvezzo",
+				"Outros",
+				"Rubbish"
+			]
+
+			# List stories on stories folder
+			self.stories["List"] = self.Folder.Contents(self.folders["Mega"]["stories"]["root"])["folder"]["names"]
+			self.stories["List"] = self.Folder.Remove_Folders(self.stories["List"], folders_to_remove)
+	
+			# Update stories list file with new story names
+			self.File.Edit(self.stories["Folders"]["Database"]["Stories list"], self.Text.From_List(self.stories["List"]), "w")
 
 		# Story titles list
 		self.stories["Titles"] = {}
@@ -875,11 +881,9 @@ class Stories(object):
 
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False)
+			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False, current_diary_slim = False)
 
 	def Select_Story(self, select_text_parameter = None, select_class = False):
-		from copy import deepcopy
-
 		# Define the show text
 		show_text = self.language_texts["stories, title()"]
 

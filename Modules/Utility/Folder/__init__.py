@@ -364,11 +364,10 @@ class Folder():
 				"root": self.folders["Mega"]["root"] + folder + "/"
 			}
 
-		# Mega "Image" dictionary
-		self.folders["Image"] = self.folders["Mega"]["Image"]
-
-		# Mega "Notepad" folders
-		self.folders["Notepad"] = self.folders["Mega"]["Notepad"]
+		# Define all of the Mega sub-folders as a root key in the "Folders" dictionary
+		for key, dictionary in self.folders["Mega"].items():
+			if key not in self.folders:
+				self.folders[key] = dictionary
 
 		# Mega "Notepad" folders
 		folders = [
@@ -622,8 +621,8 @@ class Folder():
 			"Theme": self.JSON.Language.language_texts["theme, title()"]
 		}
 
-		for name, folder in folders.items():
-			self.folders["Image"]["Christmas"][name] = {
+		for key, folder in folders.items():
+			self.folders["Image"]["Christmas"][key] = {
 				"root": self.folders["Image"]["Christmas"]["root"] + folder + "/"
 			}
 
@@ -632,8 +631,8 @@ class Folder():
 			"Images": self.JSON.Language.language_texts["images, title()"]
 		}
 
-		for name, folder in folders.items():
-			self.folders["Image"]["Years"][name] = {
+		for key, folder in folders.items():
+			self.folders["Image"]["Years"][key] = {
 				"root": self.folders["Image"]["Years"]["root"] + folder + "/"
 			}
 
@@ -645,12 +644,14 @@ class Folder():
 		for item in folders:
 			key = item.lower().replace(" ", "_")
 
+			folder = self.folders["Mega"]["PHP"]["root"] + item + "/"
+
 			self.folders["Mega"]["php"][key] = {
-				"root": self.folders["Mega"]["php"]["root"] + item + "/"
+				"root": folder
 			}
 
 			self.folders["Mega"]["PHP"][item] = {
-				"root": self.folders["Mega"]["PHP"]["root"] + item + "/"
+				"root": folder
 			}
 
 		# Mega "PHP" JSON files
@@ -685,7 +686,17 @@ class Folder():
 				"root": os.path.join(self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["root"], item + "/")
 			}
 
-		# Mega Websites folders and files
+		# Mega "Stories" folders
+		folders = {
+			"Game Multiverse Bubble": self.JSON.Language.language_texts["game_multiverse_bubble"]
+		}
+
+		for key, folder in folders.items():
+			self.folders["Stories"][key] = {
+				"root": self.folders["Stories"]["root"] + folder + "/"
+			}
+
+		# Mega "Websites" folders and files
 		items = {
 			"Folders": [
 				"CSS",
@@ -840,10 +851,16 @@ class Folder():
 
 		for value in folders.values():
 			if type(value) != dict:
-				if os.path.isfile(value) == False and "." not in value:
+				if (
+					os.path.isfile(value) == False and
+					"." not in value
+				):
 					self.Create(value)
 
-				if os.path.isfile(value) == False and "." in value:
+				if (
+					os.path.isfile(value) == False and
+					"." in value
+				):
 					self.File.Create(value)
 
 			if type(value) == dict:

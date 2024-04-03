@@ -62,8 +62,8 @@ class Comment_Writer(Watch_History):
 			]
 
 			# Define the dictionary that says if comment posting on the remote media is activated
-			self.remote_origins_dictionary = {
-				"Animes Vision": True,
+			self.post_comments_on = {
+				"Animes Vision": False,
 				"YouTube": True
 			}
 
@@ -77,7 +77,7 @@ class Comment_Writer(Watch_History):
 				self.dictionary["Media type"]["Plural"]["en"] in self.media_types["Post comment"] and
 				"Remote" in self.media["Episode"] and
 				self.media["Episode"]["Remote"]["Link"] != "" and
-				self.remote_origins_dictionary[self.media["Episode"]["Remote"]["Title"]] == True
+				self.post_comments_on[self.media["Episode"]["Remote"]["Title"]] == True
 			):
 				if self.dictionary["Comment Writer"]["States"]["Add"] == False:
 					# Copy the comment text
