@@ -402,5 +402,14 @@ class Register(Database):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		# Write on Diary Slim
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False)
+		# Define the "Write on Diary Slim" dictionary
+		dictionary = {
+			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+			"Time": self.dictionary["Entry"]["Dates"]["Timezone"],
+			"Add": {
+				"Dot": False
+			}
+		}
+
+		# Write the entry text on Diary Slim
+		Write_On_Diary_Slim_Module(dictionary)

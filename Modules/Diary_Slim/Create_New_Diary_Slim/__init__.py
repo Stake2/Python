@@ -291,20 +291,17 @@ class Create_New_Diary_Slim(Diary_Slim):
 		self.dictionary["Texts"]["Diary Slim date text"] = template.format(item)
 
 		# Define the "type the time that you" text template
-		type_text = self.JSON.Language.language_texts["type_the_time_that_you_{}"]
+		template = self.JSON.Language.language_texts["type_the_time_that_you_{}"]
 
 		# Ask for the time the user have gone to sleep
-		type_text = type_text.format(self.JSON.Language.language_texts["have_gone_to_sleep"])
+		type_text = template.format(self.JSON.Language.language_texts["have_gone_to_sleep"])
 
 		self.dictionary["Times"]["Sleeping"] = self.Match_Time_Pattern(type_text)
 
 		# Ask for the time the user woke up
-		type_text = type_text.format(self.JSON.Language.language_texts["woke_up"])
+		type_text = template.format(self.JSON.Language.language_texts["woke_up"])
 
 		self.dictionary["Times"]["Waking"] = self.Match_Time_Pattern(type_text)
-
-		# Show a space separator
-		print()
 
 		# Format the root header template, making the Diary Slim header
 		self.dictionary["Texts"]["Header"] = self.diary_slim["Header template"].format(self.dictionary["Times"]["Sleeping"], self.dictionary["Times"]["Waking"])
@@ -513,19 +510,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 		# If the Diary file Slim does not exist
 		if self.states["Diary Slim exists"] == False:
-			# If the "Check for skipped Diary Slim" state is True
-			if self.states["Skipped Diary Slims"]["Check"] == True:
-				# Show a space separator
-				print()
-
-			# Show a five dash space separator
-			print(self.separators["5"])
-
-			# If the "Check for skipped Diary Slim" state is False
-			if self.states["Skipped Diary Slims"]["Check"] == False:
-				# Show a space separator
-				print()
-
 			# Get the current day file text
 			file_text = self.File.Contents(self.dictionary["File"])["lines"]
 
@@ -552,11 +536,20 @@ class Create_New_Diary_Slim(Diary_Slim):
 					current_diary_slim = False
 
 				# Write the full Diary Slim header text into the Diary Slim file
-				# With the custom date
+				# With the text and the custom date
 				# Without the time (it is already in the full text)
-				# Without checking for file length (no spaces on the start of file)
-				# And with the two local verbose and current Diary Slim variables above
-				Write_On_Diary_Slim_Module(self.dictionary["Texts"]["To write"], custom_date = self.dictionary["Dates"]["Now"], add_time = False, check_file_length = False, current_diary_slim = current_diary_slim, verbose = verbose)
+				# And with the two local "current Diary Slim" and "verbose" variables above
+				dictionary = {
+					"Text": self.dictionary["Texts"]["To write"],
+					"Date": self.dictionary["Dates"]["Now"],
+					"Add": {
+						"Time": False
+					},
+					"Current_Diary_Slim": current_diary_slim,
+					"Verbose": verbose
+				}
+
+				Write_On_Diary_Slim_Module(dictionary)
 
 		# Open the current Diary Slim file
-		self.System.Open(self.dictionary["File"])
+		self.System.Open(self.dictionary["File"], verbose = False)

@@ -710,4 +710,14 @@ class Register(GamePlayer):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False, current_diary_slim = False)
+		# Define the "Write on Diary Slim" dictionary
+		dictionary = {
+			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+			"Time": self.dictionary["Entry"]["Dates"]["Timezone"],
+			"Add": {
+				"Dot": False
+			}
+		}
+
+		# Write the entry text on Diary Slim
+		Write_On_Diary_Slim_Module(dictionary)

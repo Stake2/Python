@@ -8,11 +8,16 @@ class Fill_Media_Files(Watch_History):
 	def __init__(self, dictionary = None):
 		super().__init__()
 
+		# Define the root dictionary
 		self.dictionary = dictionary
 
+		# Define the "Options" dictionary
 		options = {
 			"Media type": {
-				"Status": self.texts["statuses, type: list"]["en"],
+				"Status": [
+					self.texts["watching, title()"]["en"],
+					self.texts["re_watching, title()"]["en"]
+				],
 
 				# Remove the "Movies" media type from the media type dictionary, returning a local media types dictionary
 				"List": self.Remove_Media_Type(self.texts["movies, title()"]["en"])
@@ -76,9 +81,12 @@ class Fill_Media_Files(Watch_History):
 			):
 				self.Define_Variables()
 
+		self.dictionary["Fill media files"] = True
+
 		# Select the media again to update the media files
 		self.dictionary = self.Select_Media(self.dictionary)
 		self.media = self.dictionary["Media"]
+		self.dictionary["Fill media files"] = True
 
 		from copy import deepcopy
 
@@ -442,7 +450,10 @@ class Fill_Media_Files(Watch_History):
 				print("\t" + id)
 
 	def Add_To_Videos_List(self):
-		video_id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"])
+		print()
+		print(self.separators["5"])
+
+		video_id = ""
 
 		import validators
 

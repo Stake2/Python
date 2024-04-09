@@ -1313,7 +1313,8 @@ class Watch_History(object):
 
 				if (
 					watch == False and
-					len(dictionary["Media"]["Items"]["List"]) == 1
+					len(dictionary["Media"]["Items"]["List"]) == 1 and
+					"Fill media files" not in dictionary
 				):
 					print()
 					print("---")

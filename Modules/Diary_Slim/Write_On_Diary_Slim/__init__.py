@@ -458,8 +458,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Show a space separator
 			print()
 
+			# Define the "Write on Diary Slim" dictionary
+			dictionary = {
+				"Text": self.dictionary["Text to write"]
+			}
+
 			# Write the text on Diary Slim
-			Write_On_Diary_Slim_Module(self.dictionary["Text to write"])
+			Write_On_Diary_Slim_Module(dictionary)
 
 		# Open the current Diary Slim file
 		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"])

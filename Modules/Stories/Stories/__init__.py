@@ -881,7 +881,15 @@ class Stories(object):
 
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-			Write_On_Diary_Slim_Module(task_dictionary["Task"]["Descriptions"][self.user_language], self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"], show_text = False, current_diary_slim = False)
+			# Define the "Write on Diary Slim" dictionary
+			dictionary = {
+				"Text": task_dictionary["Task"]["Descriptions"][self.user_language]
+				"Time": self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
+				"Show text": False
+			}
+
+			# Write the entry text on Diary Slim
+			Write_On_Diary_Slim_Module(dictionary)
 
 	def Select_Story(self, select_text_parameter = None, select_class = False):
 		# Define the show text

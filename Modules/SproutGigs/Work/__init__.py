@@ -66,7 +66,13 @@ class Work(SproutGigs):
 				print(self.website["name"])
 				print()
 
-				Write_On_Diary_Slim_Module(self.language_texts["i_worked_a_little_on"] + " " + '"' + self.website["name"] + '"')
+				# Define the "Write on Diary Slim" dictionary
+				dictionary = {
+					"Text": self.language_texts["i_worked_a_little_on"] + " " + '"' + self.website["name"] + '"'
+				}
+
+				# Write the entry text on Diary Slim
+				Write_On_Diary_Slim_Module(dictionary)
 
 				self.finish_working = True
 

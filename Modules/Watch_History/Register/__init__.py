@@ -1068,7 +1068,8 @@ class Register(Watch_History):
 			self.Input.Type(self.language_texts["press_enter_to_copy_the_watched_text"])
 
 			# Copy the watched text to the clipboard
-			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
+			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + \
+			self.dictionary["Entry"]["Diary Slim"]["Clean text"])
 
 		print()
 		print(self.separators["5"])
@@ -1081,7 +1082,17 @@ class Register(Watch_History):
 
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
-		Write_On_Diary_Slim_Module(self.dictionary["Entry"]["Diary Slim"]["Text"], self.dictionary["Entry"]["Dates"]["Timezone"], add_dot = False, current_diary_slim = False)
+		# Define the "Write on Diary Slim" dictionary
+		dictionary = {
+			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+			"Time": self.dictionary["Entry"]["Dates"]["Timezone"],
+			"Add": {
+				"Dot": False
+			}
+		}
+
+		# Write the entry text on Diary Slim
+		Write_On_Diary_Slim_Module(dictionary)
 
 	def Show_Information(self):
 		self.dictionary["header_text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ": "
