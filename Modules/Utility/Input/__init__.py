@@ -63,6 +63,7 @@ class Input():
 
 			if (
 				"\n" in option and
+				len(text) >= 2 and
 				text[-2] + text[-1] != "\n\n"
 			):
 				text += "\n"

@@ -106,6 +106,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Define the "Text to write" as the language text
 				self.dictionary["Text to write"] = self.dictionary["Text"]["Texts"][self.user_language]
 
+				# If the "States" key is inside the "Text" dictionary
+				if "States" in self.dictionary["Text"]:
+					# Get the current state
+					self.dictionary["Text to write"] = self.dictionary["Text"]["States"]["Current state"][self.user_language]
+
 			# If the option is the "[Multi-selection]" one
 			if option == "[Multi-selection]":
 				# Change the "Multi-selection" mode to activated
@@ -113,6 +118,18 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Run this method again to run it with the "Multi-selection" mode activated
 				self.Select_The_Text()
+
+		# If the "Multi-selection" mode is deactivated
+		if self.states["Multi-selection"] == False:
+			# If the "States" key is inside the "Text" dictionary
+			if "States" in self.dictionary["Text"]:
+				# Change the current state to the next state
+				self.Next_State(self.dictionary["Text"])
+
+			# If the "Additional information" key is inside the "Text" dictionary
+			if "Additional information" in self.dictionary["Text"]:
+				# Define the additional information and update the text to write
+				self.dictionary["Text to write"] = self.Define_Additional_Information(self.dictionary)
 
 	def Multi_Selection(self):
 		# Add the "[Finish selection]" text to the list of options
@@ -139,24 +156,31 @@ class Write_On_Diary_Slim(Diary_Slim):
 			print()
 			print(self.separators["5"])
 
-			# Show the "List:" text
+			# If the list of texts is not empty
 			if texts != []:
+				# Show the "List:" text
 				print()
 				print(self.JSON.Language.language_texts["list, title()"] + ":")
 
-				# Show the list
+				# Show the list of texts
 				print("[")
 
+				# Iterate through the texts in the list
 				for text in texts:
+					# Make a backup of the text
 					text_backup = text
 
+					# Add one tab to the text
 					text = text.replace("\n", "\n\t")
 
+					# Show the text with a tab and quotes around it
 					print("\t" + '"' + text + '"')
 
+					# If the text backup is not the last one, show a space separator
 					if text_backup != texts[-1]:
 						print()
 
+				# Show the end of the list
 				print("]")
 
 			# Ask the user to select the Diary Slim text
@@ -167,13 +191,31 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Define the "Text" dictionary inside the root dictionary
 				self.dictionary["Text"] = self.diary_slim["Texts"]["Dictionary"][option]
 
+				# Remove the selected text from the parameters dictionary
+				parameters["options"].remove(option)
+				parameters["language_options"].remove(self.dictionary["Text"]["Texts"][self.user_language])
+
 				# Add two line breaks if the text is not the first one
 				if texts != []:
 					self.dictionary["Text to write"] += "\n\n"
 
-				# Add the language text to the "Text to write" string
+				# Define the language text
 				language_text = self.dictionary["Text"]["Texts"][self.user_language]
 
+				# If the "States" key is inside the "Text" dictionary
+				if "States" in self.dictionary["Text"]:
+					# Get the current state
+					language_text = self.dictionary["Text"]["States"]["Current state"][self.user_language]
+
+					# Change the current state to the next state
+					self.Next_State(self.dictionary["Text"])
+
+				# If the "Additional information" key is inside the "Text" dictionary
+				if "Additional information" in self.dictionary["Text"]:
+					# Define the additional information and update the text to write
+					language_text = self.Define_Additional_Information(self.dictionary, language_text)
+
+				# Add the language text to the "Text to write" string
 				self.dictionary["Text to write"] += language_text
 
 				# Add a period to the end of the text if it is not present
@@ -184,7 +226,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 				language_text = language_text.replace("\n", "\n")
 
 				# Add the language text to the texts list
-				texts.append(language_text)
+				texts.append(language_text)		
 
 	def Define_Item_Variables(self):
 		# Remove the "..." (three dots) text if it is present inside the text

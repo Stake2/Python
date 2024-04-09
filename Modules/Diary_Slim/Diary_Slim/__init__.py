@@ -655,6 +655,45 @@ class Diary_Slim():
 			if self.File.Exist(dictionary["Files"]["Data"]) == True:
 				dictionary.update(self.JSON.To_Python(dictionary["Files"]["Data"]))
 
+			# Else, remove the key
+			else:
+				dictionary["Files"].pop("Data")
+
+			# ----- #
+
+			# Manage the text "States" 
+
+			# Define the text "States.json" file
+			dictionary["Files"]["States"] = dictionary["Folders"]["root"] + "States.json"
+
+			# Read the "States.json" file if it exists
+			if self.File.Exist(dictionary["Files"]["States"]) == True:
+				dictionary["States"] = self.JSON.To_Python(dictionary["Files"]["States"])
+
+				# Get the list of state dictionaries
+				states = list(dictionary["States"]["Dictionary"].values())
+
+				# If the current state is empty, get the first state
+				if dictionary["States"]["Current state"] == {}:
+					dictionary["States"]["Current state"] = states[0]
+
+				# Update the "States.json" file
+				self.JSON.Edit(dictionary["Files"]["States"], dictionary["States"])
+
+				# Iterate through the small languages list
+				for language in self.languages["small"]:
+					# Define the state name
+					dictionary["Texts"][language] = dictionary["States"]["Names"][language]
+
+					# Add the current state
+					dictionary["Texts"][language] += " (" + dictionary["States"]["Current state"][language] + ")"
+
+			# Else, remove the key
+			else:
+				dictionary["Files"].pop("States")
+
+			# ----- #
+
 			# Define the language text files
 			for language in self.languages["small"]:
 				# Get the full language
@@ -662,21 +701,27 @@ class Diary_Slim():
 
 				# Define and create the language text file
 				dictionary["Files"][language] = dictionary["Folders"]["root"] + full_language + ".txt"
-				self.File.Create(dictionary["Files"][language])
 
-				# Read the language text file and add its contents to the "Texts" dictionary
-				dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
+				# If the "States" key is not inside the "Text" dictionary, create the file
+				if "States" not in dictionary:
+					self.File.Create(dictionary["Files"][language])
 
-				# Add "..." (three dots) if the "Item" key is present inside the "Data" dictionary
-				if "Item" in dictionary:
-					dictionary["Texts"][language] += "..."
+				# If the language file exists
+				if self.File.Exist(dictionary["Files"][language]) == True:
+					# Read the language text file and add its contents to the "Texts" dictionary
+					dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
 
-			# Move the "Data" file key to the end
-			file = dictionary["Files"]["Data"]
+					# Add "..." (three dots) if the "Item" key is present inside the "Data" dictionary
+					if "Item" in dictionary:
+						dictionary["Texts"][language] += "..."
 
-			dictionary["Files"].pop("Data")
+			if "Data" in dictionary["Files"]:
+				# Move the "Data" file key to the end if the key is present
+				file = dictionary["Files"]["Data"]
 
-			dictionary["Files"]["Data"] = file
+				dictionary["Files"].pop("Data")
+
+				dictionary["Files"]["Data"] = file
 
 			# If the "Item" key is inside the text dictionary
 			if "Item" in dictionary:
@@ -727,6 +772,12 @@ class Diary_Slim():
 
 			self.diary_slim["Texts"]["Options"][self.user_language].append(language_text)
 
+		# Iterate through the keys inside the Diary Slim Texts dictionary
+		for key in self.diary_slim["Texts"]["Dictionary"].copy():
+			# If the key is not inside the "List" list, remove it
+			if key not in self.diary_slim["Texts"]["List"]:
+				self.diary_slim["Texts"]["Dictionary"].pop(key)
+
 		# Make a copy of the "Texts" dictionary
 		texts_copy = deepcopy(self.diary_slim["Texts"])
 
@@ -735,3 +786,74 @@ class Diary_Slim():
 
 		# Update the "Texts.json" file with the updated Diary Slim "Texts" dictionary
 		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Texts"]["Texts"], texts_copy)
+
+	def Next_State(self, dictionary):
+		# Define the states variable for easier typing
+		states = dictionary["States"]
+
+		# Get the list of state dictionaries
+		states_list = list(states["Dictionary"].values())
+
+		# Get the index of the next state
+		index = states_list.index(states["Current state"]) + 1
+
+		# If the index is the last one, define the index as the first one
+		if index == len(states_list):
+			index = 0
+
+		# Define the next state
+		states["Current state"] = states_list[index]
+
+		# Update the "States.json" file
+		self.JSON.Edit(dictionary["Files"]["States"], states)
+
+	def Define_Additional_Information(self, dictionary, text_to_write = None):
+		# Define the text variable for easier typing
+		text = dictionary["Text"]
+
+		# Define the additional information variable for easier typing
+		additional_information = text["Additional information"]
+
+		# Ask the question and get the user answer
+		user_answer = self.Input.Yes_Or_No(additional_information["Question"][self.user_language])
+
+		# Define the list of booleans
+		booleans = [
+			True,
+			False
+		]
+
+		# If the "text to write" parameter is None
+		if text_to_write == None:
+			text_to_write = dictionary["Text to write"]
+
+		# Iterate through the "Yes" and "No" list
+		i = 0
+		for answer in ["Yes", "No"]:
+			# Get the boolean
+			boolean = booleans[i]
+
+			# If the answer dictionary exists
+			if answer in additional_information:
+				# Define the answer dictionary for easier typing
+				answer_dictionary = additional_information[answer]
+
+				# If the answer is the same as the boolean
+				# And the "[Answer]" ([Boolean]) option is inside the "Additional information" dictionary
+				# And the "Continue" key is not inside the "[Answer]" dictionary
+				if (
+					user_answer == boolean and
+					answer in additional_information and
+					"Continue" not in answer_dictionary
+				):
+					# If the "Format" key is inside the "[Answer]" dictionary
+					if "Format" in answer_dictionary:
+						# Define the format variable for easier typing
+						format = answer_dictionary["Format"][self.user_language]
+
+						# Format the format text with the text to write
+						text_to_write = format.replace("{Text}", text_to_write)
+
+			i += 1
+
+		return text_to_write
