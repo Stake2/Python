@@ -526,7 +526,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# If the Diary Slim file is empty
 			if file_text == []:
 				# Define the verbose and current Diary Slim variables for easier typing
-				verbose = None
+				verbose = True
 				current_diary_slim = True
 
 				# If the "Check for skipped Diary Slim" state is True

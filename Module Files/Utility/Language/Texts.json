@@ -1656,6 +1656,14 @@
 		"en": "Author",
 		"pt": "Autor"
 	},
+	"authors, title()": {
+		"en": "Authors",
+		"pt": "Autores"
+	},
+	"authors_list": {
+		"en": "Authors list",
+		"pt": "Lista de Autores"
+	},
 	"creation_date": {
 		"en": "Creation date",
 		"pt": "Data de criação"

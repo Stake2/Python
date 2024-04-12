@@ -168,8 +168,7 @@ class Diary_Slim():
 		# Define the "Data" sub-folders
 		names = [
 			"Header",
-			"Texts",
-			"State texts"
+			"Texts"
 		]
 
 		# Iterate through the names list

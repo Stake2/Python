@@ -15,6 +15,10 @@
 		"en": "Stories",
 		"pt": "Histórias"
 	},
+	"stories_list": {
+		"en": "Stories list",
+		"pt": "Lista de Histórias"
+	},
 	"story_title": {
 		"en": "Story title",
 		"pt": "Título da história"
@@ -22,6 +26,10 @@
 	"story_titles": {
 		"en": "Story titles",
 		"pt": "Títulos de história"
+	},
+	"story_information": {
+		"en": "Story information",
+		"pt": "Informações da história"
 	},
 	"website_image_folder": {
 		"en": "Website image folder",
@@ -424,32 +432,6 @@
 	"first_track": {
 		"en": "First track",
 		"pt": "Primeira faixa"
-	},
-	"folder_names, type: list": [
-		"Chapters",
-		"Comments",
-		"Covers",
-		"Information",
-		"Lore",
-		"Readers and Reads"
-	],
-	"file_names, type: list": [
-		"Author",
-		"Chapter dates",
-		"Creation date",
-		"Chapters",
-		"Information",
-		"Pack",
-		"Writing",
-		"Post",
-		"Titles",
-		"Wattpad"
-	],
-	"sub_file_names, type: dict": {
-		"Covers": [
-			"Landscape",
-			"Portrait"
-		]
 	},
 	"information_items, type: list": {
 		"en": [

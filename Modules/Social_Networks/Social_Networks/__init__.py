@@ -39,8 +39,8 @@ class Social_Networks(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"JSON",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules

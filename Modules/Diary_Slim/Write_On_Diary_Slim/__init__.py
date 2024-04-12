@@ -226,7 +226,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 				language_text = language_text.replace("\n", "\n")
 
 				# Add the language text to the texts list
-				texts.append(language_text)		
+				texts.append(language_text)
 
 	def Define_Item_Variables(self):
 		# Remove the "..." (three dots) text if it is present inside the text

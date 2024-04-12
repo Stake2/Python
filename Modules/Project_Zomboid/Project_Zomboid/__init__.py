@@ -142,11 +142,11 @@ class Project_Zomboid(object):
 		self.File.Create(self.project_zomboid["Folders"]["Cities"]["Cities"])
 
 		# Define and create the "Pre-defined values.json" file
-		self.project_zomboid["Folders"]["Database"]["Pre-defined values"] = self.project_zomboid["Folders"]["Database"]["root"] + "Pre-defined values.json"
-		self.File.Create(self.project_zomboid["Folders"]["Database"]["Pre-defined values"])
+		self.project_zomboid["Folders"]["Pre-defined values"] = self.project_zomboid["Folders"]["root"] + "Pre-defined values.json"
+		self.File.Create(self.project_zomboid["Folders"]["Pre-defined values"])
 
 		# Read the pre-defined values file
-		self.project_zomboid["Pre-defined values"] = self.JSON.To_Python(self.project_zomboid["Folders"]["Database"]["Pre-defined values"])
+		self.project_zomboid["Pre-defined values"] = self.JSON.To_Python(self.project_zomboid["Folders"]["Pre-defined values"])
 
 	def Define_The_Cities(self):
 		# Define the "Cities" dictionary

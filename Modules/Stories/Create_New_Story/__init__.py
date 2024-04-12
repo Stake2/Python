@@ -6,6 +6,12 @@ class Create_New_Story(Stories):
 	def __init__(self):
 		super().__init__()
 
+		# Dictionaries
+		self.default_information_items = {
+			self.JSON.Language.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
+			self.JSON.Language.language_texts["author, title()"]: self.stories["Author"]
+		}
+
 		self.Type_Story_Information()
 		self.Create_Story_Folder_And_Files()
 
@@ -89,7 +95,7 @@ class Create_New_Story(Stories):
 					information = self.Input.Type(information_item, next_line = True)
 
 					if information != "" and information_item == self.JSON.Language.language_texts["author, title()"]:
-						information = self.default_author + "\n" + information
+						information = self.stories["Author"] + "\n" + information
 
 					if information == "":
 						information = self.default_information_items[information_item]
@@ -113,7 +119,7 @@ class Create_New_Story(Stories):
 		self.Folder.Create(self.stories[self.story_title]["Folders"]["root"])
 
 		# Create subfolders
-		for folder_name in self.texts["folder_names, type: list"]:
+		for folder_name in self.stories["Directory names"]["Folders"]:
 			self.stories[self.story_title]["Folders"][folder_name] = {
 				"root": self.stories[self.story_title]["Folders"]["root"] + folder_name + "/"
 			}
@@ -121,13 +127,11 @@ class Create_New_Story(Stories):
 			self.Folder.Create(self.stories[self.story_title]["Folders"][folder_name]["root"])
 
 			# Create sub-sub-folders
-			if folder_name in self.texts["sub_file_names, type: dict"]:
-				for sub_folder_name in self.texts["sub_file_names, type: dict"][folder_name]:
+			if folder_name in self.stories["Directory names"]["Sub-files"]:
+				for sub_folder_name in self.stories["Directory names"]["Sub-files"][folder_name]:
 					self.stories[self.story_title]["Folders"][folder_name][sub_folder_name] = self.stories[self.story_title]["Folders"][folder_name]["root"] + sub_folder_name + "/"
 
 					self.Folder.Create(self.stories[self.story_title]["Folders"][folder_name][sub_folder_name])
-
-		self.stories[self.story_title]["Information"]["Chapter status"] = self.File.Dictionary(self.stories["Folders"]["Database"]["Chapter status template"], next_line = True)
 
 		# Write to information files
 		for key in self.texts["file_names, type: list"]:
@@ -148,7 +152,7 @@ class Create_New_Story(Stories):
 			if key == "Chapter status":
 				text = self.Text.From_Dictionary(text)
 
-			if key != "Author" or key == "Author" and self.stories[self.story_title]["Information"]["Author"] != self.default_author:
+			if key != "Author" or key == "Author" and self.stories[self.story_title]["Information"]["Author"] != self.stories["Author"]:
 				self.stories[self.story_title]["Folders"]["Information"][key] = self.stories[self.story_title]["Folders"]["Information"]["root"] + file_name
 
 				self.File.Create(self.stories[self.story_title]["Folders"]["Information"][key])
@@ -179,8 +183,11 @@ class Create_New_Story(Stories):
 			text_to_write = self.stories[self.story_title]["Information"]["Synopsis"][full_language]
 			self.File.Edit(self.stories[self.story_title]["Folders"]["Information"]["Synopsis"][full_language], text_to_write, "w")
 
-		# Create Obsidian's Vaults folder
-		self.stories[self.story_title]["Folders"]["Obsidian's Vaults"] = self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["stories"]["root"] + self.story_titles["en"] + "/"
-		self.Folder.Create(self.stories[self.story_title]["Folders"]["Obsidian's Vaults"])
+		create_obsidian = False
+
+		if create_obsidian == True:
+			# Create Obsidian's Vaults folder
+			self.stories[self.story_title]["Folders"]["Obsidian's Vaults"] = self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["stories"]["root"] + self.story_titles["en"] + "/"
+			self.Folder.Create(self.stories[self.story_title]["Folders"]["Obsidian's Vaults"])
 
 		self.story = self.stories[self.story_title]

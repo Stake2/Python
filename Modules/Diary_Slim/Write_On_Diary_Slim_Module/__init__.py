@@ -88,7 +88,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 			self.dictionary["Texts"]["To write"] += "."
 
 		# Add the text to the file
-		self.File.Edit(current_diary_slim["File"], self.dictionary["Texts"]["To write"], "a", next_line = False, verbose = self.dictionary["Verbose"])
+		self.File.Edit(current_diary_slim["File"], self.dictionary["Texts"]["To write"], "a", next_line = False)
 
 		# If the "verbose" switch is True, show a space separator
 		if self.switches["verbose"] == True:
