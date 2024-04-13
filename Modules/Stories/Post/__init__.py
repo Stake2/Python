@@ -133,7 +133,7 @@ class Post(Stories):
 			step["Skip"] == False
 		):
 			# Define the input text with the step text
-			input_text = self.JSON.Language.language_texts["skip_the, feminine"] + " " + step["Text"]
+			input_text = self.Language.language_texts["skip_the, feminine"] + " " + step["Text"]
 
 			# Ask if the user wants to skip this posting step
 			step["Skip"] = self.Input.Yes_Or_No(input_text)
@@ -142,7 +142,7 @@ class Post(Stories):
 		if step["Skip"] == True:
 			# Show the "You skipped the" [posting step text] text
 			print()
-			print(self.language_texts["you_skipped_the"] + " " + step["Text"] + ".")
+			print(self.Language.language_texts["you_skipped_the"] + " " + step["Text"] + ".")
 
 		# Update the root step dictionary with the local one
 		self.post["Steps"][step["Key"]] = step
@@ -210,44 +210,13 @@ class Post(Stories):
 			self.post["Chapter"]["Numbers"]["Names"][language] = number_name
 
 	def Create_Cover(self):
-		# Define the cover types dictionary
-		self.cover_types = {
-			"List": [
-				"Landscape",
-				"Portrait"
-			],
-			"Dictionary": {}
-		}
-
-		# Fill the cover types dictionary
-		for key in self.cover_types["List"]:
-			# Define the text key
-			text_key = key.lower() + ", title()"
-
-			# Get the language text
-			language_text = self.JSON.Language.language_texts[text_key]
-
-			# Define the cover type dictionary, with its key, title, titles, and extension
-			dictionary = {
-				"Key": key,
-				"Title": language_text,
-				"Titles": {}
-			}
-
-			# Fill the "Titles" dictionary with the language texts
-			for language in self.languages["small"]:
-				dictionary["Titles"][language] = self.JSON.Language.texts[text_key][language]
-
-			# Add the cover type dictionary to the root dictionary
-			self.cover_types["Dictionary"][key] = dictionary
-
-		# Iterate through the cover types list
-		for cover_type in self.cover_types["Dictionary"].values():
+		# Iterate through the "Cover types" dictionary
+		for cover_type in self.stories["Cover types"]["Dictionary"].values():
 			# Define the skip text template
-			template = self.language_texts["cover_creation"] + " " + self.JSON.Language.language_texts["in_{}_mode"]
+			template = self.language_texts["cover_creation"] + " " + self.Language.language_texts["in_{}_mode"]
 
 			# Define the skip text
-			text = template.format("[" + cover_type["Title"] + "]")
+			text = template.format("[" + cover_type["Titles"][self.user_language] + "]")
 
 			# Ask if the user wants to skip the creation of the cover with the specific type
 			self.Skip(self.post["Steps"]["Create_Cover"], custom_text = text)
@@ -267,9 +236,9 @@ class Post(Stories):
 
 						# Define the list of items
 						items = [
-							cover_type["Title"],
+							cover_type["Titles"][self.user_language],
 							translated_language,
-							cover_type["Title"],
+							cover_type["Titles"][self.user_language],
 							self.post["Extension"].upper()
 						]
 
@@ -281,11 +250,8 @@ class Post(Stories):
 						print()
 						print(text)
 
-						# Get the language Photoshop cover folder of the story
-						folder = self.story["Folders"]["Covers"]["Photoshop"][language]["root"]
-
-						# Define the PSD (Photoshop) file
-						file = folder + cover_type["Titles"][language] + "_" + ".psd"
+						# Get the language Photoshop cover file of the story
+						file = self.story["Folders"]["Covers"][cover_type["Title"]][full_language]["Photoshop"]
 
 						# Open the Photoshop file
 						self.System.Open(file)
@@ -325,10 +291,10 @@ class Post(Stories):
 
 						# Define the list of items
 						items = [
-							cover_type["Title"],
+							cover_type["Titles"][self.user_language],
 							translated_language,
 							self.story["Information"]["Chapters"]["Number"],
-							cover_type["Title"],
+							cover_type["Titles"][self.user_language],
 							self.post["Extension"].upper()
 						]
 
@@ -340,11 +306,8 @@ class Post(Stories):
 						print()
 						print(text)
 
-						# Get the language Photoshop cover folder of the story
-						folder = self.story["Folders"]["Covers"]["Photoshop"][language]["root"]
-
-						# Define the PSD (Photoshop) file
-						file = folder + cover_type["Titles"][language] + "_" + ".psd"
+						# Get the language Photoshop cover file of the story
+						file = self.story["Folders"]["Covers"][cover_type["Title"]][full_language]["Photoshop"]
 
 						# Open the Photoshop file
 						self.System.Open(file)
@@ -385,7 +348,7 @@ class Post(Stories):
 								chapter_title == chapter_titles[0]
 							):
 								# Ask for the user to press Enter after pausing inside the first chapter
-								self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+								self.Input.Type(self.Language.language_texts["continue, title()"])
 
 						print()
 
@@ -449,7 +412,7 @@ class Post(Stories):
 
 		# Copy the cover file to the chapter covers folder of the story folder inside the "Images" folder of the "Mega Websites" folder
 		# If the cover type is "Landscape"
-		if cover_type["Key"] == self.JSON.Language.texts["landscape, title()"]["en"]:
+		if cover_type["Key"] == self.Language.texts["landscape, title()"]["en"]:
 			# Get the folder
 			destination_folder = self.story["Folders"]["Covers"]["Websites"]["Chapters"]["root"]
 

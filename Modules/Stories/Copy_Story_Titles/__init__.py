@@ -20,7 +20,7 @@ class Copy_Story_Titles(Stories):
 
 		self.story_title = None
 
-		while self.story_title != self.JSON.Language.language_texts["quit, title()"]:
+		while self.story_title != self.Language.language_texts["quit, title()"]:
 			if self.switches["junction"] == False:
 				self.Select_And_Copy_Story_Title()
 
@@ -30,7 +30,7 @@ class Copy_Story_Titles(Stories):
 			if self.switches["junction"] == True:
 				self.Join_Story_Titles()
 
-			if self.story_title == "[" + self.JSON.Language.language_texts["quit, title()"] + "]":
+			if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
 				break
 
 	def Make_Story_Titles_List(self):
@@ -50,7 +50,7 @@ class Copy_Story_Titles(Stories):
 					story_title = '"' + story_title + '"'
 
 				# Separate letters of story title
-				if copy_mode == self.JSON.Language.language_texts["acronym, title()"]:
+				if copy_mode == self.Language.language_texts["acronym, title()"]:
 					story_title = story_title.split(" ")
 
 					string = ""
@@ -77,7 +77,7 @@ class Copy_Story_Titles(Stories):
 
 	def Select_Copy_Mode(self):
 		options = self.language_texts["copy_modes, type: list"].copy()
-		options.append("[" + self.JSON.Language.language_texts["quit, title()"] + "]")
+		options.append("[" + self.Language.language_texts["quit, title()"] + "]")
 
 		show_text = self.language_texts["copy_modes"]
 		select_text = self.language_texts["select_a_copy_mode"]
@@ -88,18 +88,18 @@ class Copy_Story_Titles(Stories):
 		# Create the copy mode dictionary
 		self.copy_mode = {
 			"name": self.copy_mode,
-			"item": self.language_texts["story_title"].lower(),
-			"plural_item": self.language_texts["story_titles"].lower()
+			"item": self.Language.language_texts["story_title"].lower(),
+			"plural_item": self.Language.language_texts["story_titles"].lower()
 		}
 
 		# If the copy mode is acronym mode, update item and plural_item keys
-		if self.copy_mode["name"] == self.JSON.Language.language_texts["acronym, title()"]:
+		if self.copy_mode["name"] == self.Language.language_texts["acronym, title()"]:
 			self.copy_mode.update({
 				"item": self.language_texts["story_acronym"].lower(),
 				"plural_item": self.language_texts["story_acronyms"].lower()
 			})
 
-		if self.copy_mode["name"] == "[" + self.JSON.Language.language_texts["quit, title()"] + "]":
+		if self.copy_mode["name"] == "[" + self.Language.language_texts["quit, title()"] + "]":
 			quit()
 
 		# Define story titles list of the copy mode
@@ -118,13 +118,13 @@ class Copy_Story_Titles(Stories):
 		# In place of "change mode" and "join" actions
 		self.copy_mode["list, quit"].append(self.language_texts["filler_formatted"])
 		self.copy_mode["list, quit"].append(self.language_texts["filler_formatted"])
-		self.copy_mode["list, quit"].append("[" + self.JSON.Language.language_texts["quit, title()"] + "]")
+		self.copy_mode["list, quit"].append("[" + self.Language.language_texts["quit, title()"] + "]")
 
 		# Create actions dictionary with actions list
 		if self.switches["first_mode_change"] == True:
 			self.junction_actions = {
 				"list": [
-					"[" + self.JSON.Language.language_texts["join_{}"] + "]",
+					"[" + self.Language.language_texts["join_{}"] + "]",
 					"[" + self.language_texts["disable_junction_mode"] + "]"
 				]
 			}
@@ -150,7 +150,7 @@ class Copy_Story_Titles(Stories):
 					self.copy_mode["list, actions, no change mode"].append(self.language_texts["filler_formatted"])
 
 			# If the action is the "join" junction action, add it to the "join_{}" key of the junction_actions dictionary
-			if action == "[" + self.JSON.Language.language_texts["join_{}"] + "]":
+			if action == "[" + self.Language.language_texts["join_{}"] + "]":
 				self.junction_actions["join_{}"] = action_value
 
 				# If the join mode is deactivated, add the join action to the list with actions
@@ -222,14 +222,14 @@ class Copy_Story_Titles(Stories):
 
 	def Check_Story_Title(self):
 		# Check if the story title is the quit text, if it is, show the "finished copying story titles" text
-		if self.story_title == "[" + self.JSON.Language.language_texts["quit, title()"] + "]":
+		if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
 			self.Finish_Copying()
 
 	def Join_Story_Titles(self):
 		# Create the empty string which will be the joined story title
 		joined_story_title = ""
 
-		select_text = self.language_texts["select_{}_to_{}"].format(self.JSON.Language.language_texts["the_first, masculine"] + " " + self.copy_mode["item"], self.language_texts["join"])
+		select_text = self.language_texts["select_{}_to_{}"].format(self.Language.language_texts["the_first, masculine"] + " " + self.copy_mode["item"], self.Language.language_texts["join"])
 
 		# Select the first story title, do not copy
 		self.Select_And_Copy_Story_Title(options = self.copy_mode["list, actions, no change mode"], select_text = select_text, copy = False)
@@ -240,14 +240,14 @@ class Copy_Story_Titles(Stories):
 			while self.story_title == self.language_texts["filler_formatted"]:
 				self.Select_And_Copy_Story_Title(options = self.copy_mode["list, actions, no change mode"], select_text = select_text, copy = False)
 
-		if self.story_title == "[" + self.JSON.Language.language_texts["quit, title()"] + "]":
+		if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
 			quit()
 
 		if self.story_title != "[" + self.language_texts["disable_junction_mode"] + "]":
 			# Add the first story title to the empty string
 			joined_story_title += self.story_title
 
-			select_text = self.language_texts["select_{}_to_{}"].format(self.JSON.Language.language_texts["the_second, masculine"] + " " + self.copy_mode["item"], self.language_texts["join"])
+			select_text = self.language_texts["select_{}_to_{}"].format(self.Language.language_texts["the_second, masculine"] + " " + self.copy_mode["item"], self.Language.language_texts["join"])
 
 			# Select the second story title, do not copy
 			self.Select_And_Copy_Story_Title(options = self.copy_mode["list, quit"], select_text = select_text, copy = False)
@@ -258,7 +258,7 @@ class Copy_Story_Titles(Stories):
 				while self.story_title == self.language_texts["filler_formatted"]:
 					self.Select_And_Copy_Story_Title(options = self.copy_mode["list, quit"], select_text = select_text, copy = False)
 
-			if self.story_title == "[" + self.JSON.Language.language_texts["quit, title()"] + "]":
+			if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
 				quit()
 
 			# Add the separator and the second story title to the joined story title

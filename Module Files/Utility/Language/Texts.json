@@ -1081,6 +1081,14 @@
 		"en": "{} website link",
 		"pt": "Link do site {}"
 	},
+	"website_link": {
+		"en": "Website link",
+		"pt": "Link do site"
+	},
+	"website_image_folder": {
+		"en": "Website image folder",
+		"pt": "Pasta de imagens do site"
+	},
 	"official_website": {
 		"en": "Official website",
 		"pt": "Site oficial"
@@ -1683,9 +1691,89 @@
 			"feminine": "Pular o"
 		}
 	},
-	"website_link": {
-		"en": "Website link",
-		"pt": "Link do site"
+	"you_skipped_the": {
+		"en": "You skipped the",
+		"pt": "Você pulou a"
+	},
+	"join": {
+		"en": "join",
+		"pt": "juntar"
+	},
+	"story": {
+		"en": "story",
+		"pt": "história"
+	},
+	"story, title()": {
+		"en": "Story",
+		"pt": "História"
+	},
+	"stories": {
+		"en": "stories",
+		"pt": "histórias"
+	},
+	"stories, title()": {
+		"en": "Stories",
+		"pt": "Histórias"
+	},
+	"story_title": {
+		"en": "Story title",
+		"pt": "Título da história"
+	},
+	"story_titles": {
+		"en": "Story titles",
+		"pt": "Títulos de história"
+	},
+	"stories_list": {
+		"en": "Stories list",
+		"pt": "Lista de Histórias"
+	},
+	"story_information": {
+		"en": "Story information",
+		"pt": "Informações da história"
+	},
+	"story_covers": {
+		"en": "Story Covers",
+		"pt": "Capas de Histórias"
+	},
+	"reader, title()": {
+		"en": "Reader",
+		"pt": "Leitor"
+	},
+	"readers, title()": {
+		"en": "Readers",
+		"pt": "Leitores"
+	},
+	"read, title()": {
+		"en": "Read",
+		"pt": "Leitura"
+	},
+	"reads, title()": {
+		"en": "Reads",
+		"pt": "Leituras"
+	},
+	"lore, title()": {
+		"en": "Lore",
+		"pt": "Lore"
+	},
+	"visual, title()": {
+		"en": "Visual",
+		"pt": "Visual"
+	},
+	"chapter": {
+		"en": "chapter",
+		"pt": "capítulo"
+	},
+	"chapter, title()": {
+		"en": "Chapter",
+		"pt": "Capítulo"
+	},
+	"chapters": {
+		"en": "chapters",
+		"pt": "capítulos"
+	},
+	"chapters, title()": {
+		"en": "Chapters",
+		"pt": "Capítulos"
 	},
 	"portrait, title()": {
 		"en": "Portrait",
@@ -1842,22 +1930,6 @@
 		"pt": "Datas",
 		"en": "Dates"
 	},
-	"story": {
-		"en": "story",
-		"pt": "história"
-	},
-	"story, title()": {
-		"en": "Story",
-		"pt": "História"
-	},
-	"stories": {
-		"en": "stories",
-		"pt": "histórias"
-	},
-	"stories, title()": {
-		"en": "Stories",
-		"pt": "Histórias"
-	},
 	"operational_system": {
 		"en": "Operational System",
 		"pt": "Sistema Operacional"
@@ -1865,10 +1937,6 @@
 	"render, title()": {
 		"en": "Render",
 		"pt": "Renderização"
-	},
-	"story_covers": {
-		"en": "Story Covers",
-		"pt": "Capas de Histórias"
 	},
 	"covers, title()": {
 		"en": "Covers",

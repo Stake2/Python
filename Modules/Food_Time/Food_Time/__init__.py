@@ -41,6 +41,9 @@ class Food_Time():
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
@@ -50,8 +53,8 @@ class Food_Time():
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"JSON",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules

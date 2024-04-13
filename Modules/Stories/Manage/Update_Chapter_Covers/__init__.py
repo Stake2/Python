@@ -9,21 +9,27 @@ class Update_Chapter_Covers(Stories):
 		# Import sub-classes method
 		self.Import_Sub_Classes()
 
-		# Show the information text with the story title
+		# Show space separators and a dash space separator
 		print()
 		print(self.separators["5"])
 		print()
+
+		# Show the information text with the story title in the user language
 		print(self.language_texts["updating_the_chapter_covers_of_this_story"] + ":")
 		print(self.story["Titles"][self.user_language])
 		print()
 
-		# Run the "Post" class as a module
+		# Run the "Post" class as a module to update all of the chapter covers
 		self.Post(run_as_module = True)
 
-		# Show the finish text
+		# Show the finish text with the story title in the user language
 		print(self.separators["5"])
 		print()
-		print(self.language_texts["finished_updating_the_chapter_covers"] + ".")
+		print(self.language_texts["you_finished_updating_the_chapter_covers_of_this_story"] + ":")
+		print(self.story["Titles"][self.user_language])
+
+		# Show a five dash space separator
+		print(self.separators["5"])
 
 	def Import_Sub_Classes(self):
 		# Import the "importlib" module

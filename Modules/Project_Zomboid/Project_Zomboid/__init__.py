@@ -30,6 +30,9 @@ class Project_Zomboid(object):
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
@@ -118,7 +121,6 @@ class Project_Zomboid(object):
 
 		# Create the sub-folders
 		folders = [
-			"Database",
 			"Cities"
 		]
 
@@ -145,8 +147,21 @@ class Project_Zomboid(object):
 		self.project_zomboid["Folders"]["Pre-defined values"] = self.project_zomboid["Folders"]["root"] + "Pre-defined values.json"
 		self.File.Create(self.project_zomboid["Folders"]["Pre-defined values"])
 
-		# Read the pre-defined values file
-		self.project_zomboid["Pre-defined values"] = self.JSON.To_Python(self.project_zomboid["Folders"]["Pre-defined values"])
+		# Define the default pre-defined values dictionary
+		self.project_zomboid["Pre-defined values"] = {
+			"City": "",
+			"Survivor": ""
+		}
+
+		file = self.project_zomboid["Folders"]["Pre-defined values"]
+
+		# If the file is not empty
+		if self.File.Contents(file)["lines"] != []:
+			# Read the pre-defined values file
+			self.project_zomboid["Pre-defined values"] = self.JSON.To_Python(self.project_zomboid["Folders"]["Pre-defined values"])
+
+		# Write the default or updated "Pre-defined values" dictionary into the "Pre-defined values.json" file
+		self.JSON.Edit(self.project_zomboid["Folders"]["Pre-defined values"], self.project_zomboid["Pre-defined values"])
 
 	def Define_The_Cities(self):
 		# Define the "Cities" dictionary

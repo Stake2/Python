@@ -18,6 +18,9 @@ class Date():
 		from Utility.Text import Text as Text
 
 		self.JSON = JSON()
+
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
 		self.Text = Text()
 
 		self.languages = self.JSON.Language.languages

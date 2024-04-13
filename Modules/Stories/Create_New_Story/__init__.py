@@ -8,8 +8,8 @@ class Create_New_Story(Stories):
 
 		# Dictionaries
 		self.default_information_items = {
-			self.JSON.Language.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
-			self.JSON.Language.language_texts["author, title()"]: self.stories["Author"]
+			self.Language.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
+			self.Language.language_texts["author, title()"]: self.stories["Author"]
 		}
 
 		self.Type_Story_Information()
@@ -19,7 +19,7 @@ class Create_New_Story(Stories):
 
 		self.Show_Story_Information([self.story["Title"]])
 
-		self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
 
 	def Type_Story_Information(self):
 		self.story_titles = {}
@@ -28,7 +28,7 @@ class Create_New_Story(Stories):
 		for information_item in self.language_texts["information_items, type: list"]:
 			english_information_item = self.texts["information_items, type: list"]["en"][i]
 
-			if information_item == self.JSON.Language.language_texts["title, title()"]:
+			if information_item == self.Language.language_texts["title, title()"]:
 				for language in self.languages["small"]:
 					translated_language = self.languages["full_translated"][language][self.user_language]
 
@@ -56,7 +56,7 @@ class Create_New_Story(Stories):
 				for language in self.story_titles:
 					self.stories[self.story_title]["Information"]["Titles"][language] = self.story_titles[language]
 
-			if information_item == self.JSON.Language.language_texts["synopsis, title()"]:
+			if information_item == self.Language.language_texts["synopsis, title()"]:
 				self.stories[self.story_title]["Information"]["Wattpad"] = {
 					"ID": {},
 				}
@@ -81,26 +81,26 @@ class Create_New_Story(Stories):
 				self.stories[self.story_title]["Information"]["Website"] = self.links["Stake2 Website"] + self.story_titles["en"] + "/"
 
 			title_and_synopsis = [
-				self.JSON.Language.language_texts["title, title()"],
-				self.JSON.Language.language_texts["synopsis, title()"]
+				self.Language.language_texts["title, title()"],
+				self.Language.language_texts["synopsis, title()"]
 			]
 
 			if information_item not in title_and_synopsis:
 				creation_date_and_author = [
-					self.JSON.Language.language_texts["creation_date"],
-					self.JSON.Language.language_texts["author, title()"]
+					self.Language.language_texts["creation_date"],
+					self.Language.language_texts["author, title()"]
 				]
 
 				if information_item in creation_date_and_author:
 					information = self.Input.Type(information_item, next_line = True)
 
-					if information != "" and information_item == self.JSON.Language.language_texts["author, title()"]:
+					if information != "" and information_item == self.Language.language_texts["author, title()"]:
 						information = self.stories["Author"] + "\n" + information
 
 					if information == "":
 						information = self.default_information_items[information_item]
 
-				if information_item == self.JSON.Language.language_texts["status, title()"]:
+				if information_item == self.Language.language_texts["status, title()"]:
 					show_text = self.language_texts["writing_statuses"]
 					select_text = self.language_texts["select_a_writing_status"]
 
@@ -172,10 +172,10 @@ class Create_New_Story(Stories):
 			self.Folder.Create(self.stories[self.story_title]["Folders"]["Chapters"][full_language])
 
 			# Create and write to chapters number file
-			self.stories[self.story_title]["Folders"]["Chapters"][self.JSON.Language.language_texts["number, title()"]] = self.stories[self.story_title]["Folders"]["Chapters"]["root"] + self.JSON.Language.language_texts["number, title()"] + ".txt"
-			self.File.Create(self.stories[self.story_title]["Folders"]["Chapters"][self.JSON.Language.language_texts["number, title()"]])
+			self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]] = self.stories[self.story_title]["Folders"]["Chapters"]["root"] + self.Language.language_texts["number, title()"] + ".txt"
+			self.File.Create(self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]])
 
-			self.File.Edit(self.stories[self.story_title]["Folders"]["Chapters"][self.JSON.Language.language_texts["number, title()"]], "0", "w")
+			self.File.Edit(self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]], "0", "w")
 
 			# Create Synopsis file and write synopsis to it
 			self.stories[self.story_title]["Folders"]["Information"]["Synopsis"][full_language] = self.stories[self.story_title]["Folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"

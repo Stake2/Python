@@ -18,6 +18,9 @@ class System():
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.Define_Texts()
 
 	def Define_Texts(self):

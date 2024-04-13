@@ -28,6 +28,9 @@ class Years(object):
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
@@ -37,8 +40,8 @@ class Years(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"JSON",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -829,7 +832,7 @@ class Years(object):
 				folder[key] = folder["root"]
 
 				# Define the file name and extension
-				# (Langauge file name and "txt")
+				# (Language file name and "txt")
 				file_name = file[self.user_language]
 
 				extension = "txt"

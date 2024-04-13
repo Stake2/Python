@@ -1,51 +1,7 @@
 {
-	"story": {
-		"en": "story",
-		"pt": "história"
-	},
-	"story, title()": {
-		"en": "Story",
-		"pt": "História"
-	},
-	"stories": {
-		"en": "stories",
-		"pt": "histórias"
-	},
-	"stories, title()": {
-		"en": "Stories",
-		"pt": "Histórias"
-	},
-	"stories_list": {
-		"en": "Stories list",
-		"pt": "Lista de Histórias"
-	},
-	"story_title": {
-		"en": "Story title",
-		"pt": "Título da história"
-	},
-	"story_titles": {
-		"en": "Story titles",
-		"pt": "Títulos de história"
-	},
-	"story_information": {
-		"en": "Story information",
-		"pt": "Informações da história"
-	},
-	"website_image_folder": {
-		"en": "Website image folder",
-		"pt": "Pasta de imagens do site"
-	},
-	"chapter": {
-		"en": "chapter",
-		"pt": "capítulo"
-	},
 	"chapter, title()": {
 		"en": "Chapter",
 		"pt": "Capítulo"
-	},
-	"chapters": {
-		"en": "chapters",
-		"pt": "capítulos"
 	},
 	"chapters, title()": {
 		"en": "Chapters",
@@ -63,29 +19,9 @@
 		"en": "Select a story to",
 		"pt": "Selecione uma história para"
 	},
-	"select_a_chapter_to": {
-		"en": "Select a chapter to",
-		"pt": "Selecione um capítulo para"
-	},
-	"you_skipped_the": {
-		"en": "You skipped the",
-		"pt": "Você pulou a"
-	},
-	"cover, title()": {
-		"en": "Cover",
-		"pt": "Capa"
-	},
-	"covers, title()": {
-		"en": "Covers",
-		"pt": "Capas"
-	},
 	"cover_creation": {
 		"en": "cover creation",
 		"pt": "criação de capa"
-	},
-	"covers_creation": {
-		"en": "covers creation",
-		"pt": "criação de capas"
 	},
 	"websites_update": {
 		"en": "websites update",
@@ -139,25 +75,17 @@
 		"en": "Press Enter when you finish rendering the covers",
 		"pt": "Pressione Enter quando você terminar de renderizar as capas"
 	},
-	"now_render_the_covers_in": {
-		"en": "Now render the covers in",
-		"pt": "Agora renderize as capas em"
-	},
 	"mega_stories": {
 		"en": "Mega Stories",
 		"pt": "de Histórias do Mega"
 	},
 	"website_story_covers": {
-		"en": "Website story covers",
+		"en": "website story covers",
 		"pt": "de capas de histórias do site"
 	},
 	"paste_the_wattpad_chapter_link": {
 		"en": "Paste the Wattpad chapter link",
 		"pt": "Cole o link do capítulo no Wattpad"
-	},
-	"the_{}_part_of_the": {
-		"en": "the {} of the",
-		"pt": "a {} parte do"
 	},
 	"one_more_chapter": {
 		"en": "One more chapter",
@@ -377,14 +305,6 @@
 		"en": "Disable junction mode",
 		"pt": "Desabilitar o modo de junção"
 	},
-	"join": {
-		"en": "join",
-		"pt": "juntar"
-	},
-	"joined, title()": {
-		"en": "Joined",
-		"pt": "Juntado"
-	},
 	"filler_formatted": {
 		"en": "[ ] (Filler)",
 		"pt": "[ ] (Preenchedor)"
@@ -417,9 +337,9 @@
 		"en": "Updating the chapter covers of this story",
 		"pt": "Atualizando as capas de capítulo desta história"
 	},
-	"finished_updating_the_chapter_covers": {
-		"en": "Finished updating the chapter covers",
-		"pt": "Terminou de atualizar as capas de capítulo"
+	"you_finished_updating_the_chapter_covers_of_this_story": {
+		"en": "You finished updating the chapter covers of this story",
+		"pt": "Você terminou de atualizar as capas de capítulo desta história"
 	},
 	"i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website": {
 		"en": "I published the chapter {} of my story \"{}\" on Wattpad and Stake2 Website",

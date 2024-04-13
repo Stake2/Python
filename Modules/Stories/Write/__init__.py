@@ -14,7 +14,7 @@ class Write(Stories):
 		print(self.separators["5"])
 		print()
 
-		print(self.language_texts["story, title()"] + ":")
+		print(self.Language.language_texts["story, title()"] + ":")
 
 		story_titles = ""
 
@@ -138,9 +138,9 @@ class Write(Stories):
 		print(self.chapter["titles"][self.full_user_language])
 
 	def Define_Files(self):
-		self.chapter["files"] = {}
-		self.chapter["files"]["story"] = {}
-		self.chapter["files"]["obsidian"] = {}
+		self.chapter["Files"] = {}
+		self.chapter["Files"]["Story"] = {}
+		self.chapter["Files"]["obsidian"] = {}
 
 		for language in self.languages["small"]:
 			full_language = self.languages["full"][language]
@@ -149,23 +149,26 @@ class Write(Stories):
 				self.chapter["language"] = full_language
 
 				# Story chapter file
-				self.chapter["files"]["story"][full_language] = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["titles"][full_language] + ".txt"
-				self.File.Create(self.chapter["files"]["story"][full_language])
+				self.chapter["Files"]["Story"][full_language] = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["titles"][full_language] + ".txt"
+				self.File.Create(self.chapter["Files"]["Story"][full_language])
 
 				# Obsidian chapter file
 				self.chapter["title"] = self.chapter["titles"][full_language]
 
-				self.chapter["files"]["obsidian"][full_language] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][full_language] + self.chapter["titles"][full_language] + ".md"
-				self.File.Create(self.chapter["files"]["obsidian"][full_language])
+				self.chapter["Files"]["obsidian"][full_language] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][full_language] + self.chapter["titles"][full_language] + ".md"
+				self.File.Create(self.chapter["Files"]["obsidian"][full_language])
 
 		# Define chapter language as full user language on Translate writing mode
 		if self.writing_mode == "Translate":
 			self.chapter["language"] = self.full_user_language
 
 			# Copy English chapter text into user language chapter file
-			text = self.File.Contents(self.chapter["files"]["story"][self.languages["full"]["en"]])["string"]
+			text = self.File.Contents(self.chapter["Files"]["Story"][self.languages["full"]["en"]])["string"]
 
-			self.File.Edit(self.chapter["files"]["obsidian"][self.full_user_language], text, "w")
+			self.File.Edit(self.chapter["Files"]["obsidian"][self.full_user_language], text, "w")
+
+	def Open_Website(self):
+		print()
 
 	def Open_Obsidian(self):
 		replace_list = [
@@ -340,36 +343,34 @@ class Write(Stories):
 				# Ask for chapter title
 				self.chapter["titles"][full_language] += " - " + self.Input.Type(self.language_texts["type_or_paste_the_chapter_title_in_{}"].format(translated_language))
 
-				titles_text = self.JSON.Language.texts["titles, title()"][language]
-
-				# Define titles file
-				file = self.story["Folders"]["Chapters"][full_language][titles_text][titles_text]
+				# Define the titles file
+				file = self.story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
 
 				# Write new chapter title to titles file
 				self.File.Edit(file, self.chapter["titles"][full_language], "a")
 
 		# Rename story chapter file
-		for key in self.chapter["files"]["story"]:
-			source_file = self.chapter["files"]["story"][key]
+		for key in self.chapter["Files"]["Story"]:
+			source_file = self.chapter["Files"]["Story"][key]
 
 			# Write Obsidian text into story chapter file
-			self.File.Edit(source_file, self.File.Contents(self.chapter["files"]["obsidian"][key])["string"], "w")
+			self.File.Edit(source_file, self.File.Contents(self.chapter["Files"]["obsidian"][key])["string"], "w")
 
 			# Update chapter file path with chapter title
-			self.chapter["files"]["story"][key] = self.story["Folders"]["Chapters"][key]["root"] + self.chapter["titles"][key] + ".txt"
+			self.chapter["Files"]["Story"][key] = self.story["Folders"]["Chapters"][key]["root"] + self.chapter["titles"][key] + ".txt"
 
-			if source_file != self.chapter["files"]["story"][key]:
-				self.File.Move(source_file, self.chapter["files"]["story"][key])
+			if source_file != self.chapter["Files"]["Story"][key]:
+				self.File.Move(source_file, self.chapter["Files"]["Story"][key])
 
 		# Rename Obsidian chapter file
-		for key in self.chapter["files"]["obsidian"]:
-			source_file = self.chapter["files"]["obsidian"][key]
+		for key in self.chapter["Files"]["obsidian"]:
+			source_file = self.chapter["Files"]["obsidian"][key]
 
 			# Update chapter file path with chapter title
-			self.chapter["files"]["obsidian"][key] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][key] + self.chapter["titles"][key] + ".md"
+			self.chapter["Files"]["obsidian"][key] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][key] + self.chapter["titles"][key] + ".md"
 
-			if source_file != self.chapter["files"]["obsidian"][key]:
-				self.File.Move(source_file, self.chapter["files"]["obsidian"][key])
+			if source_file != self.chapter["Files"]["obsidian"][key]:
+				self.File.Move(source_file, self.chapter["Files"]["obsidian"][key])
 
 	def Register_Task(self):
 		# Define task dictionary, to use it on Tasks class
@@ -405,7 +406,7 @@ class Write(Stories):
 
 			# Add translated user language to task name if writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["Task"]["Titles"][language] += " " + self.JSON.Language.texts["to"][language] + " " + translated_user_language
+				self.task_dictionary["Task"]["Titles"][language] += " " + self.Language.texts["to"][language] + " " + translated_user_language
 
 			self.task_dictionary["Task"]["Titles"][language] += "."
 

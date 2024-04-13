@@ -30,6 +30,9 @@ class Folder():
 		self.File = File()
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.app_settings = self.JSON.Language.app_settings
 		self.languages = self.JSON.Language.languages
 		self.date = self.Date.date
@@ -346,21 +349,15 @@ class Folder():
 		]
 
 		for folder in folders:
-			key = folder.lower().replace(" ", "_").replace("'", "_")
+			key = folder
 
-			if key == "notepad":
+			if folder == "Notepad":
 				folder = self.JSON.Language.language_texts["notepad, title()"]
 
-				key = "Notepad"
-
-			if key == "image":
-				key = "Image"
+			if folder == "Stories":
+				folder = self.JSON.Language.language_texts["stories, title()"]
 
 			self.folders["Mega"][key] = {
-				"root": self.folders["Mega"]["root"] + folder + "/"
-			}
-
-			self.folders["Mega"][folder] = {
 				"root": self.folders["Mega"]["root"] + folder + "/"
 			}
 
@@ -646,10 +643,6 @@ class Folder():
 
 			folder = self.folders["Mega"]["PHP"]["root"] + item + "/"
 
-			self.folders["Mega"]["php"][key] = {
-				"root": folder
-			}
-
 			self.folders["Mega"]["PHP"][item] = {
 				"root": folder
 			}
@@ -663,8 +656,6 @@ class Folder():
 
 		for item in files:
 			key = item.lower().replace(" ", "_")
-
-			self.folders["Mega"]["php"]["json"][key] = self.folders["Mega"]["php"]["json"]["root"] + item + ".json"
 
 			self.folders["Mega"]["PHP"]["JSON"][item] = self.folders["Mega"]["PHP"]["JSON"]["root"] + item + ".json"
 
@@ -714,19 +705,13 @@ class Folder():
 		for item in items["Folders"]:
 			key = item.lower().replace(" ", "_")
 
-			folder = self.folders["Mega"]["websites"]["root"] + item + "/"
-
-			self.folders["Mega"]["websites"][key] = {
-				"root": folder
-			}
-
 			self.folders["Mega"]["Websites"][item] = {
 				"root": self.folders["Mega"]["Websites"]["root"] + item + "/"
 			}
 
 		# Create the files
 		for item in items["Files"]:
-			file = self.folders["Mega"]["websites"]["root"] + item + "."
+			file = self.folders["Mega"]["Websites"]["root"] + item + "."
 
 			if item in items["JSON"]:
 				file += "json"
@@ -734,7 +719,6 @@ class Folder():
 			else:
 				file += ".txt"
 
-			self.folders["Mega"]["websites"][key] = file
 			self.folders["Mega"]["Websites"][item] = file
 
 		# "Colors.css" file inside the "CSS" folder

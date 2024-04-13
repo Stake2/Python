@@ -19,6 +19,9 @@ class [module_name](object):
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
@@ -60,11 +63,11 @@ class [module_name](object):
 		self.switches = self.Global_Switches.switches["Global"]
 
 		# Get the Languages dictionary
-		self.languages = self.JSON.Language.languages
+		self.languages = self.Language.languages
 
 		# Get the user language and full user language
-		self.user_language = self.JSON.Language.user_language
-		self.full_user_language = self.JSON.Language.full_user_language
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -73,9 +76,23 @@ class [module_name](object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string

@@ -11,6 +11,9 @@ class Run():
 		self.Input = Input()
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.current_folder = os.path.split(__file__)[0] + "\\"
 
 		self.descriptions_file = self.current_folder + "Descriptions.json"

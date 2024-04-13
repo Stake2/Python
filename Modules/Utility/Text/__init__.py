@@ -17,6 +17,9 @@ class Text():
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.Define_Texts()
 
 	def Verbose(self, text, item, verbose = True):

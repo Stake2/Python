@@ -15,6 +15,9 @@ class Input():
 		self.File = File()
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.user_language = self.JSON.Language.user_language
 
 		self.Define_Texts()
@@ -25,11 +28,22 @@ class Input():
 		self.language_texts = self.JSON.Language.Item(self.texts)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = True, first_space = True):
-		if show_text != None and add_colon == True and show_text[-1] + show_text[-2] != ": ":
+		if (
+			show_text != None and
+			add_colon == True and
+			show_text[-1] + show_text[-2] != ": " and
+			show_text[-1] != "?"
+		):
 			show_text += ": "
 
-		if select_text != None and select_text[-1] + select_text[-2] != ": ":
-			if add_colon == True or select_text_colon == True:
+		if (
+			select_text != None and
+			select_text[-1] + select_text[-2] != ": "
+		):
+			if (
+				add_colon == True or
+				select_text_colon == True
+			):
 				select_text += ": "
 
 		if show_text == None:

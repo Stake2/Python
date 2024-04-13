@@ -41,10 +41,10 @@ class Show_Story_Information(Stories):
 			for information_item in self.language_texts["information_items, type: list"]:
 				english_information_item = self.texts["information_items, type: list"]["en"][i]
 
-				if information_item != self.JSON.Language.language_texts["title, title()"]:
+				if information_item != self.Language.language_texts["title, title()"]:
 					print(information_item + ":")
 
-					if information_item != self.JSON.Language.language_texts["synopsis, title()"]:
+					if information_item != self.Language.language_texts["synopsis, title()"]:
 						language_information_item = story["Information"][english_information_item]
 
 						if self.user_language in language_information_item:
@@ -68,7 +68,7 @@ class Show_Story_Information(Stories):
 								):
 									print("\t" + str(item))
 
-					if information_item == self.JSON.Language.language_texts["synopsis, title()"]:
+					if information_item == self.Language.language_texts["synopsis, title()"]:
 						for line in story["Information"][english_information_item][self.user_language].splitlines():
 							print("\t" + line)
 
@@ -80,11 +80,11 @@ class Show_Story_Information(Stories):
 			print("\t" + story["Folders"]["root"])
 			print()
 
-			print(self.language_texts["website_image_folder"] + ":")
+			print(self.Language.language_texts["website_image_folder"] + ":")
 			print("\t" + story["Folders"]["Covers"]["Websites"]["root"])
 			print()
 
-			print(self.JSON.Language.language_texts["website_link"] + ":")
+			print(self.Language.language_texts["website_link"] + ":")
 			print("\t" + story["Information"]["Website"]["Link"])
 			print()
 

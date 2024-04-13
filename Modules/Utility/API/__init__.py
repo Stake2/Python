@@ -34,6 +34,9 @@ class API():
 		self.Date = Date()
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		self.secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["secrets"])
 
 	def YouTube(self, api):

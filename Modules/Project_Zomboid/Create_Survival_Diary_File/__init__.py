@@ -114,7 +114,11 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# ----- #
 
 		# Define the date
-		self.dictionary["Date"] = self.Date.From_String(str(self.dates["Numbers"]["Day"]) + "/" + str(self.dates["Numbers"]["Month"]) + "/" + str(self.dates["Numbers"]["Year"]))
+		day = str(self.dates["Numbers"]["Day"])
+		month = self.Text.Add_Leading_Zeroes(self.dates["Numbers"]["Month"])
+		year = str(self.dates["Numbers"]["Year"])
+
+		self.dictionary["Date"] = self.Date.From_String(day + "/" + month + "/" + year, format = "%d/%m/%Y")
 
 		# Define the "File" dictionary
 		self.dictionary["File"] = {}
