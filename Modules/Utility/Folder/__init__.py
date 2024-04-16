@@ -85,13 +85,13 @@ class Folder():
 		}
 
 		portuguese_folder_names = {
-			"Art": self.JSON.Language.language_texts["art, title()"],
-			"Media": self.JSON.Language.language_texts["medias, title()"],
-			"Games": self.JSON.Language.language_texts["games, title()"]
+			"Art": self.Language.language_texts["art, title()"],
+			"Media": self.Language.language_texts["medias, title()"],
+			"Games": self.Language.language_texts["games, title()"]
 		}
 
 		# Define the language texts dictionary variable for easier typing
-		language_texts = self.JSON.Language.language_texts
+		language_texts = self.Language.language_texts
 
 		# Iterate through the folder names dictionary
 		for name in folder_names:
@@ -160,7 +160,7 @@ class Folder():
 			folder_backup = folder
 
 			if folder == "Shortcuts":
-				folder = self.JSON.Language.language_texts["shortcuts, title()"]
+				folder = self.Language.language_texts["shortcuts, title()"]
 
 			self.folders["apps"][key] = {
 				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
@@ -176,14 +176,14 @@ class Folder():
 
 		self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
 
-		self.folders["apps"]["shortcuts"]["white_shortcuts"] = self.folders["apps"]["shortcuts"]["root"] + self.JSON.Language.language_texts["whites, title()"]
+		self.folders["apps"]["shortcuts"]["white_shortcuts"] = self.folders["apps"]["shortcuts"]["root"] + self.Language.language_texts["whites, title()"]
 
-		self.folders["Apps"]["Shortcuts"]["White"] = self.folders["apps"]["shortcuts"]["root"] + self.JSON.Language.language_texts["whites, title()"]
+		self.folders["Apps"]["Shortcuts"]["White"] = self.folders["apps"]["shortcuts"]["root"] + self.Language.language_texts["whites, title()"]
 
 		# Jogos (Games) folders
 		folders = {
-			"Shortcuts": self.JSON.Language.language_texts["shortcuts, title()"],
-			"Folders": self.JSON.Language.language_texts["folders, title()"]
+			"Shortcuts": self.Language.language_texts["shortcuts, title()"],
+			"Folders": self.Language.language_texts["folders, title()"]
 		}
 
 		for key, folder in folders.items():
@@ -215,7 +215,7 @@ class Folder():
 		# "Downloads" folders
 		folders = {
 			"Mega": "",
-			"Videos": self.JSON.Language.language_texts["videos, title()"]
+			"Videos": self.Language.language_texts["videos, title()"]
 		}
 
 		for key, folder in folders.items():
@@ -352,10 +352,10 @@ class Folder():
 			key = folder
 
 			if folder == "Notepad":
-				folder = self.JSON.Language.language_texts["notepad, title()"]
+				folder = self.Language.language_texts["notepad, title()"]
 
 			if folder == "Stories":
-				folder = self.JSON.Language.language_texts["stories, title()"]
+				folder = self.Language.language_texts["stories, title()"]
 
 			self.folders["Mega"][key] = {
 				"root": self.folders["Mega"]["root"] + folder + "/"
@@ -402,10 +402,10 @@ class Folder():
 
 		# Mega "Notepad" Data Networks folders
 		networks = {
-			"Audiovisual Media": self.JSON.Language.language_texts["audiovisual_media"],
-			"Database": self.JSON.Language.language_texts["database, title()"],
-			"Games": self.JSON.Language.language_texts["games, title()"],
-			"Productivity": self.JSON.Language.language_texts["productivity, title()"]
+			"Audiovisual Media": self.Language.language_texts["audiovisual_media"],
+			"Database": self.Language.language_texts["database, title()"],
+			"Games": self.Language.language_texts["games, title()"],
+			"Productivity": self.Language.language_texts["productivity, title()"]
 		}
 
 		for network, folder in networks.items():
@@ -502,10 +502,10 @@ class Folder():
 					text_key += ", title()"
 
 				if (
-					text_key in self.JSON.Language.language_texts and
+					text_key in self.Language.language_texts and
 					sub_folder in ["Media information", "Comments"]
 				):
-					sub_folder = self.JSON.Language.language_texts[text_key]
+					sub_folder = self.Language.language_texts[text_key]
 
 				dictionary[key] = {
 					"root": dictionary["root"] + sub_folder + "/"
@@ -601,10 +601,10 @@ class Folder():
 
 		# Mega "Image" folders
 		folders = {
-			"Christmas": self.JSON.Language.language_texts["christmas, title()"],
-			"Diary": self.JSON.Language.language_texts["diary, title()"],
-			"Friends": self.JSON.Language.language_texts["friends, title()"],
-			"Social Networks": self.JSON.Language.language_texts["social_networks"],
+			"Christmas": self.Language.language_texts["christmas, title()"],
+			"Diary": self.Language.language_texts["diary, title()"],
+			"Friends": self.Language.language_texts["friends, title()"],
+			"Social Networks": self.Language.language_texts["social_networks"],
 			"Years": self.Date.language_texts["years, title()"]
 		}
 
@@ -615,7 +615,7 @@ class Folder():
 
 		# Mega Image Christmas folders
 		folders = {
-			"Theme": self.JSON.Language.language_texts["theme, title()"]
+			"Theme": self.Language.language_texts["theme, title()"]
 		}
 
 		for key, folder in folders.items():
@@ -625,7 +625,7 @@ class Folder():
 
 		# Mega Image "Years" folders
 		folders = {
-			"Images": self.JSON.Language.language_texts["images, title()"]
+			"Images": self.Language.language_texts["images, title()"]
 		}
 
 		for key, folder in folders.items():
@@ -679,7 +679,7 @@ class Folder():
 
 		# Mega "Stories" folders
 		folders = {
-			"Game Multiverse Bubble": self.JSON.Language.language_texts["game_multiverse_bubble"]
+			"Game Multiverse Bubble": self.Language.language_texts["game_multiverse_bubble"]
 		}
 
 		for key, folder in folders.items():
@@ -739,7 +739,7 @@ class Folder():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Capitalize(self, text, lower = False):
 		text = list(text)

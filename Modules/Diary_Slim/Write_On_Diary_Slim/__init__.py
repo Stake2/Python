@@ -83,7 +83,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			parameters["options"].append("[Multi-selection]")
 
 			# Get the language text
-			language_text = "[" + self.JSON.Language.language_texts["multi_selection"] + "]"
+			language_text = "[" + self.Language.language_texts["multi_selection"] + "]"
 
 			# Add the "[Multi-selection]" text in the user language to the list of language options
 			parameters["language_options"].append(language_text)
@@ -136,7 +136,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		parameters["options"].append("[Finish selection]")
 
 		# Define the language texxt
-		language_text = "[" + self.JSON.Language.language_texts["finish_selection"] + "]"
+		language_text = "[" + self.Language.language_texts["finish_selection"] + "]"
 
 		# Add the "[Finish selection]" text in the user language to the list of language options
 		parameters["language_options"].append(language_text)
@@ -160,7 +160,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			if texts != []:
 				# Show the "List:" text
 				print()
-				print(self.JSON.Language.language_texts["list, title()"] + ":")
+				print(self.Language.language_texts["list, title()"] + ":")
 
 				# Show the list of texts
 				print("[")
@@ -268,7 +268,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 					text_key += ", title()"
 
 				# Get the show text using the text key
-				show_text = self.JSON.Language.language_texts[text_key]
+				show_text = self.Language.language_texts[text_key]
 
 				# Ask the user to select an option from the list of options
 				self.dictionary["Text"]["Data"][self.user_language] = self.Input.Select(options["List"], show_text = show_text)["option"]
@@ -305,7 +305,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 						# If the item is the last one
 						if item == split[-1]:
 							# Add the "and " text before the last item
-							self.dictionary["Text"]["Data"][language] += self.JSON.Language.texts["and"][language] + " "
+							self.dictionary["Text"]["Data"][language] += self.Language.texts["and"][language] + " "
 
 						# Add the item
 						self.dictionary["Text"]["Data"][language] += item
@@ -403,36 +403,19 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the empty languages text
 		languages_text = ""
 
+		# Define the translated languages list
+		translated_languages = []
+
 		# Iterate through the small languages list
 		for language in self.languages["small"]:
 			# Get the translated language in the user language
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			# If the number of small languages is two
-			# And the current language is not the first one
-			if (
-				len(self.languages["small"]) == 2 and
-				language != self.languages["small"][0]
-			):
-				# Add a space to the languages text
-				languages_text += " "
+			# Add the translated language to the list
+			translated_languages.append(translated_language)
 
-			# If the current langauge is the last one
-			if language == self.languages["small"][-1]:
-				# Add the "and " text to the languages text
-				languages_text += self.JSON.Language.language_texts["and"] + " "
-
-			# Add the translated language in the user language
-			languages_text += translated_language
-
-			# If the number of small languages is not two
-			# And the current language is not the last one
-			if (
-				len(self.languages["small"]) != 2 and
-				language != self.languages["small"][-1]
-			):
-				# Add the ", " (comma and space) text to the languages text
-				languages_text += ", "
+		# Create the translated languages text
+		languages_text = self.Text.From_List(translated_languages)
 
 		# Iterate through the small languages list
 		for language in self.languages["small"]:
@@ -462,7 +445,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# If the "testing" switch is True
 			else:
 				# Add the "[Description]" text in the current language to the task description
-				self.task_dictionary["Task"]["Descriptions"][language] += "[" + self.JSON.Language.texts["description, title()"][language] + "]"
+				self.task_dictionary["Task"]["Descriptions"][language] += "[" + self.Language.texts["description, title()"][language] + "]"
 
 			# Define the text to add to the backup file as the task description in the current language
 			text = self.task_dictionary["Task"]["Descriptions"][language]

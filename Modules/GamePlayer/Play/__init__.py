@@ -70,11 +70,11 @@ class Play(GamePlayer):
 		# Define the playing status list for "Plan to play" related statuses
 		status_list = [
 			self.texts["plan_to_play, title()"][self.user_language],
-			self.JSON.Language.texts["on_hold, title()"][self.user_language]
+			self.Language.texts["on_hold, title()"][self.user_language]
 		]
 
 		# If the game playing status is inside the status list
-		if self.game["Details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+		if self.game["Details"][self.Language.language_texts["status, title()"]] in status_list:
 			# Change the playing status to "Playing"
 			self.Change_Status(self.dictionary, self.language_texts["playing, title()"])
 
@@ -101,7 +101,7 @@ class Play(GamePlayer):
 	def Register_The_Session(self):
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Ask the user to press Enter to start counting the session time

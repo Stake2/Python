@@ -20,13 +20,13 @@ class Show_Year_Information(Years):
 				print(tab + "| " + line)
 
 		if self.File.Contents(file)["lines"] == []:
-			print(tab + "| [" + self.JSON.Language.language_texts["empty, title()"] + "]")
+			print(tab + "| [" + self.Language.language_texts["empty, title()"] + "]")
 
 	def Show_Information(self):
 		print("-----")
 		print()
 
-		print(self.JSON.Language.language_texts["{}_information"].format(self.year["Number"]) + ":")
+		print(self.Language.language_texts["{}_information"].format(self.year["Number"]) + ":")
 		print()
 		print("-----")
 		print()

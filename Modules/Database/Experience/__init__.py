@@ -45,11 +45,11 @@ class Experience(Database):
 		# Define the experiencing status list for "Plan to experience" related statuses
 		status_list = [
 			self.texts["plan_to_experience, title()"][self.user_language],
-			self.JSON.Language.texts["on_hold, title()"][self.user_language]
+			self.Language.texts["on_hold, title()"][self.user_language]
 		]
 
 		# If the game experiencing status is inside the status list
-		if self.data["Details"][self.JSON.Language.language_texts["status, title()"]] in status_list:
+		if self.data["Details"][self.Language.language_texts["status, title()"]] in status_list:
 			# If the data "Dates.txt" file is empty
 			if self.File.Contents(self.data["Folders"]["dates"])["lines"] == []:
 				# Get the first experiencing time where the user started experiencing the data

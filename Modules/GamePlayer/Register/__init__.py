@@ -301,16 +301,16 @@ class Register(GamePlayer):
 
 		# Define the entry text lines
 		lines = [
-			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Sessions"]["Numbers"]["Total"]),
-			self.JSON.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"])
+			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Sessions"]["Numbers"]["Total"]),
+			self.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"])
 		]
 
 		# Add the entry title lines
 		if language_parameter != "General":
-			text = self.JSON.Language.texts["title, title()"][language]
+			text = self.Language.texts["title, title()"][language]
 
 		if language_parameter == "General":
-			text = self.JSON.Language.texts["titles, title()"][language]
+			text = self.Language.texts["titles, title()"][language]
 
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
@@ -327,16 +327,16 @@ class Register(GamePlayer):
 
 		# Add the rest of the lines
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
-			self.JSON.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
+			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
+			self.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.JSON.Language.texts["session_duration"][language] + ":" + "\n" + "{}",
-			self.JSON.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
+			self.Language.texts["session_duration"][language] + ":" + "\n" + "{}",
+			self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
 		])
 
 		# Add states texts lines
 		if self.dictionary["States"]["Texts"] != {}:
-			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				language_text = self.dictionary["States"]["Texts"][key][language]
@@ -366,14 +366,14 @@ class Register(GamePlayer):
 
 		i = 0
 		for line in lines:
-			if self.JSON.Language.texts["titles, title()"][language] in line:
-				line = line.replace(self.JSON.Language.texts["titles, title()"][language], self.JSON.Language.texts["title, title()"][language])
+			if self.Language.texts["titles, title()"][language] in line:
+				line = line.replace(self.Language.texts["titles, title()"][language], self.Language.texts["title, title()"][language])
 
 				lines[i] = line
 
 			i += 1
 
-		items.append(self.Text.From_List(titles) + "\n")
+		items.append(self.Text.From_List(titles, break_line = True) + "\n")
 
 		# If the game has sub-games
 		# And the sub-game title is not the same as the game title
@@ -412,7 +412,7 @@ class Register(GamePlayer):
 		items.append(session_duration)
 
 		# Define language entry text
-		file_text = self.Text.From_List(lines)
+		file_text = self.Text.From_List(lines, break_line = True)
 
 		return file_text.format(*items)
 
@@ -422,7 +422,7 @@ class Register(GamePlayer):
 			full_language = self.languages["full"][language]
 
 			# Folder names
-			root_folder = self.JSON.Language.texts["game_sessions"][language]
+			root_folder = self.Language.texts["game_sessions"][language]
 			type_folder = self.dictionary["Type"]["Type"][language]
 
 			# Entries folder
@@ -453,7 +453,7 @@ class Register(GamePlayer):
 			self.File.Edit(self.current_year["Folders"][language]["Game sessions"][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
-			subfolder_name = self.JSON.Language.texts["game_sessions"][language]
+			subfolder_name = self.Language.texts["game_sessions"][language]
 
 			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
 
@@ -591,13 +591,13 @@ class Register(GamePlayer):
 
 		# Ask the user if it wants to write a description for the gaming session
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
 
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
 			# Define the type text
-			type_text = self.JSON.Language.language_texts["description, title()"] + ":"
+			type_text = self.Language.language_texts["description, title()"] + ":"
 
 			# Define the keyword parameters dictionary
 			parameters = {
@@ -616,7 +616,7 @@ class Register(GamePlayer):
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.JSON.Language.language_texts["states, title()"] + ":" + "\n"
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]
@@ -642,7 +642,7 @@ class Register(GamePlayer):
 		}
 
 		# Define the list text, with all the Social Networks separated by commas
-		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"])
 
 		# Remove the "Discord" and "Twitter" Social Networks
 		self.social_networks["List"].remove("Discord")
@@ -650,7 +650,7 @@ class Register(GamePlayer):
 
 		# Define the list text, with all the Social Networks separated by commas
 		# But without Twitter
-		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"])
 
 		# Define the item text to be used
 		self.social_networks["Item text"] = self.language_texts["the_game_cover"]
@@ -673,7 +673,7 @@ class Register(GamePlayer):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 

@@ -146,7 +146,7 @@ class Create_Year_Summary(Years):
 				text = template.format(*items)
 
 				# Remove the " of [year]" text
-				remove = " " + self.JSON.Language.language_texts["of, neutral"] + " " + str(year)
+				remove = " " + self.Language.language_texts["of, neutral"] + " " + str(year)
 
 				text = text.replace(remove, "")
 
@@ -160,7 +160,7 @@ class Create_Year_Summary(Years):
 			print()
 
 			# Show the date of today
-			print(self.JSON.Language.language_texts["today_is"] + ":")
+			print(self.Language.language_texts["today_is"] + ":")
 			print("\t" + self.summary["Texts"]["Today"])
 			print()
 			print("--------------------")
@@ -376,7 +376,7 @@ class Create_Year_Summary(Years):
 							# Add the "last [number]" text
 							gender = type_dictionary["Gender"]
 
-							history["Data"]["Text"][language] += " (" + self.JSON.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][last_number] + ")"
+							history["Data"]["Text"][language] += " (" + self.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][last_number] + ")"
 
 							# Add a colon and line break
 							history["Data"]["Text"][language] += ":" + "\n"
@@ -450,7 +450,7 @@ class Create_Year_Summary(Years):
 					text_key += ", title()"
 
 				# Define the texts dictionary to be used
-				texts = self.JSON.Language.texts
+				texts = self.Language.texts
 
 				if text_key in self.texts:
 					texts = self.texts
@@ -484,7 +484,7 @@ class Create_Year_Summary(Years):
 					self.summary["Text"][language] += "\n\n" + "-----" + "\n\n"
 
 			# Add the "Things done in {year}" text
-			text = self.JSON.Language.texts["things_done_in"][language] + " " + str(self.years["Current year"]["Number"]) + ": "
+			text = self.Language.texts["things_done_in"][language] + " " + str(self.years["Current year"]["Number"]) + ": "
 
 			text += str(self.summary["Numbers"]["Things done"])
 
@@ -502,7 +502,7 @@ class Create_Year_Summary(Years):
 					text_key = number_key.lower().replace(" ", "_")
 
 					# Define the text with the number
-					text = self.JSON.Language.texts[text_key][language] + ": " + str(number)
+					text = self.Language.texts[text_key][language] + ": " + str(number)
 
 					# Add a line break to the text
 					text += "\n"
@@ -546,7 +546,7 @@ class Create_Year_Summary(Years):
 					text_key = number_key.lower().replace(" ", "_")
 
 					# Define the number text
-					text = self.JSON.Language.texts[text_key][language]
+					text = self.Language.texts[text_key][language]
 
 					# Define the History Data variable for easier typing
 					data = history["Data"]
@@ -558,7 +558,7 @@ class Create_Year_Summary(Years):
 						if "Gender" in history:
 							gender = history["Gender"]
 
-						text += " (" + self.JSON.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][data["Number"]] + ")"
+						text += " (" + self.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][data["Number"]] + ")"
 
 					# Add a colon and a line break
 					text += ":" + "\n"
@@ -588,7 +588,7 @@ class Create_Year_Summary(Years):
 	def Show_Summary_Information(self):
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Show the year in which its summary was created
@@ -596,7 +596,7 @@ class Create_Year_Summary(Years):
 		print("\t" + self.year["Number"])
 
 		# Define the type text
-		type_text = self.language_texts["show_year_summary"] + "? (" + self.JSON.Language.language_texts["can_be_long, masculine"] + ")"
+		type_text = self.language_texts["show_year_summary"] + "? (" + self.Language.language_texts["can_be_long, masculine"] + ")"
 
 		# Ask the user if the program should show the summary text (can be long)
 		self.summary["States"]["Show"] = self.Input.Yes_Or_No(type_text)
@@ -605,9 +605,9 @@ class Create_Year_Summary(Years):
 		if self.summary["States"]["Show"] == True:
 			# Show the summary text in the user language
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 			print()
-			print(self.JSON.Language.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
+			print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
 			print("\t" + "[")
 
 			for line in self.summary["Text"][self.user_language].splitlines():
@@ -624,4 +624,4 @@ class Create_Year_Summary(Years):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

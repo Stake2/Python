@@ -84,7 +84,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					print()
 					print("---")
 					print()
-					print(self.JSON.Language.language_texts["media, title()"] + ":")
+					print(self.Language.language_texts["media, title()"] + ":")
 					print("[" + self.dictionary["Media"]["Title"] + "]")
 
 					# Select the media and define its variables, returning the media dictionary (without asking user to select the media)
@@ -115,7 +115,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Show the media item title
 						if self.media["Item"]["Title"] != self.media["Title"]:
 							print()
-							print(self.JSON.Language.language_texts["item"].title() + ":")
+							print(self.Language.language_texts["item"].title() + ":")
 							print("[" + self.media["Item"]["Title"] + "]")
 
 						# Verify if empty episodes' titles files exist
@@ -159,7 +159,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						self.switches["testing"] == True and
 						self.media_title != media_list[-1]
 					):
-						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+						self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			#self.Text.Copy(string)
 			#input()
@@ -169,7 +169,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				plural_media_type != self.media_types["Plural"]["en"][-1] and
 				plural_media_type not in media_types_to_remove
 			):
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
 
@@ -193,7 +193,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 		# And the watching status is not "Plan to watch" or "Completed"
 		if (
 			"titles" in self.dictionary["Media"]["Item"]["Folders"] and
-			self.dictionary["Media"]["Details"][self.JSON.Language.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.JSON.Language.language_texts["completed, title()"]]
+			self.dictionary["Media"]["Details"][self.Language.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.Language.language_texts["completed, title()"]]
 		):
 			# Define the titles file to check its contents
 			titles_file = self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.languages["full"]["en"] + ".txt"
@@ -212,7 +212,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					self.System.Open(titles_file)
 
 				# Wait for the user input (meaning the user finished filling the titles file)
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 	def Add_Date(self):
 		item_types = ["Media"]
@@ -276,7 +276,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 					# Ask for the day and month separated by a slash, because the year is already inside the details
 					while re.search(r"[0-9]{2,2}/[0-9]{2,2}", date) == None:
-						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.JSON.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
+						date = self.Input.Type(self.Date.language_texts["day, title()"] + " " + self.Language.language_texts["and"] + " " + self.Date.language_texts["month"]) + "/" + year
 
 				# Add the "date" key and value after the "year" key
 				key_value = {
@@ -390,7 +390,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					print("\t\t" + media_dictionary["title"] + ":")
 
 					# Ask for media (item) link
-					link = self.Input.Type(self.JSON.Language.language_texts["{}_website_link"].format("MyAnimeList"))
+					link = self.Input.Type(self.Language.language_texts["{}_website_link"].format("MyAnimeList"))
 
 					# Get ID from link
 					id = link.split("/")[-2]
@@ -504,8 +504,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 				# Add "Studio(s)" key to media (item) details after the "Episodes duration" key
 				key_value = {
-					"key": self.Text.By_Number(media_dictionary["Information"]["Dictionary"]["Studios"], self.JSON.Language.language_texts["studio, title()"], self.JSON.Language.language_texts["studios, title()"]),
-					"value": self.Text.From_List(media_dictionary["Information"]["Dictionary"]["Studios"], break_line = False, separator = ", ")
+					"key": self.Text.By_Number(media_dictionary["Information"]["Dictionary"]["Studios"], self.Language.language_texts["studio, title()"], self.Language.language_texts["studios, title()"]),
+					"value": self.Text.From_List(media_dictionary["Information"]["Dictionary"]["Studios"])
 				}
 
 				media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.language_texts["episodes_duration"])
@@ -523,7 +523,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					else:
 						key_value["value"] = media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"]["en"]
 
-					media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.JSON.Language.language_texts["link, title()"])
+					media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.Language.language_texts["link, title()"])
 
 				# Update media (item) details file
 				self.File.Edit(media_dictionary["Folders"]["details"], self.Text.From_Dictionary(media_dictionary["Details"]), "w")
@@ -886,7 +886,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def Paste_Links(self, media_dictionary):
 		links = {
 			"Official": {
-				"Link": self.JSON.Language.language_texts["official_website"],
+				"Link": self.Language.language_texts["official_website"],
 				"Twitter": "Twitter"
 			},
 			"Wikipedia": {
@@ -965,11 +965,11 @@ class Iterate_Through_The_Media_List(Watch_History):
 						link["Gender"] = "masculine"
 
 					# Define of and in texts
-					of_text = self.JSON.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["of"]
-					in_text = self.JSON.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["in"]
+					of_text = self.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["of"]
+					in_text = self.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["in"]
 
 					# Define text to show when asking for user to paste the website link
-					text = self.JSON.Language.language_texts["{}_website_link"].format(in_text + " " + translated_full_language + " " + of_text + " " + link_key)
+					text = self.Language.language_texts["{}_website_link"].format(in_text + " " + translated_full_language + " " + of_text + " " + link_key)
 
 					# If the language is not inside the links dictionary, ask for the website link
 					if language not in media_dictionary["Information"]["Dictionary"]["Links"][link_key]:
@@ -991,7 +991,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						episode_list_links = {}
 
 						# Define text to show when asking for user to paste the episode list website link
-						text = self.JSON.Language.language_texts["{}_website_link"].format(of_text + " " + self.language_texts["episode_list"].lower() + " " + in_text + " " + translated_full_language + " " + of_text + " " + link_key)
+						text = self.Language.language_texts["{}_website_link"].format(of_text + " " + self.language_texts["episode_list"].lower() + " " + in_text + " " + translated_full_language + " " + of_text + " " + link_key)
 
 						# If the language is not inside the episode list links dictionary, ask for the episode list website link
 						if (

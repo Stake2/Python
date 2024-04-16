@@ -104,7 +104,7 @@ class Convert_History(Tasks):
 				self.JSON.Edit(self.year["Folders"][task_type]["tasks"], self.year[task_type])
 
 				# "Entry list.txt"
-				self.File.Edit(self.year["Folders"][task_type]["entry_list"], self.Text.From_List(self.year[task_type]["Entries"]), "w")
+				self.File.Edit(self.year["Folders"][task_type]["entry_list"], self.Text.From_List(self.year[task_type]["Entries"], break_line = True), "w")
 
 			if self.year["Number"] != list(self.years_list)[-1]:
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
+				self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")

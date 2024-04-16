@@ -148,7 +148,7 @@ class Open_Social_Network(Social_Networks):
 			# If the "First separator" state is True
 			if self.dictionary["States"]["First separator"] == True:
 				# Show a separator
-				print(self.large_bar)
+				print(self.separators["5"])
 				print()
 
 		# If there are more than one Social Network to open
@@ -166,12 +166,12 @@ class Open_Social_Network(Social_Networks):
 				print()
 
 			# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-			print(self.JSON.Language.language_texts["number, title()"] + ":")
+			print(self.Language.language_texts["number, title()"] + ":")
 			print("\t" + number_text)
 			print()
 
 			# Show the "Social Network" text and the Social Network name
-			print(self.JSON.Language.language_texts["social_network"] + ":")
+			print(self.Language.language_texts["social_network"] + ":")
 			print("\t" + self.social_network["Name"])
 			print()
 
@@ -203,7 +203,7 @@ class Open_Social_Network(Social_Networks):
 		):
 			# Show a separator
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 	def Open_Social_Network(self):
 		# Open the Social Network link

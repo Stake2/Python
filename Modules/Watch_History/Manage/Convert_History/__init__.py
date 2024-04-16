@@ -58,7 +58,7 @@ class Convert_History(Watch_History):
 			for entry in self.watched["Entries"]["Dictionary"].values():
 				titles_list.append(entry["Episode"]["Titles"][self.media["Language"]])
 
-			self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(titles_list), "a")
+			self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(titles_list, break_line = True), "a")
 
 			self.watched["Correct titles"] = self.File.Contents(self.watched["Correct titles"])["lines"]
 
@@ -99,12 +99,12 @@ class Convert_History(Watch_History):
 
 			self.Text.Copy(time, verbose = False)
 
-			new_title = self.Input.Type(self.JSON.Language.language_texts["title, title()"], next_line = True)
+			new_title = self.Input.Type(self.Language.language_texts["title, title()"], next_line = True)
 
 			if new_title != "":
 				self.watched["Correct titles"][i] = new_title
 
-				self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(self.watched["Correct titles"]), "w")
+				self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(self.watched["Correct titles"], break_line = True), "w")
 
 			i += 1
 
@@ -189,14 +189,14 @@ class Convert_History(Watch_History):
 				lines[11] = titles["en"]
 
 				# Update the year Entry file
-				self.File.Edit(year_entry_file, self.Text.From_List(lines), "w")
+				self.File.Edit(year_entry_file, self.Text.From_List(lines, break_line = True), "w")
 
 				# Iterate through the small languages list
 				for language in self.languages["small"]:
 					full_language = self.languages["full"][language]
 
 					# Get the root and type folder
-					root_folder = self.JSON.Language.texts["watched_media"][language]
+					root_folder = self.Language.texts["watched_media"][language]
 					type_folder = self.dictionary["Media type"]["Plural"][language]
 
 					# Get the type folder inside the root folder which is inside the year language folder
@@ -211,7 +211,7 @@ class Convert_History(Watch_History):
 					lines[10] = titles[language]
 
 					# Update the year Entry file per language
-					self.File.Edit(file, self.Text.From_List(lines), "w")
+					self.File.Edit(file, self.Text.From_List(lines, break_line = True), "w")
 
 				# Update the episode title in the Watched Entry file
 				watched_entry_file = self.watched["Files"]["root"] + watched_entry["Entry"].replace(":", ";").replace("/", "-") + ".txt"
@@ -223,7 +223,7 @@ class Convert_History(Watch_History):
 				lines[10] = titles[self.media["Language"]]
 
 				# Update the Watched Entry file
-				self.File.Edit(watched_entry_file, self.Text.From_List(lines), "w")
+				self.File.Edit(watched_entry_file, self.Text.From_List(lines, break_line = True), "w")
 
 				# --- #
 
@@ -238,23 +238,23 @@ class Convert_History(Watch_History):
 
 				print()
 
-				print(self.JSON.Language.language_texts["entry, title()"] + ":")
+				print(self.Language.language_texts["entry, title()"] + ":")
 				print("[" + year_entry["Entry"] + "]")
 				print()
 
-				print(self.JSON.Language.language_texts["line, title()"] + ":")
+				print(self.Language.language_texts["line, title()"] + ":")
 				print("[" + str(i + 1) + "]")
 				print()
 
-				print(self.JSON.Language.language_texts["wrong, title()"] + ":")
+				print(self.Language.language_texts["wrong, title()"] + ":")
 				print("[" + wrong_title + "]")
 				print()
 
-				print(self.JSON.Language.language_texts["right, title()"] + ":")
+				print(self.Language.language_texts["right, title()"] + ":")
 				print("[" + correct_title + "]")
 
 				if self.switches["testing"] == True:
-					self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+					self.Input.Type(self.Language.language_texts["continue, title()"])
 
 				print()
 				print("-----")
@@ -290,7 +290,7 @@ class Convert_History(Watch_History):
 			setattr(self, title, sub_class)
 
 		# Show the "with_file" text
-		print(self.JSON.Language.language_texts["with_file"])
+		print(self.Language.language_texts["with_file"])
 		print()
 
 		# Get the History dictionary to update the entries number
@@ -372,7 +372,7 @@ class Convert_History(Watch_History):
 				# Show a dash and space separator, and the number
 				print(self.separators["5"])
 				print()
-				print(self.JSON.Language.language_texts["number, title()"] + ":")
+				print(self.Language.language_texts["number, title()"] + ":")
 				print("[" + str(number) + "/" + str(number) + "]")
 
 				# Define the empty entry dictionary
@@ -392,7 +392,7 @@ class Convert_History(Watch_History):
 						text_key = item_name.lower() + ", title()"
 
 						# Get the language text
-						language_text = self.JSON.Language.language_texts[text_key]
+						language_text = self.Language.language_texts[text_key]
 
 						ask_for_item = True
 
@@ -427,8 +427,8 @@ class Convert_History(Watch_History):
 						media_items = self.year["Media"]["Items"]["List"]
 
 						# Ask the user to select a media item
-						show_text = self.JSON.Language.language_texts["items, title()"]
-						select_text = self.JSON.Language.language_texts["item, title()"]
+						show_text = self.Language.language_texts["items, title()"]
+						select_text = self.Language.language_texts["item, title()"]
 
 						value = self.Input.Select(media_items, show_text = show_text, select_text = select_text)["option"]
 
@@ -449,7 +449,7 @@ class Convert_History(Watch_History):
 
 				print()
 
-				# Update the "Pre-entries.json" file with the new pre-entries
+				# Update the "Pre-entries.json" file with the updated "Pre-entries" dictionary
 				self.JSON.Edit(self.year["Folders"]["Pre-entries"], self.year["Pre-entries"])
 
 		last_pre_entry = pre_entries_list[-1]
@@ -474,15 +474,15 @@ class Convert_History(Watch_History):
 			# Media type, entry date, and title
 			progress_text = "-----" + "\n" + \
 			"\n" + \
-			self.JSON.Language.language_texts["number, title()"] + ":" + "\n" + \
+			self.Language.language_texts["number, title()"] + ":" + "\n" + \
 			"[" + str(e + 1) + "/" + str(len(pre_entries_list)) + "]" + "\n" + "\n" + \
-			self.JSON.Language.language_texts["type, title()"] + ":" + "\n" + \
+			self.Language.language_texts["type, title()"] + ":" + "\n" + \
 			"[" + entry["Type"] + "]" + "\n" + \
 			"\n" + \
 			self.Date.language_texts["date, title()"] + ":" + "\n" + \
 			"[" + entry["Date"] + "]" + "\n" + \
 			"\n" + \
-			self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + \
+			self.Language.language_texts["title, title()"] + ":" + "\n" + \
 			"[" + entry["Title"] + "]" + "\n"
 
 			# Convert the Date to UTC
@@ -506,7 +506,7 @@ class Convert_History(Watch_History):
 			self.media = self.dictionary["Media"]
 
 			# Show the media title
-			text = self.JSON.Language.language_texts["media, title()"] + ":" + "\n" + \
+			text = self.Language.language_texts["media, title()"] + ":" + "\n" + \
 			"[" + self.media["Title"] + "]"
 
 			progress_text += "\n" + text + "\n"
@@ -524,11 +524,11 @@ class Convert_History(Watch_History):
 			if self.media["Item"]["Title"] != self.media["Title"]:
 				text = "[" + self.media["Item"]["Title"] + "]"
 
-				progress_text += "\n" + self.JSON.Language.language_texts["item"].title() + ":" + "\n" + \
+				progress_text += "\n" + self.Language.language_texts["item"].title() + ":" + "\n" + \
 				text + "\n"
 
 				print()
-				print(self.JSON.Language.language_texts["item"].title() + ":")
+				print(self.Language.language_texts["item"].title() + ":")
 				print(text)
 
 			# Define the title
@@ -592,7 +592,7 @@ class Convert_History(Watch_History):
 				states_dictionary["Series media"] == False or
 				states_dictionary["Single unit"] == True
 			):
-				comment_entry = self.JSON.Language.language_texts["comment, title()"]
+				comment_entry = self.Language.language_texts["comment, title()"]
 
 			# If the comment entry name exists inside the media Comments dictionary
 			if comment_entry in self.media["Item"]["Comments"]["Entries"]:
@@ -668,7 +668,7 @@ class Convert_History(Watch_History):
 				self.switches["testing"] == True
 			):
 				# Ask for user input before continuing the conversion
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, feminine"].title() + " " + self.JSON.Language.language_texts["entry"] + ")")
+				self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, feminine"].title() + " " + self.Language.language_texts["entry"] + ")")
 
 				# Show a space separator
 				print()
@@ -856,13 +856,13 @@ class Convert_History(Watch_History):
 					progress_text = "-----" + "\n" + \
 					"\n" + \
 					str(e + 1) + "/" + str(len(self.year["Lists"]["Episodes"])) + ":" + "\n" + "\n" + \
-					self.JSON.Language.language_texts["type, title()"] + ":" + "\n" + \
+					self.Language.language_texts["type, title()"] + ":" + "\n" + \
 					"[" + entry["Type"] + "]" + "\n" + \
 					"\n" + \
 					self.Date.language_texts["date, title()"] + ":" + "\n" + \
 					"[" + entry["Date"] + "]" + "\n" + \
 					"\n" + \
-					self.JSON.Language.language_texts["entry, title()"] + ":" + "\n" + \
+					self.Language.language_texts["entry, title()"] + ":" + "\n" + \
 					"[" + entry["Episode title"] + "]" + "\n"
 
 					# Show the progress text
@@ -968,7 +968,7 @@ class Convert_History(Watch_History):
 
 								text = tab + "[" + self.media["Item"]["Title"] + "]"
 
-								progress_text += "\n" + self.JSON.Language.language_texts["item"].title() + ":" + "\n" + \
+								progress_text += "\n" + self.Language.language_texts["item"].title() + ":" + "\n" + \
 								text.replace(tab, "") + "\n"
 
 								print()
@@ -1030,7 +1030,7 @@ class Convert_History(Watch_History):
 												self.Input.Type()
 
 												# Update the episode titles list
-												self.File.Edit(self.media["Item"]["Episodes"]["Titles"]["Files"][language], self.Text.From_List(self.media["Item"]["Episodes"]["Titles"][language]), "w")
+												self.File.Edit(self.media["Item"]["Episodes"]["Titles"]["Files"][language], self.Text.From_List(self.media["Item"]["Episodes"]["Titles"][language], break_line = True), "w")
 
 									number += 1
 
@@ -1067,7 +1067,7 @@ class Convert_History(Watch_History):
 							states_dictionary["Replace title"] = False
 
 							# If the language "Dubbed" text is inside the episode title, set the "Watch dubbed" state as True
-							if self.JSON.Language.language_texts["dubbed, title()"] in entry["Episode title"]:
+							if self.Language.language_texts["dubbed, title()"] in entry["Episode title"]:
 								states_dictionary["Watch dubbed"] = True
 
 							# If the language "Re-watching" text is inside the episode title, set the "Re-watching" state as True
@@ -1089,7 +1089,7 @@ class Convert_History(Watch_History):
 								number = self.media["Episode"]["re_watched"]["times"]
 
 								for language in self.languages["small"]:
-									text = self.Text.By_Number(number, self.JSON.Language.texts["{}_time"][language], self.JSON.Language.texts["{}_times"][language])
+									text = self.Text.By_Number(number, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
 
 									self.media["Episode"]["re_watched"]["time_text"][language] = text.format(self.Date.texts["number_names_feminine, type: list"][language][number])
 
@@ -1120,7 +1120,7 @@ class Convert_History(Watch_History):
 
 							# Comment file name for movies or single unit media items
 							if states_dictionary["Series media"] == False or states_dictionary["Single unit"] == True:
-								comment_entry = self.JSON.Language.language_texts["comment, title()"]
+								comment_entry = self.Language.language_texts["comment, title()"]
 
 							# Add Re-watching text to comment file name if it exists
 							if states_dictionary["Re-watching"] == True:
@@ -1253,7 +1253,7 @@ class Convert_History(Watch_History):
 							print(progress_text)
 
 							if entry["Episode title"] != self.year["Lists"]["Episodes"][-1] and self.switches["testing"] == True:
-								self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, feminine"].title() + " " + self.JSON.Language.language_texts["entry"] + ")")
+								self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, feminine"].title() + " " + self.Language.language_texts["entry"] + ")")
 
 							print()
 
@@ -1298,9 +1298,9 @@ class Convert_History(Watch_History):
 			Watch_History = Watch_History()
 
 			if "Episodes" in self.year["Lists"] and self.year["Number"] != list(self.years_list)[-1]:
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
+				self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
-		# Update the "History.json" file with the new History dictionary
+		# Update the "History.json" file with the updated "History" dictionary
 		self.JSON.Edit(self.folders["Watch History"]["History"], self.dictionaries["History"])
 
 	def Fix_Comment_Dictionaries(self):
@@ -1401,7 +1401,7 @@ class Convert_History(Watch_History):
 
 					# Show the Entry name
 					print()
-					print(self.JSON.Language.language_texts["entry, title()"] + ":")
+					print(self.Language.language_texts["entry, title()"] + ":")
 					print("[" + entry["Entry"] + "]")
 					print("[" + entry["Date"] + "]")
 					print()
@@ -1412,7 +1412,7 @@ class Convert_History(Watch_History):
 						self.media_title = entry["Media"]["Romanized"]
 
 					# Show the media title
-					print(self.JSON.Language.language_texts["media, title()"] + ":")
+					print(self.Language.language_texts["media, title()"] + ":")
 					print("[" + self.media_title + "]")
 
 					if (
@@ -1424,13 +1424,13 @@ class Convert_History(Watch_History):
 					# If there is a Episode, show its title in the user language
 					if "Episode" in entry:
 						print()
-						print(self.JSON.Language.language_texts["episode, title()"] + ":")
+						print(self.Language.language_texts["episode, title()"] + ":")
 						print("[" + entry["Episode"]["Titles"][self.user_language] + "]")
 
 					# If there is a media Item, show its original title
 					if "Item" in entry:
 						print()
-						print(self.JSON.Language.language_texts["item, title()"] + ":")
+						print(self.Language.language_texts["item, title()"] + ":")
 						print("[" + entry["Item"]["Original"] + "]")
 
 						if (
@@ -1487,7 +1487,7 @@ class Convert_History(Watch_History):
 
 					# Show the "Comments" header
 					print()
-					print(self.JSON.Language.language_texts["comments, title()"] + ":")
+					print(self.Language.language_texts["comments, title()"] + ":")
 
 					found_comment = False
 
@@ -1507,12 +1507,12 @@ class Convert_History(Watch_History):
 							# Show some Comment entry information
 							print("\t" + "[" + str(c + 1) + "/" + str(len(self.comments["Entries"])) + "]:")
 							print()
-							print("\t" + self.JSON.Language.language_texts["entry, title()"] + ":")
+							print("\t" + self.Language.language_texts["entry, title()"] + ":")
 							print("\t" + "[" + comment["Entry"] + "]")
 
 							if comment["Titles"][self.user_language] != comment["Entry"]:
 								print()
-								print("\t" + self.JSON.Language.language_texts["title, title()"] + ":")
+								print("\t" + self.Language.language_texts["title, title()"] + ":")
 								print("\t" + "[" + comment["Titles"][self.user_language] + "]")
 
 							print()
@@ -1734,7 +1734,7 @@ class Convert_History(Watch_History):
 
 					# Show "Continue" text on testing mode to pause between entries
 					if self.switches["testing"] == True:
-						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+						self.Input.Type(self.Language.language_texts["continue, title()"])
 
 					# Define the list of dictionaries to update the Entry dictionary
 					dicts = [
@@ -1747,19 +1747,19 @@ class Convert_History(Watch_History):
 					for dict_ in dicts:
 						dict_["Dictionary"][entry_key] = entry
 
-					# Update the "Watched.json" file with the updated Watched dictionary
+					# Update the "Watched.json" file with the updated "Watched" dictionary
 					self.JSON.Edit(self.medias[self.media_title]["Watched"]["Entries file"], self.medias[self.media_title]["Watched"]["Entries"])
 
 					e += 1
 
-			# Update the year "Entries.json" file with the updated year Entries dictionary
+			# Update the year "Entries.json" file with the updated year "Entries" dictionary
 			self.JSON.Edit(self.year["Folders"]["entries"], self.year["Entries"])
 
 			# Update the Per Media Type files
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				key = plural_media_type.lower().replace(" ", "_")
 
-				# Update the Per Media Type "Entries.json" file with the updated Media type Entries dictionary
+				# Update the Per Media Type "Entries.json" file with the updated media type "Entries" dictionary
 				self.JSON.Edit(self.year["Folders"]["per_media_type"][key]["entries"], self.year["Media type entries"][plural_media_type])
 
 	def Replace_Year_Number(self, folders, to_replace, replace_with):

@@ -18,7 +18,7 @@ class Create_New_Module(Python):
 	def Ask_For_Module_Info(self):
 		# Show a space and a five dash separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		# Ask for the module name
 		self.module_name = self.Input.Type(self.language_texts["type_the_name_of_the_new_python_module"])
@@ -48,7 +48,7 @@ class Create_New_Module(Python):
 
 		# Show a five dash separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		# Ask for the user to type the module descriptions in all languages
 		prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages)["lines"]
@@ -327,7 +327,7 @@ class Create_New_Module(Python):
 		# Sort the list of usage modules
 		self.modules["Usage"]["List"] = sorted(self.modules["Usage"]["List"], key = str.lower)
 
-		# Update the "Modules.json" file with the new Modules dictionary
+		# Update the "Modules.json" file with the updated "Modules" dictionary
 		self.JSON.Edit(self.folders["modules_file"], self.modules)
 
 	def Change_Global_Switches(self):
@@ -346,7 +346,7 @@ class Create_New_Module(Python):
 
 	def Show_Module_Information(self):
 		# Show a five dash separator
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Show the module name
@@ -417,4 +417,4 @@ class Create_New_Module(Python):
 
 		# Show space separators and a five dash separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

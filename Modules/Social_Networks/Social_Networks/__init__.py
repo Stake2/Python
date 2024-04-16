@@ -89,12 +89,26 @@ class Social_Networks(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Define_Folders_And_Files(self):
 		# Define the "Social Networks" folder dictionary
@@ -111,7 +125,7 @@ class Social_Networks(object):
 
 		# Social Networks text "Database" folder
 		self.folders["Social Networks"]["Text"]["Database"] = {
-			"root": self.folders["Social Networks"]["Text"]["root"] + "Database/"
+			"root": self.folders["Social Networks"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
 		}
 
 		# Database "Information items.json" file
@@ -130,7 +144,7 @@ class Social_Networks(object):
 
 		# Social Networks image "Digital Identities" folder
 		self.folders["Social Networks"]["Image"]["Digital Identities"] = {
-			"root": self.folders["Social Networks"]["Image"]["root"] + self.JSON.Language.language_texts["digital_identities"] + "/"
+			"root": self.folders["Social Networks"]["Image"]["root"] + self.Language.language_texts["digital_identities"] + "/"
 		}
 
 		self.Folder.Create(self.folders["Social Networks"]["Image"]["Digital Identities"]["root"])
@@ -215,7 +229,7 @@ class Social_Networks(object):
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Define the language file name text
-				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+				dict_[language] = self.Language.texts[text_key + addon][language]
 
 			if "s" not in text_key:
 				text_key += "s"
@@ -225,7 +239,7 @@ class Social_Networks(object):
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
-				dict_["Plural"][language] = self.JSON.Language.texts[text_key + addon][language]
+				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary
 			dictionary["Dictionary"][file_name] = dict_
@@ -263,7 +277,7 @@ class Social_Networks(object):
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Define the language link type text
-				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+				dict_[language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "Link types" dictionary
 			dictionary["Dictionary"][link_type] = dict_
@@ -276,13 +290,13 @@ class Social_Networks(object):
 
 		# ---------- #
 
-		# List the friend folders, populating the social networks list
-		self.social_networks["List"] = self.Folder.Contents(self.folders["Social Networks"]["Text"]["root"])["folder"]["names"]
+		# Get the list of social networks
+		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social Networks"]["Text"]["Social Networks"])["List"]
 
 		# Remove the non-friend folders from the above list
 		to_remove = [
 			"4chan",
-			"Database",
+			self.Language.language_texts["database, title()"],
 			"Google+",
 			"Plug DJ"
 		]
@@ -292,7 +306,7 @@ class Social_Networks(object):
 				self.social_networks["List"].remove(item)
 
 		# Write the Social Networks list to the "Social Networks list.txt" file
-		text_to_write = self.Text.From_List(self.social_networks["List"])
+		text_to_write = self.Text.From_List(self.social_networks["List"], break_line = True)
 
 		self.File.Edit(self.folders["Social Networks"]["Text"]["Social Networks list"], text_to_write, "w")
 
@@ -396,7 +410,7 @@ class Social_Networks(object):
 						new_settings = {}
 
 						# Define the texts dictionary for easier typing
-						texts_dictionary = self.JSON.Language.texts
+						texts_dictionary = self.Language.texts
 
 						# Iterate through the settings list
 						for setting in self.texts["settings, type: list"]:
@@ -583,7 +597,7 @@ class Social_Networks(object):
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Define the correct texts dictionary
-				texts_dictionary = self.JSON.Language.texts
+				texts_dictionary = self.Language.texts
 
 				if text_key in self.texts:
 					texts_dictionary = self.texts
@@ -615,18 +629,18 @@ class Social_Networks(object):
 
 			text_key += addon
 
-			if text_key not in self.JSON.Language.texts:
+			if text_key not in self.Language.texts:
 				text_key = text_key.replace(addon, "")
 				text_key = text_key[:-1]
 
 				text_key += addon + ", type: plural"
 
-			if text_key not in self.JSON.Language.texts:
+			if text_key not in self.Language.texts:
 				text_key = text_key_backup
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
-				dict_["Plural"][language] = self.JSON.Language.texts[text_key][language]
+				dict_["Plural"][language] = self.Language.texts[text_key][language]
 
 			# Define the "Gender" key
 			dict_["Gender"] = {
@@ -647,7 +661,7 @@ class Social_Networks(object):
 				if key in dictionary["Gender"]["Feminine"]:
 					gender = "feminine"
 
-				words[item] = self.JSON.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+				words[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
 
 				# Define the gender inside the "Gender" dictionary
 				dict_["Gender"]["Text"] = gender
@@ -884,7 +898,7 @@ class Social_Networks(object):
 		if first_separator == True:
 			# Show a separator
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		# Define the information text
 		information_text = self.language_texts["please_type_the_social_network_profile_information"] + ' "{}":'
@@ -956,7 +970,7 @@ class Social_Networks(object):
 
 					# Define the information as "[Empty]" if it is empty
 					if information == "":
-						information = "[{}]".format(self.JSON.Language.language_texts["empty, title()"])
+						information = "[{}]".format(self.Language.language_texts["empty, title()"])
 
 				# If the information item is inside the "Additional items" dictionary
 				if key in self.information_items["Additional items"][self.social_network["Name"]]:

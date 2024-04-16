@@ -40,7 +40,7 @@ class File():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:

@@ -163,7 +163,7 @@ class Convert_History(Diary_Slim):
 			self.JSON.Edit(self.year["Folders"]["year"], self.year["Year"])
 
 			if self.year["Number"] != list(self.years_list)[-1] and self.switches["testing"] == True:
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"] + " (" + self.JSON.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
+				self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, masculine"].title() + " " + self.Date.language_texts["year, title()"] + ")")
 
-		# Update the "History.json" file with the new History dictionary
+		# Update the "History.json" file with the updated "History" dictionary
 		self.JSON.Edit(self.diary_slim["Folders"]["Years"]["History"], self.history)

@@ -10,10 +10,9 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		# Define the root dictionary
 		self.dictionary = {
-			"Cities": {},
-			"Survivors": {},
-			"City": {},
-			"Survivor": {}
+			"Survivors": self.project_zomboid["Survivors"]["List"],
+			"Survivor": {},
+			"City": {}
 		}
 
 		# Define the "States" dictionary
@@ -21,19 +20,8 @@ class Create_Survival_Diary_File(Project_Zomboid):
 			"Used pre-defined values": False
 		}
 
-		# Select the city
-		self.Select_A_City()
-
 		# Select the survivor
 		self.Select_A_Survivor()
-
-		# If the pre-defined city and survivor were present
-		if (
-			self.project_zomboid["Pre-defined values"]["City"] != "" and
-			self.project_zomboid["Pre-defined values"]["Character"] != ""
-		):
-			# Define the "Used pre-defined values" state as True
-			self.states["Used pre-defined values"] = True
 
 		# Update the information about the survivor (dates, survival day, files)
 		self.Update_Information()
@@ -44,74 +32,46 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# Open the file
 		self.Open_File()
 
-	def Select_A_City(self):
-		# Define the local "Cities" dictionary
-		self.dictionary["Cities"] = deepcopy(self.project_zomboid["Cities"])
-
-		# Remove cities with no survivors
-		for city, dictionary in deepcopy(self.dictionary["Cities"]["Dictionary"]).items():
-			if dictionary["Survivors"]["List"] == []:
-				# Remove the city
-				self.dictionary["Cities"]["Names"].remove(city)
-
-				# Remove the dictionary
-				self.dictionary["Cities"]["Dictionary"].pop(city)
-
-		# If the pre-defined city is an empty string, ask the user to select a city
-		if self.project_zomboid["Pre-defined values"]["City"] == "":
-			# Define the state
-			state = "Kentucky"
-
-			# Define the show and select texts
-			show_text = self.language_texts["{}_cities"].format(state)
-			select_text = self.language_texts["select_a_{}_city_to_use"].format(state)
-
-			# Ask for the user to select the city
-			city = self.Input.Select(self.dictionary["Cities"]["Names"], show_text = show_text, select_text = select_text)["option"]
-
-		# If the city inside the pre-defined values dictionary is not an empty string
-		if self.project_zomboid["Pre-defined values"]["City"] != "":
-			# Define the city as the pre-defined city
-			city = self.project_zomboid["Pre-defined values"]["City"]
-
-		# Get the "City" dictionary
-		self.dictionary["City"] = self.dictionary["Cities"]["Dictionary"][city]
-
 	def Select_A_Survivor(self):
 		# If the pre-defined survivor is an empty string, ask the user to select a survivor
 		if self.project_zomboid["Pre-defined values"]["Survivor"] == "":
 			# Define the show and select texts
-			show_text = self.JSON.Language.language_texts["survivors, title()"]
-			select_text = self.language_texts["select_a_survivor_from_{}_to_survive_as_them"].format(self.dictionary["City"]["Name"])
+			show_text = self.Language.language_texts["survivors, title()"]
+			select_text = self.language_texts["select_a_survivor_to_survive_as_them"]
 
 			# Ask for the user to select the survivor
-			survivor = self.Input.Select(self.dictionary["City"]["Survivors"]["List"], show_text = show_text, select_text = select_text)["option"]
+			survivor = self.Input.Select(self.dictionary["Survivors"], show_text = show_text, select_text = select_text)["option"]
 
-		# If the survivor inside the pre-defined values dictionary is not an empty string
+		# If the survivor inside the "Pre-defined values" dictionary is not an empty string
 		if self.project_zomboid["Pre-defined values"]["Survivor"] != "":
 			# Define the survivor as the pre-defined survivor
 			survivor = self.project_zomboid["Pre-defined values"]["Survivor"]
 
+			# Define the "Used pre-defined values" state as True
+			self.states["Used pre-defined values"] = True
+
 		# Get the "Survivor" dictionary
-		self.dictionary["Survivor"] = self.dictionary["City"]["Survivors"]["Dictionary"][survivor]
+		self.dictionary["Survivor"] = self.project_zomboid["Survivors"]["Dictionary"][survivor]
+
+		# Define the "City" dictionary
+		city = self.dictionary["Survivor"]["City"]
+
+		self.dictionary["City"] = self.project_zomboid["Cities"]["Dictionary"][city]
 
 	def Update_Information(self):
-		# Define the Dates variable for easier typing
-		self.dates = self.dictionary["Survivor"]["Dates"]
+		# Define the "dates" variable for easier typing
+		self.dates = self.dictionary["Survivor"]["Diary"]
 
-		# Add to the day number
+		# Add one to the day number
 		self.dates["Numbers"]["Day"] += 1
 
-		# Add to the survival day number
+		# Add one to the survival day number
 		self.dates["Numbers"]["Survival day"] += 1
 
-		# Add to the files number
-		self.dictionary["Survivor"]["Numbers"]["Files"] += 1
+		# Update the "Survivor.json" file with the root "Update_Dictionary"
+		self.Update_Dictionary(self.dictionary["Survivor"])
 
-		# Update the "Survivor.json" file
-		self.JSON.Edit(self.dictionary["Survivor"]["Folders"]["Survivor"], self.dictionary["Survivor"])
-
-		# ----- #
+		# ---------- #
 
 		# Define the date
 		day = str(self.dates["Numbers"]["Day"])
@@ -139,7 +99,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# Define the header template of the diary
 		self.dictionary["File"]["Header template"] = self.Date.language_texts["today_is_day_{} {} {}, {}"] + "." + \
 		"\n" + \
-		self.JSON.Language.language_texts["it_is"].capitalize() + " {} {}." + \
+		self.Language.language_texts["it_is"].capitalize() + " {} {}." + \
 		"\n\n"
 
 		# Define the number name of the day
@@ -159,7 +119,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		self.dictionary["File"]["Header"] = self.dictionary["File"]["Header template"].format(*items)
 
 		# Create the survival diary file
-		self.dictionary["File"]["File"] = self.dates["Folders"]["Year"]["Month"]["root"] + self.dictionary["File"]["Name"] + ".txt"
+		self.dictionary["File"]["File"] = self.dictionary["Survivor"]["Diary"]["Folders"]["Month"]["root"] + self.dictionary["File"]["Name"] + ".txt"
 		self.File.Create(self.dictionary["File"]["File"])
 
 		# Write the diary header to the survival diary file
@@ -176,14 +136,14 @@ class Create_Survival_Diary_File(Project_Zomboid):
 			print(self.language_texts["the_class_used_predefined_city_and_survivor"] + ".")
 			print()
 
-		# Show the city
-		print(self.JSON.Language.language_texts["city, title()"] + ":")
-		print("\t" + self.dictionary["City"]["Name"])
+		# Show the survivor
+		print(self.Language.language_texts["survivor, title()"] + ":")
+		print("\t" + self.dictionary["Survivor"]["Name"])
 		print()
 
-		# Show the survivor
-		print(self.JSON.Language.language_texts["survivor, title()"] + ":")
-		print("\t" + self.dictionary["Survivor"]["Name"])
+		# Show the locality
+		print(self.Language.language_texts["locality, title()"] + ":")
+		print("\t" + self.dictionary["City"]["Locality"][self.user_language])
 		print()
 
 		# Show the survival diary file name and file

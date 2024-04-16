@@ -107,7 +107,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			print()
 
 		# Define the information text
-		self.dictionary["Texts"]["Information"] = self.JSON.Language.language_texts["today_is"]
+		self.dictionary["Texts"]["Information"] = self.Language.language_texts["today_is"]
 
 		# If the "Check for skipped Diary Slim" state is True
 		if self.states["Skipped Diary Slims"]["Check"] == True:
@@ -273,7 +273,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		texts = self.dictionary["Dates"]["Now"]["Timezone"]["DateTime"]["Texts"]
 
 		# Define the "Today is" text template
-		template = self.JSON.Language.language_texts["today_is"] + " {}."
+		template = self.Language.language_texts["today_is"] + " {}."
 
 		# Define the item which is the day name and the root "Day" text
 		item = texts["Day name"][self.user_language] + ", " + self.dictionary["Texts"]["Day"]
@@ -291,15 +291,15 @@ class Create_New_Diary_Slim(Diary_Slim):
 		self.dictionary["Texts"]["Diary Slim date text"] = template.format(item)
 
 		# Define the "type the time that you" text template
-		template = self.JSON.Language.language_texts["type_the_time_that_you_{}"]
+		template = self.Language.language_texts["type_the_time_that_you_{}"]
 
 		# Ask for the time the user have gone to sleep
-		type_text = template.format(self.JSON.Language.language_texts["have_gone_to_sleep"])
+		type_text = template.format(self.Language.language_texts["have_gone_to_sleep"])
 
 		self.dictionary["Times"]["Sleeping"] = self.Match_Time_Pattern(type_text)
 
 		# Ask for the time the user woke up
-		type_text = template.format(self.JSON.Language.language_texts["woke_up"])
+		type_text = template.format(self.Language.language_texts["woke_up"])
 
 		self.dictionary["Times"]["Waking"] = self.Match_Time_Pattern(type_text)
 
@@ -325,10 +325,10 @@ class Create_New_Diary_Slim(Diary_Slim):
 		format_text = " ({}: 00:00)"
 
 		# Format the format text with the "format" text
-		type_text += format_text.format(self.JSON.Language.language_texts["format"])
+		type_text += format_text.format(self.Language.language_texts["format"])
 
 		# Define the helper text variable for easier typing
-		format_text_helper = self.JSON.Language.language_texts["wrong_format_utilize_this_one"]
+		format_text_helper = self.Language.language_texts["wrong_format_utilize_this_one"]
 
 		# Import the "Re" module
 		import re
@@ -482,7 +482,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# Update the month "Diary Slims" number inside the "Month" dictionary
 			self.current_month["Dictionary"]["Numbers"]["Diary Slims"] = len(list(self.current_month["Dictionary"]["Diary Slims"].keys()))
 
-			# Edit the "Month.json" file with the new "Month" dictionary
+			# Edit the "Month.json" file with the updated "Month" dictionary
 			self.JSON.Edit(self.current_month["File"], self.current_month["Dictionary"])
 
 			# ----- #
@@ -503,7 +503,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			for month in self.diary_slim["Current year"]["Year"]["Months"].values():
 				self.diary_slim["Current year"]["Year"]["Numbers"]["Diary Slims"] += month["Numbers"]["Diary Slims"]
 
-			# Edit the "Year.json" file with the new "Year" dictionary
+			# Edit the "Year.json" file with the updated "Year" dictionary
 			self.JSON.Edit(self.diary_slim["Current year"]["Folders"]["Year"], self.diary_slim["Current year"]["Year"])
 
 		# ----- #
@@ -546,7 +546,8 @@ class Create_New_Diary_Slim(Diary_Slim):
 						"Time": False
 					},
 					"Current_Diary_Slim": current_diary_slim,
-					"Verbose": verbose
+					"Verbose": verbose,
+					"First space": True
 				}
 
 				Write_On_Diary_Slim_Module(dictionary)

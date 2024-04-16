@@ -18,7 +18,7 @@ class Show_Tasks(Tasks):
 		self.dictionaries["Tasks"] = self.dictionaries["Tasks"][:-2]
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print(self.dictionaries["Tasks"])
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

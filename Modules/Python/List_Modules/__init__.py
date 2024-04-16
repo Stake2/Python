@@ -7,7 +7,7 @@ class List_Modules(Python):
 		super().__init__()
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["these_are_the_modules_that_exist_in_the_modules_folder"] + ":")
 
@@ -20,4 +20,4 @@ class List_Modules(Python):
 					print(module)
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

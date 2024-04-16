@@ -9,7 +9,7 @@ class Write_On_Diary(Diary):
 		self.diary_chapter_file = self.File.Contents(self.current_diary_file)["lines"][0]
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["current_diary_chapter"] + ":")
 		print(self.diary_chapter_file)

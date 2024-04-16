@@ -51,7 +51,8 @@ class SproutGigs():
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -97,12 +98,26 @@ class SproutGigs():
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Define_Folders_And_Files(self):
 		# Folders
@@ -120,7 +135,7 @@ class SproutGigs():
 		# Lists
 		self.category_list = self.Folder.Contents(self.categories_folder)["folder"]["names"]
 
-		self.File.Edit(self.categories_file, self.Text.From_List(self.category_list), "w")
+		self.File.Edit(self.categories_file, self.Text.From_List(self.category_list, break_line = True), "w")
 
 		self.additional_options = [
 			"[" + self.language_texts["change_category"] + "]",

@@ -34,33 +34,33 @@ class Add_A_New_Data(Database):
 
 	def Type_Data_Information(self):
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["type_the_data_information_(some_items_can_be_left_empty_by_pressing_enter)"] + ":")
 
 		# Ask for the data titles
-		self.data["Title"] = self.Input.Type(self.JSON.Language.language_texts["original_title"], next_line = True, accept_enter = False)
+		self.data["Title"] = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 		self.data["Titles"]["Original"] = self.data["Title"]
 
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			title = self.Input.Type(self.JSON.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
+			title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 			if title != "":
 				self.data["Titles"][language] = title
 
-		title = self.Input.Type(self.JSON.Language.language_texts["romanized_title"], next_line = True)
+		title = self.Input.Type(self.Language.language_texts["romanized_title"], next_line = True)
 
 		if title != "":
 			self.data["Titles"]["Romanized"] = title
 
 		# Ask for the data year and dates
-		text = self.Date.language_texts["year, title()"] + " (" + self.JSON.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
+		text = self.Date.language_texts["year, title()"] + " (" + self.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
 		self.data["Year"] = self.Input.Type(text, next_line = True, regex = "^[1-9]{1}[0-9]{3}; " + str(self.Date.Now()["Units"]["Year"]), accept_enter = False)
 
 		for date_type in ["start", "end"]:
-			text = self.Date.language_texts[date_type + "_date"] + " (" + self.JSON.Language.language_texts["format"] + ": " + self.Date.Now()["Formats"]["DD/MM/YYYY"] + ")"
+			text = self.Date.language_texts[date_type + "_date"] + " (" + self.Language.language_texts["format"] + ": " + self.Date.Now()["Formats"]["DD/MM/YYYY"] + ")"
 
 			accept_enter = False
 			regex = None
@@ -79,44 +79,44 @@ class Add_A_New_Data(Database):
 				self.data[date_type.title() + " date"] = date
 
 		# Ask for the original language of the data
-		show_text = self.JSON.Language.language_texts["languages, title()"]
-		select_text = self.JSON.Language.language_texts["language, title()"]
+		show_text = self.Language.language_texts["languages, title()"]
+		select_text = self.Language.language_texts["language, title()"]
 
 		languages = list(self.languages["full"].values())
-		languages.append("[" + self.JSON.Language.language_texts["empty, title()"] + "]")
+		languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
 		language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
-		if language != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
+		if language != "[" + self.Language.language_texts["empty, title()"] + "]":
 			self.data["Language"] = language
 
 		# Ask for the data status
-		show_text = self.JSON.Language.language_texts["statuses, title()"]
-		select_text = self.JSON.Language.language_texts["status, title()"]
+		show_text = self.Language.language_texts["statuses, title()"]
+		select_text = self.Language.language_texts["status, title()"]
 
 		self.data["Status"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
 
 		# Ask for the data origin type
-		show_text = self.JSON.Language.language_texts["origin_types"]
-		select_text = self.JSON.Language.language_texts["origin_type"]
+		show_text = self.Language.language_texts["origin_types"]
+		select_text = self.Language.language_texts["origin_type"]
 
-		self.data["Origin type"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.JSON.Language.language_texts["origin_types, type: list"])["option"]
+		self.data["Origin type"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.Language.language_texts["origin_types, type: list"])["option"]
 
 	def Create_Details(self):
 		self.data["Details"] = {
-			self.JSON.Language.language_texts["title, title()"]: self.data["Title"]
+			self.Language.language_texts["title, title()"]: self.data["Title"]
 		}
 
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			key = self.JSON.Language.language_texts["title_in_{}"].format(translated_language) 
+			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
 			if language in self.data["Titles"]:
 				self.data["Details"][key] = self.data["Titles"][language]
 
 		if "Romanized" in self.data["Titles"]:
-			key = self.JSON.Language.language_texts["romanized_title"]
+			key = self.Language.language_texts["romanized_title"]
 
 			self.data["Details"][key] = self.data["Titles"]["Romanized"]
 
@@ -129,12 +129,12 @@ class Add_A_New_Data(Database):
 			self.data["Details"][self.Date.language_texts["end_date"]] = self.data["End date"]
 
 		if "Language" in self.data:
-			self.data["Details"][self.JSON.Language.language_texts["original_language"]] = self.data["Language"]
+			self.data["Details"][self.Language.language_texts["original_language"]] = self.data["Language"]
 
-		if self.data["Status"] != self.JSON.Language.language_texts["remote, title()"]:
-			self.data["Details"][self.JSON.Language.language_texts["status, title()"]] = self.data["Status"]
+		if self.data["Status"] != self.Language.language_texts["remote, title()"]:
+			self.data["Details"][self.Language.language_texts["status, title()"]] = self.data["Status"]
 
-		self.data["Details"][self.JSON.Language.language_texts["origin_type"]] = self.data["Origin type"]
+		self.data["Details"][self.Language.language_texts["origin_type"]] = self.data["Origin type"]
 
 		# Create the data folders
 		self.data["Folders"] = {
@@ -144,7 +144,7 @@ class Add_A_New_Data(Database):
 		self.Folder.Create(self.data["Folders"]["root"])
 
 		# Create the data details file
-		self.data["Folders"]["details"] = self.data["Folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
+		self.data["Folders"]["details"] = self.data["Folders"]["root"] + self.Language.language_texts["details, title()"] + ".txt"
 		self.File.Create(self.data["Folders"]["details"])
 
 		# Write into the data details file
@@ -167,5 +167,5 @@ class Add_A_New_Data(Database):
 		# Update the number of data inside the json dictionary
 		self.dictionary["Type"]["JSON"]["Number"] = len(self.dictionary["Type"]["JSON"]["Titles"])
 
-		# Edit the "Information.json" file with the new dictionary
+		# Edit the "Information.json" file with the updated "Information" dictionary
 		self.JSON.Edit(self.dictionary["Type"]["Folders"]["information"]["info"], self.dictionary["Type"]["JSON"])

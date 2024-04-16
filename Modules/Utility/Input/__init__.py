@@ -25,7 +25,7 @@ class Input():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = True, first_space = True):
 		if (
@@ -245,7 +245,7 @@ class Input():
 		]
 
 		if type(question) == dict:
-			question = self.JSON.Language.Item(question)
+			question = self.Language.Item(question)
 
 		if "?" not in question:
 			question += "?"
@@ -277,7 +277,7 @@ class Input():
 			text += ": "
 
 		if type(text) == dict:
-			text = self.JSON.Language.Item(text)
+			text = self.Language.Item(text)
 
 		if first_space == True:
 			print()
@@ -324,12 +324,12 @@ class Input():
 				new_text = text
 
 				if ": " in text:
-					example_text = self.JSON.Language.language_texts["example, title()"] + ': "' + regex["Example"] + '"'
+					example_text = self.Language.language_texts["example, title()"] + ': "' + regex["Example"] + '"'
 
 					try:
 						int(regex["Example"])
 
-						example_text += ", " + self.JSON.Language.language_texts["length, title()"] + ": " + str(len(regex["Example"]))
+						example_text += ", " + self.Language.language_texts["length, title()"] + ": " + str(len(regex["Example"]))
 
 					except ValueError:
 						pass

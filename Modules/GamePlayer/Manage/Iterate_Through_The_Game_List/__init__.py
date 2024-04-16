@@ -74,13 +74,13 @@ class Iterate_Through_The_Game_List(GamePlayer):
 					# Show a separator to separate the information of the previous game from the next
 					if g != 1:
 						print()
-						print(self.large_bar)
+						print(self.separators["5"])
 
 					# If the length of the game list is not one (more than one game)
 					if length != 1:
 						# Show the current game number and the number of games inside the game list
 						print()
-						print(self.JSON.Language.language_texts["number, title()"] + ":")
+						print(self.Language.language_texts["number, title()"] + ":")
 						print("\t" + "[" + str(g) + "/" + str(length) + "]")
 						print()
 						print("---")
@@ -118,7 +118,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 						length != 1
 					):
 						# Ask the user to press Enter to advance to the next game type
-						self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+						self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			# If the "testing" switch is True
 			# And the game type is not the last one
@@ -132,7 +132,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				game_types_to_use == []
 			):
 				# Ask the user to press Enter to advance to the next game type
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			# Add to the current game type number
 			i += 1

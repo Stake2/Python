@@ -20,7 +20,8 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 				"Dot": True
 			},
 			"Current Diary Slim": True,
-			"Verbose": True
+			"Verbose": True,
+			"First space": False
 		}
 
 		# Get the keys and values from the "dictionary" parameter
@@ -46,7 +47,8 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		keys = [
 			"Show text",
 			"Current Diary Slim",
-			"Verbose"
+			"Verbose",
+			"First space"
 		]
 
 		for key in keys:
@@ -103,8 +105,8 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 			# Because the "testing" switch is True
 
 			# Replace "was" with "was not"
-			replace = self.JSON.Language.language_texts["was"]
-			with_ = self.JSON.Language.language_texts["was_not"]
+			replace = self.Language.language_texts["was"]
+			with_ = self.Language.language_texts["was_not"]
 
 			self.dictionary["Texts"]["To show"] = self.dictionary["Texts"]["To show"].replace(replace, with_)
 
@@ -121,6 +123,11 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 		# Add the text to write to the text to show
 		self.dictionary["Texts"]["To show"] += "\n" + "[" + self.dictionary["Texts"]["To write"] + "]"
+
+		# If the "First space" switch is True
+		if self.dictionary["First space"] == True:
+			# Show the first space
+			print()
 
 		# If the "Show text" switch is True
 		# And the "Verbose" switch is True

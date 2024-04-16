@@ -53,7 +53,7 @@ class Open_Friend_File(Friends):
 			if self.dictionary["States"]["Search"] == False:
 				# Show a separator
 				print()
-				print(self.large_bar)
+				print(self.separators["5"])
 
 			# Select a friend
 			# And also update the "Selected a Friend" state in the "States" dictionary
@@ -201,7 +201,7 @@ class Open_Friend_File(Friends):
 				friends = list(self.dictionary["Search"]["Found"].keys())
 
 				print()
-				print(self.large_bar)
+				print(self.separators["5"])
 
 				self.Select_Friend(friends_list = friends, select_text = select_text)
 
@@ -249,7 +249,7 @@ class Open_Friend_File(Friends):
 		file_name = file_name[self.user_language].lower()
 
 		# Show a separator
-		separator = self.large_bar
+		separator = self.separators["5"]
 
 		# If a friend file was not found
 		if self.dictionary["States"]["Found file"] == False:
@@ -289,7 +289,7 @@ class Open_Friend_File(Friends):
 					self.dictionary["Search"]["Information item"]["Name"] != "Origin Social Network"
 				):
 					# Define the Social Network text
-					social_network_text = self.JSON.Language.language_texts["social_network"] + ":" + "\n" + \
+					social_network_text = self.Language.language_texts["social_network"] + ":" + "\n" + \
 					"\t" + self.social_network["Name"]
 
 					# Show the "Social Network" text and name
@@ -302,7 +302,7 @@ class Open_Friend_File(Friends):
 			if self.dictionary["States"]["Found file"] == True:
 				print()
 
-			print(self.JSON.Language.language_texts["search, title()"] + ":")
+			print(self.Language.language_texts["search, title()"] + ":")
 			print("\t" + self.dictionary["Search"]["Query"])
 
 		# If the user searched for a friend
@@ -390,7 +390,7 @@ class Open_Friend_File(Friends):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 	def Open_Friend_File(self):
 		self.System.Open(self.friend["File"], verbose = False)

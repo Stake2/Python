@@ -62,6 +62,19 @@ class Language():
 					"linguagem",
 					"Linguagem"
 				]
+			},
+			"text_language": {
+				"key": "text_language",
+				"name": {
+					"en": "text_language",
+					"pt": "idioma_de_texto"
+				},
+				"list": [
+					"text language",
+					"Text language",
+					"idioma de texto",
+					"Idioma de texto"
+				]
 			}
 		}
 
@@ -501,11 +514,11 @@ class Language():
 		import pathlib
 
 		self.app_settings = {
-			"language": self.system_information["Language"]
+			"Language": self.system_information["Language"]
 		}
 
 		self.username = pathlib.Path.home().name
-		self.user_language = self.app_settings["language"]
+		self.user_language = self.app_settings["Language"]
 		self.full_user_language = self.languages["full"][self.user_language]
 
 		from tzlocal import get_localzone
@@ -760,38 +773,43 @@ class Language():
 
 	def Read_Settings_File(self):
 		if os.path.isfile(self.settings_file) == True:
-			settings = self.To_Python(self.settings_file)
+			self.settings = self.To_Python(self.settings_file)
 
 			for setting_name in self.setting_names:
 				possible_setting_names = self.setting_names[setting_name]["list"]
 
 				for possible_setting_name in possible_setting_names:
-					if possible_setting_name in settings:
-						setting = settings[possible_setting_name]
+					if possible_setting_name in self.settings:
+						setting = self.settings[possible_setting_name]
 
-						if setting in list(self.languages["full"].values()):
-							for language in self.languages["full"]:
-								full_language = self.languages["full"][language]
+						if setting_name == "language":
+							if setting in list(self.languages["full"].values()):
+								for language in self.languages["full"]:
+									full_language = self.languages["full"][language]
 
-								if setting == full_language:
-									setting = language
+									if setting == full_language:
+										setting = language
 
-						self.app_settings[setting_name] = setting
+							if setting in self.languages["small"]:
+								self.user_language = setting
+								self.full_user_language = self.languages["full"][setting]
 
-						if setting in self.languages["small"]:
-							self.user_language = setting
-							self.full_user_language = self.languages["full"][setting]
+						self.app_settings[setting_name.replace("_", " ").capitalize()] = setting
+
+						key = self.setting_names[setting_name]["name"][self.user_language].replace("_", " ").capitalize()
+
+						self.app_settings[key] = setting
+
+			self.settings = self.app_settings
 
 			self.Define_Language_Texts()
 
-			settings[self.language_texts["language, title()"]] = self.app_settings["language"]
-
-			self.Edit(self.settings_file, self.From_Python(settings), "w")
+			self.Edit(self.settings_file, self.From_Python(self.settings), "w")
 
 			# ----- #
 
 			settings = {
-				"Language": self.app_settings["language"]
+				"Language": self.app_settings["Language"]
 			}
 
 			self.global_settings_file = os.path.join(self.folders["apps"]["root"], "Settings.json")
@@ -823,7 +841,7 @@ class Language():
 		for setting_name in self.setting_names:
 			setting_information = self.setting_names[setting_name]
 
-			language_setting_name = setting_information["name"][self.app_settings["language"]]
+			language_setting_name = setting_information["name"][self.app_settings["Language"]]
 
 			option = self.Select(self.languages["small"], show_text = self.language_texts["languages"].title() + ":", select_text = self.language_texts["select_one_{}_(number_or_word), masculine"].format(language_setting_name) + ": ")
 
@@ -869,7 +887,7 @@ class Language():
 		text = template
 
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.app_settings["language"]]
+			translated_language = self.languages["full_translated"][language][self.app_settings["Language"]]
 
 			typed = self.Type(self.language_texts["type_the_text_in_{}"].format(translated_language) + ": ", accept_enter = False, next_line = True)
 

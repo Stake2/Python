@@ -294,7 +294,7 @@ class Update_CSS_Colors(PHP):
 
 		# Show space and five dash separators
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Show the text to show
@@ -309,4 +309,4 @@ class Update_CSS_Colors(PHP):
 			print()
 
 		# Show a five dash separator
-		print(self.large_bar)
+		print(self.separators["5"])

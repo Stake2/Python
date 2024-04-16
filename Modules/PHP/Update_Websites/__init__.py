@@ -8,7 +8,7 @@ class Update_Websites(PHP):
 
 		# Show a space separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		self.update_one_website = update_one_website
 		self.module_website = module_website
@@ -61,7 +61,7 @@ class Update_Websites(PHP):
 		self.Open_Git_Console_Window()
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		website = self.websites["Updated website"]
@@ -85,7 +85,7 @@ class Update_Websites(PHP):
 		self.languages["full_translated"]["General"] = {}
 
 		for language in self.languages["small"]:
-			self.languages["full_translated"]["General"][language] = self.JSON.Language.texts["general, title()"][language]
+			self.languages["full_translated"]["General"][language] = self.Language.texts["general, title()"][language]
 
 		self.languages["small"].insert(0, "General")
 		self.languages["full"]["General"] = "General"
@@ -146,7 +146,7 @@ class Update_Websites(PHP):
 			if type(self.module_website) == list:
 				self.websites["Numbers"] = self.module_website
 
-		# Add websites to update dictionary in websites dictionary
+		# Add websites to the "Update" dictionary in the "Websites" dictionary
 		for number in self.websites["Numbers"]:
 			website = self.websites["List"]["en"][number]
 
@@ -192,16 +192,16 @@ class Update_Websites(PHP):
 
 		while dictionary["option"] != "[" + self.texts["finish_selection"]["en"] + "]":
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 			print()
-			print(self.JSON.Language.language_texts["list, title()"] + ":")
+			print(self.Language.language_texts["list, title()"] + ":")
 
 			if websites["Select list"] != []:
 				for website in websites["Select list"]:
 					print("\t" + website)
 
 			else:
-				print("[" + self.JSON.Language.language_texts["empty, title(), feminine"] + "]")
+				print("[" + self.Language.language_texts["empty, title(), feminine"] + "]")
 
 			# Select website from the list and return its number
 			dictionary = self.Input.Select(websites["List"]["en"], language_options = websites["List"][self.user_language], show_text = self.show_text, select_text = self.select_text)
@@ -246,7 +246,7 @@ class Update_Websites(PHP):
 
 		# Show website info
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(text + ":")
 
@@ -277,7 +277,7 @@ class Update_Websites(PHP):
 			if len(self.websites["Update"]) > 1:
 				# Show website info for current website
 				print()
-				print(self.large_bar)
+				print(self.separators["5"])
 				print()
 				print(self.language_texts["website, title()"] + ":")
 				print("\t" + str(i) + "/" + str(len(list(self.websites["Update"].keys()))))
@@ -295,18 +295,18 @@ class Update_Websites(PHP):
 
 				if self.switches["verbose"] == True:
 					print()
-					print(self.JSON.Language.language_texts["link, title()"] + ":")
+					print(self.Language.language_texts["link, title()"] + ":")
 					print("\t" + link)
 
 				self.Date.Sleep(1)
 
 			if key != list(self.websites["Update"].keys())[-1]:
-				self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
 

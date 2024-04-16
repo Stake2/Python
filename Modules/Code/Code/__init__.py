@@ -34,7 +34,8 @@ class Code(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -80,17 +81,31 @@ class Code(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
 
-		self.code_footer = "\n" + self.large_bar + "\n"
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
+
+		self.code_footer = "\n" + self.separators["5"] + "\n"
 
 	def Define_Folders(self):
-		self.programming_network_folder = self.folders["Notepad"]["Data Networks"]["root"] + self.JSON.Language.language_texts["programming, title()"] + "/"
+		self.programming_network_folder = self.folders["Notepad"]["Data Networks"]["root"] + self.Language.language_texts["programming, title()"] + "/"
 		self.Folder.Create(self.programming_network_folder)
 
 		self.programming_network_file_names = [

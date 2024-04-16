@@ -8,7 +8,7 @@ class Watch_List_Of_Media(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		self.finish_selection_text = "[" + self.JSON.Language.language_texts["finish_selection"] + "]"
+		self.finish_selection_text = "[" + self.Language.language_texts["finish_selection"] + "]"
 
 		self.Define_Media_List_Dict()
 
@@ -150,10 +150,10 @@ class Watch_List_Of_Media(Watch_History):
 
 				self.Show_Media_Title(option_info)
 
-				if self.JSON.Language.language_texts["episode, title()"] in self.media_dictionary["Media"]["Item"]["Details"]:
+				if self.Language.language_texts["episode, title()"] in self.media_dictionary["Media"]["Item"]["Details"]:
 					print()
-					print(self.JSON.Language.language_texts["episode, title()"] + ":")
-					print(self.media_dictionary["Media"]["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] + "]")
+					print(self.Language.language_texts["episode, title()"] + ":")
+					print(self.media_dictionary["Media"]["Item"]["Details"][self.Language.language_texts["episode, title()"]] + "]")
 					print()
 
 				key = option_info["Media"]["Title"]

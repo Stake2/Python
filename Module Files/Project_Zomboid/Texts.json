@@ -7,16 +7,20 @@
 		"en": "Select a {} city to use",
 		"pt": "Selecione uma cidade de {} para usar"
 	},
-	"select_a_survivor_from_{}_to_survive_as_them": {
-		"en": "Select a survivor from [{}] to survive as them",
-		"pt": "Selecione um sobrevivente de [{}] para sobreviver como ele"
+	"select_a_survivor_to_survive_as_them": {
+		"en": "Select a survivor to survive as them",
+		"pt": "Selecione um sobrevivente para sobreviver como ele"
 	},
-	"the_class_used_predefined_city_and_survivor": {
-		"en": "The class used a predefined city and survivor",
-		"pt": "A classe utilizou uma cidade e sobrevivente pré-definidos"
+	"the_class_a_survivor": {
+		"en": "The class used a predefined survivor",
+		"pt": "A classe utilizou um sobrevivente pré-definido"
 	},
 	"this_survival_diary_file_was_created": {
 		"en": "This survivor diary file was created",
 		"pt": "Este arquivo de diário de sobrevivente foi criado"
+	},
+	"kentucky_united_states": {
+		"pt": "Kentucky, Estados Unidos",
+		"en": "Kentucky, United States"
 	}
 }

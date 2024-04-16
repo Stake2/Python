@@ -101,9 +101,11 @@ class Diary_Slim():
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
 		# Define the "Separators" dictionary
 		self.separators = {}
@@ -153,12 +155,17 @@ class Diary_Slim():
 
 		# Iterate through the names list
 		for name in names:
-			# Get the key
+			# Define the key
 			key = name
 
-			# If the name of the folder is "Years", get the text in the user language
-			if name == "Years":
-				name = self.Date.language_texts[name.lower() + ", title()"]
+			# Define the text key for the folder
+			text_key = key.lower().replace(" ", "_")
+
+			if "_" not in text_key:
+				text_key += ", title()"
+
+			# Define the folder name
+			name = self.Language.language_texts[text_key]
 
 			# Define the folder with its key and name
 			self.diary_slim["Folders"][key] = {
@@ -176,13 +183,25 @@ class Diary_Slim():
 
 		# Iterate through the names list
 		for name in names:
+			# Define the key
+			key = name
+
+			# Define the text key for the folder
+			text_key = key.lower().replace(" ", "_")
+
+			if "_" not in text_key:
+				text_key += ", title()"
+
+			# Define the folder name
+			name = self.Language.language_texts[text_key]
+
 			# Define the folder with its key and name
-			self.diary_slim["Folders"]["Data"][name] = {
+			self.diary_slim["Folders"]["Data"][key] = {
 				"root": self.diary_slim["Folders"]["Data"]["root"] + name + "/"
 			}
 
 			# Create it
-			self.Folder.Create(self.diary_slim["Folders"]["Data"][name]["root"])
+			self.Folder.Create(self.diary_slim["Folders"]["Data"][key]["root"])
 
 		# Define the "Header" files
 		for language in self.languages["small"]:
@@ -385,7 +404,7 @@ class Diary_Slim():
 				# Redefine the "year_dictionary" variable
 				year_dictionary = template
 
-				# Update the empty "Year.json" file with the new "Year" dictionary
+				# Update the empty "Year.json" file with the updated "Year" dictionary
 				self.JSON.Edit(file, year_dictionary)
 
 			# Add the "folders" dictionary to the root "Diary Slim" folders dictionary
@@ -400,7 +419,7 @@ class Diary_Slim():
 	def Define_Story_Information(self):
 		# Define the story JSON files
 		names = [
-			"Information",
+			"Story",
 			"Titles"
 		]
 
@@ -411,37 +430,38 @@ class Diary_Slim():
 			self.File.Create(self.diary_slim["Folders"]["Story"][name])
 
 		# Define the default Story "Information" dictionary
-		self.information = {
+		self.story = {
 			"Titles": {},
 			"Chapters": {
-				"Number": 0
+				"Number": 0,
+				"List": []
 			},
 			"Status": {
 				"Number": 0,
-				"Names": self.JSON.Language.language_texts["writing, title()"]
+				"Names": self.Language.language_texts["writing, title()"]
 			},
 			"HEX color": "f1858d"
 		}
 
 		# If the "Information.json" file is not empty
-		file = self.diary_slim["Folders"]["Story"]["Information"]
+		file = self.diary_slim["Folders"]["Story"]["Story"]
 
 		if self.File.Contents(file)["lines"] != []:
 			# Get the filled "Information" dictionary from the file
-			self.information = self.JSON.To_Python(self.diary_slim["Folders"]["Story"]["Information"])
+			self.story = self.JSON.To_Python(self.diary_slim["Folders"]["Story"]["Story"])
 
 		# If the "Titles" dictionary is empty
-		if self.information["Titles"] == {}:
+		if self.story["Titles"] == {}:
 			# Get the "Titles" dictionary from the "Titles.json" file
-			self.information["Titles"] = self.JSON.To_Python(self.diary_slim["Folders"]["Story"]["Titles"])
+			self.story["Titles"] = self.JSON.To_Python(self.diary_slim["Folders"]["Story"]["Titles"])
 
 		# If the number of chapters is 0 (zero)
-		if self.information["Chapters"]["Number"] == 0:
+		if self.story["Chapters"]["Number"] == 0:
 			# Define the number of chapters as the number of Diary Slims
-			self.information["Chapters"]["Number"] = self.history["Numbers"]["Diary Slims"]
+			self.story["Chapters"]["Number"] = self.history["Numbers"]["Diary Slims"]
 
-		# Update the "Information.json" file with the updated Information dictionary
-		self.JSON.Edit(self.diary_slim["Folders"]["Story"]["Information"], self.information)
+		# Update the "Story.json" file with the updated "Story" dictionary
+		self.JSON.Edit(self.diary_slim["Folders"]["Story"]["Story"], self.story)
 
 	def Define_Current_Year(self):
 		# Define the current year "Folders" dictionary

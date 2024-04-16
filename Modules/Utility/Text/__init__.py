@@ -23,7 +23,10 @@ class Text():
 		self.Define_Texts()
 
 	def Verbose(self, text, item, verbose = True):
-		if self.switches["verbose"] == True and verbose == True:
+		if (
+			self.switches["verbose"] == True and
+			verbose == True
+		):
 			import inspect
 
 			print()
@@ -34,7 +37,7 @@ class Text():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Add_Leading_Zeroes(self, number):
 		if int(number) <= 9:
@@ -84,7 +87,7 @@ class Text():
 
 	def Copy(self, text, verbose = True):
 		if type(text) == list:
-			text = self.From_List(text)
+			text = self.From_List(text, break_line = True)
 
 		if type(text) == dict:
 			text = self.From_Dictionary(text)
@@ -95,7 +98,7 @@ class Text():
 
 		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
-	def From_List(self, list_, break_line = True, separator = "", and_text = False):
+	def Old_From_List(self, list_, break_line = True, separator = "", and_text = True):
 		string = ""
 
 		i = 0
@@ -113,47 +116,71 @@ class Text():
 				i == len(list_) - 2 and
 				and_text == True
 			):
-				string += self.JSON.Language.language_texts["and"] + " "
+				string += self.Language.language_texts["and"] + " "
 
 			i += 1
 
 		return string
 
-	def List_To_Text(self, list_, language = None, or_ = False, lower = False):
+	def From_List(self, list_, language = None, lower = False, break_line = False, and_text = True, or_text = False, quotes = False):
 		text = ""
 
-		text_list = self.JSON.Language.language_texts
+		text_list = self.Language.language_texts
 
 		if language != None:
-			text_list = self.JSON.Language.texts
+			text_list = self.Language.texts
 
 		for item in list_:
 			item_backup = item
 
-			if item_backup == list_[-1]:
-				if len(list_) > 2 or len(list_) == 2:
-					if or_ == False:
+			if (
+				item_backup == list_[-1] and
+				break_line == False
+			):
+				if (
+					len(list_) > 2 or
+					len(list_) == 2
+				):
+					separator_text = ""
+
+					if and_text == True:
 						separator_text = text_list["and"]
 
-					else:
+					if or_text == True:
 						separator_text = text_list["or"]
 
-					if language != None:
+					if (
+						language != None and
+						separator_text != ""
+					):
 						separator_text = separator_text[language]
 
-					text += separator_text + " "
+					if separator_text != "":
+						text += separator_text + " "
 
 			if lower == True:
 				item = item.lower()
 
+			if quotes == True:
+				item = '"' + item + '"'
+
 			text += item
 
-			if item_backup != list_[-1]:
+			if (
+				item_backup != list_[-1] and
+				break_line == False
+			):
 				if len(list_) == 2:
 					text += " "
 
 				if len(list_) > 2:
 					text += ", "
+
+			if (
+				item_backup != list_[-1] and
+				break_line == True
+			):
+				text += "\n"
 
 		return text
 

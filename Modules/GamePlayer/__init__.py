@@ -30,9 +30,9 @@ class Run():
 		for class_ in self.classes:
 			class_description = self.descriptions[class_]
 
-			self.class_descriptions.append(self.JSON.Language.Item(class_description))
+			self.class_descriptions.append(self.Language.Item(class_description))
 
-		self.language_texts = self.JSON.Language.Item(self.descriptions)
+		self.language_texts = self.Language.Item(self.descriptions)
 
 		has_active_arguments = False
 
@@ -66,7 +66,7 @@ class Run():
 		# If the module has no active arguments
 		if has_active_arguments == False:
 			# Ask for the user to select a class
-			option = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.JSON.Language.language_texts["select_one_class_to_execute"])["option"]
+			option = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"])["option"]
 
 		# If the module has active arguments
 		if has_active_arguments == True:

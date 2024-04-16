@@ -22,6 +22,9 @@ class Project_Zomboid(object):
 		# Create the survivor dictionaries
 		self.Create_The_Survivor_Dictionaries()
 
+		# Update the cities and survivors dictionaries
+		self.Update_The_Dictionaries()
+
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
 
@@ -89,9 +92,11 @@ class Project_Zomboid(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
 		# Define the "Separators" dictionary
 		self.separators = {}
@@ -121,7 +126,8 @@ class Project_Zomboid(object):
 
 		# Create the sub-folders
 		folders = [
-			"Cities"
+			"Cities",
+			"Survivors"
 		]
 
 		# Iterate through the list of folders
@@ -130,7 +136,7 @@ class Project_Zomboid(object):
 			text_key = key.lower() + ", title()"
 
 			# Define the folder name
-			name = self.JSON.Language.language_texts[text_key]
+			name = self.Language.language_texts[text_key]
 
 			# Define and create the folder
 			self.project_zomboid["Folders"][key] = {
@@ -143,13 +149,38 @@ class Project_Zomboid(object):
 		self.project_zomboid["Folders"]["Cities"]["Cities"] = self.project_zomboid["Folders"]["Cities"]["root"] + "Cities.json"
 		self.File.Create(self.project_zomboid["Folders"]["Cities"]["Cities"])
 
+		# ---------- #
+
+		# Create the "Survivors" sub-folders
+		folders = [
+			"Deceased"
+		]
+
+		# Iterate through the list of folders
+		for key in folders:
+			# Define the text key
+			text_key = key.lower() + ", title()"
+
+			# Define the folder name
+			name = self.Language.language_texts[text_key]
+
+			# Define and create the folder
+			self.project_zomboid["Folders"]["Survivors"][key] = {
+				"root": self.project_zomboid["Folders"]["Survivors"]["root"] + name + "/"
+			}
+
+			self.Folder.Create(self.project_zomboid["Folders"]["Survivors"][key]["root"])
+
+		# Define and create the "Survivors.json" file inside the "Survivors" folder
+		self.project_zomboid["Folders"]["Survivors"]["Survivors"] = self.project_zomboid["Folders"]["Survivors"]["root"] + "Survivors.json"
+		self.File.Create(self.project_zomboid["Folders"]["Survivors"]["Survivors"])
+
 		# Define and create the "Pre-defined values.json" file
 		self.project_zomboid["Folders"]["Pre-defined values"] = self.project_zomboid["Folders"]["root"] + "Pre-defined values.json"
 		self.File.Create(self.project_zomboid["Folders"]["Pre-defined values"])
 
 		# Define the default pre-defined values dictionary
 		self.project_zomboid["Pre-defined values"] = {
-			"City": "",
 			"Survivor": ""
 		}
 
@@ -166,20 +197,36 @@ class Project_Zomboid(object):
 	def Define_The_Cities(self):
 		# Define the "Cities" dictionary
 		self.project_zomboid["Cities"] = {
-			"Names": [
-				"Muldraugh",
-				"Riverside",
-				"Rosewood",
-				"West Point"
-			],
-			"Dictionary": {}
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {},
+			"State": "Kentucky"
 		}
 
+		# Get the list of cities
+		folder = self.project_zomboid["Folders"]["Cities"]["root"]
+
+		self.project_zomboid["Cities"]["List"] = self.Folder.Contents(folder)["folder"]["names"]
+
+		# Sort the list of cities
+		self.project_zomboid["Cities"]["List"] = sorted(self.project_zomboid["Cities"]["List"], key = str.lower)
+
+		# Update the number of cities
+		self.project_zomboid["Cities"]["Numbers"]["Total"] = len(self.project_zomboid["Cities"]["List"])
+
 		# Iterate through the list of city names
-		for city in self.project_zomboid["Cities"]["Names"]:
+		for city in self.project_zomboid["Cities"]["List"]:
 			# Define the empty dictionary
 			dictionary = {
-				"Name": city
+				"Name": city,
+				"Locality": {},
+				"Folders": {},
+				"Numbers": {
+					"Survivors": 0
+				},
+				"Survivors": []
 			}
 
 			# Define the city "Folders" dictionary
@@ -193,128 +240,250 @@ class Project_Zomboid(object):
 			dictionary["Folders"]["City"] = dictionary["Folders"]["root"] + "City.json"
 			self.File.Create(dictionary["Folders"]["City"])
 
-			# Add the local dictionary to the root "Cities" dictionary
+			# Define the full locality of the city for each language
+			# 
+			# Format:
+			# [City] - [State] - [Country]
+			for language in self.languages["small"]:
+				dictionary["Locality"][language] = city + " - " + self.project_zomboid["Cities"]["State"] + " - " + self.Language.texts["united_states"][language]
+
+			# Add the local "City" dictionary to the root "Cities" dictionary
 			self.project_zomboid["Cities"]["Dictionary"][city] = dictionary
 
 	def Create_The_Survivor_Dictionaries(self):
-		# Iterate through the list of "City" dictionaries
-		for name, dictionary in self.project_zomboid["Cities"]["Dictionary"].items():
-			# Define the "Survivors" dictionary
-			dictionary["Survivors"] = {
-				"Numbers": {
-					"Total": 0
+		# Define the local "Survivors" dictionary
+		dictionary = {
+			"Numbers": {
+				"Total": 0,
+				"Deceased": 0
+			},
+			"List": [],
+			"Deceased": [],
+			"Dictionary": {}
+		}
+
+		# Get the list of survivors
+		folder = self.project_zomboid["Folders"]["Survivors"]["root"]
+
+		dictionary["List"] = self.Folder.Contents(folder)["folder"]["names"]
+
+		# Remove the "Deceased" folder
+		deceased = self.Language.language_texts["deceased, title()"]
+
+		dictionary["List"].remove(deceased)
+
+		# Get the number of survivors
+		dictionary["Numbers"]["Total"] = len(dictionary["List"])
+
+		# ---------- #
+
+		# Get the list of deceased survivors
+		folder = self.project_zomboid["Folders"]["Survivors"]["Deceased"]["root"]
+
+		dictionary["Deceased"] = self.Folder.Contents(folder)["folder"]["names"]
+
+		# Get the number of deceased survivors
+		dictionary["Numbers"]["Deceased"] = len(dictionary["Deceased"])
+
+		# Update the total number of survivors
+		dictionary["Numbers"]["Total"] += dictionary["Numbers"]["Deceased"]
+
+		# ---------- #
+
+		# Create the local list of survivors
+		survivors = dictionary["List"] + dictionary["Deceased"]
+
+		# Iterate through the list of survivors
+		for survivor in survivors:
+			# Define the root folder
+			root_folder = self.project_zomboid["Folders"]["Survivors"]
+
+			# If the survivor is in the "Deceased survivors" list
+			if survivor in dictionary["Deceased"]:
+				# Define the root folder as the "Deceased" folder
+				root_folder = self.project_zomboid["Folders"]["Survivors"]["Deceased"]
+
+			# Create the local "Survivor" dictionary
+			survivor = {
+				"Name": survivor,
+				"City": "",
+				"Details": {
+					"Gender": "",
+					"Age": 27,
+					"Date of birth": "01/01/1966"
 				},
-				"List": [],
-				"Dictionary": {}
-			}
-
-			# Get the list of survivors
-			dictionary["Survivors"]["List"] = self.Folder.Contents(dictionary["Folders"]["root"])["folder"]["names"]
-
-			# Get the number of survivors
-			dictionary["Survivors"]["Numbers"]["Total"] = len(dictionary["Survivors"]["List"])
-
-			# Iterate through the list of survivors
-			for survivor in dictionary["Survivors"]["List"]:
-				survivor = {
-					"Name": survivor,
-					"Folders": {
-						"root": dictionary["Folders"]["root"] + survivor + "/"
-					},
+				"Folders": {
+					"root": root_folder["root"] + survivor + "/",
+					"Survivor": ""
+				},
+				"Diary": {
 					"Numbers": {
-						"Files": 0
+						"Survival day": 0,
+						"Day": 8,
+						"Month": 7,
+						"Year": 1993
 					},
-					"Dates": {
-						"Numbers": {
-							"Day": 1,
-							"Month": 1,
-							"Year": 1993,
-							"Survival day": 1,
-						},
-						"Folders": {}
-					}
+					"Folders": {}
 				}
-
-				# Create the root folder
-				self.Folder.Create(survivor["Folders"]["root"])
-
-				# Define and create the "Survivor.json" file
-				survivor["Folders"]["Survivor"] = survivor["Folders"]["root"] + "Survivor.json"
-				self.File.Create(survivor["Folders"]["Survivor"])
-
-				# If the survivor file is not empty
-				if self.File.Contents(survivor["Folders"]["Survivor"])["lines"] != []:
-					# Read the "Survivor.json" file to get the local dictionary
-					local_dictionary = self.JSON.To_Python(survivor["Folders"]["Survivor"])
-
-					# Update the "Numbers" and "Dates" dictionaries
-					survivor["Numbers"] = local_dictionary["Numbers"]
-					survivor["Dates"] = local_dictionary["Dates"]
-
-				# ----- #
-
-				# Define some variables for easier typing
-				dates = survivor["Dates"]["Numbers"]
-
-				year = str(dates["Year"])
-				month = str(dates["Month"])
-				day = str(dates["Day"])
-
-				# Define and create the year folder
-				if year not in survivor["Dates"]["Folders"]:
-					survivor["Dates"]["Folders"][year] = {
-						"root": survivor["Folders"]["root"] + year + "/"
-					}
-
-					self.Folder.Create(survivor["Dates"]["Folders"][year]["root"])
-
-				# Define the date
-				date = self.Date.From_String(str(1) + "/" + month + "/" + year)
-
-				# Get the month name with number in the user language
-				month_name_with_number = date["Texts"]["Month name with number"][self.user_language]
-
-				# Define and create the month folder
-				if month not in survivor["Dates"]["Folders"][year]:
-					survivor["Dates"]["Folders"][year][month] = {
-						"root": survivor["Dates"]["Folders"][year]["root"] + month_name_with_number + "/"
-					}
-
-				self.Folder.Create(survivor["Dates"]["Folders"][year][month]["root"])
-
-				# Define the "Year" folder key
-				survivor["Dates"]["Folders"]["Year"] = {
-					"root": survivor["Dates"]["Folders"][year]["root"],
-					"Month": deepcopy(survivor["Dates"]["Folders"][year][month])
-				}
-
-				# ----- #
-
-				# Add the local "Survivor" dictionary to the root "Survivors" dictionary
-				dictionary["Survivors"]["Dictionary"][survivor["Name"]] = survivor
-
-				# Update the "Survivor.json" file with the new "Survivor" dictionary
-				self.JSON.Edit(survivor["Folders"]["Survivor"], survivor)
-
-			# Add the local dictionary to the root "Cities" dictionary
-			self.project_zomboid["Cities"]["Dictionary"][name] = dictionary
-
-			# Define the "City" dictionary and add the "Name" key and the "Survivors" list
-			city = {
-				"Name": dictionary["Name"],
-				"Survivors": dictionary["Survivors"]
 			}
 
-			# Update the "City.json" file with the new "City" dictionary
-			self.JSON.Edit(dictionary["Folders"]["City"], city)
+			# Create the root folder
+			self.Folder.Create(survivor["Folders"]["root"])
 
-		# Create a local copy of each "City" dictionary
-		cities = deepcopy(self.project_zomboid["Cities"])
+			# Define and create the "Survivor.json" file
+			survivor["Folders"]["Survivor"] = survivor["Folders"]["root"] + "Survivor.json"
+			self.File.Create(survivor["Folders"]["Survivor"])
 
-		# Iterate through the "Cities" dictionary
-		for name in self.project_zomboid["Cities"]["Names"]:
-			# Remove the "Folders" key
-			cities["Dictionary"][name].pop("Folders")
+			# If the "Survivor.json" file is not empty
+			if self.File.Contents(survivor["Folders"]["Survivor"])["lines"] != []:
+				# Read the "Survivor.json" file to get the local dictionary
+				local_dictionary = self.JSON.To_Python(survivor["Folders"]["Survivor"])
 
-		# Update the "Cities.json" file with the new local "Cities" dictionary
-		self.JSON.Edit(self.project_zomboid["Folders"]["Cities"]["Cities"], cities)
+				# Update the keys of the root "Survivor" dictionary
+				for key, value in local_dictionary.items():
+					survivor[key] = value
+
+			# ---------- #
+
+			# Define and create the "Diary" folder
+			name = self.Language.language_texts["diary, title()"]
+
+			survivor["Diary"]["Folders"] = {
+				"root": survivor["Folders"]["root"] + name + "/"
+			}
+
+			self.Folder.Create(survivor["Diary"]["Folders"]["root"])
+
+			# ---------- #
+
+			# Define some variables for easier typing
+			numbers = survivor["Diary"]["Numbers"]
+
+			year = str(numbers["Year"])
+			month = self.Text.Add_Leading_Zeroes(numbers["Month"])
+			day = str(numbers["Day"])
+
+			# Define the "Date" dictionary
+			date = self.Date.From_String(day + "/" + month + "/" + year, format = "%d/%m/%Y")
+
+			# Define and create the year folder
+			survivor["Diary"]["Folders"]["Year"] = {
+				"root": survivor["Diary"]["Folders"]["root"] + year + "/"
+			}
+
+			self.Folder.Create(survivor["Diary"]["Folders"]["Year"]["root"])
+
+			# Get the month name with number in the user language
+			month_name_with_number = date["Texts"]["Month name with number"][self.user_language]
+
+			# Define and create the month folder
+			survivor["Diary"]["Folders"]["Year"]["Month"] = {
+				"root": survivor["Diary"]["Folders"]["Year"]["root"] + month_name_with_number + "/"
+			}
+
+			self.Folder.Create(survivor["Diary"]["Folders"]["Year"]["Month"]["root"])
+
+			# Make a shortcut to the month folder
+			survivor["Diary"]["Folders"]["Month"] = survivor["Diary"]["Folders"]["Year"]["Month"]
+
+			# ---------- #
+
+			# Add the local "Survivor" dictionary to the root "Survivors" dictionary
+			dictionary["Dictionary"][survivor["Name"]] = survivor
+
+			# ---------- #
+
+			# Define the "city" variable with the city of the survivor
+			city = survivor["City"]
+
+			# Get the "City" dictionary of the city of the survivor
+			city = self.project_zomboid["Cities"]["Dictionary"][city]
+
+			# Add the survivor to the "Survivors" list of the city
+			city["Survivors"].append(survivor["Name"])
+
+			# Update the number of survivors in the city
+			city["Numbers"]["Survivors"] = len(city["Survivors"])
+
+		# Define the root "Survivors" dictionary as the local dictionary
+		self.project_zomboid["Survivors"] = dictionary
+
+	def Update_The_Dictionaries(self):
+		# Define the local "Types" dictionary
+		types = {
+			"Survivor": "Survivors",
+			"City": "Cities"
+		}
+
+		# Iterate through the list of dictionary types
+		for type_, key in types.items():
+			# Create a local copy of the dictionary type from the root "Project Zomboid" dictionary
+			local_dictionary = deepcopy(self.project_zomboid[key])
+
+			# Define the list of items as a copy as the root list
+			list_ = deepcopy(local_dictionary["List"])
+
+			# If the dictionary type is "Survivor"
+			if type_ == "Survivor":
+				# Update the local list of items to add the deceased survivors
+				list_ = local_dictionary["List"] + local_dictionary["Deceased"]
+
+			# Iterate through the list of items
+			for item in list_:
+				# Get the dictionary of the item
+				item = local_dictionary["Dictionary"][item]
+
+				# Update the dictionary of the item and its file
+				self.Update_Dictionary(item, copy = False)
+
+				# If the dictionary type is "Survivor"
+				# And the survivor is a deceased survivor
+				if (
+					type_ == "Survivor" and
+					item["Name"] in local_dictionary["Deceased"]
+				):
+					# Remove the survivor dictionary from the "Dictionary" key
+					local_dictionary["Dictionary"].pop(item["Name"])
+
+			# Sort the root list of items
+			local_dictionary["List"] = sorted(local_dictionary["List"], key = str.lower)
+
+			# If the dictionary type is "Survivor"
+			if type_ == "Survivor":
+				# Sort the root list of deceased survivors
+				local_dictionary["Deceased"] = sorted(local_dictionary["Deceased"], key = str.lower)
+
+			# If the dictionary type is "City"
+			if type_ == "City":
+				# Remove the "State" key
+				local_dictionary.pop("State")
+
+			# Update the JSON file with the updated local dictionary
+			self.JSON.Edit(self.project_zomboid["Folders"][key][key], local_dictionary)
+
+	def Update_Dictionary(self, dictionary, copy = True):
+		# Define the default dictionary type as "Survivor"
+		type_ = "Survivor"
+
+		# If the name inside the dictionary is inside the list of cities
+		if dictionary["Name"] in self.project_zomboid["Cities"]["List"]:
+			type_ = "City"
+
+		# If the "copy" parameter is True
+		if copy == True:
+			# Make a local copy of the dictionary to not modify it by reference (modifying the original dictionary)
+			dictionary = deepcopy(dictionary)
+
+		# Get the dictionary JSON file before the "Folders" key is removed
+		json_file = dictionary["Folders"][type_]
+
+		# Remove the "Folders" key from the current dictionary
+		dictionary.pop("Folders")
+
+		# If the dictionary type is "Survivor"
+		if type_ == "Survivor":
+			# Remove the "Folders" key from the "Diary" dictionary
+			dictionary["Diary"].pop("Folders")
+
+		# Update the dictionary JSON file with the updated dictionary
+		self.JSON.Edit(json_file, dictionary)

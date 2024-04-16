@@ -88,12 +88,26 @@ class Christmas():
 		self.date = self.Date.date
 
 	def Define_Texts(self):
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
 
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
+
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Import_Classes(self):
 		# Define the classes to be imported
@@ -160,7 +174,7 @@ class Christmas():
 				"Year pictures": self.current_year["Folders"]["Image"]["Christmas"]["Pictures"]["root"],
 			},
 			"Files": {
-				"Christmas theme": self.folders["Image"]["Christmas"]["Theme"]["root"] + self.JSON.Language.language_texts["christmas, title()"] + ".lnk",
+				"Christmas theme": self.folders["Image"]["Christmas"]["Theme"]["root"] + self.Language.language_texts["christmas, title()"] + ".lnk",
 				"Texts": self.current_year["Folders"]["Christmas"]["Merry Christmas"]["Texts"]
 			},
 			"Programs": {
@@ -260,12 +274,12 @@ class Christmas():
 					print()
 
 				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-				print(self.JSON.Language.language_texts["social_networks"] + ":")
+				print(self.Language.language_texts["social_networks"] + ":")
 				print("\t" + text)
 				print()
 
 				# Show the "Social Network" text and the Social Network name
-				print(self.JSON.Language.language_texts["social_network"] + ":")
+				print(self.Language.language_texts["social_network"] + ":")
 				print("\t" + social_network)
 
 			self.social_networks["List"] = [
@@ -310,12 +324,12 @@ class Christmas():
 					print()
 
 				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-				print(self.JSON.Language.language_texts["social_networks"] + ":")
+				print(self.Language.language_texts["social_networks"] + ":")
 				print("\t" + text)
 				print()
 
 				# Show the "Social Network" text and the Social Network name
-				print(self.JSON.Language.language_texts["social_network"] + ":")
+				print(self.Language.language_texts["social_network"] + ":")
 				print("\t" + social_network)
 
 				# Define the text template
@@ -324,7 +338,7 @@ class Christmas():
 				# Define the text template items
 				items = [
 					social_network,
-					self.JSON.Language.language_texts["profile, title()"]
+					self.Language.language_texts["profile, title()"]
 				]
 
 				# Format the text template with the items
@@ -347,7 +361,7 @@ class Christmas():
 				i += 1
 
 	def Open_Module(self, module):
-		self.press_enter_text = self.JSON.Language.language_texts["press_enter_when_you"] + " {}"
+		self.press_enter_text = self.Language.language_texts["press_enter_when_you"] + " {}"
 
 		texts = {
 			"Watch_History": self.language_texts["press_enter_when_you_finish_watching_all_of_the_christmas_episodes"],
@@ -380,15 +394,15 @@ class Christmas():
 				lines = self.File.Contents(file)["lines"]
 
 				# Define the file information text
-				text = self.JSON.Language.language_texts[key.lower() + ", title()"].lower()
+				text = self.Language.language_texts[key.lower() + ", title()"].lower()
 
 				print()
-				print(self.JSON.Language.language_texts["to, title()"] + " " + text + ":")
+				print(self.Language.language_texts["to, title()"] + " " + text + ":")
 
 				tab = "\t"
 
 				if lines == []:
-					print(tab + "[" + self.JSON.Language.language_texts["nothing, title()"] + "]")
+					print(tab + "[" + self.Language.language_texts["nothing, title()"] + "]")
 
 				i = 1
 				for line in lines:

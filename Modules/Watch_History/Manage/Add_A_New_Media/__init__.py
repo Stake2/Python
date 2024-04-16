@@ -95,10 +95,10 @@ class Add_A_New_Media(Watch_History):
 
 		# Ask for the media (item) titles
 		if self.switches["testing"] == False:
-			title = self.Input.Type(self.JSON.Language.language_texts["original_title"], next_line = True, accept_enter = False)
+			title = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
 		if self.switches["testing"] == True:
-			title = self.JSON.Language.language_texts["title, title()"] + " (" + self.dictionary["Media type"]["Singular"][self.user_language] + ")"
+			title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Media type"]["Singular"][self.user_language] + ")"
 
 			if self.item == True:
 				title = self.dictionary["Media type"]["Subfolders"]["Singular"] + " " + str(self.media["Items"]["Number"] + 1)
@@ -114,7 +114,7 @@ class Add_A_New_Media(Watch_History):
 			title = ""
 
 			if self.switches["testing"] == False:
-				title = self.Input.Type(self.JSON.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
+				title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 			if title != "":
 				media["Titles"][language] = title
@@ -128,7 +128,7 @@ class Add_A_New_Media(Watch_History):
 				accept_enter = False
 
 			if self.switches["testing"] == False:
-				title = self.Input.Type(self.JSON.Language.language_texts["romanized_title"], next_line = True, accept_enter = accept_enter)
+				title = self.Input.Type(self.Language.language_texts["romanized_title"], next_line = True, accept_enter = accept_enter)
 
 			if self.switches["testing"] == True:
 				title = "Título romanizado"
@@ -137,7 +137,7 @@ class Add_A_New_Media(Watch_History):
 				media["Titles"]["Romanized"] = title
 
 			# Ask for the media year and dates
-			text = self.Date.language_texts["year, title()"] + " (" + self.JSON.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
+			text = self.Date.language_texts["year, title()"] + " (" + self.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
 
 			accept_enter = False
 
@@ -160,7 +160,7 @@ class Add_A_New_Media(Watch_History):
 				media["Year"] = self.media["Year"]
 
 			for date_type in ["start", "end"]:
-				text = self.Date.language_texts[date_type + "_date"] + " (" + self.JSON.Language.language_texts["format"] + ": " + self.Date.Now()["Formats"]["DD/MM/YYYY"] + ")"
+				text = self.Date.language_texts[date_type + "_date"] + " (" + self.Language.language_texts["format"] + ": " + self.Date.Now()["Formats"]["DD/MM/YYYY"] + ")"
 
 				accept_enter = False
 				regex = None
@@ -197,8 +197,8 @@ class Add_A_New_Media(Watch_History):
 			# Ask for the user information if the media type is "Videos"
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 				if self.switches["testing"] == False:
-					handle = self.Input.Type(self.JSON.Language.language_texts["handle, title()"], next_line = True)
-					id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"], next_line = True)
+					handle = self.Input.Type(self.Language.language_texts["handle, title()"], next_line = True)
+					id = self.Input.Type(self.Language.language_texts["id, upper()"], next_line = True)
 
 				if self.switches["testing"] == True:
 					handle = "@arroba"
@@ -210,7 +210,7 @@ class Add_A_New_Media(Watch_History):
 			# Ask for the media staff information
 			if "Staff keys" in media:
 				for key in media["Staff keys"]:
-					text = self.JSON.Language.language_texts[key + ", title()"]
+					text = self.Language.language_texts[key + ", title()"]
 
 					if self.switches["testing"] == False:
 						media[key.capitalize()] = self.Input.Type(text + ":", next_line = True, accept_enter = False)
@@ -219,29 +219,29 @@ class Add_A_New_Media(Watch_History):
 						media[key.capitalize()] = text
 
 			# Ask for the original language of the media
-			show_text = self.JSON.Language.language_texts["languages, title()"]
-			select_text = self.JSON.Language.language_texts["language, title()"]
+			show_text = self.Language.language_texts["languages, title()"]
+			select_text = self.Language.language_texts["language, title()"]
 
 			languages = list(self.languages["full"].values())
-			languages.append("[" + self.JSON.Language.language_texts["empty, title()"] + "]")
+			languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
 			if self.switches["testing"] == False:
 				language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
-				if language != "[" + self.JSON.Language.language_texts["empty, title()"] + "]":
+				if language != "[" + self.Language.language_texts["empty, title()"] + "]":
 					media["Language"] = language
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				# Ask if the media has dubbing
 				if self.switches["testing"] == False:
-					media["Dubbing"] = self.Input.Yes_Or_No(self.JSON.Language.language_texts["dubbing, title()"], convert_to_text = True)
+					media["Dubbing"] = self.Input.Yes_Or_No(self.Language.language_texts["dubbing, title()"], convert_to_text = True)
 
 				if self.switches["testing"] == True:
-					media["Dubbing"] = self.JSON.Language.language_texts["yes, title()"]
+					media["Dubbing"] = self.Language.language_texts["yes, title()"]
 
 			# Ask for the media status
 			show_text = self.language_texts["select_one_watching_status_from_the_status_list"]
-			select_text = self.JSON.Language.language_texts["status, title()"]
+			select_text = self.Language.language_texts["status, title()"]
 
 			if self.switches["testing"] == False:
 				status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
@@ -252,14 +252,14 @@ class Add_A_New_Media(Watch_History):
 			media["Status"] = status
 
 			# Ask for the media origin type
-			show_text = self.JSON.Language.language_texts["origin_types"]
-			select_text = self.JSON.Language.language_texts["origin_type"]
+			show_text = self.Language.language_texts["origin_types"]
+			select_text = self.Language.language_texts["origin_type"]
 
 			if self.switches["testing"] == False:
-				media["Origin type"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.JSON.Language.language_texts["origin_types, type: list"])["option"]
+				media["Origin type"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.Language.language_texts["origin_types, type: list"])["option"]
 
 			if self.switches["testing"] == True:
-				media["Origin type"] = self.JSON.Language.language_texts["origin_types, type: list"][0]
+				media["Origin type"] = self.Language.language_texts["origin_types, type: list"][0]
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				# Ask if the user wants to add the "Dubbed" text to the media title
@@ -267,7 +267,7 @@ class Add_A_New_Media(Watch_History):
 					media["Dubbed to the media title"] = self.Input.Yes_Or_No(self.language_texts["dubbed_to_the_media_title"], convert_to_text = True)
 
 				if self.switches["testing"] == True:
-					media["Dubbed to the media title"] = self.JSON.Language.language_texts["yes, title()"]
+					media["Dubbed to the media title"] = self.Language.language_texts["yes, title()"]
 
 		if self.item == True:
 			# Define the media staff information
@@ -279,7 +279,7 @@ class Add_A_New_Media(Watch_History):
 			# Ask for the playlist information if the media type is "Videos"
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 				if self.switches["testing"] == False:
-					id = self.Input.Type(self.JSON.Language.language_texts["id, upper()"], next_line = True)
+					id = self.Input.Type(self.Language.language_texts["id, upper()"], next_line = True)
 
 				if self.switches["testing"] == True:
 					id = "PLrVhyUnEQMV-eML_NqunfE0uOunraC0Xu"
@@ -289,13 +289,13 @@ class Add_A_New_Media(Watch_History):
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				# Ask the user to select the media item type
-				show_text = self.JSON.Language.language_texts["types, title()"]
-				select_text = self.JSON.Language.language_texts["type, title()"]
+				show_text = self.Language.language_texts["types, title()"]
+				select_text = self.Language.language_texts["type, title()"]
 
 				# Ask which secondary type the media item is
 				self.local_secondary_types = self.secondary_types["Singular"][self.user_language]
 
-				empty_text = "[" + self.JSON.Language.language_texts["empty, title()"] + "]"
+				empty_text = "[" + self.Language.language_texts["empty, title()"] + "]"
 
 				self.local_secondary_types.append(empty_text)
 
@@ -316,14 +316,14 @@ class Add_A_New_Media(Watch_History):
 					media["Single unit"] = self.Input.Yes_Or_No(self.language_texts["single_unit"], convert_to_text = True)
 
 				if self.switches["testing"] == True:
-					media["Single unit"] = self.JSON.Language.language_texts["yes, title()"]
+					media["Single unit"] = self.Language.language_texts["yes, title()"]
 
 				# Ask if the media item title replaces the media title
 				if self.switches["testing"] == False:
 					media["Replace title"] = self.Input.Yes_Or_No(self.language_texts["replace_title"], convert_to_text = True)
 
 				if self.switches["testing"] == True:
-					media["Replace title"] = self.JSON.Language.language_texts["yes, title()"]
+					media["Replace title"] = self.Language.language_texts["yes, title()"]
 
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 			# Ask if the user wants to always watch the media (item) dubbed
@@ -331,13 +331,13 @@ class Add_A_New_Media(Watch_History):
 				media["Watch dubbed"] = self.Input.Yes_Or_No(self.language_texts["watch_dubbed"], convert_to_text = True)
 
 			if self.switches["testing"] == True:
-				media["Watch dubbed"] = self.JSON.Language.language_texts["yes, title()"]
+				media["Watch dubbed"] = self.Language.language_texts["yes, title()"]
 
 			# Ask for title and episode separators
 			media["Separators"] = {}
 
 			for item_type in ["title", "episode"]:
-				text = self.JSON.Language.language_texts[item_type + "_separator"]
+				text = self.Language.language_texts[item_type + "_separator"]
 
 				if self.switches["testing"] == False:
 					separator = self.Input.Type(text, next_line = True)
@@ -354,19 +354,19 @@ class Add_A_New_Media(Watch_History):
 
 	def Create_Details(self, media):
 		media["Details"] = {
-			self.JSON.Language.language_texts["original_title"]: media["Title"]
+			self.Language.language_texts["original_title"]: media["Title"]
 		}
 
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			key = self.JSON.Language.language_texts["title_in_{}"].format(translated_language) 
+			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
 			if language in media["Titles"]:
 				media["Details"][key] = media["Titles"][language]
 
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"] and "Romanized" in media["Titles"]:
-			key = self.JSON.Language.language_texts["romanized_title"]
+			key = self.Language.language_texts["romanized_title"]
 
 			media["Details"][key] = media["Titles"]["Romanized"]
 
@@ -389,63 +389,63 @@ class Add_A_New_Media(Watch_History):
 				if ", " not in media[key.capitalize()]:
 					text_key = text_key[:-1]
 
-				text_key = self.JSON.Language.language_texts[text_key + ", title()"]
+				text_key = self.Language.language_texts[text_key + ", title()"]
 
 				if key.capitalize() in media:
 					media["Details"][text_key] = media[key.capitalize()]
 
 		if self.item == False:
 			if "Handle" in media:
-				media["Details"][self.JSON.Language.language_texts["handle, title()"]] = media["Handle"]
+				media["Details"][self.Language.language_texts["handle, title()"]] = media["Handle"]
 
 			if "ID" in media:
-				media["Details"][self.JSON.Language.language_texts["id, upper()"]] = media["ID"]
+				media["Details"][self.Language.language_texts["id, upper()"]] = media["ID"]
 
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 				media["Link"] = self.remote_origins["YouTube"] + "channel/" + media["ID"]
 
 			if "Language" in media:
-				media["Details"][self.JSON.Language.language_texts["original_language"]] = media["Language"]
+				media["Details"][self.Language.language_texts["original_language"]] = media["Language"]
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
-				if media["Dubbing"] != self.JSON.Language.language_texts["no, title()"]:
-					media["Details"][self.JSON.Language.language_texts["dubbing, title()"]] = media["Dubbing"]
+				if media["Dubbing"] != self.Language.language_texts["no, title()"]:
+					media["Details"][self.Language.language_texts["dubbing, title()"]] = media["Dubbing"]
 
-				if media["Status"] != self.JSON.Language.language_texts["remote, title()"]:
-					media["Details"][self.JSON.Language.language_texts["status, title()"]] = media["Status"]
+				if media["Status"] != self.Language.language_texts["remote, title()"]:
+					media["Details"][self.Language.language_texts["status, title()"]] = media["Status"]
 
-			media["Details"][self.JSON.Language.language_texts["origin_type"]] = media["Origin type"]
+			media["Details"][self.Language.language_texts["origin_type"]] = media["Origin type"]
 
-			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"] and media["Dubbed to the media title"] != self.JSON.Language.language_texts["no, title()"]:
+			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"] and media["Dubbed to the media title"] != self.Language.language_texts["no, title()"]:
 				media["Details"][self.language_texts["dubbed_to_the_media_title"]] = media["Dubbed to the media title"]
 
 		if self.item == True:
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
-				media["Details"][self.JSON.Language.language_texts["origin_location"]] = media["ID"]
-				media["Details"][self.JSON.Language.language_texts["link, title()"]] = self.remote_origins["YouTube"] + "playlist?list=" + media["ID"]
+				media["Details"][self.Language.language_texts["origin_location"]] = media["ID"]
+				media["Details"][self.Language.language_texts["link, title()"]] = self.remote_origins["YouTube"] + "playlist?list=" + media["ID"]
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				if (
 					"Type" in media and
 					media["Type"] != ""
 				):
-					media["Details"][self.JSON.Language.language_texts["type, title()"]] = media["Type"]
+					media["Details"][self.Language.language_texts["type, title()"]] = media["Type"]
 
-				if media["Single unit"] != self.JSON.Language.language_texts["no, title()"]:
+				if media["Single unit"] != self.Language.language_texts["no, title()"]:
 					media["Details"][self.language_texts["single_unit"]] = media["Single unit"]
 
-				if media["Replace title"] != self.JSON.Language.language_texts["no, title()"]:
+				if media["Replace title"] != self.Language.language_texts["no, title()"]:
 					media["Details"][self.language_texts["replace_title"]] = media["Replace title"]
 
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
-			if media["Watch dubbed"] != self.JSON.Language.language_texts["no, title()"]:
+			if media["Watch dubbed"] != self.Language.language_texts["no, title()"]:
 				media["Details"][self.language_texts["watch_dubbed"]] = media["Watch dubbed"]
 
 			if media["Separators"] != {}:
 				for item_type in media["Separators"]:
 					separator = media["Separators"][item_type]
 
-					text = self.JSON.Language.language_texts[item_type + "_separator"]
+					text = self.Language.language_texts[item_type + "_separator"]
 
 					media["Details"][text] = separator
 
@@ -461,7 +461,7 @@ class Add_A_New_Media(Watch_History):
 			self.Folder.Create(media["Folders"]["root"])
 
 		# Create the media (item) details file
-		media["Folders"]["details"] = media["Folders"]["root"] + self.JSON.Language.language_texts["details, title()"] + ".txt"
+		media["Folders"]["details"] = media["Folders"]["root"] + self.Language.language_texts["details, title()"] + ".txt"
 		self.File.Create(media["Folders"]["details"])
 
 		# Write into the media (item) details file
@@ -486,14 +486,14 @@ class Add_A_New_Media(Watch_History):
 		# Update the number of media inside the json dictionary
 		self.dictionary["Media type"]["JSON"]["Number"] = len(self.dictionary["Media type"]["JSON"]["Titles"])
 
-		# Edit the "Info.json" file with the new dictionary
+		# Edit the "Information.json" file with the updated "Information" dictionary
 		self.JSON.Edit(self.dictionary["Media type"]["Folders"]["Media information"]["Information"], self.dictionary["Media type"]["JSON"])
 
 	def Add_Media_Items(self):
 		# Ask if the media has media items
 		self.local_secondary_types = self.secondary_types["Plural"][self.user_language]
 
-		text = self.language_texts["has_media_items"] + " (" + self.JSON.Language.language_texts["like"] + " " + self.Text.List_To_Text(self.local_secondary_types, or_ = True, lower = True) + ")"
+		text = self.language_texts["has_media_items"] + " (" + self.Language.language_texts["like"] + " " + self.Text.From_list(self.local_secondary_types, or_text = True, lower = True) + ")"
 
 		self.media["States"]["Media item list"] = self.Input.Yes_Or_No(text)
 
@@ -562,10 +562,10 @@ class Add_A_New_Media(Watch_History):
 				if self.media["States"]["First media item"] == True:
 					self.media["States"]["First media item"] = False
 
-				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.JSON.Language.language_texts["add_more"])
+				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.Language.language_texts["add_more"])
 
 			# Update the media items list file
-			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"]), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"], break_line = True), "w")
 
 			# Define the current media item as the first one
 			self.media["Items"]["Current"] = [
@@ -573,6 +573,6 @@ class Add_A_New_Media(Watch_History):
 			]
 
 			# Update the current media item file
-			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"]), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"], break_line = True), "w")
 
 			self.dictionary["Media"].pop("Folders")

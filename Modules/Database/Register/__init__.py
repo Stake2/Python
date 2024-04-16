@@ -47,8 +47,8 @@ class Register(Database):
 		options = self.types["Plural"]["en"]
 		language_options = self.types["Plural"][self.user_language]
 
-		show_text = self.JSON.Language.language_texts["types, title()"]
-		select_text = self.JSON.Language.language_texts["select_a_type"]
+		show_text = self.Language.language_texts["types, title()"]
+		select_text = self.Language.language_texts["select_a_type"]
 
 		dictionary = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
@@ -192,28 +192,28 @@ class Register(Database):
 
 		# Define entry text lines
 		lines = [
-			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
-			self.JSON.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Entry type"][self.type]["Numbers"]["Total"])
+			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
+			self.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Entry type"][self.type]["Numbers"]["Total"])
 		]
 
 		# Add entry title lines
 		if language_parameter != "General":
-			text = self.JSON.Language.texts["title, title()"][language]
+			text = self.Language.texts["title, title()"][language]
 
 		if language_parameter == "General":
-			text = self.JSON.Language.texts["titles, title()"][language]
+			text = self.Language.texts["titles, title()"][language]
 
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Plural"][language] + "\n",
+			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.JSON.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
+			self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
 		])
 
 		# Add states texts lines
 		if self.dictionary["States"]["Texts"] != {}:
-			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				language_text = self.dictionary["States"]["Texts"][key][language]
@@ -243,14 +243,14 @@ class Register(Database):
 
 		i = 0
 		for line in lines:
-			if self.JSON.Language.texts["titles, title()"][language] in line:
-				line = line.replace(self.JSON.Language.texts["titles, title()"][language], self.JSON.Language.texts["title, title()"][language])
+			if self.Language.texts["titles, title()"][language] in line:
+				line = line.replace(self.Language.texts["titles, title()"][language], self.Language.texts["title, title()"][language])
 
 				lines[i] = line
 
 			i += 1
 
-		items.append(self.Text.From_List(titles) + "\n")
+		items.append(self.Text.From_List(titles, break_line = True) + "\n")
 
 		# Add times to items list
 		times = ""
@@ -263,7 +263,7 @@ class Register(Database):
 		items.append(times)
 
 		# Define language entry text
-		file_text = self.Text.From_List(lines)
+		file_text = self.Text.From_List(lines, break_line = True)
 
 		return file_text.format(*items)
 
@@ -304,7 +304,7 @@ class Register(Database):
 			self.File.Edit(self.current_year["Folders"][language]["Added entries"][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
 
 			# Firsts Of The Year subfolder folder
-			subfolder_name = self.JSON.Language.texts["entries, title()"][language]
+			subfolder_name = self.Language.texts["entries, title()"][language]
 
 			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
 
@@ -388,7 +388,7 @@ class Register(Database):
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.JSON.Language.language_texts["states, title()"] + ":" + "\n"
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]

@@ -87,12 +87,26 @@ class Years(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
 
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
+
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Define_Folders_And_Files(self):
 		# Define the "Years" folder dictionary
@@ -109,7 +123,7 @@ class Years(object):
 
 		# Year "Texts" text folder
 		self.folders["Years"]["Text"]["Texts"] = {
-			"root": self.folders["Years"]["Text"]["root"] + self.JSON.Language.language_texts["texts, title()"] + "/"
+			"root": self.folders["Years"]["Text"]["root"] + self.Language.language_texts["texts, title()"] + "/"
 		}
 
 		# "Years.json" file
@@ -124,7 +138,7 @@ class Years(object):
 
 		# Year "Images" image folder
 		self.folders["Years"]["Image"]["Images"] = {
-			"root": self.folders["Years"]["Image"]["root"] + self.JSON.Language.language_texts["images, title()"] + "/"
+			"root": self.folders["Years"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
 		}
 
 	def Define_Folder_Item_Names_Dictionary(self):
@@ -250,7 +264,7 @@ class Years(object):
 						if "_" not in text_key:
 							text_key += ", title()"
 
-						dict_["Dictionary"][item_name][language] = self.JSON.Language.texts[text_key][language]
+						dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
 
 				self.folder_item_names[folder_key][item_type] = dict_
 
@@ -276,7 +290,7 @@ class Years(object):
 						if "_" not in text_key:
 							text_key += ", title()"
 
-						dict_["Dictionary"][item_name][language] = self.JSON.Language.texts[text_key][language]
+						dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
 
 				# Example:
 				# key: "Christmas", sub_folder: "Planning"
@@ -316,7 +330,7 @@ class Years(object):
 								if "_" not in text_key:
 									text_key += ", title()"
 
-								dict_["Dictionary"][item_name][language] = self.JSON.Language.texts[text_key][language]
+								dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
 
 							# Define the local dictionary
 							# Example:
@@ -350,7 +364,7 @@ class Years(object):
 							if "_" not in text_key:
 								text_key += ", title()"
 
-							dict_["Dictionary"][item_name][language] = self.JSON.Language.texts[text_key][language]
+							dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
 
 						# Define the local dictionary
 						# Example:
@@ -421,7 +435,7 @@ class Years(object):
 			self.years["States"]["Current year folder exists"] = False
 
 		# Write the Years list to the "Year list.txt" file
-		text_to_write = self.Text.From_List(self.years["List"])
+		text_to_write = self.Text.From_List(self.years["List"], break_line = True)
 
 		self.File.Edit(self.folders["Years"]["Text"]["Years list"], text_to_write, "w")
 
@@ -478,11 +492,11 @@ class Years(object):
 				if folder_type == "Image":
 					# Define the image folder names dictionary
 					folder_names = {
-						"Christmas": self.JSON.Language.language_texts["christmas, title()"],
-						"Memories": self.JSON.Language.language_texts["memories, title()"],
+						"Christmas": self.Language.language_texts["christmas, title()"],
+						"Memories": self.Language.language_texts["memories, title()"],
 						"Story": "",
-						"Summary": self.JSON.Language.language_texts["summary, title()"],
-						"New Year": self.JSON.Language.language_texts["new_year"]
+						"Summary": self.Language.language_texts["summary, title()"],
+						"New Year": self.Language.language_texts["new_year"]
 					}
 
 					# Iterate through the folder names
@@ -503,8 +517,8 @@ class Years(object):
 
 					# Define the image folder names dictionary
 					folder_names = {
-						"Screenshots": self.JSON.Language.language_texts["screenshots, title()"],
-						"Pictures": self.JSON.Language.language_texts["pictures, title()"]
+						"Screenshots": self.Language.language_texts["screenshots, title()"],
+						"Pictures": self.Language.language_texts["pictures, title()"]
 					}
 
 					# Iterate through the folder names
@@ -538,7 +552,7 @@ class Years(object):
 
 		# ---------- #
 
-		# Define the "Texts" dictionary
+# Define the "Texts" dictionary
 		dictionary = {
 			"Name": "Texts",
 			"Folders": {
@@ -574,23 +588,23 @@ class Years(object):
 		# Get the local files dictionary
 		dictionary["Files"] = data["Dictionary"]["Files"]["Text"]
 
-		# Define the "Texts" dictionary as the local "Texts" dictionary
+# Define the "Texts" dictionary as the local "Texts" dictionary
 		self.years["Texts"] = dictionary
 
 		# ---------- #
 
 		# Define the image folder names dictionary
 		folder_names = {
-			"Christmas": self.JSON.Language.language_texts["christmas, title()"],
-			"Memories": self.JSON.Language.language_texts["memories, title()"],
-			"Summary": self.JSON.Language.language_texts["summary, title()"],
-			"New Year": self.JSON.Language.language_texts["new_year"],
+			"Christmas": self.Language.language_texts["christmas, title()"],
+			"Memories": self.Language.language_texts["memories, title()"],
+			"Summary": self.Language.language_texts["summary, title()"],
+			"New Year": self.Language.language_texts["new_year"],
 			"Story": ""
 		}
 
 		# Define the local "Images" dictionary
 		local_dictionary = {
-			"root": self.folders["Years"]["Image"]["root"] + self.JSON.Language.language_texts["images, title()"] + "/"
+			"root": self.folders["Years"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
 		}
 
 		# Iterate through the folder names

@@ -21,7 +21,7 @@ class Create_Friend_Folder(Friends):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		# Ask the user if they want to add Social Networks to an existing friend folder
 		self.dictionary["States"]["Add Social Network to existing friend folder"] = self.Input.Yes_Or_No(self.language_texts["add_social_network_to_friend_folder"])
@@ -29,7 +29,7 @@ class Create_Friend_Folder(Friends):
 		# If the user wants to add Social Networks to an existing friend folder, select a Friend to do that
 		if self.dictionary["States"]["Add Social Network to existing friend folder"] == True:
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 			self.Select_Friend()
 
@@ -57,7 +57,7 @@ class Create_Friend_Folder(Friends):
 	def Type_Friend_Information(self):
 		# Show a separator and the "Please type the information of the Friend" text
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 		print(self.language_texts["please_type_the_information_of_the_friend"] + ":")
 
@@ -86,7 +86,7 @@ class Create_Friend_Folder(Friends):
 			"Age": "18",
 			"Gender": "Masculino",
 			"Sexuality": "Heterossexual",
-			"Birthday": "01/01/2000",
+			"Date of birth": "01/01/2000",
 			"Height": "",
 			"Hometown": "? - California - United States",
 			"Residence place": "? - California - United States",
@@ -178,7 +178,7 @@ class Create_Friend_Folder(Friends):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 	def Add_Social_Networks(self):
 		# Create a local copy of the Social Networks dictionary
@@ -326,7 +326,7 @@ class Create_Friend_Folder(Friends):
 
 			# Create the "Social Networks" folder
 			dict_["Social Networks"] = {
-				"root": dict_["root"] + self.JSON.Language.language_texts["social_networks"] + "/"
+				"root": dict_["root"] + self.Language.language_texts["social_networks"] + "/"
 			}
 
 			self.Folder.Create(dict_["Social Networks"]["root"])
@@ -366,7 +366,7 @@ class Create_Friend_Folder(Friends):
 			if item == "Image":
 				# Create the image "Media" folder
 				dict_["Media"] = {
-					"root": dict_["root"] + self.JSON.Language.language_texts["media, title()"] + "/"
+					"root": dict_["root"] + self.Language.language_texts["media, title()"] + "/"
 				}
 
 				self.Folder.Create(dict_["Media"]["root"])
@@ -418,7 +418,7 @@ class Create_Friend_Folder(Friends):
 				self.Folder.Create(dict_["root"])
 
 				# Create the "Profile.txt" file
-				dict_["Profile"] = dict_["root"] + self.JSON.Language.language_texts["profile, title()"] + ".txt"
+				dict_["Profile"] = dict_["root"] + self.Language.language_texts["profile, title()"] + ".txt"
 
 				self.File.Create(dict_["Profile"])
 
@@ -521,7 +521,7 @@ class Create_Friend_Folder(Friends):
 				social_networks_list.remove(item)
 
 		# Update the "Social Networks.txt" file with the list above
-		text_to_write = self.Text.From_List(social_networks_list)
+		text_to_write = self.Text.From_List(social_networks_list, break_line = True)
 
 		self.File.Edit(self.friend["Files"]["Social Networks"]["List"], text_to_write, "w")
 
@@ -552,7 +552,7 @@ class Create_Friend_Folder(Friends):
 	def Show_Information(self):
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Define the text to show
@@ -599,7 +599,7 @@ class Create_Friend_Folder(Friends):
 		# ---------- #
 
 		# Define the texts dictionary for easier typing
-		texts_dictionary = self.JSON.Language.language_texts
+		texts_dictionary = self.Language.language_texts
 
 		# Define the local Social Networks dictionary
 		social_networks = self.friend["Social Networks"]
@@ -665,10 +665,10 @@ class Create_Friend_Folder(Friends):
 				print(two_tabs + language_information_item + ":")
 
 				if current_information == "":
-					current_information = self.JSON.Language.language_texts["empty, title()"]
+					current_information = self.Language.language_texts["empty, title()"]
 
 				print(two_tabs + current_information)
 
 		# Show a final separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])

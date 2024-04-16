@@ -91,10 +91,9 @@ class Register(Tasks):
 
 					self.re = re
 
-
 				if language != self.languages["small"][0]:
 					print()
-					print(self.large_bar)
+					print(self.separators["5"])
 
 				print()
 				print(self.language_texts["task_title"] + ":")
@@ -115,7 +114,10 @@ class Register(Tasks):
 						# Determine if the typed task item has commas
 						has_comma = False
 
-						if "," in task_item or ", " in task_item:
+						if (
+							"," in task_item or
+							", " in task_item
+						):
 							has_comma = True
 
 							for list_item in [",", ", "]:
@@ -142,8 +144,9 @@ class Register(Tasks):
 
 								# If the sub item is equal to the last item, add the "and" text and a space
 								if sub_item == sub_items[-1]:
-									task_item += self.JSON.Language.texts["and"][language] + " "
+									task_item += self.Language.texts["and"][language] + " "
 
+								# Add the sub item
 								task_item += sub_item
 
 								# If the sub item is equal to the last one
@@ -154,7 +157,7 @@ class Register(Tasks):
 								):
 									task_item += ", "
 
-							# Replace the parenthesis of the task title template
+							# Remove the parenthesis of the task title template
 							self.dictionary["Task"]["Titles"][language] = self.dictionary["Task"]["Titles"][language].replace("(s)", "s")
 
 						# Else, remove the "(s)" plural prototype text
@@ -168,7 +171,7 @@ class Register(Tasks):
 			self.dictionary["Task"]["Descriptions"][language] = self.dictionary["Task"]["Titles"][language] + "." + "\n\n"
 
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 			type_text = self.language_texts["describe_the_task_in"] + " " + translated_language + ":\n"
 
@@ -303,22 +306,22 @@ class Register(Tasks):
 
 		# Add task title lines
 		if language_parameter != "General":
-			text = self.JSON.Language.texts["title, title()"][language]
+			text = self.Language.texts["title, title()"][language]
 
 		if language_parameter == "General":
-			text = self.JSON.Language.texts["titles, title()"][language]
+			text = self.Language.texts["titles, title()"][language]
 
 		lines.append("\n" + text + ":" + "\n" + "{}")
 
 		lines.extend([
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Plural"][language] + "\n",
+			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Plural"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
 			self.File.texts["file_name"][language] + ":" + "\n" + self.task["Name"]["Normal"]
 		])
 
 		# Add states texts lines
 		if self.dictionary["States"]["Texts"] != {}:
-			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				language_text = self.dictionary["States"]["Texts"][key][language]
@@ -384,7 +387,7 @@ class Register(Tasks):
 		items.append(descriptions)
 
 		# Define language task text
-		file_text = self.Text.From_List(lines)
+		file_text = self.Text.From_List(lines, break_line = True)
 
 		return file_text.format(*items)
 
@@ -394,7 +397,7 @@ class Register(Tasks):
 			full_language = self.languages["full"][language]
 
 			# Folder names
-			root_folder = self.JSON.Language.texts["done_tasks"][language]
+			root_folder = self.Language.texts["done_tasks"][language]
 			type_folder = self.dictionary["Type"]["Plural"][language]
 
 			# Done tasks folder
@@ -460,7 +463,7 @@ class Register(Tasks):
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.JSON.Language.language_texts["states, title()"] + ":" + "\n"
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]

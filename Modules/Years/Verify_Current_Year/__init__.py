@@ -19,11 +19,11 @@ class Verify_Current_Year(Years):
 		self.files = {
 			"Created in": {
 				"Text key": "created_in",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.JSON.Language.language_texts["created_in"] + ".txt"
+				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["created_in"] + ".txt"
 			},
 			"Edited in": {
 				"Text key": "edited_in",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.JSON.Language.language_texts["edited_in"] + ".txt"
+				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["edited_in"] + ".txt"
 			},
 			"This Year I (post)": {
 				"Text key": "this_year_i_post",
@@ -31,14 +31,14 @@ class Verify_Current_Year(Years):
 			},
 			"Christmas": {
 				"Text key": "texts, title()",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["Christmas"]["Merry Christmas"]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt",
+				self.user_language: self.years["Current year"]["Folders"]["Text"]["Christmas"]["Merry Christmas"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
 				"Template": {
 					self.user_language: self.years["Texts"]["Files"]["Christmas"]["Merry Christmas"]["Texts"]
 				}
 			},
 			"New Year": {
 				"Text key": "texts, title()",
-				self.user_language: self.years["Current year"]["Folders"]["New Year"]["root"] + self.JSON.Language.language_texts["texts, title()"] + ".txt",
+				self.user_language: self.years["Current year"]["Folders"]["New Year"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
 				"Template": {
 					self.user_language: self.years["Texts"]["Files"]["New Year"]["Texts"]
 				}
@@ -48,10 +48,10 @@ class Verify_Current_Year(Years):
 		# Define the language "This Year I (post)" file
 		for language in self.languages["small"]:
 			# Define the "This Year I (post)" file
-			self.files["This Year I (post)"][language] = self.years["Current year"]["Folders"][language][self.JSON.Language.texts["this_year_i_post"]["en"]]
+			self.files["This Year I (post)"][language] = self.years["Current year"]["Folders"][language][self.Language.texts["this_year_i_post"]["en"]]
 
 			# Define the template file
-			self.files["This Year I (post)"]["Template"][language] = self.years["Texts"]["Folders"][language][self.JSON.Language.texts["this_year_i_post"]["en"]]
+			self.files["This Year I (post)"]["Template"][language] = self.years["Texts"]["Folders"][language][self.Language.texts["this_year_i_post"]["en"]]
 
 		# If the current year did not existed in the years folder
 		# Creates the folders and files of the current year folder
@@ -153,14 +153,14 @@ class Verify_Current_Year(Years):
 						"Item": str(self.date["Units"]["Year"]),
 						"List": [
 							"{current_year}",
-							"[" + self.JSON.Language.language_texts["current_year"] + "]"
+							"[" + self.Language.language_texts["current_year"] + "]"
 						]
 					},
 					"Next year": {
 						"Item": str(self.date["Units"]["Year"] + 1),
 						"List": [
 							"{next_year}",
-							"[" + self.JSON.Language.language_texts["next_year"] + "]"
+							"[" + self.Language.language_texts["next_year"] + "]"
 						]
 					}
 				}
@@ -209,14 +209,14 @@ class Verify_Current_Year(Years):
 		print()
 
 		# Show the image folder of the year
-		print(self.JSON.Language.language_texts["image_folder"] + ":")
+		print(self.Language.language_texts["image_folder"] + ":")
 		print(tab + self.years["Current year"]["Folders"]["Image"]["root"])
 
 		# If the current year did not existed in the years folder
 		if self.years["States"]["Current year folder exists"] == False:
 			# Show the "Texts" text
 			print()
-			print(self.JSON.Language.language_texts["texts, title()"] + ":")
+			print(self.Language.language_texts["texts, title()"] + ":")
 
 			tab = "\t"
 			double_tab = "\t\t"
@@ -240,7 +240,7 @@ class Verify_Current_Year(Years):
 					text_key = files["Text key"]
 
 					# Define the language text
-					language_text = self.JSON.Language.texts[text_key][language]
+					language_text = self.Language.texts[text_key][language]
 
 					# Read the file and get its lines of text
 					lines = self.File.Contents(file)["lines"]

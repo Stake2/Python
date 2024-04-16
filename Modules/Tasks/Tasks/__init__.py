@@ -88,12 +88,26 @@ class Tasks(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Import_Classes(self):
 		# Define the classes to be imported
@@ -181,7 +195,7 @@ class Tasks(object):
 			for language in self.languages["small"]:
 				for item in ["Art", "Programming"]:
 					if plural_task_type in self.task_types["subfolders, type: dict"][item]:
-						self.task_types[plural_task_type]["Subfolders"][language] = self.JSON.Language.texts[item.lower() + ", title()"][language]
+						self.task_types[plural_task_type]["Subfolders"][language] = self.Language.texts[item.lower() + ", title()"][language]
 
 				# Define the task item
 				self.task_types[plural_task_type]["Items"][language] = self.task_types["items, type: dict"][plural_task_type][language]
@@ -259,7 +273,7 @@ class Tasks(object):
 		# Define the number of Entries of all years as the local number of entries
 		self.dictionaries["History"]["Numbers"]["Tasks"] = tasks
 
-		# Update the "History.json" file with the new History dictionary
+		# Update the "History.json" file with the updated "History" dictionary
 		self.JSON.Edit(self.folders["Task History"]["History"], self.dictionaries["History"])
 
 		# Create the "Per Task Type" key inside the "Numbers" dictionary of the "Tasks" dictionary
@@ -330,8 +344,8 @@ class Tasks(object):
 					if key != "First task type task in year":
 						text_key = key.lower().replace(" ", "_")
 
-						if text_key in self.JSON.Language.texts:
-							text = self.JSON.Language.texts[text_key][language]
+						if text_key in self.Language.texts:
+							text = self.Language.texts[text_key][language]
 
 						else:
 							text = self.texts[text_key][language]
@@ -347,7 +361,7 @@ class Tasks(object):
 							text_key = "first_{}_in_year, feminine"
 							task_item = self.texts["{}_task"][language].format(task_item)
 
-						text = self.JSON.Language.texts[text_key][language].format(task_item)
+						text = self.Language.texts[text_key][language].format(task_item)
 
 					states_dictionary["Texts"][key][language] = text
 
@@ -363,7 +377,7 @@ class Tasks(object):
 		task = dictionary["Task"]
 
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		print(self.language_texts["this_task_was_registered"] + ":")
@@ -375,7 +389,7 @@ class Tasks(object):
 			print("\t" + task["Titles"][language])
 			print()
 
-		print(self.JSON.Language.language_texts["type, title()"] + ":")
+		print(self.Language.language_texts["type, title()"] + ":")
 
 		types = []
 
@@ -390,7 +404,7 @@ class Tasks(object):
 
 		print()
 
-		print(self.JSON.Language.language_texts["when, title()"] + ":")
+		print(self.Language.language_texts["when, title()"] + ":")
 		print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
 
 		# If there are states, show them
@@ -399,12 +413,12 @@ class Tasks(object):
 			dictionary["States"]["Texts"] != {}
 		):
 			print()
-			print(self.JSON.Language.language_texts["states, title()"] + ":")
+			print(self.Language.language_texts["states, title()"] + ":")
 
 			for key in dictionary["States"]["Texts"]:
 				print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
-		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.JSON.Language.language_texts["can_be_long, feminine"] + ")")
+		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.Language.language_texts["can_be_long, feminine"] + ")")
 
 		if show_task_description == True:
 			print()
@@ -413,8 +427,8 @@ class Tasks(object):
 
 		if dictionary["large_bar"] == True:
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		# If the user finished reading the information summary, ask for input before ending execution
 		if dictionary["input"] == True:
-			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

@@ -15,10 +15,11 @@ class Main():
 		self.Define_Basic_Variables()
 
 		methods = [
+			"Test",
 			"Download_Minecraft_Assets",
 			"Notepad_Theme",
 			"XML",
-			"Remove_Dots_From_String",	
+			"Remove_Dots_From_String",
 			"Remove_Line_Of_Files",
 			"Add_Line_To_Files",
 			"Replace_Lines",
@@ -54,6 +55,9 @@ class Main():
 		from Utility.JSON import JSON as JSON
 
 		self.JSON = JSON()
+
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
 
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
@@ -98,11 +102,11 @@ class Main():
 		self.switches = self.Global_Switches.switches["Global"]
 
 		# Get the Languages dictionary
-		self.languages = self.JSON.Language.languages
+		self.languages = self.Language.languages
 
 		# Get the user language and full user language
-		self.user_language = self.JSON.Language.user_language
-		self.full_user_language = self.JSON.Language.full_user_language
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -124,6 +128,100 @@ class Main():
 
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
+
+	def Test(self):
+		print()
+		print(self.separators["5"])
+		print()
+
+		# Define the language
+		language = self.user_language
+		#language = "en"
+
+		# Define the "Texts" dictionary
+		texts = {
+			"pt": {
+				"List": [
+					"Um",
+					"Dois",
+					"Três",
+					"Quatro"
+				],
+				"Texts": [
+					'"e" antes do último item no idioma do usuário',
+					'"e" antes do último item em Inglês',
+					'com "ou" antes do último item',
+					'sem "e" antes do último item',
+					"com palavras em minúsculo",
+					"com aspas",
+					"com quebras de linha"
+				],
+				"One line text": "Texto de uma linha",
+				"Multi-line text": "Texto multi-linha"
+			},
+			"en": {
+				"List": [
+					"One",
+					"Two",
+					"Three",
+					"Four"
+				],
+				"Texts": [
+					'"and" before the last item in the user language',
+					'"and" before the last item in English',
+					'with "or" before the last item',
+					'without "and" before the last item',
+					"with words in lower case",
+					"with quotes",
+					"with line breaks"
+				],
+				"One line text": "One line text",
+				"Multi-line text": "Multi-line text"
+			}
+		}
+
+		items = texts[language]["List"]
+
+		items = [
+			self.Text.From_List(items, language = self.user_language),
+			self.Text.From_List(items, language = "en"),
+			self.Text.From_List(items, language = language, or_text = True),
+			self.Text.From_List(items, language = language, and_text = False),
+			self.Text.From_List(items, language = language, lower = True),
+			self.Text.From_List(items, language = language, quotes = True),
+			self.Text.From_List(items, break_line = True).splitlines()
+		]
+
+		# Show the list
+		print(self.Language.texts["original_list"][language] + ":")
+
+		print("[")
+
+		for item in texts[language]["List"]:
+			text = '"' + item + '"'
+
+			if item != texts[language]["List"][-1]:
+				text += ","
+
+			print("\t" + text)
+
+		print("]")
+		print()
+
+		i = 0
+		for text in texts[language]["Texts"]:
+			if text != texts[language]["Texts"][-1]:
+				print(texts[language]["One line text"] + " (" + text + "):")
+				print("\t" + items[i])
+				print()
+
+			if text == texts[language]["Texts"][-1]:
+				print(texts[language]["Multi-line text"] + " (" + text + "):")
+
+				for line in self.Text.From_List(texts[language]["List"], break_line = True).splitlines():
+					print("\t" + line)
+
+			i += 1
 
 	def Download_Minecraft_Assets(self):
 		# Import the "requests" module
@@ -258,32 +356,32 @@ class Main():
 				print()
 
 				# Show the current asset number and total number
-				print(self.JSON.Language.language_texts["number, title()"] + ":")
+				print(self.Language.language_texts["number, title()"] + ":")
 				print("[" + str(i) + "/" + str(length) + "]")
 				print()
 
 				# Show the asset key
-				print(self.JSON.Language.language_texts["key, title()"] + ":")
+				print(self.Language.language_texts["key, title()"] + ":")
 				print("[" + key + "]")
 				print()
 
 				# Show the folder
-				print(self.JSON.Language.language_texts["folder, title()"] + ":")
+				print(self.Language.language_texts["folder, title()"] + ":")
 				print("[" + assets_folder + "]")
 				print()
 
 				# Show the link
-				print(self.JSON.Language.language_texts["link, title()"] + ":")
+				print(self.Language.language_texts["link, title()"] + ":")
 				print("[" + link + "]")
 				print()
 
 				# Show the asset object file
-				print(self.JSON.Language.language_texts["file, title()"] + ":")
+				print(self.Language.language_texts["file, title()"] + ":")
 				print("[" + file + "]")
 				print()
 
 				# Show the extracted and converted file
-				print(self.JSON.Language.language_texts["file, title()"] + " (2)" + ":")
+				print(self.Language.language_texts["file, title()"] + " (2)" + ":")
 				print("[" + extracted_file + "]")
 
 			if self.File.Exist(file) == False:
@@ -304,7 +402,7 @@ class Main():
 
 				# Show the code
 				print()
-				print(self.JSON.Language.language_texts["code, title()"] + ":")
+				print(self.Language.language_texts["code, title()"] + ":")
 				print("[" + str(code) + "]")
 
 				# If the code is not "200"
@@ -379,7 +477,7 @@ class Main():
 		folder = self.Folder.Sanitize(self.Input.Type(self.Folder.language_texts["folder, title()"]))
 		files = self.Folder.Contents(folder, add_sub_folders = False)["file"]["list"]
 
-		titles_file = self.Folder.Sanitize(self.Input.Type(self.File.language_texts["file, title()"] + " " + self.JSON.Language.language_texts["genders, type: dict"]["of"] + " " + self.JSON.Language.language_texts["titles, title()"].lower()))
+		titles_file = self.Folder.Sanitize(self.Input.Type(self.File.language_texts["file, title()"] + " " + self.Language.language_texts["genders, type: dict"]["of"] + " " + self.Language.language_texts["titles, title()"].lower()))
 		titles = self.File.Contents(titles_file)["lines"]
 
 		from xml.dom.minidom import getDOMImplementation
@@ -514,7 +612,7 @@ class Main():
 		print()
 		print("-----")
 		print()
-		print(self.JSON.Language.language_texts["playlist, title()"] + ":")
+		print(self.Language.language_texts["playlist, title()"] + ":")
 		print(playlist_file)
 
 	def Remove_Dots_From_String(self):

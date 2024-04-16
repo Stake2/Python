@@ -87,12 +87,26 @@ class GamePlayer(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Import_Classes(self):
 		# Import the "importlib" module
@@ -143,7 +157,7 @@ class GamePlayer(object):
 			"Active argument" in self.arguments
 		):
 			print()
-			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
+			print(self.Language.language_texts["arguments, title()"] + ":")
 			print()
 
 			self.JSON.Show(self.arguments)
@@ -152,8 +166,8 @@ class GamePlayer(object):
 		self.game_types = self.JSON.To_Python(self.folders["Data"]["Types"])
 
 		self.game_types.update({
-			"Genders": self.JSON.Language.texts["genders, type: dict"],
-			"Gender items": self.JSON.Language.texts["gender_items"],
+			"Genders": self.Language.texts["genders, type: dict"],
+			"Gender items": self.Language.texts["gender_items"],
 			"Game list": {
 				"Number": 0,
 				"Numbers": {}
@@ -192,7 +206,7 @@ class GamePlayer(object):
 					self.texts["plan_to_play, title()"]["en"],
 					self.texts["playing, title()"]["en"],
 					self.texts["re_playing, title()"]["en"],
-					self.JSON.Language.texts["on_hold, title()"]["en"]
+					self.Language.texts["on_hold, title()"]["en"]
 				],
 				"Texts": {},
 				"Game number": 0,
@@ -284,7 +298,7 @@ class GamePlayer(object):
 			for english_status in self.texts["statuses, type: list"]["en"]:
 				self.game_types[game_type]["JSON"]["Status"][english_status] = sorted(self.game_types[game_type]["JSON"]["Status"][english_status], key = str.lower)
 
-			# Edit the "Information.json" file with the new dictionary
+			# Edit the "Information.json" file with the updated dictionary
 			self.JSON.Edit(self.game_types[game_type]["Folders"]["Information"]["Information"], self.game_types[game_type]["JSON"])
 
 			# Check the status of the game list
@@ -420,7 +434,7 @@ class GamePlayer(object):
 		# Define the number of Entries of all years as the local number of entries
 		self.dictionaries["History"]["Numbers"]["Sessions"] = sessions
 
-		# Update the "History.json" file with the new History dictionary
+		# Update the "History.json" file with the updated "History" dictionary
 		self.JSON.Edit(self.folders["Play History"]["History"], self.dictionaries["History"])
 
 		# Create the "Per Game Type" key inside the "Numbers" dictionary of the "Sessions" dictionary
@@ -455,10 +469,10 @@ class GamePlayer(object):
 			if game_type in self.dictionaries["Sessions"]["Numbers"]["Per Game Type"]:
 				self.dictionaries["Sessions"]["Numbers"]["Per Game Type"][game_type] = self.dictionaries["Game type"][game_type]["Numbers"]["Total"]
 
-			# Update the per game type "Sessions.json" file with the updated per game type Sessions dictionary
+			# Update the per game type "Sessions.json" file with the updated per game type "Sessions" dictionary
 			self.JSON.Edit(self.folders["Play History"]["Current year"]["Per Game Type"][key]["Sessions"], self.dictionaries["Game type"][game_type])
 
-		# Update the "Sessions.json" file with the updated Sessions dictionary
+		# Update the "Sessions.json" file with the updated "Sessions" dictionary
 		self.JSON.Edit(self.folders["Play History"]["Current year"]["Sessions"], self.dictionaries["Sessions"])
 
 	def Get_Game_List(self, dictionary, status = None):
@@ -522,7 +536,7 @@ class GamePlayer(object):
 				self.texts["plan_to_play, title()"]["en"],
 				self.texts["playing, title()"]["en"],
 				self.texts["re_playing, title()"]["en"],
-				self.JSON.Language.texts["on_hold, title()"]["en"]
+				self.Language.texts["on_hold, title()"]["en"]
 			]
 		}
 
@@ -690,7 +704,7 @@ class GamePlayer(object):
 			key = file_name.lower().replace(" ", "_").replace(".json", "")
 
 			if key == "details":
-				texts_list = self.JSON.Language.language_texts
+				texts_list = self.Language.language_texts
 
 			if key == "dates":
 				texts_list = self.Date.language_texts
@@ -727,7 +741,7 @@ class GamePlayer(object):
 
 			# Create the "Played" folder
 			folder["Played"] = {
-				"root": root_folder + self.JSON.Language.language_texts["played, title()"] + "/"
+				"root": root_folder + self.Language.language_texts["played, title()"] + "/"
 			}
 
 			self.Folder.Create(folder["Played"]["root"])
@@ -883,8 +897,8 @@ class GamePlayer(object):
 			game["Language"] = self.full_user_language
 
 			# Change user language to original game language if the key exists inside the game details
-			if self.JSON.Language.language_texts["original_language"] in game["Details"]:
-				game["Language"] = game["Details"][self.JSON.Language.language_texts["original_language"]]
+			if self.Language.language_texts["original_language"] in game["Details"]:
+				game["Language"] = game["Details"][self.Language.language_texts["original_language"]]
 
 			if game["Language"] in list(self.languages["full"].values()):
 				# Iterate through full languages list to find small language from the full language
@@ -894,7 +908,7 @@ class GamePlayer(object):
 					if full_language == game["Language"]:
 						game["Language"] = small_language
 
-			game["Platform"] = game["Details"][self.JSON.Language.language_texts["platform, title()"]]
+			game["Platform"] = game["Details"][self.Language.language_texts["platform, title()"]]
 
 			i = 0
 			for platform in self.game_types["Platforms"][self.user_language]:
@@ -929,8 +943,8 @@ class GamePlayer(object):
 
 			# Define Re-playing state for Re-playing status
 			if (
-				self.JSON.Language.language_texts["status, title()"] in game["Details"] and
-				game["Details"][self.JSON.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]
+				self.Language.language_texts["status, title()"] in game["Details"] and
+				game["Details"][self.Language.language_texts["status, title()"]] == self.language_texts["re_playing, title()"]
 			):
 				game["States"]["Re-playing"] = True
 
@@ -1037,7 +1051,7 @@ class GamePlayer(object):
 				if (
 					game["Platform"]["en"] not in ["Console", "Mobile", "Super Nintendo", "Nintendo 64"] and
 					dictionary["Type"]["Type"]["en"] not in ["Flash", "Nintendo 64", "Super Nintendo"] and
-					self.JSON.Language.language_texts["steam, title()"] not in game["Details"] and
+					self.Language.language_texts["steam, title()"] not in game["Details"] and
 					"steam://" not in game["Files"]["Shortcut"]["Path"] and
 					"https://" not in game["Files"]["Shortcut"]["Path"]
 				):
@@ -1205,7 +1219,7 @@ class GamePlayer(object):
 				text_key += ", title()"
 
 			# Get the user language text to use it as the file name
-			text = self.JSON.Language.language_texts[text_key]
+			text = self.Language.language_texts[text_key]
 
 			# Define the file name inside the "Folders" dictionary
 			game["Sub-game type"]["Folders"][name] = game["Sub-game type"]["Folders"]["root"] + text + ".txt"
@@ -1243,7 +1257,7 @@ class GamePlayer(object):
 			game["Sub-game type"]["Items"]["List"] = self.Folder.Contents(game["Sub-game type"]["Folders"]["root"])["folder"]["names"]
 
 			# Update the "List.txt" file
-			self.File.Edit(game["Sub-game type"]["Folders"]["List"], self.Text.From_List(game["Sub-game type"]["Items"]["List"]), "w")
+			self.File.Edit(game["Sub-game type"]["Folders"]["List"], self.Text.From_List(game["Sub-game type"]["Items"]["List"], break_line = True), "w")
 
 		# Update the number of sub-games
 		game["Sub-game type"]["Items"]["Number"] = len(game["Sub-game type"]["Items"]["List"])
@@ -1296,7 +1310,7 @@ class GamePlayer(object):
 			"language_options": game["Sub-game type"]["Items"]["Language list"],
 
 			"show_text": game["Sub-game type"]["Texts"]["Plural"][self.user_language],
-			"select_text": self.JSON.Language.language_texts["select_an_item_from_the_list"]
+			"select_text": self.Language.language_texts["select_an_item_from_the_list"]
 		}
 
 		# Sanitize the language titles
@@ -1369,7 +1383,7 @@ class GamePlayer(object):
 					self.texts["plan_to_play, title()"]["en"],
 					self.texts["playing, title()"]["en"],
 					self.texts["re_playing, title()"]["en"],
-					self.JSON.Language.texts["on_hold, title()"]["en"]
+					self.Language.texts["on_hold, title()"]["en"]
 				]
 			},
 			"Game": {
@@ -1449,8 +1463,8 @@ class GamePlayer(object):
 						if ", title()" not in text_key:
 							text_key = text_key.replace(" ", "_")
 
-						if text_key in self.JSON.Language.texts:
-							text = self.JSON.Language.texts[text_key][language]
+						if text_key in self.Language.texts:
+							text = self.Language.texts[text_key][language]
 
 						else:
 							text = self.texts[text_key][language]
@@ -1506,22 +1520,22 @@ class GamePlayer(object):
 
 			# Define titles key
 			game["Titles"] = {
-				"Original": game["Details"][self.JSON.Language.language_texts["title, title()"]],
-				"Sanitized": game["Details"][self.JSON.Language.language_texts["title, title()"]],
+				"Original": game["Details"][self.Language.language_texts["title, title()"]],
+				"Sanitized": game["Details"][self.Language.language_texts["title, title()"]],
 			}
 
 			game["Titles"]["Language"] = game["Titles"]["Original"]
 
 			# If the "romanized_title" key exists inside the game details, define the romanized name and ja name
-			if self.JSON.Language.language_texts["romanized_title"] in game["Details"]:
-				if self.JSON.Language.language_texts["romanized_title"] in game["Details"]:
-					game["Titles"]["Romanized"] = game["Details"][self.JSON.Language.language_texts["romanized_title"]]
+			if self.Language.language_texts["romanized_title"] in game["Details"]:
+				if self.Language.language_texts["romanized_title"] in game["Details"]:
+					game["Titles"]["Romanized"] = game["Details"][self.Language.language_texts["romanized_title"]]
 					game["Titles"]["Language"] = game["Titles"]["Romanized"]
 
 				if "Romanized" in game["Titles"]:
 					game["Titles"]["Sanitized"] = game["Titles"]["Romanized"]
 
-				game["Titles"]["ja"] = game["Details"][self.JSON.Language.language_texts["title, title()"]]
+				game["Titles"]["ja"] = game["Details"][self.Language.language_texts["title, title()"]]
 
 			if (
 				" (" in game["Titles"]["Original"] and
@@ -1534,7 +1548,7 @@ class GamePlayer(object):
 
 			# Define game titles per language
 			for language in self.languages["small"]:
-				key = self.JSON.Language.texts["title_in_language"][language][self.user_language]
+				key = self.Language.texts["title_in_language"][language][self.user_language]
 
 				if key in game["Details"]:
 					game["Titles"][language] = game["Details"][key]
@@ -1755,7 +1769,7 @@ class GamePlayer(object):
 					# If the number of time units is two
 					if len(time_units) == 2:
 						# Add the " and " text
-						gaming_time["Text"][language] += " " + self.JSON.Language.texts["and"][language] + " "
+						gaming_time["Text"][language] += " " + self.Language.texts["and"][language] + " "
 
 				# If the time unit key is the last one
 				# And the number of time units is more than two
@@ -1772,7 +1786,7 @@ class GamePlayer(object):
 						gaming_time["Text"][language] += ", "
 
 					# Add the " and " text
-					gaming_time["Text"][language] += self.JSON.Language.texts["and"][language] + " "
+					gaming_time["Text"][language] += self.Language.texts["and"][language] + " "
 
 				# Add the time unit to the full gaming time text
 				gaming_time["Text"][language] += str(time_unit)
@@ -1819,10 +1833,10 @@ class GamePlayer(object):
 
 	def Change_Status(self, dictionary, status = ""):
 		if status == "":
-			status = self.JSON.Language.language_texts["completed, title()"]
+			status = self.Language.language_texts["completed, title()"]
 
 		# Update the status key in the game details
-		dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]] = status
+		dictionary["Game"]["Details"][self.Language.language_texts["status, title()"]] = status
 
 		# Update the game details file
 		self.File.Edit(dictionary["Game"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["Details"]), "w")
@@ -1838,7 +1852,7 @@ class GamePlayer(object):
 		):
 			game_type = dictionary["Type"]
 
-			self.language_status = dictionary["Game"]["Details"][self.JSON.Language.language_texts["status, title()"]]
+			self.language_status = dictionary["Game"]["Details"][self.Language.language_texts["status, title()"]]
 
 			# Get the English status from the language status of the game details
 			status = self.Get_Language_Status(self.language_status)
@@ -1873,10 +1887,10 @@ class GamePlayer(object):
 					"JSON" not in dictionary["Type"]
 				):
 					folder = game_type["Folders"]["Information"]["root"] + self.Sanitize_Title(game_title) + "/"
-					details_file = folder + self.JSON.Language.language_texts["details, title()"] + ".txt"
+					details_file = folder + self.Language.language_texts["details, title()"] + ".txt"
 					details = self.File.Dictionary(details_file)
 
-					self.language_status = details[self.JSON.Language.language_texts["status, title()"]]
+					self.language_status = details[self.Language.language_texts["status, title()"]]
 
 					# Get the English status from the language status of the game details
 					status = self.Get_Language_Status(self.language_status)
@@ -1957,7 +1971,7 @@ class GamePlayer(object):
 		# Show a separator
 		if "First separator" not in dictionary:
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		# --------------- #
 
@@ -2026,7 +2040,7 @@ class GamePlayer(object):
 
 		# Show the "Category" text
 		print()
-		print(self.JSON.Language.language_texts["category, title()"] + ":")
+		print(self.Language.language_texts["category, title()"] + ":")
 
 		# Show the categories
 		types = []
@@ -2053,7 +2067,7 @@ class GamePlayer(object):
 			if text not in platforms:
 				platforms.append(text)
 
-		print(self.JSON.Language.language_texts["platform, title()"] + ":")
+		print(self.Language.language_texts["platform, title()"] + ":")
 
 		for item in platforms:
 			print(item)
@@ -2081,10 +2095,10 @@ class GamePlayer(object):
 		if game["Folders"]["Local"]["root"] != "":
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
-			print("\t" + self.JSON.Language.language_texts["informations, title()"] + ":")
+			print("\t" + self.Language.language_texts["informations, title()"] + ":")
 			print("\t" + folders["root"])
 			print()
-			print("\t" + self.JSON.Language.language_texts["local, title()"] + ":")
+			print("\t" + self.Language.language_texts["local, title()"] + ":")
 			print("\t" + game["Folders"]["Local"]["root"])
 
 		# --------------- #
@@ -2098,7 +2112,7 @@ class GamePlayer(object):
 		# Show the shortcut path
 		if game["Files"]["Shortcut"]["Path"] != "":
 			print()
-			print(self.JSON.Language.language_texts["path, title()"] + ":")
+			print(self.Language.language_texts["path, title()"] + ":")
 			print("\t" + game["Files"]["Shortcut"]["Path"])
 
 		# --------------- #
@@ -2115,7 +2129,7 @@ class GamePlayer(object):
 			print()
 
 			# Show the session duration text
-			print(self.JSON.Language.language_texts["session_duration"] + ":")
+			print(self.Language.language_texts["session_duration"] + ":")
 			print("\t" + dictionary["Entry"]["Session duration"]["Text"][self.user_language])
 
 			# --------------- #
@@ -2137,7 +2151,7 @@ class GamePlayer(object):
 				dictionary["States"]["Texts"] != {}
 			):
 				print()
-				print(self.JSON.Language.language_texts["states, title()"] + ":")
+				print(self.Language.language_texts["states, title()"] + ":")
 
 				for key in dictionary["States"]["Texts"]:
 					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
@@ -2145,7 +2159,7 @@ class GamePlayer(object):
 			# If there is a session description, show it
 			if "Description" in self.dictionary["Entry"]["Diary Slim"]:
 				print()
-				print(self.JSON.Language.language_texts["description, title()"] + ":")
+				print(self.Language.language_texts["description, title()"] + ":")
 
 				# Define the "description" variable for easier typing and a more beautiful code
 				description = self.dictionary["Entry"]["Diary Slim"]["Description"]["lines"]
@@ -2156,6 +2170,6 @@ class GamePlayer(object):
 
 			# If the user finished playing, ask for input before ending execution
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
-			self.Input.Type(self.JSON.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

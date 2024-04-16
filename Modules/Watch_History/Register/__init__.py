@@ -316,9 +316,9 @@ class Register(Watch_History):
 
 		# Define the Entry text lines list
 		lines = [
-			self.JSON.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
+			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
 			self.texts["media_type_number"][language] + ": " + str(self.dictionaries["Media type"][self.media_type]["Numbers"]["Total"]),
-			"\n" + self.JSON.Language.texts["media, title()"][language] + ":" + "\n" + "{}"
+			"\n" + self.Language.texts["media, title()"][language] + ":" + "\n" + "{}"
 		]
 
 		# Add the item and episode titles lines
@@ -327,13 +327,13 @@ class Register(Watch_History):
 				self.media["States"]["Media item list"] == True and
 				self.media["States"]["Media item is media"] == False
 			):
-				lines.append(self.JSON.Language.texts["item, title()"][language] + ":" + "\n" + "{}")
+				lines.append(self.Language.texts["item, title()"][language] + ":" + "\n" + "{}")
 
 			if self.media["States"]["Single unit"] == False:
-				text = self.JSON.Language.texts["titles, title()"][language]
+				text = self.Language.texts["titles, title()"][language]
 
 				if language_parameter != "General":
-					text = self.JSON.Language.texts["title, title()"][language]
+					text = self.Language.texts["title, title()"][language]
 
 				list_ = []
 
@@ -342,12 +342,12 @@ class Register(Watch_History):
 						list_.append(title)
 
 				if len(list_) == 1:
-					text = self.JSON.Language.texts["title, title()"][language]
+					text = self.Language.texts["title, title()"][language]
 
 				lines.append(text + ":" + "\n" + "{}")
 
 		lines_to_add = [
-			self.JSON.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Media type"]["Plural"][language] + "\n"
+			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Media type"]["Plural"][language] + "\n"
 		]
 
 		text = self.Date.texts["times, title()"][language] + ":" + "\n" + "{}"
@@ -363,7 +363,7 @@ class Register(Watch_History):
 
 		# Add the state texts lines
 		if self.dictionary["States"]["Texts"] != {}:
-			text = "\n" + self.JSON.Language.texts["states, title()"][language] + ":" + "\n"
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				language_text = self.dictionary["States"]["Texts"][key][language]
@@ -376,7 +376,7 @@ class Register(Watch_History):
 			lines.append(text)
 
 		# Define the language entry text
-		file_text = self.Text.From_List(lines)
+		file_text = self.Text.From_List(lines, break_line = True)
 
 		# Define the items to be added to the entry text
 		items = []
@@ -449,7 +449,7 @@ class Register(Watch_History):
 					episode_title = self.media["Episode"]["Titles"][language]
 
 					if episode_title == "":
-						episode_title = "[" + self.JSON.Language.texts["empty, title()"][language] + "]"
+						episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
 
 					episode_titles = episode_title + "\n"
 
@@ -458,7 +458,7 @@ class Register(Watch_History):
 						episode_title = self.media["Episode"]["Titles"][language]
 
 						if episode_title == "":
-							episode_title = "[" + self.JSON.Language.texts["empty, title()"][language] + "]"
+							episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
 
 						if episode_title + "\n" not in episode_titles:
 							episode_titles += episode_title + "\n"
@@ -485,7 +485,7 @@ class Register(Watch_History):
 			full_language = self.languages["full"][language]
 
 			# Folder names
-			root_folder = self.JSON.Language.texts["watched_media"][language]
+			root_folder = self.Language.texts["watched_media"][language]
 			type_folder = self.dictionary["Media type"]["Plural"][language]
 
 			# Watched media folder
@@ -521,7 +521,7 @@ class Register(Watch_History):
 			# "Firsts Of The Year" part
 			if self.media["States"]["First media type entry in year"] == True:
 				# "Firsts Of The Year" subfolder
-				subfolder_name = self.JSON.Language.texts["media, title()"][language]
+				subfolder_name = self.Language.texts["media, title()"][language]
 
 				folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
 				self.Folder.Create(folder)
@@ -593,17 +593,17 @@ class Register(Watch_History):
 
 				# Add the "Status" key and value "Completed" to the end of the details
 				key_value = {
-					"key": self.JSON.Language.language_texts["status, title()"],
-					"value": self.JSON.Language.language_texts["completed, title()"]
+					"key": self.Language.language_texts["status, title()"],
+					"value": self.Language.language_texts["completed, title()"]
 				}
 
 				self.media["Item"]["Details"] = self.JSON.Add_Key_After_Key(self.media["Item"]["Details"], key_value, add_to_end = True)
 
 				if (
-					self.JSON.Language.language_texts["episode, title()"] in self.media["Item"]["Details"] and
+					self.Language.language_texts["episode, title()"] in self.media["Item"]["Details"] and
 					self.media["States"]["Single unit"] == True
 				):
-					self.media["Item"]["Details"].pop(self.JSON.Language.language_texts["episode, title()"])
+					self.media["Item"]["Details"].pop(self.Language.language_texts["episode, title()"])
 
 				# Update the media item details file
 				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
@@ -640,7 +640,7 @@ class Register(Watch_History):
 				self.media["Episode"]["Next"] = self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][self.media["Episode"]["Number"]]
 
 				# Define current episode to watch as the next episode
-				self.media["Item"]["Details"][self.JSON.Language.language_texts["episode, title()"]] = self.media["Episode"]["Next"]
+				self.media["Item"]["Details"][self.Language.language_texts["episode, title()"]] = self.media["Episode"]["Next"]
 
 				# Update media item details file
 				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
@@ -650,17 +650,17 @@ class Register(Watch_History):
 
 		# If the media is completed, define its status as completed
 		if self.media["States"]["Completed media"] == True:
-			if self.JSON.Language.language_texts["remote_origin"] in self.media["Details"]:
-				if self.media["Details"][self.JSON.Language.language_texts["remote_origin"]] == "Animes Vision":
-					self.media["Details"].pop(self.JSON.Language.language_texts["remote_origin"])
+			if self.Language.language_texts["remote_origin"] in self.media["Details"]:
+				if self.media["Details"][self.Language.language_texts["remote_origin"]] == "Animes Vision":
+					self.media["Details"].pop(self.Language.language_texts["remote_origin"])
 
-				elif self.media["Details"][self.JSON.Language.language_texts["remote_origin"]] == "YouTube":
-					self.media["Details"].pop(self.JSON.Language.language_texts["remote_origin"])
+				elif self.media["Details"][self.Language.language_texts["remote_origin"]] == "YouTube":
+					self.media["Details"].pop(self.Language.language_texts["remote_origin"])
 
 			# Define the new status as "Completed"
 			self.media["Status change"] = {
-				"Old": self.media["Details"][self.JSON.Language.language_texts["status, title()"]],
-				"New": self.JSON.Language.language_texts["completed, title()"]
+				"Old": self.media["Details"][self.Language.language_texts["status, title()"]],
+				"New": self.Language.language_texts["completed, title()"]
 			}
 
 			# Update the status key in the media details
@@ -707,7 +707,7 @@ class Register(Watch_History):
 
 			# Define the status list to use to get the media with the statuses on the list
 			status_list = [
-				self.JSON.Language.texts["on_hold, title()"]["en"],
+				self.Language.texts["on_hold, title()"]["en"],
 				self.texts["watching, title()"]["en"],
 				self.texts["re_watching, title()"]["en"]
 			]
@@ -744,7 +744,7 @@ class Register(Watch_History):
 							# Iterate through the media items list
 							for item_title in media_items:
 								item_folder = media_items_folder + self.Sanitize_Title(item_title) + "/"
-								item_details_file = item_folder + self.JSON.Language.language_texts["details, title()"] + ".txt"
+								item_details_file = item_folder + self.Language.language_texts["details, title()"] + ".txt"
 
 								item_details = self.File.Dictionary(item_details_file)
 
@@ -771,8 +771,8 @@ class Register(Watch_History):
 
 									# Add the "Status" key and value "Completed" to the end of the details
 									key_value = {
-										"key": self.JSON.Language.language_texts["status, title()"],
-										"value": self.JSON.Language.language_texts["completed, title()"]
+										"key": self.Language.language_texts["status, title()"],
+										"value": self.Language.language_texts["completed, title()"]
 									}
 
 									media_dictionary["Media"]["Item"]["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Media"]["Item"]["Details"], key_value, add_to_end = True)
@@ -882,7 +882,7 @@ class Register(Watch_History):
 				text = self.media_types["Genders"][self.user_language]["masculine"]["of_the"]
 
 			# Add unit and "of the" text
-			self.watched_item_text = self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"] + " " + self.media["texts"]["unit"][self.user_language] + " " + text
+			self.watched_item_text = self.Language.language_texts["genders, type: dict, masculine"]["this"] + " " + self.media["texts"]["unit"][self.user_language] + " " + text
 
 			if (
 				self.media["States"]["Single unit"] == False and
@@ -890,19 +890,19 @@ class Register(Watch_History):
 			):
 				# Replace "this" text with "the first" if the episode is the first one
 				if self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][0]:
-					self.watched_item_text = self.watched_item_text.replace(self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"], self.JSON.Language.language_texts["the_first, masculine"])
+					self.watched_item_text = self.watched_item_text.replace(self.Language.language_texts["genders, type: dict, masculine"]["this"], self.Language.language_texts["the_first, masculine"])
 
 				# Replace "this" text with "the last" if the episode is the last one
 				if (
 					self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] or
 					len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) == 1
 				):
-					self.watched_item_text = self.watched_item_text.replace(self.JSON.Language.language_texts["genders, type: dict, masculine"]["this"], self.JSON.Language.language_texts["the_last, masculine"])
+					self.watched_item_text = self.watched_item_text.replace(self.Language.language_texts["genders, type: dict, masculine"]["this"], self.Language.language_texts["the_last, masculine"])
 
 			if "Movie" in self.media["Episode"]["Titles"][self.media["Language"]]:
 				self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.language_texts["movie"])
 
-			self.of_the_text = self.JSON.Language.language_texts["of_the_{}"]
+			self.of_the_text = self.Language.language_texts["of_the_{}"]
 
 			if (
 				self.media["States"]["Media item list"] == True and
@@ -914,11 +914,11 @@ class Register(Watch_History):
 
 					# Replace the "of the" text with "of the first" if the media item is the first one
 					if self.media["Item"]["Title"] == self.media["Items"]["List"][0]:
-						text = self.JSON.Language.language_texts["first, feminine"] + " "
+						text = self.Language.language_texts["first, feminine"] + " "
 
 					# Replace the "of the" text with "of the last" if the media item is the last one
 					if self.media["Item"]["Title"] == self.media["Items"]["List"][-1]:
-						text = self.JSON.Language.language_texts["last, feminine"] + " "
+						text = self.Language.language_texts["last, feminine"] + " "
 
 					# Add the item text ("season" or "series") to "of the" text
 					self.of_the_text = self.of_the_text.format(text + self.language_texts["season, title()"].lower())
@@ -983,7 +983,7 @@ class Register(Watch_History):
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.JSON.Language.language_texts["states, title()"] + ":" + "\n"
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
 				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]
@@ -1009,7 +1009,7 @@ class Register(Watch_History):
 		}
 
 		# Define the list text, with all the Social Networks separated by commas
-		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"])
 
 		# Remove the "Discord" and "Twitter" Social Networks
 		self.social_networks["List"].remove("Discord")
@@ -1017,7 +1017,7 @@ class Register(Watch_History):
 
 		# Define the list text, with all the Social Networks separated by commas
 		# But without Twitter
-		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"], break_line = False, separator = ", ", and_text = True)
+		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"])
 
 		# Define the item text to be used
 		self.social_networks["Item text"] = self.language_texts["the_episode_cover"]
@@ -1026,7 +1026,7 @@ class Register(Watch_History):
 			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.language_texts["movie"])
 
 		if self.media["States"]["Video"] == True:
-			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.JSON.Language.language_texts["video, title()"].lower())
+			self.social_networks["Item text"] = self.social_networks["Item text"].replace(self.language_texts["episode"], self.Language.language_texts["video, title()"].lower())
 
 		# Define the "posted" template
 		self.social_networks["Template"] = self.language_texts["i_posted_the_watched_text, type: template"] + "."

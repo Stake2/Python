@@ -100,12 +100,26 @@ class Food_Time():
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Define_Lists_And_Dictionaries(self):
 		# Read the "Times.json" file
@@ -143,11 +157,11 @@ class Food_Time():
 	def Parse_Arguments(self):
 		if self.switches["verbose"] == True:
 			print()
-			print(self.JSON.Language.language_texts["arguments, title()"] + ":")
+			print(self.Language.language_texts["arguments, title()"] + ":")
 			print()
 			self.JSON.Show(self.arguments)
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		# Get the arguments from the "Module_Selector.py" module
 		for key, argument in self.arguments.items():

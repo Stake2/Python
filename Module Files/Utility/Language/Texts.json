@@ -30,6 +30,10 @@
 		"pt": "idioma completo",
 		"en": "full language"
 	},
+	"text_language": {
+		"pt": "Idioma de texto",
+		"en": "Text language"
+	},
 	"original_title": {
 		"en": "Original title",
 		"pt": "Título original"
@@ -95,6 +99,14 @@
 	"diary_slim": {
 		"pt": "Diário Slim",
 		"en": "Diary Slim"
+	},
+	"header, title()": {
+		"pt": "Cabeçalho",
+		"en": "Header"
+	},
+	"data, title()": {
+		"pt": "Dados",
+		"en": "Data"
 	},
 	"data_networks": {
 		"pt": "Redes de Dados",
@@ -174,6 +186,10 @@
 	"list, title()": {
 		"en": "List",
 		"pt": "Lista"
+	},
+	"original_list": {
+		"en": "Original list",
+		"pt": "Lista original"
 	},
 	"current, title()": {
 		"en": "Current",
@@ -773,6 +789,14 @@
 		"pt": "Aniversários",
 		"en": "Birthdays"
 	},
+	"date_of_birth": {
+		"pt": "Data de nascimento",
+		"en": "Date of birth"
+	},
+	"date_of_birth, type: plural": {
+		"pt": "Datas de nascimento",
+		"en": "Dates of birth"
+	},
 	"height, title()": {
 		"pt": "Altura",
 		"en": "Height"
@@ -788,6 +812,14 @@
 	"hometowns, title()": {
 		"pt": "Cidades natais",
 		"en": "Hometowns"
+	},
+	"locality, title()": {
+		"pt": "Localidade",
+		"en": "Locality"
+	},
+	"united_states": {
+		"pt": "Estados Unidos",
+		"en": "United States"
 	},
 	"residence_place": {
 		"pt": "Local de residência",
@@ -1977,6 +2009,10 @@
 	"survivors, title()": {
 		"en": "Survivors",
 		"pt": "Sobreviventes"
+	},
+	"deceased, title()": {
+		"en": "Deceased",
+		"pt": "Falecidos"
 	},
 	"it_is": {
 		"en": "it is",

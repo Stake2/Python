@@ -26,7 +26,7 @@ class System():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Verbose(self, text, item, verbose = True):
 		import inspect

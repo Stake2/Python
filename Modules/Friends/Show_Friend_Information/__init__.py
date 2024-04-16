@@ -15,7 +15,7 @@ class Show_Friend_Information(Friends):
 
 	def Select_File_Type(self):
 		self.information_item_dict = {
-			self.JSON.Language.texts["information, title()"]["en"]: {
+			self.Language.texts["information, title()"]["en"]: {
 				"English": self.information_items["en"],
 				self.full_user_language: self.information_items["information_items, type: dict, en: " + self.user_language],
 			},
@@ -42,7 +42,7 @@ class Show_Friend_Information(Friends):
 
 			friend_data = self.friend_data[friend][self.file_name]
 
-			if self.file_name == self.JSON.Language.texts["information, title()"]["en"]:
+			if self.file_name == self.Language.texts["information, title()"]["en"]:
 				self.friend_social_networks[friend] = {"None": None}
 
 			if self.file_name == "Social Networks":
@@ -60,7 +60,7 @@ class Show_Friend_Information(Friends):
 
 				for information_item in self.english_information_items:
 					if information_item in friend_sub_data:
-						if self.file_name == self.JSON.Language.texts["information, title()"]["en"]:
+						if self.file_name == self.Language.texts["information, title()"]["en"]:
 							self.friend_information_items[friend][information_item] = friend_sub_data[information_item]
 
 						if self.file_name == "Social Networks":
@@ -73,7 +73,7 @@ class Show_Friend_Information(Friends):
 		for friend in self.friends:
 			for social_network in self.friend_social_networks_backup[friend]:
 				for information_item in self.english_information_items:
-					if self.file_name == self.JSON.Language.texts["information, title()"]["en"]:
+					if self.file_name == self.Language.texts["information, title()"]["en"]:
 						friend_information_items = self.friend_information_items[friend]
 
 					if self.file_name == "Social Networks":
@@ -127,7 +127,7 @@ class Show_Friend_Information(Friends):
 
 		for friend in self.friends.copy():
 			for social_network in self.friend_social_networks[friend].copy():
-				if self.file_name == self.JSON.Language.texts["information, title()"]["en"]:
+				if self.file_name == self.Language.texts["information, title()"]["en"]:
 					friend_information_items = self.friend_information_items[friend]
 
 				if self.file_name == "Social Networks":
@@ -144,7 +144,7 @@ class Show_Friend_Information(Friends):
 
 	def Show_Information(self):
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 
 		for friend in self.friend_information_items:
 			print()
@@ -166,7 +166,7 @@ class Show_Friend_Information(Friends):
 							if social_network != self.friend_social_networks[friend][0]:
 								print()
 
-							print(self.JSON.Language.language_texts["social_network"] + ":")
+							print(self.Language.language_texts["social_network"] + ":")
 							print(social_network)
 							print()
 
@@ -174,7 +174,7 @@ class Show_Friend_Information(Friends):
 						print(information)
 						print()
 
-						if self.file_name == self.JSON.Language.texts["information, title()"]["en"]:
+						if self.file_name == self.Language.texts["information, title()"]["en"]:
 							print("---")
 
 						if self.file_name == "Social Networks":

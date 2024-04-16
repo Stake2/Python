@@ -90,12 +90,26 @@ class Friends(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
 
-		self.large_bar = "-----"
-		self.dash_space = "-"
+		# Define the "Separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
 
 	def Import_Classes(self):
 		# Define the classes to be imported
@@ -135,7 +149,7 @@ class Friends(object):
 
 		# Friends text "Database" folder
 		self.folders["Friends"]["Text"]["Database"] = {
-			"root": self.folders["Friends"]["Text"]["root"] + "Database/"
+			"root": self.folders["Friends"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
 		}
 
 		self.Folder.Create(self.folders["Friends"]["Text"]["Database"]["root"])
@@ -215,7 +229,7 @@ class Friends(object):
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
-				text = self.JSON.Language.texts[text_key + addon][language]
+				text = self.Language.texts[text_key + addon][language]
 
 				# Define the language information item inside the local "dict_" dictionary
 				dict_[language] = text
@@ -233,26 +247,27 @@ class Friends(object):
 			# Define the plural versions of the information item
 			dict_["Plural"] = {}
 
-			# Update the text key
+			# Update the back of the text key
 			text_key_backup = text_key + addon
 
 			if "s" not in text_key[-1]:
 				text_key += "s"
 
+			# Add the text addon (might be a empty string or the ", title()" text)
 			text_key += addon
 
-			if text_key not in self.JSON.Language.texts:
+			if text_key not in self.Language.texts:
 				text_key = text_key.replace(addon, "")
 				text_key = text_key[:-1]
 
 				text_key += addon + ", type: plural"
 
-			if text_key not in self.JSON.Language.texts:
+			if text_key not in self.Language.texts:
 				text_key = text_key_backup
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
-				dict_["Plural"][language] = self.JSON.Language.texts[text_key][language]
+				dict_["Plural"][language] = self.Language.texts[text_key][language]
 
 			# Define the "Gender" key
 			dict_["Gender"] = {
@@ -363,7 +378,7 @@ class Friends(object):
 					gender = "feminine"
 
 				# Get the gender words dictionary
-				dict_[item] = self.JSON.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+				dict_[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
 
 				# Define the gender inside the "Gender" dictionary
 				dictionary["Dictionary"][key]["Gender"]["Text"] = gender
@@ -430,7 +445,7 @@ class Friends(object):
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Define the language file name text
-				dict_[language] = self.JSON.Language.texts[text_key + addon][language]
+				dict_[language] = self.Language.texts[text_key + addon][language]
 
 			if "s" not in text_key[-1]:
 				text_key += "s"
@@ -440,7 +455,7 @@ class Friends(object):
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
-				dict_["Plural"][language] = self.JSON.Language.texts[text_key + addon][language]
+				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary
 			dictionary["Dictionary"][file_name] = dict_
@@ -450,11 +465,11 @@ class Friends(object):
 
 		# ---------- #
 
-		# List the friend folders, populating the friends list
+		# Get the list of social networks
 		self.friends["List"] = self.JSON.To_Python(self.folders["Friends"]["Text"]["Friends"])["List"]
 
 		# Write the friends list to the "Friends list.txt" file
-		text_to_write = self.Text.From_List(self.friends["List"])
+		text_to_write = self.Text.From_List(self.friends["List"], break_line = True)
 
 		self.File.Edit(self.folders["Friends"]["Text"]["Friends list"], text_to_write, "w")
 
@@ -508,7 +523,7 @@ class Friends(object):
 
 				# Create the "Social Networks" folder
 				dict_["Social Networks"] = {
-					"root": dict_["root"] + self.JSON.Language.language_texts["social_networks"] + "/"
+					"root": dict_["root"] + self.Language.language_texts["social_networks"] + "/"
 				}
 
 				self.Folder.Create(dict_["Social Networks"]["root"])
@@ -548,7 +563,7 @@ class Friends(object):
 				if item == "Image":
 					# Create the image "Media" folder
 					dict_["Media"] = {
-						"root": dict_["root"] + self.JSON.Language.language_texts["media, title()"] + "/"
+						"root": dict_["root"] + self.Language.language_texts["media, title()"] + "/"
 					}
 
 					self.Folder.Create(dict_["Media"]["root"])
@@ -639,7 +654,7 @@ class Friends(object):
 					social_networks_list.remove(item)
 
 			# Update the "Social Networks.txt" file with the list above
-			text_to_write = self.Text.From_List(social_networks_list)
+			text_to_write = self.Text.From_List(social_networks_list, break_line = True)
 
 			self.File.Edit(dictionary["Files"]["Social Networks"]["List"], text_to_write, "w")
 
@@ -698,7 +713,7 @@ class Friends(object):
 					self.Folder.Create(dict_["root"])
 
 					# Create the "Profile.txt" file
-					dict_["Profile"] = dict_["root"] + self.JSON.Language.language_texts["profile, title()"] + ".txt"
+					dict_["Profile"] = dict_["root"] + self.Language.language_texts["profile, title()"] + ".txt"
 
 					self.File.Create(dict_["Profile"])
 
@@ -952,10 +967,10 @@ class Friends(object):
 		if information_item == None:
 			# Show a separator
 			print()
-			print(self.large_bar)
+			print(self.separators["5"])
 
 		# Define the show and select text
-		show_text = self.JSON.Language.language_texts["information_items"]
+		show_text = self.Language.language_texts["information_items"]
 		select_text = self.language_texts["select_the_information_item"]
 
 		# If the "information_item" parameter is None
@@ -1035,7 +1050,7 @@ class Friends(object):
 
 					# Define the information as "[Empty]" if it is empty
 					if information == "":
-						information = "[{}]".format(self.JSON.Language.language_texts["empty, title()"])
+						information = "[{}]".format(self.Language.language_texts["empty, title()"])
 
 			# Else, ask user to select an item from the list of information
 			else:
@@ -1047,7 +1062,7 @@ class Friends(object):
 				# If the information item is "Origin Social Network"
 				if information_item["Name"] == "Origin Social Network":
 					# Define the genders list for easier typing
-					genders = self.JSON.Language.texts["genders, type: list"]
+					genders = self.Language.texts["genders, type: list"]
 
 					# Iterate through the genders list
 					i = 0

@@ -45,7 +45,7 @@ class Date():
 	def Define_Texts(self):
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
 
-		self.language_texts = self.JSON.Language.Item(self.texts)
+		self.language_texts = self.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
 		if date_parameter != None:
@@ -281,7 +281,7 @@ class Date():
 					list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
 					list_.insert(22, ":")
 
-					date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_, break_line = False)
+					date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_)
 
 				i += 1
 
@@ -450,7 +450,7 @@ class Date():
 						len(keys) > 2 or
 						len(keys) == 2
 					):
-						date["Text"][language] += self.JSON.Language.texts["and"][language] + " "
+						date["Text"][language] += self.Language.texts["and"][language] + " "
 
 				# Define the text key
 				text_key = key.lower()
@@ -589,8 +589,8 @@ class Date():
 		self.texts["number_names, type: list"] = self.numbers["list"]
 		self.texts["number_names_feminine, type: list"] = self.numbers["list_feminine"]
 
-		self.language_texts["number_names, type: list"] = self.JSON.Language.Item(self.numbers["list"])
-		self.language_texts["number_names_feminine, type: list"] = self.JSON.Language.Item(self.numbers["list_feminine"])
+		self.language_texts["number_names, type: list"] = self.Language.Item(self.numbers["list"])
+		self.language_texts["number_names_feminine, type: list"] = self.Language.Item(self.numbers["list_feminine"])
 
 	def Create_Years_List(self, mode = "list", start = 2018, plus = 0, function = str, string_format = None):
 		if mode == "list":
@@ -622,7 +622,7 @@ class Date():
 			return dict_
 
 	def Time_Text(self, time_string, language, add_original_time = False):
-		language_texts = self.JSON.Language.Item(self.texts, language)
+		language_texts = self.Language.Item(self.texts, language)
 
 		time = time_string.split(":")
 		hour = time[0]
@@ -662,7 +662,7 @@ class Date():
 				texts["minutes"] != "" and
 				texts["seconds"] == ""
 			):
-				text += " " + self.JSON.Language.language_texts["and"] + " "
+				text += " " + self.Language.language_texts["and"] + " "
 
 		if (
 			texts["hours"] != "" and
@@ -679,7 +679,7 @@ class Date():
 			texts["minutes"] != "" and 
 			texts["seconds"] != ""
 		):
-			text += " " + self.JSON.Language.language_texts["and"] + " "
+			text += " " + self.Language.language_texts["and"] + " "
 
 		if (
 			texts["seconds"] != "" and 

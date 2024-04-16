@@ -134,7 +134,7 @@ class Comment_Writer(Watch_History):
 			self.media["States"]["Series media"] == False or
 			self.media["States"]["Single unit"] == True
 		):
-			self.media["Comment"]["File name"] = self.JSON.Language.language_texts["comment, title()"]
+			self.media["Comment"]["File name"] = self.Language.language_texts["comment, title()"]
 
 		# Add Re-watching text to comment file name if it exists
 		if self.media["States"]["Re-watching"] == True:
@@ -197,11 +197,11 @@ class Comment_Writer(Watch_History):
 				title += self.media["Episode"]["re_watched"]["text"]
 
 			# Define episode text (title)
-			episode_text = self.JSON.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
+			episode_text = self.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"
 
 			self.media["Comment"]["Text"]["String"] += episode_text
 
-			self.media["Comment"]["Text"]["Lines"].append(self.JSON.Language.language_texts["title, title()"] + ":")
+			self.media["Comment"]["Text"]["Lines"].append(self.Language.language_texts["title, title()"] + ":")
 			self.media["Comment"]["Text"]["Lines"].append(title)
 
 			if self.media["States"]["Video"] == True:
@@ -248,7 +248,7 @@ class Comment_Writer(Watch_History):
 			self.System.Open(comment_file)
 
 			# Wait for user to add the comment text to the comment file above
-			self.Input.Type(self.JSON.Language.language_texts["continue, title()"])
+			self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			# Update the dictionary with the updated contents of the comment file
 			dictionary = self.File.Contents(comment_file)
@@ -421,7 +421,7 @@ class Comment_Writer(Watch_History):
 			# Update the time in comment file
 			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
 			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
-			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
+			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"], break_line = True)
 
 		# If the "Add comment" state is True
 		if self.dictionary["Comment Writer"]["States"]["Add"] == True:

@@ -35,7 +35,7 @@ class Start_Christmas(Christmas):
 
 		# Show a separator
 		print()
-		print(self.large_bar)
+		print(self.separators["5"])
 		print()
 
 		# Define today as "24 of December" for testing purposes
@@ -58,7 +58,7 @@ class Start_Christmas(Christmas):
 			self.christmas["States"]["Today is Christmas"] = True
 
 		# Show the current date text
-		print(self.JSON.Language.language_texts["today_is"] + ":")
+		print(self.Language.language_texts["today_is"] + ":")
 
 		date_text = date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
 
@@ -129,7 +129,7 @@ class Start_Christmas(Christmas):
 
 	def Execute_Christmas_Steps(self):
 		# Show the "Starting Christmas" information text
-		print(self.language_texts["starting_{}_of_{}..."].format(self.JSON.Language.language_texts["christmas, title()"], self.date["Units"]["Year"]))
+		print(self.language_texts["starting_{}_of_{}..."].format(self.Language.language_texts["christmas, title()"], self.date["Units"]["Year"]))
 		print()
 		print("-")
 		print()
@@ -193,7 +193,7 @@ class Start_Christmas(Christmas):
 			# If the program needs to ask for user input before continuing to the next step
 			if ask_for_input == True:
 				# Define the type text for easier typing
-				type_text = self.JSON.Language.language_texts["continue, title()"]
+				type_text = self.Language.language_texts["continue, title()"]
 
 				# Define the first space variable
 				first_space = False
