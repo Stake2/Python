@@ -360,7 +360,7 @@ class Project_Zomboid(object):
 			numbers = survivor["Diary"]["Numbers"]
 
 			year = str(numbers["Year"])
-			month = self.Text.Add_Leading_Zeroes(numbers["Month"])
+			month = str(self.Text.Add_Leading_Zeroes(numbers["Month"]))
 			day = str(numbers["Day"])
 
 			# Define the "Date" dictionary
@@ -487,3 +487,62 @@ class Project_Zomboid(object):
 
 		# Update the dictionary JSON file with the updated dictionary
 		self.JSON.Edit(json_file, dictionary)
+
+	def Define_Date_Dictionary(self, dictionary):
+		# Define the "diary" variable
+		diary = dictionary["Survivor"]["Diary"]
+
+		# Define the "Date" dictionary
+		day = str(diary["Numbers"]["Day"])
+		month = str(self.Text.Add_Leading_Zeroes(diary["Numbers"]["Month"]))
+		year = str(diary["Numbers"]["Year"])
+
+		dictionary["Date"] = self.Date.From_String(day + "/" + month + "/" + year, format = "%d/%m/%Y")
+
+		return dictionary
+
+	def Verify_Diary_Date(self, dictionary):
+		# Define the "diary" variable
+		diary = dictionary["Survivor"]["Diary"]
+
+		# If the current month is the last month
+		if diary["Numbers"]["Month"] == 12:
+			# Add one to the year number
+			diary["Numbers"]["Year"] += 1
+
+			# Reset the month number to one
+			diary["Numbers"]["Month"] = 1
+
+			# Define and create the year folder
+			diary["Folders"]["Year"] = {
+				"root": diary["Folders"]["root"] + str(diary["Numbers"]["Year"]) + "/"
+			}
+
+			self.Folder.Create(diary["Folders"]["Year"]["root"])
+
+		# If the current month is not the last month
+		else:
+			# Add one to the month number
+			diary["Numbers"]["Month"] += 1
+
+		# Reset the day number to one
+		diary["Numbers"]["Day"] = 1
+
+		# Re-define the "Date" dictionary
+		self.dictionary = self.Define_Date_Dictionary(self.dictionary)
+
+		# Get the month name with number in the user language
+		month_name_with_number = self.dictionary["Date"]["Texts"]["Month name with number"][self.user_language]
+
+		# Define and create the month folder
+		diary["Folders"]["Year"]["Month"] = {
+			"root": diary["Folders"]["Year"]["root"] + month_name_with_number + "/"
+		}
+
+		self.Folder.Create(diary["Folders"]["Year"]["Month"]["root"])
+
+		# Make a shortcut to the month folder
+		diary["Folders"]["Month"] = diary["Folders"]["Year"]["Month"]
+
+		# Return the dictionary
+		return dictionary

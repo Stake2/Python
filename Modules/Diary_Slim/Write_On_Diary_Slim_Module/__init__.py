@@ -25,7 +25,12 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		}
 
 		# Get the keys and values from the "dictionary" parameter
+		self.Update_Dictionary(dictionary)
 
+		# Write the text to the current Diary Slim
+		self.Write()
+
+	def Update_Dictionary(self, dictionary):
 		# Get the "Text" key
 		if "Text" in dictionary:
 			self.dictionary["Texts"]["To write"] = dictionary["Text"]
@@ -54,8 +59,6 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		for key in keys:
 			if key in dictionary:
 				self.dictionary[key] = dictionary[key]
-
-		self.Write()
 
 	def Write(self):
 		# If the time string is empty, get a time string from the current date

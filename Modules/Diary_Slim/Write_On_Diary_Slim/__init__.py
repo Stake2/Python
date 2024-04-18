@@ -492,7 +492,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			Write_On_Diary_Slim_Module(dictionary)
 
 		# Open the current Diary Slim file
-		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"])
+		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"], verbose = False)
 
 		# Show a five dash space separator
 		print()

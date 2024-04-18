@@ -23,6 +23,9 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# Select the survivor
 		self.Select_A_Survivor()
 
+		# Define the "Date" dictionary
+		self.Define_Date()
+
 		# Update the information about the survivor (dates, survival day, files)
 		self.Update_Information()
 
@@ -58,28 +61,31 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		self.dictionary["City"] = self.project_zomboid["Cities"]["Dictionary"][city]
 
-	def Update_Information(self):
-		# Define the "dates" variable for easier typing
-		self.dates = self.dictionary["Survivor"]["Diary"]
+	def Define_Date(self):
+		# Define the "diary" variable for easier typing
+		self.diary = self.dictionary["Survivor"]["Diary"]
 
-		# Add one to the day number
-		self.dates["Numbers"]["Day"] += 1
+		# Define the "Date" dictionary
+		self.dictionary = self.Define_Date_Dictionary(self.dictionary)
+
+		# If the current day is not the same as the number of days in the month
+		if int(self.diary["Numbers"]["Day"]) != self.dictionary["Date"]["Units"]["Month days"]:
+			# Add one to the day number
+			self.diary["Numbers"]["Day"] += 1
+
+		# If the current day is the same as the number of days in the month
+		# (Last day of month)
+		if int(self.diary["Numbers"]["Day"]) == self.dictionary["Date"]["Units"]["Month days"]:
+			# Verify the survivor diary date
+			self.dictionary = self.Verify_Diary_Date(self.dictionary)
 
 		# Add one to the survival day number
-		self.dates["Numbers"]["Survival day"] += 1
+		self.diary["Numbers"]["Survival day"] += 1
 
-		# Update the "Survivor.json" file with the root "Update_Dictionary"
+		# Update the "Survivor.json" file with the root "Update_Dictionary" method
 		self.Update_Dictionary(self.dictionary["Survivor"])
 
-		# ---------- #
-
-		# Define the date
-		day = str(self.dates["Numbers"]["Day"])
-		month = self.Text.Add_Leading_Zeroes(self.dates["Numbers"]["Month"])
-		year = str(self.dates["Numbers"]["Year"])
-
-		self.dictionary["Date"] = self.Date.From_String(day + "/" + month + "/" + year, format = "%d/%m/%Y")
-
+	def Update_Information(self):
 		# Define the "File" dictionary
 		self.dictionary["File"] = {}
 
@@ -88,7 +94,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		# Define the list of items of the file name template
 		items = [
-			str(self.dates["Numbers"]["Survival day"]), # The survival day
+			str(self.diary["Numbers"]["Survival day"]), # The survival day
 			self.dictionary["Date"]["Texts"]["Day name"][self.user_language], # The day name in the user language
 			self.dictionary["Date"]["Formats"]["DD-MM-YYYY"] # And the "Day-Month-Year" format of the current date
 		]
@@ -103,7 +109,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		"\n\n"
 
 		# Define the number name of the day
-		day_number_name = self.Date.language_texts["number_names, type: list"][self.dates["Numbers"]["Day"]].capitalize()
+		day_number_name = self.Date.language_texts["number_names, type: list"][self.diary["Numbers"]["Day"]].capitalize()
 
 		# Define the list of items of the diary template
 		items = [

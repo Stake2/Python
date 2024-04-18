@@ -11,16 +11,12 @@
 		"en": "Select a survivor to survive as them",
 		"pt": "Selecione um sobrevivente para sobreviver como ele"
 	},
-	"the_class_a_survivor": {
+	"the_class_used_a_survivor": {
 		"en": "The class used a predefined survivor",
 		"pt": "A classe utilizou um sobrevivente pré-definido"
 	},
 	"this_survival_diary_file_was_created": {
 		"en": "This survivor diary file was created",
 		"pt": "Este arquivo de diário de sobrevivente foi criado"
-	},
-	"kentucky_united_states": {
-		"pt": "Kentucky, Estados Unidos",
-		"en": "Kentucky, United States"
 	}
 }

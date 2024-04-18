@@ -98,30 +98,6 @@ class Text():
 
 		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
-	def Old_From_List(self, list_, break_line = True, separator = "", and_text = True):
-		string = ""
-
-		i = 0
-		for item in list_:
-			string += item
-
-			if i != len(list_) - 1:
-				if separator != "":
-					string += separator
-
-				if break_line == True:
-					string += "\n"
-
-			if (
-				i == len(list_) - 2 and
-				and_text == True
-			):
-				string += self.Language.language_texts["and"] + " "
-
-			i += 1
-
-		return string
-
 	def From_List(self, list_, language = None, lower = False, break_line = False, and_text = True, or_text = False, quotes = False):
 		text = ""
 
