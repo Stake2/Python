@@ -33,7 +33,7 @@ class Write_On_Diary(Diary):
 		self.presenter_text = None
 
 		while self.presenter_text not in self.finish_texts:
-			self.presenter_text = self.Input.Lines(self.presenter + ": " + self.format_text_item, line_options_parameter = {"capitalize": True, "dots": True, "next_line": False})["string"]
+			self.presenter_text = self.Input.Lines(self.presenter + ": " + self.format_text_item, line_options_parameter = {"capitalize": True, "next_line": False})["string"]
 
 			if self.presenter_text not in self.presenter_numbers:
 				format_text = self.format_text

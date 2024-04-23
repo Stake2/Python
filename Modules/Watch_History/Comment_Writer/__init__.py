@@ -349,13 +349,18 @@ class Comment_Writer(Watch_History):
 			for language in self.languages["small"]:
 				if language in dict_:
 					if (
-						"Original" in dict_ and dict_["Original"] == dict_[language] or \
-						"Romanized" in dict_ and dict_["Romanized"] == dict_[language]
+						"Original" in dict_ and
+						dict_["Original"] == dict_[language] or
+						"Romanized" in dict_ and
+						dict_["Romanized"] == dict_[language]
 					):
 						dict_.pop(language)
 
 			# Remove the "Language" key
-			if "Language" in dict_ and dict_["Language"] == dict_[self.media["Language"]]:
+			if (
+				"Language" in dict_ and
+				dict_["Language"] == dict_[self.media["Language"]]
+			):
 				dict_.pop("Language")
 
 		# Add the YouTube video ID, comment link, and the comment ID to the Comment dictionary
@@ -418,7 +423,7 @@ class Comment_Writer(Watch_History):
 			# Define the comment time as the comment published time gotten from the YouTube API
 			self.dictionaries["Comments"]["Dictionary"][self.key]["Date"] = self.Date.To_String(comment_date, utc = True)
 
-			# Update the time in comment file
+			# Update the time in the comment text
 			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
 			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
 			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"], break_line = True)

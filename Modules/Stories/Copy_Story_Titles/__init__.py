@@ -6,275 +6,409 @@ class Copy_Story_Titles(Stories):
 	def __init__(self):
 		super().__init__()
 
-		self.switches = {
-			"junction": False,
-			"first_mode_change": True
+		# Define the root dictionary
+		self.dictionary = {
+			"Texts": {
+				"Show": "",
+				"Select": ""
+			},
+			"Lists": {},
+			"Story title": "",
+			"Copy modes": {
+				"List": self.texts["copy_modes, type: list"],
+				"Language": self.language_texts["copy_modes, type: list"]
+			},
+			"Copy mode": {},
+			"Copy actions": {
+				"List": self.texts["copy_actions, type: list"],
+				"Language": self.language_texts["copy_actions, type: list"]
+			}
 		}
 
-		self.show_text = None
-		self.select_text = None
+		# Define the "States" dictionary
+		self.states = {
+			"First change of copy mode": True,
+			"Junction mode": False
+		}
 
-		self.Make_Story_Titles_List()
+		# Create the lists of story titles
+		self.Create_Titles_Lists()
 
+		# Select the copy mode
 		self.Select_Copy_Mode()
 
-		self.story_title = None
-
-		while self.story_title != self.Language.language_texts["quit, title()"]:
-			if self.switches["junction"] == False:
+		# While the selected story title is not the "[Quit]" text
+		while self.dictionary["Story title"] != self.Language.language_texts["quit, title()"]:
+			# If the junction mode is deactivated
+			if self.states["Junction mode"] == False:
+				# Select and copy the story title
 				self.Select_And_Copy_Story_Title()
 
-				if self.story_title == "[" + self.language_texts["change_mode"] + "]":
+				# If the selected story title is the "[Change mode]" text
+				if self.dictionary["Story title"] == "[" + self.language_texts["change_copy_mode"] + "]":
+					# Run the "Select_Copy_Mode" method to select a new copy mode
 					self.Select_Copy_Mode()
 
-			if self.switches["junction"] == True:
+			# If the junction mode is activated
+			if self.states["Junction mode"] == True:
+				# Join the story titles
 				self.Join_Story_Titles()
 
-			if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
+			# If the story title is the "[Quit]" text, quit
+			if self.dictionary["Story title"] == "[" + self.Language.language_texts["quit, title()"] + "]":
 				break
 
-	def Make_Story_Titles_List(self):
-		# Add copy modes to stories dictionary
-		self.stories["copy_lists"] = {}
+	def Create_Titles_Lists(self):
+		# Add the copy modes to the "Lists" dictionary, with their empty lists
+		for copy_mode in self.dictionary["Copy modes"]["Language"]:
+			self.dictionary["Lists"][copy_mode] = []
 
-		for copy_mode in self.language_texts["copy_modes, type: list"]:
-			self.stories["copy_lists"][copy_mode] = []
-
+		# Import the "ascii_uppercase" module
 		from string import ascii_uppercase as ascii_uppercase
 
-		# Iterate through list of story titles
+		# Iterate through the list of all story titles in all languages
 		for story_title in self.stories["Titles"]["All"]:
-			for copy_mode in self.language_texts["copy_modes, type: list"]:
-				# Add quotes around story title
+			# Iterate through the list of copy modes in the user language
+			for copy_mode in self.dictionary["Copy modes"]["Language"]:
+				# If the copy mode is "With quotes"
+				# Add quotes around the story title 
 				if copy_mode == self.language_texts["with_quotes"]:
 					story_title = '"' + story_title + '"'
 
-				# Separate letters of story title
+				# If the copy mode is "Acronym"
+				# Separate the letters of the story title
 				if copy_mode == self.Language.language_texts["acronym, title()"]:
+					# Split the story title
 					story_title = story_title.split(" ")
 
+					# Define the empty string
 					string = ""
+
+					# Iterate through the words in the split story title
 					for word in story_title:
+						# Count the uppercase letters inside the word
 						uppercase_letters = sum(1 for character in word if character.isupper())
 
-						# If there are only one uppercase character in word
+						# If the number of uppercase letters is zero or one
 						if uppercase_letters in [0, 1]:
+							# If the first letter of the word is not a quote, add the first letter to the acronym
 							if word[0] != '"':
 								string += word[0]
 
+							# Else, add the second letter, which probably is not a quote
 							else:
 								string += word[1]
 
-						# If there are more than one uppercase character in word
+						# If there are more than one uppercase character in the word
 						if uppercase_letters > 1:
+							# Iterate through the characters in the word
 							for character in word:
-								if character in ascii_uppercase and character != '"':
+								# If the character is not a quote
+								# And the character is an uppercase letter
+								if (
+									character != '"' and
+									character in ascii_uppercase
+								):
+									# Add the character
 									string += character
 
+					# Define the local story title as the defined string
 					story_title = string
 
-				self.stories["copy_lists"][copy_mode].append(story_title)
+				# Add the story title to the list of the current copy mode
+				self.dictionary["Lists"][copy_mode].append(story_title)
 
 	def Select_Copy_Mode(self):
-		options = self.language_texts["copy_modes, type: list"].copy()
+		# Define the list of options, which is the list of copy modes in the user language
+		options = self.dictionary["Copy modes"]["Language"].copy()
+
+		# Add the "Quit" text to the list of options
 		options.append("[" + self.Language.language_texts["quit, title()"] + "]")
 
+		# Define the show and select text
 		show_text = self.language_texts["copy_modes"]
 		select_text = self.language_texts["select_a_copy_mode"]
 
-		# Select a copy mode
-		self.copy_mode = self.Input.Select(options, show_text = show_text, select_text = select_text)["option"]
+		# Ask the user to select a copy mode
+		self.dictionary["Copy mode"] = self.Input.Select(options, show_text = show_text, select_text = select_text)["option"]
 
-		# Create the copy mode dictionary
-		self.copy_mode = {
-			"name": self.copy_mode,
-			"item": self.Language.language_texts["story_title"].lower(),
-			"plural_item": self.Language.language_texts["story_titles"].lower()
+		# Define the "Copy mode" dictionary
+		self.dictionary["Copy mode"] = {
+			"Name": self.dictionary["Copy mode"],
+			"Texts": {},
+			"List": {}
 		}
 
-		# If the copy mode is acronym mode, update item and plural_item keys
-		if self.copy_mode["name"] == self.Language.language_texts["acronym, title()"]:
-			self.copy_mode.update({
-				"item": self.language_texts["story_acronym"].lower(),
-				"plural_item": self.language_texts["story_acronyms"].lower()
-			})
+		# Define the text key for the copy mode text
+		text_key = "story_title"
 
-		if self.copy_mode["name"] == "[" + self.Language.language_texts["quit, title()"] + "]":
+		# If the copy mode is the "Acronym" mode
+		if self.dictionary["Copy mode"]["Name"] == self.Language.language_texts["acronym, title()"]:
+			# Update the text key to "story_acronym"
+			text_key = "story_acronym"
+
+		# Define the text of the copy mode
+		for item in ["Singular", "Plural"]:
+			# Make a copy of the text key
+			text_key_copy = text_key
+
+			# If the text key is "story_title"
+			# And the item is the "Singular" one
+			if (
+				text_key == "story_title" and
+				item == "Singular"
+			):
+				# Add the ", type: generic" text to the text key
+				text_key_copy += ", type: generic"
+
+			# If the item is the "Plural" one, add an "s" to make the text plural
+			if item == "Plural":
+				text_key_copy += "s"
+
+			# Define the item text as the language text from inside the "Language" module
+			self.dictionary["Copy mode"]["Texts"][item] = self.Language.language_texts[text_key_copy].lower()
+
+		# If the name of the copy mode is "Quit", quit
+		if self.dictionary["Copy mode"]["Name"] == "[" + self.Language.language_texts["quit, title()"] + "]":
 			quit()
 
-		# Define story titles list of the copy mode
-		self.copy_mode["list"] = self.stories["copy_lists"][self.copy_mode["name"]]
+		# Define the "List" dictionary, with the list of story titles of the selected copy mode
+		self.dictionary["Copy mode"]["List"] = {
+			"Normal": self.dictionary["Lists"][self.dictionary["Copy mode"]["Name"]]
+		}
 
-		# Copy the story titles list to add actions to it
-		self.copy_mode["list_with_actions"] = self.copy_mode["list"].copy()
+		# Define the other type of lists
+		# That are the normal list with some changes
+		items = [
+			"With actions",
+			"With actions (no mode change)"
+		]
 
-		# Copy the story titles list to add actions to it, but not adding the "change mode" action
-		self.copy_mode["list, actions, no change mode"] = self.copy_mode["list"].copy()
+		# Iterate through the different lists
+		for item in items:
+			self.dictionary["Copy mode"]["List"][item] = self.dictionary["Copy mode"]["List"]["Normal"].copy()
 
-		# List with quit option added
-		self.copy_mode["list, quit"] = self.copy_mode["list"].copy()
-
-		# Add fillers to story titles list with quit action
-		# In place of "change mode" and "join" actions
-		self.copy_mode["list, quit"].append(self.language_texts["filler_formatted"])
-		self.copy_mode["list, quit"].append(self.language_texts["filler_formatted"])
-		self.copy_mode["list, quit"].append("[" + self.Language.language_texts["quit, title()"] + "]")
-
-		# Create actions dictionary with actions list
-		if self.switches["first_mode_change"] == True:
-			self.junction_actions = {
-				"list": [
+		# Create the "Junction actions" dictionary with the list of actions
+		# Only if the change of mode is the first one
+		if self.states["First change of copy mode"] == True:
+			self.dictionary["Junction actions"] = {
+				"List": [
 					"[" + self.Language.language_texts["join_{}"] + "]",
 					"[" + self.language_texts["disable_junction_mode"] + "]"
 				]
 			}
 
-		# Iterate through copy actions list
-		for action in self.language_texts["copy_actions, type: list"]:
-			action_value = action
+		# Iterate through the copy actions list
+		for action in self.dictionary["Copy actions"]["Language"]:
+			# Define the value
+			value = action
 
-			# If "{}" is in the action value, format it with the plural item
-			if "{}" in action_value:
-				action_value = action_value.format(self.copy_mode["plural_item"])
+			# If the "{}" text is in the action value, format it with the plural copy mode text
+			if "{}" in value:
+				value = value.format(self.dictionary["Copy mode"]["Texts"]["Plural"])
 
 			# If the action is not on the junction actions list
-			if action not in self.junction_actions["list"]:
-				self.copy_mode["list_with_actions"].append(action_value)
+			if action not in self.dictionary["Junction actions"]["List"]:
+				# Add the value to the list of story titles with actions
+				self.dictionary["Copy mode"]["List"]["With actions"].append(value)
 
-				# If the action is not the "change mode" action, add it to the story titles list without the change mode action
-				if action != "[" + self.language_texts["change_mode"] + "]":
-					self.copy_mode["list, actions, no change mode"].append(action_value)
+				# If the action is not the "Change mode" action
+				if action != "[" + self.language_texts["change_copy_mode"] + "]":
+					# Add the value to the list of story titles with actions and no mode change
+					self.dictionary["Copy mode"]["List"]["With actions (no mode change)"].append(value)
 
-				# If the action is the "change mode" action, add a filler to the story titles list without the change mode action
-				if action == "[" + self.language_texts["change_mode"] + "]":
-					self.copy_mode["list, actions, no change mode"].append(self.language_texts["filler_formatted"])
+				# If the action is the "Change mode" action
+				if action == "[" + self.language_texts["change_copy_mode"] + "]":
+					# Add a filler to the list of story titles with actions and no mode change
+					self.dictionary["Copy mode"]["List"]["With actions (no mode change)"].append(self.language_texts["filler_formatted"])
 
-			# If the action is the "join" junction action, add it to the "join_{}" key of the junction_actions dictionary
+			# If the action is the "Join" junction action
 			if action == "[" + self.Language.language_texts["join_{}"] + "]":
-				self.junction_actions["join_{}"] = action_value
+				# Add it to the "Join" key of the "Junction actions" dictionary
+				self.dictionary["Junction actions"]["Join"] = value
 
-				# If the join mode is deactivated, add the join action to the list with actions
-				if self.switches["junction"] == False:
-					self.copy_mode["list_with_actions"].append(action_value)
+				# If the junction mode is deactivated
+				if self.states["Junction mode"] == False:
+					# Add the value to the list of story titles with actions
+					self.dictionary["Copy mode"]["List"]["With actions"].append(value)
 
-			# If the action is the "disable junction mode" junction action, add it to the story titles list without the change mode action
+			# If the action is the "Disable junction mode" junction action
 			if action == "[" + self.language_texts["disable_junction_mode"] + "]":
-				# If the join mode is activated, add the disable action to the list with actions
-				if self.switches["junction"] == True:
-					self.copy_mode["list_with_actions"].append(action_value)
+				# If the junction mode is activated
+				if self.states["Junction mode"] == True:
+					# Add the value to the list of story titles with actions
+					self.dictionary["Copy mode"]["List"]["With actions"].append(value)
 
-				self.copy_mode["list, actions, no change mode"].append(action_value)
+				# Add the value to the list of story titles with actions and no mode change
+				self.dictionary["Copy mode"]["List"]["With actions (no mode change)"].append(value)
 
 	def Select_And_Copy_Story_Title(self, options = None, select_text = None, select = True, copy = True):
+		# If the "options" parameter is None
 		if options == None:
-			options = self.copy_mode["list_with_actions"]
+			# Define the options list as the list of story titles with actions
+			options = self.dictionary["Copy mode"]["List"]["With actions"]
 
-		show_text = self.copy_mode["plural_item"].capitalize()
+		# Define the show text as the plural copy mode text
+		show_text = self.dictionary["Copy mode"]["Texts"]["Plural"].capitalize()
 
-		if self.show_text != None:
-			show_text = self.show_text + "\n\n" + self.copy_mode["plural_item"].capitalize()
+		# If the show text inside the root dictionary is not an empty string
+		if self.dictionary["Texts"]["Show"] != "":
+			# Define the show text as the original text, two line breaks, and the plural copy mode text
+			show_text = self.dictionary["Texts"]["Show"] + "\n\n" + self.dictionary["Copy mode"]["Texts"]["Plural"].capitalize()
 
+		# If the "select_text" parameter is None
 		if select_text == None:
+			# Define the select text as the "Select one {} to copy" text
 			select_text = self.language_texts["select_one_{}_to_copy"]
 
-		if self.select_text != None:
-			select_text = self.select_text + "\n" + self.language_texts["please_select_one_{}_to_copy"]
+		# If the select text inside the root dictionary is not an empty string
+		if self.dictionary["Texts"]["Select"] != "":
+			# Define the select text as the original text, one line break, and the "Please select one {} to copy" text
+			select_text = self.dictionary["Texts"]["Select"] + "\n" + self.language_texts["please_select_one_{}_to_copy"]
 
-			self.select_text = None
+			# Reset the select text inside the root dictionary to an empty string
+			self.dictionary["Texts"]["Select"] = ""
 
-		select_text = select_text.format(self.copy_mode["item"])
+		# Format the select text with the singular copy mode text
+		select_text = select_text.format(self.dictionary["Copy mode"]["Texts"]["Singular"])
 
-		# Select story title
+		# Define the default "number" variable
+		number = 0
+
+		# If the "select" parameter is True
 		if select == True:
-			self.story_title = self.Input.Select(options, show_text = show_text, select_text = select_text)["option"]
+			# Ask the user to select the story title
+			self.dictionary["Story title"] = self.Input.Select(options, show_text = show_text, select_text = select_text)
 
-			# If the story title is the change mode action, it is not the first time that the copy mode changes
-			if self.story_title == "[" + self.language_texts["change_mode"] + "]":
-				self.switches["first_mode_change"] = False
+			# Get the option number
+			number = self.dictionary["Story title"]["number"]
 
-			# If the story title is the join action, activate join mode
-			if self.story_title == self.junction_actions["join_{}"]:
-				self.switches["junction"] = True
+			# Define the story title as the option
+			self.dictionary["Story title"] = self.dictionary["Story title"]["option"]
 
-			# If the story title is the disable junction mode action, deactivate join mode
-			if self.story_title == "[" + self.language_texts["disable_junction_mode"] + "]":
-				self.switches["junction"] = False
+			# If the story title is the "Change mode" action
+			if self.dictionary["Story title"] == "[" + self.language_texts["change_copy_mode"] + "]":
+				# It is now not the first time the user changes the copy mode
+				self.states["First change of copy mode"] = False
 
-			# Check if the story title is the quit text
-			self.Check_Story_Title()
+			# If the story title is the "Join" action
+			if self.dictionary["Story title"] == self.dictionary["Junction actions"]["Join"]:
+				# Activate the junction mode
+				self.states["Junction mode"] = True
 
-		# Create a list of items that should not be copied (copy actions and the filler)
-		self.negative_lists = []
-		self.negative_lists.extend(self.language_texts["copy_actions, type: list"])
-		self.negative_lists.append(self.language_texts["filler_formatted"])
+			# If the story title is the "Disable junction mode" action
+			if self.dictionary["Story title"] == "[" + self.language_texts["disable_junction_mode"] + "]":
+				# Deactivate the junction mode
+				self.states["Junction mode"] = False
 
-		# Copy the story title if it is not in the list above, and copy is true
-		if self.story_title not in self.negative_lists and copy == True:
-			self.Text.Copy(self.story_title)
+			# If the story title is the "[Quit]" text
+			if self.dictionary["Story title"] == "[" + self.Language.language_texts["quit, title()"] + "]":
+				# Finish copying the story titles and show some information
+				self.Finish_Copying()
 
-		# If the story title is not the filler, reset show_text to none
-		if self.story_title != self.language_texts["filler_formatted"]:
-			self.show_text = None
+		# Create a list of items that should not be copied (copy actions and the filler text)
+		self.dictionary["Lists"]["Negative"] = []
+		self.dictionary["Lists"]["Negative"].extend(self.dictionary["Copy actions"]["Language"])
+		self.dictionary["Lists"]["Negative"].append(self.language_texts["filler_formatted"])
 
-		# If the story title is the filler, add filler explanation to the show_text
-		if self.story_title == self.language_texts["filler_formatted"]:
-			self.show_text = self.language_texts["you_selected_a_filler_text, type: explanation"].format(len(self.copy_mode["list_with_actions"]), len(options))
+		# If the story title is not in the negative list (of items that should not be copied)
+		# And the "copy" parameter is True
+		if (
+			self.dictionary["Story title"] not in self.dictionary["Lists"]["Negative"] and
+			copy == True
+		):
+			# Copy the story title
+			self.Text.Copy(self.dictionary["Story title"])
 
-	def Check_Story_Title(self):
-		# Check if the story title is the quit text, if it is, show the "finished copying story titles" text
-		if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
-			self.Finish_Copying()
+		# If the story title is not the filler text, reset the show text to an empty string
+		if self.dictionary["Story title"] != self.language_texts["filler_formatted"]:
+			self.dictionary["Texts"]["Show"] = ""
+
+		# If the story title is the filler text
+		if self.dictionary["Story title"] == self.language_texts["filler_formatted"]:
+			# Add the filler explanation text to the show text, telling the user that they selected a filler text
+			self.dictionary["Texts"]["Show"] = self.language_texts["you_selected_a_filler_text, type: explanation"].format(len(self.dictionary["Copy mode"]["List"]["With actions"]), len(options))
+
+		return number
 
 	def Join_Story_Titles(self):
-		# Create the empty string which will be the joined story title
+		# Define the "joined story title" variable as an empty string
 		joined_story_title = ""
 
-		select_text = self.language_texts["select_{}_to_{}"].format(self.Language.language_texts["the_first, masculine"] + " " + self.copy_mode["item"], self.Language.language_texts["join"])
+		# Define the local list of story titles
+		story_titles = self.dictionary["Copy mode"]["List"]["With actions (no mode change)"].copy()
 
-		# Select the first story title, do not copy
-		self.Select_And_Copy_Story_Title(options = self.copy_mode["list, actions, no change mode"], select_text = select_text, copy = False)
+		# Iterate through the list of items (first and second story title)
+		for item in ["First", "Second"]:
+			# If the junction mode is activated
+			if self.states["Junction mode"] == True:
+				# Define the text template for the select text of the story title
+				template = self.language_texts["select_{}_to_{}"]
 
-		# If the story title is the filler, ask again
-		if self.story_title == self.language_texts["filler_formatted"]:
-			# While the story title is the filler, ask again
-			while self.story_title == self.language_texts["filler_formatted"]:
-				self.Select_And_Copy_Story_Title(options = self.copy_mode["list, actions, no change mode"], select_text = select_text, copy = False)
+				# Define the list of items to use to format the template
+				items = [
+					self.Language.language_texts["the_" + item.lower() + ", masculine"] + " " + self.dictionary["Copy mode"]["Texts"]["Singular"],
+					self.Language.language_texts["join"]
+				]
 
-		if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
-			quit()
+				# Format the template with the list of items
+				select_text = template.format(*items)
 
-		if self.story_title != "[" + self.language_texts["disable_junction_mode"] + "]":
-			# Add the first story title to the empty string
-			joined_story_title += self.story_title
+				# Select the first story title, and do not copy it
+				number = self.Select_And_Copy_Story_Title(options = story_titles, select_text = select_text, copy = False)
 
-			select_text = self.language_texts["select_{}_to_{}"].format(self.Language.language_texts["the_second, masculine"] + " " + self.copy_mode["item"], self.Language.language_texts["join"])
+				# If the story title is the filler text, ask again for the first story title
+				if self.dictionary["Story title"] == self.language_texts["filler_formatted"]:
+					# While the story title is the filler text, ask again for the first story title
+					while self.dictionary["Story title"] == self.language_texts["filler_formatted"]:
+						number = self.Select_And_Copy_Story_Title(options = story_titles, select_text = select_text, copy = False)
 
-			# Select the second story title, do not copy
-			self.Select_And_Copy_Story_Title(options = self.copy_mode["list, quit"], select_text = select_text, copy = False)
+				# If the story title is not in the negative list (of items that should not be copied)
+				if self.dictionary["Story title"] not in self.dictionary["Lists"]["Negative"]:
+					# Define the index in the story titles list as the filler, removing the old selected story title
+					story_titles[number] = self.language_texts["filler_formatted"]
 
-			# If the story title is the filler, ask again
-			if self.story_title == self.language_texts["filler_formatted"]:
-				# While the story title is the filler, ask again
-				while self.story_title == self.language_texts["filler_formatted"]:
-					self.Select_And_Copy_Story_Title(options = self.copy_mode["list, quit"], select_text = select_text, copy = False)
+			# If the first story title is the "Disable junction mode" text
+			if self.dictionary["Story title"] == "[" + self.language_texts["disable_junction_mode"] + "]":
+				# Disable the junction mode
+				self.states["Junction mode"] = False
 
-			if self.story_title == "[" + self.Language.language_texts["quit, title()"] + "]":
+			# If the story title is the "[Quit]" text
+			if self.dictionary["Story title"] == "[" + self.Language.language_texts["quit, title()"] + "]":
 				quit()
 
-			# Add the separator and the second story title to the joined story title
-			joined_story_title += " - " + self.story_title
+			# If the junction mode is activated
+			if self.states["Junction mode"] == True:
+				# If the item is the second one
+				if item == "Second":
+					# Add a dash separator to the joined story title
+					joined_story_title += " - "
 
-			# Define the story title to be copied
-			self.story_title = joined_story_title
+				# Add the story title to the empty string
+				joined_story_title += self.dictionary["Story title"]
 
-			self.Select_And_Copy_Story_Title(select = False, copy = True)
+				# If the story title is not the "Disable junction mode" text
+				# And the item is the second one
+				if (
+					self.dictionary["Story title"] != "[" + self.language_texts["disable_junction_mode"] + "]" and
+					item == "Second"
+				):
+					# Define the story title to be copied as the joined story title
+					self.dictionary["Story title"] = joined_story_title
 
-		# If the first story title is the disable junction mode action, disable junction mode
-		if self.story_title == "[" + self.language_texts["disable_junction_mode"] + "]":
-			self.switches["junction"] = False
+					# Now copy the joined story title
+					self.Select_And_Copy_Story_Title(select = False, copy = True)
+
+		# If the first story title is the "Disable junction mode" text
+		if self.dictionary["Story title"] == "[" + self.language_texts["disable_junction_mode"] + "]":
+			# Disable the junction mode
+			self.states["Junction mode"] = False
 
 	def Finish_Copying(self):
+		# Show some spaces and a five dash space separator
 		print()
-		print("-----")
+		print(self.separators["5"])
 		print()
-		print(self.language_texts["finished_copying_the_{}"].format(self.copy_mode["plural_item"]) + ".")
+
+		# Show the information telling the user that they finished copying the story titles with the plural copy mode text
+		print(self.language_texts["you_finished_copying_the_{}"].format(self.dictionary["Copy mode"]["Texts"]["Plural"]) + ".")

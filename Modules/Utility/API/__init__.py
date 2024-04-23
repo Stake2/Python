@@ -86,7 +86,7 @@ class API():
 
 			# Save the credentials for the next run
 			self.File.Create(self.token_file)
-			self.JSON.Edit(self.token_file, api["credentials"].to_json())
+			self.JSON.Edit(self.token_file, api["credentials"].to_json(), edit = True)
 
 		# Define API dictionary
 		api.update({

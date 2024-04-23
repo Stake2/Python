@@ -275,31 +275,23 @@
 		"en": "With quotes",
 		"pt": "Com aspas"
 	},
-	"story_acronym": {
-		"en": "Story acronym",
-		"pt": "Acrônimo de história"
-	},
-	"story_acronyms": {
-		"en": "Story acronyms",
-		"pt": "Acrônimos de história"
-	},
 	"copy_actions, type: list": {
 		"en": [
-			"Change mode",
+			"Change copy mode",
 			"Join {}",
 			"Disable junction mode",
 			"Quit"
 		],
 		"pt": [
-			"Mudar modo",
+			"Mudar modo de cópia",
 			"Juntar {}",
 			"Desabilitar o modo de junção",
 			"Sair"
 		]
 	},
-	"change_mode": {
-		"en": "Change mode",
-		"pt": "Mudar modo"
+	"change_copy_mode": {
+		"en": "Change copy mode",
+		"pt": "Mudar modo de cópia"
 	},
 	"disable_junction_mode": {
 		"en": "Disable junction mode",
@@ -310,12 +302,12 @@
 		"pt": "[ ] (Preenchedor)"
 	},
 	"you_selected_a_filler_text, type: explanation": {
-		"en": "You selected a Filler.\nIt does perform any action, it is only utilized to make the lengths of the lists the same, the length of the current list is {}.",
-		"pt": "Você selecionou um Preenchedor.\nEle não executa nenhuma ação, só é utilizado para tornar os comprimentos das listas iguais, o comprimento da lista atual é {}."
+		"en": "You selected a Filler.\nIt does perform any action, it is only utilized to make the lengths of the lists the same, the length of the current list is \"{}\".",
+		"pt": "Você selecionou um Preenchedor.\nEle não executa nenhuma ação, só é utilizado para tornar os comprimentos das listas iguais, o comprimento da lista atual é \"{}\"."
 	},	
-	"finished_copying_the_{}": {
-		"en": "Finished copying the {}",
-		"pt": "Terminou de copiar os {}"
+	"you_finished_copying_the_{}": {
+		"en": "You finished copying the {}",
+		"pt": "Você terminou de copiar os {}"
 	},
 	"manage_the_story": {
 		"en": "Manage the story",

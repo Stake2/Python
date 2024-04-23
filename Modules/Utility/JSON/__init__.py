@@ -95,7 +95,7 @@ class JSON():
 
 		return contents
 
-	def Edit(self, file, text, next_line = True, verbose = None):
+	def Edit(self, file, text, next_line = True, verbose = None, edit = False):
 		file = self.Sanitize(file)
 
 		contents = self.Contents(file)
@@ -107,12 +107,16 @@ class JSON():
 		file_text = file + "\n\n\t" + verbose_text
 
 		if self.Exist(file) == True:
-			if self.switches["file"]["edit"] == True and contents["string"] != text:
-				edit = open(file, "w", encoding = "UTF8")
-				edit.write(text)
-				edit.close()
+			if (
+				self.switches["file"]["edit"] == True or
+				edit == True
+			):
+				if contents["string"] != text:
+					edit = open(file, "w", encoding = "UTF8")
+					edit.write(text)
+					edit.close()
 
-				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
+					show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
 			if self.switches["file"]["edit"] == False:
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])

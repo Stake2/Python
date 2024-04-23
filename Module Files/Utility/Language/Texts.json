@@ -1751,9 +1751,21 @@
 		"en": "Story title",
 		"pt": "Título da história"
 	},
+	"story_title, type: generic": {
+		"en": "Story title",
+		"pt": "Título de história"
+	},
 	"story_titles": {
 		"en": "Story titles",
 		"pt": "Títulos de história"
+	},
+	"story_acronym": {
+		"en": "Story acronym",
+		"pt": "Acrônimo de história"
+	},
+	"story_acronyms": {
+		"en": "Story acronyms",
+		"pt": "Acrônimos de história"
 	},
 	"stories_list": {
 		"en": "Stories list",

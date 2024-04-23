@@ -425,7 +425,7 @@ class Stories(object):
 		self.stories["Titles"]["Language"] = self.stories["Titles"][self.user_language]
 
 		# Define the "All" list
-		self.stories["Titles"]["All"] = self.stories["Titles"][self.user_language] + self.stories["Titles"]["en"]
+		self.stories["Titles"]["All"] = []
 
 		# Define the "Dictionary" dictionary
 		self.stories["Dictionary"] = {}
@@ -529,6 +529,12 @@ class Stories(object):
 
 			# Define the story titles in all languages
 			story["Titles"] = story["Information"]["Titles"]
+
+			# Add the story titles to the "All" list
+			for title in story["Titles"].values():
+				# If the title is not already in the list
+				if title not in self.stories["Titles"]["All"]:
+					self.stories["Titles"]["All"].append(title)
 
 			# ---------- #
 

@@ -1309,7 +1309,7 @@ class Watch_History(object):
 				):
 					if (
 						watch == True and
-						len(dictionary["Media"]["Items"]["List"]) != 1
+						len(items_list) != 1
 					):
 						title = self.Input.Select(items_list, show_text = show_text, select_text = select_text)["option"]
 
@@ -1318,7 +1318,7 @@ class Watch_History(object):
 
 				if (
 					watch == False and
-					len(dictionary["Media"]["Items"]["List"]) == 1 and
+					len(items_list) == 1 and
 					"Fill media files" not in dictionary
 				):
 					print()

@@ -140,23 +140,29 @@ class Text():
 			if quotes == True:
 				item = '"' + item + '"'
 
-			text += item
-
 			if (
 				item_backup != list_[-1] and
 				break_line == False
 			):
 				if len(list_) == 2:
-					text += " "
+					item += " "
 
 				if len(list_) > 2:
-					text += ", "
+					item += ", "
 
 			if (
 				item_backup != list_[-1] and
 				break_line == True
 			):
-				text += "\n"
+				item += "\n"
+
+			if (
+				item_backup == "" and
+				break_line == True
+			):
+				item = "\n"
+
+			text += item
 
 		return text
 
