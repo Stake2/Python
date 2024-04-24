@@ -5,7 +5,7 @@ from Project_Zomboid.Project_Zomboid import Project_Zomboid as Project_Zomboid
 from copy import deepcopy
 
 class Create_Survival_Diary_File(Project_Zomboid):
-	def __init__(self):
+	def __init__(self, dictionary = {}):
 		super().__init__()
 
 		# Define the root dictionary
@@ -15,13 +15,30 @@ class Create_Survival_Diary_File(Project_Zomboid):
 			"City": {}
 		}
 
+		# If the dictionary parameter is not an empty dictionary
+		if dictionary != {}:
+			# Define the list of keys to update on the root dictionary
+			keys = [
+				"Survivor",
+				"City"
+			]
+
+			# Iterate through the list of keys
+			for key in keys:
+				# If the key is inside the dictionary parameter
+				if key in dictionary:
+					# Update the key in the root dictionary
+					self.dictionary[key] = dictionary[key]
+
 		# Define the "States" dictionary
 		self.states = {
 			"Used pre-defined values": False
 		}
 
-		# Select the survivor
-		self.Select_A_Survivor()
+		# If the survivor is not already defined
+		if self.dictionary["Survivor"] == {}:
+			# Select the survivor
+			self.Select_A_Survivor()
 
 		# Define the "Date" dictionary
 		self.Define_Date()
@@ -81,6 +98,9 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		# Add one to the survival day number
 		self.diary["Numbers"]["Survival day"] += 1
+
+		# Define the "Date" dictionary
+		self.dictionary = self.Define_Date_Dictionary(self.dictionary)
 
 		# Update the "Survivor.json" file with the root "Update_Dictionary" method
 		self.Update_Dictionary(self.dictionary["Survivor"])

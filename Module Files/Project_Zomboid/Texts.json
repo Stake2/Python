@@ -11,6 +11,14 @@
 		"en": "Select a survivor to survive as them",
 		"pt": "Selecione um sobrevivente para sobreviver como ele"
 	},
+	"type_the_name_of_the_survivor": {
+		"en": "Type the name of the survivor",
+		"pt": "Digite o nome do sobrevivente"
+	},
+	"type_the_details_of_the_survivor": {
+		"en": "Type the details of the survivor",
+		"pt": "Digite os detalhes do sobrevivente"
+	},
 	"the_class_used_a_survivor": {
 		"en": "The class used a predefined survivor",
 		"pt": "A classe utilizou um sobrevivente pré-definido"

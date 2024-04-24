@@ -250,6 +250,23 @@ class Project_Zomboid(object):
 			# Add the local "City" dictionary to the root "Cities" dictionary
 			self.project_zomboid["Cities"]["Dictionary"][city] = dictionary
 
+	def Select_City(self):
+		# Define the parameters dictionary for the "Select" method of the "Input" class
+		dictionary = {
+			"options": self.project_zomboid["Cities"]["List"],
+			"show_text": self.Language.language_texts["cities, title()"],
+			"select_text": self.Language.language_texts["city, title()"]
+		}
+
+		# Ask the user to select a city from the list
+		city = self.Input.Select(**dictionary)["option"]
+
+		# Get the city from the "Cities" dictionary
+		city = self.project_zomboid["Cities"]["Dictionary"][city]
+
+		# Return the city
+		return city
+
 	def Create_The_Survivor_Dictionaries(self):
 		# Define the local "Survivors" dictionary
 		dictionary = {
@@ -484,6 +501,11 @@ class Project_Zomboid(object):
 		if type_ == "Survivor":
 			# Remove the "Folders" key from the "Diary" dictionary
 			dictionary["Diary"].pop("Folders")
+
+		# If the dictionary type is "City"
+		if type_ == "City":
+			# Sort the list of survivors
+			dictionary["Survivors"] = sorted(dictionary["Survivors"], key = str.lower)
 
 		# Update the dictionary JSON file with the updated dictionary
 		self.JSON.Edit(json_file, dictionary)

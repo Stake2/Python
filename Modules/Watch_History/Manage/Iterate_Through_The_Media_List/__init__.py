@@ -513,7 +513,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				if media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"] != {}:
 					# Add "Wikipedia" key to media (item) details after the "Link" key
 					key_value = {
-						"key": "Wikipedia",
+						"key": self.Language.language_texts["wikipedia, title()"],
 						"value": ""
 					}
 
@@ -991,7 +991,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						episode_list_links = {}
 
 						# Define text to show when asking for user to paste the episode list website link
-						text = self.Language.language_texts["{}_website_link"].format(of_text + " " + self.language_texts["episode_list"].lower() + " " + in_text + " " + translated_full_language + " " + of_text + " " + link_key)
+						text = self.Language.language_texts["{}_website_link"].format(of_text + " " + self.language_texts["episode_list"].lower() + " " + in_text + " " + translated_full_language + " " + of_text + " " + self.Language.language_texts["wikipedia, title()"])
 
 						# If the language is not inside the episode list links dictionary, ask for the episode list website link
 						if (

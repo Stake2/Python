@@ -167,6 +167,10 @@
 		"en": "You selected this option",
 		"pt": "Você selecionou essa opção"
 	},
+	"leave_empty_to_use_the_default_value": {
+		"en": "Leave empty to use the default value",
+		"pt": "Deixe vazio para usar o valor padrão"
+	},
 	"press_enter_when_you": {
 		"en": "Press Enter when you",
 		"pt": "Pressione Enter quando você"
@@ -240,10 +244,6 @@
 	"languages, title()": {
 		"pt": "Idiomas",
 		"en": "Languages"
-	},
-	"language_with_country, title()": {
-		"pt": "Idioma Com País",
-		"en": "Language With Country"
 	},
 	"full_language, title()": {
 		"pt": "Idioma Completo",
@@ -372,10 +372,6 @@
 	"languages, title()": {
 		"pt": "Idiomas",
 		"en": "Languages"
-	},
-	"language_with_country, title()": {
-		"pt": "Idioma Com País",
-		"en": "Language With Country"
 	},
 	"full_language, title()": {
 		"pt": "Idioma Completo",
@@ -664,6 +660,10 @@
 			"pt": "Título em Inglês",
 			"en": "Title in English"
 		}
+	},
+	"country, title()": {
+		"pt": "País",
+		"en": "Country"
 	},
 	"state": {
 		"pt": "estado",
@@ -1040,6 +1040,10 @@
 	"releases, title()": {
 		"en": "Releases",
 		"pt": "Lançamentos"
+	},
+	"release_date": {
+		"en": "Release date",
+		"pt": "Data de lançamento"
 	},
 	"written_in": {
 		"en": "Written in",
@@ -2026,6 +2030,10 @@
 		"en": "Deceased",
 		"pt": "Falecidos"
 	},
+	"wikipedia, title()": {
+		"en": "Wikipedia",
+		"pt": "Wikipédia"
+	},
 	"it_is": {
 		"en": "it is",
 		"pt": "é"
@@ -2101,6 +2109,10 @@
 		"last",
 		"in"
 	],
+	"select_the_gender": {
+		"en": "Select the gender",
+		"pt": "Selecione o gênero"
+	},
 	"genders, type: list": {
 		"en": [
 			"Feminine",
