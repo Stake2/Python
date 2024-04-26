@@ -252,14 +252,14 @@ class Project_Zomboid(object):
 
 	def Select_City(self):
 		# Define the parameters dictionary for the "Select" method of the "Input" class
-		dictionary = {
+		parameters = {
 			"options": self.project_zomboid["Cities"]["List"],
 			"show_text": self.Language.language_texts["cities, title()"],
 			"select_text": self.Language.language_texts["city, title()"]
 		}
 
 		# Ask the user to select a city from the list
-		city = self.Input.Select(**dictionary)["option"]
+		city = self.Input.Select(**parameters)["option"]
 
 		# Get the city from the "Cities" dictionary
 		city = self.project_zomboid["Cities"]["Dictionary"][city]

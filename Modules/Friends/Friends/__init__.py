@@ -23,7 +23,11 @@ class Friends(object):
 		self.Define_Folders_And_Files()
 
 		# Class methods
+
+		# Define the "Information items" dictionary
 		self.Define_Information_Items()
+
+		# Define the "Friends" dictionary
 		self.Define_Friends_Dictionary()
 
 	def Define_Basic_Variables(self):
@@ -222,6 +226,7 @@ class Friends(object):
 			# Define the text key
 			text_key = key.lower().replace(" ", "_")
 
+			# Define the text addon
 			addon = ""
 
 			if "_" not in text_key:
@@ -229,6 +234,7 @@ class Friends(object):
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
+				# Get the information text
 				text = self.Language.texts[text_key + addon][language]
 
 				# Define the language information item inside the local "dict_" dictionary
@@ -281,6 +287,7 @@ class Friends(object):
 				"Example": ""
 			}
 
+			# If the key is in the "Formats" dictionary, use the format dictionary inside it
 			if key in dictionary["Formats"]:
 				dict_["Format"] = dictionary["Formats"][key]
 

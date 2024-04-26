@@ -2,192 +2,409 @@
 
 from Stories.Stories import Stories as Stories
 
+from copy import deepcopy
+
 class Create_New_Story(Stories):
 	def __init__(self):
 		super().__init__()
 
-		# Dictionaries
-		self.default_information_items = {
-			self.Language.language_texts["creation_date"]: self.Date.Now()["Formats"]["DD/MM/YYYY"],
-			self.Language.language_texts["author, title()"]: self.stories["Author"]
+		# Define the root dictionary
+		self.dictionary = {
+			"Story": {}
 		}
 
+		# Type the information about the story
 		self.Type_Story_Information()
-		self.Create_Story_Folder_And_Files()
 
+		# Create the folders of the story
+		self.Create_Story_Folders()
+
+		# Update the files of the story
+		self.Update_Files()
+
+		# Add the list to the list of stories
+		self.Add_To_Stories_List()
+
+		# Execute the root class again to define the variables of the story
 		super().__init__()
 
-		self.Show_Story_Information([self.story["Title"]])
+		# Import sub-classes method
+		self.Import_Sub_Classes()
 
-		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+		# Show information about the story
+		self.Show_Story_Information()
 
 	def Type_Story_Information(self):
-		self.story_titles = {}
-
-		i = 0
-		for information_item in self.language_texts["information_items, type: list"]:
-			english_information_item = self.texts["information_items, type: list"]["en"][i]
-
-			if information_item == self.Language.language_texts["title, title()"]:
-				for language in self.languages["small"]:
-					translated_language = self.languages["full_translated"][language][self.user_language]
-
-					type_text = self.language_texts["story_title_in_{}"].format(translated_language)
-
-					title = self.Input.Type(type_text, next_line = True)
-
-					self.story_titles[language] = title
-
-					if language == "en":
-						self.story_title = story_title
-
-				self.stories[self.story_title] = {}
-				self.stories[self.story_title]["Title"] = self.story_titles["en"]
-
-				if "Folders" not in self.stories[self.story_title]:
-					self.stories[self.story_title]["Folders"] = {}
-
-				if "Information" not in self.stories[self.story_title]:
-					self.stories[self.story_title]["Information"] = {}
-
-				if "Titles" not in self.stories[self.story_title]["Information"]:
-					self.stories[self.story_title]["Information"]["Titles"] = {}
-
-				for language in self.story_titles:
-					self.stories[self.story_title]["Information"]["Titles"][language] = self.story_titles[language]
-
-			if information_item == self.Language.language_texts["synopsis, title()"]:
-				self.stories[self.story_title]["Information"]["Wattpad"] = {
-					"ID": {},
-				}
-
-				for language in self.languages["small"]:
-					self.stories[self.story_title]["Information"]["Wattpad"]["ID"][language] = "None"
-
-				synopses = {}
-
-				self.stories[self.story_title]["Information"][english_information_item] = {}
-
-				for language in self.languages["small"]:
-					full_language = self.languages["full"][language]
-					translated_language = self.languages["full_translated"][language][self.user_language]
-
-					type_text = self.language_texts["story_synopsis_in_{}"].format(translated_language)
-
-					synopsis = self.Input.Lines(type_text, line_options_parameter = {"next_line": True})["string"]
-
-					self.stories[self.story_title]["Information"][english_information_item][full_language] = synopsis
-
-				self.stories[self.story_title]["Information"]["Website"] = self.links["Stake2 Website"] + self.story_titles["en"] + "/"
-
-			title_and_synopsis = [
-				self.Language.language_texts["title, title()"],
-				self.Language.language_texts["synopsis, title()"]
-			]
-
-			if information_item not in title_and_synopsis:
-				creation_date_and_author = [
-					self.Language.language_texts["creation_date"],
-					self.Language.language_texts["author, title()"]
-				]
-
-				if information_item in creation_date_and_author:
-					information = self.Input.Type(information_item, next_line = True)
-
-					if information != "" and information_item == self.Language.language_texts["author, title()"]:
-						information = self.stories["Author"] + "\n" + information
-
-					if information == "":
-						information = self.default_information_items[information_item]
-
-				if information_item == self.Language.language_texts["status, title()"]:
-					show_text = self.language_texts["writing_statuses"]
-					select_text = self.language_texts["select_a_writing_status"]
-
-					information = self.Input.Select(self.language_texts["status, type: list"], show_text = show_text, select_text = select_text)["option"]
-
-				self.stories[self.story_title]["Information"][english_information_item] = information
-
-			i += 1
-
-		self.stories[self.story_title]["Information"] = dict(sorted(self.stories[self.story_title]["Information"].items(), key = str.lower))
-
-	def Create_Story_Folder_And_Files(self):
-		# Create root folder
-		self.stories[self.story_title]["Folders"] = {}
-		self.stories[self.story_title]["Folders"]["root"] = self.stories["Folders"]["root"] + self.story_titles["en"] + "/"
-		self.Folder.Create(self.stories[self.story_title]["Folders"]["root"])
-
-		# Create subfolders
-		for folder_name in self.stories["Directory names"]["Folders"]:
-			self.stories[self.story_title]["Folders"][folder_name] = {
-				"root": self.stories[self.story_title]["Folders"]["root"] + folder_name + "/"
-			}
-
-			self.Folder.Create(self.stories[self.story_title]["Folders"][folder_name]["root"])
-
-			# Create sub-sub-folders
-			if folder_name in self.stories["Directory names"]["Sub-files"]:
-				for sub_folder_name in self.stories["Directory names"]["Sub-files"][folder_name]:
-					self.stories[self.story_title]["Folders"][folder_name][sub_folder_name] = self.stories[self.story_title]["Folders"][folder_name]["root"] + sub_folder_name + "/"
-
-					self.Folder.Create(self.stories[self.story_title]["Folders"][folder_name][sub_folder_name])
-
-		# Write to information files
-		for key in self.texts["file_names, type: list"]:
-			file_name = key
-
-			text = ""
-
-			if key in self.stories[self.story_title]["Information"]:
-				text = self.stories[self.story_title]["Information"][key]
-
-			if key in ["Titles", "Wattpad"]:
-				text = self.JSON.From_Python(text)
-				file_name += ".json"
-
-			if key not in ["Chapter status", "Titles", "Wattpad"]:
-				file_name += ".txt"
-
-			if key == "Chapter status":
-				text = self.Text.From_Dictionary(text)
-
-			if key != "Author" or key == "Author" and self.stories[self.story_title]["Information"]["Author"] != self.stories["Author"]:
-				self.stories[self.story_title]["Folders"]["Information"][key] = self.stories[self.story_title]["Folders"]["Information"]["root"] + file_name
-
-				self.File.Create(self.stories[self.story_title]["Folders"]["Information"][key])
-				self.File.Edit(self.stories[self.story_title]["Folders"]["Information"][key], text, "w")
-
-		# Create Synopsis folder
-		self.stories[self.story_title]["Folders"]["Information"]["Synopsis"] = {
-			"root": self.stories[self.story_title]["Folders"]["Information"]["root"] + "Synopsis/"
+		# Define the default local "Story" dictionary
+		story = {
+			"Title": "",
+			"Titles": {},
+			"Folders": {},
+			"Information": {}
 		}
 
-		# Create Chapters subfolders and Synopsis files
+		# Show a five dash space separators
+		print()
+		print(self.separators["5"])
+
+		# Ask for the titles of the story
 		for language in self.languages["small"]:
+			# Get the translated language
+			translated_language = self.languages["full_translated"][language][self.user_language]
+
+			# Ask for the story title
+			text = self.language_texts["story_title_in"] + " " + translated_language
+
+			if self.switches["testing"] == False:
+				title = self.Input.Type(text, accept_enter = False, next_line = True)
+
+			if self.switches["testing"] == True:
+				title = self.Language.texts["story_title"][language]
+
+				print()
+				print(text + ":")
+				print(title)
+
+			# Add the story title to the "Titles" dictionary
+			story["Titles"][language] = title
+
+			# If the language is "English", define it as the root story title
+			if language == "en":
+				story["Title"] = title
+
+		# Add the "Titles" dictionary to the "Information" dictionary
+		story["Information"]["Titles"] = story["Titles"]
+
+		# ---------- #
+
+		# Create the "Chapters" dictionary
+		story["Information"]["Chapters"] = {
+			"Numbers": {
+				"Total": 0,
+				"Last posted chapter": 0
+			},
+			"Titles": {},
+			"Dates": []
+		}
+
+		# ---------- #
+
+		# Show the text telling the user to type the details about the story
+		print()
+		print(self.separators["5"])
+		print()
+		print(self.language_texts["type_the_information_of_the_story"] + ":")
+
+		# Define the list of keys
+		keys = list(self.stories["Information items"]["Dictionary"].keys())
+
+		# Iterate through the information items in the "Information items" dictionary
+		for key, information_item in self.stories["Information items"]["Dictionary"].items():
+			# If the information item is not the first one
+			if key != keys[0]:
+				# Show a five dash space separators
+				print()
+				print(self.separators["5"])
+
+				# Define the exclude list
+				exclude_list = [
+					"Status",
+					"Synopsis",
+					"Author"
+				]
+
+				# If the key is not in the list above
+				if key not in exclude_list:
+					print()
+
+			# If the information item is "Creation date"
+			if key == "Creation date":
+				# Define the format variable for easier typing
+				format = information_item["Format"]
+
+				# Define the text of the information item
+				text = information_item["Texts"][self.user_language]
+
+				# Update the information text to add the example
+				new_text = text + ":" + "\n" + \
+				"(" + self.Language.language_texts["leave_empty_to_use_the_default_value"] + ': "' + format["Example"] + '")'
+
+				if self.switches["testing"] == False:
+					# Ask for the information
+					information = self.Input.Type(new_text, next_line = True)
+
+				if self.switches["testing"] == True:
+					information = ""
+
+					print()
+
+				# If the typed information is an empty string
+				if information == "":
+					# Define the information as the default information value
+					information = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
+
+					# Show the default information
+					print(text + ":")
+					print(information)
+
+				# If the typed information is not an empty string
+				else:
+					# Import the "re" module
+					import re
+
+					# Search for the regex in the typed information
+					search = re.search(format["Regex"], information)
+
+					# If the information does not match the regex
+					if search == None:
+						# Ask for the information again
+						information = self.Input.Type(new_text, accept_enter = False, next_line = True, regex = format)
+
+			# If the information item is "Synopsis"
+			if key == "Synopsis":
+				# Define the empty "Synopsis" dictionary
+				information = {}
+
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# Get the translated language
+					translated_language = self.languages["full_translated"][language][self.user_language]
+
+					# Define the type text
+					type_text = self.language_texts["story_synopsis_in"] + " " + translated_language
+
+					if self.switches["testing"] == False:
+						# Ask for the lines of text for the synopsis
+						synopsis = self.Input.Lines(type_text, line_options_parameter = {"next_line": True})["string"]
+
+					if self.switches["testing"] == True:
+						synopsis = self.Language.texts["synopsis, title()"][language]
+
+						print()
+						print(type_text + ":")
+						print(synopsis)
+
+					# Add the synopsis to the "Synopsis" dictionary
+					information[language] = synopsis
+
+			# If there is no root method to select the information
+			if "Method" not in information_item:
+				# Add the information to the "Information" dictionary of the "Story" dictionary
+				story["Information"][key] = information
+
+			# If there is a root method to select the information
+			if "Method" in information_item:
+				# Use it to select the information
+				information = information_item["Method"]()
+
+				# Define the information inside the "Information" dictionary
+				story["Information"][key] = information
+
+				# If the information key is "Author"
+				if key == "Author":
+					# Add the selected information to the "Information" dictionary of the "Story" dictionary
+					story["Information"][key] = information[0]
+
+					# Define the list of authors as the information
+					story["Information"]["Authors"] = information
+
+					# If the length of the list of authors is more than one
+					if len(information) > 1:
+						# Transform the root into a text string with all the authors
+						story["Information"][key] = self.Text.From_List(information)
+
+		# ---------- #
+
+		# Define the "Readers" dictionary
+		story["Information"]["Readers"] = {
+			"Number": 0,
+			"List": []
+		}
+
+		# Define the story "Pack" dictionary
+		story["Information"]["Pack"] = deepcopy(self.stories["Story pack"])
+
+		# Define the "Writing" dictionary
+		story["Information"]["Writing"] = {}
+
+		for writing_mode in self.texts["writing_modes, type: list"]["en"]:
+			story["Information"]["Writing"][writing_mode] = {
+				"Chapter": 0,
+				"Times": {
+					"First": "",
+					"Last": ""
+				}
+			}
+
+		# Define the "Website" dictionary
+		story["Information"]["Website"] = {
+			"Link": self.links["Stake2 Website"] + story["Title"] + "/"
+		}
+
+		# Define the "Wattpad" dictionary
+		story["Information"]["Wattpad"] = {}
+
+		# ---------- #
+
+		# Define the root "Story" dictionary as the local dictionary
+		self.dictionary["Story"] = story
+
+		# Add the story to the object of this class for easier typing
+		self.story = story
+
+	def Create_Story_Folders(self):
+		# Define and create the story folder
+		root_folder = self.stories["Folders"]["root"]
+
+		self.story["Folders"]["root"] = root_folder + self.story["Titles"][self.user_language] + "/"
+		self.Folder.Create(self.story["Folders"]["root"])
+
+		# Create the sub-folders and files of the story
+		self.story = self.Create_Story_Sub_Folders(self.story)
+
+	def Update_Files(self):
+		# Create the language synopsis files and add the synopsis to them
+
+		# Define the root folder
+		root_folder = self.story["Folders"]["Information"]["Synopsis"]["root"]
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Get the full language
 			full_language = self.languages["full"][language]
 
-			# Create Chapters subfolder
-			self.stories[self.story_title]["Folders"]["Chapters"][full_language] = self.stories[self.story_title]["Folders"]["Chapters"]["root"] + full_language + "/"
-			self.Folder.Create(self.stories[self.story_title]["Folders"]["Chapters"][full_language])
+			# Define and create the file
+			file = root_folder + full_language + ".txt"
+			self.File.Create(file)
 
-			# Create and write to chapters number file
-			self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]] = self.stories[self.story_title]["Folders"]["Chapters"]["root"] + self.Language.language_texts["number, title()"] + ".txt"
-			self.File.Create(self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]])
+			# Write to the file
+			self.File.Edit(file, self.story["Information"]["Synopsis"][language])
 
-			self.File.Edit(self.stories[self.story_title]["Folders"]["Chapters"][self.Language.language_texts["number, title()"]], "0", "w")
+		# ---------- #
+		
+		# Update the "Authors.txt" file with the list of authors
+		text_to_write = self.Text.From_List(self.story["Information"]["Authors"], break_line = True)
 
-			# Create Synopsis file and write synopsis to it
-			self.stories[self.story_title]["Folders"]["Information"]["Synopsis"][full_language] = self.stories[self.story_title]["Folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"
+		self.File.Edit(self.story["Folders"]["Authors"], text_to_write, "w")
 
-			text_to_write = self.stories[self.story_title]["Information"]["Synopsis"][full_language]
-			self.File.Edit(self.stories[self.story_title]["Folders"]["Information"]["Synopsis"][full_language], text_to_write, "w")
+		# ---------- #
 
-		create_obsidian = False
+		# Write to the "Creation date" file, the JSON files, and the "Readers" file
 
-		if create_obsidian == True:
-			# Create Obsidian's Vaults folder
-			self.stories[self.story_title]["Folders"]["Obsidian's Vaults"] = self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["stories"]["root"] + self.story_titles["en"] + "/"
-			self.Folder.Create(self.stories[self.story_title]["Folders"]["Obsidian's Vaults"])
+		# Define the list of file names
+		file_names = [
+			"Creation date",
+			"Readers"
+		]
 
-		self.story = self.stories[self.story_title]
+		# Add the JSON file names
+		file_names += self.stories["Directories"]["Information"]["JSON"]
+
+		# Iterate through the files inside the list of file names
+		for file_name in file_names:
+			# Define the default class for writing into the file
+			Class = self.File
+
+			# If the file name is inside the list of JSON files
+			if file_name in self.stories["Directories"]["Information"]["JSON"]:
+				# Define the class for writing into the file as the "JSON" class
+				Class = self.JSON
+
+			# If the file name exists inside the "Information" folders dictionary
+			if file_name in self.story["Folders"]["Information"]:
+				# Define the file variable for easier typing
+				file = self.story["Folders"]["Information"][file_name]
+
+			# If not, then it must be on the "Readers" folder
+			else:
+				file = self.story["Folders"]["Readers"][file_name]
+
+			# Define the text to be written on the file
+			text = self.story["Information"][file_name]
+
+			# If the file name is "Readers"
+			if file_name == "Readers":
+				# Transform the list of readers into a text string
+				text = self.Text.From_List(text["List"], break_line = True)
+
+			# Write to the file
+			Class.Edit(file, text)
+
+		# ---------- #
+
+		# Update the "Story.json" file with the new story "Information" dictionary
+		self.JSON.Edit(self.story["Folders"]["Story"], self.story["Information"])
+
+	def Add_To_Stories_List(self):
+		# Add to the list of stories
+		self.stories["List"].append(self.story["Title"])
+
+		# Sort the list of stories
+		self.stories["List"] = sorted(self.stories["List"], key = str.lower)
+
+		# Add the story to the stories "Dictionary"
+		self.stories["Dictionary"][self.story["Title"]] = self.story
+
+		# Make a copy of the "Stories" dictionary
+		stories_dictionary = deepcopy(self.stories)
+
+		# Remove the unneeded keys
+		keys = [
+			"Folders",
+			"Story pack",
+			"Writing links",
+			"Directories",
+			"Information items",
+			"Cover types"
+		]
+
+		for key in keys:
+			stories_dictionary.pop(key)
+
+		# Remove the "Language" key from the "Titles" dictionary
+		stories_dictionary["Titles"].pop("Language")
+
+		# Write the updated local "Stories" dictionary to the "Stories.json" file
+		self.JSON.Edit(self.stories["Folders"]["Stories"], stories_dictionary)
+
+		# ---------- #
+
+		# Add to the list of story titles in the user language, in the correct index
+		index = self.stories["List"].index(self.story["Title"])
+		language_story_title = self.story["Titles"][self.user_language]
+
+		self.stories["Titles"]["Language"].insert(index, language_story_title)
+
+		# Update the "Stories list.txt" file with the updated  list of story titles in the user language
+		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], break_line = True)
+
+		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
+
+	def Import_Sub_Classes(self):
+		# Import the "importlib" module
+		import importlib
+
+		# Define the classes to be imported
+		classes = [
+			"Show_Story_Information"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-class to the current module
+			setattr(Stories, title, sub_class)
+
+	def Show_Story_Information(self):
+		# Define the list of stories
+		stories_list = [
+			self.story["Title"]
+		]
+
+		# Execute the "Show_Story_Information" sub-class
+		Stories.Show_Story_Information(stories_list)

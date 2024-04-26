@@ -17,9 +17,17 @@ class Social_Networks(object):
 		self.Define_Folders_And_Files()
 
 		# Class methods
+
+		# Define the "Information items" dictionary
 		self.Define_Information_Items_Dictionary()
+
+		# Define the "Social Networks" dictionary
 		self.Define_Social_Networks_Dictionary()
+
+		# Define the information items
 		self.Define_Information_Items()
+
+		# Update the social networks file
 		self.Update_Social_Networks_File()
 
 	def Define_Basic_Variables(self):
@@ -675,6 +683,7 @@ class Social_Networks(object):
 				"Example": ""
 			}
 
+			# If the key is in the "Formats" dictionary, use the format dictionary inside it
 			if key in dictionary["Formats"]:
 				dict_["Format"] = dictionary["Formats"][key]
 

@@ -22,9 +22,11 @@ class Update_Chapter_Covers(Stories):
 		# Run the "Post" class as a module to update all of the chapter covers
 		self.Post(run_as_module = True)
 
-		# Show the finish text with the story title in the user language
+		# Show a dash space separator and a space separator
 		print(self.separators["5"])
 		print()
+
+		# Show the finish text with the story title in the user language
 		print(self.language_texts["you_finished_updating_the_chapter_covers_of_this_story"] + ":")
 		print(self.story["Titles"][self.user_language])
 

@@ -1,4 +1,8 @@
 {
+	"story_title_in": {
+		"en": "Story title in",
+		"pt": "Título da história em"
+	},
 	"chapter, title()": {
 		"en": "Chapter",
 		"pt": "Capítulo"
@@ -99,13 +103,13 @@
 		"en": "The last chapter",
 		"pt": "O último capítulo"
 	},
-	"story_title_in_{}": {
-		"en": "Story title in {}",
-		"pt": "Título da história em {}"
+	"type_the_information_of_the_story": {
+		"en": "Type the information of the story",
+		"pt": "Digite as informações da história"
 	},
-	"story_synopsis_in_{}": {
-		"en": "Story synopsis in {}",
-		"pt": "Sinopse da história em {}"
+	"story_synopsis_in": {
+		"en": "Story synopsis in",
+		"pt": "Sinopse da história em"
 	},
 	"writing_modes, type: list": {
 		"en": [
@@ -341,26 +345,6 @@
 		"en": "You finished copying the chapter titles of this story",
 		"pt": "Você terminou de copiar os títulos de capítulo desta história"
 	},
-	"first_track": {
-		"en": "First track",
-		"pt": "Primeira faixa"
-	},
-	"information_items, type: list": {
-		"en": [
-			"Title",
-			"Author",
-			"Creation date",
-			"Status",
-			"Synopsis"
-		],
-		"pt": [
-			"Título",
-			"Autor",
-			"Data de criação",
-			"Status",
-			"Sinopse"
-		]
-	},
 	"status, type: list": {
 		"en": [
 			"Writing",
@@ -379,12 +363,24 @@
 			"Em pausa"
 		]
 	},
+	"writing_status": {
+		"en": "Writing status",
+		"pt": "Status de escrita"
+	},
 	"writing_statuses": {
 		"en": "Writing statuses",
-		"pt": "Estados de escrita"
+		"pt": "Status de escrita"
 	},
 	"select_a_writing_status": {
 		"en": "Select a writing status",
-		"pt": "Selecione um estado de escrita"
+		"pt": "Selecione um status de escrita"
+	},
+	"do_you_want_to_add_more_authors": {
+		"en": "Do you want to add more authors",
+		"pt": "Você quer adicionar mais autores"
+	},
+	"select_an_additional_author": {
+		"en": "Select an additional author",
+		"pt": "Selecione um autor adicional"
 	}
 }

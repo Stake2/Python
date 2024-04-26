@@ -251,8 +251,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# That means the user must type the data (string)
 			# And not select it (from a list of options)
 			if "Options" not in self.dictionary["Text"]:
-				# Ask the user to type the data in the user language
-				self.dictionary["Text"]["Data"][self.user_language] = self.Input.Type(self.language_texts[self.dictionary["Text"]["Type text"]])
+				# Iterate through the small languages list
+				for language in self.languages["small"]:
+					# Get the translated language in the user language
+					translated_language = self.languages["full_translated"][language][self.user_language]
+
+					# Define the type text
+					type_text = self.language_texts[self.dictionary["Text"]["Type text"]] + " " + self.Language.language_texts["genders, type: dict"]["in"] + " " + translated_language
+
+					# Ask the user to type the data in each language
+					self.dictionary["Text"]["Data"][language] = self.Input.Type(type_text)
 
 			# If the "Options" key is inside the Text dictionary
 			# That means the user must select the data from a list of options

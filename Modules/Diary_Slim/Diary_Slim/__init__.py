@@ -433,7 +433,9 @@ class Diary_Slim():
 		self.story = {
 			"Titles": {},
 			"Chapters": {
-				"Number": 0,
+				"Numbers": {
+					"Total": 0
+				},
 				"List": []
 			},
 			"Status": {
@@ -455,10 +457,8 @@ class Diary_Slim():
 			# Get the "Titles" dictionary from the "Titles.json" file
 			self.story["Titles"] = self.JSON.To_Python(self.diary_slim["Folders"]["Story"]["Titles"])
 
-		# If the number of chapters is 0 (zero)
-		if self.story["Chapters"]["Number"] == 0:
-			# Define the number of chapters as the number of Diary Slims
-			self.story["Chapters"]["Number"] = self.history["Numbers"]["Diary Slims"]
+		# Define the number of chapters as the number of Diary Slims
+		self.story["Chapters"]["Numbers"]["Total"] = self.history["Numbers"]["Diary Slims"]
 
 		# Update the "Story.json" file with the updated "Story" dictionary
 		self.JSON.Edit(self.diary_slim["Folders"]["Story"]["Story"], self.story)

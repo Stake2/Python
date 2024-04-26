@@ -15,6 +15,9 @@ class Add_A_New_Survivor(Project_Zomboid):
 		# Type the information about the survivor
 		self.Type_Survivor_Information()
 
+		# Create the folder of the survivor
+		self.Create_Survivor_Folder()
+
 		# Update the files of the survivor
 		self.Update_Files()
 
@@ -52,6 +55,8 @@ class Add_A_New_Survivor(Project_Zomboid):
 		# Ask for the name of the survivor
 		survivor["Name"] = self.Input.Type(self.language_texts["type_the_name_of_the_survivor"], accept_enter = False, next_line = True)
 
+		# ---------- #
+
 		# Show the text telling the user to type the details about the survivor
 		print()
 		print(self.separators["5"])
@@ -67,13 +72,13 @@ class Add_A_New_Survivor(Project_Zomboid):
 				}
 			},
 			"Age": {
-				"Regex": {
+				"Format": {
 					"Regex": "^([2][7-9]|[3-9][0-9]|100)$",
 					"Example": "27"
 				}
 			},
 			"Date of birth": {
-				"Regex": {
+				"Format": {
 					"Regex": "^(0[0-9]|3[0-1])/(0[0-9]|1[0-2])/(1893|196[0-6]|19[0-5][0-9])$",
 					"Example": "01/01/1966"
 				}
@@ -103,7 +108,7 @@ class Add_A_New_Survivor(Project_Zomboid):
 				plural_text = self.Language.language_texts[text_key]
 
 				# Define the parameters dictionary for the "Select" method of the "Input" class
-				dictionary = {
+				parameters = {
 					"options": detail["Lists"]["en"],
 					"language_options": detail["Lists"]["Language"],
 					"show_text": text,
@@ -111,16 +116,16 @@ class Add_A_New_Survivor(Project_Zomboid):
 				}
 
 				# Ask the user to select an option from the list
-				typed = self.Input.Select(**dictionary)["option"]
+				typed = self.Input.Select(**parameters)["option"]
 
-			# If the "Regex" key is inside the "Detail" dictionary
-			if "Regex" in detail:
-				# Define the regex variable for easier typing
-				regex = detail["Regex"]
+			# If the "Format" key is inside the "Detail" dictionary
+			if "Format" in detail:
+				# Define the format variable for easier typing
+				format = detail["Format"]
 
 				# Update the detail text to add the example
 				new_text = text + ":" + "\n" + \
-				"(" + self.Language.language_texts["leave_empty_to_use_the_default_value"] + ': "' + regex["Example"] + '")'
+				"(" + self.Language.language_texts["leave_empty_to_use_the_default_value"] + ': "' + format["Example"] + '")'
 
 				# Ask for the detail
 				typed = self.Input.Type(new_text, next_line = True)
@@ -128,7 +133,7 @@ class Add_A_New_Survivor(Project_Zomboid):
 				# If the typed value is an empty string
 				if typed == "":
 					# Define the typed variable as the default detail value
-					typed = regex["Example"]
+					typed = format["Example"]
 
 					# Show the default detail
 					print(text + ":")
@@ -140,15 +145,17 @@ class Add_A_New_Survivor(Project_Zomboid):
 					import re
 
 					# Search for the regex in the typed value
-					search = re.search(regex["Regex"], typed)
+					search = re.search(format["Regex"], typed)
 
 					# If the value does not match the regex
 					if search == None:
 						# Ask for the detail again
-						typed = self.Input.Type(new_text, accept_enter = False, next_line = True, regex = regex)
+						typed = self.Input.Type(new_text, accept_enter = False, next_line = True, regex = format)
 
 			# Add the detail to the "Details" dictionary of the "Survivor" dictionary
 			survivor["Details"][key] = typed
+
+		# ---------- #
 
 		# Ask the user to select the city of the survivor
 		city = self.Select_City()
@@ -159,10 +166,12 @@ class Add_A_New_Survivor(Project_Zomboid):
 		# Add the city to the root dictionary
 		self.dictionary["City"] = city
 
+		# ---------- #
+
 		# Define the root "Survivor" dictionary as the local dictionary
 		self.dictionary["Survivor"] = survivor
 
-	def Update_Files(self):
+	def Create_Survivor_Folder(self):
 		# Define and create the survivor folder
 		root_folder = self.project_zomboid["Folders"]["Survivors"]["root"]
 
@@ -173,6 +182,7 @@ class Add_A_New_Survivor(Project_Zomboid):
 		self.dictionary["Survivor"]["Folders"]["Survivor"] = self.dictionary["Survivor"]["Folders"]["root"] + "Survivor.json"
 		self.File.Create(self.dictionary["Survivor"]["Folders"]["Survivor"])
 
+	def Update_Files(self):
 		# Update the "Survivor.json" file
 		self.Update_Dictionary(self.dictionary["Survivor"])
 

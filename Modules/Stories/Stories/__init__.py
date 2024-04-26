@@ -30,6 +30,9 @@ class Stories(object):
 		# Define the cover folder names list
 		self.Define_Cover_Folder_Names()
 
+		# Define the "Information items" dictionary
+		self.Define_Information_Items()
+
 		# Define the "Stories" dictionary
 		self.Define_Stories_Dictionary()
 
@@ -240,16 +243,17 @@ class Stories(object):
 
 		# Define the "Database" files
 		names = [
-			"Authors.json"
+			"Authors",
+			"Information items"
 		]
 
 		# Iterate through the file names list
 		for file_name in names:
 			# Split the file name to remove possible extensions
-			key = file_name.split(".")[0]
+			key = file_name
 
 			# Define the file with the root folder and file name
-			file = self.stories["Folders"]["Database"]["root"] + file_name
+			file = self.stories["Folders"]["Database"]["root"] + file_name + ".json"
 
 			# Add the file to the "Database" folders dictionary
 			self.stories["Folders"]["Database"][key] = file
@@ -300,7 +304,8 @@ class Stories(object):
 		self.stories["Directories"] = {
 			"Root": {
 				"Files": [
-					"Story information"
+					"Story information",
+					"Authors"
 				],
 				"JSON": [
 					"Story"
@@ -350,17 +355,102 @@ class Stories(object):
 			}
 		}
 
+	def Define_Information_Items(self):
+		# Define the "Information items" dictionary
+		dictionary = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {}
+		}
+
+		# Read the "Information items.json" file if it is not empty
+		file = self.stories["Folders"]["Database"]["Information items"]
+
+		if self.File.Contents(file)["lines"] != []:
+			dictionary = self.JSON.To_Python(file)
+
+		# Get the number of information items
+		dictionary["Numbers"]["Total"] = len(dictionary["List"])
+
+		# Reset the "Dictionary" key to be an empty dictionary
+		dictionary["Dictionary"] = {}
+
+		# Iterate through the information items list
+		for key in dictionary["List"]:
+			# Create the information item dictionary
+			dict_ = {
+				"Name": key
+			}
+
+			# Define the text key
+			text_key = key.lower().replace(" ", "_")
+
+			# Define the text addon
+			addon = ""
+
+			if "_" not in text_key:
+				addon = ", title()"
+
+			# Create the "Texts" dictionary
+			dict_["Texts"] = {}
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Get the information text
+				text = self.Language.texts[text_key + addon][language]
+
+				# Define the language information item inside the local "dict_" dictionary
+				dict_["Texts"][language] = text
+
+			# If the key is in the "Formats" dictionary, use the format dictionary inside it
+			if key in dictionary["Formats"]:
+				dict_["Format"] = dictionary["Formats"][key]
+
+			# If a root method named ["Select_" + key.capitalize()] exists
+			method_name = "Select_" + key.capitalize()
+
+			if hasattr(self, method_name) == True:
+				# Define it as the method to be used to select the information
+				dict_["Method"] = getattr(self, method_name)
+
+			# Add the information item dictionary to the root "Information items" dictionary
+			dictionary["Dictionary"][key] = dict_
+
+		# Define the "Information items" dictionary as the local "Information items" dictionary
+		self.stories["Information items"] = dictionary
+
+		# Create a local "Information items" dictionary
+		local_dictionary = deepcopy(self.stories["Information items"])
+
+		# Iterate through the information items in the "Information items" dictionary
+		for key, information_item in local_dictionary["Dictionary"].items():
+			# If the "Method" key is inside the information item dictionary
+			if "Method" in information_item:
+				# Get the name of the method used to select the information item
+				information_item["Method"] = information_item["Method"].__name__
+
+		# Update the "Information items.json" file with the updated and local "Information items" dictionary
+		self.JSON.Edit(self.stories["Folders"]["Database"]["Information items"], local_dictionary)
+
 	def Define_Stories_Dictionary(self):
 		import collections
 
-		# ----- #
+		# ---------- #
 
 		# Authors
+
+		# Get the contents of the "Authors list" file
+		lines = self.File.Contents(self.stories["Folders"]["Authors list"])["lines"]
+
+		# Define the "Author" key, which is the first author
+		self.stories["Author"] = lines[0]
 
 		# Get the story authors
 		self.stories["Authors"] = {
 			"Number": 0,
-			"List": self.File.Contents(self.stories["Folders"]["Authors list"])["lines"]
+			"List": lines
 		}
 
 		# Define the number of authors
@@ -369,10 +459,7 @@ class Stories(object):
 		# Write the "Authors" dictionary to the database "Authors.json" file
 		self.JSON.Edit(self.stories["Folders"]["Database"]["Authors"], self.stories["Authors"])
 
-		# Define the first author
-		self.stories["Author"] = self.stories["Authors"]["List"][0]
-
-		# ----- #
+		# ---------- #
 
 		# Define the "Cover types" dictionary
 		self.stories["Cover types"] = {
@@ -402,7 +489,7 @@ class Stories(object):
 			# Add the cover type dictionary to the root dictionary
 			self.stories["Cover types"]["Dictionary"][key] = dictionary
 
-		# ----- #
+		# ---------- #
 
 		# "Stories" dictionary
 
@@ -412,17 +499,21 @@ class Stories(object):
 		# Get the list of stories
 		self.stories["List"] = self.JSON.To_Python(self.stories["Folders"]["Stories"])["List"]
 
+		# Sort the list of stories
+		self.stories["List"] = sorted(self.stories["List"], key = str.lower)
+
 		# Update the "Total" key of the "Numbers" dictionary
 		self.stories["Numbers"]["Total"] = len(self.stories["List"])
 
 		# Define the "Titles" dictionary and get the story titles
 		self.stories["Titles"] = {
-			"en": self.stories["List"]
+			"en": self.stories["List"],
+			self.user_language: [],
+			"Language": []
 		}
 
-		# Define the language titles
+		# Define the list of story titles in the user language
 		self.stories["Titles"][self.user_language] = self.File.Contents(self.stories["Folders"]["Stories list"])["lines"]
-		self.stories["Titles"]["Language"] = self.stories["Titles"][self.user_language]
 
 		# Define the "All" list
 		self.stories["Titles"]["All"] = []
@@ -430,11 +521,41 @@ class Stories(object):
 		# Define the "Dictionary" dictionary
 		self.stories["Dictionary"] = {}
 
+		# ---------- #
+
+		# Remove stories which have no folder
+
+		# Define the language story titles list
+		language_story_titles = deepcopy(self.stories["Titles"][self.user_language])
+
+		# Iterate through the list of stories
+		s = 0
+		for story_title in self.stories["List"].copy():
+			# Get the language story title
+			language_story_title = language_story_titles[s]
+
+			# Define the root story folder
+			story_folder = self.stories["Folders"]["root"] + language_story_title + "/"
+
+			# If the root folder does not exist
+			if self.Folder.Exist(story_folder) == False:
+				# Remove the story from the list of stories
+				self.stories["List"].remove(story_title)
+				self.stories["Titles"][self.user_language].remove(language_story_title)
+
+			# Add one to the "s" number variable
+			s += 1
+
+		# Update the "Total" key of the "Numbers" dictionary
+		self.stories["Numbers"]["Total"] = len(self.stories["List"])
+
+		# ---------- #
+
 		# Add the stories to the "Stories" dictionary
 		s = 0
 		for story_title in self.stories["List"]:
 			# Get the language story title
-			language_story_title = self.stories["Titles"]["Language"][s]
+			language_story_title = self.stories["Titles"][self.user_language][s]
 
 			# Define the "Story" dictionary and the keys
 			story = {
@@ -445,9 +566,6 @@ class Stories(object):
 				},
 				"Information": {}
 			}
-
-			# Create the root story folder
-			self.Folder.Create(story["Folders"]["root"])
 
 			# Create the story sub-folders
 			story = self.Create_Story_Sub_Folders(story)
@@ -515,20 +633,23 @@ class Stories(object):
 
 			# ---------- #
 
-			# Set the default author of the story
-			# If the author is not inside the story information
-			# Or the author is inside the story information and is empty
-			if (
-				"Author" not in story["Information"] or
-				"Author" in story["Information"] and
-				story["Information"]["Author"] == ""
-			):
-				story["Information"]["Author"] = self.stories["Author"]
+			# Update the "Authors.txt" file with the list of authors
+			text_to_write = self.Text.From_List(story["Information"]["Authors"], break_line = True)
+
+			self.File.Edit(story["Folders"]["Authors"], text_to_write, "w")
+
+			# If the number of authors is more than one
+			if len(story["Information"]["Authors"]) > 1:
+				# Transform the list of authors into a text without line breaks
+				story["Information"]["Author"] = self.Text.From_List(story["Information"]["Authors"], language = "en")
 
 			# ---------- #
 
 			# Define the story titles in all languages
 			story["Titles"] = story["Information"]["Titles"]
+
+			# Add the language story title to the list of story titles in the user language
+			self.stories["Titles"]["Language"].append(story["Titles"][self.user_language])
 
 			# Add the story titles to the "All" list
 			for title in story["Titles"].values():
@@ -580,7 +701,10 @@ class Stories(object):
 
 			# Define the default story "Chapters" dictionary
 			story["Information"]["Chapters"] = {
-				"Number": 0,
+				"Numbers": {
+					"Total": 0,
+					"Last posted chapter": 0
+				},
 				"Titles": {},
 				"Dates": self.File.Contents(story["Folders"]["Chapters"]["Dates"])["lines"]
 			}
@@ -597,14 +721,10 @@ class Stories(object):
 				story["Information"]["Chapters"]["Titles"][language] = self.File.Contents(file)["lines"]
 
 			# Update the number of chapters
-			story["Information"]["Chapters"]["Number"] = len(story["Information"]["Chapters"]["Titles"]["en"])
+			story["Information"]["Chapters"]["Numbers"]["Total"] = len(story["Information"]["Chapters"]["Titles"]["en"])
 
 			# Add the "Last posted chapter" key
-			key_value = {
-				"Last posted chapter": story["Information"]["Chapters"]["Number"]
-			}
-
-			story["Information"]["Chapters"] = self.JSON.Add_Key_After_Key(story["Information"]["Chapters"], key_value, after_key = "Number")
+			story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = story["Information"]["Chapters"]["Numbers"]["Total"]
 
 			# Write the "Chapters" dictionary into the "Chapters.json" file
 			self.JSON.Edit(story["Folders"]["Information"]["Chapters"], story["Information"]["Chapters"])
@@ -636,7 +756,7 @@ class Stories(object):
 
 			for writing_mode in self.texts["writing_modes, type: list"]["en"]:
 				writing[writing_mode] = {
-					"Chapter": 1,
+					"Chapter": 0,
 					"Times": {
 						"First": "",
 						"Last": ""
@@ -788,6 +908,11 @@ class Stories(object):
 			# Add one to the "s" number variable
 			s += 1
 
+		# Update the "Stories list.txt" file with the updated  list of story titles in the user language
+		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], break_line = True)
+
+		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
+
 		# Make a copy of the "Stories" dictionary
 		stories_dictionary = deepcopy(self.stories)
 
@@ -797,11 +922,15 @@ class Stories(object):
 			"Story pack",
 			"Writing links",
 			"Directories",
+			"Information items",
 			"Cover types"
 		]
 
 		for key in keys:
 			stories_dictionary.pop(key)
+
+		# Remove the "Language" key from the "Titles" dictionary
+		stories_dictionary["Titles"].pop("Language")
 
 		# Write the updated local "Stories" dictionary to the "Stories.json" file
 		self.JSON.Edit(self.stories["Folders"]["Stories"], stories_dictionary)
@@ -917,6 +1046,143 @@ class Stories(object):
 
 		# Return the "Story" dictionary
 		return story
+
+	def Select_Status(self):
+		# Define the parameters dictionary for the "Select" method of the "Input" class
+		parameters = {
+			"options": self.texts["status, type: list"]["en"],
+			"language_options": self.language_texts["status, type: list"],
+			"show_text": self.language_texts["writing_statuses"],
+			"select_text": self.language_texts["select_a_writing_status"]
+		}
+
+		if self.switches["testing"] == False:
+			# Ask the user to select a status from the list
+			option = self.Input.Select(**parameters)
+
+		if self.switches["testing"] == True:
+			option = {
+				"number": 0,
+				"option": self.texts["writing, title()"]["en"],
+				"language_option": self.language_texts["writing, title()"]
+			}
+
+			print()
+			print(self.language_texts["writing_status"] + ":")
+			print(option["language_option"])
+
+		# Create the "Status" dictionary
+		status = {
+			"Number": option["number"],
+			"Names": {
+				"en": option["option"],
+				self.user_language: option["language_option"]
+			}
+		}
+
+		# Return the "Status" dictionary
+		return status
+
+	def Select_Author(self):
+		# Define the authors list with the first author
+		authors = [
+			self.stories["Authors"]["List"][0]
+		]
+
+		# Show the list of authors
+		self.Show_Authors_List(authors)
+
+		# Ask if the user wants to add more authors to the list of authors
+		question = self.language_texts["do_you_want_to_add_more_authors"]
+
+		if self.switches["testing"] == False:
+			add_more = self.Input.Yes_Or_No(question)
+
+		if self.switches["testing"] == True:
+			add_more = False
+
+		# If the user wants to add more authors
+		if add_more == True:
+			# Define the list of authors without the first one
+			options = deepcopy(self.stories["Authors"]["List"])
+			options.pop(0)
+
+			# Define the parameters dictionary for the "Select" method of the "Input" class
+			parameters = {
+				"options": options,
+				"language_options": deepcopy(options),
+				"show_text": self.Language.language_texts["authors, title()"],
+				"select_text": self.language_texts["select_an_additional_author"]
+			}
+
+			# Add the "[Finish selection]" text to the list of options
+			parameters["options"].append("[Finish selection]")
+
+			# Define the language texxt
+			language_text = "[" + self.Language.language_texts["finish_selection"] + "]"
+
+			# Add the "[Finish selection]" text in the user language to the list of language options
+			parameters["language_options"].append(language_text)
+
+			# Define the "finish selection" variable for easier typing
+			finish_selection = "[Finish selection]"
+
+			# Define the default empty option variable
+			option = ""
+
+			# While the option is not the "[Finish selection]" text
+			while option != finish_selection:
+				# Show a five dash space separator
+				print()
+				print(self.separators["5"])
+
+				# If the list of authors is not empty
+				if authors != []:
+					# Show the list of authors
+					self.Show_Authors_List(authors)
+
+				# Ask the user to select the author
+				option = self.Input.Select(**parameters)["option"]
+
+				# If the option is not the "[Finish selection]" text
+				if option != finish_selection:
+					# Remove the selected text from the parameters dictionary
+					parameters["options"].remove(option)
+					parameters["language_options"].remove(option)
+
+					# Add the author to the list of authors
+					authors.append(option)
+
+					# If the length of the list of options is one
+					# That means the user select all of the options of the list
+					# Then define the option as the "finish_selection" one, to stop the while loop
+					if len(parameters["options"]) == 1:
+						option = finish_selection
+
+		# Return the list of authors
+		return authors
+
+	def Show_Authors_List(self, authors):
+		# Show the "Authors:" text
+		print()
+		print(self.Language.language_texts["authors, title()"] + ":")
+
+		# Show the list of authors
+		print("[")
+
+		# Iterate through the authors in the list
+		for author in authors:
+			# Make a backup of the author
+			backup = author
+
+			# Add one tab to the author
+			author = author.replace("\n", "\n\t")
+
+			# Show the author with a tab and quotes around it
+			print("\t" + '"' + author + '"')
+
+		# Show the end of the list
+		print("]")
 
 	def Define_Cover_Folder_Names(self):
 		# Define the empty folder names list
