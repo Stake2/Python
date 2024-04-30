@@ -418,12 +418,14 @@ class Tasks(object):
 			for key in dictionary["States"]["Texts"]:
 				print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
-		show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.Language.language_texts["can_be_long, feminine"] + ")")
+		# If the description of the task is not the same as the task title
+		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
+			show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.Language.language_texts["can_be_long, feminine"] + ")")
 
-		if show_task_description == True:
-			print()
-			print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
-			print("[" + task["Descriptions"][self.user_language] + "]")
+			if show_task_description == True:
+				print()
+				print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
+				print("[" + task["Descriptions"][self.user_language] + "]")
 
 		if dictionary["large_bar"] == True:
 			print()

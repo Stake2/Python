@@ -1723,13 +1723,16 @@
 	"skip_the": {
 		"en": "Skip the",
 		"pt": {
-			"masculine": "Pular a",
-			"feminine": "Pular o"
+			"masculine": "Pular o",
+			"feminine": "Pular a"
 		}
 	},
 	"you_skipped_the": {
 		"en": "You skipped the",
-		"pt": "Você pulou a"
+		"pt": {
+			"masculine": "Você pulou o",
+			"feminine": "Você pulou a"
+		}
 	},
 	"join": {
 		"en": "join",

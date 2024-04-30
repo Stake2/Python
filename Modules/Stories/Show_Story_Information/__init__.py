@@ -3,14 +3,11 @@
 from Stories.Stories import Stories as Stories
 
 class Show_Story_Information(Stories):
-	def __init__(self, stories_list = [], stories = {}):
+	def __init__(self, stories_list = []):
 		super().__init__()
 
 		# Define the list of stories in the object of this class
 		self.stories_list = stories_list
-
-		if stories != {}:
-			self.stories = stories
 
 		# Show information about the stories
 		self.Show_Information()

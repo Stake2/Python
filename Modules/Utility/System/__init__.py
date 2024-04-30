@@ -86,10 +86,10 @@ class System():
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
 			process.kill()
 
-	def Open_Link(self, link):
+	def Open_Link(self, link, verbose = True):
 		import webbrowser
 
-		self.Verbose(self.language_texts["opening, title()"], link, verbose = True)
+		self.Verbose(self.language_texts["opening, title()"], link, verbose = verbose)
 
 		webbrowser.open(link)
 

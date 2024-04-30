@@ -135,7 +135,8 @@ class Open_Social_Network(Social_Networks):
 			self.dictionary["Social Networks"]["Numbers"]["Iteration"] += 1
 
 	def Show_Information(self):
-		print()
+		if self.dictionary["Spaces"]["First"] == True:
+			print()
 
 		# If there is only one Social Network to open
 		# Or there are more than one Social Network to open

@@ -461,6 +461,11 @@ class Register(Tasks):
 	def Write_On_Diary_Slim(self):
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.user_language]
 
+		# If the description of the task is the same as the task title
+		if self.dictionary["Task"]["Titles"]["en"] == self.dictionary["Task"]["Descriptions"]["en"]:
+			# Add a dot to the Diary Slim text
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "."
+
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"

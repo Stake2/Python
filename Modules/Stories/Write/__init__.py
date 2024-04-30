@@ -62,7 +62,7 @@ class Write(Stories):
 		show_text = self.language_texts["writing_modes"]
 		select_text = self.language_texts["select_a_writing_mode"]
 
-		chapter_number = self.story["Information"]["Chapters"]["Number"]
+		chapter_number = self.story["Information"]["Chapters"]["Numbers"]["Total"]
 
 		i = 0
 		for writing_mode in options:
@@ -373,7 +373,7 @@ class Write(Stories):
 				self.File.Move(source_file, self.chapter["Files"]["obsidian"][key])
 
 	def Register_Task(self):
-		# Define task dictionary, to use it on Tasks class
+		# Create the task dictionary, to use it on the "Tasks" class
 		self.task_dictionary = {
 			"Task": {
 				"Titles": {},

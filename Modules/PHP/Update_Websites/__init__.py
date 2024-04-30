@@ -136,8 +136,12 @@ class Update_Websites(PHP):
 			# If the module website is a string or an integer, find the number of that website
 			if type(self.module_website) in [str, int]:
 				number = 0
+
 				for website in self.websites["List"]["en"]:
-					if self.module_website == website or self.module_website == number:
+					if (
+						self.module_website == website or
+						self.module_website == number
+					):
 						self.websites["Numbers"].append(number)
 
 					number += 1
@@ -244,9 +248,7 @@ class Update_Websites(PHP):
 		if len(self.websites["Update"]) > 1:
 			text = self.language_texts["updating_these_websites"]
 
-		# Show website info
-		print()
-		print(self.separators["5"])
+		# Show information about the websites that are going to be updated
 		print()
 		print(text + ":")
 

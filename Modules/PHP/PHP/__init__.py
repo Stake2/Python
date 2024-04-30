@@ -19,6 +19,9 @@ class PHP(object):
 
 		self.JSON = JSON()
 
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
@@ -27,7 +30,8 @@ class PHP(object):
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -73,7 +77,7 @@ class PHP(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
-# Define the "Texts" dictionary
+		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
 
 		# Define the "Language texts" dictionary

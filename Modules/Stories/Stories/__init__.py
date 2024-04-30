@@ -162,6 +162,9 @@ class Stories(object):
 			"My works": self.social_networks["Wattpad"]["Information"]["Link"] + "myworks/"
 		}
 
+		# Update the "Wattpad" key
+		self.social_networks["Dictionary"]["Wattpad"] = self.social_networks["Wattpad"]
+
 	def Define_Folders_And_Files(self):
 		# Define the root "Stories" dictionary
 		self.stories = {
@@ -467,7 +470,8 @@ class Stories(object):
 				"Landscape",
 				"Portrait"
 			],
-			"Dictionary": {}
+			"Dictionary": {},
+			"Extension": "png"
 		}
 
 		# Fill the "Cover types" dictionary
@@ -723,8 +727,14 @@ class Stories(object):
 			# Update the number of chapters
 			story["Information"]["Chapters"]["Numbers"]["Total"] = len(story["Information"]["Chapters"]["Titles"]["en"])
 
-			# Add the "Last posted chapter" key
-			story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = story["Information"]["Chapters"]["Numbers"]["Total"]
+			# If the "Chapters.json" file is not empty
+			file = story["Folders"]["Information"]["Chapters"]
+
+			contents = self.File.Contents(file)
+
+			if contents["lines"] != []:
+				# Update the "Last posted chapter" key with the correct number
+				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = self.JSON.To_Python(file)["Numbers"]["Last posted chapter"]
 
 			# Write the "Chapters" dictionary into the "Chapters.json" file
 			self.JSON.Edit(story["Folders"]["Information"]["Chapters"], story["Information"]["Chapters"])
@@ -1237,20 +1247,20 @@ class Stories(object):
 		if "Type" not in task_dictionary:
 			task_dictionary["Type"] = "Stories"
 
-		# If the date is not inside the task dictionary, set it as now
-		if "Date" not in task_dictionary["Entry"]:
-			task_dictionary["Entry"]["Date"] = self.Date.Now()
+		# If the "Entry" key is not inside the task dictionary
+		if "Entry" not in task_dictionary:
+			# Create it
+			task_dictionary["Entry"] = {
+				"Date": self.Date.Now()
+			}
 
 		# Register the task with the "Register" class of the "Tasks" module
 		if register_task == True:
-			# Import the "Tasks" module
-			import Tasks
-
-			# Run the root class to define its variables
-			self.Tasks = Tasks()
+			# Import the "Register" class of the "Tasks" module
+			from Tasks.Register import Register as Register
 
 			# Register the task
-			sef.Tasks.Register(task_dictionary)
+			Register(task_dictionary)
 
 		# Register the task on the current "Diary Slim" file if the "Tasks" module did not
 		if register_task == False:
@@ -1270,7 +1280,7 @@ class Stories(object):
 			# Write the task text on Diary Slim
 			Write_On_Diary_Slim_Module(dictionary)
 
-	def Select_Story(self, select_text_parameter = None, select_class = False):
+	def Select_Story(self, stories_list = [], select_text_parameter = None, select_class = False):
 		# Define the show text
 		show_text = self.Language.language_texts["stories, title()"]
 
@@ -1297,27 +1307,44 @@ class Stories(object):
 		# Make a local copy of the "Stories" dictionary
 		stories = deepcopy(self.stories)
 
-		# Remove the stories with all chapters posted if the class is "Post"
+		# Define the list of stories if it the parameter is an empty list
+		if stories_list == []:
+			stories_list = self.stories["Titles"]["en"]
+
+		# Empty the titles lists
+		for language in self.languages["small"]:
+			stories["Titles"][language] = []
+
+		# If the class name is "Post"
 		if class_name == "Post":
 			# Iterate through the English story titles list
-			for story in self.stories["Titles"]["en"]:
+			for story in stories_list.copy():
 				# Get the "Story" dictionary
-				story = stories[story]
+				story = stories["Dictionary"][story]
+			
+				# Get the last posted chapter number
+				last_posted_chapter = story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
 
-				# Get the last chapter posted
-				last_chapter_posted = story["Information"]["Chapters"]["Last posted chapter"]
+				# If the last posted chapter is the same as the last chapter
+				if last_posted_chapter == story["Information"]["Chapters"]["Numbers"]["Total"]:
+					# Remove the story from the list of stories
+					stories_list.remove(story["Title"])
 
-				# If the last chapter posted is the same as the last chapter
-				if last_chapter_posted == story["Information"]["Chapters"]["Number"]:
-					# Iterate through the small languages list
-					for language in self.languages["small"]:
-						# Remove the story from the story titles list in the current language
-						stories["Titles"][language].remove(story["Information"]["Titles"][language])
+		# Iterate through the English story titles list
+		for story in stories_list.copy():
+			# Get the "Story" dictionary
+			story = stories["Dictionary"][story]
 
-		# Ask for the user to select the story
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Add the story title to the list of titles in the current language
+				stories["Titles"][language].append(story["Titles"][language])
+
+		# Define the options and language options lists
 		options = stories["Titles"]["en"]
 		language_options = stories["Titles"][self.user_language]
 
+		# Ask for the user to select the story
 		option = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
 
 		# Get the "Story" dictionary

@@ -11,6 +11,10 @@
 		"en": "Chapters",
 		"pt": "Capítulos"
 	},
+	"chapter_title": {
+		"en": "Chapter title",
+		"pt": "Título do capítulo"
+	},
 	"chapter_number": {
 		"en": "Chapter number",
 		"pt": "Número do capítulo"
@@ -68,8 +72,8 @@
 		"pt": "Cole a segunda parte do card do {} na caixa de texto da postagem"
 	},
 	"copying_the_cover_to_the_{}_folder": {
-		"en": "Copying the cover to the {} folder",
-		"pt": "Copiando a capa para a pasta {}"
+		"en": "Copying the cover to the [{}] folder",
+		"pt": "Copiando a capa para a pasta de [{}]"
 	},
 	"press_enter_when_you_finish_rendering_the_cover": {
 		"en": "Press Enter when you finish rendering the cover",
@@ -81,11 +85,11 @@
 	},
 	"mega_stories": {
 		"en": "Mega Stories",
-		"pt": "de Histórias do Mega"
+		"pt": "Histórias do Mega"
 	},
 	"website_story_covers": {
 		"en": "website story covers",
-		"pt": "de capas de histórias do site"
+		"pt": "capas de histórias do site"
 	},
 	"paste_the_wattpad_chapter_link": {
 		"en": "Paste the Wattpad chapter link",
@@ -337,9 +341,9 @@
 		"en": "You finished updating the chapter covers of this story",
 		"pt": "Você terminou de atualizar as capas de capítulo desta história"
 	},
-	"i_published_the_chapter_{}_of_my_story_{}_on_wattpad_and_stake2_website": {
-		"en": "I published the chapter {} of my story \"{}\" on Wattpad and Stake2 Website",
-		"pt": "Eu publiquei o capítulo {} da minha história \"{}\" no Wattpad e no Site Stake2"
+	"i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website_and_on_wattpad_with_the_title": {
+		"en": "I published the chapter number {} ({}) of my story \"{}\" on the story website and on Wattpad, with the title",
+		"pt": "Eu publiquei o capítulo número {} ({}) da minha história \"{}\" no site da história e no Wattpad, com o título"
 	},
 	"you_finished_copying_the_chapter_titles_of_this_story": {
 		"en": "You finished copying the chapter titles of this story",
