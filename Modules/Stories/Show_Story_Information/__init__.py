@@ -47,7 +47,19 @@ class Show_Story_Information(Stories):
 			# Iterate through the information items in the "Information items" dictionary
 			for key, information_item in self.stories["Information items"]["Dictionary"].items():
 				# Define the text of the information item
-				text = information_item["Texts"][self.user_language]
+				text = information_item["Texts"]
+
+				# If the key is "Author"
+				# And the number of authors is more than one
+				if (
+					key == "Author" and
+					len(story["Information"]["Authors"]) > 1
+				):
+					# Use the "Plural" dictionary
+					text = information_item["Plural"]
+
+				# Get the text in the user language
+				text = text[self.user_language]
 
 				# Show the text
 				print(text + ":")
@@ -57,13 +69,28 @@ class Show_Story_Information(Stories):
 					# Get the information inside the "Story" dictionary
 					information = story["Information"][key]
 
+					# If the key is "Author"
+					if key == "Author":
+						# Define the information as the "Authors" key
+						information = story["Information"]["Authors"]
+
 					# If the user language is inside the information, get it
 					if self.user_language in information:
 						information = information[self.user_language]
 
-					# If the type of the information is not a dictionary, show the information with a tab
+					# If the type of the information is not a dictionary
 					if type(information) != dict:
-						print("\t" + information)
+						# If the type of the information is not a list
+						if type(information) != list:
+							# Show the information with a tab
+							print("\t" + information)
+
+						# If the type of the information is a list
+						if type(information) == list:
+							# Iterate through the items in the list
+							for item in information:
+								# Show the item with a tab
+								print("\t" + item)
 
 					# If the type of the information is a dictionary
 					if type(information) == dict:
@@ -109,29 +136,54 @@ class Show_Story_Information(Stories):
 
 			# Show the link of the story
 			print(self.Language.language_texts["website_link"] + ":")
-			print("\t" + story["Information"]["Website"]["Link"])
+			print("\t" + story["Information"]["Links"]["Website"]["Link"])
 			print()
 
-			# If the "Wattpad" dictionary is not empty
-			if story["Information"]["Wattpad"] != {}:
+			# If the "Wattpad" IDs dictionary is not empty
+			if story["Information"]["Links"]["Wattpad"]["IDs"] != {}:
 				# Show the "Wattpad:" text
 				print("Wattpad:")
 
 				# Show the Wattpad information of the story
-				for language in story["Information"]["Wattpad"]:
+				for language in self.languages["small"]:
 					# Get the translated language
 					translated_language = self.languages["full_translated"][language][self.user_language]
 
 					# Get the item (link)
-					item = story["Information"]["Wattpad"][language]
+					item = story["Information"]["Links"]["Wattpad"]["Read story"][language]
 
 					# Show the link in the current language
 					# With the translated language
 					print("\t" + translated_language + ":")
-					print("\t" + item["Link"])
+					print("\t" + item)
 
-					# If the language is not the last one from the list of Wattpad links
-					if language != list(story["Information"]["Wattpad"].keys())[-1]:
+					# If the language is not the last one
+					if language != self.languages["small"][-1]:
+						# Show a space separator
+						print()
+
+				print()
+
+			# If the "Spirit Fanfics" IDs dictionary is not empty
+			if story["Information"]["Links"]["Spirit Fanfics"]["IDs"] != {}:
+				# Show the "Spirit Fanfics:" text
+				print("Spirit Fanfics:")
+
+				# Show the Spirit Fanfics information of the story
+				for language in self.languages["small"]:
+					# Get the translated language
+					translated_language = self.languages["full_translated"][language][self.user_language]
+
+					# Get the item (link)
+					item = story["Information"]["Links"]["Spirit Fanfics"]["Links"][language]
+
+					# Show the link in the current language
+					# With the translated language
+					print("\t" + translated_language + ":")
+					print("\t" + item)
+
+					# If the language is not the last one
+					if language != self.languages["small"][-1]:
 						# Show a space separator
 						print()
 

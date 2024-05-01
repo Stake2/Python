@@ -33,6 +33,9 @@ class Stories(object):
 		# Define the "Information items" dictionary
 		self.Define_Information_Items()
 
+		# Define the "Story websites" dictionary
+		self.Define_Story_Websites_Dictionary()
+
 		# Define the "Stories" dictionary
 		self.Define_Stories_Dictionary()
 
@@ -150,6 +153,10 @@ class Stories(object):
 		# Get the "Social Networks" dictionary from the "Social_Networks" module
 		self.social_networks = self.Social_Networks.social_networks
 
+		# ---------- #
+
+		# "Wattpad" social network
+
 		# Define the "Wattpad" key for faster typing
 		self.social_networks["Wattpad"] = self.social_networks["Dictionary"]["Wattpad"]
 
@@ -162,8 +169,45 @@ class Stories(object):
 			"My works": self.social_networks["Wattpad"]["Information"]["Link"] + "myworks/"
 		}
 
+		# Define the "Story" link as a shortcut for the "My works" link
+		self.social_networks["Wattpad"]["Information"]["Links"]["Story"] = self.social_networks["Wattpad"]["Information"]["Links"]["My works"]
+
+		# Define the "Read" story link
+		self.social_networks["Wattpad"]["Information"]["Links"]["Read story"] = self.social_networks["Wattpad"]["Information"]["Link"] + "story/"
+
 		# Update the "Wattpad" key
 		self.social_networks["Dictionary"]["Wattpad"] = self.social_networks["Wattpad"]
+
+		# ---------- #
+
+		# "Spirit Fanfics" social network
+
+		# Define the "Spirit Fanfics" key for faster typing
+		self.social_networks["Spirit Fanfics"] = self.social_networks["Dictionary"]["Spirit Fanfics"]
+
+		# Define the additional links
+		self.social_networks["Spirit Fanfics"]["Profile"]["Links"] = {
+			"Activities": self.social_networks["Spirit Fanfics"]["Profile"]["Links"]["Profile"] + "atividades/"
+		}
+
+		self.social_networks["Spirit Fanfics"]["Information"]["Links"] = {
+			"Story": self.social_networks["Spirit Fanfics"]["Information"]["Link"] + "historia/"
+		}
+
+		# Define the story link variable for easier typing
+		story_link = self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Story"]
+
+		# Add the "Edit story" link
+		self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Edit story"] = story_link + "editar/"
+
+		# Add the "Manage chapters" link
+		self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Manage chapters"] = story_link + "gerenciar/capitulos/"
+
+		# Add the "Add chapter" link
+		self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Add chapter"] = story_link + "adicionar/"
+
+		# Update the "Spirit Fanfics" key
+		self.social_networks["Dictionary"]["Spirit Fanfics"] = self.social_networks["Spirit Fanfics"]
 
 	def Define_Folders_And_Files(self):
 		# Define the root "Stories" dictionary
@@ -247,7 +291,8 @@ class Stories(object):
 		# Define the "Database" files
 		names = [
 			"Authors",
-			"Information items"
+			"Information items",
+			"Story websites"
 		]
 
 		# Iterate through the file names list
@@ -338,7 +383,9 @@ class Stories(object):
 				],
 				"JSON": [
 					"Chapters",
+					"Spirit Fanfics",
 					"Wattpad",
+					"Website",
 					"Writing"
 				]
 			},
@@ -407,6 +454,19 @@ class Stories(object):
 				# Define the language information item inside the local "dict_" dictionary
 				dict_["Texts"][language] = text
 
+			# If the key is "Author"
+			if key == "Author":
+				# Define the "Plural" dictionary
+				dict_["Plural"] = {}
+
+				# Iterate through the small languages list
+				for language in self.languages["small"]:
+					# Get the plural information text
+					text = self.Language.texts[text_key + "s" + addon][language]
+
+					# Define the language plural information item inside the local "dict_" dictionary
+					dict_["Plural"][language] = text
+
 			# If the key is in the "Formats" dictionary, use the format dictionary inside it
 			if key in dictionary["Formats"]:
 				dict_["Format"] = dictionary["Formats"][key]
@@ -436,6 +496,166 @@ class Stories(object):
 
 		# Update the "Information items.json" file with the updated and local "Information items" dictionary
 		self.JSON.Edit(self.stories["Folders"]["Database"]["Information items"], local_dictionary)
+
+	def Define_Story_Websites_Dictionary(self):
+		# Define the "Story websites" dictionary
+		dictionary = {
+			"List": [
+				"Wattpad",
+				"Spirit Fanfics"
+			],
+			"Dictionary": {}
+		}
+
+		# Iterate through the story websites list
+		for key in dictionary["List"]:
+			# Create the story website dictionary
+			dict_ = {
+				"Name": key
+			}
+
+			# Add the "Templates" dictionary
+			dict_["Templates"] = {
+				"Root": {
+					"IDs": {},
+					"Links": {}
+				},
+				"Additional links": {}
+			}
+
+			# If the story website is "Wattpad"
+			if key == "Wattpad":
+				# Add the "Read story" key
+				dict_["Templates"]["Root"]["Read story"] = {}
+
+				# Add the additional link
+				dict_["Templates"]["Additional links"]["Read story"] = "{ID}-{Modified story title}"
+
+			# If the story website is "Spirit Fanfics"
+			if key == "Spirit Fanfics":
+				# Add the "Add chapter" key
+				dict_["Templates"]["Root"]["Add chapter"] = {}
+
+				# Add the additional link
+				dict_["Templates"]["Additional links"]["Add chapter"] = "{ID}"
+
+			# Add the story website dictionary to the root "Story websites" dictionary
+			dictionary["Dictionary"][key] = dict_
+
+		# Define the "Story websites" dictionary as the local "Story websites" dictionary
+		self.stories["Story websites"] = dictionary
+
+		# Update the "Story websites.json" file with the updated "Story websites" dictionary
+		self.JSON.Edit(self.stories["Folders"]["Database"]["Story websites"], self.stories["Story websites"])
+
+	def Define_Story_Websites(self, story):
+		# Import the "inspect" module
+		import inspect
+
+		# Get the method name
+		method_name = inspect.stack()[1][3]
+
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# If the method name is "Type_Story_Information"
+			if method_name == "Type_Story_Information":
+				# Create the story website dictionary
+				story["Information"][key] = story_website["Templates"]["Root"]
+
+			# Get the root story link of the story website
+			root_story_link = self.social_networks[key]["Information"]["Links"]["Story"]
+
+			# If the "IDs" dictionary is not an empty dictionary
+			# Or the method name is "Type_Story_Information"
+			if (
+				story["Information"][key]["IDs"] != {} or
+				method_name == "Type_Story_Information"
+			):
+				# If the method name is "Type_Story_Information"
+				if method_name == "Type_Story_Information":
+					# Show the story website name
+					print()
+					print(self.separators["5"])
+					print()
+					print(key + ":")
+
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# Get the translated language
+					translated_language = self.languages["full_translated"][language][self.user_language]
+
+					# If the method name is "Type_Story_Information"
+					if method_name == "Type_Story_Information":
+						# Ask for the story ID
+						type_text = self.language_texts["id_of_the_story_in"] + " " + translated_language
+
+						if self.switches["testing"] == False:
+							id = self.Input.Type(type_text, accept_enter = False, next_line = True)
+
+						else:
+							id = "[ID " + language + "]"
+
+							print()
+							print(type_text + ":")
+							print(id)
+
+					# If the method name is not "Type_Story_Information"
+					else:
+						# Get the story ID
+						id = story["Information"][key]["IDs"][language]
+
+					# Add the story ID to the dictionary
+					story["Information"][key]["IDs"][language] = id
+
+					# Create the story link with the story ID
+					story["Information"][key]["Links"][language] = root_story_link + id
+
+					# Iterate through the additional links in the dictionary
+					for sub_key, template in story_website["Templates"]["Additional links"].items():
+						# Create the additional link dictionary if it does not exists
+						if sub_key not in story["Information"][key]:
+							story["Information"][key][sub_key] = {}
+
+						# Define the root link
+						root_link = self.social_networks[key]["Information"]["Links"][sub_key]
+
+						# Create the formatted template variable
+						formatted_template = template
+
+						# If the "{ID}" text is in the template
+						if "{ID}" in template:
+							# Replace the format text with the story ID
+							formatted_template = formatted_template.replace("{ID}", id)
+
+						# If the "{Modified story title}" text is in the template
+						if "{Modified story title}" in template:
+							# Modify the story title
+							modified_story_title = story["Titles"][language].lower().replace(" ", "-")
+
+							# Replace the format text with the modified story title
+							formatted_template = formatted_template.replace("{Modified story title}", modified_story_title)
+
+						# Add the root link to the formatted template, creating the additional link
+						additional_link = root_link + formatted_template
+
+						# Add the language additional link to its dictionary
+						story["Information"][key][sub_key][language] = additional_link
+
+			# Update the story website dictionary inside the "Links" dictionary with the updated story website dictionary
+			story["Information"]["Links"][key] = story["Information"][key]
+
+			# If the "Information" key exists in the "Folders" dictionary
+			if "Information" in story["Folders"]:
+				# Write the default or modified story website dictionary inside the "[Story website].json" file
+				self.JSON.Edit(story["Folders"]["Information"][key], story["Information"][key])
+
+			# If the method name is not "Type_Story_Information"
+			if method_name != "Type_Story_Information":
+				# Remove the story website key
+				story["Information"].pop(key)
+
+		# Return the "Story" dictionary
+		return story
 
 	def Define_Stories_Dictionary(self):
 		import collections
@@ -792,9 +1012,21 @@ class Stories(object):
 
 			# ---------- #
 
-			# Create the empty "Website" dictionary with the "Link" key
+			# Define the "Links" dictionary
+			story["Information"]["Links"] = {
+				"Website": {},
+				"Wattpad": {},
+				"Spirit Fanfics": {}
+			}
+
+			# ---------- #
+
+			# "Website" dictionary
+
+			# Create the empty "Website" dictionary with the "Link" and "Links" keys
 			story["Information"]["Website"] = {
-				"Link": ""
+				"Link": "",
+				"Links": {}
 			}
 
 			# Define the story website folder as the story title
@@ -821,23 +1053,26 @@ class Stories(object):
 			# Update the website "Link" key with the website folder
 			story["Information"]["Website"]["Link"] = self.links["Stake2 Website"] + website_folder + "/"
 
-			# ---------- #
-
-			# Add the story Wattpad link for each language
-			link = self.social_networks["Wattpad"]["Information"]["Links"]["My works"]
-
 			# Iterate through the list of small languages
 			for language in self.languages["small"]:
-				# If the language is inside the "Wattpad" dictionary
-				if language in story["Information"]["Wattpad"]:
-					# Get the Wattpad story id
-					id = story["Information"]["Wattpad"][language]["ID"]
+				# Define the language link with the language folder
+				story["Information"]["Website"]["Links"][language] = story["Information"]["Website"]["Link"] + language + "/"
 
-					# Define the Wattpad story link as the "My works" link plus the Wattpad story id
-					story["Information"]["Wattpad"][language]["Link"] = link + id
+			# Update the "Website" dictionary inside the "Links" dictionary with the dictionary above
+			story["Information"]["Links"]["Website"] = story["Information"]["Website"]
 
-			# Write the default or modified "Wattpad" dictionary inside the "Wattpad.json" file
-			self.JSON.Edit(story["Folders"]["Information"]["Wattpad"], story["Information"]["Wattpad"])
+			# Write the default or modified "Website" dictionary inside the "Website.json" file
+			self.JSON.Edit(story["Folders"]["Information"]["Website"], story["Information"]["Website"])
+
+			# Remove the "Website" key
+			story["Information"].pop("Website")
+
+			# ---------- #
+
+			# "Wattpad" and "Spirit Fanfics" dictionaries
+
+			# Define the "Story websites" dictionary for the story
+			self.Define_Story_Websites(story)
 
 			# ---------- #
 
@@ -869,8 +1104,7 @@ class Stories(object):
 				"Readers",
 				"Pack",
 				"Writing",
-				"Website",
-				"Wattpad"
+				"Links"
 			]
 
 			# Iterate through the list of keys
@@ -933,6 +1167,7 @@ class Stories(object):
 			"Writing links",
 			"Directories",
 			"Information items",
+			"Story websites",
 			"Cover types"
 		]
 
@@ -1053,6 +1288,18 @@ class Stories(object):
 
 					# Create the sub-folder
 					self.File.Create(folder_dictionary[sub_key])
+
+					# If the file type is "JSON"
+					if file_type == "JSON":
+						# Read the contents of the file
+						file = folder_dictionary[sub_key]
+
+						contents = self.File.Contents(file)
+
+						# If the file is empty
+						if contents["lines"] == []:
+							# Add an empty JSON dictionary to the file
+							self.JSON.Edit(file, {})
 
 		# Return the "Story" dictionary
 		return story

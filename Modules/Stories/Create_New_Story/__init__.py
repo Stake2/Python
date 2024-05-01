@@ -16,6 +16,9 @@ class Create_New_Story(Stories):
 		# Type the information about the story
 		self.Type_Story_Information()
 
+		# Define the "Story" dictionary
+		self.Define_Story_Dictionary()
+
 		# Create the folders of the story
 		self.Create_Story_Folders()
 
@@ -46,6 +49,8 @@ class Create_New_Story(Stories):
 		# Show a five dash space separators
 		print()
 		print(self.separators["5"])
+
+		# ---------- #
 
 		# Ask for the titles of the story
 		for language in self.languages["small"]:
@@ -215,20 +220,82 @@ class Create_New_Story(Stories):
 
 		# ---------- #
 
+		# Ask if the story has a parent story
+		question = self.language_texts["does_the_story_has_a_parent_story"]
+
+		if self.switches["testing"] == False:
+			parent_story = self.Input.Yes_Or_No(question)
+
+		else:
+			parent_story = True
+
+		# If the story has a parent story
+		if parent_story == True:
+			# Ask for the title of the parent story
+			type_text = self.language_texts["type_the_title_of_the_parent_story"]
+
+			if self.switches["testing"] == False:
+				title = self.Input.Type(type_text, accept_enter = False, next_line = True)
+
+			else:
+				title = "Parent Story Title"
+
+			# Create the "Parent story" dictionary
+			story["Information"]["Parent story"] = {
+				"Title": title
+			}
+
+		# ---------- #
+
+		# Define the "Links" dictionary
+		story["Information"]["Links"] = {
+			"Website": {}
+		}
+
+		# ---------- #
+
+		# "Wattpad" and "Spirit Fanfics" dictionaries
+
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# Ask if the user posted the story on the story website
+			question = self.language_texts["did_you_posted_the_story_on_the_story_website"] + ' "' + key + '"'
+
+			if self.switches["testing"] == False:
+				posted_story = self.Input.Yes_Or_No(question)
+
+			else:
+				posted_story = True
+
+			# If the user posted the story
+			if posted_story == True:
+				# Define the "Story websites" dictionary for the story
+				self.Define_Story_Websites(story)
+
+		# ---------- #
+
+		# Define the "story" variable in the class so it is available to the "Define_Story_Dictionary" method
+		self.story = story
+
+	def Define_Story_Dictionary(self):
 		# Define the "Readers" dictionary
-		story["Information"]["Readers"] = {
+		self.story["Information"]["Readers"] = {
 			"Number": 0,
 			"List": []
 		}
 
+		# ---------- #
+
 		# Define the story "Pack" dictionary
-		story["Information"]["Pack"] = deepcopy(self.stories["Story pack"])
+		self.story["Information"]["Pack"] = deepcopy(self.stories["Story pack"])
+
+		# ---------- #
 
 		# Define the "Writing" dictionary
-		story["Information"]["Writing"] = {}
+		self.story["Information"]["Writing"] = {}
 
 		for writing_mode in self.texts["writing_modes, type: list"]["en"]:
-			story["Information"]["Writing"][writing_mode] = {
+			self.story["Information"]["Writing"][writing_mode] = {
 				"Chapter": 0,
 				"Times": {
 					"First": "",
@@ -236,21 +303,69 @@ class Create_New_Story(Stories):
 				}
 			}
 
-		# Define the "Website" dictionary
-		story["Information"]["Website"] = {
-			"Link": self.links["Stake2 Website"] + story["Title"] + "/"
+		# ---------- #
+
+		# "Website" dictionary
+
+		# Create the empty "Website" dictionary with the "Link" and "Links" keys
+		self.story["Information"]["Website"] = {
+			"Link": "",
+			"Links": {}
 		}
 
-		# Define the "Wattpad" dictionary
-		story["Information"]["Wattpad"] = {}
+		# Define the story website folder as the story title
+		website_folder = self.story["Title"]
+
+		# If the story has a parent story
+		if "Parent story" in self.story["Information"]:
+			# Get the parent story dictionary
+			parent_story = self.story["Information"]["Parent story"]
+
+			# Define the website folder
+			website_folder = parent_story["Title"]
+
+			# If the parent story has a custom folder, use it
+			if "Folder" in parent_story:
+				website_folder = parent_story["Folder"]
+
+			# Add the story title to the website folder
+			website_folder += "/" + self.story["Title"]
+
+			# Define the website folder
+			self.story["Information"]["Website"]["Website folder"] = "/" + website_folder + "/"
+
+		# Update the website "Link" key with the website folder
+		self.story["Information"]["Website"]["Link"] = self.links["Stake2 Website"] + website_folder + "/"
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Define the language link with the language folder
+			self.story["Information"]["Website"]["Links"][language] = self.story["Information"]["Website"]["Link"] + language + "/"
+
+		# Update the "Website" dictionary inside the "Links" dictionary with the dictionary above
+		self.story["Information"]["Links"]["Website"] = self.story["Information"]["Website"]
+
+		# ---------- #
+
+		# "Wattpad" and "Spirit Fanfics" dictionaries
+
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# Define the story website dictionary if it is not already present
+			if key not in self.story["Information"]:
+				# Define it as the story website root link template
+				self.story["Information"][key] = story_website["Templates"]["Root"]
+
+				# Update the story website dictionary inside the "Links" dictionary with the dictionary above
+				self.story["Information"]["Links"][key] = self.story["Information"][key]
+
+		# Define the "Story websites" dictionary for the story to update the JSON files for the story websites
+		self.Define_Story_Websites(self.story)
 
 		# ---------- #
 
 		# Define the root "Story" dictionary as the local dictionary
-		self.dictionary["Story"] = story
-
-		# Add the story to the object of this class for easier typing
-		self.story = story
+		self.dictionary["Story"] = self.story
 
 	def Create_Story_Folders(self):
 		# Define and create the story folder
@@ -329,6 +444,13 @@ class Create_New_Story(Stories):
 
 			# Write to the file
 			Class.Edit(file, text)
+
+		# ---------- #
+
+		# Remove the keys inside the "Links" dictionary if they exist outside of it
+		for key in self.story["Information"]["Links"]:
+			if key in self.story["Information"]:
+				self.story["Information"].pop(key)
 
 		# ---------- #
 

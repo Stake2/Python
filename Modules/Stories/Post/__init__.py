@@ -17,8 +17,8 @@ class Post(Stories):
 				"Update websites": {
 					"Text key": "websites_update"
 				},
-				"Post on Wattpad": {
-					"Text key": "wattpad_chapter_posting"
+				"Post on story websites": {
+					"Text key": "story_website_chapter_posting"
 				},
 				"Post on Social Networks": {
 					"Text key": "social_network_posting"
@@ -499,7 +499,7 @@ class Post(Stories):
 		# Copy the chapter text
 		self.Text.Copy(chapter_text, verbose = False)
 
-	def Post_On_Wattpad(self):
+	def Post_On_Story_Websites(self):
 		# Show a five dash separator
 		print()
 		print(self.separators["5"])
@@ -513,7 +513,7 @@ class Post(Stories):
 
 			# Define the Wattpad link variable for easier typing
 			# With the Wattpad link of the story in the current language
-			wattpad_link = self.story["Information"]["Wattpad"][language]["Link"]
+			wattpad_link = self.story["Information"]["Links"]["Wattpad"]["Links"][language]
 
 			# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
 			# With the list of social networks to open, and their custom links
