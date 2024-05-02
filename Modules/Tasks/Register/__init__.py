@@ -14,7 +14,9 @@ class Register(Tasks):
 			self.Type_Task_Information()
 
 		if self.dictionary != {}:
-			self.dictionary["large_bar"] = False
+			if "Final separator" not in self.dictionary:
+				self.dictionary["large_bar"] = True
+
 			self.dictionary["input"] = False
 
 		# Define the task variable to make typing the task dictionary easier
@@ -230,6 +232,31 @@ class Register(Tasks):
 		if self.dictionary["States"]["States"] != {}:
 			self.dictionaries["Tasks"]["Dictionary"][self.key]["States"] = self.dictionary["States"]["States"]
 
+			# If the "First task type task in year" state is True
+			# And the "Custom task item" key is present in the "Task" dictionary
+			if (
+				self.task["States"]["First task type task in year"] == True and
+				"Custom task item" in self.dictionary["Task"]
+			):
+				# Define the key
+				key = "First task type task in year"
+
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# Get the state text in the current language
+					language_text = self.dictionary["States"]["Texts"][key][language]
+
+					# If the task item is inside the language text
+					if self.dictionary["Type"]["Items"][language].lower() in language_text:
+						task_item = self.dictionary["Type"]["Items"][language].lower()
+
+						to_replace = self.dictionary["Task"]["Custom task item"][language]
+
+						language_text = language_text.replace(task_item, task_item + " " + to_replace)
+
+					# Update the state text in the "States" dictionary in the current language
+					self.dictionary["States"]["Texts"][key][language] = language_text
+
 		# Add task dictionary to task type tasks dictionary
 		self.dictionaries["Task type"][self.task_type]["Dictionary"][self.key] = self.dictionaries["Tasks"]["Dictionary"][self.key].copy()
 
@@ -342,7 +369,9 @@ class Register(Tasks):
 			text = self.texts["task_descriptions"][language]
 			line_break = "\n\n"
 
-		lines.append("\n" + text + ":" + line_break + "{}")
+		# If the description of the task is not the same as the task title
+		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
+			lines.append("\n" + text + ":" + line_break + "{}")
 
 		# Define items to be added to file text format
 		items = []
@@ -384,7 +413,9 @@ class Register(Tasks):
 				if language != self.languages["small"][-1]:
 					descriptions += "\n\n"
 
-		items.append(descriptions)
+		# If the description of the task is not the same as the task title
+		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
+			items.append(descriptions)
 
 		# Define language task text
 		file_text = self.Text.From_List(lines, break_line = True)
@@ -471,7 +502,9 @@ class Register(Tasks):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
-				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]
+				language_text = self.dictionary["States"]["Texts"][key][self.user_language]
+
+				self.dictionary["Entry"]["Diary Slim"]["Text"] += language_text
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"

@@ -216,7 +216,8 @@ class Social_Networks(object):
 				"Items",
 				"Profile",
 				"Settings",
-				"Image folders"
+				"Image folders",
+				"Social Network"
 			],
 			"Dictionary": {}
 		}
@@ -301,18 +302,6 @@ class Social_Networks(object):
 		# Get the list of social networks
 		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social Networks"]["Text"]["Social Networks"])["List"]
 
-		# Remove the non-friend folders from the above list
-		to_remove = [
-			"4chan",
-			self.Language.language_texts["database, title()"],
-			"Google+",
-			"Plug DJ"
-		]
-
-		for item in to_remove:
-			if item in self.social_networks["List"]:
-				self.social_networks["List"].remove(item)
-
 		# Write the Social Networks list to the "Social Networks list.txt" file
 		text_to_write = self.Text.From_List(self.social_networks["List"], break_line = True)
 
@@ -369,7 +358,7 @@ class Social_Networks(object):
 					# Define the file name language
 					language = self.user_language
 
-					if key == "Items":
+					if key in ["Items", "Social Network"]:
 						language = "en"
 
 					file_name = file_name[language]
@@ -377,7 +366,7 @@ class Social_Networks(object):
 					# Define the extension
 					extension = "txt"
 
-					if key == "Items":
+					if key in ["Items", "Social Network"]:
 						extension = "json"
 
 					# Define the file
@@ -392,7 +381,11 @@ class Social_Networks(object):
 						dictionary["Settings"]["Create image folders"] == True
 					):
 						# If the item is "Text"
-						if item == "Text":
+						# Or the key is "Social Network"
+						if (
+							item == "Text" or
+							key == "Social Network"
+						):
 							# Create the file
 							self.File.Create(dict_[key])
 
@@ -782,6 +775,30 @@ class Social_Networks(object):
 					# Add the additional item to the "Links" dictionary if the additional item contains the Social Network link
 					if social_network["Information"]["Link"] in additional_item:
 						social_network["Profile"]["Links"][sub_key] = additional_item
+
+			# ---------- #
+
+			# Make a local copy of the "Social Network" dictionary
+			local_dictionary = deepcopy(social_network)
+
+			# Define the root keys to remove
+			to_remove = [
+				"Folders",
+				"Files",
+				"Information items"
+			]
+
+			# Iterate through the "root keys to remove" list and remove the keys
+			for sub_key in to_remove:
+				local_dictionary.pop(sub_key)
+
+			# Update the "Social Network.json" file with the updated and local "Social Network" dictionary
+			self.JSON.Edit(social_network["Folders"]["Social Network"], local_dictionary)
+
+			# Update the image "Social Network.json" file with the updated and local "Social Network" dictionary
+			self.JSON.Edit(social_network["Folders"]["Image"]["Social Network"], local_dictionary)
+
+			# ---------- #
 
 			# Update the root "Social Network" dictionary
 			self.social_networks["Dictionary"][key] = social_network

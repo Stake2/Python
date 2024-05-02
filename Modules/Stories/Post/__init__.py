@@ -89,11 +89,10 @@ class Post(Stories):
 			},
 			"Titles": {},
 			"Titles (with leading zeroes)": {},
-			"Links": {
-				"Website": "",
-				"Wattpad": ""
-			},
-			"Cards": {}
+			"Links": {},
+			"Post cards": {},
+			"Folders": {},
+			"Files": {}
 		}
 
 		# Update the last posted chapter number with the number inside the story "Information" dictionary
@@ -146,6 +145,35 @@ class Post(Stories):
 
 		# ---------- #
 
+		# Define the "Covers" folder of the chapter
+		self.dictionary["Chapter"]["Folders"]["Covers"] = {
+			"root": "",
+			"Name": self.Cover_Folder_Name(self.dictionary["Chapter"]["Number"])
+		}
+
+		# Define the root folder
+		folder_name = self.dictionary["Chapter"]["Folders"]["Covers"]["Name"]
+
+		self.dictionary["Chapter"]["Folders"]["Covers"]["root"] = self.story["Folders"]["Covers"]["Landscape"][self.full_user_language]["root"] + folder_name + "/"
+
+		# ---------- #
+
+		# Fill the chapter "Files" dictionary
+		for language in self.languages["small"]:
+			# Get the full language
+			full_language = self.languages["full"][language]
+
+			# Define the chapters folder in the current language
+			file = self.story["Folders"]["Chapters"][full_language]["root"]
+
+			# Add the chapter title in the current language and the text extension
+			file += self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + ".txt"
+
+			# Define the language chapter file in the "Files" dictionary
+			self.dictionary["Chapter"]["Files"][language] = file
+
+		# ---------- #
+
 		# Show information about the chapter
 
 		# Show a five dash space separator
@@ -154,7 +182,7 @@ class Post(Stories):
 		print()
 
 		# Show the chapter number and total chapter number
-		print(self.Language.language_texts["number, title()"] + ":")
+		print(self.language_texts["chapter_number"] + ":")
 		print(self.dictionary["Chapter"]["Numbers"]["Leading zeroes"])
 		print()
 
@@ -225,6 +253,10 @@ class Post(Stories):
 			# Show the "You skipped the [step text]" text
 			print()
 			print(self.Language.language_texts["you_skipped_the, feminine"] + " " + step["Text"] + ".")
+
+			# Show a five dash space separator text
+			print()
+			print(self.separators["5"])
 
 		# Update the root step dictionary with the local one
 		self.dictionary["Steps"][step["Key"]] = step
@@ -309,6 +341,7 @@ class Post(Stories):
 			text = template.format(*items)
 
 			# Show a five dash space separator
+			print()
 			print(self.separators["5"])
 			print()
 
@@ -407,7 +440,7 @@ class Post(Stories):
 		# 
 		# Complete:
 		# "/Landscape/English/1 - 10/"
-		folder_name += full_language + "/" + self.Cover_Folder_Name(self.dictionary["Chapter"]["Number"]) + "/"
+		folder_name += full_language + "/" + self.dictionary["Chapter"]["Folders"]["Covers"]["Name"] + "/"
 
 		# Define the file name
 		file_name = "PSD copy"
@@ -432,6 +465,8 @@ class Post(Stories):
 		print(self.File.language_texts["source_file"] + ":")
 		print(source_file)
 
+		# ---------- #
+
 		# Update the file name
 		file_name = self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] + "." + self.stories["Cover types"]["Extension"]
 
@@ -442,6 +477,8 @@ class Post(Stories):
 		print()
 		print(self.language_texts["copying_the_cover_to_the_{}_folder"].format(self.language_texts["mega_stories"]) + ":")
 		print(destination_file)
+
+		# ---------- #
 
 		# Copy the source file to the destination location
 		self.File.Copy(source_file, destination_file)
@@ -481,11 +518,8 @@ class Post(Stories):
 		Update_Websites(module_website = self.story["Title"])
 
 	def Copy_Chapter_Text(self, language, full_language):
-		# Define the chapters folder in the language
-		chapter_file = self.story["Folders"]["Chapters"][full_language]["root"]
-
-		# Add the chapter title in the current language and the text extension
-		chapter_file += self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + ".txt"
+		# Get the language chapter file
+		chapter_file = self.dictionary["Chapter"]["Files"][language]
 
 		# Get the chapter text from the file above
 		chapter_text = self.File.Contents(chapter_file)["string"]
@@ -505,222 +539,412 @@ class Post(Stories):
 		print(self.separators["5"])
 		print()
 
-		# Iterate through the small languages list
-		for language in self.languages["small"]:
-			# Get the full and translated languages
-			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.user_language]
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# Iterate through the list of small languages
+			for language in self.languages["small"]:
+				# Get the full language
+				full_language = self.languages["full"][language]
 
-			# Define the Wattpad link variable for easier typing
-			# With the Wattpad link of the story in the current language
-			wattpad_link = self.story["Information"]["Links"]["Wattpad"]["Links"][language]
+				# Define the link of the story website
+				story_link = self.story["Information"]["Links"][key]["Links"][language]
 
-			# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
-			# With the list of social networks to open, and their custom links
-			social_networks = {
-				"List": [
-					"Wattpad"
-				],
-				"Custom links": {
-					"Wattpad": wattpad_link
-				},
-				"States": {
-					"First separator": False
-				},
-				"Spaces": {
-					"First": False
+				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
+				# With the list of social networks to open, and their custom links
+				social_networks = {
+					"List": [
+						key
+					],
+					"Custom links": {
+						key: story_link
+					},
+					"States": {
+						"First separator": False
+					},
+					"Spaces": {
+						"First": False
+					}
 				}
-			}
 
-			# Open the "Wattpad" social network on the story page in the current language, with the custom link
-			self.Open_Social_Network(social_networks)
+				# If the language is not the first one
+				if language != self.languages["small"][0]:
+					# Define the first space of the "Open_Social_Network" class as True
+					social_networks["Spaces"]["First"] = True
 
-			# Show a space separator
-			print()
+				# If the story website is not the first one
+				# And the language is the first one
+				if (
+					key != self.stories["Story websites"]["List"][0] and
+					language == self.languages["small"][0]
+				):
+					# Show an additional space separator
+					print()
 
-			# Copy the chapter title
-			self.Copy_Title(language)
+				# Open the story website social network on the story page in the current language, with the custom link
+				self.Open_Social_Network(social_networks)
 
-			# Copy the chapter text
-			self.Copy_Chapter_Text(language, full_language)
-
-			# Show a space separator and a three dash separator (for each language)
-			print()
-			print(self.separators["3"])
-
-			# If the language is the first one, show an additional space separator
-			if language == self.languages["small"][0]:
+				# Show a space separator
 				print()
 
-	def Post_On_Social_Networks(self):
-		# Make an underlined version of the story title
-		self.story["Titles"]["Underlined"] = self.story["Titles"][self.user_language].replace(" ", "_")
+				# Copy the chapter title
+				self.Copy_Title(language)
 
+				# Copy the chapter text
+				self.Copy_Chapter_Text(language, full_language)
+
+				# If the language is the user language
+				if language == self.user_language:
+					# Get the link of the posted chapter on the story website from the user
+					input_text = self.language_texts["paste_the_link_of_the_chapter_on"] + " " + story_website["Name"]
+
+					self.dictionary["Chapter"]["Links"][key] = self.Input.Type(input_text, accept_enter = False, next_line = True)
+
+				# Show a space separator and a three dash separator (for each language)
+				print()
+				print(self.separators["5"])
+
+	def Post_On_Social_Networks(self):
 		# Define the website chapter link
 		# With the "chapter" parameter to automatically open the chapter when the website loads
-		self.dictionary["Chapter"]["Links"]["Website"] = self.story["Information"]["Website"]["Link"].replace(" ", "%20") + "?chapter={}#".format(str(self.dictionary["Chapter"]["Number"]))
+		self.dictionary["Chapter"]["Links"]["Website"] = self.story["Information"]["Links"]["Website"]["Link"].replace(" ", "%20") + "?chapter={}#".format(str(self.dictionary["Chapter"]["Number"]))
 
 		# Define the "Social networks" dictionary with the list of the social networks
 		social_networks = {
 			"List": [
+				"Discord",
+				"WhatsApp",
+				"Instagram",
+				"Facebook",
+				"Twitter",
 				"Wattpad",
-				"Twitter, Facebook"
+				"Spirit Fanfics"
 			],
+			"To open": [],
 			"Dictionary": {}
 		}
 
-		# Only get the "Social Network" dictionary of these social networks:
-		# Wattpad, Twitter, and Facebook
-		for social_network in ["Wattpad", "Twitter", "Facebook"]:
-			social_networks["Dictionary"][social_network] = self.social_networks["Dictionary"][social_network]
+		# Add social networks to the "To open" list
+		for key in social_networks["List"]:
+			# If the key is not "Instagram", add it to the "To open" list
+			if key != "Instagram":
+				social_networks["To open"].append(key)
 
-		# Define the "Social Network" dictionary of the "Twitter" and "Facebook" social networks as "Twitter"
-		social_networks["Dictionary"]["Twitter, Facebook"] = social_networks["Dictionary"]["Twitter"]
+		# Only get the "Social Network" dictionary of these social networks:
+		# Wattpad, Spirit Fanfics, Twitter, and Facebook
+		for key in social_networks["List"]:
+			social_networks["Dictionary"][key] = self.social_networks["Dictionary"][key]
+
+		# ---------- #
 
 		# Show a space and a five dash separator
 		print()
 		print(self.separators["5"])
 
-		# Get the link of the posted chapter on Wattpad from the user
-		self.dictionary["Chapter"]["Links"]["Wattpad"] = self.Input.Type(self.language_texts["paste_the_wattpad_chapter_link"])
-
-		# Get the "Wattpad" post template in the user language from its file
-		file = self.stories["Folders"]["Database"]["Post templates"]["Wattpad"][self.user_language]
+		# Get the root post template in the user language from its file
+		file = self.stories["Folders"]["Database"]["Post templates"][self.user_language]
 
 		template = self.File.Contents(file)["string"]
 
-		# Define the list of items to use in the template
-		items = [
-			self.story["Titles"]["Underlined"], # The underlined story title, for the story hashtag
-			self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.user_language], # The chapter title in the user language
-			self.dictionary["Chapter"]["Numbers"]["Names"][self.user_language], # The number name of the chapter title in the user language
-			self.dictionary["Chapter"]["Links"]["Wattpad"], # The Wattpad link for the chapter
-			self.story["Titles"]["Underlined"] # The underlined story title, for the story hashtag in the end
-		]
-
-		# Format the "Wattpad" template with the list of items, making the Wattpad post card
-		self.dictionary["Chapter"]["Cards"]["Wattpad"] = template.format(*items)
+		# Make an underlined version of the story title
+		self.story["Titles"]["Underlined"] = self.story["Titles"][self.user_language].replace(" ", "_")
 
 		# ---------- #
 
-		# Get the "Twitter & Facebook" post template in the user language from its file
-		file = self.stories["Folders"]["Database"]["Post templates"]["Twitter, Facebook"][self.user_language]
+		# Create the "Social Network" post card
+
+		# Define the "Make_Post_Cards" dictionary
+		dictionary = {
+			"Key": "Social Network",
+			"Link key": "Website",
+			"Template": template
+		}
+
+		# Make the post cards
+		self.Make_Post_Cards(dictionary)
+
+		# ---------- #
+
+		# Create the second "Social Network" post card
+
+		# Get the root post template in the user language from its file
+		file = self.stories["Folders"]["Database"]["Post templates"]["Story websites"][self.user_language]
 
 		template = self.File.Contents(file)["string"]
 
-		# Define the list of items to use in the template
-		items = [
-			self.dictionary["Chapter"]["Links"]["Website"], # The link of the chapter on the story website
-			self.story["Titles"]["Underlined"] # The underlined story title, for the story hashtag
-		]
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# Define the "Make_Post_Cards" dictionary
+			dictionary = {
+				"Key": "Social Network (" + key + ")",
+				"Link key": key,
+				"Template": template
+			}
 
-		# Format the "Twitter & Facebook" template with the list of items, making the Twitter and Facebook post card
-		self.dictionary["Chapter"]["Cards"]["Twitter, Facebook"] = template.format(*items)
+			# Define the list of items
+			dictionary["Items"] = [
+				story_website["Name"], # The name of the story website
+				self.dictionary["Chapter"]["Links"][key], # The chapter link of the website of the story
+				self.story["Titles"]["Underlined"], # The underlined story title, for the story hashtag in the end
+				story_website["Name"].replace(" ", "_") # The name of the story website on the hashtag format
+			]
+
+			# Make the post cards
+			self.Make_Post_Cards(dictionary)
+
+		# ---------- #
+
+		# Get the root post template in the user language from its file
+		file = self.stories["Folders"]["Database"]["Post templates"][self.user_language]
+
+		template = self.File.Contents(file)["string"]
+
+		# Iterate through the dictionary of story websites
+		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+			# Define the "Make_Post_Cards" dictionary
+			dictionary = {
+				"Key": key,
+				"Template": template
+			}
+
+			# Make the post cards
+			self.Make_Post_Cards(dictionary)
+
+		# ---------- #
+
+		# Create the last card variable
+		last_card = ""
+
+		# Iterate through the social networks inside the "To open" list
+		for key in social_networks["To open"]:
+			# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
+			social_networks_dictionary = {
+				"List": [
+					key
+				],
+				"Custom links": {
+					key: self.social_networks["Dictionary"][key]["Information"]["Opening link"]
+				},
+				"States": {
+					"First separator": True
+				}
+			}
+
+			# If the social network is inside the "Story websites" list
+			if key in self.stories["Story websites"]["List"]:
+				# Define the custom link as the "Posts" link of the story website
+				social_networks_dictionary["Custom links"][key] = self.social_networks["Dictionary"][key]["Links"]["Posts"]
+
+			# If the social network is "Discord"
+			if key == "Discord":
+				# Define the custom link as the "#stories" channel on my Discord server
+				social_networks_dictionary["Custom links"][key] = "https://discord.com/channels/311004778777935872/1041558273708540065"
+
+			# If the social network is inside the "Story websites" list
+			# And is not the "Discord" social network
+			if (
+				key not in self.stories["Story websites"]["List"] and
+				key != "Discord"
+			):
+				# Remove the "Custom links" dictionary
+				social_networks_dictionary.pop("Custom links")
+
+			# If the social network is the first one
+			if key == social_networks["To open"][0]:
+				# Remove the first separator
+				social_networks_dictionary["States"]["First separator"] = False
+
+			# Open the social network with its custom link
+			self.Open_Social_Network(social_networks_dictionary)
+
+			# ---------- #
+
+			# If the social network is the first one
+			if key == social_networks["To open"][0]:
+				# Open the covers folder of the chapter
+				self.System.Open(self.dictionary["Chapter"]["Folders"]["Covers"]["root"])
+
+			# ---------- #
+
+			# Define the card if the social network key is present
+			if key in self.dictionary["Chapter"]["Post cards"]:
+				card = self.dictionary["Chapter"]["Post cards"][key]
+
+			# Else, define it as the generic "Social Network" card
+			else:
+				card = self.dictionary["Chapter"]["Post cards"]["Social Network"]
+
+			# If the social network is not in the defined list
+			# And the social network is not a story website
+			if (
+				key not in ["Facebook", "Twitter"] and
+				key not in self.stories["Story websites"]["List"]
+			):
+				# Remove the hashtags of the card
+				card = self.Remove_Hashtags(card)
+
+			# If the social network is "Discord"
+			if key == "Discord":
+				# Add the "@Updates" role to the card
+				card += "\n\n" + "<@&1172626527175848086>"
+
+			# If the social network is "Facebook"
+			if key == "Facebook":
+				# Get the hashtags
+				hashtags = card.splitlines()[-1]
+
+				# Remove the hashtags of the card
+				card = self.Remove_Hashtags(card)
+
+				# Iterate through the list of story websites
+				for sub_key in self.stories["Story websites"]["List"]:
+					# Get the social network card of the current story website to the root card
+					second_card = self.dictionary["Chapter"]["Post cards"]["Social Network ({})".format(sub_key)]
+
+					# Remove the hashtags of the card
+					second_card = self.Remove_Hashtags(second_card)
+
+					# Add the second card to the root card
+					card += "\n\n" + "-" + "\n\n" + \
+					second_card
+
+				# Add the hashtags back
+				card += "\n\n" + hashtags
+
+			# If the current card is not the same as the last card
+			if card != last_card:
+				# Copy the social network post card
+				self.Text.Copy(card, verbose = False)
+
+			# Define the last card variable as the current card
+			last_card = card
+
+			# Define the input text
+			input_text = self.language_texts["press_enter_when_you_finish_posting_the_card_on"]
+
+			# If the social network is "Facebook"
+			if key != "Facebook":
+				print()
+				print(self.Language.language_texts["press_enter_when_you_finish"] + "...")
+
+				input_text = self.language_texts["posting_the_general_card_on"]
+
+			# Wait for the user to finish posting the social network card
+			self.Input.Type(input_text + " " + key)
+
+			# ---------- #
+
+			# If the social network is not "Facebook"
+			# And the social network is not a story website
+			if (
+				key != "Facebook" and
+				key not in self.stories["Story websites"]["List"]
+			):
+				# Iterate through the list of story websites
+				for sub_key in self.stories["Story websites"]["List"]:
+					# Define the social network card of the current story website
+					card = self.dictionary["Chapter"]["Post cards"]["Social Network ({})".format(sub_key)]
+
+					# If the social network is in the defined list
+					if key in ["Discord", "WhatsApp"]:
+						# Remove the hashtags of the card
+						card = self.Remove_Hashtags(card)
+
+					# Copy the social network post card for the current story website
+					self.Text.Copy(card, verbose = False)
+
+					# Define the input text
+					input_text = self.language_texts["posting_the_social_network_card_of"]
+
+					# Wait for the user to finish posting the social network post card of the current story website
+					self.Input.Type(input_text + ' "' + sub_key + '"')
+
+	def Make_Post_Cards(self, dictionary):
+		# If the "Link key" is not present in the dictionary
+		if "Link key" not in dictionary:
+			# Use the root key
+			dictionary["Link key"] = dictionary["Key"]
+
+		# Define the list of items to use in the template if it is not present
+		if "Items" not in dictionary:
+			dictionary["Items"] = [
+				self.story["Titles"][self.user_language], # The story title in the user language
+				self.dictionary["Chapter"]["Numbers"]["Names"][self.user_language], # The number name of the chapter title in the user language
+				self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.user_language], # The chapter title in the user language, with leading zeroes
+				self.dictionary["Chapter"]["Links"][dictionary["Link key"]], # The chapter link of the website of the story
+				self.story["Titles"]["Underlined"] # The underlined story title, for the story hashtag in the end
+			]
+
+		# If the story website is "Wattpad"
+		if dictionary["Key"] == "Wattpad":
+			dictionary["Items"][3] += "\n"
+
+		# Format the story website template with the list of items, making the story website post card
+		self.dictionary["Chapter"]["Post cards"][dictionary["Key"]] = dictionary["Template"].format(*dictionary["Items"])
 
 		# Replace the "One more chapter" text with the "The first chapter" text if the chapter is the first one of the story
 		if int(self.dictionary["Chapter"]["Number"]) <= 1:
-			self.dictionary["Chapter"]["Cards"]["Wattpad"] = self.dictionary["Chapter"]["Cards"]["Wattpad"].replace(self.language_texts["one_more_chapter"], self.language_texts["the_first_chapter"])
+			self.dictionary["Chapter"]["Post cards"][dictionary["Key"]] = self.dictionary["Chapter"]["Post cards"][dictionary["Key"]].replace(self.language_texts["one_more_chapter"], self.language_texts["the_first_chapter"])
 
 		# Replace the "One more chapter" text with the "The last chapter" text if the chapter is the last one of the story
 		if int(self.dictionary["Chapter"]["Number"]) == len(self.dictionary["Chapters"]["Titles"][self.user_language]):
-			self.dictionary["Chapter"]["Cards"]["Wattpad"] = self.dictionary["Chapter"]["Cards"]["Wattpad"].replace(self.language_texts["one_more_chapter"], self.language_texts["the_last_chapter"])
+			self.dictionary["Chapter"]["Post cards"][dictionary["Key"]] = self.dictionary["Chapter"]["Post cards"][dictionary["Key"]].replace(self.language_texts["one_more_chapter"], self.language_texts["the_last_chapter"])
 
-		# Copy the cards and open the social network links to post the cards
-		for social_network in social_networks["List"]:
-			# If the social network is "Wattpad"
-			if social_network == "Wattpad":
-				# Copy the "Wattpad" card
-				self.Text.Copy(self.dictionary["Chapter"]["Cards"]["Wattpad"], verbose = False)
+	def Remove_Hashtags(self, card):
+		# Transform the card into a list of lines
+		card = card.splitlines()
 
-				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
-				social_networks = {
-					"List": [
-						"Wattpad"
-					],
-					"Custom links": {
-						"Wattpad": self.social_networks["Dictionary"]["Wattpad"]["Profile"]["Links"]["Conversations"]
-					},
-					"States": {
-						"First separator": False
-					}
-				}
+		# Remove the hashtags
+		card.pop(-1)
+		card.pop(-1)
 
-				# Open the "Wattpad" social network
-				self.Open_Social_Network(social_networks)
+		# Transform the list into a text with line breaks
+		card = self.Text.From_List(card, break_line = True)
 
-				# Wait for the user to finish posting the Wattpad card
-				self.Input.Type(self.language_texts["press_enter_when_you_finish_posting_the_card_on_{}"].format(social_network))
-
-				# Show a space and a five dash separator
-				print()
-				print(self.separators["5"])
-
-			# If the social network is "Twitter, Facebook"
-			if social_network == "Twitter, Facebook":
-				# Copy the "Wattpad" card
-				self.Text.Copy(self.dictionary["Chapter"]["Cards"]["Wattpad"], verbose = False)
-
-				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
-				social_networks = {
-					"List": [
-						"Twitter",
-						"Facebook"
-					],
-					"Custom links": {
-						"Twitter": self.social_networks["Dictionary"]["Twitter"]["Profile"]["Links"]["Profile"],
-						"Facebook": self.social_networks["Dictionary"]["Facebook"]["Profile"]["Links"]["Profile"]
-					},
-					"States": {
-						"First separator": False
-					}
-				}
-
-				# Open the "Twitter" and "Facebook" social networks
-				self.Open_Social_Network(social_networks)
-
-				# Update the "social network" name
-				social_network = social_network.replace(", ", " " + self.Language.language_texts["and"] + " ")
-
-				# Wait for the user to finish posting
-				self.Input.Type(self.language_texts["paste_the_first_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network))
-
-				# Copy the Twitter and Facebook card
-				self.Text.Copy(self.dictionary["Chapter"]["Cards"]["Twitter, Facebook"], verbose = False)
-
-				# Wait for the user to finish posting the Twitter and Facebook card
-				self.Input.Type(self.language_texts["paste_the_second_part_of_the_card_of_{}_on_the_post_text_box"].format(social_network))
-
-			# If the social network is not the last one
-			if social_network != social_networks["List"][-1]:
-				# Show a space separator and a five dash separator
-				print()
-				print(self.separators["5"])
+		# Return the card
+		return card
 
 	def Register_Task(self):
 		# Create the task dictionary, to use it on the "Tasks" class
 		self.task_dictionary = {
 			"Task": {
-				"Titles": {}
+				"Titles": {},
+				"Custom state text": self.Language.texts["posted"]
 			}
 		}
 
 		# Add the task titles in all languages
 		for language in self.languages["small"]:
 			# Get the "I published the chapter number" text template in the current language
-			template = self.texts["i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website_and_on_wattpad_with_the_title"][language]
+			template = self.texts["i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website"][language]
+
+			# Add a comma and the "on" text
+			template += ", " + self.Language.texts["on, style: in"][language] + " "
+
+			# Add the names of the story websites
+
+			# Iterate through the list of story websites
+			for key in self.stories["Story websites"]["List"]:
+				# If the story website is the last one
+				if key == self.stories["Story websites"]["List"][-1]:
+					# Add a comma and the "and on" text
+					template += ", " + self.Language.texts["and_on, style: in"][language] + " "
+
+				# Add the name of the story website
+				template += key
+
+			# Add the "with the title" text
+			template += ", " + self.Language.texts["with_the_title"][language] + ': "{}"'
 
 			# Define the list of items to use in the template
 			items = [
 				self.dictionary["Chapter"]["Numbers"]["Names"][language], # The number name of the chapter in the current language
 				self.dictionary["Chapter"]["Number"], # The number of the chapter
-				self.story["Titles"][language] # The story title in the current language
+				self.story["Titles"][language], # The story title in the current language
+				self.dictionary["Chapter"]["Titles"][language] # The chapter title in the current language
 			]
 
 			# Format the template and get the task title in the current language
 			title = template.format(*items)
-
-			# Add the chapter title
-			title += ': "' + self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + '"'
 
 			# Add the title to the "Titles" dictionary
 			self.task_dictionary["Task"]["Titles"][language] = title

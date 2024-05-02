@@ -59,17 +59,21 @@
 		"en": "Press Enter to copy the chapter text",
 		"pt": "Pressione Enter para copiar o texto do capítulo"
 	},
-	"press_enter_when_you_finish_posting_the_card_on_{}": {
-		"en": "Press Enter when you finish posting the card on {}",
-		"pt": "Pressione Enter quando você terminar de postar o card no {}"
+	"press_enter_when_you_finish_posting_the_card_on": {
+		"en": "Press Enter when you finish posting the card on",
+		"pt": "Pressione Enter quando você terminar de postar o card no"
 	},
-	"paste_the_first_part_of_the_card_of_{}_on_the_post_text_box": {
-		"en": "Paste the first part of the card of {} on the post text box",
-		"pt": "Cole a primeira parte do card do {} na caixa de texto da postagem"
+	"press_enter_when_you_finish_posting_the_social_network_card_of": {
+		"en": "Press Enter when you finish posting the social network card of",
+		"pt": "Pressione Enter quando você terminar de postar o card de rede social do"
 	},
-	"paste_the_second_part_of_the_card_of_{}_on_the_post_text_box": {
-		"en": "Paste the second part of the card of {} on the post text box",
-		"pt": "Cole a segunda parte do card do {} na caixa de texto da postagem"
+	"posting_the_general_card_on": {
+		"en": "Posting the general card on",
+		"pt": "Postar o card geral no"
+	},
+	"posting_the_social_network_card_of": {
+		"en": "Posting the social network card of",
+		"pt": "Postar o card de rede social do"
 	},
 	"copying_the_cover_to_the_{}_folder": {
 		"en": "Copying the cover to the [{}] folder",
@@ -91,21 +95,21 @@
 		"en": "website story covers",
 		"pt": "capas de histórias do site"
 	},
-	"paste_the_wattpad_chapter_link": {
-		"en": "Paste the Wattpad chapter link",
-		"pt": "Cole o link do capítulo no Wattpad"
+	"paste_the_link_of_the_chapter_on": {
+		"en": "Paste the link of the chapter on",
+		"pt": "Cole o link do capítulo no"
 	},
 	"one_more_chapter": {
-		"en": "One more chapter",
-		"pt": "Mais um capítulo"
+		"en": "one more chapter",
+		"pt": "mais um capítulo"
 	},
 	"the_first_chapter": {
-		"en": "The first chapter",
-		"pt": "O primeiro capítulo"
+		"en": "the first chapter",
+		"pt": "o primeiro capítulo"
 	},
 	"the_last_chapter": {
-		"en": "The last chapter",
-		"pt": "O último capítulo"
+		"en": "the last chapter",
+		"pt": "o último capítulo"
 	},
 	"type_the_information_of_the_story": {
 		"en": "Type the information of the story",
@@ -173,6 +177,18 @@
 			"Escrevi",
 			"Revisei",
 			"Traduzi"
+		]
+	},
+	"writing_modes_chapter, type: list": {
+		"en": [
+			"written",
+			"revised",
+			"translated"
+		],
+		"pt": [
+			"escrito",
+			"revisado",
+			"traduzido"
 		]
 	},
 	"writing_modes": {
@@ -337,9 +353,9 @@
 		"en": "You finished updating the chapter covers of this story",
 		"pt": "Você terminou de atualizar as capas de capítulo desta história"
 	},
-	"i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website_and_on_wattpad_with_the_title": {
-		"en": "I published the chapter number {} ({}) of my story \"{}\" on the story website and on Wattpad, with the title",
-		"pt": "Eu publiquei o capítulo número {} ({}) da minha história \"{}\" no site da história e no Wattpad, com o título"
+	"i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website": {
+		"en": "I published the chapter number {} ({}) of my story \"{}\" on the story website",
+		"pt": "Eu publiquei o capítulo número {} ({}) da minha história \"{}\" no site da história"
 	},
 	"you_finished_copying_the_chapter_titles_of_this_story": {
 		"en": "You finished copying the chapter titles of this story",

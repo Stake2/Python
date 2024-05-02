@@ -161,10 +161,18 @@ class Stories(object):
 		self.social_networks["Wattpad"] = self.social_networks["Dictionary"]["Wattpad"]
 
 		# Define the additional links
+
+		# Define the "Conversations" link
 		self.social_networks["Wattpad"]["Profile"]["Links"] = {
 			"Conversations": self.social_networks["Wattpad"]["Profile"]["Links"]["Profile"] + "conversations/"
 		}
 
+		# Define the "Links" dictionary
+		self.social_networks["Wattpad"]["Links"] = {
+			"Posts": self.social_networks["Wattpad"]["Profile"]["Links"]["Conversations"]
+		}
+
+		# Define the "My works" link
 		self.social_networks["Wattpad"]["Information"]["Links"] = {
 			"My works": self.social_networks["Wattpad"]["Information"]["Link"] + "myworks/"
 		}
@@ -186,10 +194,18 @@ class Stories(object):
 		self.social_networks["Spirit Fanfics"] = self.social_networks["Dictionary"]["Spirit Fanfics"]
 
 		# Define the additional links
+
+		# Define the "Activities" link
 		self.social_networks["Spirit Fanfics"]["Profile"]["Links"] = {
 			"Activities": self.social_networks["Spirit Fanfics"]["Profile"]["Links"]["Profile"] + "atividades/"
 		}
 
+		# Define the "Links" dictionary
+		self.social_networks["Spirit Fanfics"]["Links"] = {
+			"Posts": self.social_networks["Spirit Fanfics"]["Profile"]["Links"]["Activities"]
+		}
+
+		# Define the "Story" link
 		self.social_networks["Spirit Fanfics"]["Information"]["Links"] = {
 			"Story": self.social_networks["Spirit Fanfics"]["Information"]["Link"] + "historia/"
 		}
@@ -266,8 +282,7 @@ class Stories(object):
 		folder = self.stories["Folders"]["Database"]["Post templates"]
 
 		names = [
-			"Wattpad",
-			"Twitter, Facebook"
+			"Story websites"
 		]
 
 		for folder_name in names:
@@ -277,7 +292,16 @@ class Stories(object):
 
 			self.Folder.Create(folder[folder_name]["root"])
 
-		# Create the language files
+		# Iterate through the small languages list
+		for language in self.languages["small"]:
+			# Get the full language
+			full_language = self.languages["full"][language]
+
+			# Define and create the language file
+			folder[language] = folder["root"] + full_language + ".txt"
+			self.File.Create(folder[language])
+
+		# Create the language files inside the sub-folders
 		for folder_name in names:
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
@@ -514,7 +538,7 @@ class Stories(object):
 				"Name": key
 			}
 
-			# Add the "Templates" dictionary
+			# Create the "Templates" dictionary
 			dict_["Templates"] = {
 				"Root": {
 					"IDs": {},
@@ -609,6 +633,14 @@ class Stories(object):
 
 					# Create the story link with the story ID
 					story["Information"][key]["Links"][language] = root_story_link + id
+
+					# If the story website is "Wattpad"
+					if key == "Wattpad":
+						# Modify the story title
+						modified_story_title = story["Titles"][language].lower().replace(" ", "-")
+
+						# Add the modified story title
+						story["Information"][key]["Links"][language] += "-" + modified_story_title
 
 					# Iterate through the additional links in the dictionary
 					for sub_key, template in story_website["Templates"]["Additional links"].items():
@@ -1145,6 +1177,8 @@ class Stories(object):
 
 			# Update the "Story.json" file with the updated story "Information" dictionary
 			self.JSON.Edit(story["Folders"]["Story"], story["Information"])
+
+			# ---------- #
 
 			# Add the "Story" dictionary to the root "Stories" dictionary
 			self.stories["Dictionary"][story_title] = story

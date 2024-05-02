@@ -685,6 +685,7 @@ class Register(GamePlayer):
 				"List": [
 					"WhatsApp",
 					"Twitter",
+					"Facebook",
 					"Discord"
 				],
 				"Custom links": {

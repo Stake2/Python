@@ -101,7 +101,7 @@ class Write(Stories):
 		}
 
 		for language in self.languages["small"]:
-			for item in ["action", "present_action", "past_action", "past"]:
+			for item in ["action", "present_action", "past_action", "past", "chapter"]:
 				self.chapter["writing_mode"][item][language] = self.texts["writing_modes_" + item + ", type: list"][language][self.option_info["number"]].lower()
 
 			self.chapter["writing_mode"]["names"][language] = self.texts["writing_modes, type: list"][language][self.option_info["number"]]
@@ -377,7 +377,8 @@ class Write(Stories):
 		self.task_dictionary = {
 			"Task": {
 				"Titles": {},
-				"Descriptions": {}
+				"Descriptions": {},
+				"Custom state text": self.chapter["writing_mode"]["chapter"]
 			}
 		}
 

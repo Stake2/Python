@@ -39,6 +39,10 @@
 		"pt": "Abrindo a Rede Social \"{}\" em sua página de {}, com este link",
 		"en": "Opening the Social Network \"{}\" on its {} page, with this link"
 	},
+	"opening_the_social_network_{}_with_this_link": {
+		"pt": "Abrindo a Rede Social \"{}\" com este link",
+		"en": "Opening the Social Network \"{}\" with this link"
+	},
 	"please_type_the_social_network_profile_information": {
 		"pt": "Por favor digite as informações do perfil da Rede Social",
 		"en": "Please type the Social Network profile information"

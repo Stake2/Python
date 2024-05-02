@@ -171,13 +171,17 @@
 		"en": "Leave empty to use the default value",
 		"pt": "Deixe vazio para usar o valor padrão"
 	},
-	"press_enter_when_you": {
-		"en": "Press Enter when you",
-		"pt": "Pressione Enter quando você"
+	"press_enter_when_you_finish": {
+		"en": "Press Enter when you finish",
+		"pt": "Pressione Enter quando você terminar de"
 	},
 	"press_enter_when_you_finish_reading_the_info_summary": {
 		"en": "Press Enter when you finish reading the info summary",
 		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
+	},
+	"press_enter_when_you": {
+		"en": "Press Enter when you",
+		"pt": "Pressione Enter quando você"
 	},
 	"multi_selection": {
 		"en": "Multi-selection",
@@ -618,6 +622,10 @@
 	"titles, title()": {
 		"pt": "Títulos",
 		"en": "Titles"
+	},
+	"with_the_title": {
+		"pt": "com o título",
+		"en": "with the title"
 	},
 	"id, upper()": {
 		"en": "ID",
@@ -2040,6 +2048,18 @@
 	"it_is": {
 		"en": "it is",
 		"pt": "é"
+	},
+	"on, style: in": {
+		"en": "on",
+		"pt": "no"
+	},
+	"and_on, style: in": {
+		"en": "and on",
+		"pt": "e no"
+	},
+	"posted": {
+		"en": "posted",
+		"pt": "postado"
 	},
 	"genders, type: dict": {
 		"en": {

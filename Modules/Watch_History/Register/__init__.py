@@ -1054,6 +1054,7 @@ class Register(Watch_History):
 				"List": [
 					"WhatsApp",
 					"Twitter",
+					"Facebook",
 					"Discord"
 				],
 				"Custom links": {

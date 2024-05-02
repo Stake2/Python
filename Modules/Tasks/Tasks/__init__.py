@@ -416,7 +416,9 @@ class Tasks(object):
 			print(self.Language.language_texts["states, title()"] + ":")
 
 			for key in dictionary["States"]["Texts"]:
-				print("\t" + dictionary["States"]["Texts"][key][self.user_language])
+				language_text = dictionary["States"]["Texts"][key][self.user_language]
+
+				print("\t" + language_text)
 
 		# If the description of the task is not the same as the task title
 		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:

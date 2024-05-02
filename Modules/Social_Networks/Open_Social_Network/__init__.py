@@ -179,6 +179,11 @@ class Open_Social_Network(Social_Networks):
 		# Define the text template
 		template = self.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
 
+		# If there are custom links in the dictionary
+		if "Custom links" in self.dictionary["Social Networks"]:
+			# Change the template text
+			template = self.language_texts["opening_the_social_network_{}_with_this_link"]
+
 		# Define the text template items
 		items = [
 			self.social_network["Name"],
