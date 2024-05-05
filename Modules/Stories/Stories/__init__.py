@@ -1013,21 +1013,51 @@ class Stories(object):
 
 			# ---------- #
 
+			# Define the local list of writing modes
+			writing_modes = [
+				"Write",
+				"Revise",
+				"Translate"
+			]
+
 			# Define the default "Writing" dictionary
 			writing = {}
 
-			for writing_mode in self.texts["writing_modes, type: list"]["en"]:
+			# Create the writing mode dictionaries inside the "Writing" dictionary
+			for writing_mode in writing_modes:
+				# Define the writing mode dictionary
 				writing[writing_mode] = {
-					"Chapter": 0,
+					"Chapter": 1,
 					"Times": {
 						"First": "",
-						"Last": ""
+						"Last": "",
+						"Added": "",
+						"Duration": {
+							"Units": {},
+							"Text": {}
+						}
 					}
 				}
+
+				# If the writing mode is "Write"
+				if writing_mode == "Write":
+					# Update the chapter number to zero
+					writing[writing_mode]["Chapter"] = 0
 
 			# Read the "Writing.json" file if it is not empty
 			if self.File.Contents(story["Folders"]["Information"]["Writing"])["lines"] != []:
 				writing = self.JSON.To_Python(story["Folders"]["Information"]["Writing"])
+
+			# Create the writing mode dictionaries inside the "Writing" dictionary
+			for writing_mode in writing_modes:
+				# Define the writing mode dictionary
+				if "Added" not in writing[writing_mode]["Times"]:
+					writing[writing_mode]["Times"] = {
+						"First": writing[writing_mode]["Times"]["First"],
+						"Last": writing[writing_mode]["Times"]["Last"],
+						"Added": "",
+						**writing[writing_mode]["Times"]
+					}
 
 			# Define the root "Writing" dictionary as the local dictionary
 			story["Information"]["Writing"] = writing
@@ -1554,7 +1584,7 @@ class Stories(object):
 			# Define the "Write on Diary Slim" dictionary
 			dictionary = {
 				"Text": task_dictionary["Task"]["Descriptions"][self.user_language],
-				"Time": self.task_dictionary["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
+				"Time": self.task_dictionary["Entry"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
 				"Show text": False
 			}
 

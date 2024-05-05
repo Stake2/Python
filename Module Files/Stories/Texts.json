@@ -3,14 +3,6 @@
 		"en": "Story title in",
 		"pt": "Título da história em"
 	},
-	"chapter, title()": {
-		"en": "Chapter",
-		"pt": "Capítulo"
-	},
-	"chapters, title()": {
-		"en": "Chapters",
-		"pt": "Capítulos"
-	},
 	"chapter_title": {
 		"en": "Chapter title",
 		"pt": "Título do capítulo"
@@ -18,6 +10,14 @@
 	"chapter_number": {
 		"en": "Chapter number",
 		"pt": "Número do capítulo"
+	},
+	"the_chapter_with_the_title": {
+		"en": "The chapter with the title",
+		"pt": "O capítulo com o título"
+	},
+	"a_new_chapter": {
+		"en": "a new chapter",
+		"pt": "um novo capítulo"
 	},
 	"select_a_story": {
 		"en": "Select a story",
@@ -119,78 +119,6 @@
 		"en": "Story synopsis in",
 		"pt": "Sinopse da história em"
 	},
-	"writing_modes, type: list": {
-		"en": [
-			"Write",
-			"Revise",
-			"Translate"
-		],
-		"pt": [
-			"Escrever",
-			"Revisar",
-			"Traduzir"
-		]
-	},
-	"writing_modes_present_action, type: list": {
-		"en": [
-			"Writing",
-			"Revising",
-			"Translating"
-		],
-		"pt": [
-			"Escrevendo",
-			"Revisando",
-			"Traduzindo"
-		]
-	},
-	"writing_modes_action, type: list": {
-		"en": [
-			"Writing",
-			"Revising",
-			"Translating"
-		],
-		"pt": [
-			"Escrever",
-			"Revisar",
-			"Traduzir"
-		]
-	},
-	"writing_modes_past_action, type: list": {
-		"en": [
-			"Writing",
-			"Revising",
-			"Translating"
-		],
-		"pt": [
-			"Escrita",
-			"Revisão",
-			"Tradução"
-		]
-	},
-	"writing_modes_past, type: list": {
-		"en": [
-			"Wrote",
-			"Revised",
-			"Translated"
-		],
-		"pt": [
-			"Escrevi",
-			"Revisei",
-			"Traduzi"
-		]
-	},
-	"writing_modes_chapter, type: list": {
-		"en": [
-			"written",
-			"revised",
-			"translated"
-		],
-		"pt": [
-			"escrito",
-			"revisado",
-			"traduzido"
-		]
-	},
 	"writing_modes": {
 		"en": "Writing modes",
 		"pt": "Modos de escrita"
@@ -199,65 +127,127 @@
 		"en": "Select a writing mode",
 		"pt": "Selecione um modo de escrita"
 	},
-	"write, title()": {
-		"en": "Write",
-		"pt": "Escrever"
+	"write, type: dictionary": {
+		"Infinitive": {
+			"en": "write",
+			"pt": "escrever"
+		},
+		"Infinitive action": {
+			"en": "writing",
+			"pt": "escrever"
+		},
+		"Action": {
+			"en": "writing",
+			"pt": "escrevendo"
+		},
+		"Item": {
+			"en": "writing",
+			"pt": "escrita"
+		},
+		"Done": {
+			"en": "wrote",
+			"pt": "escrevi"
+		},
+		"Chapter": {
+			"en": "written",
+			"pt": "escrito"
+		}
 	},
-	"writing, title()": {
-		"en": "Writing",
-		"pt": "Escrevendo"
+	"revise, type: dictionary": {
+		"Infinitive": {
+			"en": "revise",
+			"pt": "revisar"
+		},
+		"Infinitive action": {
+			"en": "revising",
+			"pt": "revisar"
+		},
+		"Action": {
+			"en": "revising",
+			"pt": "revisando"
+		},
+		"Item": {
+			"en": "revision",
+			"pt": "revisão"
+		},
+		"Done": {
+			"en": "revised",
+			"pt": "revisei"
+		},
+		"Chapter": {
+			"en": "revised",
+			"pt": "revisado"
+		}
 	},
-	"revise, title()": {
-		"en": "Revise",
-		"pt": "Revisar"
+	"translate, type: dictionary": {
+		"Infinitive": {
+			"en": "translate",
+			"pt": "traduzir"
+		},
+		"Infinitive action": {
+			"en": "translating",
+			"pt": "traduzir"
+		},
+		"Action": {
+			"en": "translating",
+			"pt": "traduzindo"
+		},
+		"Item": {
+			"en": "translation",
+			"pt": "tradução"
+		},
+		"Done": {
+			"en": "translated",
+			"pt": "traduzi"
+		},
+		"Chapter": {
+			"en": "translated",
+			"pt": "traduzido"
+		}
 	},
-	"translate, title()": {
-		"en": "Translate",
-		"pt": "Traduzir"
+	"press_enter_to_start_counting_the_time_of": {
+		"en": "Press Enter to start counting the time of",
+		"pt": "Pressione Enter para começar a contar o tempo de"
 	},
-	"press_enter_to_start_counting_{}_time": {
-		"en": "Press Enter to start counting {} time",
-		"pt": "Pressione Enter para começar a contar o tempo de {}"
+	"press_enter_when_you_stop": {
+		"en": "Press Enter when you stop",
+		"pt": "Pressione Enter quando você parar de"
 	},
-	"press_enter_when_you_finish_{}_the_chapter": {
-		"en": "Press Enter when you finish {} the chapter",
-		"pt": "Pressione Enter quando você terminar de {} o capítulo"
+	"did_you_finished_{}_the_whole_chapter": {
+		"en": "Did you finished {} the whole chapter",
+		"pt": "Você terminou de {} o capítulo inteiro"
 	},
-	"did_you_finished_{}_the_chapter": {
-		"en": "Did you finished {} the chapter",
-		"pt": "Você terminou de {} o capítulo"
+	"this_chapter": {
+		"en": "this chapter",
+		"pt": "este capítulo"
 	},
-	"you_finished_{}_this_chapter": {
-		"en": "You finished {} this chapter",
-		"pt": "Você terminou de {} este capítulo"
-	},
-	"{}_this_chapter": {
-		"en": "{} this chapter",
-		"pt": "{} este capítulo"
-	},
-	"type_or_paste_the_chapter_title_in_{}": {
-		"en": "Type or paste the chapter title in {}",
-		"pt": "Digite ou cole o título do capítulo em {}"
+	"type_the_chapter_title_in_{}": {
+		"en": "Type the chapter title in {}",
+		"pt": "Digite o título do capítulo em {}"
 	},
 	"i_started_{}_the_chapter_{}_of_my_story_{}": {
 		"en": "I started {} the chapter {} of my story \"{}\"",
 		"pt": "Eu comecei a {} o capítulo {} da minha história \"{}\""
 	},
-	"i_{}_the_chapter_{}_of_my_story_{}": {
-		"en": "I {} the chapter {} of my story \"{}\"",
-		"pt": "Eu {} o capítulo {} da minha história \"{}\""
+	"i_have_been_{}_the_chapter_{}_of_my_story_{}_until_now": {
+		"en": "I have been {} the chapter {} of my story \"{}\" until now",
+		"pt": "Eu estive {} o capítulo {} da minha história \"{}\" até agora"
 	},
-	"i_still_did_not_finished_{}_the_chapter": {
-		"en": "I still did not finished {} the chapter",
-		"pt": "Eu ainda não terminei de {} o capítulo"
+	"i_finished_{}_the_chapter_{}_of_my_story_{}": {
+		"en": "I finished {} the chapter {} of my story \"{}\"",
+		"pt": "Eu terminei de {} o capítulo {} da minha história \"{}\""
+	},
+	"i_started_at_{}_and_stopped_at_{}": {
+		"en": "I started at {}, and stopped at {}",
+		"pt": "Eu comecei às {}, e parei às {}"
+	},
+	"i_{}_for": {
+		"en": "I {} for",
+		"pt": "Eu {} por"
 	},
 	"post": {
 		"en": "post",
 		"pt": "postar"
-	},
-	"post, title()": {
-		"en": "Post",
-		"pt": "Postar"
 	},
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",

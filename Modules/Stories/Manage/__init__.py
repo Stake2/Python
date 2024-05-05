@@ -31,8 +31,10 @@ class Manage(Stories):
 
 			self.class_descriptions.append(self.Language.Item(class_description))
 
-		# Select the story
-		self.story = self.Select_Story()
+		# If there is no selected story in the current class
+		if hasattr(self, "story") == False:
+			# Select the story
+			self.story = self.Select_Story()
 
 		# Select the class
 		show_text = self.language_texts["manage_the_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"'

@@ -3,12 +3,17 @@
 from PHP.PHP import PHP as PHP
 
 class Update_Websites(PHP):
-	def __init__(self, update_one_website = False, module_website = None):
+	def __init__(self, update_one_website = False, module_website = None, verbose = False):
 		super().__init__()
 
 		# Show a space separator
 		print()
 		print(self.separators["5"])
+
+		# Define the root dictionary
+		self.dictionary = {
+			"Verbose": verbose
+		}
 
 		self.update_one_website = update_one_website
 		self.module_website = module_website
@@ -295,7 +300,12 @@ class Update_Websites(PHP):
 				if self.switches["testing"] == False:
 					self.System.Open(link, verbose = False)
 
-				if self.switches["verbose"] == True:
+				# If the "verbose" switch is True
+				# Or the "Verbose" key of the root dictionary is True
+				if (
+					self.switches["verbose"] == True or
+					self.dictionary["Verbose"] == True
+				):
 					print()
 					print(self.Language.language_texts["link, title()"] + ":")
 					print("\t" + link)

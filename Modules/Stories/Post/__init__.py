@@ -10,6 +10,13 @@ class Post(Stories):
 
 		# Define the root dictionary
 		self.dictionary = {
+			"Chapters": {
+				"Numbers": {
+					"Last posted chapter": 1
+				},
+				"Titles": {}
+			},
+			"Chapter": {},
 			"Steps": {
 				"Create the covers": {
 					"Text key": "cover_creation"
@@ -23,16 +30,10 @@ class Post(Stories):
 				"Post on Social Networks": {
 					"Text key": "social_network_posting"
 				}
-			},
-			"Chapters": {
-				"Numbers": {
-					"Last posted chapter": 1
-				},
-				"Titles": {}
 			}
 		}
 
-		# Define "States" dictionary
+		# Define the "States" dictionary
 		self.states = {
 			"Run as module": run_as_module,
 			"Ask for skipping": True
@@ -58,14 +59,14 @@ class Post(Stories):
 			# Ask the user to select another story
 			self.Select_Story(select_text_parameter = select_text)
 
-		# Define the chapter to be posted
-		self.Define_Chapter()
-
 		# Define the steps of chapter posting
 		self.Define_Steps()
 
+		# Define the chapter to be posted
+		self.Define_Chapter()
+
 		# Run the chapter posting steps
-		self.Run_Posting_Steps()
+		self.Run_Steps()
 
 		# Register the chapter task if the "Run as module" state is False
 		if self.states["Run as module"] == False:
@@ -76,9 +77,52 @@ class Post(Stories):
 
 		self.Open_Social_Network = Open_Social_Network
 
-	def Define_Chapter(self):
+	def Define_Steps(self):
+		# Iterate through the chapter posting steps
+		for key, step in self.dictionary["Steps"].items():
+			# Update the step dictionary
+			self.dictionary["Steps"][key] = {
+				"Key": key,
+				"Text key": step["Text key"],
+				"Text": self.language_texts[step["Text key"]],
+				"Skip": False,
+				"Method": getattr(self, key.title().replace(" ", "_"))
+			}
+
+	def Run_Steps(self):
+		# Iterate through the step key and dictionaries inside the "Steps" dictionary
+		for key, step in self.dictionary["Steps"].items():
+			# Ask if the user wants to skip the posting step
+			self.Skip(step)
+
+			# If the "Skip" state is False
+			if self.dictionary["Steps"][key]["Skip"] == False:
+				# Define the "run" variable as True
+				run = True
+
+				# If the "Run as module" state is True
+				# And the key is not "Create the covers"
+				if (
+					self.states["Run as module"] == True and
+					key != "Create the covers"
+				):
+					# Define the "run" variable as False
+					# To only update the chapter covers ("Create the covers" method)
+					# And not run the other chapter posting steps
+					run = False
+
+				# If the "run" variable is True, run the method
+				if run == True:
+					step["Method"]()
+
+	def Define_Chapter(self, chapter_number = None):
 		# Define the chapter "Titles" key
 		self.dictionary["Chapters"]["Titles"] = deepcopy(self.story["Information"]["Chapters"]["Titles"])
+
+		# Update the last posted chapter number with the number inside the story "Information" dictionary
+		self.dictionary["Chapters"]["Numbers"]["Last posted chapter"] = self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
+
+		# ---------- #
 
 		# Define the "Chapter" dictionary
 		self.dictionary["Chapter"] = {
@@ -94,9 +138,6 @@ class Post(Stories):
 			"Folders": {},
 			"Files": {}
 		}
-
-		# Update the last posted chapter number with the number inside the story "Information" dictionary
-		self.dictionary["Chapters"]["Numbers"]["Last posted chapter"] = self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
 
 		# ---------- #
 
@@ -116,13 +157,15 @@ class Post(Stories):
 		# Update the "Chapter" and "Leading zeroes" number keys
 		self.dictionary["Chapter"]["Number"] = self.dictionary["Chapters"]["Numbers"]["Last posted chapter"]
 
+		# If the "chapter number" parameter is not None
+		if chapter_number != None:
+			# Define it as the chapter number
+			self.dictionary["Chapter"]["Number"] = chapter_number
+
 		self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
 
 		# Iterate through the small languages list
 		for language in self.languages["small"]:
-			# Get the full language
-			full_language = self.languages["full"][language]
-
 			# Create the chapter title variable
 			# [Chapter title]
 			title = self.dictionary["Chapters"]["Titles"][language][self.dictionary["Chapter"]["Number"] - 1]
@@ -176,59 +219,29 @@ class Post(Stories):
 
 		# Show information about the chapter
 
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
-		print()
+		# If the "Run as module" state is False
+		# Or it is True
+		# And the "chapter number" parameter is not None
+		if (
+			self.states["Run as module"] == False or
+			self.states["Run as module"] == True and
+			chapter_number != None
+		):
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+			print()
 
-		# Show the chapter number and total chapter number
-		print(self.language_texts["chapter_number"] + ":")
-		print(self.dictionary["Chapter"]["Numbers"]["Leading zeroes"])
-		print()
+			# Show the chapter number and total chapter number
+			print(self.language_texts["chapter_number"] + ":")
+			print(self.dictionary["Chapter"]["Numbers"]["Leading zeroes"])
+			print()
 
-		# Show the chapter title
-		chapter_title = self.dictionary["Chapter"]["Titles"][self.user_language]
+			# Show the chapter title
+			chapter_title = self.dictionary["Chapter"]["Titles"][self.user_language]
 
-		print(self.Language.language_texts["title, title()"] + ":")
-		print(chapter_title)
-
-	def Define_Steps(self):
-		# Iterate through the chapter posting steps
-		for key, step in self.dictionary["Steps"].items():
-			# Update the step dictionary
-			self.dictionary["Steps"][key] = {
-				"Key": key,
-				"Text key": step["Text key"],
-				"Text": self.language_texts[step["Text key"]],
-				"Skip": False,
-				"Method": getattr(self, key.title().replace(" ", "_"))
-			}
-
-	def Run_Posting_Steps(self):
-		# Iterate through the step key and dictionaries inside the "Steps" dictionary
-		for key, step in self.dictionary["Steps"].items():
-			# Ask if the user wants to skip the posting step
-			self.Skip(step)
-
-			# If the "Skip" state is False
-			if self.dictionary["Steps"][key]["Skip"] == False:
-				# Define the "run" variable as True
-				run = True
-
-				# If the "Run as module" state is True
-				# And the key is not "Create the covers"
-				if (
-					self.states["Run as module"] == True and
-					key != "Create the covers"
-				):
-					# Define the "run" variable as False
-					# To only update the chapter covers ("Create the covers" method)
-					# And not run the other chapter posting steps
-					run = False
-
-				# If the "run" variable is True, run the method
-				if run == True:
-					step["Method"]()
+			print(self.Language.language_texts["title, title()"] + ":")
+			print(chapter_title)
 
 	def Skip(self, step, custom_text = None):
 		# If the custom text parameter is not None
@@ -340,7 +353,7 @@ class Post(Stories):
 			# Format the template with the list of items, making the explanation text
 			text = template.format(*items)
 
-			# Show a five dash space separator
+			# Show a five dash space separators
 			print()
 			print(self.separators["5"])
 			print()
@@ -354,30 +367,14 @@ class Post(Stories):
 			# Open the Photoshop file
 			self.System.Open(file)
 
-			# Show a space separator
-			print()
-
 			# Iterate through the English chapter titles
+			c = 1
 			for chapter_title in chapter_titles:
-				# If the "Run as module" state is True
-				if self.states["Run as module"] == True:
-					# Update the chapter number with leading zeroes
-					self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
-
-					# Show a five dash separator
-					print()
-					print(self.separators["5"])
-					print()
-
-					# Show the "Chapter number:" text
-					print(self.language_texts["chapter_number"] + ":")
-
-					# Show the chapter number followed by the total chapter number
-					print("[" + str(self.dictionary["Chapter"]["Number"]) + "/" + str(self.story["Information"]["Chapters"]["Numbers"]["Total"]) + "]")
-					print()
-
 				# If the "Run as module" state is False
 				if self.states["Run as module"] == False:
+					# Show a space separator
+					print()
+
 					# Copy the chapter title
 					self.Copy_Title(language)
 
@@ -389,24 +386,36 @@ class Post(Stories):
 
 				# If the "Run as module" state is True
 				if self.states["Run as module"] == True:
-					# Add one to the chapter number
-					self.dictionary["Chapter"]["Number"] += 1
+					# Define the "Chapter" dictionary of the current chapter
+					self.Define_Chapter(c)
 
-					# If the "testing" switch is True
-					# And the chapter title is the first one
-					if (
-						self.switches["testing"] == True and
-						chapter_title == chapter_titles[0]
-					):
+					# If the chapter title is the first one
+					if chapter_title == chapter_titles[0]:
 						# Ask for the user to press Enter before continuing to the next chapter
 						self.Input.Type(self.Language.language_texts["continue, title()"])
+
+					# If the chapter title is not the first one
+					if chapter_title != chapter_titles[0]:
+						# Show a space separator
+						print()
+
+				# If the "Run as module" state is False
+				if self.states["Run as module"] == False:
+					# Show a five dash space separator
+					print(self.separators["5"])
+					print()
 
 				# Move the cover file to the cover folders
 				self.Move_Cover(language, full_language, cover_type)
 
-			# If the "Run as module" state is True
-			if self.states["Run as module"] == True:
+				# Add one to the "c" number
+				c += 1
+
+			# If the language is the last one
+			if language == self.languages["small"][-1]:
+				# Show a five dash space separator
 				print()
+				print(self.separators["5"])
 
 	def Copy_Title(self, language):
 		# Define the type text
@@ -515,7 +524,7 @@ class Post(Stories):
 		from PHP.Update_Websites import Update_Websites as Update_Websites
 
 		# Update the website of the selected story
-		Update_Websites(module_website = self.story["Title"])
+		Update_Websites(module_website = self.story["Title"], verbose = True)
 
 	def Copy_Chapter_Text(self, language, full_language):
 		# Get the language chapter file
@@ -625,8 +634,13 @@ class Post(Stories):
 
 		# Add social networks to the "To open" list
 		for key in social_networks["List"]:
-			# If the key is not "Instagram", add it to the "To open" list
-			if key != "Instagram":
+			# If the key is not "Instagram"
+			# And is not a story website
+			if (
+				key != "Instagram" and
+				key not in self.stories["Story websites"]["List"]
+			):
+				# Add it to the "To open" list
 				social_networks["To open"].append(key)
 
 		# Only get the "Social Network" dictionary of these social networks:
@@ -698,8 +712,8 @@ class Post(Stories):
 
 		template = self.File.Contents(file)["string"]
 
-		# Iterate through the dictionary of story websites
-		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
+		# Iterate through the list of story websites
+		for key in self.stories["Story websites"]["List"]:
 			# Define the "Make_Post_Cards" dictionary
 			dictionary = {
 				"Key": key,
@@ -710,6 +724,8 @@ class Post(Stories):
 			self.Make_Post_Cards(dictionary)
 
 		# ---------- #
+
+		# Post the chapter on the social networks
 
 		# Create the last card variable
 		last_card = ""
@@ -729,22 +745,13 @@ class Post(Stories):
 				}
 			}
 
-			# If the social network is inside the "Story websites" list
-			if key in self.stories["Story websites"]["List"]:
-				# Define the custom link as the "Posts" link of the story website
-				social_networks_dictionary["Custom links"][key] = self.social_networks["Dictionary"][key]["Links"]["Posts"]
-
 			# If the social network is "Discord"
 			if key == "Discord":
 				# Define the custom link as the "#stories" channel on my Discord server
 				social_networks_dictionary["Custom links"][key] = "https://discord.com/channels/311004778777935872/1041558273708540065"
 
-			# If the social network is inside the "Story websites" list
-			# And is not the "Discord" social network
-			if (
-				key not in self.stories["Story websites"]["List"] and
-				key != "Discord"
-			):
+			# If the social network is not "Discord"
+			if key != "Discord":
 				# Remove the "Custom links" dictionary
 				social_networks_dictionary.pop("Custom links")
 
@@ -765,20 +772,11 @@ class Post(Stories):
 
 			# ---------- #
 
-			# Define the card if the social network key is present
-			if key in self.dictionary["Chapter"]["Post cards"]:
-				card = self.dictionary["Chapter"]["Post cards"][key]
-
-			# Else, define it as the generic "Social Network" card
-			else:
-				card = self.dictionary["Chapter"]["Post cards"]["Social Network"]
+			# Define the card as the generic "Social Network" card
+			card = self.dictionary["Chapter"]["Post cards"]["Social Network"]
 
 			# If the social network is not in the defined list
-			# And the social network is not a story website
-			if (
-				key not in ["Facebook", "Twitter"] and
-				key not in self.stories["Story websites"]["List"]
-			):
+			if key not in ["Facebook", "Twitter"]:
 				# Remove the hashtags of the card
 				card = self.Remove_Hashtags(card)
 
@@ -834,11 +832,7 @@ class Post(Stories):
 			# ---------- #
 
 			# If the social network is not "Facebook"
-			# And the social network is not a story website
-			if (
-				key != "Facebook" and
-				key not in self.stories["Story websites"]["List"]
-			):
+			if key != "Facebook":
 				# Iterate through the list of story websites
 				for sub_key in self.stories["Story websites"]["List"]:
 					# Define the social network card of the current story website
@@ -857,6 +851,47 @@ class Post(Stories):
 
 					# Wait for the user to finish posting the social network post card of the current story website
 					self.Input.Type(input_text + ' "' + sub_key + '"')
+
+		# ---------- #
+
+		# Post the chapter on the story websites
+
+		# Iterate through the list of story websites
+		for key in self.stories["Story websites"]["List"]:
+			# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
+			social_networks_dictionary = {
+				"List": [
+					key
+				],
+				"Custom links": {
+					key: self.social_networks["Dictionary"][key]["Links"]["Posts"]
+				},
+				"States": {
+					"First separator": True
+				}
+			}
+
+			# If the social network is the first one
+			if key == social_networks["To open"][0]:
+				# Remove the first separator
+				social_networks_dictionary["States"]["First separator"] = False
+
+			# Open the social network with its custom link
+			self.Open_Social_Network(social_networks_dictionary)
+
+			# ---------- #
+
+			# Define the post card
+			card = self.dictionary["Chapter"]["Post cards"][key]
+
+			# Copy the social network post card
+			self.Text.Copy(card, verbose = False)
+
+			# Define the input text
+			input_text = self.language_texts["press_enter_when_you_finish_posting_the_card_on"]
+
+			# Wait for the user to finish posting the social network card
+			self.Input.Type(input_text + " " + key)
 
 	def Make_Post_Cards(self, dictionary):
 		# If the "Link key" is not present in the dictionary

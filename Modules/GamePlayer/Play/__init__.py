@@ -99,10 +99,12 @@ class Play(GamePlayer):
 			self.System.Open(self.game["Files"]["Shortcut"]["File"])
 
 	def Register_The_Session(self):
-		# Show a separator
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
+
+		# ---------- #
 
 		# Ask the user to press Enter to start counting the session time
 		if self.open_game == True:
@@ -119,12 +121,16 @@ class Play(GamePlayer):
 		if self.open_game == True:
 			print()
 
+		# ---------- #
+
 		# Show the now time
 		print(self.Date.language_texts["now, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		if self.open_game == True:
 			self.Input.Type(self.language_texts["press_enter_when_you_finish_playing_the_game"])
+
+		# ---------- #
 
 		self.game["States"]["Finished playing"] = True
 
@@ -134,10 +140,12 @@ class Play(GamePlayer):
 		if self.switches["testing"] == True:
 			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 2, minutes = 30, seconds = 28))
 
-		# Show the after time (after playing the egame)
+		# Show the after time (after playing the game)
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["After"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# ---------- #
 
 		# Define the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
@@ -148,13 +156,17 @@ class Play(GamePlayer):
 		# Get the time units of the time difference
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
 
-		# Register the finished playing time
-		self.dictionary["Entry"]["Date"] = self.dictionary["Entry"]["Session duration"]["After"]
-
 		# Show the session duration text in the user language
 		print()
 		print(self.language_texts["session_duration"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Text"][self.user_language])
+
+		# ---------- #
+
+		# Register the finished playing time
+		self.dictionary["Entry"]["Date"] = self.dictionary["Entry"]["Session duration"]["After"]
+
+		# ---------- #
 
 		# Calculate the gaming time
 		self.dictionary["Game"] = self.Calculate_Gaming_Time(self.dictionary)
@@ -170,6 +182,8 @@ class Play(GamePlayer):
 			if self.game["Sub-game"]["Title"] == self.game["Title"]:
 				# Calculate the gaming time for the sub-game
 				self.dictionary["Game"]["Sub-game"] = self.Calculate_Gaming_Time(self.dictionary, item = True)
+
+		# ---------- #
 
 		# Use the "Register" class to register the played game, and giving the dictionary to it
 		if self.Register != None:

@@ -415,10 +415,15 @@ class Date():
 			date["Text"] = {}
 
 		if "Difference" not in date:
+			date_backup = deepcopy(date)
+
 			date = {
 				"Text": {},
 				"Difference": date
 			}
+
+			if "Units" in date_backup:
+				date["Difference"] = date_backup["Units"]
 
 		for language in self.languages["small"]:
 			date["Text"][language] = ""
@@ -455,7 +460,7 @@ class Date():
 				# Define the text key
 				text_key = key.lower()
 
-				text_key = self.Text.By_Number(date["Difference"][key], text_key, text_key[:-1])
+				text_key = self.Text.By_Number(date["Difference"][key], text_key[:-1], text_key)
 
 				# Define the time text
 				text = self.texts[text_key][language]

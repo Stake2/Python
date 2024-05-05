@@ -2,443 +2,790 @@
 
 from Stories.Stories import Stories as Stories
 
+from copy import deepcopy
+
 class Write(Stories):
 	def __init__(self):
 		super().__init__()
 
-		self.register_task = False
-
-		self.Select_Writing_Mode()
-
-		print()
-		print(self.separators["5"])
-		print()
-
-		print(self.Language.language_texts["story, title()"] + ":")
-
-		story_titles = ""
-
-		for language in self.languages["small"]:
-			title = self.story["Information"]["Titles"][language]
-
-			if title not in story_titles:
-				story_titles += title
-
-			if language != self.languages["small"][-1]:
-				story_titles += "\n"
-
-		print(story_titles)
-		print()
-
-		self.Define_Chapter()
-		self.Define_Files()
-		self.Open_Obsidian()
-
-		if self.switches["testing"] == False:
-			self.System.Open("https://app.grammarly.com/")
-			self.System.Open("https://translate.google.com/")
-
-		self.Finish_Writing()
-
-		if self.chapter["finished_writing"] == True:
-			self.Rename_Chapter_Files()
-
-		self.Close_Obsidian()
-
-		self.Define_Task_Dictionary()
-
-		if self.chapter["finished_writing"] == True:
-			self.register_task = True
-
-		self.Register_Task()
-
-		if self.chapter["finished_writing"] == False:
-			print(self.task_dictionary["Task"]["Descriptions"][self.user_language])
-			print()
-			print(self.separators["5"])
-
-	def Select_Writing_Mode(self):
-		options = self.language_texts["writing_modes, type: list"]
-		show_text = self.language_texts["writing_modes"]
-		select_text = self.language_texts["select_a_writing_mode"]
-
-		chapter_number = self.story["Information"]["Chapters"]["Numbers"]["Total"]
-
-		i = 0
-		for writing_mode in options:
-			english_writing_mode = self.texts["writing_modes, type: list"]["en"][i]
-
-			writing_mode_chapter = int(self.story["Information"]["Chapter status"][english_writing_mode])
-
-			# If the chapter number in the writing mode is equal to the chapter number of the story
-			# And the writing mode is not "Write"
-			if (
-				writing_mode_chapter == chapter_number and
-				writing_mode != self.language_texts["write, title()"]
-			):
-				# Then remove writing mode from options list
-				options.remove(writing_mode)
-
-			# If the chapter number in the writing mode is not equal to the chapter number of the story
-			if writing_mode_chapter != chapter_number:
-				options[i] = options[i] + " (" + self.language_texts["chapter, title()"] + ": " + str(writing_mode_chapter + 1) + ")"
-
-			i += 1
-
-		# Select writing mode
-		self.option_info = self.Input.Select(options, show_text = show_text, select_text = select_text)
-
-		# Define names
-		self.chapter = {
-			"writing_mode": {
-				"name": self.texts["writing_modes, type: list"]["en"][self.option_info["number"]],
-				"names": {},
-				"action": {},
-				"present_action": {},
-				"past_action": {},
-				"past": {}
-			}
+		# Define the root dictionary
+		self.dictionary = {
+			"Chapters": {
+				"Numbers": {
+					"Last posted chapter": 1
+				},
+				"Titles": {}
+			},
+			"Chapter": {},
+			"Steps": {
+				"List": [
+					"Define writing modes",
+					"Select writing mode",
+					"Define chapter",
+					"Open story website",
+					"Start writing"
+				],
+				"Dictionary": {}
+			},
+			"Writing modes": {},
+			"Writing mode": {},
+			"Writing": {},
+			"Session": {}
 		}
 
-		for language in self.languages["small"]:
-			for item in ["action", "present_action", "past_action", "past", "chapter"]:
-				self.chapter["writing_mode"][item][language] = self.texts["writing_modes_" + item + ", type: list"][language][self.option_info["number"]].lower()
+		# Define the "States" dictionary
+		self.states = {
+			"First time writing": False,
+			"Finished writing": False
+		}
 
-			self.chapter["writing_mode"]["names"][language] = self.texts["writing_modes, type: list"][language][self.option_info["number"]]
+		# ---------- #
 
-		self.writing_mode = self.chapter["writing_mode"]["name"]
+		# Define the steps of chapter writing
+		self.Define_Steps()
 
-	def Define_Chapter(self):
-		# Add to the chapter status of the writing mode
-		self.story["Information"]["Chapter status"][self.writing_mode] = int(self.story["Information"]["Chapter status"][self.writing_mode]) + 1
-		self.story["Information"]["Chapter status"][self.writing_mode] = str(self.story["Information"]["Chapter status"][self.writing_mode])
+		# Run the chapter writing steps
+		self.Run_Steps()
 
-		# Define chapter number from chapter status
-		self.chapter["number"] = self.story["Information"]["Chapter status"][self.writing_mode]
-		self.chapter["number_names"] = {}
+	def Define_Steps(self):
+		# Iterate through the list of chapter writing steps
+		for key in self.dictionary["Steps"]["List"]:
+			# Update the step dictionary
+			self.dictionary["Steps"]["Dictionary"][key] = {
+				"Key": key,
+				"Method": getattr(self, key.title().replace(" ", "_"))
+			}
 
-		for language in self.languages["small"]:
-			self.chapter["number_names"][language] = self.Date.texts["number_names, type: list"][language][int(self.chapter["number"])]
+	def Run_Steps(self):
+		# Iterate through the step dictionaries inside the "Steps" dictionary
+		for step in self.dictionary["Steps"]["Dictionary"].values():
+			# Run the method of the chapter writing step
+			step["Method"]()
 
-		# Update the "Chapter status" file
-		self.File.Edit(self.story["Folders"]["Information"]["Chapter status"], self.Text.From_Dictionary(self.story["Information"]["Chapter status"], next_line = True), "w")
+	def Define_Writing_Modes(self):
+		# Define the "Writing modes" dictionary
+		self.dictionary["Writing modes"] = {
+			"List": [
+				"Write",
+				"Revise",
+				"Translate"
+			],
+			"Dictionary": {},
+			"Verb tenses": [
+				"Infinitive",
+				"Infinitive action",
+				"Action",
+				"Item",
+				"Done",
+				"Chapter"
+			]
+		}
 
-		self.chapter["titles"] = {}
+		# Iterate through the list of writing modes
+		for key in self.dictionary["Writing modes"]["List"]:
+			# Define the writing mode dictionary
+			dictionary = {
+				"Name": key,
+				"Names": {},
+				"Texts": {},
+				"Language texts": {}
+			}
 
-		for language in self.languages["small"]:
-			full_language = self.languages["full"][language]
+			# Iterate through the list of small languages
+			for language in self.languages["small"]:
+				# Define the text key
+				text_key = key.lower() + ", title()"
 
-			self.chapter["titles"][full_language] = self.Text.Add_Leading_Zeroes(self.chapter["number"])
+				# Define the text
+				text = self.Language.texts[text_key][language]
 
-			if self.writing_mode in ["Revise", "Translate"]:
-				self.chapter["titles"][full_language] += " - "
-				self.chapter["titles"][full_language] += self.story["Information"]["Chapters"]["Titles"][language][int(self.chapter["number"]) - 1]
+				# Add it to the "Names" dictionary
+				dictionary["Names"][language] = text
 
-		print(self.language_texts["{}_this_chapter"].format(self.chapter["writing_mode"]["present_action"][self.user_language].capitalize()) + ":")
-		print(self.chapter["titles"][self.full_user_language])
+			# Get the text dictionary of the writing mode
+			text_key = key.lower() + ", type: dictionary"
 
-	def Define_Files(self):
-		self.chapter["Files"] = {}
-		self.chapter["Files"]["Story"] = {}
-		self.chapter["Files"]["obsidian"] = {}
+			texts = self.texts[text_key]
 
-		for language in self.languages["small"]:
-			full_language = self.languages["full"][language]
+			# Iterate through the list of verb tenses
+			for tense in self.dictionary["Writing modes"]["Verb tenses"]:
+				# Get the verb tense text
+				text = texts[tense]
 
-			if self.writing_mode in ["Write", "Revise"] and language == "en" or self.writing_mode == "Translate":
-				self.chapter["language"] = full_language
+				# Add it to the "Texts" dictionary
+				dictionary["Texts"][tense] = text
 
-				# Story chapter file
-				self.chapter["Files"]["Story"][full_language] = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["titles"][full_language] + ".txt"
-				self.File.Create(self.chapter["Files"]["Story"][full_language])
+				# Add the tense in the user language to the "Language texts" dictionary
+				dictionary["Language texts"][tense] = text[self.user_language]
 
-				# Obsidian chapter file
-				self.chapter["title"] = self.chapter["titles"][full_language]
+			# Add the local dictionary to the "Writing modes" dictionary
+			self.dictionary["Writing modes"]["Dictionary"][key] = dictionary
 
-				self.chapter["Files"]["obsidian"][full_language] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][full_language] + self.chapter["titles"][full_language] + ".md"
-				self.File.Create(self.chapter["Files"]["obsidian"][full_language])
+	def Select_Writing_Mode(self):
+		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
+		parameters = {
+			"options": self.dictionary["Writing modes"]["List"],
+			"language_options": [],
+			"show_text": self.language_texts["writing_modes"],
+			"select_text": self.language_texts["select_a_writing_mode"]
+		}
 
-		# Define chapter language as full user language on Translate writing mode
-		if self.writing_mode == "Translate":
-			self.chapter["language"] = self.full_user_language
+		# Iterate through the dictionary of writing modes
+		for writing_mode in self.dictionary["Writing modes"]["Dictionary"].values():
+			# Add the infinitive text to the list of language options
+			parameters["language_options"].append(writing_mode["Language texts"]["Infinitive"].title())
 
-			# Copy English chapter text into user language chapter file
-			text = self.File.Contents(self.chapter["Files"]["Story"][self.languages["full"]["en"]])["string"]
+		# ---------- #
 
-			self.File.Edit(self.chapter["Files"]["obsidian"][self.full_user_language], text, "w")
+		# Define the total chapter number variable for easier typing
+		total_chapter_number = self.story["Information"]["Chapters"]["Numbers"]["Total"]
 
-	def Open_Website(self):
-		print()
-
-	def Open_Obsidian(self):
-		replace_list = [
-			" ",
-			"ê",
-			"á",
-			"ã",
-			"â",
-			"ç",
-			"í",
-			"ó",
-			"ú",
-			"❤️",
-			"🎄",
-			"🎁"
-		]
-
-		replace_with = [
-			"%20",
-			"%C3%AA",
-			"%C3%A1",
-			"%C3%A3",
-			"%C3%A2",
-			"%C3%A7",
-			"%C3%AD",
-			"%C3%B3",
-			"%C3%BA",
-			"%E2%9D%A4%EF%B8%8F",
-			"%F0%9F%8E%84",
-			"%F0%9F%8E%81"
-		]
-
-		self.chapter["title_obsidian"] = self.chapter["title"]
-
-		# Remove unaccepted characters from chapter title
-		for item in ["?", ":", "\\", "/", '"', "*", "<", ">", "|"]:
-			self.chapter["title_obsidian"] = self.chapter["title_obsidian"].replace(item, "")
-
-		# Replace file and unicode characters with encoded characters
+		# Iterate through the list of writing modes
 		i = 0
-		for item in replace_list:
-			self.chapter["title_obsidian"] = self.chapter["title_obsidian"].replace(item, replace_with[i])
+		for writing_mode in self.dictionary["Writing modes"]["List"]:
+			# Get the chapter of the writing mode
+			chapter = self.story["Information"]["Writing"][writing_mode]["Chapter"]
+
+			# If the chapter of the writing mode is equal to the total chapter number
+			# And the writing mode is not "Write"
+			if (
+				chapter == total_chapter_number and
+				writing_mode != "Write"
+			):
+				# Then remove the writing mode from the list of options
+				parameters["options"].remove(writing_mode)
+
+			# Define the addon as the " the chapter [number name]" text
+			addon = " " + self.Language.texts["genders, type: dict"][self.user_language]["masculine"]["the"] + " "
+
+			# Add the "chapter " text
+			addon += self.Language.language_texts["chapter, title()"].lower() + " "
+
+			# If the user did not started writing the chapter in the current writing mode
+			if self.story["Information"]["Writing"][writing_mode]["Times"]["Duration"]["Units"] == {}:
+				# Add one to the local chapter number
+				chapter += 1
+
+			# Add the number
+			addon += str(chapter)
+
+			# If the writing mode is "Write"
+			if writing_mode == "Write":
+				# Create the text to add
+				text_to_add = " (" + self.language_texts["a_new_chapter"] + ")"
+
+				# Add the text above to the addon variable
+				addon += text_to_add
+
+				# Add the addon to the writing mode dictionary
+				self.dictionary["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
+
+			# Update the language option of the writing mode to add the addon above
+			parameters["language_options"][i] = parameters["language_options"][i] + addon
 
 			i += 1
 
-		# Define Obsidian chapter link
-		self.chapter["obsidian_link"] = "obsidian://open?vault=Creativity&file=Literature%2FStories%2F{}%2FChapters%2F{}%2F{}"
+		# ---------- #
 
-		# Format Obsidian chapter link with story title, chapter language, and chapter title
-		self.chapter["obsidian_link"] = self.chapter["obsidian_link"].format(self.story["Title"].replace(" ", "%20"), self.chapter["language"], self.chapter["title_obsidian"])
+		# Ask the user to select the writing mode
+		writing_mode = self.Input.Select(**parameters)["option"]
 
-		# Define the Obsidian link to be shown
-		self.chapter["obsidian_link_show"] = self.chapter["obsidian_link"].replace("%2F", "/")
-		self.chapter["obsidian_link_show"] = self.chapter["obsidian_link_show"].replace("%20", " ") + ".md"
+		# Get the writing mode dictionary
+		self.dictionary["Writing mode"] = self.dictionary["Writing modes"]["Dictionary"][writing_mode]
 
-		self.obsidian = {}
+		# Define the writing mode key
+		self.writing_mode = writing_mode
 
-		import win32com.client
+	def Define_Chapter(self):
+		# Define the chapter "Titles" key
+		self.dictionary["Chapters"]["Titles"] = deepcopy(self.story["Information"]["Chapters"]["Titles"])
 
-		# Create shortcut file
-		self.obsidian["lnk"] = self.story["Folders"]["Obsidian's Vaults"]["root"] + "Obsidian.lnk"
-		self.obsidian["target"] = self.chapter["obsidian_link"]
-		self.obsidian["icon"] = self.user_folders["appdata"]["local"] + "/Obsidian/Obsidian.exe"
+		# Update the last posted chapter number with the number inside the story "Information" dictionary
+		self.dictionary["Chapters"]["Numbers"]["Last posted chapter"] = self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
 
-		# Create shortcut
-		shell = win32com.client.Dispatch("WScript.Shell")
-		self.obsidian["shortcut"] = shell.CreateShortCut(self.obsidian["lnk"])
-		self.obsidian["shortcut"].Targetpath = self.obsidian["target"]
-		self.obsidian["shortcut"].IconLocation = self.obsidian["icon"]
-		self.obsidian["shortcut"].save()
+		# ---------- #
 
-		# Create Obsidian bat
-		self.obsidian["bat"] = self.story["Folders"]["Obsidian's Vaults"]["root"] + "Obsidian.bat"
-		self.File.Create(self.obsidian["bat"])
+		# Define a shortcut for the story "Writing" dictionary in the current writing mode
+		self.dictionary["Writing"] = self.story["Information"]["Writing"][self.writing_mode]["Times"]
 
-		# Write to Obsidian bat
-		text = "@Echo off\nchcp 65001\n" + '"' + self.obsidian["lnk"] + '"'
-		self.File.Edit(self.obsidian["bat"], text, "w")
+		# If the user did not started writing the chapter in the writing mode
+		if self.dictionary["Writing"]["Duration"]["Units"] == {}:
+			# Add one to the chapter of the writing mode
+			self.story["Information"]["Writing"][self.writing_mode]["Chapter"] += 1
 
+			# Define the "First time writing" as True
+			self.states["First time writing"] = True
+
+		# Update the "Writing.json" file with the updated "Writing" dictionary
+		self.JSON.Edit(self.story["Folders"]["Information"]["Writing"], self.story["Information"]["Writing"])
+
+		# ---------- #
+
+		# Define the "Chapter" dictionary
+		self.dictionary["Chapter"] = {
+			"Number": 1,
+			"Numbers": {
+				"Leading zeroes": 1,
+				"Names": {}
+			},
+			"Titles": {},
+			"Titles (with leading zeroes)": {},
+			"Language": {},
+			"Folders": {},
+			"Files": {}
+		}
+
+		# Define the number
+		self.dictionary["Chapter"]["Number"] = self.story["Information"]["Writing"][self.writing_mode]["Chapter"]
+
+		# Define the number with leading zeroes
+		self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
+
+		# ---------- #
+
+		# Define the titles variable for easier typing and more beautiful code
+		titles = self.dictionary["Chapters"]["Titles"]
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Define the chapter title as the chapter number with leading zeroes
+			title = self.dictionary["Chapter"]["Numbers"]["Leading zeroes"]
+
+			# If the writing mode is either "Revise" or "Translate"
+			if self.writing_mode in ["Revise", "Translate"]:
+				# Update the title of the chapter
+				title = titles[language][self.dictionary["Chapter"]["Number"] - 1]
+
+			# Define the full chapter title
+			# [01 - Chapter Title]
+			full_title = title
+
+			# If the writing mode is either "Revise" or "Translate"
+			if self.writing_mode in ["Revise", "Translate"]:
+				# Define the full chapter title
+				# [01 - Chapter Title]
+				full_title = self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] + " - " + title
+
+			# Add the chapter title to the "Titles" dictionary
+			self.dictionary["Chapter"]["Titles"][language] = title
+
+			# Add the full title to the "Titles (with leading zeroes)" dictionary
+			self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] = full_title
+
+			# Get the number name of the chapter number
+			number_name = self.Date.texts["number_names, type: list"][language][int(self.dictionary["Chapter"]["Number"])]
+
+			# Add it to the "Names" dictionary
+			self.dictionary["Chapter"]["Numbers"]["Names"][language] = number_name
+
+		# ---------- #	
+
+		# Define the root folder of the chapter
+		self.dictionary["Chapter"]["Folders"] = self.story["Folders"]["Chapters"]
+
+		# ---------- #	
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Get the full language
+			full_language = self.languages["full"][language]
+
+			# Define the chapter file
+			self.dictionary["Chapter"]["Files"][language] = self.dictionary["Chapter"]["Folders"][full_language]["root"]
+
+			# Add the chapter title
+			self.dictionary["Chapter"]["Files"][language] += self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + ".txt"
+
+			# If the writing mode is "Write"
+			# And the current language is the user language
+			# (The chapters are always written in the user language)
+			if (
+				self.writing_mode == "Write" and
+				language == self.user_language
+			):
+				# Create the file
+				self.File.Create(self.dictionary["Chapter"]["Files"][language])
+
+			# If the writing mode is either "Write" or "Revise"
+			# And the language is the same as the user language
+			# (The chapters are always written or revised in the user language)
+			if (
+				self.writing_mode in ["Write", "Revise"] and
+				language == self.user_language
+			):
+				# Define the source language of the chapter as the current small and full language
+				self.dictionary["Chapter"]["Language"]["Source"] = {
+					"Small": language,
+					"Full": full_language
+				}
+
+		# If the writing mode is "Translate"
+		if self.writing_mode == "Translate":
+			# Define the source language of the chapter as the English language
+			# (The chapters are always translated in the English language)
+			self.dictionary["Chapter"]["Language"]["Source"] = {
+				"Small": "en",
+				"Full": self.languages["full"]["en"]
+			}
+
+			# Write the user language chapter text into the English file
+			text = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["string"]
+
+			self.File.Edit(self.dictionary["Chapter"]["Files"]["en"], text, "w")
+
+		# ---------- #
+
+		# Define a shortcut for the "Chapter" dictionary
+		self.chapter = self.dictionary["Chapter"]
+
+		# ---------- #
+
+		# Show a five dash space separator
 		print()
-		print(self.language_texts["obsidian_link"] + ":")
-		print(self.chapter["obsidian_link_show"])
-
-		# Open Obsidian bat
-		if self.switches["testing"] == False:
-			self.System.Open(self.obsidian["bat"])
-
-	def Finish_Writing(self):
-		# Ask to start counting writing time
-		type_text = self.language_texts["press_enter_to_start_counting_{}_time"].format(self.chapter["writing_mode"]["past_action"][self.user_language])
-
-		self.Input.Type(type_text)
-
-		# Define start writing time
-		self.chapter["start_writing_time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
-
-		print()
-		print(self.Date.language_texts["now_time"] + ":")
-		print(self.chapter["start_writing_time"])
-
-		# Ask for user to finish writing
-		type_text = self.language_texts["press_enter_when_you_finish_{}_the_chapter"].format(self.chapter["writing_mode"]["action"][self.user_language])
-
-		self.Input.Type(type_text)
-
-		# Define finish writing time
-		self.chapter["finish_writing_time"] = self.Date.Now(self.chapter["finish_writing_time"])["Formats"]["HH:MM DD/MM/YYYY"]
-
-		# Define time difference
-		self.chapter["time_difference"] = self.Date.Difference(self.chapter["start_writing_time"], self.chapter["finish_writing_time"])
-
-		# Make time difference using already defined "started writing time"
-		if self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"] != "":
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.From_String(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Object"]
-
-			dict_ = self.chapter["time_difference"]["Difference"]
-
-			# Add Relativedelta to the "started writing time"
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] + self.Date.Relativedelta(**dict_)
-
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"] = self.Date.Now(self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])["Formats"]["HH:MM DD/MM/YYYY"]
-
-		# Ask if user finished writing the chapter
-		self.chapter["finished_writing"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_{}_the_chapter"].format(self.chapter["writing_mode"]["action"][self.user_language]))
-
-		# Make empty dictionary
-		dict_ = {}
-
-		for item in self.texts["writing_modes, type: list"]["en"]:
-			dict_[item] = {}
-			dict_[item]["first"] = ""
-			dict_[item]["last"] = ""
-
-		# Update first writing time with finish writing time
-		if self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"] == "":
-			self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"] = self.chapter["finish_writing_time"]
-
-		# Define existing dictionary
-		if self.chapter["finished_writing"] == False:
-			dict_ = self.story["Information"]["Writing"]["Time"]
-
-		# Update writing time JSON file
-		file = self.story["Folders"]["Information"]["Writing"]["Time"]
-		self.JSON.Edit(file, dict_)
-
-		# Make time difference from past first and last writing times
-		if self.chapter["finished_writing"] == True:	
-			self.chapter["time_difference"] = self.Date.Difference(self.story["Information"]["Writing"]["Time"][self.writing_mode]["first"], self.story["Information"]["Writing"]["Time"][self.writing_mode]["last"])
-
-		# Show the finish writing time
-		item = self.chapter["writing_mode"]["past_action"][self.user_language]
-
-		print()
-		print(self.Date.language_texts["after_{}_time"].format(item) + ":")
-		print(self.chapter["finish_writing_time"])
+		print(self.separators["5"])
 		print()
 
-		# Show the time difference
-		print(self.Date.language_texts["time_difference"] + ":")
-		print(self.chapter["time_difference"]["Text"][self.user_language])
+		# Show the story title in the user language
+		print(self.Language.language_texts["story, title()"] + ":")
+		print("\t" + self.story["Titles"][self.user_language])
 		print()
 
+		# Define the show text
+		show_text = " " + self.language_texts["this_chapter"]
+		show_text = self.dictionary["Writing mode"]["Language texts"]["Action"].title() + show_text
+
+		# Show the information with the writing text in the action tense
+		print(show_text + ":")
+
+		# Define the chapter title
+		chapter_title = self.chapter["Titles"][self.user_language]
+
+		# If there is an addon, add it
+		if "Addon" in self.dictionary["Writing mode"]:
+			chapter_title += self.dictionary["Writing mode"]["Addon"]
+
+		# Show the chapter title
+		print("\t" + chapter_title)
+
+	def Open_Story_Website(self):
+		# Get the websites "URL" dictionary
+		url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
+
+		# Define the template variable for easier typing
+		template = url["Code"]["Templates"]["With language"]
+
+		# Define the list of items to use to format the template
+		items = [
+			self.story["Title"], # The title of the story and website
+			self.chapter["Language"]["Source"]["Full"] # The full chapter source language
+		]
+
+		# Format the template with the items
+		url = template.format(*items)
+
+		# Define the list of custom parameters to add to the URL
+		parameters = [
+			"chapter=" + str(self.chapter["Number"]), # The number of the chapter
+			"write=true", # The write switch, to activate writing mode on the story website
+			"show_chapter_covers=true" # Show chapter covers on the chapter tabs
+		]
+
+		# Iterate through the list of parameters
+		for parameter in parameters:
+			url += "&" + parameter
+
+		# Open the URL
+		self.System.Open(url)
+
+	def Start_Writing(self):
+		# Show a five dash space separator
+		print()
 		print(self.separators["5"])
 
-	def Rename_Chapter_Files(self):
-		# Ask for the new chapter titles
+		# ---------- #
+
+		# Ask to start counting the writing time
+		type_text = self.language_texts["press_enter_to_start_counting_the_time_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"]
+
+		self.Input.Type(type_text)
+
+		# Define the "Session" dictionary, with the first writing time
+		self.dictionary["Session"] = {
+			"Before": self.Date.Now(),
+			"After": {},
+			"Duration": {}
+		}
+
+		# Show the now time
+		print()
+		print(self.Date.language_texts["now, title()"] + ":")
+		print("\t" + self.dictionary["Session"]["Before"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# Ask for the user to press Enter when they stop writing
+		# (Not when the user finished writing the whole chapter)
+		type_text = self.language_texts["press_enter_when_you_stop"] + " " + self.dictionary["Writing mode"]["Language texts"]["Infinitive action"]
+
+		self.Input.Type(type_text)
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
+		# ---------- #
+
+		# Define the "After" time (now, but after writing)
+		self.dictionary["Session"]["After"] = self.Date.Now()
+
+		if self.switches["testing"] == True:
+			self.dictionary["Session"]["After"] = self.Date.Now(self.dictionary["Session"]["Before"]["Object"] + self.Date.Relativedelta(hours = 1))
+
+		# Show the after time (after writing the chapter)
+		print()
+		print(self.Date.language_texts["after, title()"] + ":")
+		print("\t" + self.dictionary["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# ---------- #
+
+		# Define the time difference
+		self.dictionary["Session"]["Duration"] = self.Date.Difference(self.dictionary["Session"]["Before"], self.dictionary["Session"]["After"])
+
+		# Get the time units of the time difference
+		self.dictionary["Session"]["Duration"]["Duration"] = self.dictionary["Session"]["Duration"]["Difference"]
+
+		# Show the writing duration time in the user language
+		print()
+		print(self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
+		print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.user_language])
+
+		# ---------- #
+
+		# If the writing session is the first one for the current chapter
+		if self.dictionary["Writing"]["Duration"]["Units"] == {}:
+			# Define the first time of writing as the "Before" time
+			self.dictionary["Writing"]["First"] = self.dictionary["Session"]["Before"]
+
+		else:
+			# Transform the already existing first writing time into a Date dictionary
+			self.dictionary["Writing"]["First"] = self.Date.From_String(self.dictionary["Writing"]["First"])
+
+		# Define the "Added" time as the first time if it is not present
+		if self.dictionary["Writing"]["Added"] == "":
+			self.dictionary["Writing"]["Added"] = deepcopy(self.dictionary["Writing"]["First"])
+
+		else:
+			# Transform the already existing added writing time into a Date dictionary
+			self.dictionary["Writing"]["Added"] = self.Date.From_String(self.dictionary["Writing"]["Added"])
+
+		# Define the last time of writing as the "After" time
+		self.dictionary["Writing"]["Last"] = self.dictionary["Session"]["After"]
+
+		# If the writing session is the first one for the current chapter
+		if self.states["First time writing"] == True:
+			# Define the "Duration" dictionary inside the writing "Times" dictionary
+			# With the "Units" dictionary being the units of the current session duration
+			self.dictionary["Writing"]["Duration"] = {
+				"Units": self.dictionary["Session"]["Duration"]["Duration"],
+				"Text": {}
+			}
+
+		# Calculate and update the writing time
+		self.Update_Writing_Time()
+
+		# ---------- #
+
+		# If this is not the first time the user writes the current chapter
+		if self.states["First time writing"] == False:
+			# Show the total writing time text in the user language
+			print()
+			print(self.Language.language_texts["total_duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
+			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.user_language])
+
+		# ---------- #
+
+		# Ask if user finished writing the whole chapter, not just a part of it
+		type_text = self.language_texts["did_you_finished_{}_the_whole_chapter"].format(self.dictionary["Writing mode"]["Language texts"]["Infinitive action"])
+
+		self.states["Finished writing"] = self.Input.Yes_Or_No(type_text)
+
+		# If the user finished writing the whole chapter
+		if self.states["Finished writing"] == True:
+			# Run the "Finish_Writing" method
+			self.Finish_Writing()
+
+		else:
+			# Register the writing task only on Diary Slim
+			self.Register_Task(register_task = False)
+
+	def Finish_Writing(self):
+		# If the writing mode is "Write"
 		if self.writing_mode == "Write":
-			for language in self.languages["small"]:
-				full_language = self.languages["full"][language]
-				translated_language = self.languages["full_translated"][language][self.user_language]
+			# Rename the chapter files
+			self.Rename_Chapter_Files()
 
-				# Ask for chapter title
-				self.chapter["titles"][full_language] += " - " + self.Input.Type(self.language_texts["type_or_paste_the_chapter_title_in_{}"].format(translated_language))
+		# Register the writing task
+		self.Register_Task()
 
-				# Define the titles file
-				file = self.story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
+		# Reset the writing mode "Writing" dictionary to its default version
+		self.Update_Writing_Time(purge = True)
 
-				# Write new chapter title to titles file
-				self.File.Edit(file, self.chapter["titles"][full_language], "a")
+	def Update_Writing_Time(self, purge = False):
+		# If the "purge" parameter is False
+		if purge == False:
+			# Create the time units dictionary
+			dictionary = {}
 
-		# Rename story chapter file
-		for key in self.chapter["Files"]["Story"]:
-			source_file = self.chapter["Files"]["Story"][key]
+			# Iterate through the time difference keys
+			for key, unit in self.dictionary["Session"]["Duration"]["Duration"].items():
+				dictionary[key.lower()] = unit
 
-			# Write Obsidian text into story chapter file
-			self.File.Edit(source_file, self.File.Contents(self.chapter["Files"]["obsidian"][key])["string"], "w")
+			# Add the writing time difference time unit to the added time date object
+			self.dictionary["Writing"]["Added"]["Object"] += self.Date.Relativedelta(**dictionary)
 
-			# Update chapter file path with chapter title
-			self.chapter["Files"]["Story"][key] = self.story["Folders"]["Chapters"][key]["root"] + self.chapter["titles"][key] + ".txt"
+			# Transform the added time into a date dictionary with the updated object (the added time above)
+			self.dictionary["Writing"]["Added"] = self.Date.Now(self.dictionary["Writing"]["Added"]["Object"])
 
-			if source_file != self.chapter["Files"]["Story"][key]:
-				self.File.Move(source_file, self.chapter["Files"]["Story"][key])
+			# Make the difference between the first time and the added time
+			difference = self.Date.Difference(self.dictionary["Writing"]["First"]["Object"], self.dictionary["Writing"]["Added"]["Object"])
 
-		# Rename Obsidian chapter file
-		for key in self.chapter["Files"]["obsidian"]:
-			source_file = self.chapter["Files"]["obsidian"][key]
+			# Update the time units of the "Duration" dictionary
+			self.dictionary["Writing"]["Duration"]["Units"] = difference["Difference"]
 
-			# Update chapter file path with chapter title
-			self.chapter["Files"]["obsidian"][key] = self.story["Folders"]["Obsidian's Vaults"]["Chapters"][key] + self.chapter["titles"][key] + ".md"
+			# Create the writing time text using the "Make_Time_Text" method of the "Date" module
+			self.dictionary["Writing"]["Duration"]["Text"] = self.Date.Make_Time_Text(difference)
 
-			if source_file != self.chapter["Files"]["obsidian"][key]:
-				self.File.Move(source_file, self.chapter["Files"]["obsidian"][key])
+			# Transform the times back into date strings
+			for key in ["First", "Last", "Added"]:
+				self.dictionary["Writing"][key] = self.Date.To_String(self.dictionary["Writing"][key], utc = False)
 
-	def Register_Task(self):
+		# If the "purge" parameter is True
+		if purge == True:
+			# Reset the writing mode "Times" dictionary to its default version
+			self.story["Information"]["Writing"][self.writing_mode]["Times"] = {
+				"First": "",
+				"Last": "",
+				"Added": "",
+				"Duration": {
+					"Units": {},
+					"Text": {}
+				}
+			}
+
+		# Update the "Writing.json" file
+		self.JSON.Edit(self.story["Folders"]["Information"]["Writing"], self.story["Information"]["Writing"])
+
+	def Rename_Chapter_Files(self):
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Get the full and translated languages
+			full_language = self.languages["full"][language]
+			translated_language = self.languages["full_translated"][language][self.user_language]
+
+			# Ask for chapter title in the current language
+			type_text = self.language_texts["type_the_chapter_title_in_{}"].format(translated_language)
+
+			chapter_title = self.Input.Type(type_text, next_line = True)
+
+			# Add it to the "Titles" dictionary
+			self.chapter["Titles"][language] = chapter_title
+
+			# Add it to the "Titles (with leading zeroes)" dictionary
+			self.chapter["Titles (with leading zeroes)"][language] += " - " + chapter_title
+
+			# Define the titles file
+			file = self.story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
+
+			# Add the new chapter title to titles file
+			self.File.Edit(file, chapter_title, "a")
+
+			# ---------- #
+
+			# Define the source file
+			source_file = self.chapter["Files"][language]
+
+			# Define the destination file
+			destination_file = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["Titles (with leading zeroes)"][language] + ".txt"
+
+			# If the current language is the user language
+			if language == self.user_language:
+				# Rename the chapter file
+				self.File.Move(source_file, destination_file)
+
+			# Else, just create the destination file
+			else:
+				self.File.Create(destination_file)
+
+	def Register_Task(self, register_task = True):
 		# Create the task dictionary, to use it on the "Tasks" class
 		self.task_dictionary = {
 			"Task": {
 				"Titles": {},
 				"Descriptions": {},
-				"Custom state text": self.chapter["writing_mode"]["chapter"]
+				"Custom task item": self.dictionary["Writing mode"]["Texts"]["Chapter"]
 			}
 		}
 
-		# Define I text based on finished writing or not
-		i_text = self.texts["i_started_{}_the_chapter_{}_of_my_story_{}"]
+		# Define the text template for the task as the "I started writing", for the first time
+		template = self.texts["i_started_{}_the_chapter_{}_of_my_story_{}"]
 
-		if self.chapter["finished_writing"] == True:
-			i_text = self.texts["i_{}_the_chapter_{}_of_my_story_{}"]
+		# If this is not the first time the user writes the current chapter
+		# And is not the last one (the user did not finished writing the whole chapter)
+		if (
+			self.states["First time writing"] == False and
+			self.states["Finished writing"] == False
+		):
+			# Define the text template for the task as the "I have been writing", for the middle times
+			# (Not the beginning of writing, and not the ending)
+			template = self.texts["i_have_been_{}_the_chapter_{}_of_my_story_{}_until_now"]
 
-		# Create task titles and descriptions
+		# If the user finished writing the whole chapter
+		if self.states["Finished writing"] == True:
+			# Define the text template for the task as the "I finished writing", for the last time
+			template = self.texts["i_finished_{}_the_chapter_{}_of_my_story_{}"]
+
+		# ---------- #
+
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# Get the full and translated user languages
 			full_language = self.languages["full"][language]
 			translated_user_language = self.languages["full_translated"][self.user_language][language]
 
-			parameters = self.chapter["writing_mode"]["action"][language], self.chapter["number_names"][language], self.story["Titles"][language]
+			# Define the list of items to use to format the template
+			items = [
+				self.dictionary["Writing mode"]["Texts"]["Infinitive action"][language],
+				self.chapter["Numbers"]["Names"][language],
+				self.story["Titles"][language]
+			]
 
-			# Add past writing mode to parameters list
-			if self.chapter["finished_writing"] == True:
-				parameters = list(parameters)
-				parameters[0] = self.chapter["writing_mode"]["past"][language]
-				parameters = tuple(parameters)
+			# If this is not the first time the user writes the current chapter
+			# And is not the last one (the user did not finished writing the whole chapter)
+			if (
+				self.states["First time writing"] == False and
+				self.states["Finished writing"] == False
+			):
+				# Update the writing mode text to the "Action" one
+				items[0] = self.dictionary["Writing mode"]["Texts"]["Action"][language]
 
-			# Create task titles
-			self.task_dictionary["Task"]["Titles"][language] = i_text[language]
-			self.task_dictionary["Task"]["Titles"][language] = self.task_dictionary["Task"]["Titles"][language].format(*parameters)
+			# Define the task title in the current language as the template in the current language
+			task_title = template[language]
 
-			# Add translated user language to task name if writing mode is "Translate"
+			# If the writing mode is "Translate"
 			if self.writing_mode == "Translate":
-				self.task_dictionary["Task"]["Titles"][language] += " " + self.Language.texts["to"][language] + " " + translated_user_language
+				# Define the English translated language
+				translated_language = self.languages["full_translated"]["en"][language]
 
-			self.task_dictionary["Task"]["Titles"][language] += "."
+				# Add the "from [User langauge] to English" text
+				task_title += " " + self.Language.texts["from_{}_to_{}"][language].format(translated_user_language, translated_language)
 
-			# Create task descriptions
-			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language]
+			# Format the template with the list of items
+			task_title = task_title.format(*items)
 
-			# Add writing time
-			self.task_dictionary["Task"]["Descriptions"][language] += "\n\n"
+			# Add the task title to the "Task" dictionary
+			self.task_dictionary["Task"]["Titles"][language] = task_title
 
-			text = self.chapter["writing_mode"]["past_action"][language]
+			# ---------- #
 
-			if self.Date.texts["{}_time"][language][0] == "{":
-				text = text.capitalize()
+			# Create the task description, initially as the task title with a dot
+			description = self.task_dictionary["Task"]["Titles"][language] + "."
 
-			self.task_dictionary["Task"]["Descriptions"][language] += self.Date.texts["{}_time"][language].format(text) + ":" + "\n"
-			self.task_dictionary["Task"]["Descriptions"][language] += self.chapter["time_difference"]["Text"][language]
+			# Add two line breaks
+			description += "\n\n"
 
-			# Add "still did not finished writing" text to task description if did not finished writing
-			if self.chapter["finished_writing"] == False:
-				self.task_dictionary["Task"]["Descriptions"][language] += "\n\n"
-				self.task_dictionary["Task"]["Descriptions"][language] += self.texts["i_still_did_not_finished_{}_the_chapter"][language].format(self.chapter["writing_mode"]["action"][language]) + "."
+			# ---------- #
+
+			# If the user finished writing the whole chapter
+			if self.states["Finished writing"] == True:
+				# Add the "The chapter with the title" text
+				description += self.texts["the_chapter_with_the_title"][language] + ":" + "\n"
+
+				# Add the chapter title in the current language
+				description += self.chapter["Titles"][language]
+
+				# Add two line breaks
+				description += "\n\n"
+
+			# ---------- #
+
+			# Add the "I started at, and stopped at" formatted template
+			items = [
+				self.dictionary["Session"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0],
+				self.dictionary["Session"]["After"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0]
+			]
+
+			description += self.texts["i_started_at_{}_and_stopped_at_{}"][language].format(*items)
+
+			# Add the dot and line break
+			description += "." + "\n"
+
+			# ---------- #
+
+			# Add the "I [wrote] for [writing time]" formatted template
+			items = [
+				self.dictionary["Writing mode"]["Texts"]["Done"][language].lower()
+			]
+
+			description += self.texts["i_{}_for"][language].format(*items)
+
+			# Add the session writing time text
+			# Example: 1 hour, 30 minutes, 10 seconds
+			description += " " + self.dictionary["Session"]["Duration"]["Text"][language]
+
+			# Add the session writing time units
+			# Example: (01:30:10)
+			description += " ("
+
+			# Define the list of keys
+			keys = list(self.dictionary["Session"]["Duration"]["Duration"].keys())
+
+			# Iterate through the list of units
+			for key, unit in self.dictionary["Session"]["Duration"]["Duration"].items():
+				# Add the unit number with leading zeroes
+				description += str(self.Text.Add_Leading_Zeroes(unit))
+
+				# If the unit is not the last one, add a colon
+				if key != keys[-1]:
+					description += ":"
+
+			# Close the parenthesis and add the dot
+			description += ")."
+
+			# ---------- #
+
+			# If this is not the first time the user writes the current chapter
+			if self.states["First time writing"] == False:
+				# Add two line breaks
+				description += "\n\n"
+
+				# Add the "Totalling " text
+				description += self.Language.texts["totaling, title()"][language] + " "
+
+				# Add the total writing time text
+				# Example: 1 hour, 30 minutes, 10 seconds
+				description += self.dictionary["Writing"]["Duration"]["Text"][language]
+
+				# Add the total writing time units
+				# Example: (01:30:10)
+				description += " ("
+
+				# Define the list of keys
+				keys = list(self.dictionary["Writing"]["Duration"]["Units"].keys())
+
+				# Iterate through the list of units
+				for key, unit in self.dictionary["Writing"]["Duration"]["Units"].items():
+					# Add the unit number with leading zeroes
+					description += str(self.Text.Add_Leading_Zeroes(unit))
+
+					# If the unit is not the last one, add a colon
+					if key != keys[-1]:
+						description += ":"
+
+				# Close the parenthesis and add the dot
+				description += ")."
+
+			# ---------- #
+
+			# Add the task description to the "Task" dictionary
+			self.task_dictionary["Task"]["Descriptions"][language] = description
 
 		# Register the task with the root method
-		Stories.Register_Task(self, self.task_dictionary, register_task = self.register_task)
-
-	def Close_Obsidian(self):
-		# Close Obsidian
-		self.System.Close("Obsidian")
-
-		# Delete lnk file
-		self.File.Delete(self.obsidian["lnk"])
-
-		# Delete bat file
-		self.File.Delete(self.obsidian["bat"])
+		Stories.Register_Task(self, self.task_dictionary, register_task = register_task)

@@ -768,7 +768,6 @@ class Language():
 			self.Create(self.settings_file)
 			self.Edit(self.settings_file, self.From_Python({}), "w")
 
-		#self.space_text = "__" + self.language_texts["space, title()"] + "__"
 		self.space_text = ""
 
 	def Read_Settings_File(self):

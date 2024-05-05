@@ -299,7 +299,12 @@ class Create_New_Story(Stories):
 				"Chapter": 0,
 				"Times": {
 					"First": "",
-					"Last": ""
+					"Last": "",
+					"Added": "",
+					"Duration": {
+						"Units": {},
+						"Text": {}
+					}
 				}
 			}
 

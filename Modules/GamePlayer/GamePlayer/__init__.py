@@ -1635,17 +1635,17 @@ class GamePlayer(object):
 			# Add the difference time to the game time
 			game["Gaming time"]["Units"][key] += difference
 
-		# Iterate through the difference time units
-		for key in entry["Session duration"]["Difference"]:
-			dict_ = {
-				key.lower(): game["Gaming time"]["Units"][key]
-			}
+			# Iterate through the difference time units
+			for key in entry["Session duration"]["Difference"]:
+				dict_ = {
+					key.lower(): game["Gaming time"]["Units"][key]
+				}
 
-			# Add the game time difference time unit to the added time date object
-			game["Gaming time"]["Times"]["Added"]["Object"] += self.Date.Relativedelta(**dict_)
+				# Add the game time difference time unit to the added time date object
+				game["Gaming time"]["Times"]["Added"]["Object"] += self.Date.Relativedelta(**dict_)
 
-		# Transform the added time into a date dictionary with the updated object (the added time above)
-		game["Gaming time"]["Times"]["Added"] = self.Date.Now(game["Gaming time"]["Times"]["Added"]["Object"])
+			# Transform the added time into a date dictionary with the updated object (the added time above)
+			game["Gaming time"]["Times"]["Added"] = self.Date.Now(game["Gaming time"]["Times"]["Added"]["Object"])
 
 		# --------------- #
 
@@ -1653,9 +1653,7 @@ class GamePlayer(object):
 		difference = self.Date.Difference(game["Gaming time"]["Times"]["First"]["Object"], game["Gaming time"]["Times"]["Added"]["Object"])
 
 		# Define the game time difference units as the difference above
-		for key in difference["Difference"]:
-			diff = difference["Difference"][key]
-
+		for key, diff in difference["Difference"].items():
 			game["Gaming time"]["Units"][key] = diff
 
 		# Define the added time as the first time

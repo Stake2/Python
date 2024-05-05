@@ -139,55 +139,42 @@ class Show_Story_Information(Stories):
 			print("\t" + story["Information"]["Links"]["Website"]["Link"])
 			print()
 
-			# If the "Wattpad" IDs dictionary is not empty
-			if story["Information"]["Links"]["Wattpad"]["IDs"] != {}:
-				# Show the "Wattpad:" text
-				print("Wattpad:")
+			# Iterate through the list of story websites
+			for key in self.stories["Story websites"]["List"]:
+				# If the story website IDs dictionary is not empty
+				if story["Information"]["Links"][key]["IDs"] != {}:
+					# Show the name of the story website
+					print(key + ":")
 
-				# Show the Wattpad information of the story
-				for language in self.languages["small"]:
-					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.user_language]
+					# Show the story website information of the story
+					for language in self.languages["small"]:
+						# Get the translated language
+						translated_language = self.languages["full_translated"][language][self.user_language]
 
-					# Get the item (link)
-					item = story["Information"]["Links"]["Wattpad"]["Read story"][language]
+						# Get the item (link)
+						item = story["Information"]["Links"][key]
 
-					# Show the link in the current language
-					# With the translated language
-					print("\t" + translated_language + ":")
-					print("\t" + item)
+						# Define the sub-key
+						sub_key = "Links"
 
-					# If the language is not the last one
-					if language != self.languages["small"][-1]:
-						# Show a space separator
-						print()
+						# If the story website is "Wattpad"
+						if key == "Wattpad":
+							sub_key = "Read story"
 
-				print()
+						# Get the language link
+						item = item[sub_key][language]
 
-			# If the "Spirit Fanfics" IDs dictionary is not empty
-			if story["Information"]["Links"]["Spirit Fanfics"]["IDs"] != {}:
-				# Show the "Spirit Fanfics:" text
-				print("Spirit Fanfics:")
+						# Show the link in the current language
+						# With the translated language
+						print("\t" + translated_language + ":")
+						print("\t" + item)
 
-				# Show the Spirit Fanfics information of the story
-				for language in self.languages["small"]:
-					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.user_language]
+						# If the language is not the last one
+						if language != self.languages["small"][-1]:
+							# Show a space separator
+							print()
 
-					# Get the item (link)
-					item = story["Information"]["Links"]["Spirit Fanfics"]["Links"][language]
-
-					# Show the link in the current language
-					# With the translated language
-					print("\t" + translated_language + ":")
-					print("\t" + item)
-
-					# If the language is not the last one
-					if language != self.languages["small"][-1]:
-						# Show a space separator
-						print()
-
-				print()
+					print()
 
 		# Show a five dash space separator
 		print(self.separators["5"])

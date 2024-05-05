@@ -144,6 +144,10 @@
 		"en": "Items",
 		"pt": "Itens"
 	},
+	"from_{}_to_{}": {
+		"en": "from {} to {}",
+		"pt": "do {} para o {}"
+	},
 	"select_an_item_from_the_list": {
 		"en": "Select an item from the list",
 		"pt": "Selecionar um item da lista"
@@ -550,6 +554,18 @@
 	"{}_times": {
 		"en": "{} times",
 		"pt": "{} vezes"
+	},
+	"duration_of": {
+		"en": "Duration of",
+		"pt": "Duração de"
+	},
+	"total_duration_of": {
+		"en": "Total duration of",
+		"pt": "Duração total de"
+	},
+	"totaling, title()": {
+		"en": "Totaling",
+		"pt": "Totalizando"
 	},
 	"{}_information": {
 		"pt": "Informações de {}",
@@ -1865,6 +1881,14 @@
 	"writing, title()": {
 		"en": "Writing",
 		"pt": "Escrevendo"
+	},
+	"revise, title()": {
+		"en": "Revise",
+		"pt": "Revisar"
+	},
+	"translate, title()": {
+		"en": "Translate",
+		"pt": "Traduzir"
 	},
 	"post, title()": {
 		"en": "Post",

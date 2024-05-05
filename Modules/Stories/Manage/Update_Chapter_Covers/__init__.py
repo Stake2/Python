@@ -17,12 +17,12 @@ class Update_Chapter_Covers(Stories):
 		# Show the information text with the story title in the user language
 		print(self.language_texts["updating_the_chapter_covers_of_this_story"] + ":")
 		print(self.story["Titles"][self.user_language])
-		print()
 
 		# Run the "Post" class as a module to update all of the chapter covers
 		self.Post(run_as_module = True)
 
-		# Show a dash space separator and a space separator
+		# Show a five dash space separator
+		print()
 		print(self.separators["5"])
 		print()
 
@@ -31,6 +31,7 @@ class Update_Chapter_Covers(Stories):
 		print(self.story["Titles"][self.user_language])
 
 		# Show a five dash space separator
+		print()
 		print(self.separators["5"])
 
 	def Import_Sub_Classes(self):
