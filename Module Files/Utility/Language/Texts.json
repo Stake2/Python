@@ -2029,6 +2029,10 @@
 		"pt": "Sites",
 		"en": "Websites"
 	},
+	"year, title()": {
+		"pt": "Ano",
+		"en": "Year"
+	},
 	"years, title()": {
 		"pt": "Anos",
 		"en": "Years"
@@ -2072,6 +2076,10 @@
 	"it_is": {
 		"en": "it is",
 		"pt": "é"
+	},
+	"in": {
+		"en": "in",
+		"pt": "em"
 	},
 	"on, style: in": {
 		"en": "on",

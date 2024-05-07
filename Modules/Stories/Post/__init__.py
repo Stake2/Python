@@ -523,8 +523,14 @@ class Post(Stories):
 		# Import the "Update websites" sub-class of the "PHP" module
 		from PHP.Update_Websites import Update_Websites as Update_Websites
 
+		# Define the dictionary to update the story website
+		dictionary = {
+			"Website": self.story["Title"],
+			"Verbose": True
+		}
+
 		# Update the website of the selected story
-		Update_Websites(module_website = self.story["Title"], verbose = True)
+		Update_Websites(dictionary)
 
 	def Copy_Chapter_Text(self, language, full_language):
 		# Get the language chapter file

@@ -23,7 +23,6 @@ class Update_CSS_Colors(PHP):
 		# With the selectors dictionary
 		self.dictionary = {
 			"Files": {
-				"Colors JSON": self.folders["Mega"]["PHP"]["JSON"]["Colors"],
 				"Colors CSS": self.folders["Mega"]["Websites"]["CSS"]["Colors"]
 			},
 			"Texts": {},
@@ -75,9 +74,6 @@ class Update_CSS_Colors(PHP):
 				}
 			}
 		}
-
-		# Read the "Colors.json" file
-		self.colors = self.JSON.To_Python(self.dictionary["Files"]["Colors JSON"])
 
 	def Create_Color_Selectors(self):
 		# Iterate through the colors list

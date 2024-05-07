@@ -7,9 +7,12 @@ class PHP(object):
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
+
+		# Define the dictionaries
+		self.Define_Dictionaries()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -97,3 +100,13 @@ class PHP(object):
 
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
+
+	def Define_Dictionaries(self):
+		# Read the "Websites.json" file to get the "Websites" dictionary
+		self.websites = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Websites"])
+
+		# Read the "URL.json" file to get the "URL" dictionary
+		self.url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
+
+		# Read the "Colors.json" file to get the "Colors" dictionary
+		self.colors = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Colors"])

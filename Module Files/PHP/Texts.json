@@ -1,8 +1,4 @@
 {
-	"general, title()": {
-		"pt": "Geral",
-		"en": "General"
-	},
 	"websites": {
 		"pt": "sites",
 		"en": "websites"
@@ -31,10 +27,6 @@
 		"pt": "Atualizando estes sites",
 		"en": "Updating these websites"
 	},
-	"website_link": {
-		"pt": "Link do site",
-		"en": "Website link"
-	},
 	"press_enter_when_the_pages_finish_loading": {
 		"pt": "Pressione Enter quando as páginas terminarem de carregar",
 		"en": "Press Enter when the pages finish loading"
@@ -43,21 +35,21 @@
 		"pt": "Atualizar mais sites",
 		"en": "Update more websites"
 	},
-	"copy_and_paste_the_text": {
-		"pt": "Copie e cole o texto",
-		"en": "Copy and paste the text"
+	"create_a_list_of_websites_to_update": {
+		"pt": "Criar uma lista de sites para atualizar",
+		"en": "Create a list of websites to update"
 	},
-	"create_website_list_to_update": {
-		"pt": "Criar lista de sites para atualizar",
-		"en": "Create website list to update"
+	"update_all_websites": {
+		"pt": "Atualizar todos os sites",
+		"en": "Update all websites"
 	},
-	"finish_selection": {
-		"pt": "Terminar seleção",
-		"en": "Finish selection"
+	"update_all_{}_websites": {
+		"pt": "Atualizar todos os sites de {}",
+		"en": "Update all {} websites"
 	},
-	"you_finished_updating_the_website": {
-		"pt": "Você terminou de atualizar o site",
-		"en": "You finished updating the website"
+	"you_finished_updating_this_website": {
+		"pt": "Você terminou de atualizar este site",
+		"en": "You finished updating this website"
 	},
 	"you_finished_updating_these_websites": {
 		"pt": "Você terminou de atualizar estes sites",
