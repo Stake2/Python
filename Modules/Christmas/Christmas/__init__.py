@@ -178,7 +178,7 @@ class Christmas():
 				"Texts": self.current_year["Folders"]["Christmas"]["Merry Christmas"]["Texts"]
 			},
 			"Programs": {
-				"Foobar2000": self.folders["Program Files (x86)"]["Foobar2000"]["root"] + "foobar2000.exe"
+				"Foobar2000": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
 			},
 			"Social Network links": {
 				"YouTube": "https://www.youtube.com/@Stake2_/",

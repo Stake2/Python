@@ -147,6 +147,9 @@ class Folder():
 				"root": self.folders["Program Files (x86)"]["root"] + folder + "/"
 			}
 
+		# Define the "Foobar2000.exe" program
+		self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"] = self.folders["Program Files (x86)"]["Foobar2000"]["root"] + "foobar2000.exe"
+
 		# "Apps" sub-folders
 		folders = [
 			"Module files",

@@ -89,15 +89,18 @@ class Create_New_Story(Stories):
 				"Last posted chapter": 0
 			},
 			"Titles": {},
-			"Dates": []
+			"Dates": [],
+			"Dictionary": {}
 		}
 
 		# ---------- #
 
-		# Show the text telling the user to type the details about the story
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
+
+		# Show the text telling the user to type the details about the story
 		print(self.language_texts["type_the_information_of_the_story"] + ":")
 
 		# Define the list of keys
@@ -479,7 +482,7 @@ class Create_New_Story(Stories):
 		keys = [
 			"Folders",
 			"Story pack",
-			"Writing links",
+			"Writing",
 			"Directories",
 			"Information items",
 			"Cover types"

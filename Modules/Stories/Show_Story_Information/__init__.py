@@ -124,6 +124,26 @@ class Show_Story_Information(Stories):
 
 				print()
 
+			# Show the chapters of the story if they exist
+			if story["Information"]["Chapters"]["Numbers"]["Total"] != 0:
+				print(self.Language.language_texts["chapters, title()"] + ":")
+
+				# Show the number of chapters
+				print("\t" + self.Language.language_texts["number, title()"] + ":")
+				print("\t\t" + str(story["Information"]["Chapters"]["Numbers"]["Total"]))
+				print()
+
+				# Show the titles of the chapters in the user language with their numbers
+				print("\t" + self.Language.language_texts["titles, title()"] + ":")
+
+				t = 1
+				for title in story["Information"]["Chapters"]["Titles"][self.user_language]:
+					print("\t\t" + str(t) + " - " + title)
+
+					t += 1
+
+				print()
+
 			# Show the folder of the story
 			print(self.Folder.language_texts["folder, title()"] + ":")
 			print("\t" + story["Folders"]["root"])

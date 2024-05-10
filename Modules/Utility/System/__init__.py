@@ -84,7 +84,8 @@ class System():
 		import psutil
 
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
-			process.kill()
+			if self.switches["testing"] == False:
+				process.kill()
 
 	def Open_Link(self, link, verbose = True):
 		import webbrowser

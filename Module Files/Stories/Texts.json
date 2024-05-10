@@ -205,9 +205,37 @@
 			"pt": "traduzido"
 		}
 	},
+	"opening_the_chapter_file_in": {
+		"en": "Opening the chapter file in",
+		"pt": "Abrindo o arquivo do capítulo em"
+	},
+	"opening_the_story_website_in": {
+		"en": "Opening the story website in",
+		"pt": "Abrindo o site da história em"
+	},
+	"opening_{}_for_you_to_listen_to_the_soundtrack_of_the_story": {
+		"en": "Opening \"{}\" for you to listen to the soundtrack of the story",
+		"pt": "Abrindo o \"{}\" para você ouvir a trilha sonora da história"
+	},
 	"press_enter_to_start_counting_the_time_of": {
 		"en": "Press Enter to start counting the time of",
 		"pt": "Pressione Enter para começar a contar o tempo de"
+	},
+	"do_you_want_to_pause_the_{}_session": {
+		"en": "Do you want to pause the {} session",
+		"pt": "Você quer pausar a sessão de {}"
+	},
+	"do_you_want_to_postpone_the_{}_session_to_continue_{}_later": {
+		"en": "Do you want to postpone the {} session to continue {} later",
+		"pt": "Você quer adiar a sessão de {} para continuar {} depois"
+	},
+	"press_enter_to_unpause_the_{}_session": {
+		"en": "Press Enter to unpause the {} session",
+		"pt": "Pressione Enter para despausar a sessão de {}"
+	},
+	"the_time_subtracted_from_the_total_{}_time": {
+		"en": "the time subtracted from the total {} time",
+		"pt": "o tempo subtraído do tempo total de {}"
 	},
 	"press_enter_when_you_stop": {
 		"en": "Press Enter when you stop",
@@ -220,6 +248,10 @@
 	"this_chapter": {
 		"en": "this chapter",
 		"pt": "este capítulo"
+	},
+	"do_you_want_to_update_the_chapter_titles": {
+		"en": "Do you want to update the chapter titles",
+		"pt": "Você quer atualizar os títulos do capítulo"
 	},
 	"type_the_chapter_title_in_{}": {
 		"en": "Type the chapter title in {}",

@@ -563,6 +563,10 @@
 		"en": "Total duration of",
 		"pt": "Duração total de"
 	},
+	"pause, type: item": {
+		"en": "Pause",
+		"pt": "Pausa"
+	},
 	"totaling, title()": {
 		"en": "Totaling",
 		"pt": "Totalizando"
@@ -1076,6 +1080,10 @@
 	"opening, title()": {
 		"en": "Opening",
 		"pt": "Abrindo"
+	},
+	"opening_the": {
+		"en": "Opening",
+		"pt": "Abrindo o"
 	},
 	"opening_this_file": {
 		"en": "Opening this file",
@@ -2012,6 +2020,10 @@
 	"dates, title()": {
 		"pt": "Datas",
 		"en": "Dates"
+	},
+	"writing_dates": {
+		"pt": "Datas de escrita",
+		"en": "Writing dates"
 	},
 	"operational_system": {
 		"en": "Operational System",

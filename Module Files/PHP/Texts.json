@@ -55,6 +55,14 @@
 		"pt": "Você terminou de atualizar estes sites",
 		"en": "You finished updating these websites"
 	},
+	"opening_the_server": {
+		"pt": "Abrindo o servidor",
+		"en": "Opening the server"
+	},
+	"closing_the_server": {
+		"pt": "Fechando o servidor",
+		"en": "Closing the server"
+	},
 	"the_file_of_colors_was_not_modified": {
 		"pt": "O arquivo de cores não foi modificado",
 		"en": "The file of colors was not modified"

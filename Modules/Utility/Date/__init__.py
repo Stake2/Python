@@ -483,6 +483,15 @@ class Date():
 				):
 					date["Text"][language] += ", "
 
+		# Remove spaces at the end of the texts if they are present
+		for key in date["Text"]:
+			text = date["Text"][key]
+
+			if " " in text[-1]:
+				text = text[:-1]
+
+			date["Text"][key] = text
+
 		return date["Text"]
 
 	def Number_Name_Generator(self):

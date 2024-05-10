@@ -135,6 +135,7 @@ class Stories(object):
 	def Import_Classes(self):
 		# Define the classes to be imported
 		classes = [
+			"PHP",
 			"Social_Networks"
 		]
 
@@ -148,6 +149,17 @@ class Stories(object):
 
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class())
+
+		# Import the root methods of the "PHP" class
+		for method in ["Define", "Manage"]:
+			# Define the method name
+			method_name = method + "_Server"
+
+			# Get the method
+			method = getattr(self.PHP, method_name)
+
+			# Add the method to the "Stories" class
+			setattr(self, method_name, method)
 
 	def Define_Social_Network_Variables(self):
 		# Get the "Social Networks" dictionary from the "Social_Networks" module
@@ -362,13 +374,13 @@ class Stories(object):
 			}
 		}
 
-		# Define the "Writing links" dictionary
-		self.stories["Writing links"] = {
-			"TimeAndDate": {
-				"Link": "https://www.timeanddate.com/stopwatch/"
+		# Define the "Writing" dictionary
+		self.stories["Writing"] = {
+			"Links": {
+				"Google Translate": "https://translate.google.com/"
 			},
-			"Google Translate": {
-				"Link": "https://translate.google.com/"
+			"Programs": {
+				"Foobar2000": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
 			}
 		}
 
@@ -388,7 +400,7 @@ class Stories(object):
 					"Language"
 				],
 				"Files": [
-					"Dates"
+					"Writing dates"
 				]
 			},
 			"Comments": {},
@@ -962,7 +974,8 @@ class Stories(object):
 					"Last posted chapter": 0
 				},
 				"Titles": {},
-				"Dates": self.File.Contents(story["Folders"]["Chapters"]["Dates"])["lines"]
+				"Writing dates": self.File.Contents(story["Folders"]["Chapters"]["Writing dates"])["lines"],
+				"Dictionary": {}
 			}
 
 			# Add the chapter titles to the chapter "Titles" dictionary
@@ -985,8 +998,50 @@ class Stories(object):
 			contents = self.File.Contents(file)
 
 			if contents["lines"] != []:
+				# Get the JSON dictionary
+				json = self.JSON.To_Python(file)
+
 				# Update the "Last posted chapter" key with the correct number
-				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = self.JSON.To_Python(file)["Numbers"]["Last posted chapter"]
+				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = json["Numbers"]["Last posted chapter"]
+
+				# Update the chapters "Dictionary"
+				story["Information"]["Chapters"]["Dictionary"] = json["Dictionary"]
+
+			# Iterate through the chapters inside the chapters list
+			c = 1
+			for chapter in story["Information"]["Chapters"]["Titles"]["en"]:
+				# If the chapter dictionary does not exist
+				if str(c) not in list(story["Information"]["Chapters"]["Dictionary"].keys()):
+					# Define the chapter dictionary with its information
+					chapter = {
+						"Number": c,
+						"Titles": {},
+						"Dates": {
+							"Written": "",
+							"Revised": "",
+							"Translated": ""
+						}
+					}
+
+					# Define the titles of the chapter
+					for language in self.languages["small"]:
+						chapter["Titles"][language] = story["Information"]["Chapters"]["Titles"][language][c - 1]
+
+					# Define the "writing dates" variable for easier typing
+					writing_dates = story["Information"]["Chapters"]["Writing dates"]
+
+					# If the written date for the chapter exists
+					if (
+						writing_dates != [] and
+						len(writing_dates) >= c
+					):
+						# Define the chapter written date
+						chapter["Dates"]["Written"] = writing_dates[c - 1]
+
+					# Add the chapter dictionary to the "Chapters" dictionary
+					story["Information"]["Chapters"]["Dictionary"][str(c)] = chapter
+
+				c += 1
 
 			# Write the "Chapters" dictionary into the "Chapters.json" file
 			self.JSON.Edit(story["Folders"]["Information"]["Chapters"], story["Information"]["Chapters"])
@@ -1228,7 +1283,7 @@ class Stories(object):
 		keys = [
 			"Folders",
 			"Story pack",
-			"Writing links",
+			"Writing",
 			"Directories",
 			"Information items",
 			"Story websites",
@@ -1585,7 +1640,7 @@ class Stories(object):
 			dictionary = {
 				"Text": task_dictionary["Task"]["Descriptions"][self.user_language],
 				"Time": self.task_dictionary["Entry"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
-				"Show text": False
+				"Show text": True
 			}
 
 			# Write the task text on Diary Slim

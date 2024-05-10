@@ -137,18 +137,6 @@ class Update_Websites(PHP):
 			# Add the full translated language
 			self.dictionary["Languages"]["Full translated"][language] = self.languages["full_translated"][language]
 
-	def Define_Server(self):
-		# Define the "Server" dictionary
-		self.dictionary["Server"] = {
-			"Name": "XAMPP",
-			"Server": self.folders["XAMPP"]["XAMPP Control"],
-			"Programs": [
-				"xampp-control",
-				"httpd",
-				"mysql"
-			]
-		}
-
 	def Define_Websites(self, dictionary):
 		# Iterate through the dictionary of websites
 		for title, website in self.websites["Dictionary"].items():
@@ -405,23 +393,6 @@ class Update_Websites(PHP):
 
 		# Return the dictionary and parameters
 		return dictionary, parameters
-
-	def Manage_Server(self, open = False, close = False):
-		# If the "testing" switch is False
-		if self.switches["testing"] == False:
-			# If the "open" parameter is True
-			if open == True:
-				# Open the server
-				self.System.Open(self.dictionary["Server"]["Server"])
-
-				# Wait for 4 miliseconds
-				self.Date.Sleep(4)
-
-			# If the "close" parameter is True
-			if close == True:
-				# Close the programs of the server
-				for program in self.dictionary["Server"]["Programs"]:
-					self.System.Close(program)
 
 	def Update_Websites(self):
 		# If the "One website" state is False, then there is more than one website to update

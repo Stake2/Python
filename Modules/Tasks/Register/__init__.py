@@ -15,7 +15,7 @@ class Register(Tasks):
 
 		if self.dictionary != {}:
 			if "Final separator" not in self.dictionary:
-				self.dictionary["large_bar"] = True
+				self.dictionary["large_bar"] = False
 
 			self.dictionary["input"] = False
 
@@ -76,7 +76,7 @@ class Register(Tasks):
 			"Entry": {
 				"Date": self.Date.Now()
 			},
-			"large_bar": True,
+			"large_bar": False,
 			"input": True
 		}
 
