@@ -253,7 +253,7 @@ class Convert_History(Watch_History):
 				print(self.Language.language_texts["right, title()"] + ":")
 				print("[" + correct_title + "]")
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					self.Input.Type(self.Language.language_texts["continue, title()"])
 
 				print()
@@ -665,7 +665,7 @@ class Convert_History(Watch_History):
 			# And the testing switch is True
 			if (
 				entry["Title"] != last_pre_entry["Title"] and
-				self.switches["testing"] == True
+				self.switches["Testing"] == True
 			):
 				# Ask for user input before continuing the conversion
 				self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, feminine"].title() + " " + self.Language.language_texts["entry"] + ")")
@@ -874,8 +874,8 @@ class Convert_History(Watch_History):
 					# If testing is True and the episode title is not inside the remove list
 					# Or testing is False and the remove list is empty
 					if (
-						self.switches["testing"] == True and entry["Episode title"] not in remove_list or
-						self.switches["testing"] == False and remove_list == []
+						self.switches["Testing"] == True and entry["Episode title"] not in remove_list or
+						self.switches["Testing"] == False and remove_list == []
 					):
 						# Find the media and get media titles
 						for media_title in self.media_type_dictionaries[entry["Type"]]["Media list"]:
@@ -1252,7 +1252,7 @@ class Convert_History(Watch_History):
 							print()
 							print(progress_text)
 
-							if entry["Episode title"] != self.year["Lists"]["Episodes"][-1] and self.switches["testing"] == True:
+							if entry["Episode title"] != self.year["Lists"]["Episodes"][-1] and self.switches["Testing"] == True:
 								self.Input.Type(self.Language.language_texts["continue, title()"] + " (" + self.Language.language_texts["next, feminine"].title() + " " + self.Language.language_texts["entry"] + ")")
 
 							print()
@@ -1733,7 +1733,7 @@ class Convert_History(Watch_History):
 						print(self.separators["5"])
 
 					# Show "Continue" text on testing mode to pause between entries
-					if self.switches["testing"] == True:
+					if self.switches["Testing"] == True:
 						self.Input.Type(self.Language.language_texts["continue, title()"])
 
 					# Define the list of dictionaries to update the Entry dictionary

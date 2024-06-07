@@ -218,14 +218,14 @@ class Create_Friend_Folder(Friends):
 
 			if (
 				self.dictionary["States"]["Add Social Networks"] == True and
-				self.switches["testing"] == False and
+				self.switches["Testing"] == False and
 				i != 0
 			):
 				# Ask if the user wants to add more Social Networks
 				self.dictionary["States"]["Add more Social Networks"] = self.Input.Yes_Or_No(self.language_texts["add_more_social_networks"])
 
 			if (
-				self.switches["testing"] == True and
+				self.switches["Testing"] == True and
 				self.friend["Social Networks"]["List"] == ["Discord", "Facebook"]
 			):
 				self.dictionary["States"]["Add more Social Networks"] = False

@@ -562,7 +562,15 @@ class Post(Stories):
 				full_language = self.languages["full"][language]
 
 				# Define the link of the story website
-				story_link = self.story["Information"]["Links"][key]["Links"][language]
+				story_link = self.story["Information"]["Links"][key]["Edit story"]
+
+				# If the "Add chapter" key is inside the "Links" dictionary
+				if "Add chapter" in self.story["Information"]["Links"][key]:
+					# Update the story link to that one
+					story_link = self.story["Information"]["Links"][key]["Add chapter"]
+
+				# Get the language link
+				story_link = story_link[language]
 
 				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
 				# With the list of social networks to open, and their custom links

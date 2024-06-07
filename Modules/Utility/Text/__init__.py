@@ -4,39 +4,70 @@ import os
 
 class Text():
 	def __init__(self):
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		self.switches = {
-			"verbose": True
-		}
+		# Define the folders of the module
+		self.Define_Folders(object = self,)
 
-		Define_Folders(self)
+		# Define the "Switches" dictionary
+		self.Define_Switches()
 
-		from Utility.JSON import JSON as JSON
+		# Define the texts of the module
+		self.Define_Texts()
 
-		self.JSON = JSON()
+	def Import_Classes(self):
+		import importlib
+
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"JSON"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.Define_Texts()
+	def Define_Switches(self):
+		# Define the "Switches" dictionary
+		self.switches = {
+			"Verbose": True
+		}
 
 	def Verbose(self, text, item, verbose = True):
 		if (
-			self.switches["verbose"] == True and
+			self.switches["Verbose"] == True and
 			verbose == True
 		):
 			import inspect
 
 			print()
-			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
+			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Add_Leading_Zeroes(self, number):

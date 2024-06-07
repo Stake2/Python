@@ -1,0 +1,15 @@
+# [module_name].py
+
+class Run():
+	def __init__(self):
+		# Import the "Modules" module
+		from Utility.Modules import Modules as Modules
+
+		# Add it to the object of this class
+		self.Modules = Modules
+
+		# Run its root class
+		self.Modules(object = self, select_class = True)
+
+if __name__ == "__main__":
+	Run()

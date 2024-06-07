@@ -5,34 +5,25 @@ import importlib
 
 class SproutGigs():
 	def __init__(self):
-		# Define the module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
+		# Folders, files, lists, and dictionaries methods
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
+
+		# Import the usage classes
+		self.Import_Usage_Classes()
+
+		# Class methods
 		self.Define_Categories()
-
-		# Define the classes to be imported
-		classes = [
-			"Social_Networks"
-		]
-
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			# Add the sub-class to the current module
-			setattr(self, title, sub_class())
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -46,7 +37,7 @@ class SproutGigs():
 		self.Language = self.JSON.Language
 
 		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -72,24 +63,24 @@ class SproutGigs():
 		self.module_folders = {}
 
 		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
+			self.module_folders[item] = deepcopy(self.folders["Apps"][item][self.module["key"]])
 
 		# Define the local folders dictionary as the Folder folders dictionary
 		self.folders = self.Folder.folders
 
 		# Restore the backup of the module folders
 		for item in ["modules", "module_files"]:
-			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
+			self.folders["Apps"][item][self.module["key"]] = self.module_folders[item]
 
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
 		# Get the Languages dictionary
-		self.languages = self.JSON.Language.languages
+		self.languages = self.Language.languages
 
 		# Get the user language and full user language
-		self.user_language = self.JSON.Language.user_language
-		self.full_user_language = self.JSON.Language.full_user_language
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -99,7 +90,7 @@ class SproutGigs():
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
@@ -121,11 +112,11 @@ class SproutGigs():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.categories_folder = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Categories/"
+		self.categories_folder = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Categories/"
 		self.Folder.Create(self.categories_folder)
 
 		# Files
-		self.website_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Website.txt"
+		self.website_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Website.txt"
 		self.File.Create(self.website_file)
 
 		self.categories_file = self.categories_folder + "Categories.txt"
@@ -156,6 +147,23 @@ class SproutGigs():
 		self.website["job link"] = self.website["link"] + "jobs.php"
 
 		self.website["category_link_template"] = self.website["job link"] + "?category={}&sub_category="
+
+	def Import_Usage_Classes(self):
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-class to the current module
+			setattr(self, title, sub_class())
 
 	def Define_Categories(self):
 		self.categories = {}
@@ -240,5 +248,5 @@ class SproutGigs():
 			print(self.language_texts["link, title()"] + ":")
 			print(self.category["info"]["link"])
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				self.System.Open(self.category["info"]["link"])

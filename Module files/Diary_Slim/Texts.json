@@ -99,6 +99,10 @@
 		"en": "Opening the description files for you to type on them.\nType on them, save and close them, and press Enter to continue.",
 		"pt": "Abrindo os arquivos de descrições para você digitar neles.\nDigite neles, salve-os e feche-os, e pressione Enter para continuar."
 	},
+	"did_you_wrote_this_diary_slim_on_the_phone": {
+		"en": "Did you wrote this Diary Slim on the phone",
+		"pt": "Você escreveu este Diário Slim no celular"
+	},
 	"you_skipped_creating_this_diary_slim": {
 		"en": "You skipped creating this Diary Slim",
 		"pt": "Você pulou a criação deste Diário Slim"

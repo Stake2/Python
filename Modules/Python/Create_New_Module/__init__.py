@@ -38,20 +38,20 @@ class Create_New_Module(Python):
 		self.translated_languages = []
 
 		for language in self.languages["small"]:
-			self.translated_languages.append(self.languages["full_translated"][language][self.user_language])
+			self.translated_languages.append("[" + self.languages["full_translated"][language][self.user_language] + "]")
 
 		# Define the lines text, which shows the number of languages
 		self.lines_text = self.language_texts["{}_lines_in_this_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["small"])])
 
 		# Define the show text for the descriptions of the module
-		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
+		self.show_text = "\n" + self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
 		# Show a five dash separator
 		print()
 		print(self.separators["5"])
 
 		# Ask for the user to type the module descriptions in all languages
-		prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages)["lines"]
+		prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages, first_space = False)["lines"]
 
 		# Define and fill the module descriptions dictionary
 		self.module_descriptions = {}
@@ -154,7 +154,7 @@ class Create_New_Module(Python):
 
 	def Create_Folders_And_Files(self):
 		# Define and create the module folder
-		self.module_folder = self.folders["apps"]["modules"]["root"] + self.module_name + "/"
+		self.module_folder = self.folders["Apps"]["Modules"]["root"] + self.module_name + "/"
 		self.Folder.Create(self.module_folder)
 
 		# Define and create the root Python file
@@ -174,16 +174,16 @@ class Create_New_Module(Python):
 		self.File.Create(self.main_class_python_file)
 
 		# Define the module folder inside the "Module files" folder
-		self.folders["apps"]["module_files"][self.module["key"]] = {
-			"root": self.folders["apps"]["module_files"]["root"] + self.module_name + "/"
+		self.folders["Apps"]["Module files"][self.module["key"]] = {
+			"root": self.folders["Apps"]["Module files"]["root"] + self.module_name + "/"
 		}
 
 		# Create it
-		self.Folder.Create(self.folders["apps"]["module_files"][self.module["key"]]["root"])
+		self.Folder.Create(self.folders["Apps"]["Module files"][self.module["key"]]["root"])
 
 		# Define and create the "Texts.json" file inside the module folder that is inside the "Module files" folder
-		self.folders["apps"]["module_files"][self.module["key"]]["texts"] = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Texts.json"
-		self.File.Create(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.folders["Apps"]["Module files"][self.module["key"]]["texts"] = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Texts.json"
+		self.File.Create(self.folders["Apps"]["Module files"][self.module["key"]]["texts"])
 
 		# ---------- #
 
@@ -202,16 +202,16 @@ class Create_New_Module(Python):
 
 	def Write_To_Files(self):
 		# Format the root code template
-		self.root_code = self.root_code_template.replace("[module_name]", self.module_name)
+		root_code = self.python["Templates"]["Root"].replace("[module_name]", self.module_name)
 
 		# Write to the root "__init__.py" Python file
-		self.File.Edit(self.root_python_file, self.root_code, "w")
+		self.File.Edit(self.root_python_file, root_code, "w")
 
 		# ---------- #
 
 		# Define the Descriptions dictionary
 		self.descriptions = {
-			"show_text": self.module_descriptions
+			"Show text": self.module_descriptions
 		}
 
 		# Iterate through the classes in the classes dictionary
@@ -228,20 +228,34 @@ class Create_New_Module(Python):
 		# ---------- #
 
 		# Format the main class code template
-		self.main_class_code = self.main_class_code_template.replace("[module_name]", self.module_name)
+		self.main_class_code = self.python["Templates"]["Main class"].replace("[module_name]", self.module_name)
 
 		# Write to the main class Python file
 		self.File.Edit(self.main_class_python_file, self.main_class_code, "w")
 
 		# ---------- #
 
+		# Define the template
+		template = self.python["Templates"]["Sub-class"]
+
 		# Iterate through the classes in the classes dictionary
 		for class_dictionary in self.classes["Dictionary"].values():
 			# Get the class file
 			file = class_dictionary["File"]
 
-			# Format the sub-class code template
-			sub_class_code = self.sub_class_code_template.format(class_dictionary["Name"], self.module_name, self.module_name, self.module_name, self.module_name, class_dictionary["Name"], self.module_name)
+			# Define the list of items to use to format the template
+			items = [
+				class_dictionary["Name"],
+				self.module_name,
+				self.module_name,
+				self.module_name,
+				self.module_name,
+				class_dictionary["Name"],
+				self.module_name
+			]
+
+			# Format the sub-class code template with the list of items
+			sub_class_code = template.format(*items)
 
 			# Write to the class code file
 			self.File.Edit(file, sub_class_code, "w")
@@ -249,14 +263,14 @@ class Create_New_Module(Python):
 		# ---------- #
 
 		# Write to the "Texts.json" file
-		self.File.Edit(self.folders["apps"]["module_files"][self.module["key"]]["texts"], "{\n\t\n}", "w")
+		self.File.Edit(self.folders["Apps"]["Module files"][self.module["key"]]["texts"], "{\n\t\n}", "w")
 
 	def Create_Module_Bat(self):
 		# Define and create the module bat file
-		bat_file = self.folders["apps"]["shortcuts"]["root"] + self.module_name + ".bat"
+		bat_file = self.folders["Apps"]["Shortcuts"]["root"] + self.module_name + ".bat"
 		self.File.Create(bat_file)
 
-		bat_text = self.conemu_bat_template
+		bat_text = self.python["Templates"]["Bat"]
 
 		# Format the ConEmu bat template
 		# Adding the name of the module and the module folder name
@@ -268,17 +282,17 @@ class Create_New_Module(Python):
 
 	def Add_To_ConEmu_Tasks(self):
 		# Get the last task number
-		last_task_number = self.File.Contents(self.last_task_number_file)["lines"][0]
+		last_task_number = self.File.Contents(self.python["Files"]["Task number"])["lines"][0]
 
 		# Add one to it
 		next_task_number = str(int(last_task_number) + 1)
 
 		# Write to the "Last task number" file
-		self.File.Edit(self.last_task_number_file, next_task_number, "w")
+		self.File.Edit(self.python["Files"]["Task number"], next_task_number, "w")
 
 		# ---------- #
 
-		# Update the "Last module XML" file
+		# Update the "Last module" file
 
 		# Define the module execution line
 		module_execution_line = "py C:\Apps\MS.py -{}".format(self.module_name.lower())
@@ -286,25 +300,25 @@ class Create_New_Module(Python):
 		# Format the ConEmu task XML template
 		# Updating the number of the task
 		# Adding the module name and execution line
-		next_module_xml = self.conemu_task_xml_template.replace("[Number]", next_task_number)
-		next_module_xml = next_module_xml.replace("[Module_Name]", self.module_name.replace(" ", "_"))
-		next_module_xml = next_module_xml.replace("[module_execution_line]", module_execution_line)
+		current_module_xml = self.python["Templates"]["Task"].replace("[Number]", next_task_number)
+		current_module_xml = current_module_xml.replace("[Module_Name]", self.module_name.replace(" ", "_"))
+		current_module_xml = current_module_xml.replace("[module_execution_line]", module_execution_line)
 
-		# Write to the "Last module XML" file
-		self.File.Edit(self.last_module_xml_file, next_module_xml, "w")
+		# Write to the "Last module" file
+		self.File.Edit(self.python["Files"]["Last module"], current_module_xml, "w")
 
 		# ---------- #
 
 		# Update the "ConEmu XML" file
 
 		# Get the last module XML
-		last_module_xml = self.File.Contents(self.last_module_xml_file)["string"]
+		last_module_xml = self.File.Contents(self.python["Files"]["Last module"])["string"]
 
 		# Read the text of the "ConEmu.xml" file
-		conemu_xml_text = self.File.Contents(self.conemu_xml_file)["string"]
+		conemu_xml_text = self.File.Contents(self.python["Files"]["ConEmu"])["string"]
 
 		# Update the ConEmu text to add the XML dictionary of the newly added module
-		conemu_xml_text = conemu_xml_text.replace(last_module_xml, last_module_xml + "\n" + next_module_xml)
+		conemu_xml_text = conemu_xml_text.replace(last_module_xml, last_module_xml + "\n" + current_module_xml)
 
 		# Update the value of the "Count" number, which is the number of tasks inside the ConEmu configuration file
 		value_count_template = '<value name="Count" type="long" data="{}"/>'
@@ -313,22 +327,20 @@ class Create_New_Module(Python):
 		conemu_xml_text = conemu_xml_text.replace(value_count_template.format(last_task_number), value_count_template.format(next_task_number))
 
 		# Update the "ConEmu.xml" file
-		self.File.Edit(self.conemu_xml_file, conemu_xml_text, "w")
+		self.File.Edit(self.python["Files"]["ConEmu"], conemu_xml_text, "w")
 
 	def Add_To_Modules_List(self):
 		# If the module name is not inside the list of usage modules
-		if self.module_name not in self.modules["Usage"]["List"]:
+		if self.module_name not in self.python["Modules"]["Dictionary"]["Usage"]["List"]:
 			# Add it
-			self.modules["Usage"]["List"].append(self.module_name)
+			self.python["Modules"]["Dictionary"]["Usage"]["List"].append(self.module_name)
 
-		# Sort the list of utility modules
-		self.modules["Utility"]["List"] = sorted(self.modules["Utility"]["List"], key = str.lower)
-
-		# Sort the list of usage modules
-		self.modules["Usage"]["List"] = sorted(self.modules["Usage"]["List"], key = str.lower)
+		# Sort the lists of utility and usage modules
+		for key in self.python["Modules"]["Types"]["List"]:
+			self.python["Modules"]["Dictionary"][key]["List"] = sorted(self.python["Modules"]["Dictionary"][key]["List"], key = str.lower)
 
 		# Update the "Modules.json" file with the updated "Modules" dictionary
-		self.JSON.Edit(self.folders["modules_file"], self.modules)
+		self.JSON.Edit(self.python["Files"]["Modules"], self.python["Modules"]["Dictionary"])
 
 	def Change_Global_Switches(self):
 		# Get the switches file

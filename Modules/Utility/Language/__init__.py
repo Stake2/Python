@@ -5,39 +5,84 @@ import re
 
 class Language():
 	def __init__(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Import the classes
+		self.Import_Classes()
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self, files = ["Languages"]).folders
 
+		# Define the "Switches" dictionary
+		self.Define_Switches()
+
+		# Define the lists and dictionaries of the module
+		self.Define_Lists_And_Dictionaries()
+
+		# Define the languages
+		self.Define_Languages()
+
+		# Get information about the system
+		self.Get_System_Information()
+
+		# Define the settings
+		self.Define_App_Settings()
+
+		# Define the texts of the module
+		self.Define_Texts()
+
+		# Define the language texts
+		self.Define_Language_Texts()
+
+		# Read the settings file
+		self.Read_Settings_File()
+
+	def Import_Classes(self):
+		import importlib
+
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
+
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Update the "Switches" dictionary, adding the "Folder" and "File" dictionaries
 		self.switches.update({
-			"folder": {
-				"create": True,
+			"Folder": {
+				"Create": True,
 			},
-			"file": {
-				"create": True,
-				"edit": True
+			"File": {
+				"Create": True,
+				"Edit": True
 			}
 		})
 
-		if self.switches["testing"] == True:
-			for item in ["folder", "file"]:
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Iterate through the switch keys
+			for item in ["Folder", "File"]:
+				# Iterate through the switches inside the "Switches" dictionary
 				for switch in self.switches[item]:
+					# Define them as False
 					self.switches[item][switch] = False
-
-		self.Define_Lists_And_Dictionaries()
-
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
-
-		Define_Folders(self, ["Languages"])
-
-		self.Define_Languages()
-		self.Get_System_Information()
-		self.Define_App_Settings()
-		self.Define_Texts()
-		self.Define_Language_Texts()
-		self.Read_Settings_File()
 
 	def Define_Lists_And_Dictionaries(self):
 		self.dictionary_separators = [
@@ -79,10 +124,14 @@ class Language():
 		}
 
 	def Define_Languages(self):
-		self.languages = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["languages"])
+		# Define the "Languages" dictionary
+		self.languages = self.To_Python(self.module["Files"]["Languages"])
 
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# If the language is not in the "Supported" languages list
 			if language not in self.languages["supported"]:
+				# Remove it from the "small" list
 				self.languages["small"].remove(language)
 
 	def Get_System_Information(self):
@@ -123,13 +172,27 @@ class Language():
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
 
-		if "/" not in path[-1] and os.path.splitext(path)[-1] == "":
+		if (
+			"/" not in path[-1] and
+			os.path.splitext(path)[-1] == ""
+		):
 			path += "/"
 
 		return path
 
+	def Current_Folder(self, file = None):
+		# If the file parameter is None, define the file as "__file__"
+		if file == None:
+			file = __file__
+
+		# Get the folder from the module file
+		folder = self.Sanitize(os.path.dirname(file))
+
+		# Return the folder
+		return folder
+
 	def Verbose(self, text, item):
-		if self.switches["verbose"] == True:
+		if self.switches["Verbose"] == True:
 			import inspect
 
 			print()
@@ -153,11 +216,17 @@ class Language():
 		item = self.Sanitize(item)
 
 		if os.path.splitext(item)[-1] == "":
-			if self.switches["folder"]["create"] == True and os.path.isdir(item) == False:
+			if (
+				self.switches["Folder"]["Create"] == True and
+				os.path.isdir(item) == False
+			):
 				os.mkdir(item)
 
 		if os.path.splitext(item)[-1] != "":
-			if self.switches["file"]["create"] == True and os.path.isfile(item) == False:
+			if (
+				self.switches["File"]["Create"] == True and
+				os.path.isfile(item) == False
+			):
 				create = open(item, "w", encoding = "utf8")
 				create.close()
 
@@ -288,7 +357,7 @@ class Language():
 
 		if self.Exist(file) == True:
 			if (
-				self.switches["file"]["edit"] == True and
+				self.switches["File"]["Edit"] == True and
 				contents["string"] != text
 			):
 				edit = open(file, mode, encoding = "UTF8")
@@ -752,7 +821,8 @@ class Language():
 		return text.split(separator)[language_number]
 
 	def Define_Texts(self):
-		self.texts = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.To_Python(self.module["Files"]["Texts"])
 
 	def Define_Language_Texts(self):
 		self.language_texts = self.Item(self.texts)
@@ -762,13 +832,11 @@ class Language():
 
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
-		self.settings_file = os.path.join(self.folders["apps"]["root"], self.language_texts["settings"].capitalize() + ".json")
+		self.settings_file = os.path.join(self.folders["Apps"]["root"], self.language_texts["settings"].capitalize() + ".json")
 
 		if os.path.isfile(self.settings_file) == False:
 			self.Create(self.settings_file)
 			self.Edit(self.settings_file, self.From_Python({}), "w")
-
-		self.space_text = ""
 
 	def Read_Settings_File(self):
 		if os.path.isfile(self.settings_file) == True:
@@ -811,7 +879,7 @@ class Language():
 				"Language": self.app_settings["Language"]
 			}
 
-			self.global_settings_file = os.path.join(self.folders["apps"]["root"], "Settings.json")
+			self.global_settings_file = os.path.join(self.folders["Apps"]["root"], "Settings.json")
 
 			self.Create(self.global_settings_file)
 			self.Edit(self.global_settings_file, self.From_Python(settings), "w")
@@ -917,7 +985,7 @@ class Language():
 	def Show_User_Information(self):
 		import getpass
 		print()
-		print(self.language_texts["class, title()"] + ' "' + self.module["name"] + '", ' + self.language_texts["the_user_information"] + ":")
+		print(self.language_texts["class, title()"] + ' "' + self.module["Name"] + '", ' + self.language_texts["the_user_information"] + ":")
 
 		print("\t" + self.language_texts["username, title()"] + ":")
 		print("\t\t" + self.system_information["User folder"])
@@ -1358,7 +1426,10 @@ class Language():
 		self.settings = settings
 
 		# If the verbose mode is activated
-		if self.switches["verbose"] == True and self.make_difference == True:
+		if (
+			self.switches["Verbose"] == True and
+			self.make_difference == True
+		):
 			# If the number of lines is greater than the maximum number of lines to show
 			# And the file is not empty
 			# Show only the text difference

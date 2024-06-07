@@ -44,10 +44,10 @@ class Add_A_New_Game(GamePlayer):
 
 		# Ask for the game titles
 		if "Original" not in self.game["Titles"]:
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Type"]["Type"][self.user_language] + ")"
 
 				if self.game["Title"] == "":
@@ -60,7 +60,7 @@ class Add_A_New_Game(GamePlayer):
 
 				title = ""
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 				if title != "":
@@ -68,7 +68,7 @@ class Add_A_New_Game(GamePlayer):
 
 			title = ""
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(self.Language.language_texts["romanized_title"], next_line = True)
 
 			if title != "":
@@ -77,10 +77,10 @@ class Add_A_New_Game(GamePlayer):
 		# Ask for the game year and dates
 		text = self.Date.language_texts["year, title()"] + " (" + self.Language.language_texts["format"] + ": " + str(self.Date.Now()["Units"]["Year"]) + ")"
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			year = self.Input.Type(text, next_line = True, regex = "^[1-9]{1}[0-9]{3}; " + str(self.Date.Now()["Units"]["Year"]), accept_enter = False)
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			year = self.Date.Now()["Units"]["Year"]
 
 		self.game["Year"] = year
@@ -94,10 +94,10 @@ class Add_A_New_Game(GamePlayer):
 			if date_type == "end":
 				accept_enter = True
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				date = self.Input.Type(text, next_line = True, accept_enter = accept_enter, regex = "[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}; " + self.Date.Now()["Formats"]["DD/MM/YYYY"])
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				date = self.Date.Now()["Formats"]["DD/MM/YYYY"]
 
 			if date != "":
@@ -121,10 +121,10 @@ class Add_A_New_Game(GamePlayer):
 			languages = list(self.languages["full"].values())
 			languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				language = "[" + self.Language.language_texts["empty, title()"] + "]"
 
 			if language != "[" + self.Language.language_texts["empty, title()"] + "]":
@@ -134,10 +134,10 @@ class Add_A_New_Game(GamePlayer):
 			show_text = self.Language.language_texts["platforms, title()"]
 			select_text = self.Language.language_texts["platform, title()"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				platform = self.Input.Select(show_text = show_text, select_text = select_text, options = self.game_types["Platforms"][self.user_language])["option"]
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				platform = self.game_types["Platforms"][self.user_language][0]
 
 			if "Platform" not in self.game:
@@ -147,7 +147,7 @@ class Add_A_New_Game(GamePlayer):
 		for key in ["developers", "publishers", "distributors"]:
 			text = self.Language.language_texts[key + ", title()"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				accept_enter = False
 
 				if key == "publishers":
@@ -158,7 +158,7 @@ class Add_A_New_Game(GamePlayer):
 				if self.game[key.capitalize()] == "":
 					self.game.pop(key.capitalize())
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				self.game[key.capitalize()] = text
 
 		# Ask for the game status
@@ -166,10 +166,10 @@ class Add_A_New_Game(GamePlayer):
 			show_text = self.Language.language_texts["statuses, title()"]
 			select_text = self.Language.language_texts["status, title()"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				status = self.language_texts["statuses, type: list"][0]
 
 			if "Status" not in self.game:

@@ -1,0 +1,70 @@
+{
+	"Folders": {
+		"root": "C:/Apps/Modules/Watch_History/"
+	},
+	"Files": {
+		"Descriptions": "C:/Users/Stake2/AppData/Roaming/Python/Python38/site-packages/Watch_History/Descriptions.json",
+		"Module": "C:/Apps/Modules/Watch_History/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar Rede de Mídias Audiovisuais (Audiovisual Media Network)",
+		"Watch_Media": {
+			"en": "Watch media",
+			"pt": "Assistir mídia"
+		},
+		"Watch_List_Of_Media": {
+			"en": "Watch list of media",
+			"pt": "Assistir lista de mídia"
+		},
+		"Manage": {
+			"en": "Manage the [Media Information] Database and [Watched Media] History",
+			"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+		},
+		"View": {
+			"en": "View database",
+			"pt": "Visualizar banco de dados"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Watch_Media": {
+				"Descriptions": {
+					"en": "Watch media",
+					"pt": "Assistir mídia"
+				},
+				"Description": "Assistir mídia",
+				"Object": "<class 'Watch_History.Watch_Media.Watch_Media'>"
+			},
+			"Watch_List_Of_Media": {
+				"Descriptions": {
+					"en": "Watch list of media",
+					"pt": "Assistir lista de mídia"
+				},
+				"Description": "Assistir lista de mídia",
+				"Object": "<class 'Watch_History.Watch_List_Of_Media.Watch_List_Of_Media'>"
+			},
+			"Manage": {
+				"Descriptions": {
+					"en": "Manage the [Media Information] Database and [Watched Media] History",
+					"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+				},
+				"Description": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+				"Object": "<class 'Watch_History.Manage.Manage'>"
+			},
+			"View": {
+				"Descriptions": {
+					"en": "View database",
+					"pt": "Visualizar banco de dados"
+				},
+				"Description": "Visualizar banco de dados",
+				"Object": "<class 'Watch_History.View.View'>"
+			}
+		},
+		"Descriptions": [
+			"Assistir mídia",
+			"Assistir lista de mídia",
+			"Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+			"Visualizar banco de dados"
+		]
+	}
+}

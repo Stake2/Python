@@ -1,71 +1,99 @@
 # Folder.py
 
 import os
+import Utility
 
 class Folder():
 	def __init__(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Import the classes
+		self.Import_Classes()
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the folders of the module
+		Utility.Define_Folders(object = self)
 
-		self.switches.update({
-			"folder": {
-				"create": True,
-				"delete": True,
-				"copy": True,
-				"move": True
-			}
-		})
+		# Define the "Switches" dictionary
+		self.Define_Switches()
 
-		if self.switches["testing"] == True:
-			for switch in self.switches["folder"]:
-				self.switches["folder"][switch] = False
+		# Define the folders
+		self.Define_Folders()
 
-		from Utility.Date import Date as Date
-		from Utility.File import File as File
-		from Utility.JSON import JSON as JSON
+		# Define the texts of the module
+		self.Define_Texts()
 
-		self.Date = Date()
-		self.File = File()
-		self.JSON = JSON()
+		# Create the folders
+		self.Create_Folders()
+
+	def Import_Classes(self):
+		import importlib
+
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"JSON",
+			"Date",
+			"File"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Add the sub-class to the current module
+				setattr(self, module_title, sub_class())
+
+			# If the module title is "Define_Folders"
+			if module_title == "Define_Folders":
+				# Add the sub-class to the "Utility" module
+				setattr(Utility, "Define_Folders", sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.app_settings = self.JSON.Language.app_settings
-		self.languages = self.JSON.Language.languages
+		# Import some variables from the imported modules
+		self.app_settings = self.Language.app_settings
+		self.languages = self.Language.languages
 		self.date = self.Date.date
 
-		self.Define_Folders()
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
 
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Update the "Switches" dictionary, adding the "Folder" dictionary
+		self.switches.update({
+			"Folder": {
+				"Create": True,
+				"Delete": True,
+				"Copy": True,
+				"Move": True
+			}
+		})
 
-		Define_Folders(self)
-
-		self.Define_Texts()
-		self.Create_Folders()
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Iterate through the switches inside the "Folder" dictionary
+			for switch in self.switches["Folder"]:
+				# Define them as False
+				self.switches["Folder"][switch] = False
 
 	def Define_Folders(self):
 		import platform
 		import pathlib
 
-		self.module = {
-			"name": self.__module__.split(".")[-1],
-			"key": self.__module__.split(".")[-1].lower().replace(" ", "_")
-		}
-
-		if self.module["name"] == "__main__":
-			self.module["name"] = "Folder"
-
+		# Define the hard drive letter
 		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
-		# Root folders
+		# Define the "Folders" dictionary with the root folders
 		self.folders = {
 			"root": {
 				"root": self.hard_drive_letter,
-				"hard_drive_letter": self.hard_drive_letter,
+				"Hard drive letter": self.hard_drive_letter,
 				"users": self.Sanitize(pathlib.Path.home().parent),
 				"system32": {
 					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
@@ -157,31 +185,34 @@ class Folder():
 			"Shortcuts"
 		]
 
-		for folder in folders:
-			key = folder.lower().replace(" ", "_")
+		# Iterate through the list of folders
+		for key in folders:
+			# Define the folder as the key
+			folder = key
 
-			folder_backup = folder
-
-			if folder == "Shortcuts":
+			# If the key is "Shortcuts"
+			if key == "Shortcuts":
+				# Change the folder name to its user language variant
 				folder = self.Language.language_texts["shortcuts, title()"]
 
-			self.folders["apps"][key] = {
-				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
+			# Define the folder dictionary
+			self.folders["Apps"][key] = {
+				"root": self.folders["Apps"]["root"] + folder + "/"
 			}
 
-			self.folders["Apps"][folder_backup] = {
-				"root": os.path.join(self.folders["apps"]["root"], folder + "/")
+		# Define the "Utility" folders
+		for folder in ["Modules", "Module files"]:
+			self.folders["Apps"][folder]["Utility"] = {
+				"root": self.folders["Apps"][folder]["root"] + "Utility/"
 			}
 
-		self.folders["apps"]["module_files"]["utility"] = {
-			"root": self.folders["apps"]["module_files"]["root"] + "Utility/"
+		# Define the "Modules.json" file
+		self.folders["Apps"]["Modules"]["Modules"] = self.folders["Apps"]["Modules"]["root"] + "Modules.json"
+
+		# Define the "White" folder
+		self.folders["Apps"]["Shortcuts"]["White"] = {
+			"root": self.folders["Apps"]["Shortcuts"]["root"] + self.Language.language_texts["whites, title()"] + "/"
 		}
-
-		self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
-
-		self.folders["apps"]["shortcuts"]["white_shortcuts"] = self.folders["apps"]["shortcuts"]["root"] + self.Language.language_texts["whites, title()"]
-
-		self.folders["Apps"]["Shortcuts"]["White"] = self.folders["apps"]["shortcuts"]["root"] + self.Language.language_texts["whites, title()"]
 
 		# Jogos (Games) folders
 		folders = {
@@ -740,8 +771,10 @@ class Folder():
 			}
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Capitalize(self, text, lower = False):
@@ -781,15 +814,26 @@ class Folder():
 
 	def Verbose(self, text, item, verbose = False):
 		if (
-			self.switches["verbose"] == True or
+			self.switches["Verbose"] == True or
 			verbose == True
 		):
 			import inspect
 
-			print(self.JSON.Language.space_text)
-			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
+			print()
+			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
+
+	def Current(self, file = None):
+		# If the file parameter is None, define the file as "__file__"
+		if file == None:
+			file = __file__
+
+		# Get the folder from the module file
+		folder = self.Sanitize(os.path.dirname(file))
+
+		# Return the folder
+		return folder
 
 	def Exist(self, path):
 		path = self.Sanitize(path)
@@ -818,7 +862,7 @@ class Folder():
 			return False
 
 		if (
-			self.switches["folder"]["create"] == True and
+			self.switches["Folder"]["Create"] == True and
 			self.Exist(folder) == False
 		):
 			os.mkdir(folder)
@@ -864,7 +908,10 @@ class Folder():
 
 			return False
 
-		if self.switches["folder"]["delete"] == True and self.Exist(folder) == True:
+		if (
+			self.switches["Folder"]["Delete"] == True and
+			self.Exist(folder) == True
+		):
 			try:
 				# Folder is empty
 				os.rmdir(folder)
@@ -899,7 +946,10 @@ class Folder():
 
 			return False
 
-		if self.switches["folder"]["copy"] == True and self.Exist(source_folder) == True:
+		if (
+			self.switches["Folder"]["Copy"] == True and
+			self.Exist(source_folder) == True
+		):
 			from distutils.dir_util import copy_tree
 			copy_tree(source_folder, destination_folder)
 
@@ -927,7 +977,10 @@ class Folder():
 
 			return False
 
-		if self.switches["folder"]["move"] == True and self.Exist(source_folder) == True:
+		if (
+			self.switches["Folder"]["Move"] == True and
+			self.Exist(source_folder) == True
+		):
 			import shutil
 
 			for file_name in os.listdir(source_folder):

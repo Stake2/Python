@@ -7,8 +7,8 @@ class [module_name](object):
 
 		Define_Folders(self)
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
 		self.Define_Texts()
 
 	def Define_Basic_Variables(self):
@@ -25,12 +25,11 @@ class [module_name](object):
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
 
-		import importlib
-
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
-			"Language"
+			"Language",
+			"JSON"
 		]
 
 		# Iterate through the Utility modules
@@ -43,7 +42,7 @@ class [module_name](object):
 				# Get the sub-class
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-clas to the current module
+				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
 		# Make a backup of the module folders
@@ -54,6 +53,8 @@ class [module_name](object):
 
 		# Define the local folders dictionary as the Folder folders dictionary
 		self.folders = self.Folder.folders
+
+		self.links = self.Folder.links
 
 		# Restore the backup of the module folders
 		for item in ["modules", "module_files"]:

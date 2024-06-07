@@ -391,20 +391,23 @@ class Write(Stories):
 			text = self.language_texts["opening_the_chapter_file_in"] + " " + translated_language
 
 			print()
-			print(self.separators["1"])
+			print(self.separators["3"])
 			print()
 			print(text + "...")
 
 			# Open it
 			self.System.Open(file, verbose = False)
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				# Wait for one second
 				self.Date.Sleep(1)
 
 	def Open_Story_Website(self):
 		# Open the server
-		self.Manage_Server(open = True)
+		self.Manage_Server(open = True, separator_number = 3)
+
+		# Wait for one second
+		self.Date.Sleep(1)
 
 		# Get the websites "URL" dictionary
 		url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
@@ -436,46 +439,50 @@ class Write(Stories):
 		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Source"]["Translated"]
 
 		print()
-		print(self.separators["1"])
+		print(self.separators["3"])
 		print()
 		print(text + "...")
 
 		# Open the URL
 		self.System.Open(url, verbose = False)
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			# Wait for two seconds
 			self.Date.Sleep(2)
 
 	def Open_Writing_Pack(self):
 		# If the writing mode is "Translate"
 		if self.writing_mode == "Translate":
-			# Show the text about opening Google Translate
-			text = self.Language.language_texts["opening_the"] + " Google Translate"
+			# Show the text about opening the translator website
+			text = self.Language.language_texts["opening_the"] + " " + self.stories["Writing"]["Translator website"]["Name"]
 
 			print()
-			print(self.separators["1"])
+			print(self.separators["3"])
 			print()
 			print(text + "...")
 
-			# Open Google Translate
-			self.System.Open(self.stories["Writing"]["Links"]["Google Translate"], verbose = False)
+			# Open the link of the translator website
+			self.System.Open(self.stories["Writing"]["Translator website"]["Link"], verbose = False)
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				# Wait for one second
 				self.Date.Sleep(1)
 
 		# Define the text about opening the music player for the user to listen to the soundtrack of the story
-		# Formatting it with "Foobar2000"
-		text = self.language_texts["opening_{}_for_you_to_listen_to_the_soundtrack_of_the_story"].format("Foobar2000")
+		# Formatting it with the name of the music player
+		text = self.language_texts["opening_the_{}_music_player_for_you_to_listen_to_the_soundtrack_of_the_story"].format(self.stories["Writing"]["Music player"]["Name"])
 
+		# Show it
 		print()
-		print(self.separators["1"])
+		print(self.separators["3"])
 		print()
 		print(text + "...")
 
-		# Open the "Foobar2000" program so the user can listen to the soundtrack of the story
-		self.System.Open(self.stories["Writing"]["Programs"]["Foobar2000"], verbose = False)
+		# Open the music player program so the user can listen to the soundtrack of the story
+		self.System.Open(self.stories["Writing"]["Music player"]["Link"], verbose = False)
+
+		# Wait for one second
+		self.Date.Sleep(1)
 
 	def Start_Writing(self):
 		# Show a five dash space separator
@@ -545,7 +552,7 @@ class Write(Stories):
 		# Define the "After" time (now, but after writing)
 		self.dictionary["Session"]["After"] = self.Date.Now()
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			relative_delta = self.Date.Relativedelta(hours = 1, minutes = 30)
 
 			self.dictionary["Session"]["After"] = self.Date.Now(self.dictionary["Session"]["Before"]["Object"] + relative_delta)
@@ -713,7 +720,7 @@ class Write(Stories):
 				# Define the after time
 				after_time = self.Date.Now()
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					relative_delta = self.Date.Relativedelta(minutes = 10)
 
 					after_time = self.Date.Now(after_time["Object"] + relative_delta)
@@ -735,7 +742,7 @@ class Write(Stories):
 				self.dictionary["Session"]["Pause"]["After"] = self.Date.Now(self.dictionary["Session"]["Pause"]["After"]["Object"] + relative_delta)
 
 			if (
-				self.switches["testing"] == True and
+				self.switches["Testing"] == True and
 				already_paused == False
 			):
 				relative_delta = self.Date.Relativedelta(minutes = 30)
@@ -854,12 +861,12 @@ class Write(Stories):
 				update_chapter_titles == True
 			):
 				# If the "testing" switch is False
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					# Ask for the chapter title in the current language
 					chapter_title = self.Input.Type(type_text, next_line = True)
 
 				# If the "testing" switch is True
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					chapter_title = self.texts["a_new_chapter"][language].title()
 
 					# Show the defined chapter title
@@ -978,7 +985,7 @@ class Write(Stories):
 			}
 
 		# Update the "Titles" key
-		self.story["Information"]["Chapters"]["Dictionary"][self.chapter["Number"]]["Titles"] = self.chapter["Titles"]
+		self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])]["Titles"] = self.chapter["Titles"]
 
 		# Define a shortcut variable for the chapter dictionary inside the "Dictionary" key
 		chapter = self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])]

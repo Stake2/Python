@@ -5,53 +5,60 @@ import importlib
 
 class Block_Websites(object):
 	def __init__(self):
-		# Define the module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
+		# Module related methods
 		self.Define_Basic_Variables()
-
-		self.folders["apps"]["modules"][self.module["key"]] = self.Folder.Contents(self.folders["apps"]["modules"][self.module["key"]]["root"], lower_key = True)["dictionary"]
-
 		self.Define_Texts()
 
-		# Define the classes to be imported
-		classes = [
-			"Social_Networks"
-		]
+		# Import the usage classes
+		self.Import_Usage_Classes()
 
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, title)
-
-			# Get the sub-class
-			sub_class = getattr(module, title)
-
-			# Add the sub-class to the current module
-			setattr(self, title, sub_class())
-
+		# Class methods
 		self.Define_Files()
 		self.Define_Lists()
 
-	def Define_Basic_Variables(self):
-		from copy import deepcopy
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON"
+		]
 
-		# Import the JSON module
-		from Utility.JSON import JSON as JSON
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-		self.JSON = JSON()
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+	def Define_Basic_Variables(self):
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
 		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"Modules",
 			"Language",
 			"JSON"
 		]
@@ -69,28 +76,18 @@ class Block_Websites(object):
 				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
-		# Make a backup of the module folders
-		self.module_folders = {}
-
-		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
-
-		# Define the local folders dictionary as the Folder folders dictionary
-		self.folders = self.Folder.folders
-
-		# Restore the backup of the module folders
-		for item in ["modules", "module_files"]:
-			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
-
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
 		# Get the Languages dictionary
-		self.languages = self.JSON.Language.languages
+		self.languages = self.Language.languages
 
 		# Get the user language and full user language
-		self.user_language = self.JSON.Language.user_language
-		self.full_user_language = self.JSON.Language.full_user_language
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -115,7 +112,7 @@ class Block_Websites(object):
 			self.separators[str(number)] = string
 
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
@@ -133,22 +130,39 @@ class Block_Websites(object):
 		"#" + space + "Block_Websites.py" + space + "#" + "\n" + \
 		"#" + bar + "#" + "\n\n"
 
+	def Import_Usage_Classes(self):
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks"
+		]
+
+		# Import them
+		for title in classes:
+			# Import the module
+			module = importlib.import_module("." + title, title)
+
+			# Get the sub-class
+			sub_class = getattr(module, title)
+
+			# Add the sub-class to the current module
+			setattr(self, title, sub_class())
+
 	def Define_Files(self):
 		self.hosts_file = self.folders["root"]["system32"]["drivers/etc"] + "hosts"
 
-		self.additional_maps_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Additional maps.txt"
+		self.additional_maps_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Additional maps.txt"
 		self.File.Create(self.additional_maps_file)
 
-		self.blocked_by_default_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Blocked by default.txt"
+		self.blocked_by_default_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Blocked by default.txt"
 		self.File.Create(self.blocked_by_default_file)
 
-		self.hosts_file_header_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Hosts file header.txt"
+		self.hosts_file_header_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Hosts file header.txt"
 		self.File.Create(self.hosts_file_header_file)
 
-		self.hour_config_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Hour config.txt"
+		self.hour_config_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Hour config.txt"
 		self.File.Create(self.hour_config_file)
 
-		self.log_file = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Log.txt"
+		self.log_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Log.txt"
 		self.File.Create(self.log_file)
 
 		# Social Networks Folder and Files

@@ -2,21 +2,23 @@
 
 # Import the "importlib" module
 import importlib
+
 from copy import deepcopy
 
 class Stories(object):
 	def __init__(self):
-		# Define the module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
 		# Module related methods
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import classes method
-		self.Import_Classes()
+		# Import the usage classes
+		self.Import_Usage_Classes()
 
 		# Folders, files, and dictionaries methods
 		self.Define_Folders_And_Files()
@@ -39,23 +41,40 @@ class Stories(object):
 		# Define the "Stories" dictionary
 		self.Define_Stories_Dictionary()
 
-	def Define_Basic_Variables(self):
-		from copy import deepcopy
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON"
+		]
 
-		# Import the JSON module
-		from Utility.JSON import JSON as JSON
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-		self.JSON = JSON()
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+	def Define_Basic_Variables(self):
 		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"Modules",
 			"Language",
 			"JSON"
 		]
@@ -73,21 +92,6 @@ class Stories(object):
 				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
-		# Make a backup of the module folders
-		self.module_folders = {}
-
-		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
-
-		# Define the local folders dictionary as the Folder folders dictionary
-		self.folders = self.Folder.folders
-
-		self.links = self.Folder.links
-
-		# Restore the backup of the module folders
-		for item in ["modules", "module_files"]:
-			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
-
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
@@ -98,6 +102,9 @@ class Stories(object):
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
 
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
+
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
 
@@ -106,7 +113,7 @@ class Stories(object):
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
@@ -132,7 +139,7 @@ class Stories(object):
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
 
-	def Import_Classes(self):
+	def Import_Usage_Classes(self):
 		# Define the classes to be imported
 		classes = [
 			"PHP",
@@ -190,10 +197,10 @@ class Stories(object):
 		}
 
 		# Define the "Story" link as a shortcut for the "My works" link
-		self.social_networks["Wattpad"]["Information"]["Links"]["Story"] = self.social_networks["Wattpad"]["Information"]["Links"]["My works"]
+		self.social_networks["Wattpad"]["Information"]["Links"]["Story"] = self.social_networks["Wattpad"]["Information"]["Link"] + "story/"
 
-		# Define the "Read" story link
-		self.social_networks["Wattpad"]["Information"]["Links"]["Read story"] = self.social_networks["Wattpad"]["Information"]["Link"] + "story/"
+		# Define the "Edit story" link
+		self.social_networks["Wattpad"]["Information"]["Links"]["Edit story"] = self.social_networks["Wattpad"]["Information"]["Links"]["My works"]
 
 		# Update the "Wattpad" key
 		self.social_networks["Dictionary"]["Wattpad"] = self.social_networks["Wattpad"]
@@ -224,6 +231,9 @@ class Stories(object):
 
 		# Define the story link variable for easier typing
 		story_link = self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Story"]
+
+		# Define the "Read story" link
+		self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Read story"] = story_link
 
 		# Add the "Edit story" link
 		self.social_networks["Spirit Fanfics"]["Information"]["Links"]["Edit story"] = story_link + "editar/"
@@ -382,6 +392,22 @@ class Stories(object):
 			"Programs": {
 				"Foobar2000": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
 			}
+		}
+
+		# Define the "Translator website" dictionary
+		dictionary = self.stories["Writing"]["Links"]
+
+		self.stories["Writing"]["Translator website"] = {
+			"Name": list(dictionary.keys())[0],
+			"Link": list(dictionary.values())[0]
+		}
+
+		# Define the "Music player" dictionary
+		dictionary = self.stories["Writing"]["Programs"]
+
+		self.stories["Writing"]["Music player"] = {
+			"Name": list(dictionary.keys())[0],
+			"Link": list(dictionary.values())[0]
 		}
 
 		# Define the "Directories" dictionary
@@ -559,21 +585,22 @@ class Stories(object):
 				"Additional links": {}
 			}
 
-			# If the story website is "Wattpad"
-			if key == "Wattpad":
-				# Add the "Read story" key
-				dict_["Templates"]["Root"]["Read story"] = {}
-
-				# Add the additional link
-				dict_["Templates"]["Additional links"]["Read story"] = "{ID}-{Modified story title}"
+			# Define the list of keys and the format
+			keys = ["Edit story"]
+			format = "{ID}-{Modified story title}"
 
 			# If the story website is "Spirit Fanfics"
 			if key == "Spirit Fanfics":
-				# Add the "Add chapter" key
-				dict_["Templates"]["Root"]["Add chapter"] = {}
+				# Modify the format
+				format = "{ID}"
+
+			# Iterate through the list of keys
+			for sub_key in keys:
+				# Add the key
+				dict_["Templates"]["Root"][sub_key] = {}
 
 				# Add the additional link
-				dict_["Templates"]["Additional links"]["Add chapter"] = "{ID}"
+				dict_["Templates"]["Additional links"][sub_key] = format
 
 			# Add the story website dictionary to the root "Story websites" dictionary
 			dictionary["Dictionary"][key] = dict_
@@ -625,7 +652,7 @@ class Stories(object):
 						# Ask for the story ID
 						type_text = self.language_texts["id_of_the_story_in"] + " " + translated_language
 
-						if self.switches["testing"] == False:
+						if self.switches["Testing"] == False:
 							id = self.Input.Type(type_text, accept_enter = False, next_line = True)
 
 						else:
@@ -1007,39 +1034,44 @@ class Stories(object):
 				# Update the chapters "Dictionary"
 				story["Information"]["Chapters"]["Dictionary"] = json["Dictionary"]
 
+			# Define the list of chapter keys
+			keys = list(story["Information"]["Chapters"]["Dictionary"].keys())
+
 			# Iterate through the chapters inside the chapters list
 			c = 1
 			for chapter in story["Information"]["Chapters"]["Titles"]["en"]:
-				# If the chapter dictionary does not exist
-				if str(c) not in list(story["Information"]["Chapters"]["Dictionary"].keys()):
-					# Define the chapter dictionary with its information
-					chapter = {
-						"Number": c,
-						"Titles": {},
-						"Dates": {
-							"Written": "",
-							"Revised": "",
-							"Translated": ""
-						}
+				# Define the chapter dictionary with its information
+				chapter = {
+					"Number": c,
+					"Titles": {},
+					"Dates": {
+						"Written": "",
+						"Revised": "",
+						"Translated": ""
 					}
+				}
 
-					# Define the titles of the chapter
-					for language in self.languages["small"]:
-						chapter["Titles"][language] = story["Information"]["Chapters"]["Titles"][language][c - 1]
+				# If the chapter dictionary already exists
+				if str(c) in keys:
+					chapter = story["Information"]["Chapters"]["Dictionary"][str(c)]
 
-					# Define the "writing dates" variable for easier typing
-					writing_dates = story["Information"]["Chapters"]["Writing dates"]
+				# Define the titles of the chapter
+				for language in self.languages["small"]:
+					chapter["Titles"][language] = story["Information"]["Chapters"]["Titles"][language][c - 1]
 
-					# If the written date for the chapter exists
-					if (
-						writing_dates != [] and
-						len(writing_dates) >= c
-					):
-						# Define the chapter written date
-						chapter["Dates"]["Written"] = writing_dates[c - 1]
+				# Define the "writing dates" variable for easier typing
+				writing_dates = story["Information"]["Chapters"]["Writing dates"]
 
-					# Add the chapter dictionary to the "Chapters" dictionary
-					story["Information"]["Chapters"]["Dictionary"][str(c)] = chapter
+				# If the written date for the chapter exists
+				if (
+					writing_dates != [] and
+					len(writing_dates) >= c
+				):
+					# Define the chapter written date
+					chapter["Dates"]["Written"] = writing_dates[c - 1]
+
+				# Add the chapter dictionary to the "Chapters" dictionary
+				story["Information"]["Chapters"]["Dictionary"][str(c)] = chapter
 
 				c += 1
 
@@ -1432,11 +1464,11 @@ class Stories(object):
 			"select_text": self.language_texts["select_a_writing_status"]
 		}
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			# Ask the user to select a status from the list
 			option = self.Input.Select(**parameters)
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			option = {
 				"number": 0,
 				"option": self.texts["writing, title()"]["en"],
@@ -1471,10 +1503,10 @@ class Stories(object):
 		# Ask if the user wants to add more authors to the list of authors
 		question = self.language_texts["do_you_want_to_add_more_authors"]
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			add_more = self.Input.Yes_Or_No(question)
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			add_more = False
 
 		# If the user wants to add more authors

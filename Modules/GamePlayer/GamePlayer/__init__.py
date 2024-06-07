@@ -1,22 +1,24 @@
 # GamePlayer.py
 
-# Import some useful modules
+# Import the "importlib" module
 import importlib
+
 from copy import deepcopy
 
 class GamePlayer(object):
 	def __init__(self):
-		# Define the module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
 		# Module related methods
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import classes method
-		self.Import_Classes()
+		# Import the usage classes
+		self.Import_Usage_Classes()
 
 		# Folders and files method
 		self.Define_Folders_And_Files()
@@ -25,21 +27,40 @@ class GamePlayer(object):
 		self.Define_Types()
 		self.Define_Registry_Format()
 
-	def Define_Basic_Variables(self):
-		# Import the JSON module
-		from Utility.JSON import JSON as JSON
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON"
+		]
 
-		self.JSON = JSON()
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+	def Define_Basic_Variables(self):
 		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"Modules",
 			"Language",
 			"JSON"
 		]
@@ -57,28 +78,18 @@ class GamePlayer(object):
 				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
-		# Make a backup of the module folders
-		self.module_folders = {}
-
-		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
-
-		# Define the local folders dictionary as the Folder folders dictionary
-		self.folders = self.Folder.folders
-
-		# Restore the backup of the module folders
-		for item in ["modules", "module_files"]:
-			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
-
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
 		# Get the Languages dictionary
-		self.languages = self.JSON.Language.languages
+		self.languages = self.Language.languages
 
 		# Get the user language and full user language
-		self.user_language = self.JSON.Language.user_language
-		self.full_user_language = self.JSON.Language.full_user_language
+		self.user_language = self.Language.user_language
+		self.full_user_language = self.Language.full_user_language
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -88,7 +99,7 @@ class GamePlayer(object):
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
@@ -108,10 +119,7 @@ class GamePlayer(object):
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
 
-	def Import_Classes(self):
-		# Import the "importlib" module
-		import importlib
-
+	def Import_Usage_Classes(self):
 		# Define the classes to be imported
 		classes = [
 			"Years",
@@ -153,7 +161,7 @@ class GamePlayer(object):
 
 	def Parse_Arguments(self):
 		if (
-			self.switches["verbose"] == True and
+			self.switches["Verbose"] == True and
 			"Active argument" in self.arguments
 		):
 			print()
@@ -989,7 +997,7 @@ class GamePlayer(object):
 					game["Files"]["Shortcut"]["Path"] += "/"
 
 			# Define the bat File for the game if it exists
-			file = self.Folder.folders["apps"]["shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
+			file = self.Folder.folders["Apps"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
 
 			if self.File.Exist(file) == True:
 				game["Files"]["Bat"] = file

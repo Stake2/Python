@@ -9,42 +9,87 @@ import pandas as pd
 
 class Date():
 	def __init__(self):
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.Define_Folders(object = self)
 
-		from Utility.JSON import JSON as JSON
-		from Utility.Text import Text as Text
-
-		self.JSON = JSON()
-
-		# Define the "Language" class as the same class inside the "JSON" class
-		self.Language = self.JSON.Language
-		self.Text = Text()
-
-		self.languages = self.JSON.Language.languages
-		self.user_language = self.JSON.Language.user_language
-		self.user_timezone = self.JSON.Language.user_timezone
-
+		# Define the texts of the module
 		self.Define_Texts()
+
+		# Generate the number names
 		self.Number_Name_Generator()
 
-		# Import time, datetime, dateutil, and calendar methods
-		self.Sleep = sleep
-		self.Date = date
-		self.Time = time
-		self.Datetime = datetime
-		self.Timedelta = timedelta
-		self.Timezone = timezone
-		self.Relativedelta = relativedelta
-		self.Combine = datetime.combine
+		# Define the list of methods to be imported
+		methods = [
+			"sleep",
+			"date",
+			"time",
+			"datetime",
+			"timedelta",
+			"timezone",
+			"relativedelta"
+		]
+
+		# Define the globals variable for easier typing
+		globals_dictionary = globals()
+
+		# Iterate through the list of methods
+		for key in methods:
+			# If the method is in the globals dictionary
+			if key in globals_dictionary:
+				# Get the method
+				method = globals()[key]
+
+			# If the method key is "combine"
+			if key == "combine":
+				method = getattr(self.Datetime, "combine")
+
+			# Add it to the object of this class
+			setattr(self, key.capitalize(), method)
 
 		self.date = self.Now()
 
-	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+	def Import_Classes(self):
+		import importlib
 
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON",
+			"Text"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
+
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
+		# Import some variables from the "Language" class
+		self.languages = self.Language.languages
+		self.user_language = self.Language.user_language
+		self.user_timezone = self.Language.user_timezone
+
+	def Define_Texts(self):
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
+
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):

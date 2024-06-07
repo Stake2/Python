@@ -4,30 +4,58 @@ import re
 
 class Input():
 	def __init__(self):
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.Define_Folders(object = self, files = ["Switches"])
 
-		from Utility.File import File as File
-		from Utility.JSON import JSON as JSON
+		# Define the texts of the module
+		self.Define_Texts()
 
-		self.File = File()
-		self.JSON = JSON()
+	def Import_Classes(self):
+		import importlib
+
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"File",
+			"JSON"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.user_language = self.JSON.Language.user_language
-
-		self.Define_Texts()
+		# Get the user language
+		self.user_language = self.Language.user_language
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, add_colon = True, select_text_colon = True, function = True, first_space = True):
+		from copy import deepcopy
+
 		if (
 			show_text != None and
 			add_colon == True and
@@ -81,6 +109,9 @@ class Input():
 				text[-2] + text[-1] != "\n\n"
 			):
 				text += "\n"
+
+			if type(option) == dict:
+				option = self.JSON.Show(deepcopy(option), return_text = True)
 
 			text += "[" + str(i + 1) + "]" + " - " + option
 
@@ -215,6 +246,10 @@ class Input():
 				str(option) != dictionary["language_option"]
 			):
 				print("\t" + dictionary["language_option"])
+
+				if type(option) == dict:
+					option = self.JSON.Show(deepcopy(option), return_text = True)
+
 				print("\t" + str(option))
 
 			if (
@@ -352,7 +387,7 @@ class Input():
 
 		return text
 
-	def Lines(self, show_text_parameter = None, length = None, line_options_parameter = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None):
+	def Lines(self, show_text_parameter = None, length = None, line_options_parameter = None, line_texts = [], accept_enter = True, no_space = False, backup_file = None, first_space = True, second_space = False):
 		show_text = show_text_parameter
 
 		if show_text_parameter == None:
@@ -367,7 +402,8 @@ class Input():
 			"show_finish_text": True,
 			"next_line": True,
 			"colon": True,
-			"first_space": True
+			"first_space": first_space,
+			"second_space": second_space
 		}
 
 		if line_options_parameter != None:
@@ -379,7 +415,8 @@ class Input():
 
 		last_text_items = ["?", "!", ":", ";", "."]
 
-		print()
+		if line_options["first_space"] == True:
+			print()
 
 		if (
 			line_options["next_line"] == True and
@@ -412,7 +449,7 @@ class Input():
 			line_options["show_finish_text"] == True and
 			show_text_parameter != None and
 			show_text_parameter[0] != "\n" and
-			line_options["show_finish_text"] == False
+			line_options["second_space"] == True
 		):
 			print()
 

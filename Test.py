@@ -14,39 +14,37 @@ class Main():
 
 		self.Define_Basic_Variables()
 
-		methods = [
-			"Test",
-			"Download_Minecraft_Assets",
-			"Notepad_Theme",
-			"XML",
-			"Remove_Dots_From_String",
-			"Remove_Line_Of_Files",
-			"Add_Line_To_Files",
-			"Replace_Lines",
-			"Get_Video_Info",
-			"Get_Channel_Info",
-			"Get_Video_Images",
-			"Get_Playlist_IDs_And_Titles",
-			"Get_Channel_ID",
-			"Create_Playlist",
-			"Add_To_Playlist",
-			"Copy_Playlist",
-			"Get_Comment_Info",
-			"String_To_Date",
-			"Time_Difference",
-			"Play_Sound"
-		]
+		# Get the members
+		import inspect
+ 
+		members = inspect.getmembers(self, predicate = inspect.ismethod)
 
-		method_names = []
+		# Remove the "__init__" method
+		members.remove(("__init__", self.__init__))
 
-		for method in methods:
-			method = method.replace("_", " ")
+		# Create the dictionary of methods
+		methods = {}
 
-			method_names.append(method)
+		# Iterate through the members, create their dictionaries, and add them to the methods dictionary
+		for member in members:
+			method = {
+				"Object": member[1]
+			}
 
-		method_name = self.Input.Select(methods, language_options = method_names)["option"]
-		method = getattr(self, method_name)
-		method()
+			# Replace the underlines in the method name with spaces
+			key = member[0].replace("_", " ")
+
+			# Add the method to the methods dictionary
+			methods[key] = method
+
+		# List the names
+		names = list(methods.keys())
+
+		# Ask the user to select a method
+		name = self.Input.Select(names)["option"]
+
+		# Get the method and run it
+		methods[name]["Object"]()
 
 	def Define_Basic_Variables(self):
 		from copy import deepcopy
@@ -129,99 +127,94 @@ class Main():
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
 
-	def Test(self):
+	def Write_File_Names_To_File(self):
+		folder = self.Folder.Sanitize(self.Input.Type(self.Folder.language_texts["folder, title()"]))
+
+		files = self.Folder.Contents(folder)["file"]["names"]
+
+		i = 0
+		for file in files:
+			file = file.replace("_", " ")
+			file = file.replace("FênixFansub", "Fênix Fansub")
+			file = file.replace("OldAge", "Old Age")
+
+			files[i] = file
+
+			i += 1
+
+		file = self.File.Sanitize(self.Input.Type("File to write to"))
+
+		self.File.Edit(file, self.Text.From_List(files, break_line = True))
+
+	def Make_Dual_Audio_Of_Media(self):
+		import os
+		import subprocess
+
 		print()
 		print(self.separators["5"])
 		print()
 
-		# Define the language
-		language = self.user_language
-		#language = "en"
+		# Define the file of titles
+		titles_file = "C:/Mega/Bloco De Notas/Redes de Dados/Mídia Audiovisual/Informações de mídia/Animes/Yuru Camp△/Temporadas/Yuru Camp△/Títulos/Português.txt"
 
-		# Define the "Texts" dictionary
-		texts = {
-			"pt": {
-				"List": [
-					"Um",
-					"Dois",
-					"Três",
-					"Quatro"
-				],
-				"Texts": [
-					'"e" antes do último item no idioma do usuário',
-					'"e" antes do último item em Inglês',
-					'com "ou" antes do último item',
-					'sem "e" antes do último item',
-					"com palavras em minúsculo",
-					"com aspas",
-					"com quebras de linha"
-				],
-				"One line text": "Texto de uma linha",
-				"Multi-line text": "Texto multi-linha"
-			},
-			"en": {
-				"List": [
-					"One",
-					"Two",
-					"Three",
-					"Four"
-				],
-				"Texts": [
-					'"and" before the last item in the user language',
-					'"and" before the last item in English',
-					'with "or" before the last item',
-					'without "and" before the last item',
-					"with words in lower case",
-					"with quotes",
-					"with line breaks"
-				],
-				"One line text": "One line text",
-				"Multi-line text": "Multi-line text"
-			}
-		}
+		titles_file = self.File.Sanitize(titles_file)
 
-		items = texts[language]["List"]
+		# Define the root folder
+		root_folder = "C:/Mídias/Animes/Yuru Camp△/"
 
-		items = [
-			self.Text.From_List(items, language = self.user_language),
-			self.Text.From_List(items, language = "en"),
-			self.Text.From_List(items, language = language, or_text = True),
-			self.Text.From_List(items, language = language, and_text = False),
-			self.Text.From_List(items, language = language, lower = True),
-			self.Text.From_List(items, language = language, quotes = True),
-			self.Text.From_List(items, break_line = True).splitlines()
-		]
+		root_folder = self.Folder.Sanitize(root_folder)
 
-		# Show the list
-		print(self.Language.texts["original_list"][language] + ":")
-
-		print("[")
-
-		for item in texts[language]["List"]:
-			text = '"' + item + '"'
-
-			if item != texts[language]["List"][-1]:
-				text += ","
-
-			print("\t" + text)
-
-		print("]")
 		print()
 
-		i = 0
-		for text in texts[language]["Texts"]:
-			if text != texts[language]["Texts"][-1]:
-				print(texts[language]["One line text"] + " (" + text + "):")
-				print("\t" + items[i])
-				print()
+		# Define the command template
+		command_template = '''ffmpeg -y ^
+		-i "{Root folder}/Legendado/{}.mkv" ^
+		-itsoffset 1 ^
+		-i "{Root folder}/Português/MP3/{}.mp3" ^
+		-map 0:s "{Root folder}/Legendas/{}.ass" ^
+		-map 0 ^
+		-map -0:s ^
+		-map -0:t ^
+		-map 1:a ^
+		-disposition:a:1 default ^
+		-disposition:a:0 0 ^
+		-c copy ^
+		-metadata title="{}" ^
+		-metadata:s:a:0 title="Japanese (Japonês)" -metadata:s:a:0 language=ja -metadata:s:a:0 lang=ja -metadata:s:a:0 handler_name=ja ^
+		-metadata:s:a:1 title="Portuguese (Português)" -metadata:s:a:1 language=pt -metadata:s:a:1 lang=pt -metadata:s:a:1 handler_name=pt ^
+		"{Root folder}/{}.mp4"'''.replace("{Root folder}", root_folder[:-1]) \
+		.replace("\t", "")
 
-			if text == texts[language]["Texts"][-1]:
-				print(texts[language]["Multi-line text"] + " (" + text + "):")
+		# Get the list of titles
+		titles = self.File.Contents(titles_file)["lines"]
 
-				for line in self.Text.From_List(texts[language]["List"], break_line = True).splitlines():
-					print("\t" + line)
+		# Iterate through the titles
+		for title in titles:
+			# Define the title dictionary with the encoded quotes and no quotes version of the title
+			title = {
+				"Encoded": title.replace('"', '\\"'),
+				"No quotes": title.replace('"', "")
+			}
 
-			i += 1
+			# Define the list of items to use to format the command template
+			items = [
+				title["No quotes"],
+				title["No quotes"],
+				title["No quotes"],
+				root_folder.split("/")[-2] + " " + title["Encoded"],
+				title["No quotes"]
+			]
+
+			# Format the command template with the list of items, making the command
+			command = str(command_template.format(*items))
+
+			# Copy the command to the clipboard for the user to run it
+			self.Text.Copy(command)
+
+			# If the title is not the last one
+			if title != titles[-1]:
+				# Ask for user input before continuing
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 	def Download_Minecraft_Assets(self):
 		# Import the "requests" module
@@ -288,7 +281,7 @@ class Main():
 		# Create the "Minecraft" folder
 		self.Folder.Create(self.download["Folders"]["Downloads"]["root"])
 
-		# Update the "Minecraft" folder
+		# Update the "Minecraft" folder with the selected version
 		self.download["Folders"]["Downloads"]["root"] += self.download["Version"] + "/"
 		self.Folder.Create(self.download["Folders"]["Downloads"]["root"])
 
@@ -384,7 +377,6 @@ class Main():
 				print(self.Language.language_texts["file, title()"] + " (2)" + ":")
 				print("[" + extracted_file + "]")
 
-			if self.File.Exist(file) == False:
 				# Download the object file
 				response = requests.get(link)
 

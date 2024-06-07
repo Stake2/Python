@@ -27,7 +27,7 @@ class Create_Year_Summary(Years):
 		# Define the year
 		self.Define_The_Year()
 
-		#if self.switches["testing"] == True:
+		#if self.switches["Testing"] == True:
 		#	self.summary["States"]["Is summary date"] = True
 
 		if self.year != None:

@@ -90,7 +90,7 @@ class Play(GamePlayer):
 			self.File.Edit(self.game["Folders"]["dates"], self.game["Dates"], "w")
 
 	def Open_Game(self):
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			if "Bat" in self.game["Files"]:
 				self.System.Open(self.game["Files"]["Bat"])
 
@@ -137,7 +137,7 @@ class Play(GamePlayer):
 		# Define the "After" time (now, but after playing)
 		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 2, minutes = 30, seconds = 28))
 
 		# Show the after time (after playing the game)

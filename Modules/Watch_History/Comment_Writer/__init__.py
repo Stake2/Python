@@ -235,7 +235,7 @@ class Comment_Writer(Watch_History):
 		# If the "Add comment" state is False
 		if self.dictionary["Comment Writer"]["States"]["Add"] == False:
 			# Ask for the user to write the comment
-			dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["Comments"]["Backups"]["Backup"])
+			dictionary = self.Input.Lines(show_text, line_options_parameter = {"print": True, "next_line": False}, backup_file = self.folders["Comments"]["Backups"]["Backup"], second_space = False)
 
 		# If the "Add comment" state is True
 		if self.dictionary["Comment Writer"]["States"]["Add"] == True:
@@ -394,10 +394,10 @@ class Comment_Writer(Watch_History):
 
 			while validators.url(original_link) != True:
 				# Ask for the YouTube comment link
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc=UgxuNs35fO-gFEDY7l14AaABAg"
 
 					print(self.language_texts["paste_the_comment_link_of_youtube"] + ":")

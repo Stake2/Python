@@ -266,11 +266,11 @@ class Fill_Media_Files(Watch_History):
 				if language == self.languages["small"][0]:
 					first_space = False
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					# Ask for the episode title
 					typed_text = self.Input.Type(self.language_texts["paste_the_episode_title_in_{}"].format("[" + translated_language + "]"), accept_enter = False, next_line = True, first_space = first_space)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					typed_text = self.texts["episode_title"][language] + " " + self.Language.language_texts["genders, type: dict"]["in"] + " " + full_language
 
 				# Remove some texts from the episode title and add quotes

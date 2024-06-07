@@ -1,53 +1,28 @@
 # GamePlayer.py
 
+# Import the "importlib" module
+import importlib
+
 class Run():
 	def __init__(self):
-		import os
-		import importlib
+		# Run its root class
+		self.Modules = self.Modules(object = self, select_class = False)
 
-		from Utility.Input import Input as Input
-		from Utility.JSON import JSON as JSON
-
-		self.Input = Input()
-		self.JSON = JSON()
-
-		# Define the "Language" class as the same class inside the "JSON" class
-		self.Language = self.JSON.Language
-
-		self.current_folder = os.path.split(__file__)[0] + "\\"
-
-		self.descriptions_file = self.current_folder + "Descriptions.json"
-		self.descriptions = self.JSON.To_Python(self.descriptions_file)
-
-		self.classes = []
-
-		for key in self.descriptions:
-			if key != "show_text":
-				self.classes.append(key)
-
-		self.class_descriptions = []
-
-		for class_ in self.classes:
-			class_description = self.descriptions[class_]
-
-			self.class_descriptions.append(self.Language.Item(class_description))
-
-		self.language_texts = self.Language.Item(self.descriptions)
-
+		# Define the "has active arguments" variable as False
 		has_active_arguments = False
 
-		# If the self object (Run) has the "arguments" dictionary
+		# If the self object (Run) contains the "arguments" dictionary
 		if hasattr(self, "arguments") == True:
 			from copy import deepcopy
 
-			# Iterate through the arguments list
+			# Iterate through the list of arguments
 			for argument in deepcopy(self.arguments).values():
 				# If the argument has the "Action" key
 				# And the action is "store"
 				# And the value of the argument is not "None"
-				# (Different from the default of the "store" action, which is "None")
+				# (Different from the default value of the "store" action, which is "None")
 				# Or the value of the argument is "True"
-				# (Different from the default of the "store_true" action, which is "False")
+				# (Different from the default value of the "store_true" action, which is "False")
 				if (
 					"Action" in argument and
 					argument["Action"] == "store" and
@@ -63,29 +38,31 @@ class Run():
 						# Store the argument inside the arguments dictionary as the active argument
 						self.arguments["Active argument"] = argument
 
+			# If the module has active arguments
+			if has_active_arguments == True:
+				# Get the auto-class (the class that will be auto-executed) from the active argument dictionary
+				class_ = self.arguments["Active argument"]["Auto-class"]
+
+				# Import the module
+				module = importlib.import_module("." + class_, self.__module__)
+
+				# Get the class of the module and create its dictionary
+				class_ = {
+					"Object": getattr(module, class_)
+				}
+
 		# If the module has no active arguments
 		if has_active_arguments == False:
-			# Ask for the user to select a class
-			option = self.Input.Select(self.classes, language_options = self.class_descriptions, show_text = self.language_texts["show_text"], select_text = self.Language.language_texts["select_one_class_to_execute"])["option"]
-
-		# If the module has active arguments
-		if has_active_arguments == True:
-			# Get the auto-class (the class that will be auto-executed) from the active argument dictionary
-			option = self.arguments["Active argument"]["Auto-class"]
-
-		# Import the module
-		module = importlib.import_module("." + option, self.__module__)
-
-		# Get the module sub-class
-		sub_class = getattr(module, option)
+			# Ask the user to select a class
+			class_ = self.Modules.Select_Class(return_class = True)
 
 		# If the self object (Run) has the "arguments" dictionary
-		# Add it to the module sub-class
+		# Add it to the module class
 		if hasattr(self, "arguments") == True:
-			setattr(sub_class, "arguments", self.arguments)
+			setattr(class_["Object"], "arguments", self.arguments)
 
-		# Run the sub-class
-		sub_class()
+		# Run the object of the class
+		class_["Object"]()
 
 # Define the alternate arguments for the module
 alternate_arguments = [

@@ -2,42 +2,70 @@
 
 class API():
 	def __init__(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Import the classes
+		self.Import_Classes()
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the folders of the module
+		self.Define_Folders(object = self, files = ["Secrets", "Client secrets"])
 
-		self.switches.update({
-			"file": {
-				"create": True,
-				"delete": True,
-				"copy": True,
-				"move": True,
-				"edit": True
-			}
-		})
+		# Define the "Switches" dictionary
+		self.Define_Switches()
 
-		if self.switches["testing"] == True:
-			for switch in self.switches["file"]:
-				self.switches["file"][switch] = False
+		# Get the "Secrets" dictionary
+		self.secrets = self.JSON.To_Python(self.module["Files"]["Secrets"])
 
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+	def Import_Classes(self):
+		import importlib
 
-		Define_Folders(self, ["Secrets", "client_secrets"])
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"File",
+			"Date",
+			"JSON"
+		]
 
-		from Utility.File import File as File
-		from Utility.Date import Date as Date
-		from Utility.JSON import JSON as JSON
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-		self.File = File()
-		self.Date = Date()
-		self.JSON = JSON()
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["secrets"])
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Update the "Switches" dictionary, adding the "File" dictionary
+		self.switches.update({
+			"File": {
+				"Create": True,
+				"Delete": True,
+				"Copy": True,
+				"Move": True,
+				"Edit": True
+			}
+		})
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Iterate through the switches inside the "File" dictionary
+			for switch in self.switches["File"]:
+				# Define them as False
+				self.switches["File"][switch] = False
 
 	def YouTube(self, api):
 		from google.auth.transport.requests import Request
@@ -46,9 +74,9 @@ class API():
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
-		self.token_file = self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"] + "Token.json"
+		self.token_file = self.module["Folders"]["Module files"]["root"] + "Token.json"
 
-		self.client_secrets = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"])
+		self.client_secrets = self.JSON.To_Python(self.module["Folders"]["Module files"]["Client secrets"])
 
 		api["scopes"] = [
 			"https://www.googleapis.com/auth/youtube",
@@ -75,13 +103,13 @@ class API():
 				except RefreshError:
 					print()
 
-					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
+					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Folders"]["Module files"]["Client secrets"], api["scopes"])
 					api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			else:
 				print()
 
-				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["client_secrets"], api["scopes"])
+				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Folders"]["Module files"]["Client secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			# Save the credentials for the next run
@@ -342,13 +370,13 @@ class API():
 				if "defaultAudioLanguage" in snippet:
 					items[id]["Language"] = snippet["defaultAudioLanguage"]
 
-					if snippet["defaultAudioLanguage"] not in self.JSON.Language.languages["full"]:
+					if snippet["defaultAudioLanguage"] not in self.Language.languages["full"]:
 						snippet["defaultAudioLanguage"] = snippet["defaultAudioLanguage"].split("-")[0]
 
-					if snippet["defaultAudioLanguage"] not in self.JSON.Language.languages["full"]:
+					if snippet["defaultAudioLanguage"] not in self.Language.languages["full"]:
 						snippet["defaultAudioLanguage"] = "pt"
 
-					items[id]["Full language"] = self.JSON.Language.languages["full"][snippet["defaultAudioLanguage"]]
+					items[id]["Full language"] = self.Language.languages["full"][snippet["defaultAudioLanguage"]]
 
 				# Else, remove the "Language" key
 				else:

@@ -4,40 +4,68 @@ import os
 
 class System():
 	def __init__(self):
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Define the folders of the module
+		self.Define_Folders(object = self)
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the "Switches" dictionary
+		self.Define_Switches()
 
-		Define_Folders(self)
+		# Define the texts of the module
+		self.Define_Texts()
 
-		from Utility.JSON import JSON as JSON
+	def Import_Classes(self):
+		import importlib
 
-		self.JSON = JSON()
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"JSON"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.Define_Texts()
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Verbose(self, text, item, verbose = True):
 		import inspect
 
 		verbose_text = "\n" + \
-		self.module["name"] + "." + inspect.stack()[1][3] + "():" + "\n" + \
+		self.module["Name"] + "." + inspect.stack()[1][3] + "():" + "\n" + \
 		"\t" + text + ":" + "\n" + \
 		"\t" + item
 
 		if (
-			self.switches["verbose"] == True or
+			self.switches["Verbose"] == True or
 			verbose == True
 		):
 			print(verbose_text)
@@ -73,7 +101,7 @@ class System():
 		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose)
 
 		if (
-			self.switches["testing"] == False or
+			self.switches["Testing"] == False or
 			open == True
 		):
 			os.startfile(item)
@@ -84,7 +112,7 @@ class System():
 		import psutil
 
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				process.kill()
 
 	def Open_Link(self, link, verbose = True):

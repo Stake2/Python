@@ -4,42 +4,74 @@ import os
 
 class File():
 	def __init__(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Import the classes
+		self.Import_Classes()
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the folders of the module
+		self.Define_Folders(object = self)
 
-		self.switches.update({
-			"file": {
-				"create": True,
-				"delete": True,
-				"copy": True,
-				"move": True,
-				"edit": True
-			}
-		})
+		# Define the "Switches" dictionary
+		self.Define_Switches()
 
-		if self.switches["testing"] == True:
-			for switch in self.switches["file"]:
-				self.switches["file"][switch] = False
+		# Define the texts of the module
+		self.Define_Texts()
 
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+	def Import_Classes(self):
+		import importlib
 
-		Define_Folders(self)
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"JSON"
+		]
 
-		from Utility.JSON import JSON as JSON
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-		self.JSON = JSON()
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		self.Define_Texts()
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Update the "Switches" dictionary, adding the "File" dictionary
+		self.switches.update({
+			"File": {
+				"Create": True,
+				"Delete": True,
+				"Copy": True,
+				"Move": True,
+				"Edit": True
+			}
+		})
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Iterate through the switches inside the "File" dictionary
+			for switch in self.switches["File"]:
+				# Define them as False
+				self.switches["File"][switch] = False
 
 	def Define_Texts(self):
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Sanitize(self, path, restricted_characters = False):
@@ -61,18 +93,16 @@ class File():
 		return os.path.splitext(os.path.basename(file))[0]
 
 	def Verbose(self, text, item, verbose = False):
-		if self.switches["verbose"] == True or verbose == True:
+		if (
+			self.switches["Verbose"] == True or
+			verbose == True
+		):
 			import inspect
 
 			method_ = inspect.stack()[1][3]
 
-			space = self.JSON.Language.space_text
-
-			if method_ == "Open":
-				space = ""
-
-			print(space)
-			print(self.module["name"] + "." + method_ + "():")
+			print("")
+			print(self.module["Name"] + "." + method_ + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 
@@ -100,7 +130,7 @@ class File():
 			return False
 
 		if (
-			self.switches["file"]["create"] == True and
+			self.switches["File"]["Create"] == True and
 			self.Exist(file) == False
 		):
 			create = open(file, "w", encoding = "utf8")
@@ -110,7 +140,7 @@ class File():
 
 			return True
 
-		if self.switches["file"]["create"] == False:
+		if self.switches["File"]["Create"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file)
 
 			return False
@@ -123,14 +153,17 @@ class File():
 
 			return False
 
-		if self.switches["file"]["delete"] == True and self.Exist(file) == True:
+		if (
+			self.switches["File"]["Delete"] == True and
+			self.Exist(file) == True
+		):
 			os.remove(file)
 
 			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["deleted, masculine"], file)
 
 			return True
 
-		if self.switches["file"]["delete"] == False:
+		if self.switches["File"]["Delete"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["delete"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file, verbose = True)
 
 			return False
@@ -151,7 +184,7 @@ class File():
 			return False
 
 		if (
-			self.switches["file"]["copy"] == True and
+			self.switches["File"]["Copy"] == True and
 			self.Exist(source_file) == True
 		):
 			import shutil
@@ -161,7 +194,7 @@ class File():
 
 			return True
 
-		if self.switches["file"]["copy"] == False:
+		if self.switches["File"]["Copy"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
 
 			return False
@@ -182,7 +215,7 @@ class File():
 			return False
 
 		if (
-			self.switches["file"]["move"] == True and
+			self.switches["File"]["Move"] == True and
 			self.Exist(source_file) == True
 		):
 			import shutil
@@ -192,7 +225,7 @@ class File():
 
 			return True
 
-		if self.switches["file"]["move"] == False:
+		if self.switches["File"]["Move"] == False:
 			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
 
 			return False
@@ -205,10 +238,14 @@ class File():
 
 		line_break = ""
 
-		if next_line == True and length != 0 and mode == "a":
+		if (
+			next_line == True and
+			length != 0 and
+			mode == "a"
+		):
 			line_break = "\n"
 
-		verbose_text = self.JSON.Language.Check_Text_Difference(contents, text)
+		verbose_text = self.Language.Check_Text_Difference(contents, text)
 
 		text = line_break + text
 
@@ -218,7 +255,7 @@ class File():
 
 		if self.Exist(file) == True:
 			if (
-				self.switches["file"]["edit"] == True and
+				self.switches["File"]["Edit"] == True and
 				contents["string"] != text
 			):
 				edit = open(file, mode, encoding = "UTF8")
@@ -227,16 +264,16 @@ class File():
 
 				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
-			if self.switches["file"]["edit"] == False:
+			if self.switches["File"]["Edit"] == False:
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
 				self.Verbose(show_text, file_text, verbose = verbose)
 
-			if self.switches["file"]["edit"] == True:
+			if self.switches["File"]["Edit"] == True:
 				return True
 
-			if self.switches["file"]["edit"] == False:
+			if self.switches["File"]["Edit"] == False:
 				return False
 
 		if self.Exist(file) == False:
@@ -331,7 +368,10 @@ class File():
 	def Dictionary(self, file, dictionary_separators = ": ", next_line = False, convert = None, true_or_false = False):
 		file = self.Sanitize(file)
 
-		if next_line == True and dictionary_separators == ": ":
+		if (
+			next_line == True and
+			dictionary_separators == ": "
+		):
 			dictionary_separators = [":"]
 
 		if type(dictionary_separators) == str:
@@ -386,7 +426,7 @@ class File():
 
 		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
 
-		if self.switches["testing"] == False or open == True:
+		if self.switches["Testing"] == False or open == True:
 			os.startfile(item)
 
 	def Close(self, program):

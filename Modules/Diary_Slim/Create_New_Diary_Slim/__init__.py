@@ -149,17 +149,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 				# Check for skipped Diary Slims
 				self.Check_For_Skipped_Diary_Slims()
 
-			# If the "Check for skipped Diary Slim" state is True
-			# And the day number is not the first one (of the month)
-			if (
-				self.states["Skipped Diary Slims"]["Check"] == True and
-				self.date["Units"]["Day"] != 1
-			):
-				# Show spaces and the show text
-				print()
-				print(self.dictionary["Texts"]["Show"])
-				print()
-
 	def Check_For_Skipped_Diary_Slims(self):
 		# Define the today variable for easier typing
 		today_date = self.date
@@ -205,9 +194,16 @@ class Create_New_Diary_Slim(Diary_Slim):
 					day_text not in diary_slims_list and
 					day < int(units["Day"])
 				):
+					# Define the key
+					key = day_text
+
+					# Update the day text to be in the correct format
+					day_text = date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + ", " + \
+					date["Formats"]["[Day] [Month name] [Year]"][self.user_language] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
+
 					# Create the day dictionary with the day text and date
 					# And add it to the "Skipped Diary Slims" dictionary
-					self.dictionary["Skipped Diary Slims"][day_text] = {
+					self.dictionary["Skipped Diary Slims"][key] = {
 						"Day text": day_text,
 						"Date": date
 					}
@@ -258,11 +254,9 @@ class Create_New_Diary_Slim(Diary_Slim):
 					self.diary_slim["Current year"] = self.object.current_year
 					self.current_month = self.object.current_month
 
-					# Show a space separator
-					print()
-
 				# Show a five dash space separator
 				print(self.separators["5"])
+				print()
 
 			# Define the "Checked for skipped Diary Slims" state as True
 			self.states["Skipped Diary Slims"]["Checked"] = True
@@ -308,15 +302,18 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 		# If the "Check for skipped Diary Slim" state is True
 		if self.states["Skipped Diary Slims"]["Check"] == True:
-			# Split the lines of the text header
-			self.dictionary["Texts"]["Header"] = self.dictionary["Texts"]["Header"].splitlines()[0]
+			# Ask if the user wrote the Diary Slim on the phone
+			question = self.language_texts["did_you_wrote_this_diary_slim_on_the_phone"]
 
-			# Add two line breaks
-			self.dictionary["Texts"]["Header"] += "\n\n"
+			self.wrote_on_phone = False
 
-			# Add a text explaining that the Diary Slim was written on the phone
-			# (Assuming that the Diary Slim was written on the phone)
-			self.dictionary["Texts"]["Header"] += self.language_texts["this_diary_slim_was_written_on_the_phone"] + "."
+			if self.switches["Testing"] == False:
+				self.wrote_on_phone = self.Input.Yes_Or_No(question)
+
+			# If the user wrote the Diary Slim on the phone
+			if self.wrote_on_phone == True:
+				# Define the text header as a text explaining that the Diary Slim was written on the phone
+				self.dictionary["Texts"]["Header"] = self.language_texts["this_diary_slim_was_written_on_the_phone"] + "."
 
 	def Match_Time_Pattern(self, type_text, time = "", first_space = True):
 		# Define the pattern and format text
@@ -351,12 +348,12 @@ class Create_New_Diary_Slim(Diary_Slim):
 					type_text += formatted_text
 
 				# If the "testing" switch is deactivated
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					# Ask for the time
 					time = self.Input.Type(type_text, next_line = True, first_space = first_space)
 
 				# If the "testing" switch is activated
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					# Define the time as "00:00"
 					time = "00:00"
 
@@ -404,11 +401,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 				type_text = self.language_texts["type_a_custom_creation_time_for_the_file, type: explanation"]
 
 				# Ask for the user to type the time if the "testing" switch is deactivated
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					typed = self.Input.Type(type_text, first_space = False, next_line = True)
 
 				# Else, define the time as "10:00"
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					typed = "10:00"
 
 				# If the typed time is not empty (not Enter)

@@ -112,7 +112,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 					# And the game list is not empty
 					# And the length of the game list is not one (more than one game)
 					if (
-						self.switches["testing"] == True and
+						self.switches["Testing"] == True and
 						self.game_title != game_list[-1] and
 						game_list != [] and
 						length != 1
@@ -125,7 +125,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			# And the game type is not inside the list of game types that needs to be skipped
 			# And the game list is not empty
 			if (
-				self.switches["testing"] == True and
+				self.switches["Testing"] == True and
 				game_type != self.game_types["Types"]["en"][-1] and
 				game_type not in game_types_to_skip and
 				game_list != [] and

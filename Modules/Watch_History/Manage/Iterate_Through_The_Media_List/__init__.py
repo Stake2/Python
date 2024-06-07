@@ -143,7 +143,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						#		string += " (" + self.media["Title"].split(" (")[-1] + "\n"
 
 						# Watch the media for testing purposes
-						#if self.switches["testing"] == True:
+						#if self.switches["Testing"] == True:
 						#	if hasattr(self, "Watch_Media") == False:
 						#		from Watch_History.Watch_Media import Watch_Media as Watch_Media
 						#		self.Watch_Media = Watch_Media
@@ -156,7 +156,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						self.media_item_number += 1
 
 					if (
-						self.switches["testing"] == True and
+						self.switches["Testing"] == True and
 						self.media_title != media_list[-1]
 					):
 						self.Input.Type(self.Language.language_texts["continue, title()"])
@@ -165,7 +165,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			#input()
 
 			if (
-				self.switches["testing"] == True and
+				self.switches["Testing"] == True and
 				plural_media_type != self.media_types["Plural"]["en"][-1] and
 				plural_media_type not in media_types_to_remove
 			):

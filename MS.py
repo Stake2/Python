@@ -8,56 +8,96 @@ from copy import deepcopy
 
 class Module_Selector():
 	def __init__(self):
+		# Import the classes
+		self.Import_Classes()
+
+		# Define the folders of the module
+		self.Define_Folders(object = self)
+
 		# Defines the basic variables
 		self.Define_Basic_Variables()
 
-		# Import the "Define_Folders" module
-		from Utility.Define_Folders import Define_Folders as Define_Folders
-
-		# Define the module folders
-		Define_Folders(self)
-
+		# Define the texts of the module
 		self.Define_Texts()
 
+		# Define the parser
 		self.Define_Parser()
-		self.Get_Modules()
-		self.Check_Arguments_And_Switches()
-		self.Reset_Switch()
 
+		# Get the modules
+		self.Get_Modules()
+
+		# Check the arguments and switches
+		self.Check_Arguments_And_Switches()
+
+		# Reset the switches
+		self.Reset_Switches()
+
+		# If the class does not has arguments
 		if self.has_arguments == False:
+			# Ask the user to select a module from the list
 			self.Select_Module()
 
+		# If the class has arguments
 		if self.has_arguments == True:
+			# Check them
 			self.Check_Arguments()
 
+		# Switch the switches
 		self.Switch()
+
+		# Run the module
 		self.Run_Module(self.module)
-		self.Reset_Switch()
+
+		# Reset the switches again
+		self.Reset_Switches()
+
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"Modules",
+			"JSON",
+			"Input",
+			"Folder"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not in the defined list
+			if module_title not in ["Define_Folders", "Modules"]:
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
+
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
+		# Define the local folders dictionary as the Folder folders dictionary
+		self.folders = self.Folder.folders
 
 	def Define_Basic_Variables(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
-
-		self.Global_Switches = Global_Switches()
+		# Get the "Switches" dictionary
 		self.switches = self.Global_Switches.switches
 
 		# Copy the reset switches from the "Global_Switches" module
 		self.reset_switches = deepcopy(self.switches["Reset"])
 
-		# Import the Input and JSON Utility modules
-		from Utility.Input import Input as Input
-		from Utility.JSON import JSON as JSON
-
-		self.Input = Input()
-		self.JSON = JSON()
-
-		self.Language = self.JSON.Language
-
+		# Get the languages and the user language from the "Language" class
 		self.languages = self.Language.languages
 		self.user_language = self.Language.user_language
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["apps"]["module_files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
@@ -87,9 +127,9 @@ class Module_Selector():
 		self.argument_parser = {
 			"Prefix": "-",
 			"ArgumentParser": {
-				"prog": self.module["name"] + ".py",
+				"prog": self.module["Name"] + ".py",
 				"description": self.language_texts["description_executes_the_module_specified_in_the_optional_arguments"],
-				"epilog": self.language_texts["epilogue_and_that_is_how_you_execute_a_module_using_the_{}"].format(self.module["name"]),
+				"epilog": self.language_texts["epilogue_and_that_is_how_you_execute_a_module_using_the_{}"].format(self.module["Name"]),
 				"formatter_class": argparse.RawDescriptionHelpFormatter,
 				"add_help": False
 			},
@@ -100,10 +140,12 @@ class Module_Selector():
 					"Action": "help"
 				},
 				"testing": [
-					"testing"
+					"testing",
+					"Testing"
 				],
 				"verbose": [
-					"verbose"
+					"verbose",
+					"Verbose"
 				],
 				"user_information": {
 					"List": [
@@ -312,7 +354,7 @@ class Module_Selector():
 
 	def Get_Modules(self):
 		# Get the list of modules from the "Modules.json" file
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Iterate through the usage modules list
 		for title in self.modules["Usage"]["List"]:
@@ -326,11 +368,14 @@ class Module_Selector():
 				"Module": importlib.import_module(title),
 				"Folders": {
 					"Texts": {
-						"root": self.folders["apps"]["module_files"]["root"] + title + "/"
+						"root": self.folders["Apps"]["Module files"]["root"] + title + "/"
 					}
 				},
 				"Is module": True
 			}
+
+			# Add the "Modules" to the "Run" class of the current module
+			setattr(module["Module"].Run, "Modules", self.Modules)
 
 			# Define the "Texts.json" file of the module
 			module["Folders"]["Texts"]["Texts"] = module["Folders"]["Texts"]["root"] + "Texts.json"
@@ -448,6 +493,9 @@ class Module_Selector():
 
 		# Iterate through the switches list
 		for switch in list(self.switches["Reset"].keys()):
+			# Lower the switch
+			switch = switch.lower()
+
 			# If the arguments contain the switch and the state of the switch is True
 			if (
 				hasattr(self.arguments, switch) and
@@ -515,10 +563,16 @@ class Module_Selector():
 		# Update the "Switches.json" file if there are switch arguments
 		if self.has_switches == True:
 			# Make a copy of the reset (default) switches and add it to the "edited" key
-			self.switches["edited"] = deepcopy(self.switches["Reset"])
+			self.switches["Edited"] = deepcopy(self.switches["Reset"])
 
 			# Iterate through the global switches keys list
 			for switch in self.switches["Global"].keys():
+				# Define the key
+				key = switch
+
+				# Lower the switch
+				switch = switch.lower()
+
 				# If the arguments list has the switch
 				# And the switch is True
 				if (
@@ -526,18 +580,18 @@ class Module_Selector():
 					getattr(self.arguments, switch) == True
 				):
 					# Update the switch inside the edited switches dictionary
-					self.switches["edited"][switch] = getattr(self.arguments, switch)	
+					self.switches["Edited"][key] = getattr(self.arguments, switch)
 
 			# Show the global switches
 			self.Show_Global_Switches()
 
-			# If the "user_information" switch is on
+			# If the "User information" switch is on
 			# Execute the "Show_User_Information" method of the "Language" class
-			if self.switches["edited"]["user_information"] == True:
+			if self.switches["Edited"]["User information"] == True:
 				self.Language.Show_User_Information()
 
 			# Edit the "Switches.json" file with the updated switches
-			self.Global_Switches.Switch(self.switches["edited"])
+			self.Global_Switches.Switch(self.switches["Edited"])
 
 	def Show_Global_Switches(self):
 		has_true_variables = False
@@ -547,8 +601,8 @@ class Module_Selector():
 			# If the switch is inside the edited switches dictionary
 			# And the switch is True
 			if (
-				switch in self.switches["edited"] and
-				self.switches["edited"][switch] == True
+				switch in self.switches["Edited"] and
+				self.switches["Edited"][switch] == True
 			):
 				# Then at least one switch is True (activated)
 				has_true_variables = True
@@ -562,24 +616,30 @@ class Module_Selector():
 
 		# Iterate through the global switches keys list
 		for switch in self.switches["Global"].keys():
+			# Define the key
+			key = switch
+
+			# Lower the switch
+			switch = switch.lower()
+
 			# If the switch is inside the edited switches dictionary
 			# And the switch is True
-			# And the switch is not the "user_information" one
+			# And the switch is not the "User information" one
 			if (
-				switch in self.switches["edited"] and
-				self.switches["edited"][switch] == True and
-				switch != "user_information"
+				key in self.switches["Edited"] and
+				self.switches["Edited"][key] == True and
+				key != "User information"
 			):
 				# Show the switch explanation text to the user
 				print(self.language_texts[switch + ", type: explanation"])
 
 		# If any switch is True (activated)
-		# And the "user_information" is off
+		# And the "User information" is off
 		# Then show a final space and dash separator
-		# (If the "user_information" switch is on, it provides its own final separator)
+		# (If the "User information" switch is on, it provides its own final separator)
 		if (
 			has_true_variables == True and
-			self.switches["edited"]["user_information"] == False
+			self.switches["Edited"]["User information"] == False
 		):
 			print()
 			print("-----")
@@ -662,7 +722,8 @@ class Module_Selector():
 		if getattr(self.arguments, "language") == True:
 			self.Language.Create_Language_Text()
 
-	def Reset_Switch(self):
+	def Reset_Switches(self):
+		# Reset the switches
 		self.Global_Switches.Reset()
 
 if __name__ == "__main__":

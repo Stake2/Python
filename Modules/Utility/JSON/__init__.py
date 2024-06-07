@@ -4,57 +4,99 @@ import os
 
 class JSON():
 	def __init__(self):
-		from Utility.Global_Switches import Global_Switches as Global_Switches
+		# Import the classes
+		self.Import_Classes()
 
-		# Global Switches dictionary
-		self.switches = Global_Switches().switches["Global"]
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
+		# Define the "Switches" dictionary
+		self.Define_Switches()
+
+		# Define the texts of the module
+		self.Define_Texts()
+
+	def Import_Classes(self):
+		import importlib
+
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"Global_Switches",
+			"Language"
+		]
+
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
+
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
+
+	def Define_Switches(self):
+		# Get the "Switches" dictionary from the "Global_Switches" module
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# Update the "Switches" dictionary, adding the "File" dictionary
 		self.switches.update({
-			"file": {
-				"create": True,
-				"edit": True
+			"File": {
+				"Create": True,
+				"Edit": True
 			}
 		})
 
-		if self.switches["testing"] == True:
-			for switch in self.switches["file"]:
-				self.switches["file"][switch] = False
-
-		# Define module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
-
-		Define_Folders(self)
-
-		self.folders["apps"]["module_files"]["utility"]["date"] = {
-			"texts": self.folders["apps"]["module_files"]["utility"]["root"] + "Date/Texts.json"
-		}
-
-		from Utility.Language import Language as Language
-
-		self.Language = Language()
-
-		self.Define_Texts()
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Iterate through the switches inside the "File" dictionary
+			for switch in self.switches["File"]:
+				# Define them as False
+				self.switches["File"][switch] = False
 
 	def Define_Texts(self):
-		self.texts = self.To_Python(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["texts"])
-		self.date_texts = self.To_Python(self.folders["apps"]["module_files"]["utility"]["date"]["texts"])
+		# Define the "Texts" dictionary
+		self.texts = self.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
+
+		# Define the "Date" utility dictionary
+		self.folders["Apps"]["Module files"]["Utility"]["Date"] = {
+			"Texts": self.folders["Apps"]["Module files"]["Utility"]["root"] + "Date/Texts.json"
+		}
+
+		# Define the "Date texts" dictionary
+		self.date_texts = self.To_Python(self.folders["Apps"]["Module files"]["Utility"]["Date"]["Texts"])
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
 
-		if "/" not in path[-1] and os.path.splitext(path)[-1] == "":
+		if (
+			"/" not in path[-1] and
+			os.path.splitext(path)[-1] == ""
+		):
 			path += "/"
 
 		return path
 
 	def Verbose(self, text, item, verbose = None):
-		if self.switches["verbose"] == True and verbose == None or verbose == True:
+		if (
+			self.switches["Verbose"] == True and
+			verbose == None or
+			verbose == True
+		):
 			import inspect
 
-			print(self.Language.space_text)
-			print(self.module["name"] + "." + inspect.stack()[1][3] + "():")
+			print()
+			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 
@@ -108,7 +150,7 @@ class JSON():
 
 		if self.Exist(file) == True:
 			if (
-				self.switches["file"]["edit"] == True or
+				self.switches["File"]["Edit"] == True or
 				edit == True
 			):
 				if contents["string"] != text:
@@ -118,16 +160,16 @@ class JSON():
 
 					show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
-			if self.switches["file"]["edit"] == False:
+			if self.switches["File"]["Edit"] == False:
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
 			if contents["string"] != text:
 				self.Verbose(show_text, file_text, verbose = verbose)
 
-			if self.switches["file"]["edit"] == True:
+			if self.switches["File"]["Edit"] == True:
 				return True
 
-			if self.switches["file"]["edit"] == False:
+			if self.switches["File"]["Edit"] == False:
 				return False
 
 		if self.Exist(file) == False:
@@ -223,8 +265,14 @@ class JSON():
 
 		return dictionary
 
-	def Show(self, json):
-		print(self.From_Python(json))
+	def Show(self, json, return_text = False):
+		json = self.From_Python(json)
+
+		if return_text == False:
+			print(json)
+
+		if return_text == True:
+			return json
 
 	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False):
 		keys = list(dictionary.keys())

@@ -290,7 +290,7 @@ class Help_With_Programming(Code):
 
 		i = 0
 		for setting_file_name in self.settings_files_data[self.language_texts["file_names"]]:
-			self.last_setting_data_folder = self.folders["apps"]["module_files"][self.module["key"]]["root"] + "Last setting data/"
+			self.last_setting_data_folder = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Last setting data/"
 
 			self.last_data_file = self.last_setting_data_folder + setting_file_name
 			self.File.Create(self.last_data_file)
@@ -418,12 +418,12 @@ class Help_With_Programming(Code):
 				mode == "close" and
 				Open == self.System.Open and
 				self.language_texts["close_tool"] not in tool_data and
-				self.switches["testing"] == False
+				self.switches["Testing"] == False
 			):
 				for program in programs_to_close:
 					self.System.Close(program)
 
-			if mode == "open" and self.switches["testing"] == False:
+			if mode == "open" and self.switches["Testing"] == False:
 				Open(tool_path)
 
 				self.Date.Sleep(2)
@@ -440,7 +440,7 @@ class Help_With_Programming(Code):
 		if self.programming_language == "PHP" and self.programming_mode == "Udemy course":
 			self.programming_language = "Udemy course"
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			Write_On_Diary_Slim(self.programming_language)
 
 		if self.programming_language == "Udemy course":

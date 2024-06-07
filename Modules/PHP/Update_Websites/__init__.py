@@ -457,13 +457,13 @@ class Update_Websites(PHP):
 				link = website["Links"][language]
 
 				# Open the link if the "testing" switch is False
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					self.System.Open(link, verbose = False)
 
 				# If the "verbose" switch is True
 				# Or the "Verbose" key of the root dictionary is True
 				if (
-					self.switches["verbose"] == True or
+					self.switches["Verbose"] == True or
 					self.dictionary["Verbose"] == True
 				):
 					# Create the link text with the current language translated into the user language
@@ -477,7 +477,7 @@ class Update_Websites(PHP):
 					print("\t" + link)
 
 				# Open the link if the "testing" switch is False
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					# Wait for 1 milisecond before opening the next link
 					self.Date.Sleep(1)
 
@@ -511,5 +511,5 @@ class Update_Websites(PHP):
 				git_file = file
 
 		# If the "testing" switch is False, open the Git file
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			self.System.Open_Link(git_file, verbose = False)

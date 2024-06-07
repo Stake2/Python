@@ -60,10 +60,10 @@ class Create_New_Story(Stories):
 			# Ask for the story title
 			text = self.language_texts["story_title_in"] + " " + translated_language
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(text, accept_enter = False, next_line = True)
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				title = self.Language.texts["story_title"][language]
 
 				print()
@@ -137,11 +137,11 @@ class Create_New_Story(Stories):
 				new_text = text + ":" + "\n" + \
 				"(" + self.Language.language_texts["leave_empty_to_use_the_default_value"] + ': "' + format["Example"] + '")'
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					# Ask for the information
 					information = self.Input.Type(new_text, next_line = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					information = ""
 
 					print()
@@ -181,11 +181,11 @@ class Create_New_Story(Stories):
 					# Define the type text
 					type_text = self.language_texts["story_synopsis_in"] + " " + translated_language
 
-					if self.switches["testing"] == False:
+					if self.switches["Testing"] == False:
 						# Ask for the lines of text for the synopsis
 						synopsis = self.Input.Lines(type_text, line_options_parameter = {"next_line": True})["string"]
 
-					if self.switches["testing"] == True:
+					if self.switches["Testing"] == True:
 						synopsis = self.Language.texts["synopsis, title()"][language]
 
 						print()
@@ -226,7 +226,7 @@ class Create_New_Story(Stories):
 		# Ask if the story has a parent story
 		question = self.language_texts["does_the_story_has_a_parent_story"]
 
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			parent_story = self.Input.Yes_Or_No(question)
 
 		else:
@@ -237,7 +237,7 @@ class Create_New_Story(Stories):
 			# Ask for the title of the parent story
 			type_text = self.language_texts["type_the_title_of_the_parent_story"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(type_text, accept_enter = False, next_line = True)
 
 			else:
@@ -264,7 +264,7 @@ class Create_New_Story(Stories):
 			# Ask if the user posted the story on the story website
 			question = self.language_texts["did_you_posted_the_story_on_the_story_website"] + ' "' + key + '"'
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				posted_story = self.Input.Yes_Or_No(question)
 
 			else:

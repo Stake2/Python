@@ -446,7 +446,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "." + "\n\n"
 
 			# If the "testing" switch is False
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				# Add the contents of the description file in the current language to the task description
 				self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
 

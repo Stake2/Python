@@ -39,7 +39,7 @@ class Start_Christmas(Christmas):
 		print()
 
 		# Define today as "24 of December" for testing purposes
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 24))
 
 		# Define the date and Christmas date units for easier typing

@@ -1,116 +1,108 @@
 # Define_Folders.py
 
+import os
+import pathlib
+
 class Define_Folders():
-	def __init__(self, object_to_define = None, folder_names = []):
-		if object_to_define != None:
-			import os
-			import pathlib
+	def __init__(self, object = None, files = []):
+		# Define the "Folders" dictionary
+		self.Define_Folders()
 
-			name = type(object_to_define).__name__
-			class_module = object_to_define.__module__
+		# Define the "object" and "files" parameters inside this class
+		self.object = object
 
-			if "." in class_module:
-				if class_module.split(".")[0] == "Utility":
-					name = class_module.split(".")[1]
+		# Define the files list with the "Texts" item,
+		# And also add the values of the "files" parameter, if it is not an empty list
+		self.files = [
+			"Texts",
+			*files
+		]
 
-				else:
-					name = class_module.split(".")[0]
+		# Define the "Module" dictionary
+		self.Define_Module()
 
-			if name == "Run":
-				name = class_module.split(".")[0]
+	def Define_Folders(self):
+		# Define the hard drive letter
+		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
-			if hasattr(object_to_define, "module") == False:
-				self.module = {
-					"name": name,
-					"key": name.lower().replace(" ", "_")
-				}
+		# Define the "Folders" dictionary
+		self.folders = {
+			"root": self.hard_drive_letter
+		}
 
-			if hasattr(object_to_define, "module") == True:
-				self.module = getattr(object_to_define, "module")
+		# Define the "Apps" folder
+		self.folders["Apps"] = {
+			"root": self.folders["root"] + "Apps/"
+		}
 
-			if (
-				hasattr(object_to_define, "folders") == False or
-				hasattr(object_to_define, "folders") == True and
-				"apps" not in getattr(object_to_define, "folders")
-			):
-				if hasattr(self, "folders") == False:
-					self.folders = {
-						"hard_drive_letter": os.path.normpath(pathlib.Path.home().drive) + "/",
-					}
+		# Define its sub-folders
+		folders = [
+			"Module files",
+			"Modules"
+		]
 
-				self.folders["apps"] = {
-					"root": self.folders["hard_drive_letter"] + "Apps/"
-				}
-
-				self.folders["apps"]["module_files"] = {
-					"root": self.folders["apps"]["root"] + "Module Files/"
-				}
-
-				self.folders["apps"]["module_files"]["utility"] = {
-					"root": self.folders["apps"]["module_files"]["root"] + "Utility/"
-				}
-
-				self.folders["apps"]["modules"] = {
-					"root": self.folders["apps"]["root"] + "Modules/"
-				}
-
-				self.folders["apps"]["modules"]["modules"] = {
-					"root": self.folders["apps"]["modules"]["root"] + "Modules.json"
-				}
-
-			if hasattr(object_to_define, "folders") == True:
-				self.folders = getattr(object_to_define, "folders")
-
-			self.folders["apps"]["module_files"]["utility"][self.module["key"]] = {
-				"root": self.folders["apps"]["module_files"]["utility"]["root"] + self.module["name"] + "/"
+		# Iterate through the list of folders
+		for folder in folders:
+			# Define the folder dictionary
+			self.folders["Apps"][folder] = {
+				"root": self.folders["Apps"]["root"] + folder + "/"
 			}
 
-			folder_key = ""
+		# Define the "Utility" folders
+		for folder in ["Modules", "Module files"]:
+			self.folders["Apps"][folder]["Utility"] = {
+				"root": self.folders["Apps"][folder]["root"] + "Utility/"
+			}
 
-			if os.path.isdir(self.folders["apps"]["module_files"]["utility"][self.module["key"]]["root"]) == True:
-				folder_key = "utility"
+		# Define the "Modules.json" file
+		self.folders["Apps"]["Modules"]["Modules"] = self.folders["Apps"]["Modules"]["root"] + "Modules.json"
 
-				self.folders["apps"]["modules"][folder_key] = {
-					"root": self.folders["apps"]["modules"]["root"] + folder_key.title() + "/"
-				}
+	def Define_Module(self):
+		# Define the "Module" dictionary
+		self.module = {
+			"Name": type(self.object).__name__,
+			"Module": self.object.__module__,
+			"Utility": False,
+			"Folders": {},
+			"Files": {}
+		}
 
-				self.folders["apps"]["modules"][folder_key][self.module["key"]] = {
-					"root": self.folders["apps"]["modules"][folder_key]["root"] + self.module["name"] + "/"
-				}
+		# If there is a dot in the name of the module
+		if "." in self.module["Module"]:
+			# If the first item of the module name is "Utility"
+			if self.module["Module"].split(".")[0] == "Utility":
+				# Split it to get only the class module, not its root module
+				# For example: Remove "Utility." from "Utility.Define_Folders"
+				# Result: "Define_Folders"
+				self.module["Name"] = self.module["Module"].split(".")[1]
 
-				self.folders["apps"]["module_files"][folder_key][self.module["key"]] = {
-					"root": self.folders["apps"]["module_files"][folder_key]["root"] + self.module["name"] + "/"
-				}
+				# Define the "Utility" state as True
+				self.module["Utility"] = True
 
-				folder = self.folders["apps"]["module_files"][folder_key][self.module["key"]]["root"]
-
+			# Else, just split the module name and get the first name, which is the root module name
+			# There might be a sub-module on the module name
+			# For example: "Module.Sub_Module"
+			# Result: "Module"
 			else:
-				self.folders["apps"]["module_files"].pop("utility")
+				self.module["Name"] = self.module["Module"].split(".")[0]
 
-				self.folders["apps"]["modules"][self.module["key"]] = {
-					"root": self.folders["apps"]["modules"]["root"] + self.module["name"] + "/"
-				}
+		# Define the module folders
+		for key in ["Modules", "Module files"]:
+			# Define the root folder
+			root_folder = self.folders["Apps"][key]
 
-				self.folders["apps"]["module_files"][self.module["key"]] = {
-					"root": self.folders["apps"]["module_files"]["root"] + self.module["name"] + "/"
-				}
+			# If the module is an utility module
+			if self.module["Utility"] == True:
+				root_folder = root_folder["Utility"]
 
-			self.folders["apps"]["modules"]["modules"] = self.folders["apps"]["modules"]["root"] + "Modules.json"
+			# Define the module folder
+			self.module["Folders"][key] = {
+				"root": root_folder["root"] + self.module["Name"] + "/"
+			}
 
-			folder_names.append("Texts")
+		# Iterate through the files of the module
+		for file in self.files:
+			self.module["Files"][file] = self.module["Folders"]["Module files"]["root"] + file + ".json"
 
-			for item in folder_names:
-				key = item.lower().replace(" ", "_")
-
-				if self.module["key"] in self.folders["apps"]["module_files"]:
-					folder = self.folders["apps"]["module_files"][self.module["key"]]
-
-				else:
-					folder = self.folders["apps"]["module_files"][folder_key][self.module["key"]]
-
-				folder[key] = folder["root"] + item + ".json"
-
-			for key in ["module", "folders"]:
-				value = getattr(self, key)
-
-				setattr(object_to_define, key, value)
+		# Define the "Module" dictionary inside the object
+		setattr(self.object, "module", self.module)

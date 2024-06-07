@@ -6,7 +6,7 @@ class Add_A_New_Media(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		# Define the dictionary and select the media type
+		# Define the root dictionary and ask the user to select a media type
 		self.dictionary = {
 			"Media type": self.Select_Media_Type(),
 			"Media": {
@@ -94,10 +94,10 @@ class Add_A_New_Media(Watch_History):
 		print(text + ":")
 
 		# Ask for the media (item) titles
-		if self.switches["testing"] == False:
+		if self.switches["Testing"] == False:
 			title = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Media type"]["Singular"][self.user_language] + ")"
 
 			if self.item == True:
@@ -113,7 +113,7 @@ class Add_A_New_Media(Watch_History):
 
 			title = ""
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 			if title != "":
@@ -127,10 +127,10 @@ class Add_A_New_Media(Watch_History):
 			if self.item == False and self.dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:
 				accept_enter = False
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				title = self.Input.Type(self.Language.language_texts["romanized_title"], next_line = True, accept_enter = accept_enter)
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				title = "Título romanizado"
 
 			if title != "":
@@ -147,10 +147,10 @@ class Add_A_New_Media(Watch_History):
 			):
 				accept_enter = True
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				date = self.Input.Type(text, next_line = True, regex = "^[1-9]{1}[0-9]{3}; " + str(self.Date.Now()["Units"]["Year"]), accept_enter = accept_enter)
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				date = str(self.Date.Now()["Units"]["Year"])
 
 			if date != "":
@@ -171,16 +171,19 @@ class Add_A_New_Media(Watch_History):
 				):
 					accept_enter = True
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					date = self.Input.Type(text, next_line = True, accept_enter = accept_enter, regex = "[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}; " + self.Date.Now()["Formats"]["DD/MM/YYYY"])
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					date = self.Date.Now()["Formats"]["DD/MM/YYYY"]
 
 				if date != "":
 					import re
 
-					if date_type == "end" and re.search("[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}", date) == None:
+					if (
+						date_type == "end" and
+						re.search("[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}", date) == None
+					):
 						date = self.Input.Type(text, next_line = True, accept_enter = False, regex = "[0-9]{2}\/[0-9]{2}\/[1-9]{1}[0-9]{3}; " + self.Date.Now()["Formats"]["DD/MM/YYYY"])
 
 					media[date_type.title() + " date"] = date
@@ -196,11 +199,11 @@ class Add_A_New_Media(Watch_History):
 		if self.item == False:
 			# Ask for the user information if the media type is "Videos"
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					handle = self.Input.Type(self.Language.language_texts["handle, title()"], next_line = True)
 					id = self.Input.Type(self.Language.language_texts["id, upper()"], next_line = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					handle = "@arroba"
 					id = "UCwCC0_ax9am34MtX8EFrRGA"
 
@@ -212,10 +215,10 @@ class Add_A_New_Media(Watch_History):
 				for key in media["Staff keys"]:
 					text = self.Language.language_texts[key + ", title()"]
 
-					if self.switches["testing"] == False:
+					if self.switches["Testing"] == False:
 						media[key.capitalize()] = self.Input.Type(text + ":", next_line = True, accept_enter = False)
 
-					if self.switches["testing"] == True:
+					if self.switches["Testing"] == True:
 						media[key.capitalize()] = text
 
 			# Ask for the original language of the media
@@ -225,7 +228,7 @@ class Add_A_New_Media(Watch_History):
 			languages = list(self.languages["full"].values())
 			languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
 
 				if language != "[" + self.Language.language_texts["empty, title()"] + "]":
@@ -233,20 +236,20 @@ class Add_A_New_Media(Watch_History):
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				# Ask if the media has dubbing
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					media["Dubbing"] = self.Input.Yes_Or_No(self.Language.language_texts["dubbing, title()"], convert_to_text = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					media["Dubbing"] = self.Language.language_texts["yes, title()"]
 
 			# Ask for the media status
 			show_text = self.language_texts["select_one_watching_status_from_the_status_list"]
 			select_text = self.Language.language_texts["status, title()"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				status = self.Input.Select(show_text = show_text, select_text = select_text, options = self.language_texts["statuses, type: list"])["option"]
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				status = self.language_texts["statuses, type: list"][0]
 
 			media["Status"] = status
@@ -255,18 +258,18 @@ class Add_A_New_Media(Watch_History):
 			show_text = self.Language.language_texts["origin_types"]
 			select_text = self.Language.language_texts["origin_type"]
 
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				media["Origin type"] = self.Input.Select(show_text = show_text, select_text = select_text, options = self.Language.language_texts["origin_types, type: list"])["option"]
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				media["Origin type"] = self.Language.language_texts["origin_types, type: list"][0]
 
 			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 				# Ask if the user wants to add the "Dubbed" text to the media title
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					media["Dubbed to the media title"] = self.Input.Yes_Or_No(self.language_texts["dubbed_to_the_media_title"], convert_to_text = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					media["Dubbed to the media title"] = self.Language.language_texts["yes, title()"]
 
 		if self.item == True:
@@ -278,10 +281,10 @@ class Add_A_New_Media(Watch_History):
 
 			# Ask for the playlist information if the media type is "Videos"
 			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					id = self.Input.Type(self.Language.language_texts["id, upper()"], next_line = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					id = "PLrVhyUnEQMV-eML_NqunfE0uOunraC0Xu"
 
 				if "?list=" in media["ID"]:
@@ -299,10 +302,10 @@ class Add_A_New_Media(Watch_History):
 
 				self.local_secondary_types.append(empty_text)
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					media_item_type = self.Input.Select(show_text = show_text, select_text = select_text, options = self.local_secondary_types)["option"]
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					media_item_type = self.local_secondary_types[3]
 
 				if media_item_type == empty_text:
@@ -312,25 +315,25 @@ class Add_A_New_Media(Watch_History):
 					media["Type"] = media_item_type
 
 				# Ask if the media item is a single unit
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					media["Single unit"] = self.Input.Yes_Or_No(self.language_texts["single_unit"], convert_to_text = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					media["Single unit"] = self.Language.language_texts["yes, title()"]
 
 				# Ask if the media item title replaces the media title
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					media["Replace title"] = self.Input.Yes_Or_No(self.language_texts["replace_title"], convert_to_text = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					media["Replace title"] = self.Language.language_texts["yes, title()"]
 
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
 			# Ask if the user wants to always watch the media (item) dubbed
-			if self.switches["testing"] == False:
+			if self.switches["Testing"] == False:
 				media["Watch dubbed"] = self.Input.Yes_Or_No(self.language_texts["watch_dubbed"], convert_to_text = True)
 
-			if self.switches["testing"] == True:
+			if self.switches["Testing"] == True:
 				media["Watch dubbed"] = self.Language.language_texts["yes, title()"]
 
 			# Ask for title and episode separators
@@ -339,10 +342,10 @@ class Add_A_New_Media(Watch_History):
 			for item_type in ["title", "episode"]:
 				text = self.Language.language_texts[item_type + "_separator"]
 
-				if self.switches["testing"] == False:
+				if self.switches["Testing"] == False:
 					separator = self.Input.Type(text, next_line = True)
 
-				if self.switches["testing"] == True:
+				if self.switches["Testing"] == True:
 					separator = ""
 
 				if separator != "":

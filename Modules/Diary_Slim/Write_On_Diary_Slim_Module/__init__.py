@@ -96,14 +96,14 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		self.File.Edit(current_diary_slim["File"], self.dictionary["Texts"]["To write"], "a", next_line = False)
 
 		# If the "verbose" switch is True, show a space separator
-		if self.switches["verbose"] == True:
+		if self.switches["Verbose"] == True:
 			print()
 
 		# Define the text to show as the "This text was written to the current Diary Slim" text
 		self.dictionary["Texts"]["To show"] = self.language_texts["this_text_was_written_to_the_current_diary_slim"] + ":"
 
 		# If the "testing" switch is True
-		if self.switches["testing"] == True:
+		if self.switches["Testing"] == True:
 			# Update the information telling the user that the text was not written to the file
 			# Because the "testing" switch is True
 
