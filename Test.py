@@ -1,5 +1,8 @@
 # Test.py
 
+# Import the "importlib" module
+import importlib
+
 import re
 from urllib.parse import urlparse, parse_qs
 import validators
@@ -7,65 +10,55 @@ from googleapiclient import discovery
 
 class Main():
 	def __init__(self):
-		# Define the module folders
-		from Utility.Define_Folders import Define_Folders as Define_Folders
+		# Import the classes
+		self.Import_Classes()
 
-		Define_Folders(self)
+		# Define the folders of the module
+		self.folders = self.Define_Folders(object = self).folders
 
+		# Module related methods
 		self.Define_Basic_Variables()
+		self.Define_Texts()
 
-		# Get the members
-		import inspect
- 
-		members = inspect.getmembers(self, predicate = inspect.ismethod)
+		# Class methods
 
-		# Remove the "__init__" method
-		members.remove(("__init__", self.__init__))
+		# Get the methods of the class
+		self.Get_Methods()
 
-		# Create the dictionary of methods
-		methods = {}
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON"
+		]
 
-		# Iterate through the members, create their dictionaries, and add them to the methods dictionary
-		for member in members:
-			method = {
-				"Object": member[1]
-			}
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-			# Replace the underlines in the method name with spaces
-			key = member[0].replace("_", " ")
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
 
-			# Add the method to the methods dictionary
-			methods[key] = method
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
 
-		# List the names
-		names = list(methods.keys())
-
-		# Ask the user to select a method
-		name = self.Input.Select(names)["option"]
-
-		# Get the method and run it
-		methods[name]["Object"]()
-
-	def Define_Basic_Variables(self):
-		from copy import deepcopy
-
-		# Import the JSON module
-		from Utility.JSON import JSON as JSON
-
-		self.JSON = JSON()
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+	def Define_Basic_Variables(self):
 		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["apps"]["modules"]["modules"])
-
-		# Import the "importlib" module
-		import importlib
+		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"Modules",
 			"Language",
 			"JSON"
 		]
@@ -80,21 +73,8 @@ class Main():
 				# Get the sub-class
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-clas to the current module
+				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
-
-		# Make a backup of the module folders
-		self.module_folders = {}
-
-		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["apps"][item][self.module["key"]])
-
-		# Define the local folders dictionary as the Folder folders dictionary
-		self.folders = self.Folder.folders
-
-		# Restore the backup of the module folders
-		for item in ["modules", "module_files"]:
-			self.folders["apps"][item][self.module["key"]] = self.module_folders[item]
 
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
@@ -106,12 +86,16 @@ class Main():
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
 
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		self.folders = self.Folder.folders
+
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
 
 		# Get the current date from the Date module
 		self.date = self.Date.date
 
+	def Define_Texts(self):
 		# Define the "Separators" dictionary
 		self.separators = {}
 
@@ -126,6 +110,73 @@ class Main():
 
 			# Add the string to the Separators dictionary
 			self.separators[str(number)] = string
+
+	def Get_Methods(self):
+		# Get the members
+		import inspect
+ 
+		members = inspect.getmembers(self, predicate = inspect.ismethod)
+
+		# Define a list of methods to remove
+		remove_list = [
+			"__init__",
+			"Define_Basic_Variables",
+			"Define_Texts",
+			"Import_Classes"
+		]
+
+		# Iterate through the tuples in the members
+		for tuple_ in members.copy():
+			# Get the member (method) name
+			member = tuple_[0]
+
+			# If the member is in the remove list
+			if member in remove_list:
+				# Remove it
+				members.remove(tuple_)
+
+		# Create the dictionary of methods
+		methods = {}
+
+		# Iterate through the members, create their dictionaries, and add them to the methods dictionary
+		for member in members:
+			method = member[1]
+
+			# Replace the underlines in the method name with spaces
+			key = member[0].replace("_", " ")
+
+			# Add the method to the methods dictionary
+			methods[key] = method
+
+		# List the names
+		names = list(methods.keys())
+
+		# List the methods
+		methods = list(methods.values())
+
+		# Ask the user to select a method
+		method = self.Input.Select(methods, names)["option"]
+
+		# Run the method
+		method()
+
+	def Shortcut(self):
+		# Define the default shortcut dictionary
+		dictionary = {
+			#"File": "C:/Apps/Sync.lnk"
+			"Name": "Requisitos",
+			"Folder": "C:/Apps/Shortcuts/",
+			"Target": "C:/Apps/requirements.txt"
+		}
+
+		# Create the shortcut
+		shortcut = self.System.Create_Shortcut(dictionary)
+
+		# Get the shortcut dictionary
+		#shortcut = self.System.Get_Shortcut(dictionary)
+
+		# Show it
+		self.JSON.Show(shortcut)
 
 	def Write_File_Names_To_File(self):
 		folder = self.Folder.Sanitize(self.Input.Type(self.Folder.language_texts["folder, title()"]))
@@ -154,36 +205,88 @@ class Main():
 		print(self.separators["5"])
 		print()
 
+		# Define the media type and title
+		media_type = "Animes"
+		media_title = "Yuru Camp△"
+
 		# Define the file of titles
-		titles_file = "C:/Mega/Bloco De Notas/Redes de Dados/Mídia Audiovisual/Informações de mídia/Animes/Yuru Camp△/Temporadas/Yuru Camp△/Títulos/Português.txt"
+		titles_file = "C:/Mega/Bloco De Notas/Redes de Dados/Mídia Audiovisual/Informações de mídia/{}/{}/Temporadas/Season 2/Títulos/Português.txt".format(media_type, media_title)
 
 		titles_file = self.File.Sanitize(titles_file)
 
 		# Define the root folder
-		root_folder = "C:/Mídias/Animes/Yuru Camp△/"
+		root_folder = "C:/Mídias/{}/{}/Season 2/".format(media_type, media_title)
 
 		root_folder = self.Folder.Sanitize(root_folder)
 
-		print()
+		# Define the command parameters
+		command_parameters = {
+			"Video input": 'i "{Root folder}/Legendado/{}.mkv"',
+			"Input timestamp offset": "itsoffset 1",
+			"Audio input": 'i "{Root folder}/Português/MP3/{}.mp3"',
+			"Map external subtitle": 'map 0:s "{Root folder}/Legendas/{}.ass"',
+			"Map all": "map 0",
+			"Remove subtitles from original file": "map -0:s",
+			"Remove attachments from original file": "map -0:t",
+			"Map first audio input to second audio stream": "map 1:a",
+			"Make first audio the default audio": "disposition:a:1 default",
+			"Remove disposition from the first audio": "disposition:a:0 0",
+			"Copy streams from original video": "c copy",
+			"Add the title of the episode": 'metadata title="{}"',
+			"Add the language and title of the Japanese audio": 'metadata:s:a:0 title="Japanese (Japonês)" -metadata:s:a:0 language=ja -metadata:s:a:0 lang=ja -metadata:s:a:0 handler_name=ja',
+			"Add the language and title of the Portuguese audio": 'metadata:s:a:1 title="Portuguese (Português)" -metadata:s:a:1 language=pt -metadata:s:a:1 lang=pt -metadata:s:a:1 handler_name=pt',
+			"Output file": '"{Root folder}/{}.mp4"'
+		}
 
-		# Define the command template
-		command_template = '''ffmpeg -y ^
-		-i "{Root folder}/Legendado/{}.mkv" ^
-		-itsoffset 1 ^
-		-i "{Root folder}/Português/MP3/{}.mp3" ^
-		-map 0:s "{Root folder}/Legendas/{}.ass" ^
-		-map 0 ^
-		-map -0:s ^
-		-map -0:t ^
-		-map 1:a ^
-		-disposition:a:1 default ^
-		-disposition:a:0 0 ^
-		-c copy ^
-		-metadata title="{}" ^
-		-metadata:s:a:0 title="Japanese (Japonês)" -metadata:s:a:0 language=ja -metadata:s:a:0 lang=ja -metadata:s:a:0 handler_name=ja ^
-		-metadata:s:a:1 title="Portuguese (Português)" -metadata:s:a:1 language=pt -metadata:s:a:1 lang=pt -metadata:s:a:1 handler_name=pt ^
-		"{Root folder}/{}.mp4"'''.replace("{Root folder}", root_folder[:-1]) \
-		.replace("\t", "")
+		# Replace the root folder template with the real root folder
+		for key, value in command_parameters.items():
+			if "{Root folder}" in value:
+				value = value.replace("{Root folder}", root_folder[:-1])
+
+				command_parameters[key] = value
+
+		# Define the command templates
+		command_types = {
+			"Normal": {
+				"Name": "Normal",
+				"Remove": [
+					#"Input timestamp offset",
+					"Map external subtitle",
+					"Remove subtitles from original file",
+					"Remove attachments from original file"
+				]
+			},
+			"Add external subtitles": {
+				"Name": "Add external subtitles",
+				"Remove": []
+			}
+		}
+
+		# Select the command type
+		command_type = command_types["Normal"]
+
+		# Define the default command template
+		command_template = "ffmpeg -y ^" + "\n"
+
+		# Define the list of keys
+		keys = list(command_parameters.keys())
+
+		# Iterate through the command parameters in the dictionary to make the command template
+		for key, parameter in command_parameters.items():
+			# If the key is not in the "Remove" list of the command type
+			if key not in command_type["Remove"]:
+				# If the key is not "Output file"
+				if key != "Output file":
+					# Add a dash to the command template
+					command_template += "-"
+
+				# Add the parameter
+				command_template += parameter
+
+				# If the key is not the last one
+				if key != keys[-1]:
+					# Add a break line symbol and a line break symbol
+					command_template += " ^" + "\n"
 
 		# Get the list of titles
 		titles = self.File.Contents(titles_file)["lines"]
@@ -192,27 +295,61 @@ class Main():
 		for title in titles:
 			# Define the title dictionary with the encoded quotes and no quotes version of the title
 			title = {
-				"Encoded": title.replace('"', '\\"'),
-				"No quotes": title.replace('"', "")
+				"Normal": media_title + " " + title,
+				"Encoded": media_title + " " + title.replace('"', '\\"'),
+				"No quotes": title.replace('"', ""),
+				"Original": title
 			}
 
 			# Define the list of items to use to format the command template
 			items = [
 				title["No quotes"],
-				title["No quotes"],
-				title["No quotes"],
-				root_folder.split("/")[-2] + " " + title["Encoded"],
 				title["No quotes"]
 			]
 
+			# If the command type is "Normal"
+			if command_type["Name"] == "Normal":
+				# Add the encoded title
+				items.append(title["Encoded"])
+
+			# If the command type is "Add external subtitles"
+			if command_type["Name"] == "Add external subtitles":
+				# Add the "No quotes" title
+				items.append(title["No quotes"])
+
+				# Add the encoded title
+				items.append(title["Encoded"])
+
+			# Add the "No quotes" title
+			items.append(title["No quotes"])
+
+			# Sanitize the items
+			i = 0
+			for item in items:
+				item = self.File.Sanitize(item, restricted_characters = True)
+
+				items[i] = item
+
+				i += 1
+
 			# Format the command template with the list of items, making the command
 			command = str(command_template.format(*items))
+
+			# If the title is not the first one
+			if title["Original"] != titles[0]:
+				# Show some space separators
+				print()
+				print(self.separators["5"])
+				print()
+
+			# Show the title
+			print(title["Normal"])
 
 			# Copy the command to the clipboard for the user to run it
 			self.Text.Copy(command)
 
 			# If the title is not the last one
-			if title != titles[-1]:
+			if title["Original"] != titles[-1]:
 				# Ask for user input before continuing
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
@@ -623,7 +760,7 @@ class Main():
 
 					i += 1
 
-				self.Text.Copy(self.Text.From_List(clipboard))
+				self.Text.Copy(self.Text.From_List(clipboard, break_line = True))
 
 	def Remove_Line_Of_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -665,7 +802,8 @@ class Main():
 				for file in files:
 					lines = self.File.Contents(file)["lines"]
 					lines.pop(number)
-					self.File.Edit(file, self.Text.From_List(lines))
+
+					self.File.Edit(file, self.Text.From_List(lines, break_line = True))
 
 	def Add_Line_To_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -718,7 +856,7 @@ class Main():
 
 					print("\t" + "[" + text + "]")
 
-					self.File.Edit(file, self.Text.From_List(lines))
+					self.File.Edit(file, self.Text.From_List(lines, break_line = True))
 
 					if file == list(files.values())[2]:
 						file_lines = self.File.Contents(list(files.values())[2])["lines"]
@@ -734,7 +872,7 @@ class Main():
 
 			i += 1
 
-		string = self.Text.From_List(lines)
+		string = self.Text.From_List(lines, break_line = True)
 
 		self.Text.Copy(string, verbose = False)
 
@@ -760,7 +898,7 @@ class Main():
 
 			i += 1
 
-		self.Text.Copy(self.Text.From_List(lines))
+		self.Text.Copy(self.Text.From_List(lines, break_line = True))
 
 	def Get_ID(self, key = "", link = ""):
 		if link == "":
@@ -924,11 +1062,11 @@ class Main():
 				title = dict_["Videos"][id]["Title"]
 				titles.append(title)
 
-			self.Text.Copy(self.Text.From_List(ids))
+			self.Text.Copy(self.Text.From_List(ids, break_line = True))
 
 			input()
 
-			self.Text.Copy(self.Text.From_List(titles))
+			self.Text.Copy(self.Text.From_List(titles, break_line = True))
 
 		return dict_
 
@@ -1213,7 +1351,7 @@ class Main():
 		for key in dictionary["titles"]:
 			list_ = dictionary["titles"][key]
 			print(key + ":")
-			self.Text.Copy(self.Text.From_List(list_))
+			self.Text.Copy(self.Text.From_List(list_, break_line = True))
 			input()
 
 	def Play_Sound(self):

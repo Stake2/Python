@@ -1,0 +1,61 @@
+{
+	"Module": "Python",
+	"Folders": {
+		"root": "C:/Apps/Modules/Python/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Python/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Python/Descriptions.json",
+		"Module": "C:/Apps/Modules/Python/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar módulos de Python",
+		"Create_New_Module": {
+			"en": "Create new module",
+			"pt": "Criar novo módulo"
+		},
+		"Create_Language_Text": {
+			"en": "Create language text",
+			"pt": "Criar texto de idioma"
+		},
+		"List_Modules": {
+			"en": "List modules",
+			"pt": "Listar módulos"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Create_New_Module": {
+				"Descriptions": {
+					"en": "Create new module",
+					"pt": "Criar novo módulo"
+				},
+				"Description": "Criar novo módulo",
+				"Object": "<class 'Python.Create_New_Module.Create_New_Module'>"
+			},
+			"Create_Language_Text": {
+				"Descriptions": {
+					"en": "Create language text",
+					"pt": "Criar texto de idioma"
+				},
+				"Description": "Criar texto de idioma",
+				"Object": "<class 'Python.Create_Language_Text.Create_Language_Text'>"
+			},
+			"List_Modules": {
+				"Descriptions": {
+					"en": "List modules",
+					"pt": "Listar módulos"
+				},
+				"Description": "Listar módulos",
+				"Object": "<class 'Python.List_Modules.List_Modules'>"
+			}
+		},
+		"Descriptions": [
+			"Criar novo módulo",
+			"Criar texto de idioma",
+			"Listar módulos"
+		]
+	}
+}

@@ -758,14 +758,16 @@ class Folder():
 		# "Colors.css" file inside the "CSS" folder
 		self.folders["Mega"]["Websites"]["CSS"]["Colors"] = self.folders["Mega"]["Websites"]["CSS"]["root"] + "Colors.css"
 
-		# Get the website subdomain
+		# Define the empty "Website" and "Links" dictionaries
 		self.website = {}
 		self.links = {}
 
+		# If the "Website.json" file exists
 		if self.File.Exist(self.folders["Mega"]["Websites"]["Website"]) == True:
+			# Define the "Website" dictionary as it
 			self.website = self.JSON.To_Python(self.folders["Mega"]["Websites"]["Website"])
 
-			# Create the "Links" dictionary with the Stake2 Website link
+			# Create the "Links" dictionary with the "Stake2 Website" link
 			self.links = {
 				"Stake2 Website": "https://" + self.website["Sub-domain"] + "." + self.website["Netlify"] + "/"
 			}

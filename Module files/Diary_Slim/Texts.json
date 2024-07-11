@@ -111,6 +111,10 @@
 		"en": "You skipped creating these Diary Slims",
 		"pt": "Você pulou a criação destes Diários Slim"
 	},
+	"it_was_created_by_the_program": {
+		"en": "It was created by the program",
+		"pt": "Ele foi criado pelo programa"
+	},
 	"they_were_created_by_the_program": {
 		"en": "They were created by the program",
 		"pt": "Eles foram criados pelo programa"

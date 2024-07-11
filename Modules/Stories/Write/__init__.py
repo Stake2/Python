@@ -25,6 +25,7 @@ class Write(Stories):
 					"Define server",
 					"Open story website",
 					"Open writing pack",
+					"Create Discord status",
 					"Start writing"
 				],
 				"Dictionary": {}
@@ -39,6 +40,7 @@ class Write(Stories):
 		self.states = {
 			"First time writing": False,
 			"Pause writing session": False,
+			"Already paused": False,
 			"Postpone writing session": False,
 			"Finished writing": False
 		}
@@ -173,13 +175,28 @@ class Write(Stories):
 				# Add one to the local chapter number
 				chapter += 1
 
-			# Add the number
+			# Add the chapter number
 			addon += str(chapter)
 
 			# If the writing mode is "Write"
 			if writing_mode == "Write":
-				# Create the text to add
+				# Create the text to add as "a new chapter"
 				text_to_add = " (" + self.language_texts["a_new_chapter"] + ")"
+
+				# Add the text above to the addon variable
+				addon += text_to_add
+
+				# Add the addon to the writing mode dictionary
+				self.dictionary["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
+
+			# If the writing mode is either "Revise" or "Translate"
+			# And the user already started writing the chapter
+			if (
+				writing_mode in ["Revise", "Translate"] and
+				self.story["Information"]["Writing"][writing_mode]["Times"]["Duration"]["Units"] != {}
+			):
+				# Create the text to add as "in progress"
+				text_to_add = " (" + self.Language.language_texts["in_progress"] + ")"
 
 				# Add the text above to the addon variable
 				addon += text_to_add
@@ -238,6 +255,7 @@ class Write(Stories):
 			"Titles": {},
 			"Titles (with leading zeroes)": {},
 			"Language": {},
+			"Discord": {},
 			"Folders": {},
 			"Files": {}
 		}
@@ -338,10 +356,12 @@ class Write(Stories):
 				"Translated": self.languages["full_translated"]["en"][self.user_language]
 			}
 
-			# Write the user language chapter text into the English file
-			text = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["string"]
+			# If the writing session is the first one for the current chapter
+			if self.states["First time writing"] == True:
+				# Write the user language chapter text into the English file
+				text = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["string"]
 
-			self.File.Edit(self.dictionary["Chapter"]["Files"]["en"], text, "w")
+				self.File.Edit(self.dictionary["Chapter"]["Files"]["en"], text, "w")
 
 		# ---------- #
 
@@ -406,8 +426,9 @@ class Write(Stories):
 		# Open the server
 		self.Manage_Server(open = True, separator_number = 3)
 
-		# Wait for one second
-		self.Date.Sleep(1)
+		if self.switches["Testing"] == False:
+			# Wait for one second
+			self.Date.Sleep(1)
 
 		# Get the websites "URL" dictionary
 		url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
@@ -481,13 +502,47 @@ class Write(Stories):
 		# Open the music player program so the user can listen to the soundtrack of the story
 		self.System.Open(self.stories["Writing"]["Music player"]["Link"], verbose = False)
 
-		# Wait for one second
-		self.Date.Sleep(1)
+		if self.switches["Testing"] == False:
+			# Wait for one second
+			self.Date.Sleep(1)
+
+	def Create_Discord_Status(self):
+		# Define the template
+		template = self.language_texts["{}_the_chapter_{}_of_my_story_{}"]
+
+		# Define the list of items
+		items = [
+			self.dictionary["Writing mode"]["Language texts"]["Action"].title(), # The action of the writing mode
+			self.dictionary["Chapter"]["Numbers"]["Names"][self.user_language], # The number name of the chapter in the user language
+			'"' + self.story["Titles"][self.user_language] + '"' # The story title in the user language, with quotes around it
+		]
+
+		# Format the template with the items, making the Discord status
+		self.chapter["Discord"]["Status"] = template.format(*items)
+
+		# Define the text to show
+		text = self.Language.language_texts["copying_the_discord_status"]
+
+		# Show it
+		print()
+		print(self.separators["3"])
+		print()
+		print(text + "...")
+
+		# Copy the status to the clipboard
+		self.Text.Copy(self.chapter["Discord"]["Status"], verbose = False)
 
 	def Start_Writing(self):
 		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
+
+		# If this is not the first time the user writes the current chapter
+		if self.states["First time writing"] == False:
+			# Show the total writing time text in the user language
+			print()
+			print(self.Language.language_texts["total_duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
+			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.user_language])
 
 		# ---------- #
 
@@ -518,6 +573,10 @@ class Write(Stories):
 			# Ask if the user wants to pause the writing session
 			self.Pause_Writing()
 
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
 		# ---------- #
 
 		# Define the "postpone writing session" text template
@@ -535,6 +594,10 @@ class Write(Stories):
 		# Ask if the user wants to postpone the writing session to continue writing later
 		self.states["Postpone writing session"] = self.Input.Yes_Or_No(input_text)
 
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
 		# ---------- #
 
 		# Ask for the user to press Enter when they stop writing
@@ -549,26 +612,21 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Define the "After" time (now, but after writing)
-		self.dictionary["Session"]["After"] = self.Date.Now()
-
-		if self.switches["Testing"] == True:
-			relative_delta = self.Date.Relativedelta(hours = 1, minutes = 30)
-
-			self.dictionary["Session"]["After"] = self.Date.Now(self.dictionary["Session"]["Before"]["Object"] + relative_delta)
-
-		# Show the after time (after writing the chapter)
-		print()
-		print(self.Date.language_texts["after, title()"] + ":")
-		print("\t" + self.dictionary["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Define the "After" time (now, but after writing)
+			self.dictionary["Session"]["After"] = self.Date.Now()
 
 		# ---------- #
 
-		# Define the after time
-		after_time = deepcopy(self.dictionary["Session"]["After"])
+		# Define the empty addon variable
+		addon = ""
 
-		# If the "Pause" key is present inside the "Session" dictionary
+		# If the "Pause" dictionary is present
 		if "Pause" in self.dictionary["Session"]:
+			# Define the addon as the text about the writing time with the pause time subtracted
+			addon = " (" + self.language_texts["with_the_pause_time_subtracted"] + ")"
+
 			# Define the subtract dictionary
 			subtract = {}
 
@@ -580,20 +638,38 @@ class Write(Stories):
 			relative_delta = self.Date.Relativedelta(**subtract)
 
 			# Subtract the subtract time from the after time
-			after_time = self.Date.Now(self.dictionary["Session"]["After"]["Object"] - relative_delta)
+			self.dictionary["Session"]["After"] = self.Date.Now(self.dictionary["Session"]["After"]["Object"] - relative_delta)
 
 		# ---------- #
 
-		# Define the time difference
-		self.dictionary["Session"]["Duration"] = self.Date.Difference(self.dictionary["Session"]["Before"], after_time)
+		# Calculate and define the writing duration
+		self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"], add = False)
 
-		# Get the time units of the time difference
-		self.dictionary["Session"]["Duration"]["Duration"] = self.dictionary["Session"]["Duration"]["Difference"]
-
-		# Show the writing duration time in the user language
+		# Show the after time (after writing the chapter)
 		print()
-		print(self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
+		print(self.Date.language_texts["after, title()"] + ":")
+		print("\t" + self.dictionary["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# Define the text to show
+		text = self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"]
+
+		# Add the addon if it is not empty
+		if addon != "":
+			text += addon
+
+		# Add the colon
+		text += ":"
+
+		# Show the writing duration text in the user language
+		print()
+		print(text)
+
+		# Show the writing duration (subtracting the pause time)
 		print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.user_language])
+
+		# Show the pause duration time in the user language
+		text = self.Language.language_texts["duration_of"] + " " + self.Language.language_texts["pause, type: item"].lower()
+		text += " (" + self.language_texts["the_time_subtracted_from_the_total_{}_time"].format(self.dictionary["Writing mode"]["Language texts"]["Item"]) + ")"
 
 		# If the "Pause" key is present inside the "Session" dictionary
 		if "Pause" in self.dictionary["Session"]:
@@ -632,7 +708,7 @@ class Write(Stories):
 			# Define the "Duration" dictionary inside the writing "Times" dictionary
 			# With the "Units" dictionary being the units of the current session duration
 			self.dictionary["Writing"]["Duration"] = {
-				"Units": self.dictionary["Session"]["Duration"]["Duration"],
+				"Units": self.dictionary["Session"]["Duration"]["Difference"],
 				"Text": {}
 			}
 
@@ -687,46 +763,81 @@ class Write(Stories):
 
 		# If the user wants to pause the writing session
 		if self.states["Pause writing session"] == True:
-			# Define the variable informing that the user already paused the writing session
-			already_paused = False
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# Show the before time (when starting writing the chapter)
+			print()
+			print(self.Date.language_texts["before, title()"] + ":")
+			print("\t" + self.dictionary["Session"]["Before"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+			# Calculate and define the writing duration
+			self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"])
+
+			# Show the after time (after writing the chapter)
+			print()
+			print(self.Date.language_texts["after, title()"] + ":")
+			print("\t" + self.dictionary["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+			# Show the writing duration time in the user language
+			print()
+			print(self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
+			print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.user_language])
+
+			# ---------- #
 
 			# If the "Pause" key is not in the session dictionary
 			if "Pause" not in self.dictionary["Session"]:
 				# Define the "Pause" dictionary
 				self.dictionary["Session"]["Pause"] = {
-					"Before": self.Date.Now()
+					"Before": self.Date.Now(),
+					"After": {},
+					"Is pause": True
 				}
 
 			# If the "Pause" key is in the session dictionary
 			else:
-				# Define the before time
-				before_time = self.Date.Now()
+				self.states["Already paused"] = True
 
-				# Update the "already paused" variable to True
-				already_paused = True
+			# ---------- #
 
 			# Ask for user input to unpause the writing session
 			input_text = self.language_texts["press_enter_to_unpause_the_{}_session"].format(self.dictionary["Writing mode"]["Language texts"]["Item"])
 
 			self.Input.Type(input_text)
 
-			# If user still did not paused the writing session
-			if already_paused == False:
-				# Define the "After" time (now, but after unpausing)
-				self.dictionary["Session"]["Pause"]["After"] = self.Date.Now()
+			# ---------- #
+
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# If the user did not pause the writing session
+			if self.states["Already paused"] == False:
+				# Calculate and define the pause duration
+				self.dictionary["Session"]["Pause"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"]["Pause"])
+
+			# Show the after time (after writing the chapter)
+			print()
+			print(self.Date.language_texts["after, title()"] + ":")
+			print("\t" + self.dictionary["Session"]["Pause"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+			# ---------- #
 
 			# If the user already paused the writing session
-			if already_paused == True:
-				# Define the after time
-				after_time = self.Date.Now()
+			if self.states["Already paused"] == True:
+				if self.switches["Testing"] == False:
+					# Define the after time
+					after_time = self.Date.Now()
 
 				if self.switches["Testing"] == True:
-					relative_delta = self.Date.Relativedelta(minutes = 10)
+					relative_delta = self.Date.Relativedelta(minutes = 15)
 
-					after_time = self.Date.Now(after_time["Object"] + relative_delta)
+					after_time = self.Date.Now(self.dictionary["Session"]["Pause"]["After"]["Object"] + relative_delta)
 
 				# Create the difference between the now and after time
-				difference = self.Date.Difference(before_time, after_time)
+				difference = self.Date.Difference(self.dictionary["Session"]["Pause"]["After"], after_time)
 
 				# Define the add dictionary
 				add = {}
@@ -741,19 +852,49 @@ class Write(Stories):
 				# Add the add time to the after time
 				self.dictionary["Session"]["Pause"]["After"] = self.Date.Now(self.dictionary["Session"]["Pause"]["After"]["Object"] + relative_delta)
 
-			if (
-				self.switches["Testing"] == True and
-				already_paused == False
-			):
-				relative_delta = self.Date.Relativedelta(minutes = 30)
-
-				self.dictionary["Session"]["Pause"]["After"] = self.Date.Now(self.dictionary["Session"]["Pause"]["Before"]["Object"] + relative_delta)
+			# ---------- #
 
 			# Define the time difference
 			self.dictionary["Session"]["Pause"]["Duration"] = self.Date.Difference(self.dictionary["Session"]["Pause"]["Before"], self.dictionary["Session"]["Pause"]["After"])
 
 			# Define the subtract time
 			self.dictionary["Session"]["Pause"]["Subtract"] = self.dictionary["Session"]["Pause"]["Duration"]["Difference"]
+
+			# ---------- #
+
+			# Define the subtract dictionary
+			subtract = {}
+
+			# Fill the subtract dictionary
+			for key, value in self.dictionary["Session"]["Pause"]["Subtract"].items():
+				subtract[key.lower()] = value
+
+			# Define the relative delta
+			relative_delta = self.Date.Relativedelta(**subtract)
+
+			# Subtract the subtract time from the after time
+			after_time = self.Date.Now(self.dictionary["Session"]["After"]["Object"] - relative_delta)
+
+			# Define the time difference
+			difference = self.Date.Difference(self.dictionary["Session"]["Before"], after_time)
+
+			# Define the text to show
+			text = self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"]
+
+			# If the "Pause" key is present inside the "Session" dictionary
+			if "Pause" in self.dictionary["Session"]:
+				# Add the text about the writing time with the pause time subtracted
+				text += " (" + self.language_texts["with_the_pause_time_subtracted"] + ")"
+
+			# Add the colon
+			text += ":"
+
+			# Show the writing duration time in the user language (subtracting the pause time)
+			print()
+			print(text)
+			print("\t" + difference["Text"][self.user_language])
+
+			# ---------- #
 
 			# Show the pause duration time in the user language
 			text = self.Language.language_texts["duration_of"] + " " + self.Language.language_texts["pause, type: item"].lower()
@@ -762,6 +903,41 @@ class Write(Stories):
 			print()
 			print(text + ":")
 			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.user_language])
+
+	def Calculate_Duration(self, dictionary, add = True):
+		# If the "After" key is an empty dictionary
+		if dictionary["After"] == {}:
+			# Define the after time
+			dictionary["After"] = self.Date.Now()
+
+		# Define the local "after time" variable as a copy of the "After" key
+		after_time = deepcopy(dictionary["After"])
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Define the minutes to add (as 30 minutes)
+			minutes = 30
+
+			# If the "Is pause" key is in the dictionary
+			if "Is pause" in dictionary:
+				# Define the minutes as 10
+				minutes = 10
+
+			# Define the relative delta with the minutes
+			relative_delta = self.Date.Relativedelta(minutes = minutes)
+
+			# If the "add" parameter is True
+			if add == True:
+				# Add the relative delta to the after time
+				after_time = self.Date.Now(after_time["Object"] + relative_delta)
+
+				# Update the after time
+				dictionary["After"] = after_time
+
+		# Get the time difference
+		difference = self.Date.Difference(dictionary["Before"], after_time)
+
+		return difference
 
 	def Finish_Writing(self):
 		# If the writing mode is inside the defined list
@@ -785,7 +961,7 @@ class Write(Stories):
 			dictionary = {}
 
 			# Iterate through the time difference keys
-			for key, unit in self.dictionary["Session"]["Duration"]["Duration"].items():
+			for key, unit in self.dictionary["Session"]["Duration"]["Difference"].items():
 				dictionary[key.lower()] = unit
 
 			# Add the writing time difference time unit to the added time date object
@@ -1079,7 +1255,13 @@ class Write(Stories):
 			# ---------- #
 
 			# If the user finished writing the whole chapter
-			if self.states["Finished writing"] == True:
+			# And the writing mode is either "Write" or "Revise"
+			# Or the writing mode is "Translate"
+			if (
+				self.states["Finished writing"] == True and
+				self.writing_mode in ["Write", "Revise"] or
+				self.writing_mode == "Translate"
+			):
 				# Add the "The chapter with the title" text
 				description += self.texts["the_chapter_with_the_title"][language] + ":" + "\n"
 
@@ -1120,10 +1302,10 @@ class Write(Stories):
 			description += " ("
 
 			# Define the list of keys
-			keys = list(self.dictionary["Session"]["Duration"]["Duration"].keys())
+			keys = list(self.dictionary["Session"]["Duration"]["Difference"].keys())
 
 			# Iterate through the list of units
-			for key, unit in self.dictionary["Session"]["Duration"]["Duration"].items():
+			for key, unit in self.dictionary["Session"]["Duration"]["Difference"].items():
 				# Add the unit number with leading zeroes
 				description += str(self.Text.Add_Leading_Zeroes(unit))
 

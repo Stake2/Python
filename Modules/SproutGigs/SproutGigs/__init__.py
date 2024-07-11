@@ -25,23 +25,40 @@ class SproutGigs():
 		# Class methods
 		self.Define_Categories()
 
-	def Define_Basic_Variables(self):
-		from copy import deepcopy
+	def Import_Classes(self):
+		# Define the list of modules to be imported
+		modules = [
+			"Define_Folders",
+			"JSON"
+		]
 
-		# Import the JSON module
-		from Utility.JSON import JSON as JSON
+		# Iterate through the list of modules
+		for module_title in modules:
+			# Import the module
+			module = importlib.import_module("." + module_title, "Utility")
 
-		self.JSON = JSON()
+			# Get the sub-class
+			sub_class = getattr(module, module_title)
+
+			# If the module title is not "Define_Folders"
+			if module_title != "Define_Folders":
+				# Run the sub-class to define its variable
+				sub_class = sub_class()
+
+			# Add the sub-class to the current module
+			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+	def Define_Basic_Variables(self):
 		# Get the modules list
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
 			"Define_Folders",
+			"Modules",
 			"Language",
 			"JSON"
 		]
@@ -59,19 +76,6 @@ class SproutGigs():
 				# Add the sub-class to the current module
 				setattr(self, module_title, sub_class())
 
-		# Make a backup of the module folders
-		self.module_folders = {}
-
-		for item in ["modules", "module_files"]:
-			self.module_folders[item] = deepcopy(self.folders["Apps"][item][self.module["key"]])
-
-		# Define the local folders dictionary as the Folder folders dictionary
-		self.folders = self.Folder.folders
-
-		# Restore the backup of the module folders
-		for item in ["modules", "module_files"]:
-			self.folders["Apps"][item][self.module["key"]] = self.module_folders[item]
-
 		# Get the switches dictionary from the "Global Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
@@ -81,6 +85,9 @@ class SproutGigs():
 		# Get the user language and full user language
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
+
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		self.folders = self.Folder.folders
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -112,11 +119,11 @@ class SproutGigs():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.categories_folder = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Categories/"
+		self.categories_folder = self.module["Folders"]["Module files"]["root"] + "Categories/"
 		self.Folder.Create(self.categories_folder)
 
 		# Files
-		self.website_file = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Website.txt"
+		self.website_file = self.module["Folders"]["Module files"]["root"] + "Website.txt"
 		self.File.Create(self.website_file)
 
 		self.categories_file = self.categories_folder + "Categories.txt"

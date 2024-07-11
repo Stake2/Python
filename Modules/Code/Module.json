@@ -1,0 +1,35 @@
+{
+	"Module": "Code",
+	"Folders": {
+		"root": "C:/Apps/Modules/Code/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Code/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Code/Descriptions.json",
+		"Module": "C:/Apps/Modules/Code/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Programar programas e sites",
+		"Help_With_Programming": {
+			"en": "Help with programming",
+			"pt": "Ajudar na programação"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Help_With_Programming": {
+				"Descriptions": {
+					"en": "Help with programming",
+					"pt": "Ajudar na programação"
+				},
+				"Description": "Ajudar na programação",
+				"Object": "<class 'Code.Help_With_Programming.Help_With_Programming'>"
+			}
+		},
+		"Descriptions": [
+			"Ajudar na programação"
+		]
+	}
+}

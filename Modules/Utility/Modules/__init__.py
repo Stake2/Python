@@ -24,7 +24,10 @@ class Modules():
 		self.Define_Classes()
 
 		# If the "Select class" state is True
-		if self.states["Select class"] == True:
+		if (
+			self.states["Select class"] == True and
+			hasattr(self, "do_not_select_class") == False
+		):
 			self.Select_Class()
 
 	def Import_Classes(self):
@@ -45,7 +48,7 @@ class Modules():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class())
 
-		# Define the local folders dictionary as the Folder folders dictionary
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
 		self.folders = self.Folder.folders
 
 	def Define_Module(self):
@@ -80,6 +83,8 @@ class Modules():
 
 		# Define the module dictionary
 		self.module = {
+			"Module": self.object.__module__,
+			"Sub-module": "",
 			"Folders": {
 				"root": self.folders["Apps"]["Modules"]["root"] + self.object.__module__ + "/"
 			},
@@ -87,14 +92,45 @@ class Modules():
 			"Descriptions": {}
 		}
 
+		# Define the sub-module
+		if "." in self.module["Module"]:
+			self.module["Sub-module"] = self.module["Module"].split(".")[-1]
+			self.module["Module"] = self.module["Module"].split(".")[0]
+
+		else:
+			# Remove the "Sub-module" key
+			self.module.pop("Sub-module")
+
+		# Define the root folder
+		self.module["Folders"] = {
+			"root": self.folders["Apps"]["Modules"]["root"] + self.module["Module"] + "/"
+		}
+
+		folder = self.module["Folders"]["root"]
+
+		# Define the texts folder
+		self.module["Folders"]["Texts"] = {
+			"root": self.folders["Apps"]["Module files"]["root"] + self.module["Module"] + "/"
+		}
+
+		# Define the sub-module folder if it exists
+		if "Sub-module" in self.module:
+			# Define the folder
+			self.module["Folders"][self.module["Sub-module"]] = {
+				"root": self.module["Folders"]["root"] + self.module["Sub-module"] + "/"
+			}
+
+			# Update the local folder
+			folder = self.module["Folders"][self.module["Sub-module"]]["root"]
+
 		# Define the descriptions file
-		self.module["Files"]["Descriptions"] = self.Language.Current_Folder(file) + "Descriptions.json"
+		self.module["Files"]["Descriptions"] = folder + "Descriptions.json"
 
 		# Get the class descriptions
 		self.module["Descriptions"] = self.JSON.To_Python(self.module["Files"]["Descriptions"])
 
 		# Define and create the "Module.json" file
-		self.module["Files"]["Module"] = self.module["Folders"]["root"] + "Module.json"
+		self.module["Files"]["Module"] = folder + "Module.json"
 		self.File.Create(self.module["Files"]["Module"])
 
 		# Define the user language version of the show text
@@ -124,9 +160,17 @@ class Modules():
 					"Remove list" in self.module["Descriptions"] and
 					key not in self.module["Descriptions"]["Remove list"]
 				):
-					# Get the class object
+					# Import the module
 					module = importlib.import_module("." + key, self.object.__module__)
-					object = getattr(module, key)
+
+					# If the module contains the key
+					if hasattr(module, key) == True:
+						# Get the class object
+						object = getattr(module, key)
+
+					else:
+						# Get the "Run" class
+						object = getattr(module, "Run")
 
 					# Create the class dictionary and add it to the "Classes" dictionary, with the class descriptions
 					self.classes["Dictionary"][key] = {
@@ -168,6 +212,9 @@ class Modules():
 
 		# Define the "Modules" variable inside the class object
 		setattr(self.module["Selected class"]["Object"], "Modules", Modules)
+
+		# Define the "module" variable inside the class object
+		setattr(self.module["Selected class"]["Object"], "module", self.module)
 
 		# If the "return_class" parameter is False
 		if return_class == False:

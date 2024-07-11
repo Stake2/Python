@@ -35,7 +35,8 @@ class Create_New_Diary_Slim(Diary_Slim):
 			"Diary Slim exists": False,
 			"Skipped Diary Slims": {
 				"Check": False,
-				"Checked": False
+				"Checked": False,
+				"One": True
 			}
 		}
 
@@ -98,8 +99,18 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# Show the "Skipped Diary Slims" text
 			print(self.dictionary["Texts"]["Skipped Diary Slims"])
 
-			# Show the information text telling the user that the skipped Diary Slims were created by the program (Create_New_Diary_Slim)
-			print(self.language_texts["they_were_created_by_the_program"] + ".")
+			# Define the information text telling the user that the skipped Diary Slims were created by the program (Create_New_Diary_Slim)
+			text_key = "it_was_created_by_the_program"
+
+			# If the "One" state is False
+			if self.states["Skipped Diary Slims"]["One"] == False:
+				text_key = "they_were_created_by_the_program"
+
+			# Define the text using the singular or plural text key
+			text = self.language_texts[text_key]
+
+			# Show the text
+			print(text + ".")
 
 	def Show_Information(self):
 		# If the "Check for skipped Diary Slim" state is False, show a space separator
@@ -213,6 +224,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 			if self.dictionary["Skipped Diary Slims"] != {}:
 				# Define the number of skipped Diary Slims
 				number = len(list(self.dictionary["Skipped Diary Slims"].keys()))
+
+				# If the number is greater than one
+				if number > 1:
+					# Define the "One" state as False
+					self.states["Skipped Diary Slims"]["One"] = False
 
 				# Define the singular or plural text
 				texts = self.language_texts

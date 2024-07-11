@@ -507,8 +507,13 @@ class Update_Websites(PHP):
 				"Git" in file or
 				"GitHub" in file
 			):
-				# Define the Git file as the current file
-				git_file = file
+				# If the "bat" or "exe" extension is in the file
+				if (
+					".bat" in file or
+					".exe" in file
+				):
+					# Define the Git file as the current file
+					git_file = file
 
 		# If the "testing" switch is False, open the Git file
 		if self.switches["Testing"] == False:

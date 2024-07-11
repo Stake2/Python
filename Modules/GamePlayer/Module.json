@@ -1,0 +1,48 @@
+{
+	"Module": "GamePlayer",
+	"Folders": {
+		"root": "C:/Apps/Modules/GamePlayer/",
+		"Texts": {
+			"root": "C:/Apps/Module files/GamePlayer/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/GamePlayer/Descriptions.json",
+		"Module": "C:/Apps/Modules/GamePlayer/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar Rede de Jogos (Game Network)",
+		"Play": {
+			"en": "Play",
+			"pt": "Jogar"
+		},
+		"Manage": {
+			"en": "Manage the [Game Information] Database and [Play History]",
+			"pt": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Play": {
+				"Descriptions": {
+					"en": "Play",
+					"pt": "Jogar"
+				},
+				"Description": "Jogar",
+				"Object": "<class 'GamePlayer.Play.Play'>"
+			},
+			"Manage": {
+				"Descriptions": {
+					"en": "Manage the [Game Information] Database and [Play History]",
+					"pt": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
+				},
+				"Description": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]",
+				"Object": "<class 'GamePlayer.Manage.Manage'>"
+			}
+		},
+		"Descriptions": [
+			"Jogar",
+			"Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
+		]
+	}
+}

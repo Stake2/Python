@@ -9,8 +9,10 @@ class Run():
 		if hasattr(self, "arguments") == True:
 			setattr(Food_Time, "arguments", self.arguments)
 
-		# Run the "Food_Time" class
-		self.Food_Time = Food_Time()
+		# If the "Do not run class" variable is not present in this class
+		if hasattr(self, "do_not_run_class") == False:
+			# Run the "Food_Time" class
+			self.Food_Time = Food_Time()
 
 # Define the custom arguments for the module
 custom_arguments = [

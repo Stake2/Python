@@ -1,0 +1,87 @@
+{
+	"Module": "Stories",
+	"Folders": {
+		"root": "C:/Apps/Modules/Stories/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Stories/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Stories/Descriptions.json",
+		"Module": "C:/Apps/Modules/Stories/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar as histórias",
+		"Select_Story": {
+			"en": "Select story",
+			"pt": "Selecionar história"
+		},
+		"Create_New_Story": {
+			"en": "Create a new story",
+			"pt": "Criar uma nova história"
+		},
+		"Show_Story_Information": {
+			"en": "Show story information",
+			"pt": "Mostrar informações de histórias"
+		},
+		"Manage": {
+			"en": "Manage",
+			"pt": "Gerenciar"
+		},
+		"Copy_Story_Titles": {
+			"en": "Copy the story titles",
+			"pt": "Copiar os títulos de histórias"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Select_Story": {
+				"Descriptions": {
+					"en": "Select story",
+					"pt": "Selecionar história"
+				},
+				"Description": "Selecionar história",
+				"Object": "<class 'Stories.Select_Story.Select_Story'>"
+			},
+			"Create_New_Story": {
+				"Descriptions": {
+					"en": "Create a new story",
+					"pt": "Criar uma nova história"
+				},
+				"Description": "Criar uma nova história",
+				"Object": "<class 'Stories.Create_New_Story.Create_New_Story'>"
+			},
+			"Show_Story_Information": {
+				"Descriptions": {
+					"en": "Show story information",
+					"pt": "Mostrar informações de histórias"
+				},
+				"Description": "Mostrar informações de histórias",
+				"Object": "<class 'Stories.Show_Story_Information.Show_Story_Information'>"
+			},
+			"Manage": {
+				"Descriptions": {
+					"en": "Manage",
+					"pt": "Gerenciar"
+				},
+				"Description": "Gerenciar",
+				"Object": "<class 'Stories.Manage.Manage'>"
+			},
+			"Copy_Story_Titles": {
+				"Descriptions": {
+					"en": "Copy the story titles",
+					"pt": "Copiar os títulos de histórias"
+				},
+				"Description": "Copiar os títulos de histórias",
+				"Object": "<class 'Stories.Copy_Story_Titles.Copy_Story_Titles'>"
+			}
+		},
+		"Descriptions": [
+			"Selecionar história",
+			"Criar uma nova história",
+			"Mostrar informações de histórias",
+			"Gerenciar",
+			"Copiar os títulos de histórias"
+		]
+	}
+}

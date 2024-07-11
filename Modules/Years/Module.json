@@ -1,0 +1,61 @@
+{
+	"Module": "Years",
+	"Folders": {
+		"root": "C:/Apps/Modules/Years/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Years/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Years/Descriptions.json",
+		"Module": "C:/Apps/Modules/Years/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar Anos",
+		"Verify_Current_Year": {
+			"en": "Verify current Year (for start of Year)",
+			"pt": "Verificar Ano atual (para começo do Ano)"
+		},
+		"Create_Year_Summary": {
+			"en": "Create Year summary (for end of Year)",
+			"pt": "Criar resumo de Ano (para fim do Ano)"
+		},
+		"Show_Year_Information": {
+			"en": "Show Year information",
+			"pt": "Mostrar informações de Ano"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Verify_Current_Year": {
+				"Descriptions": {
+					"en": "Verify current Year (for start of Year)",
+					"pt": "Verificar Ano atual (para começo do Ano)"
+				},
+				"Description": "Verificar Ano atual (para começo do Ano)",
+				"Object": "<class 'Years.Verify_Current_Year.Verify_Current_Year'>"
+			},
+			"Create_Year_Summary": {
+				"Descriptions": {
+					"en": "Create Year summary (for end of Year)",
+					"pt": "Criar resumo de Ano (para fim do Ano)"
+				},
+				"Description": "Criar resumo de Ano (para fim do Ano)",
+				"Object": "<class 'Years.Create_Year_Summary.Create_Year_Summary'>"
+			},
+			"Show_Year_Information": {
+				"Descriptions": {
+					"en": "Show Year information",
+					"pt": "Mostrar informações de Ano"
+				},
+				"Description": "Mostrar informações de Ano",
+				"Object": "<class 'Years.Show_Year_Information.Show_Year_Information'>"
+			}
+		},
+		"Descriptions": [
+			"Verificar Ano atual (para começo do Ano)",
+			"Criar resumo de Ano (para fim do Ano)",
+			"Mostrar informações de Ano"
+		]
+	}
+}

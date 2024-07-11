@@ -5,8 +5,15 @@ class API():
 		# Import the classes
 		self.Import_Classes()
 
+		# Define the files of the module
+		files = [
+			"Secrets",
+			"Client secrets",
+			"Token"
+		]
+
 		# Define the folders of the module
-		self.Define_Folders(object = self, files = ["Secrets", "Client secrets"])
+		self.Define_Folders(object = self, files = files)
 
 		# Define the "Switches" dictionary
 		self.Define_Switches()
@@ -74,9 +81,9 @@ class API():
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
-		self.token_file = self.module["Folders"]["Module files"]["root"] + "Token.json"
+		self.token_file = self.module["Files"]["Token"]
 
-		self.client_secrets = self.JSON.To_Python(self.module["Folders"]["Module files"]["Client secrets"])
+		self.client_secrets = self.JSON.To_Python(self.module["Files"]["Client secrets"])
 
 		api["scopes"] = [
 			"https://www.googleapis.com/auth/youtube",
@@ -103,13 +110,13 @@ class API():
 				except RefreshError:
 					print()
 
-					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Folders"]["Module files"]["Client secrets"], api["scopes"])
+					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Files"]["Client secrets"], api["scopes"])
 					api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			else:
 				print()
 
-				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Folders"]["Module files"]["Client secrets"], api["scopes"])
+				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Files"]["Client secrets"], api["scopes"])
 				api["credentials"] = api["flow"].run_local_server(port = 0)
 
 			# Save the credentials for the next run

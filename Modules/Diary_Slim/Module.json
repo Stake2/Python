@@ -1,0 +1,55 @@
+{
+	"Module": "Diary_Slim",
+	"Folders": {
+		"root": "C:/Apps/Modules/Diary_Slim/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Diary_Slim/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Diary_Slim/Descriptions.json",
+		"Module": "C:/Apps/Modules/Diary_Slim/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o Diário Slim",
+		"Create_New_Diary_Slim": {
+			"en": "Create a new Diary Slim",
+			"pt": "Criar um novo Diário Slim"
+		},
+		"Write_On_Diary_Slim": {
+			"en": "Write on Diary Slim",
+			"pt": "Escrever no Diário Slim"
+		},
+		"Manage": {
+			"en": "Manage the [Diary Slim] Database and History",
+			"pt": "Gerenciar o Banco de Dados e Histórico do [Diário Slim]"
+		},
+		"Remove list": [
+			"Manage"
+		]
+	},
+	"Classes": {
+		"Dictionary": {
+			"Create_New_Diary_Slim": {
+				"Descriptions": {
+					"en": "Create a new Diary Slim",
+					"pt": "Criar um novo Diário Slim"
+				},
+				"Description": "Criar um novo Diário Slim",
+				"Object": "<class 'Diary_Slim.Create_New_Diary_Slim.Create_New_Diary_Slim'>"
+			},
+			"Write_On_Diary_Slim": {
+				"Descriptions": {
+					"en": "Write on Diary Slim",
+					"pt": "Escrever no Diário Slim"
+				},
+				"Description": "Escrever no Diário Slim",
+				"Object": "<class 'Diary_Slim.Write_On_Diary_Slim.Write_On_Diary_Slim'>"
+			}
+		},
+		"Descriptions": [
+			"Criar um novo Diário Slim",
+			"Escrever no Diário Slim"
+		]
+	}
+}

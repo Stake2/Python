@@ -1,0 +1,61 @@
+{
+	"Module": "Friends",
+	"Folders": {
+		"root": "C:/Apps/Modules/Friends/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Friends/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Friends/Descriptions.json",
+		"Module": "C:/Apps/Modules/Friends/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar Amigos",
+		"Open_Friend_File": {
+			"en": "Open Friend file",
+			"pt": "Abrir arquivo de Amigo"
+		},
+		"Create_Friend_Folder": {
+			"en": "Create friend folder",
+			"pt": "Criar pasta de Amigo"
+		},
+		"Show_Friend_Information": {
+			"en": "Show information of all Friends",
+			"pt": "Mostrar informações de todos os Amigos"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Open_Friend_File": {
+				"Descriptions": {
+					"en": "Open Friend file",
+					"pt": "Abrir arquivo de Amigo"
+				},
+				"Description": "Abrir arquivo de Amigo",
+				"Object": "<class 'Friends.Open_Friend_File.Open_Friend_File'>"
+			},
+			"Create_Friend_Folder": {
+				"Descriptions": {
+					"en": "Create friend folder",
+					"pt": "Criar pasta de Amigo"
+				},
+				"Description": "Criar pasta de Amigo",
+				"Object": "<class 'Friends.Create_Friend_Folder.Create_Friend_Folder'>"
+			},
+			"Show_Friend_Information": {
+				"Descriptions": {
+					"en": "Show information of all Friends",
+					"pt": "Mostrar informações de todos os Amigos"
+				},
+				"Description": "Mostrar informações de todos os Amigos",
+				"Object": "<class 'Friends.Show_Friend_Information.Show_Friend_Information'>"
+			}
+		},
+		"Descriptions": [
+			"Abrir arquivo de Amigo",
+			"Criar pasta de Amigo",
+			"Mostrar informações de todos os Amigos"
+		]
+	}
+}

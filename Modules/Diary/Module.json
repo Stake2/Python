@@ -1,0 +1,48 @@
+{
+	"Module": "Diary",
+	"Folders": {
+		"root": "C:/Apps/Modules/Diary/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Diary/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Diary/Descriptions.json",
+		"Module": "C:/Apps/Modules/Diary/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o Diário",
+		"Create_New_Diary_Chapter": {
+			"en": "Create new Diary chapter",
+			"pt": "Criar novo capítulo do Diário"
+		},
+		"Write_On_Diary": {
+			"en": "Write on Diary",
+			"pt": "Escrever no Diário"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Create_New_Diary_Chapter": {
+				"Descriptions": {
+					"en": "Create new Diary chapter",
+					"pt": "Criar novo capítulo do Diário"
+				},
+				"Description": "Criar novo capítulo do Diário",
+				"Object": "<class 'Diary.Create_New_Diary_Chapter.Create_New_Diary_Chapter'>"
+			},
+			"Write_On_Diary": {
+				"Descriptions": {
+					"en": "Write on Diary",
+					"pt": "Escrever no Diário"
+				},
+				"Description": "Escrever no Diário",
+				"Object": "<class 'Diary.Write_On_Diary.Write_On_Diary'>"
+			}
+		},
+		"Descriptions": [
+			"Criar novo capítulo do Diário",
+			"Escrever no Diário"
+		]
+	}
+}

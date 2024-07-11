@@ -66,5 +66,9 @@
 	"stores_the_module_to_be_executed": {
 		"en": "Stores the module to be executed",
 		"pt": "Guarda o módulo a ser executado"
+	},
+	"updates_the_json_file_of_the_modules": {
+		"en": "Updates the JSON file of the modules",
+		"pt": "Atualiza o arquivo JSON dos módulos"
 	}
 }

@@ -159,7 +159,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		# Show the information about the pre-defined values that were used
 		if self.states["Used pre-defined values"] == True:
-			print(self.language_texts["the_class_used_predefined_city_and_survivor"] + ".")
+			print(self.language_texts["the_class_used_a_predefined_survivor"] + ".")
 			print()
 
 		# Show the survivor

@@ -237,6 +237,10 @@
 		"en": "the time subtracted from the total {} time",
 		"pt": "o tempo subtraído do tempo total de {}"
 	},
+	"with_the_pause_time_subtracted": {
+		"en": "with the paues time subtracted",
+		"pt": "com o tempo de pausa subtraído"
+	},
 	"press_enter_when_you_stop": {
 		"en": "Press Enter when you stop",
 		"pt": "Pressione Enter quando você parar de"
@@ -412,6 +416,10 @@
 	"select_a_writing_status": {
 		"en": "Select a writing status",
 		"pt": "Selecione um status de escrita"
+	},
+	"{}_the_chapter_{}_of_my_story_{}": {
+		"en": "{} the chapter {} of my story {}",
+		"pt": "{} o capítulo {} da minha história {}"
 	},
 	"do_you_want_to_add_more_authors": {
 		"en": "Do you want to add more authors",

@@ -487,10 +487,10 @@ class Post(Stories):
 		print(self.language_texts["copying_the_cover_to_the_{}_folder"].format(self.language_texts["mega_stories"]) + ":")
 		print(destination_file)
 
-		# ---------- #
-
 		# Copy the source file to the destination location
 		self.File.Copy(source_file, destination_file)
+
+		# ---------- #
 
 		# Copy the cover file to the chapter covers folder of the story folder inside the "Images" folder of the "Mega Websites" folder
 		# If the cover type is "Landscape"

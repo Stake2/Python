@@ -1,9 +1,13 @@
 {
+	"Module": "Watch_History",
 	"Folders": {
-		"root": "C:/Apps/Modules/Watch_History/"
+		"root": "C:/Apps/Modules/Watch_History/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Watch_History/"
+		}
 	},
 	"Files": {
-		"Descriptions": "C:/Users/Stake2/AppData/Roaming/Python/Python38/site-packages/Watch_History/Descriptions.json",
+		"Descriptions": "C:/Apps/Modules/Watch_History/Descriptions.json",
 		"Module": "C:/Apps/Modules/Watch_History/Module.json"
 	},
 	"Descriptions": {

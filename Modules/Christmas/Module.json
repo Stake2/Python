@@ -1,0 +1,35 @@
+{
+	"Module": "Christmas",
+	"Folders": {
+		"root": "C:/Apps/Modules/Christmas/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Christmas/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Christmas/Descriptions.json",
+		"Module": "C:/Apps/Modules/Christmas/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Natal",
+		"Start_Christmas": {
+			"en": "Start Christmas",
+			"pt": "Começar o Natal"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Start_Christmas": {
+				"Descriptions": {
+					"en": "Start Christmas",
+					"pt": "Começar o Natal"
+				},
+				"Description": "Começar o Natal",
+				"Object": "<class 'Christmas.Start_Christmas.Start_Christmas'>"
+			}
+		},
+		"Descriptions": [
+			"Começar o Natal"
+		]
+	}
+}

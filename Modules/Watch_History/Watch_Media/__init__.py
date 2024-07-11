@@ -790,12 +790,19 @@ class Watch_Media(Watch_History):
 		# Open media unit with its executor
 		self.System.Open(self.media["Episode"]["unit"])
 
-	# Make Discord Custom Status for the media or media episode that is going to be watched and copy it
+	# Make a status of the media to put on Discord, with the media and episode titles
 	def Create_Discord_Status(self):
-		template = self.media["Details"][self.Language.language_texts["status, title()"]]
+		# Define the status
+		status = self.media["Details"][self.Language.language_texts["status, title()"]]
 
+		# Define the key for the episode title
 		key = "with_title"
 
+		# If the media has a media list
+		# And the media item is not the media
+		# And the media is not a video channel
+		# And the media item is not single unit
+		# And the "Replace title" state is deactivated
 		if (
 			self.media["States"]["Media item list"] == True and
 			self.media["States"]["Media item is media"] == False and
@@ -805,15 +812,26 @@ class Watch_Media(Watch_History):
 		):
 			key = "with_title_and_item"
 
+		# If the key is present in the "Episode" dictionary
 		if key in self.media["Episode"]:
+			# Define the title using the key
 			title = self.media["Episode"][key][self.user_language]
 
+		# If the media is not a series media
 		if self.media["States"]["Series media"] == False:
+			# Define the title as the episode title in the user language, plus the original title of the episode
 			title = self.media["Episode"]["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
-		self.dictionary["discord_status"] = template + " " + self.dictionary["Media type"]["Singular"][self.user_language] + ": " + title
+		# Define the "Discord" dictionary and the status
+		self.dictionary["Discord"] = {
+			"Status": ""
+		}
 
-		self.Text.Copy(self.dictionary["discord_status"])
+		# Define the status, adding the media item status, media type, and media title + episode title
+		self.dictionary["Discord"]["Status"] = status + " " + self.dictionary["Media type"]["Singular"][self.user_language] + ": " + title
+
+		# Copy the status
+		self.Text.Copy(self.dictionary["Discord"]["Status"])
 
 	def Comment_On_Media(self):
 		# Ask to comment on media (using Comment_Writer class)

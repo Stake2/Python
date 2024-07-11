@@ -1,6 +1,7 @@
 # System.py
 
 import os
+import win32com.client
 
 class System():
 	def __init__(self):
@@ -23,7 +24,8 @@ class System():
 		modules = [
 			"Define_Folders",
 			"Global_Switches",
-			"JSON"
+			"JSON",
+			"File"
 		]
 
 		# Iterate through the list of modules
@@ -121,6 +123,98 @@ class System():
 		self.Verbose(self.language_texts["opening, title()"], link, verbose = verbose)
 
 		webbrowser.open(link)
+
+	def Define_Shortcut(self, dictionary):
+		# Initiate the shell
+		shell = win32com.client.Dispatch("wscript.shell")
+
+		# Define the shortcut dictionary
+		shortcut = {
+			"Name": "",
+			"Folder": "",
+			"File": "",
+			"Extension": "",
+			"Target": ""
+		}
+
+		# Iterate through the keys inside the shortcut dictionary
+		for key in shortcut:
+			# If the key is inside the parameter dictionary
+			if key in dictionary:
+				# Define the key inside the shortcut dictionary as the one in the parameter one
+				shortcut[key] = dictionary[key]
+
+		# If the "Target" key is in the parameter dictionary
+		if "Target" in dictionary:
+			# If the "://" text is not in the shortcut target
+			if "://" not in dictionary["Target"]:
+				# Sanitize the target path
+				shortcut["Target"] = self.Sanitize(shortcut["Target"])
+
+				# Define the extension as "lnk" (link)
+				shortcut["Extension"] = "lnk"
+
+			else:
+				# Define the extension as "url"
+				shortcut["Extension"] = "url"
+
+			# If the "Name" key is an empty string
+			if shortcut["Name"] == "":
+				# Get the name of the file path
+				shortcut["Name"] = self.File.Name(shortcut["Target"])
+
+			# If the "Folder" key is not present in the parameter dictionary
+			if "Folder" not in dictionary:
+				shortcut["Folder"] = self.File.Folder(shortcut["Target"])
+
+		# If the target is not present
+		else:
+			# Create the shortcut with the file path
+			shortcut_file = shell.CreateShortCut(shortcut["File"])
+
+			# Get the name of the file path
+			shortcut["Name"] = self.File.Name(shortcut["File"])
+
+			# Get the target path from the already existing shortcut
+			shortcut["Target"] = self.Sanitize(shortcut_file.TargetPath)
+
+			# Get the extension from the file path
+			shortcut["Extension"] = "." + dictionary["File"].split(".")[-1]
+
+			# Define the folder of the shortcut
+			shortcut["Folder"] = self.File.Folder(shortcut["File"])
+
+		# Return the shortcut dictionary
+		return shortcut
+
+	def Create_Shortcut(self, dictionary):
+		# Define the shortcut dictionary
+		shortcut = self.Define_Shortcut(dictionary)
+
+		# Update the "File" key
+		shortcut["File"] = shortcut["Folder"] + shortcut["Name"] + "." + shortcut["Extension"]
+
+		# Initiate the shell
+		shell = win32com.client.Dispatch("wscript.shell")
+
+		# Create the shortcut with the file path
+		shortcut_file = shell.CreateShortCut(shortcut["File"])
+
+		# Define the target path
+		shortcut_file.TargetPath = dictionary["Target"]
+
+		# Save the shortcut
+		shortcut_file.Save()
+
+		# Return the shortcut dictionary
+		return shortcut
+
+	def Get_Shortcut(self, shortcut):
+		# Define the shortcut dictionary
+		shortcut = self.Define_Shortcut(shortcut)
+
+		# Return the shortcut dictionary
+		return shortcut
 
 	def Variable_Name(self, variable):
 		import inspect

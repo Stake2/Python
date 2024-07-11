@@ -1,0 +1,48 @@
+{
+	"Module": "PHP",
+	"Folders": {
+		"root": "C:/Apps/Modules/PHP/",
+		"Texts": {
+			"root": "C:/Apps/Module files/PHP/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/PHP/Descriptions.json",
+		"Module": "C:/Apps/Modules/PHP/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar sites em PHP",
+		"Update_Websites": {
+			"en": "Update websites",
+			"pt": "Atualizar sites"
+		},
+		"Update_CSS_Colors": {
+			"pt": "Atualizar cores CSS",
+			"en": "Update CSS colors"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Update_Websites": {
+				"Descriptions": {
+					"en": "Update websites",
+					"pt": "Atualizar sites"
+				},
+				"Description": "Atualizar sites",
+				"Object": "<class 'PHP.Update_Websites.Update_Websites'>"
+			},
+			"Update_CSS_Colors": {
+				"Descriptions": {
+					"pt": "Atualizar cores CSS",
+					"en": "Update CSS colors"
+				},
+				"Description": "Atualizar cores CSS",
+				"Object": "<class 'PHP.Update_CSS_Colors.Update_CSS_Colors'>"
+			}
+		},
+		"Descriptions": [
+			"Atualizar sites",
+			"Atualizar cores CSS"
+		]
+	}
+}

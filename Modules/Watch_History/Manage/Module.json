@@ -1,0 +1,77 @@
+{
+	"Module": "Watch_History",
+	"Sub-module": "Manage",
+	"Folders": {
+		"root": "C:/Apps/Modules/Watch_History/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Watch_History/"
+		},
+		"Manage": {
+			"root": "C:/Apps/Modules/Watch_History/Manage/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Watch_History/Manage/Descriptions.json",
+		"Module": "C:/Apps/Modules/Watch_History/Manage/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+		"Add_A_New_Media": {
+			"en": "Add a new media to the Database",
+			"pt": "Adicionar uma nova mídia ao Banco de Dados"
+		},
+		"Iterate_Through_The_Media_List": {
+			"en": "Iterate through the media list",
+			"pt": "Iterar através da lista de mídia"
+		},
+		"Add_To_Comments_Dictionary": {
+			"en": "Add to comments dictionary",
+			"pt": "Adicionar ao dicionário de comentários"
+		},
+		"Fill_Media_Files": {
+			"en": "Fill media files",
+			"pt": "Preencher arquivos de mídia"
+		},
+		"Convert_History": {
+			"en": "Convert history",
+			"pt": "Converter histórico"
+		},
+		"Remove list": [
+			"Add_To_Comments_Dictionary",
+			"Convert_History"
+		]
+	},
+	"Classes": {
+		"Dictionary": {
+			"Add_A_New_Media": {
+				"Descriptions": {
+					"en": "Add a new media to the Database",
+					"pt": "Adicionar uma nova mídia ao Banco de Dados"
+				},
+				"Description": "Adicionar uma nova mídia ao Banco de Dados",
+				"Object": "<class 'Watch_History.Manage.Add_A_New_Media.Add_A_New_Media'>"
+			},
+			"Iterate_Through_The_Media_List": {
+				"Descriptions": {
+					"en": "Iterate through the media list",
+					"pt": "Iterar através da lista de mídia"
+				},
+				"Description": "Iterar através da lista de mídia",
+				"Object": "<class 'Watch_History.Manage.Iterate_Through_The_Media_List.Iterate_Through_The_Media_List'>"
+			},
+			"Fill_Media_Files": {
+				"Descriptions": {
+					"en": "Fill media files",
+					"pt": "Preencher arquivos de mídia"
+				},
+				"Description": "Preencher arquivos de mídia",
+				"Object": "<class 'Watch_History.Manage.Fill_Media_Files.Fill_Media_Files'>"
+			}
+		},
+		"Descriptions": [
+			"Adicionar uma nova mídia ao Banco de Dados",
+			"Iterar através da lista de mídia",
+			"Preencher arquivos de mídia"
+		]
+	}
+}

@@ -1818,6 +1818,10 @@
 		"en": "Story Covers",
 		"pt": "Capas de Histórias"
 	},
+	"in_progress": {
+		"en": "in progress",
+		"pt": "em andamento"
+	},
 	"reader, title()": {
 		"en": "Reader",
 		"pt": "Leitor"
@@ -1897,6 +1901,10 @@
 	"translate, title()": {
 		"en": "Translate",
 		"pt": "Traduzir"
+	},
+	"google_translate": {
+		"en": "Google Translate",
+		"pt": "Google Tradutor"
 	},
 	"post, title()": {
 		"en": "Post",
@@ -2104,6 +2112,10 @@
 	"posted": {
 		"en": "posted",
 		"pt": "postado"
+	},
+	"copying_the_discord_status": {
+		"en": "Copying the Discord status",
+		"pt": "Copiando o status do Discord"
 	},
 	"genders, type: dict": {
 		"en": {

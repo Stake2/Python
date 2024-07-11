@@ -102,8 +102,11 @@ class Stories(object):
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
 
-		# Define the local folders dictionary as the Folder folders dictionary
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
 		self.folders = self.Folder.folders
+
+		# Import the "Links" dictionary from the "Folder" class
+		self.links = self.Folder.links
 
 		# Get the Sanitize method of the File class
 		self.Sanitize = self.File.Sanitize
@@ -387,28 +390,28 @@ class Stories(object):
 		# Define the "Writing" dictionary
 		self.stories["Writing"] = {
 			"Links": {
-				"Google Translate": "https://translate.google.com/"
+				"Google Translate": {
+					"Name": self.Language.language_texts["google_translate"],
+					"Link": "https://translate.google.com/"
+				}
 			},
 			"Programs": {
-				"Foobar2000": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
+				"Foobar2000": {
+					"Name": "Foobar2000",
+					"Link": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
+				}
 			}
 		}
 
 		# Define the "Translator website" dictionary
 		dictionary = self.stories["Writing"]["Links"]
 
-		self.stories["Writing"]["Translator website"] = {
-			"Name": list(dictionary.keys())[0],
-			"Link": list(dictionary.values())[0]
-		}
+		self.stories["Writing"]["Translator website"] = dictionary["Google Translate"]
 
 		# Define the "Music player" dictionary
 		dictionary = self.stories["Writing"]["Programs"]
 
-		self.stories["Writing"]["Music player"] = {
-			"Name": list(dictionary.keys())[0],
-			"Link": list(dictionary.values())[0]
-		}
+		self.stories["Writing"]["Music player"] = dictionary["Foobar2000"]
 
 		# Define the "Directories" dictionary
 		self.stories["Directories"] = {
@@ -446,6 +449,7 @@ class Stories(object):
 				"JSON": [
 					"Chapters",
 					"Spirit Fanfics",
+					"Pack",
 					"Wattpad",
 					"Website",
 					"Writing"
@@ -923,8 +927,10 @@ class Stories(object):
 						# Get the string of the information
 						information = information["string"]
 
-				# Define the information with its key inside the "Information" dictionary
-				story["Information"][key] = information
+				# If the information from the file is not an empty string, list, or dictionary
+				if information not in ["", [], {}]:
+					# Define the information with its key inside the "Information" dictionary
+					story["Information"][key] = information
 
 			# ---------- #
 
@@ -1158,6 +1164,9 @@ class Stories(object):
 			if "Pack" not in story["Information"]:
 				# Define the "Pack" dictionary of the current story as the default "Pack" dictionary
 				story["Information"]["Pack"] = deepcopy(self.stories["Story pack"])
+
+			# Write the default or modified "Pack" dictionary inside the "Pack.json" file
+			self.JSON.Edit(story["Folders"]["Information"]["Pack"], story["Information"]["Pack"])
 
 			# ---------- #
 
@@ -1437,7 +1446,7 @@ class Stories(object):
 					# Define the file
 					folder_dictionary[sub_key] = folder_dictionary["root"] + file_name
 
-					# Create the sub-folder
+					# Create the file
 					self.File.Create(folder_dictionary[sub_key])
 
 					# If the file type is "JSON"
@@ -1449,7 +1458,7 @@ class Stories(object):
 
 						# If the file is empty
 						if contents["lines"] == []:
-							# Add an empty JSON dictionary to the file
+							# Write an empty JSON dictionary to the file
 							self.JSON.Edit(file, {})
 
 		# Return the "Story" dictionary

@@ -1,0 +1,74 @@
+{
+	"Module": "Database",
+	"Folders": {
+		"root": "C:/Apps/Modules/Database/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Database/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Database/Descriptions.json",
+		"Module": "C:/Apps/Modules/Database/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar a Rede de Banco de Dados (Database Network)",
+		"Experience": {
+			"en": "Experience",
+			"pt": "Experimentar"
+		},
+		"Register": {
+			"en": "Register",
+			"pt": "Registrar"
+		},
+		"Manage": {
+			"en": "Manage the [Data Information] Database and the [Experience History]",
+			"pt": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]"
+		},
+		"View": {
+			"en": "View",
+			"pt": "Visualizar"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Experience": {
+				"Descriptions": {
+					"en": "Experience",
+					"pt": "Experimentar"
+				},
+				"Description": "Experimentar",
+				"Object": "<class 'Database.Experience.Experience'>"
+			},
+			"Register": {
+				"Descriptions": {
+					"en": "Register",
+					"pt": "Registrar"
+				},
+				"Description": "Registrar",
+				"Object": "<class 'Database.Register.Register'>"
+			},
+			"Manage": {
+				"Descriptions": {
+					"en": "Manage the [Data Information] Database and the [Experience History]",
+					"pt": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]"
+				},
+				"Description": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]",
+				"Object": "<class 'Database.Manage.Run'>"
+			},
+			"View": {
+				"Descriptions": {
+					"en": "View",
+					"pt": "Visualizar"
+				},
+				"Description": "Visualizar",
+				"Object": "<class 'Database.View.View'>"
+			}
+		},
+		"Descriptions": [
+			"Experimentar",
+			"Registrar",
+			"Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]",
+			"Visualizar"
+		]
+	}
+}

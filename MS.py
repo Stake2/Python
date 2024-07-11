@@ -23,14 +23,14 @@ class Module_Selector():
 		# Define the parser
 		self.Define_Parser()
 
+		# Reset the switches
+		self.Reset_Switches()
+
 		# Get the modules
 		self.Get_Modules()
 
 		# Check the arguments and switches
 		self.Check_Arguments_And_Switches()
-
-		# Reset the switches
-		self.Reset_Switches()
 
 		# If the class does not has arguments
 		if self.has_arguments == False:
@@ -81,7 +81,7 @@ class Module_Selector():
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Define the local folders dictionary as the Folder folders dictionary
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
 		self.folders = self.Folder.folders
 
 	def Define_Basic_Variables(self):
@@ -163,6 +163,17 @@ class Module_Selector():
 					"Options": {
 						"Action": "store",
 						"Help": self.language_texts["stores_the_module_to_be_executed"]
+					},
+					"Language text": False
+				},
+				"update_modules": {
+					"List": [
+						"update_modules"
+					],
+					"Text key": "updates_the_json_file_of_the_modules",
+					"Options": {
+						"Action": "store_true",
+						"Help": self.language_texts["updates_the_json_file_of_the_modules"]
 					},
 					"Language text": False
 				}
@@ -540,12 +551,13 @@ class Module_Selector():
 			# If the arguments contain the lowercase version of the module
 			# And the module argument is True
 			# That means the user wrote the command as:
-			# python MS.py -Module_Title
+			# python MS.py -module_title
 			# 
-			# Or if the arguments the "module" argument
+			# Or if the arguments contain the "module" argument
 			# And the argument value is inside the possible module title options
 			# That means the user wrote the command as:
 			# python MS.py -module Module_Title
+			# Or any of the other options
 			if (
 				hasattr(self.arguments, module_lower) and
 				getattr(self.arguments, module_lower) == True or

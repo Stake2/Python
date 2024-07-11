@@ -88,9 +88,32 @@ class File():
 		return path
 
 	def Name(self, file):
+		# Sanitize the file
 		file = self.Sanitize(file)
 
-		return os.path.splitext(os.path.basename(file))[0]
+		# Get the file name
+		file_name = os.path.splitext(os.path.basename(file))[0]
+
+		# Return it
+		return file_name
+
+	def Folder(self, file):
+		# Sanitize the file
+		file = self.Sanitize(file)
+
+		# Split the file to get the folders
+		split = file.split("/")
+
+		# Define the folder as an empty string
+		folder = ""
+
+		# Add each sub-folder with a slash to the empty string above
+		for i in split:
+			if i != split[-1]:
+				folder += i + "/"
+
+		# Return the folder
+		return folder
 
 	def Verbose(self, text, item, verbose = False):
 		if (

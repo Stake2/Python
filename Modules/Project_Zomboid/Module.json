@@ -1,0 +1,48 @@
+{
+	"Module": "Project_Zomboid",
+	"Folders": {
+		"root": "C:/Apps/Modules/Project_Zomboid/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Project_Zomboid/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Project_Zomboid/Descriptions.json",
+		"Module": "C:/Apps/Modules/Project_Zomboid/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o jogo \"Project Zomboid\"",
+		"Create_Survival_Diary_File": {
+			"en": "Create a survival diary file",
+			"pt": "Criar um arquivo de diário de sobrevivência"
+		},
+		"Add_A_New_Survivor": {
+			"en": "Add a new survivor",
+			"pt": "Adicionar um novo sobrevivente"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Create_Survival_Diary_File": {
+				"Descriptions": {
+					"en": "Create a survival diary file",
+					"pt": "Criar um arquivo de diário de sobrevivência"
+				},
+				"Description": "Criar um arquivo de diário de sobrevivência",
+				"Object": "<class 'Project_Zomboid.Create_Survival_Diary_File.Create_Survival_Diary_File'>"
+			},
+			"Add_A_New_Survivor": {
+				"Descriptions": {
+					"en": "Add a new survivor",
+					"pt": "Adicionar um novo sobrevivente"
+				},
+				"Description": "Adicionar um novo sobrevivente",
+				"Object": "<class 'Project_Zomboid.Add_A_New_Survivor.Add_A_New_Survivor'>"
+			}
+		},
+		"Descriptions": [
+			"Criar um arquivo de diário de sobrevivência",
+			"Adicionar um novo sobrevivente"
+		]
+	}
+}

@@ -53,7 +53,7 @@ class Text():
 
 	def Verbose(self, text, item, verbose = True):
 		if (
-			self.switches["Verbose"] == True and
+			self.switches["Verbose"] == True or
 			verbose == True
 		):
 			import inspect

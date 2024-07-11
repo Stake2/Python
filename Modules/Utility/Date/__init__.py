@@ -29,7 +29,8 @@ class Date():
 			"datetime",
 			"timedelta",
 			"timezone",
-			"relativedelta"
+			"relativedelta",
+			"combine"
 		]
 
 		# Define the globals variable for easier typing

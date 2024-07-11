@@ -59,10 +59,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				self.texts["animes, title()"]["en"],
-				self.texts["cartoons, title()"]["en"],
-				self.texts["series, title()"]["en"],
-				self.texts["movies, title()"]["en"],
+				#self.texts["animes, title()"]["en"],
+				#self.texts["cartoons, title()"]["en"],
+				#self.texts["series, title()"]["en"],
+				#self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 

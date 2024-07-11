@@ -53,16 +53,20 @@ class Run():
 
 		# If the module has no active arguments
 		if has_active_arguments == False:
-			# Ask the user to select a class
-			class_ = self.Modules.Select_Class(return_class = True)
+			# If the "Do not run class" variable is not present in this class
+			if hasattr(self, "do_not_run_class") == False:
+				# Ask the user to select a class
+				class_ = self.Modules.Select_Class(return_class = True)
 
 		# If the self object (Run) has the "arguments" dictionary
 		# Add it to the module class
 		if hasattr(self, "arguments") == True:
 			setattr(class_["Object"], "arguments", self.arguments)
 
-		# Run the object of the class
-		class_["Object"]()
+		# If the "Do not run class" variable is not present in this class
+		if hasattr(self, "do_not_run_class") == False:
+			# Run the object of the class
+			class_["Object"]()
 
 # Define the alternate arguments for the module
 alternate_arguments = [

@@ -80,7 +80,7 @@ class Diary():
 		self.user_language = self.Language.user_language
 		self.full_user_language = self.Language.full_user_language
 
-		# Define the local folders dictionary as the Folder folders dictionary
+		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
 		self.folders = self.Folder.folders
 
 		# Get the Sanitize method of the File class

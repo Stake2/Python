@@ -1,0 +1,35 @@
+{
+	"Module": "Social_Networks",
+	"Folders": {
+		"root": "C:/Apps/Modules/Social_Networks/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Social_Networks/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Social_Networks/Descriptions.json",
+		"Module": "C:/Apps/Modules/Social_Networks/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar Redes Sociais",
+		"Open_Social_Network": {
+			"en": "Open Social Network",
+			"pt": "Abrir Rede Social"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Open_Social_Network": {
+				"Descriptions": {
+					"en": "Open Social Network",
+					"pt": "Abrir Rede Social"
+				},
+				"Description": "Abrir Rede Social",
+				"Object": "<class 'Social_Networks.Open_Social_Network.Open_Social_Network'>"
+			}
+		},
+		"Descriptions": [
+			"Abrir Rede Social"
+		]
+	}
+}
