@@ -579,26 +579,50 @@ class Main():
 		self.File.Open(notepad)
 
 	def Time_Difference(self):
+		# Define the before time
 		before = self.Date.Now()
 
-		self.JSON.Show(before)
+		# Show it
+		print(before["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
 
+		# Test parameters
+		# Parâmetros de teste
+		hours = 1
+		minutes = 30
+		seconds = 4
+
+		# Define the list of differences to test
 		differences = [
-			self.Date.Relativedelta(hours = 1),
-			self.Date.Relativedelta(hours = 1, minutes = 30),
-			self.Date.Relativedelta(hours = 1, minutes = 30, seconds = 2)
+			self.Date.Relativedelta(hours = hours),
+			self.Date.Relativedelta(minutes = minutes),
+			self.Date.Relativedelta(seconds = seconds),
+			self.Date.Relativedelta(hours = hours, minutes = minutes),
+			self.Date.Relativedelta(hours = hours, seconds = seconds),
+			self.Date.Relativedelta(minutes = minutes, seconds = seconds),
+			self.Date.Relativedelta(hours = hours, minutes = minutes, seconds = seconds)
 		]
 
+		# Iterate through the differences
 		for diff in differences:
-			after = self.Date.Now(self.Date.Now()["Object"] + diff)
+			# Define the after, with the before time and the current difference
+			after = self.Date.Now(before["Object"] + diff)
 
+			# Define the time difference
 			difference = self.Date.Difference(before, after)
 
+			# Show a five dash space separator
 			print()
-			print("-----")
+			print(self.separators["5"])
 			print()
-			print("[" + str(diff) + "]:")
 
+			# Get the time difference unit text
+			unit_text = str(diff).split("(")[1].split(")")[0]
+			unit_text = unit_text.capitalize().replace("=+", " + ")
+
+			# Show it
+			print(unit_text + ":")
+
+			# Show the difference texts in all languages
 			for item in difference["Text"].values():
 				print(item)
 
@@ -645,7 +669,7 @@ class Main():
 		i = 0
 		for title in titles:
 			print()
-			print("-----")
+			print(self.separators["5"])
 			print()
 			print(str(i + 1) + "/" + str(len(titles)) + ":")
 			print(title)
@@ -739,7 +763,7 @@ class Main():
 		self.File.Edit(playlist_file, export)
 
 		print()
-		print("-----")
+		print(self.separators["5"])
 		print()
 		print(self.Language.language_texts["playlist, title()"] + ":")
 		print(playlist_file)
@@ -990,7 +1014,7 @@ class Main():
 			title = titles[i]
 
 			print()
-			print("-----")
+			print(self.separators["5"])
 			print()
 			print(str(i + 1) + "/" + str(len(ids)) + ":")
 			print()
@@ -1180,7 +1204,7 @@ class Main():
 			}
 
 			print()
-			print("-----")
+			print(self.separators["5"])
 			print()
 			print(str(number) + "/" + str(len(root_ids)) + ":")
 			print()
@@ -1195,7 +1219,7 @@ class Main():
 			number += 1
 
 		print()
-		print("-----")
+		print(self.separators["5"])
 		print()
 		self.JSON.Show(add_to_playlist)
 

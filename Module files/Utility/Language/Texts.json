@@ -1453,6 +1453,10 @@
 		"en": "Description",
 		"pt": "Descrição"
 	},
+	"description_in_{}": {
+		"en": "Description in {}",
+		"pt": "Descrição em {}"
+	},
 	"steam, title()": {
 		"en": "Steam",
 		"pt": "Steam"

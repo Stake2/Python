@@ -19,7 +19,9 @@ class Register(GamePlayer):
 			},
 			"Diary Slim": {
 				"Text": "",
-				"Clean text": ""
+				"Clean text": "",
+				"Descriptions": {},
+				"Write description": False
 			},
 			"States": {
 				"Post on the Social Networks": False
@@ -29,13 +31,18 @@ class Register(GamePlayer):
 		# Define the media variable to make typing the media dictionary easier
 		self.game = self.dictionary["Game"]
 
+		# Check the game status
 		self.Check_Game_Status()
 
 		if (
 			self.game["States"]["Re-playing"] == False and
 			self.game["States"]["Completed game"] == True
 		):
+			# Check the game dates
 			self.Check_Game_Dates()
+
+		# Ask the user if it wants to write a description for the gaming session
+		self.Ask_For_Gaming_Session_Description()
 
 		# Database related methods
 		self.Register_In_JSON()
@@ -45,8 +52,10 @@ class Register(GamePlayer):
 		# Diary Slim related methods
 		self.Define_Diary_Slim_Text()
 
+		# Post the gaming session on the social networks
 		self.Post_On_Social_Networks()
 
+		# Write the information about the session on Diary Slim
 		self.Write_On_Diary_Slim()
 
 		# Show the information about the game session
@@ -82,6 +91,50 @@ class Register(GamePlayer):
 
 		# Get the dictionary from the "Play" class with the session and time related keys
 		self.dictionary = self.Play.dictionary
+
+	def Ask_For_Gaming_Session_Description(self):
+		# Ask the user if it wants to write a description for the gaming session
+		print()
+		print(self.separators["5"])
+
+		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
+
+		# If the user wants to write a description
+		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
+			# Define the keyword parameters dictionary
+			parameters = {
+				"line_options_parameter": {
+					"print": True,
+					"next_line": False,
+					"show_finish_text": True
+				}
+			}
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# If the language is not the first one
+				if language != self.languages["small"][0]:
+					# Enumerate the lines
+					parameters["line_options_parameter"]["enumerate"] = True
+					parameters["line_options_parameter"]["enumerate_text"] = False
+
+					# Get the last description
+					last_description = list(self.dictionary["Entry"]["Diary Slim"]["Descriptions"].values())[0]
+
+					# Define the number of needed lines as the number of lines of the previous description
+					parameters["length"] = last_description["length"]
+
+				# Get the translated language in the user language
+				translated_language = self.languages["full_translated"][language][self.user_language]
+
+				# Define the type text
+				type_text = self.Language.language_texts["description_in_{}"] + ":"
+
+				# Format it
+				type_text = type_text.format(translated_language)
+
+				# Ask the user to type a session description
+				self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = self.Input.Lines(type_text, **parameters)
 
 	def Register_In_JSON(self):
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
@@ -257,6 +310,9 @@ class Register(GamePlayer):
 		# 
 		# Session duration:
 		# [Session duration]
+		#
+		# Session description:
+		# [Session description]
 		# 
 		# File name:
 		# [Number. Type (Time)]
@@ -299,11 +355,15 @@ class Register(GamePlayer):
 
 		full_language = self.languages["full"][language]
 
+		# ---------- #
+
 		# Define the entry text lines
 		lines = [
 			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Sessions"]["Numbers"]["Total"]),
 			self.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"])
 		]
+
+		# ---------- #
 
 		# Add the entry title lines
 		if language_parameter != "General":
@@ -313,6 +373,8 @@ class Register(GamePlayer):
 			text = self.Language.texts["titles, title()"][language]
 
 		lines.append("\n" + text + ":" + "\n" + "{}")
+
+		# ---------- #
 
 		# If the game has sub-games
 		# And the sub-game title is not the same as the game title
@@ -325,16 +387,36 @@ class Register(GamePlayer):
 
 			lines.append(text + ":" + "\n" + "{}")
 
+		# ---------- #
+
 		# Add the rest of the lines
 		lines.extend([
 			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
 			self.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
 			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.Language.texts["session_duration"][language] + ":" + "\n" + "{}",
-			self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
+			self.Language.texts["session_duration"][language] + ":" + "\n" + "{}"
 		])
 
-		# Add states texts lines
+		# ---------- #
+
+		# If the user wrote a description for the gaming session
+		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
+			# Define the description text
+			text = self.texts["gaming_session_description"][language] + ":" + "\n" + "{}"
+
+			# Add it to the list of lines
+			lines.append(text)
+
+		# ---------- #
+
+		# Add the entry name
+		entry = self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"]
+
+		lines.append(entry)
+
+		# ---------- #
+
+		# Add the states text lines
 		if self.dictionary["States"]["Texts"] != {}:
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
@@ -348,8 +430,12 @@ class Register(GamePlayer):
 
 			lines.append(text)
 
+		# ---------- #
+
 		# Define items to be added to file text format
 		items = []
+
+		# ---------- #
 
 		# Add the entry titles to the items list
 		titles = []
@@ -375,6 +461,8 @@ class Register(GamePlayer):
 
 		items.append(self.Text.From_List(titles, break_line = True) + "\n")
 
+		# ---------- #
+
 		# If the game has sub-games
 		# And the sub-game title is not the same as the game title
 		if (
@@ -394,9 +482,9 @@ class Register(GamePlayer):
 
 		items.append(times)
 
-		# Add session duration to items list
-		session_duration = self.dictionary["Entry"]["Session duration"]["Text"][language] + "\n"
+		# ---------- #
 
+		# Add the session duration to the list of items
 		if language_parameter != "General":
 			session_duration = self.dictionary["Entry"]["Session duration"]["Text"][language] + "\n"
 
@@ -411,7 +499,31 @@ class Register(GamePlayer):
 
 		items.append(session_duration)
 
-		# Define language entry text
+		# ---------- #
+
+		# If the user wrote a description for the gaming session
+		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
+			# Get the description in the current language
+			if language_parameter != "General":
+				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language]["string"] + "\n"
+
+			# If the language parameter is "General"
+			if language_parameter == "General":
+				# Create the descriptions text in all languages
+				description = ""
+
+				for language in self.languages["small"]:
+					text = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language]["string"] + "\n"
+
+					if text not in description:
+						description += text
+
+			# Add the description to the list of items
+			items.append(description)
+
+		# ---------- #
+
+		# Define the language entry text
 		file_text = self.Text.From_List(lines, break_line = True)
 
 		return file_text.format(*items)
@@ -589,30 +701,10 @@ class Register(GamePlayer):
 
 		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
-		# Ask the user if it wants to write a description for the gaming session
-		print()
-		print(self.separators["5"])
-
-		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
-
+		# If the user wants to write a description
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
-			# Define the type text
-			type_text = self.Language.language_texts["description, title()"] + ":"
-
-			# Define the keyword parameters dictionary
-			parameters = {
-				"line_options_parameter": {
-					"print": True,
-					"next_line": False,
-					"show_finish_text": True
-				}
-			}
-
-			# Ask the user to type a session description
-			self.dictionary["Entry"]["Diary Slim"]["Description"] = self.Input.Lines(type_text, **parameters)
-
 			# Add the session description to the "Diary Slim" text
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Description"]["string"]
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.user_language]["string"]
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:

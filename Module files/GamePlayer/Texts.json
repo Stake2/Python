@@ -115,6 +115,10 @@
 		"en": "Write a description for the gaming session",
 		"pt": "Escrever uma descrição para a sessão de jogatina"
 	},
+	"gaming_session_description": {
+		"en": "Gaming session description",
+		"pt": "Descrição da sessão de jogatina"
+	},
 	"post_on_the_social_networks": {
 		"en": "Post on the Social Networks",
 		"pt": "Postar nas Redes Sociais"

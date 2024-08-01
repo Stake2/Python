@@ -1,0 +1,1 @@
+resolution.exe /w=1024 /h=768 /f=60 /b=32 /d=0

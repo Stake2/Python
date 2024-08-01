@@ -642,8 +642,16 @@ class Write(Stories):
 
 		# ---------- #
 
+		# Define the "add" variable
+		add = False
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Define the "add" variable as True
+			add = True
+
 		# Calculate and define the writing duration
-		self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"], add = False)
+		self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"], add = add)
 
 		# Show the after time (after writing the chapter)
 		print()
@@ -915,16 +923,20 @@ class Write(Stories):
 
 		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
-			# Define the minutes to add (as 30 minutes)
-			minutes = 30
+			# Define the time to add
+			time = {
+				"hours": 1,
+				"minutes": 30,
+				"seconds": 4
+			}
 
 			# If the "Is pause" key is in the dictionary
 			if "Is pause" in dictionary:
 				# Define the minutes as 10
-				minutes = 10
+				time["minutes"] = 10
 
-			# Define the relative delta with the minutes
-			relative_delta = self.Date.Relativedelta(minutes = minutes)
+			# Define the relative delta with the time dictionary
+			relative_delta = self.Date.Relativedelta(**time)
 
 			# If the "add" parameter is True
 			if add == True:
@@ -1297,24 +1309,32 @@ class Write(Stories):
 			# Example: 1 hour, 30 minutes, 10 seconds
 			description += " " + self.dictionary["Session"]["Duration"]["Text"][language]
 
-			# Add the session writing time units
-			# Example: (01:30:10)
-			description += " ("
+			# Define the "add_time_format" switch
+			add_time_format = False
 
-			# Define the list of keys
-			keys = list(self.dictionary["Session"]["Duration"]["Difference"].keys())
+			# If the "add_time_format" switch is True
+			if add_time_format == True:
+				# Add the session writing time units
+				# Example: (01:30:10)
+				description += " ("
 
-			# Iterate through the list of units
-			for key, unit in self.dictionary["Session"]["Duration"]["Difference"].items():
-				# Add the unit number with leading zeroes
-				description += str(self.Text.Add_Leading_Zeroes(unit))
+				# Define the list of keys
+				keys = list(self.dictionary["Session"]["Duration"]["Difference"].keys())
 
-				# If the unit is not the last one, add a colon
-				if key != keys[-1]:
-					description += ":"
+				# Iterate through the list of units
+				for key, unit in self.dictionary["Session"]["Duration"]["Difference"].items():
+					# Add the unit number with leading zeroes
+					description += str(self.Text.Add_Leading_Zeroes(unit))
 
-			# Close the parenthesis and add the dot
-			description += ")."
+					# If the unit is not the last one, add a colon
+					if key != keys[-1]:
+						description += ":"
+
+				# Close the parenthesis and add the dot
+				description += ")"
+
+			# Add the end period
+			description += "."
 
 			# ---------- #
 
@@ -1330,24 +1350,43 @@ class Write(Stories):
 				# Example: 1 hour, 30 minutes, 10 seconds
 				description += self.dictionary["Writing"]["Duration"]["Text"][language]
 
-				# Add the total writing time units
+				# Create the session writing time units
 				# Example: (01:30:10)
-				description += " ("
+				dictionary = {
+					"Difference": self.dictionary["Writing"]["Duration"]["Units"],
+					"Time format": ""
+				}
 
-				# Define the list of keys
-				keys = list(self.dictionary["Writing"]["Duration"]["Units"].keys())
+				dictionary["Time format"] = self.Date.Create_Time_Format(dictionary)
 
-				# Iterate through the list of units
-				for key, unit in self.dictionary["Writing"]["Duration"]["Units"].items():
-					# Add the unit number with leading zeroes
-					description += str(self.Text.Add_Leading_Zeroes(unit))
+				# If the "add_time_format" switch is False
+				if add_time_format == False:
+					# Add the time format text to the description text
+					description += " (" + dictionary["Time format"] + ")"
 
-					# If the unit is not the last one, add a colon
-					if key != keys[-1]:
-						description += ":"
+				# If the "add_time_format" switch is True
+				if add_time_format == True:
+					# Add the total writing time units
+					# Example: (01:30:10)
+					description += " ("
 
-				# Close the parenthesis and add the dot
-				description += ")."
+					# Define the list of keys
+					keys = list(self.dictionary["Writing"]["Duration"]["Units"].keys())
+
+					# Iterate through the list of units
+					for key, unit in self.dictionary["Writing"]["Duration"]["Units"].items():
+						# Add the unit number with leading zeroes
+						description += str(self.Text.Add_Leading_Zeroes(unit))
+
+						# If the unit is not the last one, add a colon
+						if key != keys[-1]:
+							description += ":"
+
+					# Close the parenthesis and add the dot
+					description += ")"
+
+				# Add the end period
+				description += "."
 
 			# ---------- #
 

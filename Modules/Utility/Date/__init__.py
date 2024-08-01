@@ -41,7 +41,7 @@ class Date():
 			# If the method is in the globals dictionary
 			if key in globals_dictionary:
 				# Get the method
-				method = globals()[key]
+				method = globals_dictionary[key]
 
 			# If the method key is "combine"
 			if key == "combine":
@@ -408,137 +408,251 @@ class Date():
 		return monthrange(*arguments)
 
 	def Difference(self, before, after):
-		date = {
+		# Define the dictionary
+		dictionary = {
 			"Before": before,
 			"After": after,
 			"Object": {},
 			"Difference": {},
 			"Unit texts": {},
-			"Text": {}
+			"Text": {},
+			"Time format": ""
 		}
 
-		for key in date:
-			if key in ["Before", "After"]:
-				if type(date[key]) == str:
-					date[key] = self.Check(date[key])
+		# Get the object of the "Before" and "After" dates
+		for key in ["Before", "After"]:
+			if type(dictionary[key]) == str:
+				dictionary[key] = self.Check(dictionary[key])
 
-				if type(date[key]) == self.Datetime:
-					date[key] = self.Now(date[key])
+			if type(dictionary[key]) == self.Datetime:
+				dictionary[key] = self.Now(dictionary[key])
 
-		date["Object"] = self.Relativedelta(date["After"]["Object"], date["Before"]["Object"])
+		# Define the object of the date difference, with the relative delta
+		dictionary["Object"] = self.Relativedelta(dictionary["After"]["Object"], dictionary["Before"]["Object"])
 
-		# Build the attribute dictionaries
+		# Iterate through the plural date attributes list in English
 		i = 0
 		for key in self.texts["plural_date_attributes, type: list"]["en"]:
-			if key in dir(date["Object"]) and getattr(date["Object"], key) != 0:
-				number = abs(getattr(date["Object"], key))
+			# If the key is inside the list of keys of the "Object" dictionary
+			# And the number is not zero
+			if (
+				key in dir(dictionary["Object"]) and
+				getattr(dictionary["Object"], key) != 0
+			):
+				# Get the absolute value of the number
+				number = abs(getattr(dictionary["Object"], key))
 
-				date["Difference"][key.title()] = abs(number)
-				date["Unit texts"][key.title()] = {}
+				# Transform the key into title case
+				key = key.title()
 
+				# Define the difference number as the absolute number
+				dictionary["Difference"][key] = abs(number)
+
+				# Create the unit text empty dictionary
+				dictionary["Unit texts"][key] = {}
+
+				# Define the text list
 				text_list = self.texts["date_attributes, type: list"]
 
+				# If the number is greater than one
 				if number > 1:
+					# Define the text list as its plural version
 					text_list = self.texts["plural_date_attributes, type: list"]
 
+				# Iterate through the list of small languages
 				for language in self.languages["small"]:
-					date["Unit texts"][key.title()][language] = text_list[language][i]
+					# Define the unit text of the number in the current language
+					dictionary["Unit texts"][key][language] = text_list[language][i]
 
+			# Add one to the "i" number
 			i += 1
 
-		date["Text"] = self.Make_Time_Text(date)
+		# Create the time text of the date difference
+		dictionary["Text"] = self.Make_Time_Text(dictionary)
 
-		return date
+		# Create the time format text
+		dictionary["Time format"] = self.Create_Time_Format(dictionary)
 
-	def Make_Time_Text(self, date):
+		# Add the time format text to the difference texts
+		for language in self.languages["small"]:
+			dictionary["Text"][language] += " (" + dictionary["Time format"] + ")"
+
+		# Return the dictionary
+		return dictionary
+
+	def Make_Time_Text(self, dictionary):
+		# Import the "deepcopy" module
 		from copy import deepcopy
 
-		# Transform the text key into a dictionary if it is a string
+		# Transform the "Text" key into a dictionary if it is a string
 		if (
-			"Text" in date and
-			type(date["Text"]) == str
+			"Text" in dictionary and
+			type(dictionary["Text"]) == str
 		):
-			date["Text"] = {}
+			dictionary["Text"] = {}
 
-		if "Difference" not in date:
-			date_backup = deepcopy(date)
+		# If the "Difference" key is not in the dictionary
+		if "Difference" not in dictionary:
+			# Make a backup of the dictionary
+			backup = deepcopy(dictionary)
 
-			date = {
+			# Recreate the dictionary with the "Text" and "Dictionary" keys
+			dictionary = {
 				"Text": {},
-				"Difference": date
+				"Difference": dictionary
 			}
 
-			if "Units" in date_backup:
-				date["Difference"] = date_backup["Units"]
+			# If the "Units" key is in the backup dictionary
+			# Define the date dictionary difference as the units
+			if "Units" in backup:
+				dictionary["Difference"] = backup["Units"]
 
+		# Iterate through the list of small languages to create the language keys in the "Text" dictionary
 		for language in self.languages["small"]:
-			date["Text"][language] = ""
+			dictionary["Text"][language] = ""
 
-		# Define the keys and remove the "Text" key
-		keys = list(date["Difference"].keys())
+		# Define the list of keys in the date difference
+		keys = list(dictionary["Difference"].keys())
 
-		# List the keys to remove
-		keys_to_remove = [
-			"Before",
-			"After",
-			"Object",
-			"Difference",
-			"Unit texts",
-			"Text"
-		]
-
-		# Remove the unused keys
-		for key in keys_to_remove:
-			if key in keys:
-				keys.remove(key)
+		# Define the number of keys
+		number_of_keys = len(keys)
 
 		# Make the time texts per language
 		for key in keys:
 			for language in self.languages["small"]:
-				# If the key is the last one and the number of time attributes is 2 or more than 2, add the "and " text
-				if key == keys[-1]:
-					if (
-						len(keys) > 2 or
-						len(keys) == 2
-					):
-						date["Text"][language] += self.Language.texts["and"][language] + " "
+				# Get the difference number
+				number = str(dictionary["Difference"][key])
+
+				# If the key is the last one
+				# And the number of time attributes is 2 or more than 2
+				if (
+					key == keys[-1] and
+					number_of_keys >= 2
+				):
+					# Add the "and " text in the current language
+					dictionary["Text"][language] += self.Language.texts["and"][language] + " "
 
 				# Define the text key
 				text_key = key.lower()
 
-				text_key = self.Text.By_Number(date["Difference"][key], text_key[:-1], text_key)
+				# Define the text key by singular or plural, based on the difference number
+				text_key = self.Text.By_Number(dictionary["Difference"][key], text_key[:-1], text_key)
 
-				# Define the time text
+				# Define the time text in the current language
 				text = self.texts[text_key][language]
 
-				if "Unit texts" in date:
-					text = date["Unit texts"][key][language]
+				# If the "Unit texts" key is in the 
+				if "Unit texts" in dictionary:
+					# Define the text as the unit text in the current language
+					text = dictionary["Unit texts"][key][language]
 
 				# Add the number and the time text (plural or singular)
-				date["Text"][language] += str(date["Difference"][key]) + " " + text
+				dictionary["Text"][language] += number + " " + text
 
 				# If the number of time attributes is equal to 2, add a space
-				if len(keys) == 2:
-					date["Text"][language] += " "
+				if number_of_keys == 2:
+					dictionary["Text"][language] += " "
 
 				# If the key is not the last one
 				# And the number of time attributes is more than 2, add the ", " text (comma)
 				if (
 					key != keys[-1] and
-					len(keys) > 2
+					number_of_keys > 2
 				):
-					date["Text"][language] += ", "
+					dictionary["Text"][language] += ", "
 
 		# Remove spaces at the end of the texts if they are present
-		for key in date["Text"]:
-			text = date["Text"][key]
+		for key in dictionary["Text"]:
+			# Get the text
+			text = dictionary["Text"][key]
 
+			# If there is a space, remove it
 			if " " in text[-1]:
 				text = text[:-1]
 
-			date["Text"][key] = text
+			# Update the text
+			dictionary["Text"][key] = text
 
-		return date["Text"]
+		# Return the "Text" dictionary
+		return dictionary["Text"]
+
+	def Create_Time_Format(self, dictionary):
+		# Define the list of time keys
+		time_keys = [
+			"Hours",
+			"Minutes",
+			"Seconds"
+		]
+
+		# Define the list of keys in the time difference
+		keys = list(dictionary["Difference"].keys())
+
+		# Define the number of keys
+		number_of_keys = len(keys)
+
+		# If the "Time format" key is not present, create it
+		dictionary["Time format"] = ""
+
+		# Iterate through the list of time keys
+		for key in time_keys:
+			# If the is not inside the time difference keys
+			if key not in keys:
+				# Define the "add" switch as False
+				add = False
+
+				# If the key is "Minutes"
+				# And the time difference contains hours
+				if (
+					key == "Minutes" and
+					"Hours" in keys
+				):
+					# Define the "add" switch as True
+					add = True
+
+				# If the key is "Seconds"
+				# And the time difference contains minutes
+				if (
+					key == "Seconds" and
+					"Minutes" in keys
+				):
+					# Define the "add" switch as True
+					add = True
+
+				# If the list time difference keys has only "Hours"
+				if keys == ["Hours"]:
+					# Define the "add" switch as True
+					add = True
+
+				# If the "add" switch is True
+				if add == True:
+					# If there is no colon on the end of the time format, add it
+					if ":" not in dictionary["Time format"][-1]:
+						dictionary["Time format"] += ":"
+
+					# If there is not colon at the end of the 
+					# Add zero time
+					dictionary["Time format"] += "00"
+
+			# If the is inside the time difference keys
+			if key in keys:
+				# Define the number and add leading zeroes
+				number = str(self.Text.Add_Leading_Zeroes(dictionary["Difference"][key]))
+
+				# Add the number
+				dictionary["Time format"] += number
+
+			# Add a colon to the time format
+			# If the key is not the last one in the time keys list
+			# And the last character is not a colon
+			if (
+				key != time_keys[-1] and
+				dictionary["Time format"] != "" and
+				dictionary["Time format"][-1] != ":"
+			):
+				dictionary["Time format"] += ":"
+
+		# Return the time format string
+		return dictionary["Time format"]
 
 	def Number_Name_Generator(self):
 		self.numbers = {}
@@ -680,88 +794,6 @@ class Date():
 
 		if mode == "dict":
 			return dict_
-
-	def Time_Text(self, time_string, language, add_original_time = False):
-		language_texts = self.Language.Item(self.texts, language)
-
-		time = time_string.split(":")
-		hour = time[0]
-		minute = time[1]
-
-		if len(time) > 2:
-			second = time[2]
-
-		texts = {}
-
-		time_keys = ["hours", "minutes", "seconds"]
-
-		for item in time_keys:
-			texts[item] = ""
-
-		# Hours
-		if hour not in ["0", "00"]:
-			texts["hours"] = self.Text.By_Number(int(hour), language_texts["hour"], language_texts["hours"])
-
-		# Minutes
-		if minute not in ["0", "00"]:
-			texts["minutes"] = self.Text.By_Number(int(minute), language_texts["minute"], language_texts["minutes"])
-
-		# Seconds
-		if (
-			len(time) > 2 and
-			second not in ["0", "00"]
-		):
-			texts["seconds"] = self.Text.By_Number(int(second), language_texts["second"], language_texts["seconds"])
-
-		text = ""
-
-		if texts["hours"] != "":
-			text += self.Text.Remove_Leading_Zeroes(hour) + " " + texts["hours"]
-
-			if (
-				texts["minutes"] != "" and
-				texts["seconds"] == ""
-			):
-				text += " " + self.Language.language_texts["and"] + " "
-
-		if (
-			texts["hours"] != "" and
-			texts["minutes"] != "" and
-			texts["seconds"] != "" and
-			texts["seconds"] != "00"
-		):
-			text += ", "
-
-		if texts["minutes"] != "":
-			text += self.Text.Remove_Leading_Zeroes(minute) + " " + texts["minutes"]
-
-		if (
-			texts["minutes"] != "" and 
-			texts["seconds"] != ""
-		):
-			text += " " + self.Language.language_texts["and"] + " "
-
-		if (
-			texts["seconds"] != "" and 
-			texts["seconds"] != "00"
-		):
-			text += self.Text.Remove_Leading_Zeroes(second) + " " + texts["seconds"]
-
-		if add_original_time == True:
-			text += " " + "("
-
-			if texts["hours"] != "":
-				text += str(self.Text.Add_Leading_Zeroes(hour)) + ":"
-
-			if texts["minutes"] != "":
-				text += str(self.Text.Add_Leading_Zeroes(minute)) + ":"
-
-			if texts["seconds"] != "":
-				text += str(self.Text.Add_Leading_Zeroes(second))
-
-			text += ")"
-
-		return text
 
 	def Schedule_Task(self, task_title, path = "", start_time = "", time_from_now = 5):
 		import win32com.client
