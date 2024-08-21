@@ -45,12 +45,17 @@ class Register(Watch_History):
 
 		self.Define_Diary_Slim_Text()
 
+		# If the "Defined title" key is not inside the root dictionary
 		if "Defined title" not in self.dictionary:
+			# Post about the watched media (and item) on the social networks
 			self.Post_On_Social_Networks()
 
+		# Write the watched media (item) description text in the user language on the Diary Slim
 		self.Write_On_Diary_Slim()
 
+		# If the "Defined title" key is not inside the root dictionary
 		if "Defined title" not in self.dictionary:
+			# Show information about the watched media (item)
 			self.Show_Information()
 
 		# Re-initiate the root class to update the files

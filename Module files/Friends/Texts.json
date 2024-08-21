@@ -41,14 +41,6 @@
 		"pt": "Pesquisar por um arquivo de {} de amigo",
 		"en": "Search for a friend {} file"
 	},
-	"select_the_information_item": {
-		"pt": "Selecione o item de informação",
-		"en": "Select the information item"
-	},
-	"select_one_information_item": {
-		"pt": "Selecione um item de informação",
-		"en": "Select a information item"
-	},
 	"type_{}": {
 		"pt": "Digite {}",
 		"en": "Type {}"

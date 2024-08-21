@@ -1,11 +1,11 @@
-# Create_Friend_Folder.py
+# Add_A_New_Friend.py
 
 from Friends.Friends import Friends as Friends
 
 from copy import deepcopy
 import collections
 
-class Create_Friend_Folder(Friends):
+class Add_A_New_Friend(Friends):
 	def __init__(self):
 		super().__init__()
 
@@ -33,7 +33,7 @@ class Create_Friend_Folder(Friends):
 
 			self.Select_Friend()
 
-		# If not, type the information of the new Friend to be added
+		# If not, ask the user to type the information of the new Friend to be added
 		if self.dictionary["States"]["Add Social Network to existing friend folder"] == False:
 			self.Type_Friend_Information()
 
@@ -264,8 +264,8 @@ class Create_Friend_Folder(Friends):
 
 		# If the Social Network is not inside the list of Social Networks of the Friend
 		if self.social_network["Name"] not in self.friend["Social Networks"]["List"]:
-			# Asks for the user to type information about the selected Social Network
-			self.social_network = self.Social_Networks.Type_Social_Network_Information(first_separator = first_separator)
+			# Asks for the user to type information about the selected Social Network profile
+			self.social_network = self.Social_Networks.Type_Social_Network_Information(social_network = self.social_network, first_separator = first_separator)
 
 			# Add the Social Network to the Social Networks list
 			self.friend["Social Networks"]["List"].append(self.social_network["Name"])
@@ -308,13 +308,12 @@ class Create_Friend_Folder(Friends):
 		if self.friend["Name"] not in self.friends["List"]:
 			self.friends["List"].append(self.friend["Name"])
 
-		# Define and create the friend folder type dictionaries
+		# Define and create the friend folders and files
 		for item in ["Text", "Image"]:
 			# Define the item key inside the "Files" dictionary
 			self.friend["Files"][item] = {}
 
-		# Define and create the friend folders and files
-		for item in ["Text", "Image"]:
+			# Define the root folder
 			folder = self.folders["Friends"][item]["root"] + self.friend["Name"] + "/"
 
 			# Create the folders dictionary
@@ -379,20 +378,31 @@ class Create_Friend_Folder(Friends):
 
 		# ---------- #
 
-		# Update the "Information" and "Social Networks" files of the Friend image folder if the file inside the text folder is different
-		for file_name in ["Information", "Social Networks"]:
+		# Define the list of file names
+		file_names = [
+			"Information",
+			"Social Networks"
+		]
+
+		# Update the friend files of the image folder if the file inside the text folder is different
+		for file_name in file_names:
+			# Define the empty files dictionary
 			files = {}
 
 			# Iterate through the folder type list
 			for item in ["Text", "Image"]:
+				# Get the file of the folder type with the file name
 				file = self.friend["Files"][item][file_name]
 
+				# Define the file dictionary with the file and file size
 				files[item] = {
 					"File": file,
 					"Size": self.File.Contents(file)["size"]
 				}
 
+			# If the size of the file on the text folder is different than the file of the image folder
 			if files["Text"]["Size"] != files["Image"]["Size"]:
+				# Replace the file on the image folder with the one on the text folder, updating the file
 				self.File.Copy(files["Text"]["File"], files["Image"]["File"])
 
 		# ---------- #
@@ -452,6 +462,8 @@ class Create_Friend_Folder(Friends):
 					folder = image_folder + folder + "/"
 
 					self.Folder.Create(folder)
+
+		# ---------- #
 
 		# Update the number of Social Networks
 		self.friend["Social Networks"]["Numbers"]["Total"] = len(self.friend["Social Networks"]["List"])
@@ -550,7 +562,7 @@ class Create_Friend_Folder(Friends):
 		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
 
 	def Show_Information(self):
-		# Show a separator
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
@@ -630,7 +642,7 @@ class Create_Friend_Folder(Friends):
 		print()
 		print(text_to_show + ":")
 
-		# Iterate through the Social Networks list
+		# Define the two tabs variable
 		two_tabs = "\t\t"
 
 		# Iterate through the Social Networks list
@@ -664,9 +676,11 @@ class Create_Friend_Folder(Friends):
 				# Show the language information item and the current information
 				print(two_tabs + language_information_item + ":")
 
+				# Define the current information as the "Empty" text if it is empty
 				if current_information == "":
 					current_information = self.Language.language_texts["empty, title()"]
 
+				# Show the current information with two tabs
 				print(two_tabs + current_information)
 
 		# Show a final separator

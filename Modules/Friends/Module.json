@@ -16,9 +16,9 @@
 			"en": "Open Friend file",
 			"pt": "Abrir arquivo de Amigo"
 		},
-		"Create_Friend_Folder": {
-			"en": "Create friend folder",
-			"pt": "Criar pasta de Amigo"
+		"Add_A_New_Friend": {
+			"en": "Add a new friend",
+			"pt": "Adicionar um novo amigo"
 		},
 		"Show_Friend_Information": {
 			"en": "Show information of all Friends",
@@ -35,13 +35,13 @@
 				"Description": "Abrir arquivo de Amigo",
 				"Object": "<class 'Friends.Open_Friend_File.Open_Friend_File'>"
 			},
-			"Create_Friend_Folder": {
+			"Add_A_New_Friend": {
 				"Descriptions": {
-					"en": "Create friend folder",
-					"pt": "Criar pasta de Amigo"
+					"en": "Add a new friend",
+					"pt": "Adicionar um novo amigo"
 				},
-				"Description": "Criar pasta de Amigo",
-				"Object": "<class 'Friends.Create_Friend_Folder.Create_Friend_Folder'>"
+				"Description": "Adicionar um novo amigo",
+				"Object": "<class 'Friends.Add_A_New_Friend.Add_A_New_Friend'>"
 			},
 			"Show_Friend_Information": {
 				"Descriptions": {
@@ -54,7 +54,7 @@
 		},
 		"Descriptions": [
 			"Abrir arquivo de Amigo",
-			"Criar pasta de Amigo",
+			"Adicionar um novo amigo",
 			"Mostrar informações de todos os Amigos"
 		]
 	}

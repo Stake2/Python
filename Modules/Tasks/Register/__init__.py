@@ -6,34 +6,47 @@ class Register(Tasks):
 	def __init__(self, dictionary = {}, show_text = True):
 		super().__init__()
 
+		# Define the root dictionary on this class as the parameter dictionary
 		self.dictionary = dictionary
 
-		# Ask for the task information
+		# If the root dictionary is empty
 		if self.dictionary == {}:
+			# Ask the user to select the task type and type the task information
 			self.Select_Task_Type()
 			self.Type_Task_Information()
 
+		# If the root dictionary is not empty
 		if self.dictionary != {}:
+			# If the "Final separator" key is not inside the root dictionary
 			if "Final separator" not in self.dictionary:
-				self.dictionary["large_bar"] = False
+				# Define the "Five dash space" switch as False
+				self.dictionary["Five dash space"] = False
 
-			self.dictionary["input"] = False
+			# Define the "Input" switch as False
+			self.dictionary["Input"] = False
 
-		# Define the task variable to make typing the task dictionary easier
+		# Define the task variable to make typing the Task dictionary easier
 		self.task = self.dictionary["Task"]
 
+		# If the "Descriptions" key is not inside the Task dictionary
 		if "Descriptions" not in self.task:
+			# Define the Descriptions dictionary as the Titles dictionary
 			self.task["Descriptions"] = self.task["Titles"]
 
+		# If the "States" dictionary is not inside the Task dictionary
 		if "States" not in self.task:
+			# Define it with the two default states as False
 			self.task["States"] = {
 				"First task in year": False,
 				"First task type task in year": False
 			}
 
+		# If the type of the task type dictionary is a string
 		if type(self.dictionary["Type"]) == str:
+			# Transform it into a task type dictionary, using the string as a key
 			self.dictionary["Type"] = self.task_types[self.dictionary["Type"]]
 
+		# Update the task entry dictionary to add the "Dates" and "Diary Slim" dictionaries
 		self.dictionary["Entry"].update({
 			"Dates": {
 				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
@@ -44,13 +57,15 @@ class Register(Tasks):
 			}
 		})
 
-		# Database related methods
+		# Database related methods to register the task entry
 		self.Register_In_JSON()
 		self.Create_Entry_File()
 		self.Add_Entry_File_To_Year_Folder()
 
+		# Write the task description in the user language on the Diary Slim
 		self.Write_On_Diary_Slim()
 
+		# Show information about the registered task
 		self.Show_Information(self.dictionary)
 
 	def Select_Task_Type(self):
@@ -76,8 +91,8 @@ class Register(Tasks):
 			"Entry": {
 				"Date": self.Date.Now()
 			},
-			"large_bar": False,
-			"input": True
+			"Five dash space": False,
+			"Input": True
 		}
 
 	def Type_Task_Information(self):
@@ -315,7 +330,7 @@ class Register(Tasks):
 		# Write the task text into the task file
 		self.File.Edit(file, self.dictionary["Text"]["General"], "w")
 
-	# Define task text per language
+	# Define the task text per language
 	def Define_File_Text(self, language_parameter = None):
 		if language_parameter != "General":
 			language = language_parameter

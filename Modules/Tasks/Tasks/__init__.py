@@ -323,12 +323,13 @@ class Tasks(object):
 		self.JSON.Edit(self.folders["Task History"]["Current year"]["Tasks"], self.dictionaries["Tasks"])
 
 	def Define_States_Dictionary(self, dictionary):
+		# Define the default empty states dictionary
 		states_dictionary = {
 			"States": {},
 			"Texts": {}
 		}
 
-		# Define keys for the states
+		# Define the list of keys for the states
 		keys = [
 			"First task in year",
 			"First task type task in year"
@@ -338,6 +339,7 @@ class Tasks(object):
 		for key in keys:
 			# If the state is True
 			if dictionary["Task"]["States"][key] == True:
+				# Define the local state as True
 				state = True
 
 				# Define the state dictionary
@@ -346,101 +348,148 @@ class Tasks(object):
 				# Define the state texts of the current state dictionary
 				states_dictionary["Texts"][key] = {}
 
+				# Iterate through the list of small languages
 				for language in self.languages["small"]:
+					# Define the default empty text
 					text = ""
 
+					# If the key is not "First task type task in year"
 					if key != "First task type task in year":
+						# Define the text key, making it lowercase and replacing spaces with underline
 						text_key = key.lower().replace(" ", "_")
 
+						# If the text key is inside the "Texts" dictionary of the "Language" class
 						if text_key in self.Language.texts:
+							# Get the text in the current language
 							text = self.Language.texts[text_key][language]
 
+						# Else, it is inside of the "Texts" dictionary of the "Tasks" class (this one)
 						else:
+							# Get the text in the current language
 							text = self.texts[text_key][language]
 
+					# If the key is "First task type task in year"
 					if key == "First task type task in year":
+						# Define the task item (the item of the task type) in the current language
 						task_item = dictionary["Type"]["Items"][language]
 
+						# If the task type is not "Python" nor "PHP"
 						if self.task_type not in ["Python", "PHP"]:
+							# Define the text key
 							text_key = "first_{}_in_year"
+
+							# Make the task item lowercase
 							task_item = task_item.lower()
 
+						# If the task type is "Python" or "PHP"
 						if self.task_type in ["Python", "PHP"]:
+							# Define the text key
 							text_key = "first_{}_in_year, feminine"
+
+							# Define the task item ask the "{}_task" formatted with the task item, in the current language
 							task_item = self.texts["{}_task"][language].format(task_item)
 
+						# Define the text as the text of the text key being formatted with the task item, in the current language
 						text = self.Language.texts[text_key][language].format(task_item)
 
+					# Add the text to the state "Texts" dictionary with the key, in the current language
 					states_dictionary["Texts"][key][language] = text
 
+		# Return the local states dictionary
 		return states_dictionary
 
 	def Define_Year_Summary_Data(self, entry, language):
 		# Get the entry title
 		item = entry["Titles"][language]
 
+		# Return it
 		return item
 
 	def Show_Information(self, dictionary):
+		# Make a shortcut for the "Task" dictionary
 		task = dictionary["Task"]
 
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
 
+		# ---------- #
+
+		# Show the text about the registered task
 		print(self.language_texts["this_task_was_registered"] + ":")
 
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# Get the translated language
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
+			# Show the translated language and the task title in the current language
 			print("\t" + translated_language + ":")
 			print("\t" + task["Titles"][language])
 			print()
 
+		# ---------- #
+
+		# Show the "Type" text
 		print(self.Language.language_texts["type, title()"] + ":")
 
+		# Define the list of types
 		types = []
 
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# Define the type text with a tab and the plural type in the current language
 			text = "\t" + dictionary["Type"]["Plural"][language]
 
+			# If the text is not inside the list of types, add it
 			if text not in types:
 				types.append(text)
 
+		# Iterate through the list of types
 		for item in types:
+			# Show the current type
 			print(item)
 
-		print()
+		# ---------- #
 
+		# Show the "When" text with the entry date in the user timezone
+		print()
 		print(self.Language.language_texts["when, title()"] + ":")
 		print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
+
+		# ---------- #
 
 		# If there are states, show them
 		if (
 			"States" in dictionary and
 			dictionary["States"]["Texts"] != {}
 		):
+			# Show the "States" text
 			print()
 			print(self.Language.language_texts["states, title()"] + ":")
 
+			# Show the state texts in the user language
 			for key in dictionary["States"]["Texts"]:
 				language_text = dictionary["States"]["Texts"][key][self.user_language]
 
 				print("\t" + language_text)
 
-		# If the description of the task is not the same as the task title
-		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
-			show_task_description = self.Input.Yes_Or_No(self.language_texts["show_task_description"] + "?" + " (" + self.Language.language_texts["can_be_long, feminine"] + ")")
+		# ---------- #
 
-			if show_task_description == True:
-				print()
-				print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
-				print("[" + task["Descriptions"][self.user_language] + "]")
+		# Show the task description in the user language
+		print()
+		print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
+		print("[" + task["Descriptions"][self.user_language] + "]")
 
-		if dictionary["large_bar"] == True:
+		# If the "Five dash space" switch is True
+		if dictionary["Five dash space"] == True:
+			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
 
-		# If the user finished reading the information summary, ask for input before ending execution
-		if dictionary["input"] == True:
+		# If the user finished reading the information summary
+		# And the "Input" switch is True
+		if dictionary["Input"] == True:
+			# Ask for input before ending the execution
 			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

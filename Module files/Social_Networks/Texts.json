@@ -49,5 +49,33 @@
 	},
 	"settings, type: list": [
 		"create_image_folders"
-	]
+	],
+	"please_type_the_information_of_the_social_network": {
+		"pt": "Por favor digite as informações da rede social",
+		"en": "Please type the information of the social network"
+	},
+	"please_type_the_information_of_your_profile_in_this_social_network": {
+		"pt": "Por favor digite as informações do seu perfil nesta rede social",
+		"en": "Please type the information of your profile in this social network"
+	},
+	"you_added_this_social_network_to_the_social_networks_database": {
+		"pt": "Você adicionou esta rede social ao banco de dados de Redes Sociais",
+		"en": "You added this social network to the Social Networks database"
+	},
+	"use_pre_existing_information_items": {
+		"pt": "Usar itens de informação pré-existentes",
+		"en": "Use pre-existing information items"
+	},
+	"create_new_information_items": {
+		"pt": "Criar novos itens de informação",
+		"en": "Create new information items"
+	},
+	"does_the_information_item_has_a_format": {
+		"pt": "Does the information item has a format",
+		"en": "O item de informação tem um formato"
+	},
+	"does_the_information_item_has_additional_items": {
+		"pt": "Does the information item has additional items",
+		"en": "O item de informação tem itens adicionais"
+	}
 }

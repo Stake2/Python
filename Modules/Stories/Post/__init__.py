@@ -16,26 +16,13 @@ class Post(Stories):
 				},
 				"Titles": {}
 			},
-			"Chapter": {},
-			"Steps": {
-				"Create the covers": {
-					"Text key": "cover_creation"
-				},
-				"Update websites": {
-					"Text key": "websites_update"
-				},
-				"Post on story websites": {
-					"Text key": "story_website_chapter_posting"
-				},
-				"Post on Social Networks": {
-					"Text key": "social_network_posting"
-				}
-			}
+			"Chapter": {}
 		}
 
 		# Define the "States" dictionary
 		self.states = {
 			"Run as module": run_as_module,
+			"Select chapter": False,
 			"Ask for skipping": True
 		}
 
@@ -62,8 +49,13 @@ class Post(Stories):
 		# Define the steps of chapter posting
 		self.Define_Steps()
 
-		# Define the chapter to be posted
-		self.Define_Chapter()
+		# Ask if the user wants to select a chapter
+		self.Select_Chapter()
+
+		# If the user did not select a chapter
+		if self.states["Select chapter"] == False:
+			# Define the chapter to be posted
+			self.Define_Chapter()
 
 		# Run the chapter posting steps
 		self.Run_Steps()
@@ -78,22 +70,46 @@ class Post(Stories):
 		self.Open_Social_Network = Open_Social_Network
 
 	def Define_Steps(self):
+		# Define the default steps dictionary
+		self.dictionary["Steps"] = {
+			"Create the covers": {
+				"Text key": "cover_creation"
+			},
+			"Update websites": {
+				"Text key": "websites_update"
+			},
+			"Post on story websites": {
+				"Text key": "story_website_chapter_posting"
+			},
+			"Post on Social Networks": {
+				"Text key": "social_network_posting"
+			}
+		}
+
 		# Iterate through the chapter posting steps
 		for key, step in self.dictionary["Steps"].items():
-			# Update the step dictionary
+			# Update the step dictionary with new keys
 			self.dictionary["Steps"][key] = {
 				"Key": key,
 				"Text key": step["Text key"],
 				"Text": self.language_texts[step["Text key"]],
 				"Skip": False,
+				"Can skip": True,
 				"Method": getattr(self, key.title().replace(" ", "_"))
 			}
+
+			# If the "Can skip" key is present inside the root step dictionary
+			if "Can skip" in step:
+				# Update the key inside the local step dictionary
+				self.dictionary["Steps"][key]["Can skip"] = step["Can skip"]
 
 	def Run_Steps(self):
 		# Iterate through the step key and dictionaries inside the "Steps" dictionary
 		for key, step in self.dictionary["Steps"].items():
-			# Ask if the user wants to skip the posting step
-			self.Skip(step)
+			# If the "Can skip" switch is True
+			if step["Can skip"] == True:
+				# Ask if the user wants to skip the posting step
+				self.Skip(step)
 
 			# If the "Skip" state is False
 			if self.dictionary["Steps"][key]["Skip"] == False:
@@ -115,6 +131,52 @@ class Post(Stories):
 				if run == True:
 					step["Method"]()
 
+	def Skip(self, step, custom_text = None):
+		# If the custom text parameter is not None
+		if custom_text != None:
+			# Define the chapter posting step text as the custom text
+			step["Text"] = custom_text
+
+		# If the "Ask for skipping" state is True
+		# And the "Skip" state of the chapter posting step is False
+		if (
+			self.states["Ask for skipping"] == True and
+			step["Skip"] == False
+		):
+			# Define the input text with the step text
+			input_text = self.Language.language_texts["skip_the, feminine"] + " " + step["Text"]
+
+			# Ask if the user wants to skip this chapter posting step
+			step["Skip"] = self.Input.Yes_Or_No(input_text)
+
+		# If the "Skip" state is True
+		if step["Skip"] == True:
+			# Show the "You skipped the [step text]" text
+			print()
+			print(self.Language.language_texts["you_skipped_the, feminine"] + " " + step["Text"] + ".")
+
+			# Show a five dash space separator text
+			print()
+			print(self.separators["5"])
+
+		# Update the root step dictionary with the local one
+		self.dictionary["Steps"][step["Key"]] = step
+
+		# Return the step dictionary
+		return step
+
+	def Select_Chapter(self):
+		# Ask if the user wants to select a chapter
+		self.states["Select chapter"] = self.Input.Yes_Or_No(self.language_texts["select_chapter"])
+
+		# If the user wants to select a chapter
+		if self.states["Select chapter"] == True:
+			# Ask the user to select a chapter from the list
+			chapter_number = self.Input.Select(self.dictionary["Chapters"]["Titles"])["Option"]["Number"]
+
+			# Define the Chapter dictionary
+			self.Define_Chapter(chapter_number)
+
 	def Define_Chapter(self, chapter_number = None):
 		# Define the chapter "Titles" key
 		self.dictionary["Chapters"]["Titles"] = deepcopy(self.story["Information"]["Chapters"]["Titles"])
@@ -124,11 +186,15 @@ class Post(Stories):
 
 		# ---------- #
 
-		# Define the "Chapter" dictionary
+		# Define the defined chapter if there is not one in the root dictionary
+		if "Defined chapter" not in self.dictionary:
+			self.dictionary["Defined chapter"] = 1
+
+		# Define the "Chapter" dictionary, with the defined chapter
 		self.dictionary["Chapter"] = {
-			"Number": 1,
+			"Number": self.dictionary["Defined chapter"],
 			"Numbers": {
-				"Leading zeroes": 1,
+				"Leading zeroes": self.dictionary["Defined chapter"],
 				"Names": {}
 			},
 			"Titles": {},
@@ -162,6 +228,7 @@ class Post(Stories):
 			# Define it as the chapter number
 			self.dictionary["Chapter"]["Number"] = chapter_number
 
+		# Define the chapter number with leading zeroes
 		self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
 
 		# Iterate through the small languages list
@@ -242,40 +309,6 @@ class Post(Stories):
 
 			print(self.Language.language_texts["title, title()"] + ":")
 			print(chapter_title)
-
-	def Skip(self, step, custom_text = None):
-		# If the custom text parameter is not None
-		if custom_text != None:
-			# Define the chapter posting step text as the custom text
-			step["Text"] = custom_text
-
-		# If the "Ask for skipping" state is True
-		# And the "Skip" state of the chapter posting step is False
-		if (
-			self.states["Ask for skipping"] == True and
-			step["Skip"] == False
-		):
-			# Define the input text with the step text
-			input_text = self.Language.language_texts["skip_the, feminine"] + " " + step["Text"]
-
-			# Ask if the user wants to skip this chapter posting step
-			step["Skip"] = self.Input.Yes_Or_No(input_text)
-
-		# If the "Skip" state is True
-		if step["Skip"] == True:
-			# Show the "You skipped the [step text]" text
-			print()
-			print(self.Language.language_texts["you_skipped_the, feminine"] + " " + step["Text"] + ".")
-
-			# Show a five dash space separator text
-			print()
-			print(self.separators["5"])
-
-		# Update the root step dictionary with the local one
-		self.dictionary["Steps"][step["Key"]] = step
-
-		# Return the step dictionary
-		return step
 
 	def Create_The_Covers(self):
 		# Iterate through the "Cover types" dictionary

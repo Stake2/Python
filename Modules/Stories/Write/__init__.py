@@ -555,6 +555,7 @@ class Write(Stories):
 		self.dictionary["Session"] = {
 			"Before": self.Date.Now(),
 			"After": {},
+			"After (copy)": {},
 			"Duration": {}
 		}
 
@@ -612,10 +613,14 @@ class Write(Stories):
 
 		# ---------- #
 
-		# If the "Testing" switch is False
-		if self.switches["Testing"] == False:
-			# Define the "After" time (now, but after writing)
-			self.dictionary["Session"]["After"] = self.Date.Now()
+		# Define the "After" time (now, but after writing)
+		self.dictionary["Session"]["After"] = self.Date.Now()
+
+		# Create the copy of the after time
+		self.dictionary["Session"]["After (copy)"] = deepcopy(self.dictionary["Session"]["After"])
+
+		# Define the after time as None
+		after_time = None
 
 		# ---------- #
 
@@ -638,7 +643,10 @@ class Write(Stories):
 			relative_delta = self.Date.Relativedelta(**subtract)
 
 			# Subtract the subtract time from the after time
-			self.dictionary["Session"]["After"] = self.Date.Now(self.dictionary["Session"]["After"]["Object"] - relative_delta)
+			self.dictionary["Session"]["After (copy)"] = self.Date.Now(self.dictionary["Session"]["After (copy)"]["Object"] - relative_delta)
+
+			# Update the after time
+			after_time = self.dictionary["Session"]["After (copy)"]
 
 		# ---------- #
 
@@ -651,7 +659,7 @@ class Write(Stories):
 			add = True
 
 		# Calculate and define the writing duration
-		self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"], add = add)
+		self.dictionary["Session"]["Duration"] = self.Calculate_Duration(self.dictionary["Session"], add = add, after_time = after_time)
 
 		# Show the after time (after writing the chapter)
 		print()
@@ -881,7 +889,7 @@ class Write(Stories):
 			relative_delta = self.Date.Relativedelta(**subtract)
 
 			# Subtract the subtract time from the after time
-			after_time = self.Date.Now(self.dictionary["Session"]["After"]["Object"] - relative_delta)
+			after_time = self.Date.Now(self.dictionary["Session"]["After (copy)"]["Object"] - relative_delta)
 
 			# Define the time difference
 			difference = self.Date.Difference(self.dictionary["Session"]["Before"], after_time)
@@ -912,14 +920,16 @@ class Write(Stories):
 			print(text + ":")
 			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.user_language])
 
-	def Calculate_Duration(self, dictionary, add = True):
+	def Calculate_Duration(self, dictionary, add = True, after_time = None):
 		# If the "After" key is an empty dictionary
 		if dictionary["After"] == {}:
 			# Define the after time
 			dictionary["After"] = self.Date.Now()
 
-		# Define the local "after time" variable as a copy of the "After" key
-		after_time = deepcopy(dictionary["After"])
+		# If the "after time" parameter is None
+		if after_time == None:
+			# Define the local "after time" variable as a copy of the "After" key
+			after_time = deepcopy(dictionary["After"])
 
 		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
@@ -932,6 +942,9 @@ class Write(Stories):
 
 			# If the "Is pause" key is in the dictionary
 			if "Is pause" in dictionary:
+				# Define the hours as 0
+				time["hours"] = 0
+
 				# Define the minutes as 10
 				time["minutes"] = 10
 
@@ -943,8 +956,14 @@ class Write(Stories):
 				# Add the relative delta to the after time
 				after_time = self.Date.Now(after_time["Object"] + relative_delta)
 
-				# Update the after time
-				dictionary["After"] = after_time
+				if "After (copy)" in dictionary:
+					# Update the copy of the after time
+					dictionary["After (copy)"] = after_time
+
+				# If the "Is pause" key is in the dictionary
+				if "Is pause" in dictionary:
+					# Update the after time
+					dictionary["After"] = after_time
 
 		# Get the time difference
 		difference = self.Date.Difference(dictionary["Before"], after_time)

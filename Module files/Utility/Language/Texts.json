@@ -777,6 +777,14 @@
 		"en": "Information items",
 		"pt": "Itens de informação"
 	},
+	"select_the_information_item": {
+		"pt": "Selecione o item de informação",
+		"en": "Select the information item"
+	},
+	"select_one_information_item": {
+		"pt": "Selecione um item de informação",
+		"en": "Select a information item"
+	},
 	"name, title()": {
 		"en": "Name",
 		"pt": "Nome"

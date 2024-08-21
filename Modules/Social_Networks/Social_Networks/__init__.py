@@ -166,6 +166,11 @@ class Social_Networks(object):
 		self.Folder.Create(self.folders["Social Networks"]["Image"]["Digital Identities"]["root"])
 
 	def Define_Information_Items_Dictionary(self):
+		# Create the root "Default dictionaries" dictionary
+		self.default_dictionaries = {
+			"Information items": {}
+		}
+
 		# Define the "Information items" dictionary
 		self.information_items = {
 			"Numbers": {
@@ -176,8 +181,20 @@ class Social_Networks(object):
 				"Exact match": [],
 				"Remove from search": [],
 				"Do not ask for item": [],
-				"Select": []
+				"Select": [],
+				"Social Network information": [
+					"Name",
+					"Creators",
+					"Company",
+					"Release date",
+					"Written in",
+					"Engine",
+					"Operating system",
+					"Link",
+					"Opening link"
+				]
 			},
+			"Accept enter": {},
 			"Gender": {
 				"Items": [
 					"The",
@@ -192,11 +209,33 @@ class Social_Networks(object):
 			"Dictionary": {}
 		}
 
+		# ---------- #
+
+		# Update the "Information items" empty dictionary
+		self.default_dictionaries["Information items"] = deepcopy(self.information_items)
+
+		# Remove the non-used keys
+		to_remove = [
+			"Remove from search",
+			"Do not ask for item",
+			"Select",
+			"Social Network information"
+		]
+
+		for key in to_remove:
+			self.default_dictionaries["Information items"]["Lists"].pop(key)
+
+		# ---------- #
+
 		# Read the "Information items.json" file if it is not empty
 		file = self.folders["Social Networks"]["Text"]["Database"]["Information items"]
 
 		if self.File.Contents(file)["lines"] != []:
-			self.information_items = self.JSON.To_Python(file)
+			# Get the file dictionary
+			information_items = self.JSON.To_Python(file)
+
+			# Merge the two dictionaries
+			self.information_items.update(information_items)
 
 	def Define_Social_Networks_Dictionary(self):
 		# Define the default "Social Networks" dictionary
@@ -337,7 +376,8 @@ class Social_Networks(object):
 				"Information": {},
 				"Settings": {
 					"Create image folders": True
-				}
+				},
+				"Profile": {}
 			}
 
 			# Define and create the social network folders and files
@@ -534,20 +574,32 @@ class Social_Networks(object):
 
 			# ---------- #
 
-			# Copy the "Information" and "Profile" files of the Social Network text folder into the image folder
-			# If the lengths of the files are different
-			for file_name in ["Information", "Profile"]:
+			# Define the list of file names
+			file_names = [
+				"Information",
+				"Profile",
+				"Social Network"
+			]
+
+			# Update the social network files of the image folder if the file inside the text folder is different
+			for file_name in file_names:
+				# Define the empty files dictionary
 				files = {}
 
+				# Iterate through the folder type list
 				for item in ["Text", "Image"]:
+					# Get the file of the folder type with the file name
 					file = dictionary["Files"][item][file_name]
 
+					# Define the file dictionary with the file and file size
 					files[item] = {
 						"File": file,
 						"Size": self.File.Contents(file)["size"]
 					}
 
+				# If the size of the file on the text folder is different than the file of the image folder
 				if files["Text"]["Size"] != files["Image"]["Size"]:
+					# Replace the file on the image folder with the one on the text folder, updating the file
 					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
 
 			# Define the "Social Network" dictionary as the local "Social Network" dictionary
@@ -562,7 +614,7 @@ class Social_Networks(object):
 			information = self.Information(social_network["Information"])
 
 			# Get the release year
-			release_year = information["Release"].split("/")[-1]
+			release_year = information["Release date"].split("/")[-1]
 
 			# If the release year is not in the Social Networks "Numbers" dictionary
 			if release_year not in self.social_networks["Numbers"]["By year"]:
@@ -588,128 +640,8 @@ class Social_Networks(object):
 		# Reset the "Dictionary" key to be an empty dictionary
 		dictionary["Dictionary"] = {}
 
-		# Iterate through the information items list
-		for key in dictionary["List"]:
-			# Create the information item dictionary
-			dict_ = {
-				"Name": key
-			}
-
-			# Define the text key
-			text_key = key.lower().replace(" ", "_")
-
-			addon = ""
-
-			if "_" not in text_key:
-				addon += ", title()"
-
-			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				# Define the correct texts dictionary
-				texts_dictionary = self.Language.texts
-
-				if text_key in self.texts:
-					texts_dictionary = self.texts
-
-				# Get the text
-				text = texts_dictionary[text_key + addon][language]
-
-				# Define the language information item inside the local "dict_" dictionary
-				dict_[language] = text
-
-				# If the language dictionary is not inside the "Lists" dictionary of the "Information items" dictionary
-				if language not in dictionary["Lists"]:
-					# Create it
-					dictionary["Lists"][language] = []
-
-				# If the text is not inside the language "Lists" dictionary of the "Information items" dictionary
-				if text not in dictionary["Lists"][language]:
-					# Add it
-					dictionary["Lists"][language].append(text)
-
-			# Define the plural versions of the information item
-			dict_["Plural"] = {}
-
-			# Update the text key
-			text_key_backup = text_key + addon
-
-			if "s" not in text_key[-1]:
-				text_key += "s"
-
-			text_key += addon
-
-			if text_key not in self.Language.texts:
-				text_key = text_key.replace(addon, "")
-				text_key = text_key[:-1]
-
-				text_key += addon + ", type: plural"
-
-			if text_key not in self.Language.texts:
-				text_key = text_key_backup
-
-			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				dict_["Plural"][language] = self.Language.texts[text_key][language]
-
-			# Define the "Gender" key
-			dict_["Gender"] = {
-				"Text": "",
-				"Words": {}
-			}
-
-			# Define the gender words of the information item
-			words = {}
-
-			for item in dictionary["Gender"]["Items"]:
-				text_key = item.lower().replace(" ", "_")
-
-				# Define the gender
-				if key in dictionary["Gender"]["Masculine"]:
-					gender = "masculine"
-
-				if key in dictionary["Gender"]["Feminine"]:
-					gender = "feminine"
-
-				words[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
-
-				# Define the gender inside the "Gender" dictionary
-				dict_["Gender"]["Text"] = gender
-
-			# Update the gender "Words" dictionary inside the root information item dictionary
-			dict_["Gender"]["Words"] = words
-
-			# Define the format of the information item
-			dict_["Format"] = {
-				"Regex": "",
-				"Example": ""
-			}
-
-			# If the key is in the "Formats" dictionary, use the format dictionary inside it
-			if key in dictionary["Formats"]:
-				dict_["Format"] = dictionary["Formats"][key]
-
-			# Define the "States" dictionary of the information item
-			dict_["States"] = {
-				"Exact match": False,
-				"Ask for information": True
-			}
-
-			# Update the "Exact match" key
-			if key in dictionary["Lists"]["Exact match"]:
-				dict_["States"]["Exact match"] = True
-
-			# Update the "Ask for information" key
-			if (
-				"Do not ask for item" in dictionary["Lists"] and
-				key in dictionary["Lists"]["Do not ask for item"]
-			):
-				dict_["States"]["Ask for information"] = False
-
-			# Add the information item dictionary to the root "Information items" dictionary
-			dictionary["Dictionary"][key] = dict_
-
-		# Define the "Information items" dictionary as the local "Information items" dictionary
-		self.information_items = dictionary
+		# Define the dictionaries of the information items
+		dictionary = self.Define_Information_Item_Dictionary(dictionary)
 
 		# Iterate through the social networks list
 		for key, social_network in self.social_networks["Dictionary"].items():
@@ -757,13 +689,18 @@ class Social_Networks(object):
 
 			# Add links to the dictionary above
 			for link_type in ["Profile", "Message"]:
+				# Define link key as the type plus the " link" text
 				link_key = link_type + " link"
 
+				# If the link key is inside the "Profile" dictionary
 				if link_key in social_network["Profile"]:
+					# Get the link from the dictionary
 					link = social_network["Profile"][link_key]
 
+					# Define the link inside the "Links" dictionary
 					social_network["Profile"]["Links"][link_type] = link
 
+				# Add the link key to the "link additional items" list
 				link_additional_items.append(link_key)
 
 			# Define the "profile" variable for faster typing
@@ -836,6 +773,175 @@ class Social_Networks(object):
 		# Sort the dictionary keys
 		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
+	def Define_Information_Item_Dictionary(self, dictionary):
+		# Iterate through the information items list
+		for key in dictionary["List"]:
+			# Create the information item dictionary
+			dict_ = {
+				"Name": key
+			}
+
+			# ---------- #
+
+			# Define the text key
+			text_key = key.lower().replace(" ", "_")
+
+			# Define the addon (empty or title)
+			addon = ""
+
+			if "_" not in text_key:
+				addon += ", title()"
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Define the correct texts dictionary
+				texts_dictionary = self.Language.texts
+
+				if text_key in self.texts:
+					texts_dictionary = self.texts
+
+				# Get the text
+				text = texts_dictionary[text_key + addon][language]
+
+				# Define the language information item inside the local "dict_" dictionary
+				dict_[language] = text
+
+				# If the language dictionary is not inside the "Lists" dictionary of the "Information items" dictionary
+				if language not in dictionary["Lists"]:
+					# Create it
+					dictionary["Lists"][language] = []
+
+				# If the text is not inside the language "Lists" dictionary of the "Information items" dictionary
+				if text not in dictionary["Lists"][language]:
+					# Add it
+					dictionary["Lists"][language].append(text)
+
+			# ---------- #
+
+			# Define the plural versions of the information item
+			dict_["Plural"] = {}
+
+			# Make a backup of the text key and update it
+			text_key_backup = text_key + addon
+
+			if "s" not in text_key[-1]:
+				text_key += "s"
+
+			# Add the addon
+			text_key += addon
+
+			# If the plural text key with the addon is not in the "Texts" dictionary of the "Language" module
+			if text_key not in self.Language.texts:
+				# Remove the addon and the "s"
+				text_key = text_key.replace(addon, "")
+				text_key = text_key[:-1]
+
+				# Add the addon and the plural type text
+				text_key += addon + ", type: plural"
+
+			# If the text key is still not in the "Texts" dictionary of the "Language" module
+			if text_key not in self.Language.texts:
+				# Define the text key as the backup
+				text_key = text_key_backup
+
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Define the plural version of the information item
+				dict_["Plural"][language] = self.Language.texts[text_key][language]
+
+			# ---------- #
+
+			# Define the "Gender" dictionary
+			dict_["Gender"] = {
+				"Text": "",
+				"Words": {}
+			}
+
+			# Define the gender words of the information item
+			words = {}
+
+			# Iterate through the gender items
+			for item in dictionary["Gender"]["Items"]:
+				# Define the text key
+				text_key = item.lower().replace(" ", "_")
+
+				# Define the gender
+				if key in self.information_items["Gender"]["Masculine"]:
+					gender = "masculine"
+
+				if key in self.information_items["Gender"]["Feminine"]:
+					gender = "feminine"
+
+				# Define the gender text of the item
+				words[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+
+				# Define the gender inside the "Gender" dictionary
+				dict_["Gender"]["Text"] = gender
+
+			# Update the gender "Words" dictionary inside the root information item dictionary
+			dict_["Gender"]["Words"] = words
+
+			# ---------- #
+
+			# Define the format of the information item
+			dict_["Format"] = {
+				"Regex": "",
+				"Example": ""
+			}
+
+			# If the key is in the "Formats" dictionary, use the format dictionary inside it
+			if key in self.information_items["Formats"]:
+				dict_["Format"] = self.information_items["Formats"][key]
+
+			# ---------- #
+
+			# Define the "States" dictionary of the information item
+			dict_["States"] = {
+				"Exact match": False,
+				"Ask for information": True,
+				"Select": False,
+				"Accept enter": True
+			}
+
+			# Define the list of needed information
+			needed_information = [
+				"Name",
+				"Release date",
+				"Link"
+			]
+
+			# If the information item is in the needed list
+			# Or is not in the "Social Network information" list
+			if (
+				dict_["Name"] in needed_information or
+				dict_["Name"] not in self.information_items["Lists"]["Social Network information"]
+			):
+				# Define the "Accept enter" state as False
+				dict_["States"]["Accept enter"] = False
+
+			# Update the "Exact match" key
+			if key in self.information_items["Lists"]["Exact match"]:
+				dict_["States"]["Exact match"] = True
+
+			# Update the "Ask for information" key
+			if (
+				"Do not ask for item" in self.information_items["Lists"] and
+				key in self.information_items["Lists"]["Do not ask for item"]
+			):
+				dict_["States"]["Ask for information"] = False
+
+			# Add the "Accept enter" state to the root "Accept enter" dictionary
+			if "Accept enter" in dictionary:
+				dictionary["Accept enter"][key] = dict_["States"]["Accept enter"]
+
+			# ---------- #
+
+			# Add the information item dictionary to the root "Information items" dictionary
+			dictionary["Dictionary"][key] = dict_
+
+		# Return the dictionary
+		return dictionary
+
 	def Update_Social_Networks_File(self):
 		# Create a local "Social Networks" dictionary
 		local_dictionary = deepcopy(self.social_networks)
@@ -870,82 +976,276 @@ class Social_Networks(object):
 		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Social Networks"], local_dictionary)
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
+		# If the file parameter is not None
 		if file != None:
+			# Get the information from it
 			information = self.File.Dictionary(file, next_line = True)
 
+		# If the information items parameter is None, define it as the default root information items dictionary
 		if information_items == None:
 			information_items = self.information_items
 
+		# Define the empty dictionary
 		dictionary = {}
 
+		# Iterate through the language keys and values of the information dictionary
 		for information_key, value in information.items():
+			# Define the correct (original) key
 			correct_key = information_key
 
+			# Iterate through the English keys and values of the root default information items dictionary
 			for key, information_item in self.information_items["Dictionary"].items():
+				# Get the language key of the information item
 				language_key = information_item[self.user_language]
 
+				# If the local current (English) key is the same as the root (user language) key
+				# Or the root (user language) key is the same as the language key
 				if (
 					key == information_key or
-					information_key == information_item[self.user_language]
+					information_key == language_key
 				):
+					# Define the correct key as the current English key
 					correct_key = key
 
+					# If the "to user language" parameter is True
 					if to_user_language == True:
+						# Define the key as the user language key
 						correct_key = language_key
 
+			# Add the information to the dictionary with the correct and selected key, be it English or user language
 			dictionary[correct_key] = value
 
+		# Return the information dictionary with the updated keys
 		return dictionary
 
 	def Select_Social_Network(self, social_network = None, social_networks = None, select_social_network = True, show_text = None, select_text = None):
+		# If the "social networks" parameter is None
 		if social_networks == None:
+			# Define the local Social Networks dictionary as the root one
 			social_networks = self.social_networks
 
+		# If the "show text" parameter is None, define it as "Social Networks"
 		if show_text == None:
 			show_text = self.language_texts["social_networks"]
 
+		# If the "select text" parameter is None, define it as "Select one Social Network to use"
 		if select_text == None:
 			select_text = self.language_texts["select_one_social_network_to_use"]
 
+		# If the "select Social Network" parameter is True
 		if select_social_network == True:
+			# If the "social network" parameter is None, ask the user to select a social network
 			if social_network == None:
 				self.social_network = self.Input.Select(social_networks["List"], show_text = show_text, select_text = select_text)["option"]
 
+			# If the "social network" parameter is not None
 			if social_network != None:
+				# If the type of the parameter is a dictionary
 				if type(social_network) == dict:
+					# Get the name of the social network from it
 					social_network = social_network["Name"]
 
+				# Define the root self social network as the local one
 				self.social_network = social_network
 
+			# If the root social network is inside the root social networks dictionary
 			if self.social_network in self.social_networks["Dictionary"]:
+				# Get the dictionary from it
 				self.social_network = self.social_networks["Dictionary"][self.social_network]
 
+				# Return the social network dictionary
 				return self.social_network
 
+			# Else, return None
 			else:
 				return None
 
+		# If the select parameter is False, return None
 		else:
 			return None
 
-	def Type_Social_Network_Information(self, first_separator = True):
+	def Select_Information_Item(self, information_items = None, information_item = None, type_information = True, type_text = None, first_separator = True):
+		# Get the information items dictionary if it is None
+		if information_items == None:
+			information_items = self.information_items
+
+		# Define the Information items to be selected
+		options = information_items["Lists"]["en"]
+
+		# Remove the information items that wish to be removed
+		if "Remove from search" in information_items["Lists"]:
+			for item in information_items["Lists"]["Remove from search"]:
+				if item in options:
+					options.remove(item)
+
+		# If the "To remove" key is inside the "Lists" dictionary
+		if "To remove" in information_items["Lists"]:
+			for item in information_items["Lists"]["To remove"]:
+				if item in options:
+					options.remove(item)
+
+		# Define the language options
+		language_options = []
+
+		for option in options:
+			option = information_items["Dictionary"][option][self.user_language]
+
+			language_options.append(option)
+
+		# If the "information item" parameter is None
+		# And the "first separator" parameter is True
+		if (
+			information_item == None and
+			first_separator == True
+		):
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+		# Define the show and select text
+		show_text = self.Language.language_texts["information_items"]
+		select_text = self.Language.language_texts["select_the_information_item"]
+
+		# If the "information_item" parameter is None
+		if information_item == None:
+			# Select an information item
+			option = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
+
+		# Else, use the "information_item" parameter
+		else:
+			option = information_item
+
+		# If the option is a string
+		if type(option) == str:
+			# Get the information item dictionary
+			information_item = information_items["Dictionary"][option]
+
+		# If the option is a dictionary
+		if type(option) == dict:
+			# Define the information item dictionary as the option dictionary
+			information_item = option
+
+		# Define the default information value
+		information = ""
+
+		# If the selected option is "Finish selection"
+		if option == "Finish selection":
+			# Define the "type information" variable as False
+			type_information = False
+
+		# If the "type_information" is True
+		if type_information == True:
+			# Type the selected Friend or Social Network information
+
+			# If the information item is not inside the "Select" list
+			if information_item["Name"] not in information_items["Lists"]["Select"]:
+				if type_text == None:
+					# Define the type text
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"] + " " + information_item[self.user_language].lower())
+
+				# Define the "accept_enter" variable
+				accept_enter = False
+
+				# Only accept enter if the information item has no format
+				if information_item["Format"]["Regex"] == "":
+					accept_enter = True
+
+				# If the "Accept enter" key is inside the information item states dictionary
+				if "Accept enter" in information_item["States"]:
+					# Update the "accept_enter" variable with its value
+					accept_enter = information_item["States"]["Accept enter"]
+
+				# If the information needs to be requested from the user:
+				if information_item["States"]["Ask for information"] == True:
+					# If the "testing" switch is False
+					# Or it is True and the information item is not inside the "Test information" dictionary
+					if (
+						self.switches["Testing"] == False or
+						self.switches["Testing"] == True and
+						information_item["Name"] not in information_item["Test information"]
+					):
+						# Ask the user for the information
+						# Defining the "accept_enter" variable as the above value
+						# Asking for input in the next line, to make it easier to read (next_line = True)
+						# Adding a tab to push the input part more to the right
+						# And forcing the format of the information item Regex, if it is not empty (regex = [Format])
+						information = self.Input.Type(type_text, accept_enter = accept_enter, next_line = True, tab = "\t", regex = information_item["Format"])
+
+					# If the "testing" switch is True
+					# And the information item is inside "Test information" dictionary
+					if (
+						self.switches["Testing"] == True and
+						information_item["Name"] in information_item["Test information"]
+					):
+						information = information_item["Test information"][information_item["Name"]]
+
+					# Define the information as "[Empty]" if it is empty
+					if information == "":
+						information = "[{}]".format(self.Language.language_texts["empty, title()"])
+
+			# Else, ask user to select an item from the list of information
+			else:
+				# Get the "Select" dictionary of the information item
+				select = information_item["Select"]
+
+				select_text = select["Texts"]["Singular"]
+
+				# If the "testing" switch is False
+				# Or it is True and the information item is not inside the "Test information" dictionary
+				if (
+					self.switches["Testing"] == False or
+					self.switches["Testing"] == True and
+					information_item["Name"] not in information_item["Test information"]
+				):
+					# Ask the user to select an item from the list of options
+					information = self.Input.Select(select["List"]["English"], language_options = select["List"]["Language"], show_text = select["Texts"]["Plural"], select_text = select_text)
+
+				# If the "testing" switch is True
+				# And the information item is inside "Test information" dictionary
+				if (
+					self.switches["Testing"] == True and
+					information_item["Name"] in information_item["Test information"]
+				):
+					information = {
+						"option": information_item["Test information"][information_item["Name"]],
+						"language_option": information_item["Test information"][information_item["Name"]]
+					}
+
+		# Show the information item and information if the "testing" switch is True
+		if (
+			self.switches["Testing"] == True and
+			information != "" and
+			information_item["Test information"] != {}
+		):
+			print()
+			print(information_item[self.user_language] + ":")
+			print("\t" + information)
+
+		# Return the dictionary with the Information item dictionary and the information text
+		return {
+			"Item": information_item,
+			"Information": information
+		}
+
+	def Type_Social_Network_Information(self, social_network = None, first_separator = True):
+		# If the "first separator" parameter is True
 		if first_separator == True:
-			# Show a separator
+			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
 
 		# Define the information text
 		information_text = self.language_texts["please_type_the_social_network_profile_information"] + ' "{}":'
 
-		# Format the information text
-		information_text = information_text.format(self.social_network["Name"])
+		# Format the information text with the name of the social network
+		information_text = information_text.format(social_network["Name"])
 
 		# Show the information text
 		print()
 		print(information_text)
 
-		# Define the Social Network Profile dictionary
-		self.social_network["Profile"] = {}
+		# Define the social network "Profile" dictionary
+		social_network["Profile"] = {}
 
 		# Define the test information dictionary for testing
 		test_information = {
@@ -960,14 +1260,14 @@ class Social_Networks(object):
 			}
 		}
 
-		# Reset the test information dictionary to test manually typing the information
+		# Reset the test information dictionary to test the manual typing of information
 		#test_information = {}
 
 		# Define the default information value
 		information = ""
 
 		# Iterate through the Information items dictionary
-		for key, information_item in self.social_network["Information items"]["Dictionary"].items():
+		for key, information_item in social_network["Information items"]["Dictionary"].items():
 			# If the information item is not inside the "Remove from search" list
 			if key not in self.information_items["Lists"]["Remove from search"]:
 				# Get the language information item
@@ -975,41 +1275,51 @@ class Social_Networks(object):
 
 				# If the user needs to type the information
 				if information_item["States"]["Ask for information"] == True:
-					# Define the "accept_enter" variable
+					# Define the "accept enter" variable as False
 					accept_enter = False
 
+					# If the format of the information item is empty, define "accept enter" as True
 					if information_item["Format"]["Regex"] == "":
 						accept_enter = True
 
-					# Get the information item format
+					# Define the default item format as None
 					item_format = None
 
-					if key in self.information_items["Formats"][self.social_network["Name"]]:
-						item_format = self.information_items["Formats"][self.social_network["Name"]][key]
+					# If the name of the information item is inside the dictionary of formats of the current social network
+					if key in self.information_items["Formats"][social_network["Name"]]:
+						# Get the item format from that dictionary
+						item_format = self.information_items["Formats"][social_network["Name"]][key]
 
+					# If the "Testing" switch is False
+					# Or it is True
+					# And the name of the social network is not in the "test information" dictionary
 					if (
 						self.switches["Testing"] == False or
 						self.switches["Testing"] == True and
-						self.social_network["Name"] not in test_information
+						social_network["Name"] not in test_information
 					):
-						# Ask the user for the information
+						# Ask the user to type the information
 						information = self.Input.Type(language_information_item, accept_enter = accept_enter, next_line = True, tab = "\t", regex = item_format)
 
+					# If the "Testing" switch is True
+					# And the name of the social network is in the "test information" dictionary
+					# And the name of the information item is inside that dictionary
 					if (
 						self.switches["Testing"] == True and
-						self.social_network["Name"] in test_information and
-						key in test_information[self.social_network["Name"]]
+						social_network["Name"] in test_information and
+						key in test_information[social_network["Name"]]
 					):
-						information = test_information[self.social_network["Name"]][key]
+						# Use the test information
+						information = test_information[social_network["Name"]][key]
 
-					# Define the information as "[Empty]" if it is empty
+					# Define the information as the "[Empty]" text if it is empty
 					if information == "":
 						information = "[{}]".format(self.Language.language_texts["empty, title()"])
 
 				# If the information item is inside the "Additional items" dictionary
-				if key in self.information_items["Additional items"][self.social_network["Name"]]:
+				if key in self.information_items["Additional items"][social_network["Name"]]:
 					# Get the additional item template of the information item
-					additional_item = self.information_items["Additional items"][self.social_network["Name"]][key]
+					additional_item = self.information_items["Additional items"][social_network["Name"]][key]
 
 					# Get the format information item
 					format_item = additional_item.split("{")[1].split("}")[0]
@@ -1018,21 +1328,27 @@ class Social_Networks(object):
 					additional_item = additional_item.replace(format_item, "")
 
 					# Define the information with the formatted additional item template
-					information = additional_item.format(self.social_network["Profile"][format_item])
+					information = additional_item.format(social_network["Profile"][format_item])
 
+				# If the "Testing" switch is True
+				# And the "test information" dictionary is not empty
+				# And the name of the social network is in that dictionary
 				if (
 					self.switches["Testing"] == True and
 					test_information != {} and
-					self.social_network["Name"] in test_information
+					social_network["Name"] in test_information
 				):
+					# Show a space, the information item, and information
 					print()
 					print(language_information_item + ":")
 					print("\t" + information)
 
-				# Add the information to the Social Network "Information" dictionary, with the information item key
-				self.social_network["Profile"][key] = information
+				# Add the information to the social network's "Profile" dictionary, with the information item key
+				social_network["Profile"][key] = information
 
+		# Show a space and a five dash space separator
 		print()
-		print("-----")
+		print(self.separators["5"])
 
-		return self.social_network
+		# Return the Social Network dictionary
+		return social_network

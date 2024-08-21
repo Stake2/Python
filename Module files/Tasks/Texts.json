@@ -39,10 +39,6 @@
 		"en": "This task was registered",
 		"pt": "Esta tarefa foi registrada"
 	},
-	"show_task_description": {
-		"en": "Show task description",
-		"pt": "Mostrar descrição da tarefa"
-	},
 	"select_a_task_type": {
 		"en": "Select a task type",
 		"pt": "Selecione um tipo de tarefa"

@@ -27,6 +27,10 @@
 		"en": "Select a story to",
 		"pt": "Selecione uma história para"
 	},
+	"chapter_selection": {
+		"en": "chapter selection",
+		"pt": "seleção de capítulo"
+	},
 	"cover_creation": {
 		"en": "cover creation",
 		"pt": "criação de capa"
@@ -284,6 +288,10 @@
 	"post": {
 		"en": "post",
 		"pt": "postar"
+	},
+	"select_chapter": {
+		"en": "Select a chapter",
+		"pt": "Selecionar um capítulo"
 	},
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",

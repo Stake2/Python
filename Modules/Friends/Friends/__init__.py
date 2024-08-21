@@ -684,19 +684,31 @@ class Friends(object):
 
 			# ---------- #
 
-			# Update the "Information" and "Social Networks" files of the Friend image folder if the file inside the text folder is different
-			for file_name in ["Information", "Social Networks"]:
+			# Define the list of file names
+			file_names = [
+				"Information",
+				"Social Networks"
+			]
+
+			# Update the friend files of the image folder if the file inside the text folder is different
+			for file_name in file_names:
+				# Define the empty files dictionary
 				files = {}
 
+				# Iterate through the folder type list
 				for item in ["Text", "Image"]:
+					# Get the file of the folder type with the file name
 					file = dictionary["Files"][item][file_name]
 
+					# Define the file dictionary with the file and file size
 					files[item] = {
 						"File": file,
 						"Size": self.File.Contents(file)["size"]
 					}
 
+				# If the size of the file on the text folder is different than the file of the image folder
 				if files["Text"]["Size"] != files["Image"]["Size"]:
+					# Replace the file on the image folder with the one on the text folder, updating the file
 					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
 
 			# ---------- #
@@ -909,31 +921,46 @@ class Friends(object):
 		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
+		# If the file parameter is not None
 		if file != None:
+			# Get the information from it
 			information = self.File.Dictionary(file, next_line = True)
 
+		# If the information items parameter is None, define it as the default root information items dictionary
 		if information_items == None:
 			information_items = self.information_items
 
+		# Define the empty dictionary
 		dictionary = {}
 
+		# Iterate through the language keys and values of the information dictionary
 		for information_key, value in information.items():
-			correct_key = ""
+			# Define the correct (original) key
+			correct_key = information_key
 
-			for key, information_item in information_items["Dictionary"].items():
+			# Iterate through the English keys and values of the root default information items dictionary
+			for key, information_item in self.information_items["Dictionary"].items():
+				# Get the language key of the information item
 				language_key = information_item[self.user_language]
 
+				# If the local current (English) key is the same as the root (user language) key
+				# Or the root (user language) key is the same as the language key
 				if (
 					key == information_key or
-					information_key == information_item[self.user_language]
+					information_key == language_key
 				):
+					# Define the correct key as the current English key
 					correct_key = key
 
+					# If the "to user language" parameter is True
 					if to_user_language == True:
+						# Define the key as the user language key
 						correct_key = language_key
 
+			# Add the information to the dictionary with the correct and selected key, be it English or user language
 			dictionary[correct_key] = value
 
+		# Return the information dictionary with the updated keys
 		return dictionary
 
 	def Select_File_Name(self):
@@ -971,6 +998,7 @@ class Friends(object):
 			for item in information_items["Lists"]["Remove from search"]:
 				options.remove(item)
 
+		# Define the language options
 		language_options = []
 
 		for option in options:
@@ -986,7 +1014,7 @@ class Friends(object):
 
 		# Define the show and select text
 		show_text = self.Language.language_texts["information_items"]
-		select_text = self.language_texts["select_the_information_item"]
+		select_text = self.Language.language_texts["select_the_information_item"]
 
 		# If the "information_item" parameter is None
 		if information_item == None:

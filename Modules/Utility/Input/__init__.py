@@ -228,7 +228,14 @@ class Input():
 		dictionary = {
 			"option": option,
 			"language_option": option,
-			"number": option_number
+			"Language option": option,
+			"number": option_number,
+			"Number": option_number,
+			"Option": {
+				"Original": option,
+				"Language": option,
+				"Number": option_number
+			}
 		}
 
 		if hasattr(self, "option_number_backup") == True:
@@ -236,6 +243,8 @@ class Input():
 
 		if language_options != None:
 			dictionary["language_option"] = language_options[dictionary["number"]]
+
+			dictionary["Option"]["Language"] = language_options[dictionary["Option"]["Number"]]
 
 		if found_option == True:
 			print()

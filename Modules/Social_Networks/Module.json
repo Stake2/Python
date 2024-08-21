@@ -15,6 +15,10 @@
 		"Open_Social_Network": {
 			"en": "Open Social Network",
 			"pt": "Abrir Rede Social"
+		},
+		"Add_Social_Network": {
+			"en": "Add Social Network",
+			"pt": "Adicionar Rede Social"
 		}
 	},
 	"Classes": {
@@ -26,10 +30,19 @@
 				},
 				"Description": "Abrir Rede Social",
 				"Object": "<class 'Social_Networks.Open_Social_Network.Open_Social_Network'>"
+			},
+			"Add_Social_Network": {
+				"Descriptions": {
+					"en": "Add Social Network",
+					"pt": "Adicionar Rede Social"
+				},
+				"Description": "Adicionar Rede Social",
+				"Object": "<class 'Social_Networks.Add_Social_Network.Add_Social_Network'>"
 			}
 		},
 		"Descriptions": [
-			"Abrir Rede Social"
+			"Abrir Rede Social",
+			"Adicionar Rede Social"
 		]
 	}
 }

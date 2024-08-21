@@ -112,8 +112,8 @@ class Show_Friend_Information(Friends):
 						self.information_items[self.user_language][information_item] = self.social_networks_information_items[information_item] + ": " + self.language_information_items_backup[information_item]
 
 	def Select_Information_Item(self):
-		show_text = self.language_texts["information_items"]
-		select_text = self.language_texts["select_one_information_item"]
+		show_text = self.Language.language_texts["information_items"]
+		select_text = self.Language.language_texts["select_one_information_item"]
 
 		self.option_info = self.Input.Select(self.english_information_items, list(self.information_items[self.user_language].values()), show_text = show_text, select_text = select_text)
 
