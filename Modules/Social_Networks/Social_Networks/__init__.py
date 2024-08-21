@@ -216,8 +216,6 @@ class Social_Networks(object):
 
 		# Remove the non-used keys
 		to_remove = [
-			"Remove from search",
-			"Do not ask for item",
 			"Select",
 			"Social Network information"
 		]

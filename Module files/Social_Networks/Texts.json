@@ -62,6 +62,14 @@
 		"pt": "Você adicionou esta rede social ao banco de dados de Redes Sociais",
 		"en": "You added this social network to the Social Networks database"
 	},
+	"do_the_social_network_profiles_need_image_folders": {
+		"pt": "Os perfis da rede social precisam de pastas de imagens",
+		"en": "Do the social network profiles need image folders"
+	},
+	"type_f_to_finish_adding": {
+		"pt": "Digite \"f\" para terminar de adicionar",
+		"en": "Type \"f\" to finish adding"
+	},
 	"use_pre_existing_information_items": {
 		"pt": "Usar itens de informação pré-existentes",
 		"en": "Use pre-existing information items"
@@ -71,11 +79,35 @@
 		"en": "Create new information items"
 	},
 	"does_the_information_item_has_a_format": {
-		"pt": "Does the information item has a format",
-		"en": "O item de informação tem um formato"
+		"pt": "O item de informação tem um formato",
+		"en": "Does the information item has a format"
 	},
 	"does_the_information_item_has_additional_items": {
-		"pt": "Does the information item has additional items",
-		"en": "O item de informação tem itens adicionais"
+		"pt": "O item de informação tem itens adicionais",
+		"en": "Does the information item has additional items"
+	},
+	"does_the_social_network_has_custom_additional_items": {
+		"pt": "A rede social tem itens adicionais personalizados",
+		"en": "Does the social network has custom additional items"
+	},
+	"like_custom_profile_or_message_links": {
+		"pt": "Como links de perfil ou mensagem personalizados",
+		"en": "Like custom profile or message links"
+	},
+	"type_the_regex_format": {
+		"pt": "Digite o formato do Regex",
+		"en": "Type the Regex format"
+	},
+	"type_an_example_of_the_format": {
+		"pt": "Digite um exemplo do formato",
+		"en": "Type an example of the format"
+	},
+	"type_the_additional_item": {
+		"pt": "Digite o item adicional",
+		"en": "Type the additional item"
+	},
+	"you_can_use_the_{}_format_string_to_place_the_social_network_link, type: explanation": {
+		"pt": "Você pode usar a string de formato {} para colocar o link da rede social.\nE a string de formato {} para colocar o item, trocando o [Item] por qualquer item que você selecionou (em Inglês).",
+		"en": "You can use the {} format string to place the social network link.\nAnd the {} format string to place the item, replacing the [Item] with any item you selected."
 	}
 }

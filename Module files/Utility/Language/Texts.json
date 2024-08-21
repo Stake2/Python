@@ -54,6 +54,10 @@
 		"pt": "Pasta de imagem",
 		"en": "Image folder"
 	},
+	"type_the_image_folder": {
+		"pt": "Digite a pasta de imagem",
+		"en": "Type the image folder"
+	},
 	"file": {
 		"en": "file",
 		"pt": "arquivo"
