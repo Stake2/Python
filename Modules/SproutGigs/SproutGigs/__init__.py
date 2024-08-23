@@ -133,7 +133,7 @@ class SproutGigs():
 		# Lists
 		self.category_list = self.Folder.Contents(self.categories_folder)["folder"]["names"]
 
-		self.File.Edit(self.categories_file, self.Text.From_List(self.category_list, break_line = True), "w")
+		self.File.Edit(self.categories_file, self.Text.From_List(self.category_list, next_line = True), "w")
 
 		self.additional_options = [
 			"[" + self.language_texts["change_category"] + "]",

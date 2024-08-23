@@ -381,7 +381,7 @@ class Register(Watch_History):
 			lines.append(text)
 
 		# Define the language entry text
-		file_text = self.Text.From_List(lines, break_line = True)
+		file_text = self.Text.From_List(lines, next_line = True)
 
 		# Define the items to be added to the entry text
 		items = []

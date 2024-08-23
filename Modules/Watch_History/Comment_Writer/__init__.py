@@ -426,7 +426,7 @@ class Comment_Writer(Watch_History):
 			# Update the time in the comment text
 			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
 			self.media["Comment"]["Text"]["String"][5] = self.Date.To_Timezone(comment_date)["Formats"]["HH:MM DD/MM/YYYY"]
-			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"], break_line = True)
+			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"], next_line = True)
 
 		# If the "Add comment" state is True
 		if self.dictionary["Comment Writer"]["States"]["Add"] == True:

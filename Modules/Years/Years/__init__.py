@@ -443,7 +443,7 @@ class Years(object):
 			self.years["States"]["Current year folder exists"] = False
 
 		# Write the Years list to the "Year list.txt" file
-		text_to_write = self.Text.From_List(self.years["List"], break_line = True)
+		text_to_write = self.Text.From_List(self.years["List"], next_line = True)
 
 		self.File.Edit(self.folders["Years"]["Text"]["Years list"], text_to_write, "w")
 

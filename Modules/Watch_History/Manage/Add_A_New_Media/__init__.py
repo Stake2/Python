@@ -568,7 +568,7 @@ class Add_A_New_Media(Watch_History):
 				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.Language.language_texts["add_more"])
 
 			# Update the media items list file
-			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"], break_line = True), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"], next_line = True), "w")
 
 			# Define the current media item as the first one
 			self.media["Items"]["Current"] = [
@@ -576,6 +576,6 @@ class Add_A_New_Media(Watch_History):
 			]
 
 			# Update the current media item file
-			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"], break_line = True), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"], next_line = True), "w")
 
 			self.dictionary["Media"].pop("Folders")

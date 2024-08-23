@@ -935,7 +935,7 @@ class Stories(object):
 			# ---------- #
 
 			# Update the "Authors.txt" file with the list of authors
-			text_to_write = self.Text.From_List(story["Information"]["Authors"], break_line = True)
+			text_to_write = self.Text.From_List(story["Information"]["Authors"], next_line = True)
 
 			self.File.Edit(story["Folders"]["Authors"], text_to_write, "w")
 
@@ -1313,7 +1313,7 @@ class Stories(object):
 			s += 1
 
 		# Update the "Stories list.txt" file with the updated  list of story titles in the user language
-		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], break_line = True)
+		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], next_line = True)
 
 		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
 

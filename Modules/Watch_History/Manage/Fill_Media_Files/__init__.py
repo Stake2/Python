@@ -319,7 +319,7 @@ class Fill_Media_Files(Watch_History):
 				file = self.dictionary["Fill episode titles"]["Episodes"]["Titles"]["Files"][language]
 
 				# Write the episode titles to the episode titles file
-				text = self.Text.From_List(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language], break_line = True)
+				text = self.Text.From_List(self.dictionary["Fill episode titles"]["Episodes"]["Titles"][language], next_line = True)
 
 				self.File.Edit(file, text, "w")
 
@@ -359,7 +359,7 @@ class Fill_Media_Files(Watch_History):
 		# Write the IDs into the IDs file
 		file = self.media["Item"]["Folders"]["titles"]["ids"]
 
-		self.File.Edit(file, self.Text.From_List(videos.keys(), break_line = True), "w")
+		self.File.Edit(file, self.Text.From_List(videos.keys(), next_line = True), "w")
 
 		# Get all video titles in the user language
 		titles = []
@@ -374,7 +374,7 @@ class Fill_Media_Files(Watch_History):
 		# Write the user language video title into the user language file
 		file = self.media["Item"]["Folders"]["titles"][self.user_language]
 
-		self.File.Edit(file, self.Text.From_List(titles, break_line = True), "w")
+		self.File.Edit(file, self.Text.From_List(titles, next_line = True), "w")
 
 		i = 1
 		keys = list(videos.keys())

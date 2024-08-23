@@ -250,7 +250,7 @@ class Register(Database):
 
 			i += 1
 
-		items.append(self.Text.From_List(titles, break_line = True) + "\n")
+		items.append(self.Text.From_List(titles, next_line = True) + "\n")
 
 		# Add times to items list
 		times = ""
@@ -263,7 +263,7 @@ class Register(Database):
 		items.append(times)
 
 		# Define language entry text
-		file_text = self.Text.From_List(lines, break_line = True)
+		file_text = self.Text.From_List(lines, next_line = True)
 
 		return file_text.format(*items)
 

@@ -348,7 +348,7 @@ class Social_Networks(object):
 		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social Networks"]["Text"]["Social Networks"])["List"]
 
 		# Write the Social Networks list to the "Social Networks list.txt" file
-		text_to_write = self.Text.From_List(self.social_networks["List"], break_line = True)
+		text_to_write = self.Text.From_List(self.social_networks["List"], next_line = True)
 
 		self.File.Edit(self.folders["Social Networks"]["Text"]["Social Networks list"], text_to_write, "w")
 
@@ -471,6 +471,7 @@ class Social_Networks(object):
 								# Add the setting value to the Settings dictionary, with the English key
 								new_settings[english_text] = settings[language_text]
 
+						# Update the root settings dictionary
 						dictionary["Settings"] = new_settings
 
 				# Define the folders dictionary as the local folders dictionary
@@ -663,17 +664,6 @@ class Social_Networks(object):
 			# Define the Social Network "Information items" dictionary as the Local "Information items" dictionary
 			social_network["Information items"] = information_items
 
-			# Remove the unused keys of the Social Network "Information items" dictionary
-			to_remove = [
-				"Lists",
-				"Gender",
-				"Formats",
-				"Additional items"
-			]
-
-			for item in to_remove:
-				social_network["Information items"].pop(item)
-
 			# Translate the keys of the "Information.txt" file to English
 			social_network["Information"] = self.Information(file = social_network["Files"]["Information"])
 
@@ -863,15 +853,24 @@ class Social_Networks(object):
 				# Define the text key
 				text_key = item.lower().replace(" ", "_")
 
-				# Define the gender
+				# Define the gender of the item
 				if key in self.information_items["Gender"]["Masculine"]:
 					gender = "masculine"
 
 				if key in self.information_items["Gender"]["Feminine"]:
 					gender = "feminine"
 
-				# Define the gender text of the item
-				words[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+				# Define the empty item dictionary
+				words[item] = {}
+
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# If the language dictionary does not exist, add it
+					if language not in words[item]:
+						words[item][language] = {}
+
+					# Define the gender text of the item in the current language
+					words[item][language] = self.Language.texts["genders, type: dict"][language][gender][text_key]
 
 				# Define the gender inside the "Gender" dictionary
 				dict_["Gender"]["Text"] = gender
@@ -955,7 +954,7 @@ class Social_Networks(object):
 			local_dictionary.pop(key)
 
 		# Define the social network keys to remove
-		to_remove = [
+		keys_to_remove = [
 			"Folders",
 			"Files",
 			"Settings"
@@ -964,11 +963,22 @@ class Social_Networks(object):
 		# Iterate through the social networks list
 		for social_network in self.social_networks["List"]:
 			# Remove the unused social network keys
-			for key in to_remove:
+			for key in keys_to_remove:
 				local_dictionary["Dictionary"][social_network].pop(key)
 
-			# Remove the "Dictionary" key of the "Information items" dictionary
-			local_dictionary["Dictionary"][social_network]["Information items"].pop("Dictionary")
+			# Remove the unused keys of the Social Network "Information items" dictionary
+			to_remove = [
+				"Lists",
+				"Accept enter",
+				"Gender",
+				"Formats",
+				"Additional items",
+				"Dictionary"
+			]
+
+			for key in to_remove:
+				if key in local_dictionary["Dictionary"][social_network]["Information items"]:
+					local_dictionary["Dictionary"][social_network]["Information items"].pop(key)
 
 		# Update the "Social Networks.json" file with the updated and local "Social Networks" dictionary
 		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Social Networks"], local_dictionary)
@@ -1139,7 +1149,7 @@ class Social_Networks(object):
 			if information_item["Name"] not in information_items["Lists"]["Select"]:
 				if type_text == None:
 					# Define the type text
-					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"] + " " + information_item[self.user_language].lower())
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.user_language] + " " + information_item[self.user_language].lower())
 
 				# Define the "accept_enter" variable
 				accept_enter = False

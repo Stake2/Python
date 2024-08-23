@@ -406,7 +406,7 @@ class Create_New_Story(Stories):
 		# ---------- #
 		
 		# Update the "Authors.txt" file with the list of authors
-		text_to_write = self.Text.From_List(self.story["Information"]["Authors"], break_line = True)
+		text_to_write = self.Text.From_List(self.story["Information"]["Authors"], next_line = True)
 
 		self.File.Edit(self.story["Folders"]["Authors"], text_to_write, "w")
 
@@ -448,7 +448,7 @@ class Create_New_Story(Stories):
 			# If the file name is "Readers"
 			if file_name == "Readers":
 				# Transform the list of readers into a text string
-				text = self.Text.From_List(text["List"], break_line = True)
+				text = self.Text.From_List(text["List"], next_line = True)
 
 			# Write to the file
 			Class.Edit(file, text)
@@ -506,7 +506,7 @@ class Create_New_Story(Stories):
 		self.stories["Titles"]["Language"].insert(index, language_story_title)
 
 		# Update the "Stories list.txt" file with the updated  list of story titles in the user language
-		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], break_line = True)
+		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], next_line = True)
 
 		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
 

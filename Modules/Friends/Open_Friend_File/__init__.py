@@ -347,6 +347,9 @@ class Open_Friend_File(Friends):
 				if self.dictionary["States"]["Exact match"] == True:
 					item = self.information_item["Gender"]["Words"]["This"]
 
+				# Define the user language version of the item
+				item = item[self.user_language]
+
 				# Add it
 				items.append(item)
 
@@ -369,7 +372,7 @@ class Open_Friend_File(Friends):
 
 				# Define the list of items to be used to format the text template
 				items = [
-					self.information_item["Gender"]["Words"]["This"] + " " + information_item,
+					self.information_item["Gender"]["Words"]["This"][self.user_language] + " " + information_item,
 					file_name,
 					self.dictionary["Search"]["Query"],
 					file_name

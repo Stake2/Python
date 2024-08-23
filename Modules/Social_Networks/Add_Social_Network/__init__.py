@@ -13,6 +13,24 @@ class Add_Social_Network(Social_Networks):
 		print()
 		print(self.separators["5"])
 
+		# Define the root dictionary
+		self.dictionary = {
+			"Social Network": {},
+			"Information items": {
+				"Addition mode": ""
+			}
+		}
+
+		# Define the "States" dictionary
+		self.states = {
+			"Has": {
+				"Image folders": False,
+				"Format": False,
+				"Additional items": False,
+				"Custom additioinal items": False
+			}
+		}
+
 		# Ask the user to type the information of the new Social Network to be added
 		self.Type_Information()
 
@@ -54,16 +72,32 @@ class Add_Social_Network(Social_Networks):
 			"Image folders": []
 		}
 
+		# Add the dictionary to the root dictionary
+		self.dictionary["Social Network"] = self.social_network
+
 		# Define the test information dictionary for testing
 		self.test_information = {
-			"Name": "The Social Network",
+			"Name": "A Rede Social",
 			"Creators": "Stake2",
 			"Company": "Stake2 Inc",
-			"Release date": "01/01/2024",
+			"Release date": "23/08/2024",
 			"Written in": "Cliente: PHP, Servidor: Python",
 			"Engine": "Cliente da web: Electron, Cliente do mobile: React Native",
 			"Operating system": "Microsoft Windows, macOS, Linux, Android, iOS, navegadores da web",
 			"Link": "https://thestake2.netlify.app/",
+			"Opening link": ""
+		}
+
+		# Define the test information dictionary for testing
+		self.test_information = {
+			"Name": "A Rede Social",
+			"Creators": "Criador",
+			"Company": "Empresa",
+			"Release date": "23/08/2024",
+			"Written in": "Cliente: NextJS, Servidor: PHP",
+			"Engine": "Cliente da web: Electron, Cliente do mobile: React Native",
+			"Operating system": "Microsoft Windows, macOS, Linux, Android, iOS, navegadores da web",
+			"Link": "https://aredesocial.com/",
 			"Opening link": ""
 		}
 
@@ -81,7 +115,7 @@ class Add_Social_Network(Social_Networks):
 			# Define the "Test information" dictionary inside the "Information item" dictionary
 			information_item["Test information"] = self.test_information
 
-			# Define the type text
+			# Define the default type text as None
 			type_text = None
 
 			# If the information does not need to be selected
@@ -119,14 +153,21 @@ class Add_Social_Network(Social_Networks):
 
 		# ---------- #
 
-		# Ask for the image folders of the social network
-		has_image_folders = self.Input.Yes_Or_No(self.language_texts["do_the_social_network_profiles_need_image_folders"])
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Ask the user if the social network contains image folders
+			self.states["Has"]["Image folders"] = self.Input.Yes_Or_No(self.language_texts["do_the_social_network_profiles_need_image_folders"])
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Define the state as True
+			self.states["Has"]["Image folders"] = True
 
 		# Update the "Create image folders" setting
-		self.social_network["Settings"]["Create image folders"] = has_image_folders
+		self.social_network["Settings"]["Create image folders"] = self.states["Has"]["Image folders"]
 
-		# If the setting is True
-		if has_image_folders == True:
+		# If the state is True
+		if self.states["Has"]["Image folders"] == True:
 			# Define the "folder" variable as an empty string
 			folder = ""
 
@@ -136,16 +177,36 @@ class Add_Social_Network(Social_Networks):
 				self.Show_The_List_Of_Folders()
 
 				# Define the input text
-				input_text = self.Language.language_texts["type_the_image_folder"] + ":" + "\n" + \
+				type_text = self.Language.language_texts["type_the_image_folder"] + "\n" + \
 				"(" + self.language_texts["type_f_to_finish_adding"] + ")"
-				
-				# Ask the user to type the image folder
-				folder = self.Input.Type(input_text, next_line = True)
+
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Ask the user to type the image folder
+					folder = self.Input.Type(type_text, accept_enter = False, next_line = True, tab = "\t")
+
+				# If the "Testing" switch is True
+				if self.switches["Testing"] == True:
+					# Define the folder
+					folder = "Export"
+
+					# Show the type text and folder
+					print()
+					print(type_text + ":")
+					print("\t" + folder)
 
 				# If the folder is not "f" (the finish text)
 				if folder != "f":
 					# Add the folder to the list
 					self.social_network["Image folders"].append(folder)
+
+				# If the "Testing" switch is True
+				if self.switches["Testing"] == True:
+					# Show the list of folders
+					self.Show_The_List_Of_Folders()
+
+					# Define the folder as "f" to finish the addition
+					folder = "f"
 
 	def Show_The_List_Of_Folders(self):
 		# Show a separator
@@ -192,15 +253,15 @@ class Add_Social_Network(Social_Networks):
 			self.language_texts["create_new_information_items"]
 		]
 
-		# Ask the user to select the mode
-		mode = self.Input.Select(options, language_options = language_options)["Option"]["Original"]
+		# Ask the user to select the adding mode
+		self.dictionary["Information items"]["Addition mode"] = self.Input.Select(options, language_options = language_options)["Option"]["Original"]
 
-		# If the mode is "Select"
-		if mode == "Select":
+		# If the addition mode is "Select"
+		if self.dictionary["Information items"]["Addition mode"] == "Select":
 			self.Select_Information_Items()
 
-		# If the mode is "Create"
-		if mode == "Create":
+		# If the addition mode is "Create"
+		if self.dictionary["Information items"]["Addition mode"] == "Create":
 			self.Create_Information_Items()
 
 	def Select_Information_Items(self):
@@ -287,6 +348,12 @@ class Add_Social_Network(Social_Networks):
 		# Define the "i" number variable
 		i = 0
 
+		# Define the list of link types
+		link_types = [
+			"Profile link",
+			"Message link"
+		]
+
 		# Iterate through the information items inside the list of the social network
 		for item in self.social_network["Information items"]["List"]:
 			# Iterate through the keys and lists in the "Lists" dictionary
@@ -308,34 +375,52 @@ class Add_Social_Network(Social_Networks):
 					# Add it to the list of the social network
 					self.social_network["Information items"]["Gender"][gender].append(item)
 
+					# Define the item gender
+					item_gender = gender
+
 			# ---------- #
 
 			# Get the language information item
 			language_information_item = language_information_items[i]
 
-			# Show a five dash space separator
-			print()
-			print(self.separators["5"])
-			print()
+			# If the "Testing" switch is False
+			# Or it is True
+			# And the item is inside the list of link types
+			if (
+				self.switches["Testing"] == False or
+				self.switches["Testing"] == True and
+				item in link_types
+			):
+				# Show a five dash space separator
+				print()
+				print(self.separators["5"])
+				print()
 
-			# Show the item
-			print(self.Language.language_texts["item, title()"] + ":")
-			print("\t" + language_information_item)
+				# Show the item
+				print(self.Language.language_texts["item, title()"] + ":")
+				print("\t" + language_information_item)
 
+			# Define the default "Has format" state as False
+			self.states["Has"]["Format"] = False
+
+			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
 				# Ask if the item has a format
-				has_format = self.Input.Yes_Or_No(self.language_texts["does_the_information_item_has_a_format"])
-
-			if self.switches["Testing"] == True:
-				has_format = False
+				self.states["Has"]["Format"] = self.Input.Yes_Or_No(self.language_texts["does_the_information_item_has_a_format"])
 
 			# If the answer is yes
-			if has_format == True:
-				# Ask the user for the regex format
+			if self.states["Has"]["Format"] == True:
+				# Define the default Regex dictionary
 				regex = {
-					"Format": self.Input.Type(self.language_texts["type_the_regex_format"]),
-					"Example": self.Input.Type(self.language_texts["type_an_example_of_the_format"]),
+					"Format": "",
+					"Example": ""
 				}
+
+				# Ask for the format
+				regex["Format"] = self.Input.Type(self.language_texts["type_the_regex_format"], accept_enter = False)
+
+				# Ask for the example
+				regex["Example"] = self.Input.Type(self.language_texts["type_an_example_of_the_format"], accept_enter = False)
 
 				# If the item dictionary is not present, add it
 				if item not in self.social_network["Information items"]["Formats"]:
@@ -343,81 +428,96 @@ class Add_Social_Network(Social_Networks):
 
 			# ---------- #
 
-			# Define the default "has additional items" variable
-			has_additional_items = False
+			# Define the default "has additional items" state as False
+			self.states["Has"]["Additional items"] = False
 
-			# Define the list of link types
-			link_types = [
-				"Profile link",
-				"Message link"
-			]
-
-			# If the item is not "Profile link" or "Message link"
-			if item not in link_types:
-				if self.switches["Testing"] == False:
-					# Ask if the item has additional items
-					has_additional_items = self.Input.Yes_Or_No(self.language_texts["does_the_information_item_has_additional_items"])
-
-				if self.switches["Testing"] == True:
-					has_additional_items = False
+			# If the item is not inside the list of link types
+			# And the "Testing" switch is False
+			if (
+				item not in link_types and
+				self.switches["Testing"] == False
+			):
+				# Ask if the item has additional items
+				self.states["Has"]["Additional items"] = self.Input.Yes_Or_No(self.language_texts["does_the_information_item_has_additional_items"])
 
 			# If the answer is yes
 			# Or the item is inside the list of link types
 			if (
-				has_additional_items == True or
+				self.states["Has"]["Additional items"] == True or
 				item in link_types
 			):
-				# Define the type text and add the explanation text
-				type_text = self.language_texts["type_the_additional_item"] + ":" + "\n"
-				type_text += "(" + self.language_texts["you_can_use_the_{}_format_string_to_place_the_social_network_link, type: explanation"] + "\n" + \
-				"\n" + \
-				self.Language.language_texts["list, title()"] + ": [List]" + ")"
+				# Define the "the text" for easier typing
+				the_text = self.Language.texts["genders, type: dict"][self.user_language][item_gender.lower()]["the"]
 
-				# Define the list of items
-				items = deepcopy(self.social_network["Information items"]["List"])
+				# Define the default "user link" dictionary
+				user_link = {}
 
-				# Iterate through the list to add the format symbols
-				c = 0
-				for x in items:
-					items[c] = "{" + items[c] + "}"
+				# If the item is inside the list of link types
+				if item in link_types:
+					# Update the "user link" dictionary to add the "The" gender text and language information item
+					user_link.update({
+						"The": the_text,
+						"Item": language_information_item.lower()
+					})
 
-					c += 1
+				# Define the information text and add the explanation text
+				information_text = self.Create_Items_Format_String(self.social_network["Information items"]["List"], user_link = user_link)
 
-				# Transform the list into a text string
-				items = self.Text.From_List(items)
-
-				# Format the type text
-				type_text = type_text.format(*[
-					'"' + "{Social Network link}" + '"',
-					'"' + "{[Item]}" + '"'
-				])
-
-				# Replace the "[List]" format text with the actual list of items
-				type_text = type_text.replace("[List]", items)
+				# Show it
+				print()
+				print(information_text)
 
 				# Define the default empty additional item
 				additional_item = ""
 
+				# Define the variable that tells if the item requires an additional item
+				accept_enter = True
+
+				# If the item is inside the list of link types, it requires one
+				if item in link_types:
+					# Demand a additional item
+					accept_enter = False
+
+					# Define the type text as the language information item
+					type_text = language_information_item
+
+				# Else, define it as the "additional item for" text with the "The" gender text of the item and the language information item
+				else:
+					# Define the type text as the "additional item for" text
+					type_text = self.language_texts["additional_item_for_{}"]
+
+					# Format it with the "The" gender text of the item
+					type_text = type_text.format(the_text)
+
+					# Add the language information item in lowercase
+					type_text += " " + language_information_item.lower()
+
+				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
 					# Ask the user for the additional item
-					additional_item = self.Input.Type(type_text, next_line = True)
+					additional_item = self.Input.Type(type_text, accept_enter = accept_enter, next_line = True)
 
+				# If the "Testing" switch is True
+				# And the item is inside the list of link types
 				if (
 					self.switches["Testing"] == True and
-					item in ["Profile link", "Message link"]
+					item in link_types
 				):
-					if item == "Profile link":
-						format_item = "/users"
+					# Define the default format item as "user"
+					format_item = "/user"
 
+					# If the item is "Message link", define the format item as "message"
 					if item == "Message link":
-						format_item = "/messages"
+						format_item = "/message"
 
-					additional_item = "{Social Network link}" + "{}".format(format_item) + "/{Handle}"
+					# Define the additional item as the social network link format string
+					# Add the format item and the "Handle" format string
+					additional_item = "{Social Network link}" + format_item + "/{Handle}"
 
+					# Show the additional item
 					print()
 					print(type_text + ":")
-					print()
-					print("[" + additional_item + "]")
+					print(additional_item)
 
 				# If the additional item is not empty
 				if additional_item != "":
@@ -432,19 +532,91 @@ class Add_Social_Network(Social_Networks):
 
 		# ---------- #
 
-		# Define the default "has custom additional items" variable
-		has_custom_additional_items = False
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
 
+		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
 			# Define the input text
-			input_text = self.language_texts["does_the_social_network_has_custom_additional_items"] + "?" + "\n" + \
+			type_text = self.language_texts["does_the_social_network_has_custom_additional_items"] + "?" + "\n" + \
 			"(" + self.language_texts["like_custom_profile_or_message_links"] + ")" + "\n"
 
 			# Ask if the social network has custom additional items
-			has_custom_additional_items = self.Input.Yes_Or_No(input_text)
+			self.states["Has"]["Custom additional items"] = self.Input.Yes_Or_No(type_text)
 
+		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
-			has_custom_additional_items = False
+			# Define the custom additional items state as True
+			self.states["Has"]["Custom additional items"] = True
+
+		# If it has
+		if self.states["Has"]["Custom additional items"] == True:
+			# Define the "name" variable as an empty string
+			name = ""
+
+			# Define the type text
+			type_text = self.language_texts["type_the_name_of_the_custom_additional_item"]
+
+			# While it is not "f" (the finish text)
+			while name != "f":
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Define the 
+					# Ask the user to type the name of the custom additional item
+					name = self.Input.Type(type_text, next_line = True, accept_enter = False, tab = "\t")
+
+				# If the "Testing" switch is True
+				if self.switches["Testing"] == True:
+					# Define the name of the custom additional item
+					name = "Export profile"
+
+					# Show the name
+					print()
+					print(type_text + ":")
+					print("[" + name + "]")
+
+				# If the name is not "f" (the finish text)
+				if name != "f":
+					# Define the information text and add the explanation text
+					information_text = self.Create_Items_Format_String(self.social_network["Information items"]["List"], text_key = "now_type_the_custom_additional_item")
+
+					# Show it
+					print()
+					print(information_text)
+
+					# If the "Testing" switch is False
+					if self.switches["Testing"] == False:
+						# Ask the user for the custom additional item
+						custom_additional_item = self.Input.Type(next_line = True, accept_enter = False)
+
+					# If the "Testing" switch is True
+					if self.switches["Testing"] == True:
+						# Define the default link
+						link = "{Social Network link}/user/{Handle}"
+
+						# If the "Profile link" is in the "Additional items" dictionary, use it
+						if "Profile link" in self.social_network["Information items"]["Additional items"]:
+							link = self.social_network["Information items"]["Additional items"]["Profile link"]
+
+						# Define the custom additional item
+						custom_additional_item = link + "/export"
+
+						# Show the custom additional item
+						print()
+						print(self.Input.language_texts["type_or_paste_the_text"] + ":")
+						print(custom_additional_item)
+
+					# Add the custom additional item to the root additional items dictionary
+					self.information_items["Additional items"][self.social_network["Name"]][name] = custom_additional_item
+
+					# Add the custom additional item to the social network additional items dictionary
+					self.social_network["Information items"]["Additional items"][name] = custom_additional_item
+
+					# If the "Testing" switch is True
+					if self.switches["Testing"] == True:
+						# Define the name as "f" to finish the addition
+						name = "f"
 
 		# ---------- #
 
@@ -453,6 +625,51 @@ class Add_Social_Network(Social_Networks):
 
 	def Create_Information_Items(self):
 		print()
+
+	def Create_Items_Format_String(self, items, text_key = None, user_link = {}):
+		# Define the default text key if the "text key" parameter is None, define it as the "additional item" text key
+		if text_key == None:
+			text_key = "type_the_additional_item"
+
+		# Define the language text
+		language_text = self.language_texts[text_key]
+
+		# If the "user link" dictionary is not empty
+		if user_link != {}:
+			# Re-define the language text as the "Type {}" text with the "the" gender text and the language information item
+			language_text = self.Language.language_texts["type_{}"].format(user_link["The"]) + " " + user_link["Item"]
+
+		# Define the information text
+		information_text = language_text + "." + "\n" + \
+		self.language_texts["you_can_use_the_{}_format_string_to_place_the_social_network_link, type: explanation"] + "\n" + \
+		"\n" + \
+		self.Language.language_texts["list_of_items"] + ":" + "\n" + \
+		"[List]"
+
+		# Define the list of items
+		items = deepcopy(items)
+
+		# Iterate through the list to add the format symbols
+		c = 0
+		for x in items:
+			items[c] = "{" + items[c] + "}"
+
+			c += 1
+
+		# Transform the list into a text string
+		items = self.Text.From_List(items, next_line = True)
+
+		# Format the type text
+		information_text = information_text.format(*[
+			'"' + "{Social Network link}" + '"',
+			'"' + "{[Item]}" + '"'
+		])
+
+		# Replace the "[List]" format text with the actual list of items
+		information_text = information_text.replace("[List]", items)
+
+		# Return the information text
+		return information_text
 
 	def Add_Social_Network_Profile(self):
 		# Iterate through the "Additional items" dictionary
@@ -582,10 +799,10 @@ class Add_Social_Network(Social_Networks):
 						self.social_network["Files"][item][key] = dict_[key]
 
 					# If the file is the settings file
-					# And the settings file exists
+					# And the "Create image folders" setting is False
 					if (
 						key == "Settings" and
-						self.File.Exist(dict_[key]) == True
+						self.social_network["Settings"]["Create image folders"] == False
 					):
 						# Add the file to the "Files" dictionary
 						self.social_network["Files"][item][key] = dict_[key]
@@ -611,6 +828,7 @@ class Add_Social_Network(Social_Networks):
 								# Add the setting value to the Settings dictionary, with the English key
 								new_settings[english_text] = settings[language_text]
 
+						# Update the root settings dictionary
 						self.social_network["Settings"] = new_settings
 
 				# Define the folders dictionary as the local folders dictionary
@@ -707,6 +925,42 @@ class Add_Social_Network(Social_Networks):
 		# Write to the "Items.json" file
 		self.JSON.Edit(self.social_network["Files"]["Items"], self.social_network["Information items"])
 
+		# ----- #
+
+		# If the "Create image folders" settings is False
+		if self.social_network["Settings"]["Create image folders"] == False:
+			# Define the local language settings dictionary (with user language keys)
+			language_settings = {}
+
+			# Define the texts dictionary for easier typing
+			texts_dictionary = self.Language.texts
+
+			# Iterate through the settings list
+			for setting in self.texts["settings, type: list"]:
+				# Get the language key of the setting
+				language_key = texts_dictionary[setting][self.user_language]
+
+				# If the language key is inside the settings dictionary
+				if language_key in self.social_network["Settings"]:
+					# Add the setting value to the Settings dictionary, with the English key
+					language_settings[language_key] = settings[setting]
+
+			# Transform the settings dictionary into a text string with lines
+			text_to_write = self.Text.From_Dictionary(language_settings, next_line = True)
+
+			# Write to the "Settings.txt" file
+			self.File.Edit(self.social_network["Files"]["Text"]["Settings"], text_to_write, "w")
+
+		# ----- #
+
+		# If the "Create image folders" settings is True
+		if self.social_network["Settings"]["Create image folders"] == True:
+			# Transform the list of image folders into a text string with lines
+			text_to_write = self.Text.From_List(self.social_network["Image folders"], next_line = True)
+
+			# Write to the "Image folders.txt" file
+			self.File.Edit(self.social_network["Files"]["Text"]["Image folders"], text_to_write, "w")
+
 		# ---------- #
 
 		# Make a local copy of the "Social Network" dictionary
@@ -715,16 +969,28 @@ class Add_Social_Network(Social_Networks):
 		# Define the root keys to remove
 		to_remove = [
 			"Folders",
-			"Files",
-			"Information items"
+			"Files"
 		]
 
 		# Iterate through the "root keys to remove" list and remove the keys
 		for sub_key in to_remove:
 			local_dictionary.pop(sub_key)
 
+		# Remove the unused keys of the Social Network "Information items" dictionary
+		to_remove = [
+			"Lists",
+			"Accept enter",
+			"Gender",
+			"Formats",
+			"Additional items",
+			"Dictionary"
+		]
+
+		for key in to_remove:
+			local_dictionary["Information items"].pop(key)
+
 		# Update the "Social Network.json" file with the updated and local "Social Network" dictionary
-		self.JSON.Edit(self.social_network["Folders"]["Social Network"], local_dictionary)
+		self.JSON.Edit(self.social_network["Folders"]["Text"]["Social Network"], local_dictionary)
 
 		# Update the image "Social Network.json" file with the updated and local "Social Network" dictionary
 		self.JSON.Edit(self.social_network["Folders"]["Image"]["Social Network"], local_dictionary)

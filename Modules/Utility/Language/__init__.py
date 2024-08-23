@@ -1026,7 +1026,7 @@ class Language():
 		print()
 		print("-----")
 
-	def Text_From_List(self, list_, break_line = True, separator = ""):
+	def Text_From_List(self, list_, next_line = True, separator = ""):
 		string = ""
 
 		i = 0
@@ -1037,7 +1037,7 @@ class Language():
 				if separator != "":
 					string += separator
 
-				if break_line == True:
+				if next_line == True:
 					string += "\n"
 
 			i += 1

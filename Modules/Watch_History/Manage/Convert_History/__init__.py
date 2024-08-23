@@ -58,7 +58,7 @@ class Convert_History(Watch_History):
 			for entry in self.watched["Entries"]["Dictionary"].values():
 				titles_list.append(entry["Episode"]["Titles"][self.media["Language"]])
 
-			self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(titles_list, break_line = True), "a")
+			self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(titles_list, next_line = True), "a")
 
 			self.watched["Correct titles"] = self.File.Contents(self.watched["Correct titles"])["lines"]
 
@@ -104,7 +104,7 @@ class Convert_History(Watch_History):
 			if new_title != "":
 				self.watched["Correct titles"][i] = new_title
 
-				self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(self.watched["Correct titles"], break_line = True), "w")
+				self.File.Edit(self.watched["Correct titles file"], self.Text.From_List(self.watched["Correct titles"], next_line = True), "w")
 
 			i += 1
 
@@ -189,7 +189,7 @@ class Convert_History(Watch_History):
 				lines[11] = titles["en"]
 
 				# Update the year Entry file
-				self.File.Edit(year_entry_file, self.Text.From_List(lines, break_line = True), "w")
+				self.File.Edit(year_entry_file, self.Text.From_List(lines, next_line = True), "w")
 
 				# Iterate through the small languages list
 				for language in self.languages["small"]:
@@ -211,7 +211,7 @@ class Convert_History(Watch_History):
 					lines[10] = titles[language]
 
 					# Update the year Entry file per language
-					self.File.Edit(file, self.Text.From_List(lines, break_line = True), "w")
+					self.File.Edit(file, self.Text.From_List(lines, next_line = True), "w")
 
 				# Update the episode title in the Watched Entry file
 				watched_entry_file = self.watched["Files"]["root"] + watched_entry["Entry"].replace(":", ";").replace("/", "-") + ".txt"
@@ -223,7 +223,7 @@ class Convert_History(Watch_History):
 				lines[10] = titles[self.media["Language"]]
 
 				# Update the Watched Entry file
-				self.File.Edit(watched_entry_file, self.Text.From_List(lines, break_line = True), "w")
+				self.File.Edit(watched_entry_file, self.Text.From_List(lines, next_line = True), "w")
 
 				# --- #
 
@@ -1030,7 +1030,7 @@ class Convert_History(Watch_History):
 												self.Input.Type()
 
 												# Update the episode titles list
-												self.File.Edit(self.media["Item"]["Episodes"]["Titles"]["Files"][language], self.Text.From_List(self.media["Item"]["Episodes"]["Titles"][language], break_line = True), "w")
+												self.File.Edit(self.media["Item"]["Episodes"]["Titles"]["Files"][language], self.Text.From_List(self.media["Item"]["Episodes"]["Titles"][language], next_line = True), "w")
 
 									number += 1
 

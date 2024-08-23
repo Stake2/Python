@@ -533,7 +533,7 @@ class Add_A_New_Friend(Friends):
 				social_networks_list.remove(item)
 
 		# Update the "Social Networks.txt" file with the list above
-		text_to_write = self.Text.From_List(social_networks_list, break_line = True)
+		text_to_write = self.Text.From_List(social_networks_list, next_line = True)
 
 		self.File.Edit(self.friend["Files"]["Social Networks"]["List"], text_to_write, "w")
 

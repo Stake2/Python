@@ -1116,7 +1116,7 @@ class Write(Stories):
 					titles[self.chapter["Number"] - 1] = chapter_title
 
 					# Define the text
-					text = self.Text.From_List(titles, break_line = True)
+					text = self.Text.From_List(titles, next_line = True)
 
 					# Change the writing mode to "write"
 					mode = "w"

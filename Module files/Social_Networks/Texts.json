@@ -86,13 +86,17 @@
 		"pt": "O item de informação tem itens adicionais",
 		"en": "Does the information item has additional items"
 	},
-	"does_the_social_network_has_custom_additional_items": {
-		"pt": "A rede social tem itens adicionais personalizados",
-		"en": "Does the social network has custom additional items"
-	},
 	"like_custom_profile_or_message_links": {
 		"pt": "Como links de perfil ou mensagem personalizados",
 		"en": "Like custom profile or message links"
+	},
+	"type_the_additional_item": {
+		"pt": "Digite o item adicional",
+		"en": "Type the additional item"
+	},
+	"additional_item_for_{}": {
+		"pt": "Item adicional para {}",
+		"en": "Additional item for {}"
 	},
 	"type_the_regex_format": {
 		"pt": "Digite o formato do Regex",
@@ -102,9 +106,17 @@
 		"pt": "Digite um exemplo do formato",
 		"en": "Type an example of the format"
 	},
-	"type_the_additional_item": {
-		"pt": "Digite o item adicional",
-		"en": "Type the additional item"
+	"does_the_social_network_has_custom_additional_items": {
+		"pt": "A rede social tem itens adicionais personalizados",
+		"en": "Does the social network has custom additional items"
+	},
+	"type_the_name_of_the_custom_additional_item": {
+		"pt": "Digite o nome do item adicional personalizado (em Inglês)",
+		"en": "Type the custom additional item"
+	},
+	"now_type_the_custom_additional_item": {
+		"pt": "Agora digite o item adicional personalizado",
+		"en": "Now type the custom additional item"
 	},
 	"you_can_use_the_{}_format_string_to_place_the_social_network_link, type: explanation": {
 		"pt": "Você pode usar a string de formato {} para colocar o link da rede social.\nE a string de formato {} para colocar o item, trocando o [Item] por qualquer item que você selecionou (em Inglês).",

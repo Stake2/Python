@@ -88,6 +88,10 @@
 		"en": "settings",
 		"pt": "configurações"
 	},
+	"type_{}": {
+		"en": "Type {}",
+		"pt": "Digite {}"
+	},
 	"type_or_paste_the_text": {
 		"en": "Type or paste the text",
 		"pt": "Digite ou cole o texto"
@@ -206,6 +210,10 @@
 	"original_list": {
 		"en": "Original list",
 		"pt": "Lista original"
+	},
+	"list_of_items": {
+		"en": "List of items",
+		"pt": "Lista de itens"
 	},
 	"current, title()": {
 		"en": "Current",

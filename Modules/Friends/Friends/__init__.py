@@ -379,7 +379,7 @@ class Friends(object):
 		# Iterate through the information items list
 		for key, dict_ in dictionary["Dictionary"].items():
 			# Define the local gender "Words" dictionary
-			dict_ = {}
+			words = {}
 
 			# Define the gender words of the information item
 			for item in dictionary["Gender"]["Items"]:
@@ -392,8 +392,17 @@ class Friends(object):
 				if key in dictionary["Gender"]["Feminine"]:
 					gender = "feminine"
 
-				# Get the gender words dictionary
-				dict_[item] = self.Language.texts["genders, type: dict"][self.user_language][gender][text_key]
+				# Define the empty item dictionary
+				words[item] = {}
+
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# If the language dictionary does not exist, add it
+					if language not in words[item]:
+						words[item][language] = {}
+
+					# Define the gender text of the item in the current language
+					words[item][language] = self.Language.texts["genders, type: dict"][language][gender][text_key]
 
 				# Define the gender inside the "Gender" dictionary
 				dictionary["Dictionary"][key]["Gender"]["Text"] = gender
@@ -484,7 +493,7 @@ class Friends(object):
 		self.friends["List"] = self.JSON.To_Python(self.folders["Friends"]["Text"]["Friends"])["List"]
 
 		# Write the friends list to the "Friends list.txt" file
-		text_to_write = self.Text.From_List(self.friends["List"], break_line = True)
+		text_to_write = self.Text.From_List(self.friends["List"], next_line = True)
 
 		self.File.Edit(self.folders["Friends"]["Text"]["Friends list"], text_to_write, "w")
 
@@ -669,7 +678,7 @@ class Friends(object):
 					social_networks_list.remove(item)
 
 			# Update the "Social Networks.txt" file with the list above
-			text_to_write = self.Text.From_List(social_networks_list, break_line = True)
+			text_to_write = self.Text.From_List(social_networks_list, next_line = True)
 
 			self.File.Edit(dictionary["Files"]["Social Networks"]["List"], text_to_write, "w")
 
@@ -1046,7 +1055,7 @@ class Friends(object):
 			if information_item["Name"] not in information_items["Lists"]["Select"]:
 				if type_text == None:
 					# Define the type text
-					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"] + " " + information_item[self.user_language].lower())
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.user_language] + " " + information_item[self.user_language].lower())
 
 				# Define the "accept_enter" variable
 				accept_enter = False
@@ -1146,7 +1155,7 @@ class Friends(object):
 				# If the selected option is "Custom Social Network"
 				if information["option"] == "Custom Social Network":
 					# Define the type text for the information item
-					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"] + " " + self.language_texts["custom_origin_social_network"])
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.user_language] + " " + self.language_texts["custom_origin_social_network"])
 
 					# If the "testing" switch is False
 					# Or it is True and the "Custom Social Network" key is not inside the "Test information" dictionary

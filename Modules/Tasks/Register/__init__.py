@@ -433,7 +433,7 @@ class Register(Tasks):
 			items.append(descriptions)
 
 		# Define language task text
-		file_text = self.Text.From_List(lines, break_line = True)
+		file_text = self.Text.From_List(lines, next_line = True)
 
 		return file_text.format(*items)
 

@@ -459,7 +459,7 @@ class Register(GamePlayer):
 
 			i += 1
 
-		items.append(self.Text.From_List(titles, break_line = True) + "\n")
+		items.append(self.Text.From_List(titles, next_line = True) + "\n")
 
 		# ---------- #
 
@@ -524,7 +524,7 @@ class Register(GamePlayer):
 		# ---------- #
 
 		# Define the language entry text
-		file_text = self.Text.From_List(lines, break_line = True)
+		file_text = self.Text.From_List(lines, next_line = True)
 
 		return file_text.format(*items)
 

@@ -980,7 +980,7 @@ class Post(Stories):
 		card.pop(-1)
 
 		# Transform the list into a text with line breaks
-		card = self.Text.From_List(card, break_line = True)
+		card = self.Text.From_List(card, next_line = True)
 
 		# Return the card
 		return card

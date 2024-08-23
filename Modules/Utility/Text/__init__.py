@@ -118,7 +118,7 @@ class Text():
 
 	def Copy(self, text, verbose = True):
 		if type(text) == list:
-			text = self.From_List(text, break_line = True)
+			text = self.From_List(text, next_line = True)
 
 		if type(text) == dict:
 			text = self.From_Dictionary(text)
@@ -129,7 +129,7 @@ class Text():
 
 		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
-	def From_List(self, list_, language = None, lower = False, break_line = False, and_text = True, or_text = False, quotes = False):
+	def From_List(self, list_, language = None, lower = False, next_line = False, and_text = True, or_text = False, quotes = False):
 		text = ""
 
 		text_list = self.Language.language_texts
@@ -142,7 +142,7 @@ class Text():
 
 			if (
 				item_backup == list_[-1] and
-				break_line == False
+				next_line == False
 			):
 				if (
 					len(list_) > 2 or
@@ -173,7 +173,7 @@ class Text():
 
 			if (
 				item_backup != list_[-1] and
-				break_line == False
+				next_line == False
 			):
 				if len(list_) == 2:
 					item += " "
@@ -183,13 +183,13 @@ class Text():
 
 			if (
 				item_backup != list_[-1] and
-				break_line == True
+				next_line == True
 			):
 				item += "\n"
 
 			if (
 				item_backup == "" and
-				break_line == True
+				next_line == True
 			):
 				item = "\n"
 
@@ -214,7 +214,10 @@ class Text():
 
 			string += str(value)
 
-			if key != keys[-1] and break_line == True:
+			if (
+				key != keys[-1] and
+				break_line == True
+			):
 				string += "\n"
 
 				if next_line == True:

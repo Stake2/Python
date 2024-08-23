@@ -1265,7 +1265,7 @@ class GamePlayer(object):
 			game["Sub-game type"]["Items"]["List"] = self.Folder.Contents(game["Sub-game type"]["Folders"]["root"])["folder"]["names"]
 
 			# Update the "List.txt" file
-			self.File.Edit(game["Sub-game type"]["Folders"]["List"], self.Text.From_List(game["Sub-game type"]["Items"]["List"], break_line = True), "w")
+			self.File.Edit(game["Sub-game type"]["Folders"]["List"], self.Text.From_List(game["Sub-game type"]["Items"]["List"], next_line = True), "w")
 
 		# Update the number of sub-games
 		game["Sub-game type"]["Items"]["Number"] = len(game["Sub-game type"]["Items"]["List"])
