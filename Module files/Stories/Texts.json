@@ -429,6 +429,24 @@
 		"en": "{} the chapter {} of my story {}",
 		"pt": "{} o capítulo {} da minha história {}"
 	},
+	"dates_of_the_chapter": {
+		"en": "Dates of the chapter",
+		"pt": "Datas do capítulo"
+	},
+	"chapter_dates, type: dictionary": {
+		"write": {
+			"en": "This chapter was originally written on {}, at {}",
+			"pt": "Este capítulo foi originalmente escrito em {}, às {}"
+		},
+		"revise": {
+			"en": "It was last revised on {}, at {}",
+			"pt": "Ele foi revisado pela última vez em {}, às {}"
+		},
+		"translate": {
+			"en": "And it was translated into {} on {}, at {}",
+			"pt": "E foi traduzido para o {} em {}, às {}"
+		}
+	},
 	"do_you_want_to_add_more_authors": {
 		"en": "Do you want to add more authors",
 		"pt": "Você quer adicionar mais autores"

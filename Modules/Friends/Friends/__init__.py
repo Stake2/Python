@@ -408,7 +408,7 @@ class Friends(object):
 				dictionary["Dictionary"][key]["Gender"]["Text"] = gender
 
 			# Update the gender "Words" dictionary inside the root information item dictionary
-			dictionary["Dictionary"][key]["Gender"]["Words"] = dict_
+			dictionary["Dictionary"][key]["Gender"]["Words"] = words
 
 		# Define the "Information items" dictionary as the local "Information items" dictionary
 		self.information_items = dictionary
@@ -491,6 +491,18 @@ class Friends(object):
 
 		# Get the list of social networks
 		self.friends["List"] = self.JSON.To_Python(self.folders["Friends"]["Text"]["Friends"])["List"]
+
+		# Iterate through the copy of the list of friends
+		for friend in self.friends["List"].copy():
+			# Get the friend folder
+			friend_folder = self.folders["Friends"]["Text"]["root"] + friend + "/"
+
+			# If the folder does not exist
+			if self.Folder.Exist(friend_folder) == False:
+				# Remove the friend from the list of friends
+				self.friends["List"].remove(friend)
+
+		# ---------- #
 
 		# Write the friends list to the "Friends list.txt" file
 		text_to_write = self.Text.From_List(self.friends["List"], next_line = True)

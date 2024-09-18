@@ -727,8 +727,7 @@ class Register(GamePlayer):
 				"Discord",
 				"WhatsApp",
 				"Instagram",
-				"Facebook",
-				"Twitter"
+				"Facebook"
 			],
 			"List text": ""
 		}
@@ -736,13 +735,12 @@ class Register(GamePlayer):
 		# Define the list text, with all the Social Networks separated by commas
 		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"])
 
-		# Remove the "Discord" and "Twitter" Social Networks
+		# Remove the "Discord" social networks
 		self.social_networks["List"].remove("Discord")
-		self.social_networks["List"].remove("Twitter")
 
 		# Define the list text, with all the Social Networks separated by commas
-		# But without Twitter
-		self.social_networks["List text (without Discord and Twitter)"] = self.Text.From_List(self.social_networks["List"])
+		# But without Discord
+		self.social_networks["List text (without Discord)"] = self.Text.From_List(self.social_networks["List"])
 
 		# Define the item text to be used
 		self.social_networks["Item text"] = self.language_texts["the_game_cover"]
@@ -754,8 +752,8 @@ class Register(GamePlayer):
 		self.social_networks["Items"] = [
 			self.social_networks["Item text"],
 			"Discord",
-			self.social_networks["List text (without Discord and Twitter)"],
-			"Twitter"
+			self.social_networks["List text (without Discord)"],
+			"Bluesky " + self.Language.language_texts["and"] + " Threads"
 		]
 
 		# Format the template with the items list
@@ -767,16 +765,18 @@ class Register(GamePlayer):
 		print()
 		print(self.separators["5"])
 
+		# Ask if the user wants to post the played session status on the social networks
 		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 
+		# If yes
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
+			# Import the "Open_Social_Network" sub-class of the "Social_Networks" module
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
 
-			# Define the Social Networks dictionary
+			# Define the "Social Networks" dictionary
 			social_networks = {
 				"List": [
 					"WhatsApp",
-					"Twitter",
 					"Facebook",
 					"Discord"
 				],
@@ -785,15 +785,12 @@ class Register(GamePlayer):
 				}
 			}
 
-			# Open the Social Networks, one by one
-			Open_Social_Network(social_networks)
+			# Open the social networks, one by one
+			#Open_Social_Network(social_networks)
 
-			self.Input.Type(self.language_texts["press_enter_to_copy_the_text_of_the_played_game"])
-
-			self.Text.Copy(self.dictionary["Entry"]["Dates"]["Timezone"] + ":\n" + self.dictionary["Entry"]["Diary Slim"]["Clean text"])
-
+		# Show a separator
 		print()
-		print("-----")
+		print(self.separators["5"])
 		print()
 
 	def Write_On_Diary_Slim(self):

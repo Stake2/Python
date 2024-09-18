@@ -2173,9 +2173,3 @@ class GamePlayer(object):
 				# Show the description lines
 				for line in description:
 					print("\t" + line)
-
-			# If the user finished playing, ask for input before ending execution
-			print()
-			print(self.separators["5"])
-
-			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])

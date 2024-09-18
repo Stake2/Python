@@ -314,7 +314,6 @@ class Write(Stories):
 		for language in self.languages["small"]:
 			# Get the full and translated languages
 			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.user_language]
 
 			# Define the chapter file
 			self.dictionary["Chapter"]["Files"][language] = self.dictionary["Chapter"]["Folders"][full_language]["root"]
@@ -339,34 +338,39 @@ class Write(Stories):
 				self.writing_mode in ["Write", "Revise"] and
 				language == self.user_language
 			):
-				# Define the source language of the chapter as the current small and full language
-				self.dictionary["Chapter"]["Language"]["Source"] = {
+				# Define the destination language of the chapter as the current small and full language
+				self.dictionary["Chapter"]["Language"]["Destination"] = {
 					"Small": language,
 					"Full": full_language,
-					"Translated": translated_language
+					"Translated": self.languages["full_translated"][language]
 				}
+
+		# Define the "Target language of translation" language
+		# The language which the original chapter will be translated into
+		self.dictionary["Chapter"]["Language"]["Target language of translation"] = {
+			"Small": "en",
+			"Full": self.languages["full"]["en"],
+			"Translated": self.languages["full_translated"]["en"]
+		}
+
+		# Define the target language variable
+		self.target_language = self.dictionary["Chapter"]["Language"]["Target language of translation"]
 
 		# If the writing mode is "Translate"
 		if self.writing_mode == "Translate":
-			# Define the source language of the chapter as the English language
-			# (The chapters are always translated in the English language)
-			self.dictionary["Chapter"]["Language"]["Source"] = {
-				"Small": "en",
-				"Full": self.languages["full"]["en"],
-				"Translated": self.languages["full_translated"]["en"][self.user_language]
-			}
-
-			# If the writing session is the first one for the current chapter
-			if self.states["First time writing"] == True:
-				# Write the user language chapter text into the English file
-				text = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["string"]
-
-				self.File.Edit(self.dictionary["Chapter"]["Files"]["en"], text, "w")
+			# Define the destination language of the chapter as the English language
+			# (The chapters are always translated to the English language)
+			self.dictionary["Chapter"]["Language"]["Destination"] = self.target_language
 
 		# ---------- #
 
 		# Define a shortcut for the "Chapter" dictionary
 		self.chapter = self.dictionary["Chapter"]
+
+		# ---------- #
+
+		# Check the chapter date texts of the chapter files
+		self.Check_Chapter_Date_Texts()
 
 		# ---------- #
 
@@ -422,6 +426,117 @@ class Write(Stories):
 				# Wait for one second
 				self.Date.Sleep(1)
 
+	def Check_Chapter_Date_Texts(self):
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Get the lines of the language chapter file
+			lines = self.File.Contents(self.dictionary["Chapter"]["Files"][language])["lines"]
+
+			# If the writing mode is "Translate"
+			# And the current language is equal to the target translation language
+			# And this writing session is the first one for the current chapter
+			if (
+				self.writing_mode == "Translate" and
+				language == self.target_language["Small"] and
+				self.states["First time writing"] == True
+			):
+				# Update the list of lines to be the chapter text of the original (user) chapter language
+				lines = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["lines"]
+
+				# Remove the first five lines that come from the original version of the chapter text
+				i = 1
+				while i <= 5:
+					lines.pop(0)
+
+					i += 1
+
+			# Get the language "Dates of the chapter" text
+			dates_of_the_chapter = self.texts["dates_of_the_chapter"][language] + ":"
+
+			# Define the "insert" switch as False
+			insert = False
+
+			# If the first line of the file is not "Dates of the chapter"
+			if lines[0] != dates_of_the_chapter:
+				# Add the "Dates of the chapter" text to the file
+				lines.insert(0, dates_of_the_chapter)
+
+				# Change the "insert" switch to True
+				insert = True
+
+			# Iterate through the list of texts about chapter dates
+			i = 1
+			for key, item in self.texts["chapter_dates, type: dictionary"].items():
+				# Define the list of items to use to format the chapter date text
+				items = [
+					"[date]",
+					"[time]"
+				]
+
+				# Get the writing mode dictionary
+				writing_mode = self.dictionary["Writing modes"]["Dictionary"][key.capitalize()]
+
+				# Get the English past writing mode (chapter)
+				past_writing_mode = writing_mode["Texts"]["Chapter"]["en"].capitalize()
+
+				# If the key is "translate", add the destination language as the first item
+				if key == "translate":
+					# Define a shortcut for the target language of the translation
+					target_language = self.dictionary["Chapter"]["Language"]["Target language of translation"]
+
+					# Add the translated language in the current language to the list of items
+					items.insert(0, target_language["Translated"][language])
+
+				# Get the text in the current language and format it using the list of items above
+				text = item[language].format(*items) + "."
+
+				# Define the chapter dictionary for easier typing
+				chapter = self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])]
+
+				# If the chapter date of that mode is not empty
+				if chapter["Dates"][past_writing_mode] != "":
+					# Define the date dictionary
+					date = self.Date.From_String(chapter["Dates"][past_writing_mode], "%H:%M %d/%m/%Y")
+
+					# Get the time of the date
+					time = date["Timezone"]["DateTime"]["Formats"]["HH:MM"]
+
+					# Define the date text of the date
+					date_text = self.Date.texts["date_format, type: format"][language]
+
+					# Replace the date strings in the date text with the units and texts inside the date dictionary
+					date_text = self.Date.Replace_Strings_In_Text(date_text, date, language)
+
+					# Replace the date inside the root text
+					text = text.replace("[date]", date_text)
+
+					# Replace the time inside the root text
+					text = text.replace("[time]", time)
+
+				# If the insert switch is False
+				if insert == False:
+					# Replace the line with the text (with replaced date and time)
+					lines[i] = text
+
+				# If the insert switch is True
+				if insert == True:
+					# Insert the current chapter date text into the correct index
+					lines.insert(i, text)
+
+				# Add one to the "i" number variable
+				i += 1
+
+			# If the insert switch is True
+			if insert == True:
+				# Add a space after the lines
+				lines.insert(i, "")
+
+			# Transform the list of lines into a text string
+			text = self.Text.From_List(lines, next_line = True)
+
+			# Update the chapter file with the new text
+			self.File.Edit(self.dictionary["Chapter"]["Files"][language], text, "w")
+
 	def Open_Story_Website(self):
 		# Open the server
 		self.Manage_Server(open = True, separator_number = 3)
@@ -439,7 +554,7 @@ class Write(Stories):
 		# Define the list of items to use to format the template
 		items = [
 			self.story["Title"], # The title of the story and website
-			self.chapter["Language"]["Source"]["Full"] # The full chapter source language
+			self.chapter["Language"]["Destination"]["Full"] # The full chapter destination language
 		]
 
 		# Format the template with the items
@@ -457,7 +572,7 @@ class Write(Stories):
 			url += "&" + parameter
 
 		# Show the text about opening the story website
-		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Source"]["Translated"]
+		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Destination"]["Translated"][self.user_language]
 
 		print()
 		print(self.separators["3"])
@@ -1164,6 +1279,9 @@ class Write(Stories):
 				# Create the file
 				self.File.Create(destination_file)
 
+			# Update the file inside the "Chapter" dictionary
+			self.chapter["Files"][language] = destination_file
+
 		# ---------- #
 
 		# If the writing mode is "Write"
@@ -1181,7 +1299,7 @@ class Write(Stories):
 		# If the writing mode is "Write"
 		if self.writing_mode == "Write":
 			# Create or update the chapter dictionary
-			self.story["Information"]["Chapters"]["Dictionary"][self.chapter["Number"]] = {
+			self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])] = {
 				"Number": self.chapter["Number"],
 				"Titles": self.chapter["Titles"],
 				"Dates": {
@@ -1202,6 +1320,9 @@ class Write(Stories):
 
 		# Update the date key of the correct writing mode
 		chapter["Dates"][key.capitalize()] = date
+
+		# Check and update the chapter date texts inside the chapter files
+		self.Check_Chapter_Date_Texts()
 
 		# Update the "Chapters.json" file with the updated "Chapters" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Chapters"], self.story["Information"]["Chapters"])

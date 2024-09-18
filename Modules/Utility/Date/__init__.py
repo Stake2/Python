@@ -407,6 +407,45 @@ class Date():
 
 		return monthrange(*arguments)
 
+	def Replace_Strings_In_Text(self, text, date, language):
+		# Define the timezone datetime shortcut
+		timezone_datetime = date["Timezone"]["DateTime"]
+
+		# Iterate through the list of date attributes
+		for attribute in self.texts["date_attributes, type: list"]["en"]:
+			# Define the key of the attribute
+			key = attribute.capitalize()
+
+			# If the attribute is inside the text
+			if attribute in text:
+				# Define the attribute text
+				attribute_text = "[" + attribute + "]"
+
+				# Get the unit of the attribute
+				unit = timezone_datetime["Units"][key]
+
+				# Replace the attribute text with the unit
+				text = text.replace(attribute_text, str(unit))
+
+		# Iterate through the list of datetime texts
+		for key in timezone_datetime["Texts"]:
+			# Lower the key
+			key = key.lower()
+
+			# If the key is inside the text
+			if key in text:
+				# Define the attribute text
+				attribute_text = "[" + key + "]"
+
+				# Get the date text
+				date_text = timezone_datetime["Texts"][key.capitalize()][language]
+
+				# Replace the attribute text with the date text
+				text = text.replace(attribute_text, date_text)
+
+		# Return the text
+		return text
+
 	def Difference(self, before, after):
 		# Define the dictionary
 		dictionary = {

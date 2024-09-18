@@ -124,8 +124,8 @@
 		"pt": "Postar nas Redes Sociais"
 	},
 	"i_posted_the_played_game_text, type: template": {
-		"pt": "Postei o texto de jogo jogado e {} no meu servidor no {}, no status do {}, e tweet no {}",
-		"en": "I posted the text of the played game and {} on my server on {}, on the status of {}, and tweet on {}"
+		"pt": "Postei o texto de jogo jogado e {} no meu servidor no {}, no status do {}, e no {}",
+		"en": "I posted the text of the played game and {} on my server on {}, on the status of {}, and on {}"
 	},
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",

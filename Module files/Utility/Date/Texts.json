@@ -328,14 +328,6 @@
 		"en": "Seconds",
 		"pt": "Segundos"
 	},
-	"date_format": {
-		"en": "%m/%d/%Y",
-		"pt": "%d/%m/%Y"
-	},
-	"date_time_format": {
-		"en": "%H:%M %m/%d/%Y",
-		"pt": "%H:%M %d/%m/%Y"
-	},
 	"time, title()": {
 		"en": "Time",
 		"pt": "Tempo"
@@ -428,6 +420,14 @@
 		"en": "{} time",
 		"pt": "Tempo de {}"
 	},
+	"date_format": {
+		"en": "%m/%d/%Y",
+		"pt": "%d/%m/%Y"
+	},
+	"date_time_format": {
+		"en": "%H:%M %m/%d/%Y",
+		"pt": "%H:%M %d/%m/%Y"
+	},
 	"{} {} {}": {
 		"pt": "{} de {} de {}",
 		"en": "{} {}, {}"
@@ -439,6 +439,10 @@
 	"today_is_day_{} {} {}, {}": {
 		"pt": "Hoje é dia {} de {} de {}, {}",
 		"en": "Today is day {} {} {}, {}"
+	},
+	"date_format, type: format": {
+		"pt": "[day] de [month name] de [year]",
+		"en": "[month name] [day], [year]"
 	},
 	"date_and_time_texts, type: dict": {
 		"short_time": "t",

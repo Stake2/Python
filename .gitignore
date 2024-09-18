@@ -20,6 +20,8 @@ Module Files/Utility/API/client_secrets.json
 Module Files/Utility/API/Secrets.json
 Module Files/Utility/API/Token.json
 
+# Template ignores
+
 # rar and zip
 *.rar
 *.zip

@@ -3060,9 +3060,3 @@ class Watch_History(object):
 					text = self.Language.language_texts["and_also"].capitalize() + " " + dictionary["Media type"]["Genders"][self.user_language]["the"] + " " + dictionary["Media type"]["Genders"][self.user_language]["first"] + " " + container
 
 				print(text + ".")
-
-			# If the user finished watching, ask for input before ending execution
-			print()
-			print(self.separators["5"])
-
-			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
