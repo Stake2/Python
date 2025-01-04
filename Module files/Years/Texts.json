@@ -39,6 +39,22 @@
 		"pt": "Executando o criador de resumo de Ano",
 		"en": "Executing the Year summary creator"
 	},
+	"summary_of_my_year_of_{current_year}": {
+		"en": "Summary of my year of {current_year}",
+		"pt": "Resumo do meu ano de {current_year}"
+	},
+	"summary_of_my_year_of_{current_year}, type: link": {
+		"en": "summary-of-my-year-of-{current_year}",
+		"pt": "resumo-do-meu-ano-de-{current_year}"
+	},
+	"summary_on": {
+		"en": "Summary on",
+		"pt": "Resumo no"
+	},
+	"post_the_year_summary_on_these_websites": {
+		"en": "Post the year summary on these websites",
+		"pt": "Poste o resumo do ano nestes sites"
+	},
 	"show_year_summary": {
 		"en": "Show year summary",
 		"pt": "Mostrar resumo do ano"
@@ -54,6 +70,10 @@
 	"the_sum_of_numbers_below": {
 		"pt": "a soma dos números abaixo",
 		"en": "the sum of numbers below"
+	},
+	"memories_of_the_year_in_images": {
+		"pt": "Memórias do ano em imagens",
+		"en": "Memories of the year in images"
 	},
 	"select_a_year_to_show_its_information": {
 		"pt": "Selecione um Ano para mostrar suas informações",
@@ -78,5 +98,9 @@
 	"{}_texts": {
 		"pt": "Textos de \"{}\"",
 		"en": "\"{}\" texts"
+	},
+	"goodbye_text_for_the_year": {
+		"pt": "Texto de adeus para o ano",
+		"en": "Goodbye text for the year"
 	}
 }

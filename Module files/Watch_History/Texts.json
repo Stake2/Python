@@ -67,6 +67,10 @@
 		"en": "Seasons",
 		"pt": "Temporadas"
 	},
+	"last_season": {
+		"en": "Last season",
+		"pt": "Última temporada"
+	},
 	"comment_file_name": {
 		"en": "Comment file name",
 		"pt": "Nome de arquivo de comentário"
@@ -324,8 +328,8 @@
 		"en": "I just finished watching {}"
 	},
 	"i_posted_the_watched_text, type: template": {
-		"pt": "Postei o texto de assistido e {} no meu servidor no {}, no status do {}, e no {}",
-		"en": "I posted the watched text and {} on my server on {}, on the status of {}, and on {}"
+		"pt": "Postei o texto de assistido e {} no meu servidor no {}, no status do {}, e também no {}",
+		"en": "I posted the watched text and {} on my server on {}, on the status of {}, and also on {}"
 	},
 	"press_enter_to_copy_the_watched_text": {
 		"pt": "Pressione Enter para copiar o texto de assistido",

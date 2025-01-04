@@ -160,6 +160,22 @@ class Main():
 		# Run the method
 		method()
 
+	def Delete_Discord_Messages(self):
+		# Define the Discord folder
+		discord_folder = self.folders["User"]["Documents"]["root"] + "Discord/"
+
+		# Define the day folder
+		day_folder = discord_folder + "08-10-2024/"
+
+		# Define the messages folder
+		messages_folder = day_folder + "messages/"
+
+		# Define the index file
+		index_json = messages_folder + "index.json"
+
+		# Read the index file
+		index = self.JSON.To_Python(index)
+
 	def Shortcut(self):
 		# Define the default shortcut dictionary
 		dictionary = {

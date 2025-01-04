@@ -110,8 +110,8 @@ class Verify_Current_Year(Years):
 			# Define the list of Social Networks
 			social_networks_list = [
 				"Discord",
-				"Instagram, Facebook",
-				"Twitter",
+				"Instagram {} Facebook".format(self.Language.language_texts["and"]),
+				"Twitter, Bluesky {} Threads".format(self.Language.language_texts["and"]),
 				"WhatsApp"
 			]
 
@@ -135,6 +135,16 @@ class Verify_Current_Year(Years):
 
 				# Update the file with the formatted template
 				self.File.Edit(file, text_to_write, "w")
+
+			# Define a new list of Social Networks
+			social_networks_list = [
+				"Discord",
+				"Instagram {} Facebook".format(self.Language.language_texts["and"]),
+				"Twitter",
+				"Bluesky {} Threads".format(self.Language.language_texts["and"]),
+				"WhatsApp",
+				"Wattpad"
+			]
 
 			# Create and format the files of Social Networks posts for the "New Year" folder
 			for social_network in social_networks_list:

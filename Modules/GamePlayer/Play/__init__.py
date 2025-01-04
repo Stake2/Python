@@ -180,8 +180,8 @@ class Play(GamePlayer):
 
 			# And the sub-game title is the same as the game title
 			if self.game["Sub-game"]["Title"] == self.game["Title"]:
-				# Calculate the gaming time for the sub-game
-				self.dictionary["Game"]["Sub-game"] = self.Calculate_Gaming_Time(self.dictionary, item = True)
+				# Calculate the gaming time for the sub-game which is the root game
+				self.dictionary["Game"]["Sub-game"] = self.Calculate_Gaming_Time(self.dictionary, item = False)
 
 		# ---------- #
 

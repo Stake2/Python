@@ -261,9 +261,13 @@
 		"en": "Do you want to update the chapter titles",
 		"pt": "Você quer atualizar os títulos do capítulo"
 	},
-	"type_the_chapter_title_in_{}": {
-		"en": "Type the chapter title in {}",
-		"pt": "Digite o título do capítulo em {}"
+	"old_title": {
+		"en": "Old title",
+		"pt": "Título antigo"
+	},
+	"type_the_new_chapter_title_in_{}": {
+		"en": "Type the new chapter title in {}",
+		"pt": "Digite o novo título do capítulo em {}"
 	},
 	"i_started_{}_the_chapter_{}_of_my_story_{}": {
 		"en": "I started {} the chapter {} of my story \"{}\"",

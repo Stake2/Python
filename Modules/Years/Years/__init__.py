@@ -17,7 +17,10 @@ class Years(object):
 
 		self.create_current_year = create_current_year
 
-		# Folders, lists, and dictionaries methods
+		# Define the dictionaries of the class
+		self.Define_Dictionaries()
+
+		# Define the folders and files of the class
 		self.Define_Folders_And_Files()
 
 		# Class methods
@@ -99,7 +102,7 @@ class Years(object):
 		self.separators = {}
 
 		# Create separators from one to ten characters
-		for number in range(1, 11):
+		for number in range(1, 21):
 			# Define the empty string
 			string = ""
 
@@ -148,6 +151,39 @@ class Years(object):
 		self.folders["Years"]["Image"]["Images"] = {
 			"root": self.folders["Years"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
 		}
+
+	def Define_Dictionaries(self):
+		# Define the dictionary of websites to post the year summary
+		self.summary_websites = {
+			"Number": 0,
+			"Dictionary": {}
+		}
+
+		# Add the "WriteAs" website
+		self.summary_websites["Dictionary"]["WriteAs"] = {
+			"Name": "WriteAs",
+			"Links": {}
+		}
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# Define the link
+			link = "https://write.as/stake2/" + self.texts["summary_of_my_year_of_{current_year}, type: link"][language]
+
+			# Add it to the links dictionary
+			self.summary_websites["Dictionary"]["WriteAs"]["Links"][language] = link
+
+		# Add the "Fandom" website
+		self.summary_websites["Dictionary"]["Fandom Stake2"] = {
+			"Name": "Fandom Stake2",
+			"Links": {
+				"pt": "https://the-stake2.fandom.com/pt-br/wiki/{current_year}#Resumo_do_Ano",
+				"en": "https://stake2.fandom.com/wiki/{current_year}#Year_Summary"
+			}
+		}
+
+		# Define the number of websites
+		self.summary_websites["Number"] = len(list(self.summary_websites["Dictionary"].keys()))
 
 	def Define_Folder_Item_Names_Dictionary(self):
 		# Define the default folder item "Names" dictionary
@@ -539,6 +575,13 @@ class Years(object):
 						# Create it
 						self.Folder.Create(local_dictionary["Christmas"][key]["root"])
 
+					# Define the "Dates.txt" file inside the "Memories" folder
+					dictionary["Files"][folder_type]["Memories"] = {
+						"Dates": local_dictionary["Memories"]["root"] + "Dates.txt"
+					}
+
+					self.File.Create(dictionary["Files"][folder_type]["Memories"]["Dates"])
+
 				# Define the folders dictionary as the local folders dictionary
 				dictionary["Folders"][folder_type] = local_dictionary
 
@@ -560,7 +603,7 @@ class Years(object):
 
 		# ---------- #
 
-# Define the "Texts" dictionary
+		# Define the "Texts" dictionary
 		dictionary = {
 			"Name": "Texts",
 			"Folders": {
@@ -596,7 +639,7 @@ class Years(object):
 		# Get the local files dictionary
 		dictionary["Files"] = data["Dictionary"]["Files"]["Text"]
 
-# Define the "Texts" dictionary as the local "Texts" dictionary
+		# Define the "Texts" dictionary as the local "Texts" dictionary
 		self.years["Texts"] = dictionary
 
 		# ---------- #
@@ -829,8 +872,9 @@ class Years(object):
 		# Define the list of files to create
 		social_networks_list = [
 			"Discord",
-			"Instagram, Facebook",
+			"Instagram {} Facebook".format(self.Language.language_texts["and"]),
 			"Twitter",
+			"Bluesky {} Threads".format(self.Language.language_texts["and"]),
 			"Wattpad",
 			"WhatsApp"
 		]
@@ -909,9 +953,6 @@ class Years(object):
 		folder = data["Local"]["New Year"]
 
 		dictionary = self.years["Names"]["New Year"]
-
-		# Remove the "Wattpad" social network from the list of Social Networks
-		social_networks_list.remove("Wattpad")
 
 		# Create the New Year "Social Networks" file
 		# Iterate through the files dictionary

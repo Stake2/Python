@@ -556,8 +556,8 @@
 		"pt": "Comprimento"
 	},
 	"example, title()": {
-        "pt": "Exemplo",
-        "en": "Example"
+	"pt": "Exemplo",
+	"en": "Example"
     },
 	"{}_time": {
 		"en": "{} time",
@@ -720,6 +720,10 @@
 	"and_in": {
 		"en": "and in",
 		"pt": "e em"
+	},
+	"and_others, feminine": {
+		"en": "and others",
+		"pt": "e outras"
 	},
 	"or": {
 		"en": "or",
@@ -2140,6 +2144,74 @@
 	"copying_the_discord_status": {
 		"en": "Copying the Discord status",
 		"pt": "Copiando o status do Discord"
+	},
+	"my, type: both genders": {
+		"en": "My",
+		"pt": "Meu/Minha"
+	},
+	"siblings, title()": {
+		"en": "Siblings",
+		"pt": "Irmãos"
+	},
+	"sibling, type: both genders": {
+		"en": "sibling",
+		"pt": "irmão/irmã"
+	},
+	"my_brother": {
+		"en": "My brother",
+		"pt": "Meu irmão"
+	},
+	"my_sister": {
+		"en": "My sister",
+		"pt": "Minha irmã"
+	},
+	"updated_statistic": {
+		"en": "Updated statistic",
+		"pt": "Estatística atualizada"
+	},
+	"updated_statistics": {
+		"en": "Updated statistics",
+		"pt": "Estatísticas atualizadas"
+	},
+	"bike_rides": {
+		"en": "Bike rides",
+		"pt": "Passeios de bicicleta"
+	},
+	"times_i_drove_the_car": {
+		"en": "Times I drove the car",
+		"pt": "Vezes que dirigi o carro"
+	},
+	"showers_taken": {
+		"en": "Showers taken",
+		"pt": "Banhos tomados"
+	},
+	"times_i_washed_my_clothes": {
+		"en": "Times I washed my clothes",
+		"pt": "Vezes que lavei minhas roupa"
+	},
+	"drawings_made": {
+		"en": "Drawings made",
+		"pt": "Desenhos feitos"
+	},
+	"new_websites": {
+		"en": "New websites",
+		"pt": "Novos sites"
+	},
+	"videos_posted": {
+		"en": "Videos posted",
+		"pt": "Vídeos postados"
+	},
+	"days_that_i_worked": {
+		"en": "Days that I worked",
+		"pt": "Dias que eu trabalheiDias que trabalhei"
+	},
+	"before, title()": {
+		"en": "Before",
+		"pt": "Antes"
+	},
+	"visits_of": {
+		"en": "Visits of",
+		"pt": "Visitas de"
 	},
 	"genders, type: dict": {
 		"en": {

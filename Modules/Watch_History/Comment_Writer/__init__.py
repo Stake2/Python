@@ -6,10 +6,13 @@ class Comment_Writer(Watch_History):
 	def __init__(self, dictionary, add_comment = False):
 		super().__init__()
 
+		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
 
+		# Make a shortcut to the "Media" dictionary
 		self.media = self.dictionary["Media"]
 
+		# Define the root "Comment Writer" dictionary
 		self.dictionary["Comment Writer"] = {
 			"States": {
 				"Backup": True,
@@ -138,7 +141,7 @@ class Comment_Writer(Watch_History):
 
 		# Add Re-watching text to comment file name if it exists
 		if self.media["States"]["Re-watching"] == True:
-			self.media["Comment"]["File name"] += self.media["Episode"]["re_watched"]["text"]
+			self.media["Comment"]["File name"] += self.media["Episode"]["Re-watched"]["Texts"]["Number"][self.user_language]
 
 		# Media folder comment file
 		self.media["Item"]["Folders"]["comments"]["files"]["comment"] = self.media["Item"]["Folders"]["comments"]["files"]["root"] + self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True) + ".txt"
@@ -194,7 +197,7 @@ class Comment_Writer(Watch_History):
 				title = self.media["Episode"]["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
 			if self.media["States"]["Re-watching"] == True:
-				title += self.media["Episode"]["re_watched"]["text"]
+				title += self.media["Episode"]["Re-watched"]["Texts"]["Number"][self.user_language]
 
 			# Define episode text (title)
 			episode_text = self.Language.language_texts["title, title()"] + ":" + "\n" + title + "\n"

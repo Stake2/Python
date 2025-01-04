@@ -93,6 +93,9 @@ class PHP(object):
 		# Get the current date from the Date module
 		self.date = self.Date.date
 
+		# Define the current year based on the current date
+		self.current_year = self.date["Units"]["Year"]
+
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])

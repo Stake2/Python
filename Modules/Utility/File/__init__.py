@@ -327,6 +327,8 @@ class File():
 
 			contents["length"] = len(contents["lines"])
 
+			contents["Length"] = contents["length"]
+
 		if self.Exist(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
 

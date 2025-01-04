@@ -128,16 +128,23 @@ class Start_Christmas(Christmas):
 		print("----------")
 
 	def Execute_Christmas_Steps(self):
-		# Show the "Starting Christmas" information text
-		print(self.language_texts["starting_{}_of_{}..."].format(self.Language.language_texts["christmas, title()"], self.date["Units"]["Year"]))
-		print()
-		print("-")
+		# Define the "Starting Christmas" text and format it
+		text = self.language_texts["starting_{}_day_in_{}"]
+
+		text = text.format(self.Language.language_texts["christmas, title()"], self.date["Units"]["Year"])
+
+		# Show the "Starting Christmas" text
+		print(text)
 		print()
 
-		# Open the language planning file
+		# Show a one dash space separator
+		print(self.separators["1"])
+		print()
+
+		# Open the language "Planning" file
 		self.System.Open(self.start_christmas["Files"]["Planning"], verbose = False)
 
-		# Define the list of keys
+		# Define the list of planning keys
 		keys = list(self.start_christmas["Planning"].keys())
 
 		# Iterate through the Christmas steps
@@ -164,27 +171,33 @@ class Start_Christmas(Christmas):
 				# Get the function dictionary of the object
 				dictionary = self.christmas["Functions"][object["Function"]]
 
-				# Get the value
-				value = object["Value"]
+				# If the value key exists inside the object
+				if "Value" in object:
+					# Get the value
+					value = object["Value"]
 
-				# If the local value is not a dictionary
-				# And the function has a values dictionary
-				# And the local value is inside that values dictionary
-				if (
-					type(value) != dict and
-					"Values" in dictionary and
-					value in dictionary["Values"]
-				):
-					# Get the value from the values dictionary
-					value = dictionary["Values"][value]
+					# If the local value is not a dictionary
+					# And the function has a values dictionary
+					# And the local value is inside that values dictionary
+					if (
+						type(value) != dict and
+						"Values" in dictionary and
+						value in dictionary["Values"]
+					):
+						# Get the value from the values dictionary
+						value = dictionary["Values"][value]
 
-				# If the "Function" key is not inside the dictionary
-				if "Function" not in dictionary:
-					# Then define the function as the default "Open" function
-					dictionary["Function"] = self.Open
+					# If the "Function" key is not inside the dictionary
+					if "Function" not in dictionary:
+						# Then define the function as the default "Open" function
+						dictionary["Function"] = self.Open
 
-				# Run the function with the value
-				dictionary["Function"](value)
+					# Run the function with the value
+					dictionary["Function"](value)
+
+				else:
+					# Run the function with no value
+					dictionary["Function"]()
 
 				if "Ask for input" in dictionary:
 					# Update the "ask_for_input" variable with the value inside the function dictionary

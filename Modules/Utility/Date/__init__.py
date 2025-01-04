@@ -455,7 +455,8 @@ class Date():
 			"Difference": {},
 			"Unit texts": {},
 			"Text": {},
-			"Time format": ""
+			"Text (with time units)": {},
+			"Time units text": ""
 		}
 
 		# Get the object of the "Before" and "After" dates
@@ -509,12 +510,18 @@ class Date():
 		# Create the time text of the date difference
 		dictionary["Text"] = self.Make_Time_Text(dictionary)
 
-		# Create the time format text
-		dictionary["Time format"] = self.Create_Time_Format(dictionary)
+		# Create the time units text
+		dictionary["Time units text"] = self.Create_Time_Units_Text(dictionary)
 
-		# Add the time format text to the difference texts
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
-			dictionary["Text"][language] += " (" + dictionary["Time format"] + ")"
+			# Create the language key if it does not exist
+			if language not in dictionary["Text (with time units)"]:
+				# Define the language key as the text in the current language
+				dictionary["Text (with time units)"][language] = dictionary["Text"][language]
+
+			# Add the time units text to the full text
+			dictionary["Text (with time units)"][language] += " (" + dictionary["Time units text"] + ")"
 
 		# Return the dictionary
 		return dictionary
@@ -615,7 +622,7 @@ class Date():
 		# Return the "Text" dictionary
 		return dictionary["Text"]
 
-	def Create_Time_Format(self, dictionary):
+	def Create_Time_Units_Text(self, dictionary):
 		# Define the list of time keys
 		time_keys = [
 			"Hours",
@@ -629,8 +636,8 @@ class Date():
 		# Define the number of keys
 		number_of_keys = len(keys)
 
-		# If the "Time format" key is not present, create it
-		dictionary["Time format"] = ""
+		# If the "Time units text" key is not present, create it
+		dictionary["Time units text"] = ""
 
 		# Iterate through the list of time keys
 		for key in time_keys:
@@ -665,12 +672,12 @@ class Date():
 				# If the "add" switch is True
 				if add == True:
 					# If there is no colon on the end of the time format, add it
-					if ":" not in dictionary["Time format"][-1]:
-						dictionary["Time format"] += ":"
+					if ":" not in dictionary["Time units text"][-1]:
+						dictionary["Time units text"] += ":"
 
 					# If there is not colon at the end of the 
 					# Add zero time
-					dictionary["Time format"] += "00"
+					dictionary["Time units text"] += "00"
 
 			# If the is inside the time difference keys
 			if key in keys:
@@ -678,20 +685,20 @@ class Date():
 				number = str(self.Text.Add_Leading_Zeroes(dictionary["Difference"][key]))
 
 				# Add the number
-				dictionary["Time format"] += number
+				dictionary["Time units text"] += number
 
 			# Add a colon to the time format
 			# If the key is not the last one in the time keys list
 			# And the last character is not a colon
 			if (
 				key != time_keys[-1] and
-				dictionary["Time format"] != "" and
-				dictionary["Time format"][-1] != ":"
+				dictionary["Time units text"] != "" and
+				dictionary["Time units text"][-1] != ":"
 			):
-				dictionary["Time format"] += ":"
+				dictionary["Time units text"] += ":"
 
 		# Return the time format string
-		return dictionary["Time format"]
+		return dictionary["Time units text"]
 
 	def Number_Name_Generator(self):
 		self.numbers = {}

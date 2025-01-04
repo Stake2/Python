@@ -204,8 +204,9 @@ class Christmas():
 		# Define a local list of Social Networks
 		social_networks = [
 			"Discord",
-			"Instagram, Facebook",
+			"Instagram {} Facebook".format(self.Language.language_texts["and"]),
 			"Twitter",
+			"Bluesky {} Threads".format(self.Language.language_texts["and"]),
 			"Wattpad",
 			"WhatsApp"
 		]
@@ -232,6 +233,9 @@ class Christmas():
 			"Open_Social_Network": {
 				"Function": self.Open_Social_Networks,
 				"Ask for input": False
+			},
+			"Discord_Status": {
+				"Function": self.Discord_Status
 			}
 		}
 
@@ -255,125 +259,12 @@ class Christmas():
 			items = item["List"]
 
 			for item in items:
+				if key == "Instagram, Facebook":
+					key = "Instagram {} Facebook".format(self.Language.language_texts["and"])
+
 				item = self.christmas[key][item]
 
 				self.System.Open(item, verbose = False)
-
-	def Open_Social_Networks(self, parameter):
-		if parameter == "Twitter":
-			self.social_networks["List"] = [
-				"Twitter"
-			]
-
-		if parameter == "All":
-			self.social_networks["List"] = sorted(self.Social_Networks.social_networks["List"], key = str.lower)
-			self.social_networks["List"].remove("Twitter")
-			self.social_networks["List"].remove("Habitica")
-
-			self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"]) + 2
-
-			print()
-
-		i = 1
-		for social_network in self.social_networks["List"]:
-			if parameter == "All":
-				# Get the total numbers
-				# And store it in a short variable for easier typing
-				total_number = self.social_networks["Numbers"]["Total"]
-
-				# Make the number text
-				text = str(i) + "/" + str(total_number)
-
-				if social_network != self.social_networks["List"][0]:
-					print("---")
-					print()
-
-				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-				print(self.Language.language_texts["social_networks"] + ":")
-				print("\t" + text)
-				print()
-
-				# Show the "Social Network" text and the Social Network name
-				print(self.Language.language_texts["social_network"] + ":")
-				print("\t" + social_network)
-
-			self.social_networks["List"] = [
-				social_network
-			]
-
-			self.Open_Social_Network(self.social_networks)
-
-			text = self.language_texts["press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet"]
-
-			if parameter == "All":
-				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + ' "' + social_network + '"'
-
-			self.Input.Type(text)
-
-			if parameter == "All":
-				print()
-
-				i += 1
-
-		if parameter == "All":
-			social_networks = [
-				"YouTube",
-				"DeviantArt"
-			]
-
-			print("---")
-			print()
-
-			for social_network in social_networks:
-				link = self.christmas["Social Network links"][social_network]
-
-				# Get the total numbers
-				# And store it in a short variable for easier typing
-				total_number = self.social_networks["Numbers"]["Total"]
-
-				# Make the number text
-				text = str(i) + "/" + str(total_number)
-
-				if social_network != social_networks[0]:
-					print("---")
-					print()
-
-				# Show the "Social Networks" and the "[Current number]/[Total number]" texts
-				print(self.Language.language_texts["social_networks"] + ":")
-				print("\t" + text)
-				print()
-
-				# Show the "Social Network" text and the Social Network name
-				print(self.Language.language_texts["social_network"] + ":")
-				print("\t" + social_network)
-
-				# Define the text template
-				template = self.Social_Networks.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
-
-				# Define the text template items
-				items = [
-					social_network,
-					self.Language.language_texts["profile, title()"]
-				]
-
-				# Format the text template with the items
-				text = template.format(*items)
-
-				print()
-				print(text + ":")
-				print("\t" + link)
-
-				if self.switches["Testing"] == False:
-					self.System.Open(link)
-
-				text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + ' "' + social_network + '"'
-
-				self.Input.Type(text)
-
-				if social_network != social_networks[-1]:
-					print()
-
-				i += 1
 
 	def Open_Module(self, module):
 		self.press_enter_text = self.Language.language_texts["press_enter_when_you"] + " {}"
@@ -426,3 +317,113 @@ class Christmas():
 					i += 1
 
 		self.Input.Type(texts[module])
+
+	def Open_Social_Networks(self, parameter):
+		# If the parameter is "Twitter"
+		if parameter == "Twitter":
+			# Define the list of social networks as only the Twitter one
+			self.social_networks["List"] = [
+				"Twitter"
+			]
+
+		# Define the default skip value as False
+		skip = False
+
+		# If the parameter is "All"
+		if parameter == "All":
+			# Define the input text
+			input_text = self.language_texts["do_you_want_to_skip_changing_the_profile_pictures"]
+
+			# Ask if the user wants to skip the changing the profile pictures
+			skip = self.Input.Yes_Or_No(input_text)
+
+			# Make a copy of the root list of social networks and sort it with the ascending lowercase key
+			self.social_networks["List"] = sorted(self.Social_Networks.social_networks["List"], key = str.lower)
+
+			# Make a list of social networks to remove
+			to_remove = [
+				"Derpibooru",
+				"Habitica",
+				#"Steam"
+			]
+
+			# Remove them
+			for item in to_remove:
+				self.social_networks["List"].remove(item)
+
+			# Update the number of social networks
+			self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
+
+			# If the skip variable is False
+			if skip == False:
+				# Show a space
+				print()
+
+		# If the parameter is "Twitter"
+		# Or the parameter is "All"
+		# And the skip variable is False
+		if (
+			parameter == "Twitter" or
+			parameter == "All" and
+			skip == False
+		):
+			# Define the "i" variable and run the for each loop
+			i = 1
+			for social_network in self.social_networks["List"].copy():
+				# If the parameter is "All"
+				if parameter == "All":
+					# Get the total number of social networks
+					# And store it in a short variable for easier typing
+					total_number = self.social_networks["Numbers"]["Total"]
+
+					# Make the number text
+					text = str(i) + "/" + str(total_number)
+
+					# If the social network is not the first one
+					if social_network != self.social_networks["List"][0]:
+						# Show a three dash space separator
+						print(self.separators["3"])
+						print()
+
+					# Show the "Social Networks" and the "[Current number]/[Total number]" texts
+					print(self.Language.language_texts["social_networks"] + ":")
+					print("\t" + text)
+					print()
+
+					# Show the "Social Network" text and the Social Network name
+					print(self.Language.language_texts["social_network"] + ":")
+					print("\t" + social_network)
+
+				# Update the list of social networks to be the local current social network
+				self.social_networks["List"] = [
+					social_network
+				]
+
+				# Open the social network
+				self.Open_Social_Network(self.social_networks)
+
+				# Define the input text to be about the scheduled tweets about the screenshot and picture of the computer
+				text = self.language_texts["press_enter_when_you_finish_scheduling_the_tweets_of_the_screenshot_and_picture_of_the_decorated_computer"]
+
+				# If the parameter is "All"
+				if parameter == "All":
+					# Define the input text to be about changing the profile picture of the local current social network
+					text = self.language_texts["press_enter_when_you_finish_changing_the_profile_picture_of"] + ' "' + social_network + '"'
+
+				# Ask for user input before continuing
+				self.Input.Type(text)
+
+				# If the parameter is "All"
+				if parameter == "All":
+					# Show a space separator
+					print()
+
+					# Add one to the "i" variable
+					i += 1
+
+	def Discord_Status(self):
+		# Define the status
+		status = self.Language.language_texts["merry_christmas"] + "! {} 🎄🎁".format(self.current_year["Number"])
+
+		# Copy the status
+		self.Text.Copy(status)

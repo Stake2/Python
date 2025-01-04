@@ -3,9 +3,9 @@
 		"pt": "Hoje não é dia de Natal, espere até",
 		"en": "Today is not Christmas day, wait until"
 	},
-	"starting_{}_of_{}...": {
-		"en": "Starting {} of {}...",
-		"pt": "Iniciando {} de {}..."
+	"starting_{}_day_in_{}": {
+		"en": "Starting {} day in {}...",
+		"pt": "Iniciando o dia de {} em {}..."
 	},
 	"defining_the_christmas_theme": {
 		"en": "Defining the Christmas theme",
@@ -27,12 +27,16 @@
 		"pt": "Pressione Enter quando você terminar de passar um tempo com a Monika no jogo",
 		"en": "Press Enter when you spending time with Monika on the game"
 	},
-	"press_enter_when_you_finish_adding_the_screenshots_to_the_scheduled_tweet": {
-		"en": "Press Enter when you finish adding the screenshots of the decoreated computer to the scheduled tweet",
-		"pt": "Pressione Enter quando você terminar de adicionar as prints do computador decorado ao tweet programado"
+	"press_enter_when_you_finish_scheduling_the_tweets_of_the_screenshot_and_picture_of_the_decorated_computer": {
+		"en": "Press Enter when you finish scheduling the tweets of the screenshot and picture of the decorated computer",
+		"pt": "Pressione Enter quando você terminar de programar os tweets da print e foto do computador decorado"
 	},
 	"your_christmas_of_{}_is_finished_congratulations!": {
 		"pt": "Seu Natal de {} está concluído, parabéns!",
 		"en": "Your Christmas of {} is finished, congratulations!"
+	},
+	"do_you_want_to_skip_changing_the_profile_pictures": {
+		"pt": "Você quer pular a mudança das fotos de perfil",
+		"en": "Do you want to skip changing profile pictures"
 	}
 }

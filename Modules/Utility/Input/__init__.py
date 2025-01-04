@@ -275,12 +275,42 @@ class Input():
 
 		return dictionary
 
-	def Define_Yes_Or_No(self, response):
-		if response in ["Yes", "yes", self.language_texts["yes, title()"], self.language_texts["yes, title()"].lower()]:
-			return True
+	def Define_Yes_Or_No(self, response, inverse = False):
+		# Define the list of yes answers
+		yes_answers = [
+			"Yes",
+			"yes",
+			self.language_texts["yes, title()"],
+			self.language_texts["yes, title()"].lower()
+		]
 
-		if response in ["No", "no", self.language_texts["no, title()"], self.language_texts["no, title()"].lower()]:
-			return False
+		# Define the list of no answers
+		no_answers = [
+			"No",
+			"no",
+			self.language_texts["no, title()"],
+			self.language_texts["no, title()"].lower()
+		]
+
+		# If the inverse parameter is False
+		if inverse == False:
+			# If the response is in the list of yes answers, return True
+			if response in yes_answers:
+				return True
+
+			# If the response is in the list of no answers, return False
+			if response in no_answers:
+				return False
+
+		# If the inverse parameter is True
+		if inverse == True:
+			# If the response is True, return "Yes"
+			if response == True:
+				return "Yes"
+
+			# If the response is False, return "No"
+			if response == False:
+				return "No"
 
 	def Yes_Or_No(self, question, convert_to_text = False, first_space = True):
 		options = [
@@ -320,7 +350,7 @@ class Input():
 		):
 			text += ": "
 
-		if type(text) == dict:
+		if isinstance(text, dict):
 			text = self.Language.Item(text)
 
 		if first_space == True:
@@ -333,7 +363,10 @@ class Input():
 
 			local_text = ""
 
-		if type(regex) == str:
+		if (
+			isinstance(regex, str) and
+			"; " in regex
+		):
 			split = regex.split("; ")
 
 			regex = {
@@ -360,7 +393,8 @@ class Input():
 
 		if (
 			regex != None and
-			regex["Regex"] != ""
+			regex["Regex"] != "" and
+			accept_enter == False
 		):
 			search = re.search(regex["Regex"], typed)
 

@@ -59,6 +59,10 @@
 		"en": "Select the drawing program",
 		"pt": "Selecione o programa de desenho"
 	},
+	"select_the_sibling": {
+		"en": "Select the sibling",
+		"pt": "Selecione o irmão"
+	},
 	"type_how_much_course_classes_you_watched_(1_one)": {
 		"en": "Type how much course classes you watched (1, one)",
 		"pt": "Digite quantas aulas de curso você assistiu (1, uma)"
@@ -125,6 +129,26 @@
 	},
 	"this_diary_slim_was_written_on_the_phone": {
 		"en": "This Slim Diary was written on the phone",
-		"pt": "Este Diário Slim foi escrito no pelo celular"
+		"pt": "Este Diário Slim foi escrito no celular"
+	},
+	"have_you_created_new_websites": {
+		"en": "Have you created new websites",
+		"pt": "Você criou novos sites"
+	},
+	"type_how_many_websites_have_you_created": {
+		"en": "Type how many websites have you created",
+		"pt": "Digite quantos sites você criou"
+	},
+	"type_the_name_of_the_workplace": {
+		"en": "Type the name of the workplace",
+		"pt": "Digite o nome do local de trabalho"
+	},
+	"type_how_much_money_you_earned": {
+		"en": "Type how much money you earned",
+		"pt": "Digite quanto dinheiro você ganhou"
+	},
+	"type_how_many_times_you_drove_the_car": {
+		"en": "Type how many times you drove the car",
+		"pt": "Digite quantas vezes você dirigiu o carro"
 	}
 }

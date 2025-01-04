@@ -199,7 +199,8 @@ class Friends(object):
 			"Lists": {
 				"Exact match": [],
 				"Select": [],
-				"Do not ask for item": []
+				"Do not ask for item": [],
+				"Accept enter": []
 			},
 			"Gender": {
 				"Items": [
@@ -1072,12 +1073,12 @@ class Friends(object):
 				# Define the "accept_enter" variable
 				accept_enter = False
 
-				if information_item["Format"]["Regex"] == "":
-					accept_enter = True
-
-				# Only accept enter if the information item has no format
+				# Only accept enter if the information item is inside the "Accept enter" list
+				# Or it has no format
 				# And it is not the "Name" information item
 				if (
+					"Accept enter" in information_items["Lists"] and
+					information_item["Name"] in information_items["Lists"]["Accept enter"] or
 					information_item["Format"]["Regex"] == "" and
 					information_item["Name"] != "Name"
 				):
@@ -1115,6 +1116,8 @@ class Friends(object):
 					# Define the information as "[Empty]" if it is empty
 					if information == "":
 						information = "[{}]".format(self.Language.language_texts["empty, title()"])
+
+						print("\t" + information)
 
 			# Else, ask user to select an item from the list of information
 			else:

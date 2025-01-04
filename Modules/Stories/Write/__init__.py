@@ -254,6 +254,7 @@ class Write(Stories):
 			},
 			"Titles": {},
 			"Titles (with leading zeroes)": {},
+			"Old chapter": {},
 			"Language": {},
 			"Discord": {},
 			"Folders": {},
@@ -319,7 +320,7 @@ class Write(Stories):
 			self.dictionary["Chapter"]["Files"][language] = self.dictionary["Chapter"]["Folders"][full_language]["root"]
 
 			# Add the chapter title
-			self.dictionary["Chapter"]["Files"][language] += self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + ".txt"
+			self.dictionary["Chapter"]["Files"][language] += self.Sanitize(self.dictionary["Chapter"]["Titles (with leading zeroes)"][language], restricted_characters = True) + ".txt"
 
 			# If the writing mode is "Write"
 			# And the current language is the user language
@@ -429,8 +430,11 @@ class Write(Stories):
 	def Check_Chapter_Date_Texts(self):
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# Get the chapter file
+			chapter_file = self.dictionary["Chapter"]["Files"][language]
+
 			# Get the lines of the language chapter file
-			lines = self.File.Contents(self.dictionary["Chapter"]["Files"][language])["lines"]
+			lines = self.File.Contents(chapter_file)["lines"]
 
 			# If the writing mode is "Translate"
 			# And the current language is equal to the target translation language
@@ -531,6 +535,15 @@ class Write(Stories):
 				# Add a space after the lines
 				lines.insert(i, "")
 
+				# If the writing mode is "Write"
+				# And this writing session is the first one for the current chapter
+				if (
+					self.writing_mode == "Write" and
+					self.states["First time writing"] == True
+				):
+					# Add a space after the lines to separate the chapter from the chapter dates
+					lines.insert(i, "")
+
 			# Transform the list of lines into a text string
 			text = self.Text.From_List(lines, next_line = True)
 
@@ -563,25 +576,29 @@ class Write(Stories):
 		# Define the list of custom parameters to add to the URL
 		parameters = [
 			"chapter=" + str(self.chapter["Number"]), # The number of the chapter
-			"write=true", # The write switch, to activate writing mode on the story website
-			"show_chapter_covers=true" # Show chapter covers on the chapter tabs
+			"write=true", # The write switch, to activate the writing mode on the story website
+			"show_chapter_covers=true" # Show the chapter covers on the chapter tabs
 		]
 
 		# Iterate through the list of parameters
 		for parameter in parameters:
+			# Add each parameter to the URL
 			url += "&" + parameter
 
-		# Show the text about opening the story website
+		# Show a three dash space separator
+		print()
+		print(self.separators["3"])
+
+		# Define and show the text about opening the story website
 		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Destination"]["Translated"][self.user_language]
 
 		print()
-		print(self.separators["3"])
-		print()
 		print(text + "...")
 
-		# Open the URL
+		# Open the story website link
 		self.System.Open(url, verbose = False)
 
+		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
 			# Wait for two seconds
 			self.Date.Sleep(2)
@@ -840,7 +857,8 @@ class Write(Stories):
 			# With the "Units" dictionary being the units of the current session duration
 			self.dictionary["Writing"]["Duration"] = {
 				"Units": self.dictionary["Session"]["Duration"]["Difference"],
-				"Text": {}
+				"Text": {},
+				"Text (with time units)": {}
 			}
 
 		# Calculate and update the writing time
@@ -914,7 +932,7 @@ class Write(Stories):
 			# Show the writing duration time in the user language
 			print()
 			print(self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
-			print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.user_language])
+			print("\t" + self.dictionary["Session"]["Duration"]["Text (with time units)"][self.user_language])
 
 			# ---------- #
 
@@ -924,6 +942,7 @@ class Write(Stories):
 				self.dictionary["Session"]["Pause"] = {
 					"Before": self.Date.Now(),
 					"After": {},
+					"After (copy)": {},
 					"Is pause": True
 				}
 
@@ -1023,7 +1042,7 @@ class Write(Stories):
 			# Show the writing duration time in the user language (subtracting the pause time)
 			print()
 			print(text)
-			print("\t" + difference["Text"][self.user_language])
+			print("\t" + difference["Text (with time units)"][self.user_language])
 
 			# ---------- #
 
@@ -1119,11 +1138,19 @@ class Write(Stories):
 			# Make the difference between the first time and the added time
 			difference = self.Date.Difference(self.dictionary["Writing"]["First"]["Object"], self.dictionary["Writing"]["Added"]["Object"])
 
-			# Update the time units of the "Duration" dictionary
-			self.dictionary["Writing"]["Duration"]["Units"] = difference["Difference"]
+			# Define a list of keys to import from the local difference dictionary
+			keys = [
+				"Text",
+				"Text (with time units)",
+				"Time units text"
+			]
 
-			# Create the writing time text using the "Make_Time_Text" method of the "Date" module
-			self.dictionary["Writing"]["Duration"]["Text"] = self.Date.Make_Time_Text(difference)
+			# Import them
+			for key in keys:
+				self.dictionary["Writing"]["Duration"][key] = difference[key]
+
+			# Define the "Units" key to be used later
+			self.dictionary["Writing"]["Duration"]["Units"] = difference["Difference"]
 
 			# Transform the times back into date strings
 			for key in ["First", "Last", "Added"]:
@@ -1162,17 +1189,41 @@ class Write(Stories):
 
 			update_chapter_titles = self.Input.Yes_Or_No(input_text)
 
+		# If the writing mode is "Revise"
+		# And the "update chapter titles" variable is True
+		if (
+			self.writing_mode == "Revise" and
+			update_chapter_titles == True
+		):
+			# Make a backup of the old chapter
+			self.chapter["Old chapter"] = deepcopy(self.chapter["Titles"])
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
 			# Get the full and translated languages
 			full_language = self.languages["full"][language]
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			# Ask for the chapter title in the current language
-			type_text = self.language_texts["type_the_chapter_title_in_{}"].format(translated_language)
+			# Ask for the new chapter title in the current language
+			type_text = self.language_texts["type_the_new_chapter_title_in_{}"].format(translated_language)
 
 			# Define the default "chapter title" variable
 			chapter_title = ""
+
+			# If the writing mode is "Revise"
+			# And the "update chapter titles" variable is True
+			if (
+				self.writing_mode == "Revise" and
+				update_chapter_titles == True
+			):
+				# Show the old chapter title
+				print()
+				print(self.language_texts["old_title"] + ":")
+				print(self.chapter["Old chapter"][language])
 
 			# If the writing mode is "Write"
 			# Or the writing mode is "Revise"
@@ -1255,7 +1306,7 @@ class Write(Stories):
 			source_file = self.chapter["Files"][language]
 
 			# Define the destination file
-			destination_file = self.story["Folders"]["Chapters"][full_language]["root"] + self.chapter["Titles (with leading zeroes)"][language] + ".txt"
+			destination_file = self.story["Folders"]["Chapters"][full_language]["root"] + self.Sanitize(self.chapter["Titles (with leading zeroes)"][language], restricted_characters = True) + ".txt"
 
 			# If the writing mode is "Write"
 			# And the current language is the user language
@@ -1449,29 +1500,14 @@ class Write(Stories):
 			# Example: 1 hour, 30 minutes, 10 seconds
 			description += " " + self.dictionary["Session"]["Duration"]["Text"][language]
 
-			# Define the "add_time_format" switch
-			add_time_format = False
+			# Define the "add_time_units_text" switch
+			add_time_units_text = True
 
-			# If the "add_time_format" switch is True
-			if add_time_format == True:
-				# Add the session writing time units
+			# If the "add_time_units_text" switch is True
+			if add_time_units_text == True:
+				# Add the session writing time units text
 				# Example: (01:30:10)
-				description += " ("
-
-				# Define the list of keys
-				keys = list(self.dictionary["Session"]["Duration"]["Difference"].keys())
-
-				# Iterate through the list of units
-				for key, unit in self.dictionary["Session"]["Duration"]["Difference"].items():
-					# Add the unit number with leading zeroes
-					description += str(self.Text.Add_Leading_Zeroes(unit))
-
-					# If the unit is not the last one, add a colon
-					if key != keys[-1]:
-						description += ":"
-
-				# Close the parenthesis and add the dot
-				description += ")"
+				description += " (" + self.dictionary["Session"]["Duration"]["Time units text"] + ")"
 
 			# Add the end period
 			description += "."
@@ -1490,40 +1526,11 @@ class Write(Stories):
 				# Example: 1 hour, 30 minutes, 10 seconds
 				description += self.dictionary["Writing"]["Duration"]["Text"][language]
 
-				# Create the session writing time units
-				# Example: (01:30:10)
-				dictionary = {
-					"Difference": self.dictionary["Writing"]["Duration"]["Units"],
-					"Time format": ""
-				}
-
-				dictionary["Time format"] = self.Date.Create_Time_Format(dictionary)
-
-				# If the "add_time_format" switch is False
-				if add_time_format == False:
-					# Add the time format text to the description text
-					description += " (" + dictionary["Time format"] + ")"
-
-				# If the "add_time_format" switch is True
-				if add_time_format == True:
-					# Add the total writing time units
+				# If the "add_time_units_text" switch is True
+				if add_time_units_text == True:
+					# Add the session writing time units text
 					# Example: (01:30:10)
-					description += " ("
-
-					# Define the list of keys
-					keys = list(self.dictionary["Writing"]["Duration"]["Units"].keys())
-
-					# Iterate through the list of units
-					for key, unit in self.dictionary["Writing"]["Duration"]["Units"].items():
-						# Add the unit number with leading zeroes
-						description += str(self.Text.Add_Leading_Zeroes(unit))
-
-						# If the unit is not the last one, add a colon
-						if key != keys[-1]:
-							description += ":"
-
-					# Close the parenthesis and add the dot
-					description += ")"
+					description += " (" + self.dictionary["Writing"]["Duration"]["Time units text"] + ")"
 
 				# Add the end period
 				description += "."

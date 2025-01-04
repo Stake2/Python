@@ -38,6 +38,9 @@ class Diary_Slim():
 		# Define the Diary Slim texts
 		self.Define_Diary_Slim_Texts()
 
+		# Define the statistics for the Diary Slim
+		self.Define_Statistics()
+
 	def Import_Classes(self):
 		# Define the list of modules to be imported
 		modules = [
@@ -253,6 +256,7 @@ class Diary_Slim():
 		self.diary_slim["Header template"] = self.File.Contents(file)["string"]
 
 	def Define_Templates(self):
+		# Define the root template dictionary
 		self.template = {
 			"Numbers": {
 				"Months": 12,
@@ -275,6 +279,7 @@ class Diary_Slim():
 			}
 		}
 
+		# Define the dictionary of templates
 		self.templates = {
 			"Year": {
 				"Numbers": {
@@ -342,11 +347,11 @@ class Diary_Slim():
 			self.history = self.JSON.To_Python(self.diary_slim["Folders"]["Years"]["History"])
 
 		# Create a list of years starting from the year "2020" to the current year
-		self.years = self.Date.Create_Years_List(start = 2020, function = str)
+		self.years_list = self.Date.Create_Years_List(start = 2020, function = str)
 
 		# If the years list inside the History dictionary is empty, create a new one
 		if self.history["Years"] == []:
-			self.history["Years"] = self.years
+			self.history["Years"] = self.years_list
 
 		# If the current year is not inside the "History" years list, add it to the list
 		if self.diary_slim["Current year"]["Number"] not in self.history["Years"]:
@@ -357,14 +362,14 @@ class Diary_Slim():
 
 		# Define the default numbers dictionary
 		numbers = {
-			"Years": len(self.years),
+			"Years": len(self.years_list),
 			"Months": 0,
 			"Days": 0,
 			"Diary Slims": 0
 		}
 
 		# Iterate through the years list
-		for year in self.years:
+		for year in self.years_list:
 			# Create the year folder
 			folders = {
 				"root": self.diary_slim["Folders"]["Years"]["root"] + year + "/"
@@ -408,10 +413,10 @@ class Diary_Slim():
 				# Update the "Year" template
 				template = self.templates["Year"]
 
-				# Update the year number
+				# Update the number of the year
 				template["Numbers"]["Year"] = int(year)
 
-				# Update the months number
+				# Update the number of months
 				template["Numbers"]["Months"] = 12
 
 				# Get a "Date" dictionary from the current year in the iteration
@@ -426,7 +431,7 @@ class Diary_Slim():
 			# Update the empty "Year.json" file with the updated "Year" dictionary
 			self.JSON.Edit(file, year_dictionary)
 
-			# Add the "folders" dictionary to the root "Diary Slim" folders dictionary
+			# Add the local "folders" dictionary to the root "Diary Slim" folders dictionary
 			self.diary_slim["Folders"]["Years"][year] = folders
 
 		# Define the History "Numbers" dictionary as the local numbers dictionary
@@ -794,6 +799,9 @@ class Diary_Slim():
 			if "Quotes" not in dictionary:
 				dictionary["Quotes"] = True
 
+			# Add the "Is statistic" state to the dictionary
+			dictionary["Is statistic"] = False
+
 			# Add the Diary Slim "Text" dictionary to the root "Texts" dictionary
 			self.diary_slim["Texts"]["Dictionary"][text] = dictionary
 
@@ -834,6 +842,212 @@ class Diary_Slim():
 		# Update the "Texts.json" file with the updated Diary Slim "Texts" dictionary
 		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Texts"]["Texts"], texts_copy)
 
+	def Define_Statistics(self):
+		# Define the root statistics dictionary
+		self.statistics = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {
+				"Bike": {
+					"Key": "Bike rides"
+				},
+				"Drove the car through the city": {
+					"Key": "Times I drove the car",
+					"Optional": True,
+					"Question": self.texts["type_how_many_times_you_drove_the_car"],
+					"Question type": "Type",
+					"Answers": {
+						"Type": {
+							"Text": self.texts["type_how_many_times_you_drove_the_car"],
+							"Type": "Number",
+							"Key": "Times I drove the car"
+						}
+					}
+				},
+				"Took a shower": {
+					"Key": "Showers taken"
+				},
+				"Wash clothes": {
+					"Key": "Times I washed my clothes"
+				},
+				"Drawings": {
+					"Key": "Drawings made"
+				},
+				"My sibling is here to spend time with us": {
+					"Key": "List"
+				},
+				"My father went to the city of his mother by bus": {
+					"Key": "My father went to the city of his mother by bus"
+				},
+				"PHP": {
+					"Key": "New websites",
+					"Optional": True,
+					"Question": self.texts["have_you_created_new_websites"],
+					"Question type": "Yes or no",
+					"Answers": {
+						"Yes": {
+							"Type": {
+								"Text": self.texts["type_how_many_websites_have_you_created"],
+								"Type": "Number"
+							}
+						}
+					}
+				},
+				"Videos": {
+					"Key": "Videos posted"
+				},
+				"Worked in-person": {
+					"Key": "Days that I worked",
+					"Question": self.texts["type_the_name_of_the_workplace"],
+					"Question type": "Type",
+					"Questions": {
+						"1": {
+							"Text": self.texts["type_how_much_money_you_earned"],
+							"Type": "Number",
+							"Key": "Money that I earned"
+						}
+					}
+				},
+				"Worked on a freelance website": {
+					"Key": "SproutGigs"
+				}
+			}
+		}
+
+		# List the statistics
+		self.statistics["List"] = list(self.statistics["Dictionary"].keys())
+
+		# Get the number of statistics
+		self.statistics["Numbers"]["Total"] = len(self.statistics["List"])
+
+		# Create the data "Statistics.json" file
+		self.diary_slim["Folders"]["Data"]["Statistics"] = self.diary_slim["Folders"]["Data"]["root"] + "Statistics.json"
+		self.File.Create(self.diary_slim["Folders"]["Data"]["Statistics"])
+
+		# ---------- #
+
+		# Create a template of the statistics dictionary
+		self.statistics_template = {}
+
+		# Iterate through the dictionary of statistics
+		for key, statistic in self.statistics["Dictionary"].items():
+			# Create a dictionary with the root statistic key
+			dictionary = {}
+
+			# If the key is not "List", add it to the local dictionary
+			if statistic["Key"] != "List":
+				dictionary[statistic["Key"]] = 0
+
+			# If the "Questions" key is inside the statistic dictionary
+			if "Questions" in statistic:
+				for question in statistic["Questions"].values():
+					dictionary[question["Key"]] = 0
+
+			# Add the local statistic dictionary to the root statistics dictionary template
+			self.statistics_template[key] = dictionary
+
+		# ---------- #
+
+		# Create the "Years" dictionary
+		self.years = {}
+
+		# Iterate through the list of years
+		for year in self.history["Years"]:
+			# Get the year folders
+			folders = self.diary_slim["Folders"]["Years"][year]
+
+			# Create the "Statistics.json" file
+			folders["Statistics"] = folders["root"] + "Statistics.json"
+			self.File.Create(folders["Statistics"])
+
+			# Add the folders and dictionary of statistics to the "Years" dictionary
+			self.years[year] = {
+				"Folders": folders,
+				"Statistics": {}
+			}
+
+			# If the local year is the current year
+			if year == self.diary_slim["Current year"]["Number"]:
+				# Add the statistics file to the "Current year" key
+				self.diary_slim["Current year"]["Folders"]["Statistics"] = folders["Statistics"]
+
+		# ---------- #
+
+		# Iterate through the keys inside the Diary Slim Texts dictionary
+		for key in self.diary_slim["Texts"]["Dictionary"].copy():
+			# Get the text dictionary
+			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
+
+			# If the text contains a statistic
+			if dictionary["Key"] in self.statistics["Dictionary"]:
+				# If the "Statistic key" key is inside the text dictionary
+				if "Statistic key" in dictionary:
+					# Get the statistic key
+					key = dictionary["Statistic key"]
+
+					# Change the key of the statistic number
+					self.statistics_template[dictionary["Key"]] = {
+						key: 0
+					}
+
+				# If the "Add to statistics" key is inside the text dictionary
+				# And the "Options" key is inside the text dictionary
+				# And the "List" key is inside the options dictionary
+				if (
+					"Add to statistics" in dictionary and
+					"Options" in dictionary and
+					"List" in dictionary["Options"]
+				):
+					# Get the key
+					key = dictionary["Key"]
+
+					# Get the dictionary
+					statistic = self.statistics["Dictionary"][key]
+
+					# Add the list of the text dictionary inside the statistic dictionary
+					statistic["List"] = dictionary["Options"]["List"]
+
+					# Add each one of the items of the list to the statistics template
+					for item in statistic["List"]:
+						self.statistics_template[key][item] = 0
+
+				# Switch the "Is statistic" state to True
+				dictionary["Is statistic"] = True
+
+		# Update the statistics
+		self.Update_Statistics()
+
+	def Update_Statistics(self):
+		# Update the data statistics file with the root statistics dictionary
+		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Statistics"], self.statistics)
+
+		# Iterate through the list of years
+		for year in self.history["Years"]:
+			# Update the statistics dictionary of the year dictionary
+			self.years[year]["Statistics"] = deepcopy(self.statistics_template)
+
+			# If the statistics file is not empty
+			if self.File.Contents(self.years[year]["Folders"]["Statistics"])["lines"] != []:
+				# Get the JSON dictionary
+				json_dictionary = self.JSON.To_Python(self.years[year]["Folders"]["Statistics"])
+
+				# Update the root dictionary with the local JSON one
+				self.years[year]["Statistics"].update(json_dictionary)
+
+			# Write the statistics dictionary into the file
+			self.JSON.Edit(self.years[year]["Folders"]["Statistics"], self.years[year]["Statistics"])
+
+			# If the local year is the current year
+			if year == self.diary_slim["Current year"]["Number"]:
+				# Add the statistics dictionary to the "Current year" key
+				self.diary_slim["Current year"]["Statistics"] = self.years[year]["Statistics"]
+
+	def Update_Current_Year_Statistics(self, statistics):
+		# Write the parameter statistics dictionary into the file
+		self.JSON.Edit(self.diary_slim["Current year"]["Folders"]["Statistics"], statistics)
+
 	def Next_State(self, dictionary):
 		# Define the states variable for easier typing
 		states = dictionary["States"]
@@ -854,45 +1068,104 @@ class Diary_Slim():
 		# Update the "States.json" file
 		self.JSON.Edit(dictionary["Files"]["States"], states)
 
-	def Define_Additional_Information(self, dictionary, text_to_write = None):
-		# Define the text variable for easier typing
-		text = dictionary["Text"]
+	def Define_Additional_Information(self, dictionary, text_to_write = None, is_statistic = False):
+		# Define the default additional information dictionary
+		additional_information = dictionary
+		
+		# If the information is not a statistic
+		if is_statistic == False:
+			# Define the text variable for easier typing
+			text = dictionary["Text"]
 
-		# Define the additional information variable for easier typing
-		additional_information = text["Additional information"]
+			# Define the additional information variable for easier typing
+			additional_information = text["Additional information"]
 
-		# Ask the question and get the user answer
-		user_answer = self.Input.Yes_Or_No(additional_information["Question"][self.user_language])
+		# Define the dictionary of answers
+		answers_dictionary = {
+			"Yes or no": ["Yes", "No"],
+			"Type or select": ["Type", "Select"]
+		}
 
-		# Define the list of booleans
-		booleans = [
-			True,
-			False
-		]
+		# If the "Question type" key is present
+		if "Question type" in additional_information:
+			# If the question type is "Yes or no"
+			if additional_information["Question type"] == "Yes or no":
+				# Ask the question and get the user answer
+				user_answer = self.Input.Yes_Or_No(additional_information["Question"][self.user_language])
+
+				# Define the list of booleans
+				booleans = [
+					True,
+					False
+				]
+
+				# Define the list of answers
+				answers = answers_dictionary["Yes or no"]
+
+			# If the question type is inside the defined list
+			if additional_information["Question type"] in ["Type", "Select"]:
+				# Define the list of answers
+				answers = answers_dictionary["Type or select"]
 
 		# If the "text to write" parameter is None
-		if text_to_write == None:
+		# And the key exists inside the dictionary
+		if (
+			text_to_write == None and
+			"Text to write" in dictionary
+		):
 			text_to_write = dictionary["Text to write"]
 
-		# Iterate through the "Yes" and "No" list
+		# If the information is a statistic
+		if is_statistic == True:
+			# Define the local statistic dictionary
+			statistic = {}
+
+		# Define the "Found answer" state
+		found_answer = False
+
+		# Iterate through the list of answers
 		i = 0
-		for answer in ["Yes", "No"]:
-			# Get the boolean
-			boolean = booleans[i]
+		for answer in answers:
+			# Define the default expression
+			expression = True == True
+
+			# If the "Question type" key is present
+			# And the question type is "Yes or no"
+			if (
+				"Question type" in additional_information and
+				additional_information["Question type"] == "Yes or no"
+			):
+				# Get the boolean
+				boolean = booleans[i]
+
+				# Define the expression
+				expression = user_answer == boolean
+
+			# If the "Answers" key is not inside the dictionary of additional information
+			if "Answers" not in additional_information:
+				# Create the "Answers" dictionary with the type text as the question
+				additional_information["Answers"] = {
+					"Type": {
+						"Text": additional_information["Question"]
+					}
+				}
 
 			# If the answer dictionary exists
-			if answer in additional_information:
+			if answer in additional_information["Answers"]:
 				# Define the answer dictionary for easier typing
-				answer_dictionary = additional_information[answer]
+				answer_dictionary = additional_information["Answers"][answer]
 
-				# If the answer is the same as the boolean
-				# And the "[Answer]" ([Boolean]) option is inside the "Additional information" dictionary
+				# If the answer expression is correct
 				# And the "Continue" key is not inside the "[Answer]" dictionary
 				if (
-					user_answer == boolean and
-					answer in additional_information and
+					expression and
 					"Continue" not in answer_dictionary
 				):
+					# If the information is a statistic
+					if is_statistic == True:
+						# Add the answer key to the statistic dictionary
+						statistic["Answer"] = answer
+
 					# If the "Format" key is inside the "[Answer]" dictionary
 					if "Format" in answer_dictionary:
 						# Define the format variable for easier typing
@@ -901,6 +1174,101 @@ class Diary_Slim():
 						# Format the format text with the text to write
 						text_to_write = format.replace("{Text}", text_to_write)
 
+					# If the "Type" key is inside the "[Answer]" dictionary
+					if "Type" in answer_dictionary:
+						# Define the type dictionary as the root answer dictionary
+						type_dictionary = answer_dictionary
+
+						# Get the type dictionary if it is truly a dictionary
+						if isinstance(answer_dictionary["Type"], dict) == True:
+							type_dictionary = answer_dictionary["Type"]
+
+						# Verify the user input
+						text_to_write = self.Verify_Input(type_dictionary)
+
+						# If the information is a statistic
+						if is_statistic == True:
+							# Add the question type to the statistic dictionary
+							statistic["Question type"] = "Type"
+
+							# If the input "Type" key is inside the local type dictionary
+							if "Type" in answer_dictionary:
+								# Add it to the statistic dictionary
+								statistic["Input type"] = answer_dictionary["Type"]
+
+							# Add the response
+							statistic["Response"] = text_to_write
+
+					# If the "Questions" key is inside the "[Answer]" dictionary
+					if "Questions" in answer_dictionary:
+						# Get the dictionary of questions
+						questions = answer_dictionary["Questions"]
+
+						# If the information is a statistic
+						if is_statistic == True:
+							# Define the statistic dictionary
+							statistic.update({
+								"Question type": "Questions",
+								"Response": {}
+							})
+
+						# Iterate through each question inside the list of questions
+						for question in questions.values():
+							# Get the question key
+							key = question["Key"]
+
+							# Get the user response
+							response = self.Verify_Input(question)
+
+							# If the information is a statistic
+							if is_statistic == True:
+								# Add the response to the statistic dictionary
+								statistic["Response"][key] = response
+
+					# Switch the "Found answer" state to True
+					found_answer = True
+
+			# Add one to the "i" number
 			i += 1
+
+		# If the method could not find an answer
+		# And the information is a statistic
+		# And the user answer variable exists
+		if (
+			found_answer == False and
+			is_statistic == True
+		):
+			# Create the response dictionary with the key
+			statistic["Response"] = self.Input.Define_Yes_Or_No(user_answer, inverse = True)
+
+		# Define the return dictionary
+		return_dictionary = {
+			"Text": text_to_write
+		}
+
+		# If the information is a statistic
+		if is_statistic == True:
+			# Define the "Statistic" key with the "Statistic" dictionary
+			return_dictionary["Statistic"] = statistic
+
+		return return_dictionary
+
+	def Verify_Input(self, type_dictionary):
+		# Define the user language text
+		type_dictionary["Text"] = type_dictionary["Text"][self.user_language]
+
+		# Define the default regex
+		regex = ""
+
+		# If the "Type" key is inside the type dictionary
+		# And its value is "Number"
+		if (
+			"Type" in type_dictionary and
+			type_dictionary["Type"] == "Number"
+		):
+			regex = r"\b[1-9][0-9]*\b; 10"
+
+		# Ask the user to type the information with the type text
+		text_to_write = self.Input.Type(type_dictionary["Text"], accept_enter = False, regex = regex)
 
 		return text_to_write

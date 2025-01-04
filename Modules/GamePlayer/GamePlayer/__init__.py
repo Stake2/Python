@@ -966,7 +966,7 @@ class GamePlayer(object):
 			if self.dictionaries["Game type"][dictionary["Type"]["Type"]["en"]]["Numbers"]["Total"] == 0:
 				game["States"]["First game type session in year"] = True
 
-			# Define the game files dictionary
+			# Define the game "Files" dictionary
 			game["Files"] = {
 				"Shortcut": {
 					"File": dictionary["Type"]["Folders"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True),
@@ -1368,7 +1368,7 @@ class GamePlayer(object):
 		title = game["Titles"]["Language"]
 
 		# Define the sub-game title variable for easier typing
-		sub_game_title = sub_game["Titles"]["Language"]
+		sub_game_title = game["Sub-game"]["Titles"]["Language"]
 
 		# If the first two characters of the title are not a colon and a space
 		if sub_game_title[0] + sub_game_title[1] != ": ":
@@ -1601,13 +1601,16 @@ class GamePlayer(object):
 		return title
 
 	def Calculate_Gaming_Time(self, dictionary, item = False):
+		# Define the game variable
 		game = deepcopy(dictionary["Game"])
 
+		# If the item parameter is True, define the game variable as the sub-game
+		if item == True:
+			game = deepcopy(game["Sub-game"])
+
+		# Get the entry if it exists
 		if "Entry" in dictionary:
 			entry = dictionary["Entry"]
-
-		if item == True:
-			game = game["Sub-game"]
 
 		# Define the first and last times
 		for key in ["First", "Last"]:
@@ -1633,53 +1636,84 @@ class GamePlayer(object):
 			# Create the date dictionary of the played time
 			game["Gaming time"]["Times"][key] = self.Date.From_String(game["Gaming time"]["Times"][key])
 
-		# Define the added time as the first played time
-		game["Gaming time"]["Times"]["Added"] = deepcopy(game["Gaming time"]["Times"]["First"])
-
 		# Iterate through the time difference keys
-		for key in entry["Session duration"]["Difference"]:
-			difference = entry["Session duration"]["Difference"][key]
-
-			# Add the difference time to the game time
+		for key, difference in entry["Session duration"]["Difference"].items():
+			# Add the difference to the game units
 			game["Gaming time"]["Units"][key] += difference
 
-			# Iterate through the difference time units
-			for key in entry["Session duration"]["Difference"]:
-				dict_ = {
-					key.lower(): game["Gaming time"]["Units"][key]
-				}
+			# Define the division number
+			division_number = 60
 
-				# Add the game time difference time unit to the added time date object
-				game["Gaming time"]["Times"]["Added"]["Object"] += self.Date.Relativedelta(**dict_)
+			if key == "Hours":
+				division_number = 24
 
-			# Transform the added time into a date dictionary with the updated object (the added time above)
-			game["Gaming time"]["Times"]["Added"] = self.Date.Now(game["Gaming time"]["Times"]["Added"]["Object"])
+			# Make the division
+			division = divmod(game["Gaming time"]["Units"][key], division_number)
+
+			# Define the divison_has_remainder variable
+			divison_has_remainder = False
+
+			# If the key is hours and there is more than 24 hours
+			# Add days
+			if (
+				key == "Hours" and
+				division[1] != 0
+			):
+				# Add the days to the days key
+				game["Gaming time"]["Units"]["Days"] += division[0]
+
+			# If the key is minutes and there is more than 60 minutes
+			# Add hours and change minutes
+			if (
+				key == "Minutes" and
+				division[1] != 0
+			):
+				# Add hours to the hours key
+				game["Gaming time"]["Units"]["Hours"] += division[0]
+
+			# If the key is seconds and there is more than 60 seconds
+			# Add minutes and change seconds
+			if (
+				key == "Seconds" and
+				division[1] != 0
+			):
+				# Add minutes to the minutes key
+				game["Gaming time"]["Units"]["Minutes"] += division[0]
+
+			# Update the difference
+			game["Gaming time"]["Units"][key] = division[1]
+
+		# Create a local time units dictionary
+		dict_ = {}
+
+		# Create a list of keys
+		keys = [
+			"days",
+			"hours",
+			"minutes",
+			"seconds"
+		]
+
+		# Iterate through the time difference keys
+		for key in keys:
+			# If the key is in the time units dictionary
+			if key.capitalize() in game["Gaming time"]["Units"]:
+				# Add the key to the local dictionary
+				dict_[key] = game["Gaming time"]["Units"][key.capitalize()]
+
+		# Define the added time as the first time
+		game["Gaming time"]["Times"]["Added"] = deepcopy(game["Gaming time"]["Times"]["First"])
+
+		# Add the game time difference time unit to the added time date object
+		game["Gaming time"]["Times"]["Added"]["Object"] += self.Date.Relativedelta(**dict_)
+
+		# Transform the added time into a date dictionary with the updated object (the added time above)
+		game["Gaming time"]["Times"]["Added"] = self.Date.Now(game["Gaming time"]["Times"]["Added"]["Object"])
 
 		# --------------- #
 
 		# Make the difference between the first time and the added time
 		difference = self.Date.Difference(game["Gaming time"]["Times"]["First"]["Object"], game["Gaming time"]["Times"]["Added"]["Object"])
-
-		# Define the game time difference units as the difference above
-		for key, diff in difference["Difference"].items():
-			game["Gaming time"]["Units"][key] = diff
-
-		# Define the added time as the first time
-		string = self.Date.To_String(game["Gaming time"]["Times"]["First"], utc = True)
-
-		game["Gaming time"]["Times"]["Added"] = self.Date.From_String(string)
-
-		# Iterate through the gaming time units
-		for key in game["Gaming time"]["Units"]:
-			dict_ = {
-				key.lower(): game["Gaming time"]["Units"][key]
-			}
-
-			# Add the game time difference time unit to the added time date object
-			game["Gaming time"]["Times"]["Added"]["Object"] += self.Date.Relativedelta(**dict_)
-
-		# Transform the added time into a date dictionary with the updated object
-		game["Gaming time"]["Times"]["Added"] = self.Date.Now(game["Gaming time"]["Times"]["Added"]["Object"])
 
 		# Transform the times back into date strings
 		for key in ["First", "Last", "Added"]:
@@ -2106,6 +2140,15 @@ class GamePlayer(object):
 			print()
 			print("\t" + self.Language.language_texts["local, title()"] + ":")
 			print("\t" + game["Folders"]["Local"]["root"])
+
+		# Show the sub-game folder if the game has sub-games and the sub-game is not the game
+		if (
+			game["States"]["Has sub-games"] == True and
+			game["Sub-game"]["Title"] != game["Title"]
+		):
+			print()
+			print(self.language_texts["sub_game_folder"] + ":")
+			print("\t" + game["Sub-game"]["Folders"]["root"])
 
 		# --------------- #
 

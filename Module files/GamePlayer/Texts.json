@@ -124,8 +124,8 @@
 		"pt": "Postar nas Redes Sociais"
 	},
 	"i_posted_the_played_game_text, type: template": {
-		"pt": "Postei o texto de jogo jogado e {} no meu servidor no {}, no status do {}, e no {}",
-		"en": "I posted the text of the played game and {} on my server on {}, on the status of {}, and on {}"
+		"pt": "Postei o texto do jogo jogado e {} no meu servidor no {}, no status do {}, e também no {}",
+		"en": "I posted the text of the played game and {} on my server on {}, on the status of {}, and also on {}"
 	},
 	"press_enter_to_copy_the_text_of_the_played_game": {
 		"en": "Press Enter to copy the text of the played game",
@@ -166,6 +166,10 @@
 	"sub_game_type": {
 		"en": "Sub-game type",
 		"pt": "Tipo de sub-jogo"
+	},
+	"sub_game_folder": {
+		"en": "Sub-game folder",
+		"pt": "Pasta de sub-jogo"
 	},
 	"dlc, upper()": {
 		"en": "DLC",

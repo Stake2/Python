@@ -1074,26 +1074,47 @@ class Convert_History(Watch_History):
 							if self.language_texts["re_watched, capitalize()"] in entry["Episode title"]:
 								states_dictionary["Re-watching"] = True
 
-								self.media["Episode"]["re_watched"] = {
-									"times": 0,
-									"text": "",
-									"re_watched_text": {},
-									"time_text": {}
+								# Define the default re-watched dictionary
+								self.media["Episode"]["Re-watched"] = {
+									"Times": 0,
+									"Number name": {},
+									"Texts": {
+										"Number": {},
+										"Number name": {}
+									}
 								}
 
-								# Get re-watched times
-								self.dictionary["Media"]["Episode"]["re_watched"]["times"] = int(entry["Episode title"].split(self.language_texts["re_watched, capitalize()"] + " ")[-1].split("x")[0])
+								# Get the re-watched times
+								self.dictionary["Media"]["Episode"]["Re-watched"]["Times"] = int(entry["Episode title"].split(self.language_texts["re_watched, capitalize()"] + " ")[-1].split("x")[0])
 
-								self.media["Episode"]["re_watched"]["text"] = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(self.media["Episode"]["re_watched"]["times"]) + "x)"
-
-								number = self.media["Episode"]["re_watched"]["times"]
-
+								# Iterate through the list of small languages
 								for language in self.languages["small"]:
-									text = self.Text.By_Number(number, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
+									# Define the number name
+									self.media["Episode"]["Re-watched"]["Number name"][language] = self.Date.texts["number_names_feminine, type: list"][language][watched_times]
 
-									self.media["Episode"]["re_watched"]["time_text"][language] = text.format(self.Date.texts["number_names_feminine, type: list"][language][number])
+									# Define the number re-watched text as the " (Re-watched [watched times]x)" text
+									# 
+									# Examples:
+									# " (Re-watched 1x)"
+									# " (Re-watched 2x)"
+									self.media["Episode"]["Re-watched"]["Texts"]["Number"][language] = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(self.media["Episode"]["Re-watched"]["Times"]) + "x)"
 
-									self.media["Episode"]["re_watched"]["re_watched_text"][language] = self.texts["re_watched, capitalize()"][language] + " " + self.media["Episode"]["re_watched"]["time_text"][language]
+									# ---------- #
+
+									# Define the text template for the number of watched times
+									# (Singular or plural)
+									text = self.Text.By_Number(watched_times, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
+
+									# Format the text template with the name of the number of watched times
+									# Examples: one time, two times
+									text = text.format(self.media["Episode"]["Re-watched"]["Number name"][language])
+
+									# Define the number name re-watched text as the "Re-watched [watched times]" text
+									# 
+									# Examples:
+									# Re-watched one time
+									# Re-watched two times
+									self.media["Episode"]["Re-watched"]["Texts"]["Number name"][language] = self.texts["re_watched, capitalize()"][language] + " " + self.media["Episode"]["Re-watched"]["Number name"][language]
 
 							comment_entry = ""
 
@@ -1124,7 +1145,7 @@ class Convert_History(Watch_History):
 
 							# Add Re-watching text to comment file name if it exists
 							if states_dictionary["Re-watching"] == True:
-								comment_entry += self.media["Episode"]["re_watched"]["text"]
+								comment_entry += self.media["Episode"]["Re-watched"]["Texts"]["Number"][self.user_language]
 
 							# If the comment entry name exists inside the media Comments dictionary
 							if comment_entry in self.media["Item"]["Comments"]["Entries"]:
@@ -1220,7 +1241,7 @@ class Convert_History(Watch_History):
 							})
 
 							if "re_watched" in self.dictionary["Media"]["Episode"]:
-								self.dictionary["Old history"]["re_watched"] = self.dictionary["Media"]["Episode"]["re_watched"]
+								self.dictionary["Old history"]["re_watched"] = self.dictionary["Media"]["Episode"]["Re-watched"]
 
 							for dictionary_name in ["Entries", "Media type"]:
 								self.dictionaries[dictionary_name] = self.old_history[dictionary_name]

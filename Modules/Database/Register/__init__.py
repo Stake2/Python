@@ -359,7 +359,7 @@ class Register(Database):
 			self.data["Started experiencing"] = self.Date.To_UTC(self.Date.From_String(self.data["dates"][key]))
 
 			# Define time spent experiencing using started experiencing time and finished experiencing time
-			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Texts"][self.user_language]
+			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
 
 			if self.data["Time spent experiencing"][0] + self.data["Time spent experiencing"][1] == ", ":
 				self.data["Time spent experiencing"] = self.data["Time spent experiencing"][2:]

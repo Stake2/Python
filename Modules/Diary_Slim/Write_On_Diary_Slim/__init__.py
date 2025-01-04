@@ -27,6 +27,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define the text item variables
 			self.Define_Item_Variables()
 
+		# If the text key is inside the root "Statistics" dictionary
+		if self.dictionary["Text"]["Key"] in self.statistics["Dictionary"]:
+			# Run the method to manage statistics
+			self.Manage_Statistic()
+
 		# Write the Diary Slim text
 		self.Write()
 
@@ -89,7 +94,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 			parameters["language_options"].append(language_text)
 
 		# If the "Multi-selection" mode is activated
-		if self.states["Multi-selection"] == True:
+		# And the Diary Slim text is not a statistic
+		if (
+			self.states["Multi-selection"] == True and
+			self.dictionary["Text"]["Is statistic"] == True
+		):
 			# Run the "Multi_Selection" method
 			self.Multi_Selection()
 
@@ -129,7 +138,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# If the "Additional information" key is inside the "Text" dictionary
 			if "Additional information" in self.dictionary["Text"]:
 				# Define the additional information and update the text to write
-				self.dictionary["Text to write"] = self.Define_Additional_Information(self.dictionary)
+				self.dictionary["Text to write"] = self.Define_Additional_Information(self.dictionary)["Text"]
 
 	def Multi_Selection(self):
 		# Add the "[Finish selection]" text to the list of options
@@ -213,7 +222,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# If the "Additional information" key is inside the "Text" dictionary
 				if "Additional information" in self.dictionary["Text"]:
 					# Define the additional information and update the text to write
-					language_text = self.Define_Additional_Information(self.dictionary, language_text)
+					language_text = self.Define_Additional_Information(self.dictionary, language_text)["Text"]
 
 				# Add the language text to the "Text to write" string
 				self.dictionary["Text to write"] += language_text
@@ -281,6 +290,52 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Ask the user to select an option from the list of options
 				self.dictionary["Text"]["Data"][self.user_language] = self.Input.Select(options["List"], show_text = show_text)["option"]
 
+				# If the "Format" key is inside the "Options" dictionary
+				if "Format" in options:
+					# Define the item key
+					item_key = "{" + self.dictionary["Text"]["Item"] + "}"
+
+					# If the "Genders" key exist inside the "Format" dictionary
+					if "Genders" in options["Format"]:
+						# Iterate through the text keys inside the list of keys
+						for text_key in options["Format"]["Keys"]:
+							# Get the text from the text key and add curly brackets
+							text = "{" + self.Language.language_texts[text_key] + "}"
+
+							# If the item text is not inside the key
+							if self.dictionary["Text"]["Item"] not in text_key:
+								# Define that key as the gender text key
+								gender_text_key = text
+
+							# If the text is inside the Diary Slim text
+							if text in self.dictionary["Text"]["Texts"][self.user_language]:
+								# Define the item key as the text key
+								item_key = text
+
+					# Define the data
+					data = self.dictionary["Text"]["Data"][self.user_language]
+
+					# Replace the key with the selected data
+					self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(item_key, data)
+
+					# If the "Gender text" key is inside the text
+					if gender_text_key in self.dictionary["Text"]["Texts"][self.user_language]:
+						# Iterate through the list of genders
+						for gender in ["Masculine", "Feminine"]:
+							# If the data is inside the gender list of the current gender
+							if data in options[gender]:
+								# Get the gender text key from the "Format" dictionary, for the current gender
+								text_key = options["Format"]["Genders"][gender.lower()]
+
+								# Get the text
+								text = self.Language.language_texts[text_key]
+
+								# Replace the gender text template inside the text with the correct gender text
+								self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(gender_text_key, text)
+
+					# Update the text to write
+					self.dictionary["Text to write"] = self.dictionary["Text"]["Texts"][self.user_language]
+
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# If the language is not inside the "Data" dictionary
@@ -345,28 +400,32 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Define the text item as the plural item
 				self.dictionary["Text"]["Item"] = self.dictionary["Text"]["Items"]["Plural"]
 
-			# If the text data does not contain a comma and a space
-			if ", " not in self.dictionary["Text"]["Data"][self.user_language]:
-				# If the "Quotes" setting is True
-				if self.dictionary["Text"]["Quotes"] == True:
-					# Iterate through the small languages list
-					for language in self.languages["small"]:
-						# Add quotes to the text data
-						self.dictionary["Text"]["Data"][language] = '"' + self.dictionary["Text"]["Data"][language] + '"'
+			# If the text does not use a simple format (has task registration)
+			if "Simple format" not in self.dictionary["Text"]:
+				# If the text data does not contain a comma and a space
+				if ", " not in self.dictionary["Text"]["Data"][self.user_language]:
+					# If the "Quotes" setting is True
+					if self.dictionary["Text"]["Quotes"] == True:
+						# Iterate through the small languages list
+						for language in self.languages["small"]:
+							# Add quotes to the text data
+							self.dictionary["Text"]["Data"][language] = '"' + self.dictionary["Text"]["Data"][language] + '"'
 
-			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				# Add a space and the text data to the texts dictionary
-				self.dictionary["Text"]["Texts"][language] += " " + self.dictionary["Text"]["Data"][language]
+				# Iterate through the small languages list
+				for language in self.languages["small"]:
+					# Add a space and the text data to the texts dictionary
+					self.dictionary["Text"]["Texts"][language] += " " + self.dictionary["Text"]["Data"][language]
 
-		# Show a three dash space separator
-		print()
-		print(self.separators["3"])
+		# If the text does not use a simple format (has task registration)
+		if "Simple format" not in self.dictionary["Text"]:
+			# Show a three dash space separator
+			print()
+			print(self.separators["3"])
 
-		# Ask for the user to type the task descriptions
-		# It is because all Diary Slim texts that contain the "Item" key are also tasks that can be registered
-		# They can be registered using the "Tasks" Python module, and its "Register" sub-class
-		self.Type_Task_Descriptions()
+			# Ask for the user to type the task descriptions
+			# It is because all Diary Slim texts that contain the "Item" key are also tasks that can be registered
+			# They can be registered using the "Tasks" Python module, and its "Register" sub-class
+			self.Type_Task_Descriptions()
 
 	def Type_Task_Descriptions(self):
 		# Define the Task dictionary
@@ -468,9 +527,155 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Delete the description file in the current language
 			self.File.Delete(self.task_dictionary["Files"][language])
 
+	def Manage_Statistic(self):
+		# Define the key
+		text_key = self.dictionary["Text"]["Key"]
+
+		# Get the statistic
+		statistic = self.statistics["Dictionary"][text_key]
+
+		# Define the information dictionary
+		information = statistic
+
+		# If the "Question" key is inside the statistic dictionary
+		if "Question" in statistic:
+			# Define the information about the statistic
+			information = self.Define_Additional_Information(statistic, is_statistic = True)["Statistic"]
+
+		# Get the statistic dictionary of the Diary Slim text, in the current year
+		current_year_statistics = self.diary_slim["Current year"]["Statistics"][text_key]
+
+		# ---------- #
+
+		# Define the statistic text key
+		statistic_text_key = statistic["Key"].replace(" ", "_").lower()
+
+		# Define the statistic text if the key exists inside the language texts dictionary of the "Language" class
+		if statistic_text_key in self.Language.language_texts:
+			text = self.Language.language_texts[statistic_text_key]
+
+		else:
+			text = statistic["Key"]
+
+		# If the "Data" is inside the Diary Slim text dictionary
+		if "Data" in self.dictionary["Text"]:
+			# Get the text from it
+			text = self.dictionary["Text"]["Data"][self.user_language]
+
+		# If the "Statistic text" is inside the Diary Slim text dictionary
+		if "Statistic text" in self.dictionary["Text"]:
+			text = self.dictionary["Text"]["Statistic text"][self.user_language]
+
+		# Add to the statistic numbers of the current year
+
+		# If the text key is inside the statistics dictionary of the current year
+		if text_key in self.diary_slim["Current year"]["Statistics"]:
+			# Define the statistic key as the key inside the statistic dictionary
+			statistic_key = statistic["Key"]
+
+		# If the "Data" key is inside the Diary Slim text dictionary
+		if "Data" in self.dictionary["Text"]:
+			# Get the data to use as a key
+			data_key = self.dictionary["Text"]["Data"][self.user_language]
+
+			# Define the statistic key
+			statistic_key = data_key
+
+		# Define the "Statistics" dictionary inside the Diary Slim text dictionary
+		self.dictionary["Text"]["Statistics"] = {
+			"Number": 0,
+			"Dictionary": {
+				statistic["Key"]: {
+					"Text": text,
+					"Old number": current_year_statistics[statistic_key],
+					"Number": current_year_statistics[statistic_key]
+				}
+			},
+			"Changed statistic": False
+		}
+
+		# Define the number to add as one
+		number = 1
+
+		# If the "Question" key is inside the statistic dictionary
+		if "Question" in statistic:
+			# Get the response
+			response = information["Response"]
+
+			# If the response is a number
+			if response.isdigit() == True:
+				# Define the number to add as the response
+				number = int(response)
+
+			# If the response is "No" or "0"
+			if response in ["No", 0, "0"]:
+				# Define the number as zero
+				number = 0
+
+			# If the "Questions" key is inside the statistic dictionary
+			if "Questions" in statistic:
+				# Iterate through the responses
+				for key, answer in response.items():
+					# Save the old number
+					old_number = current_year_statistics[key]
+
+					# Add the answer to the statistic using the response/question key
+					current_year_statistics[key] += answer
+
+					# Add the key to the statistic dictionary inside the Diary Slim dictionary
+					self.dictionary["Text"]["Statistics"]["Dictionary"][key] = {
+						"Text": self.language_texts[key.replace(" ", "_").lower()],
+						"Old number": old_number,
+						"Number": current_year_statistics[key]
+					}
+
+		# Update the number of statistics
+		self.dictionary["Text"]["Statistics"]["Number"] = len(list(self.dictionary["Text"]["Statistics"]["Dictionary"].keys()))
+
+		# Add the defined number to the defined statistic key
+		current_year_statistics[statistic_key] += number
+
+		# Update the number inside the statistics dictionary inside the Diary Slim text dictionary
+		self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"] = current_year_statistics[statistic_key]
+
+		# If the old number is not the same as the new number
+		old_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Old number"]
+		new_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"]
+
+		if old_number != new_number:
+			# Change the "Changed statistic" to True
+			self.dictionary["Text"]["Statistics"]["Changed statistic"] = True
+
+		# If the "Text decorator" is inside the Diary Slim text dictionary
+		if "Text decorator" in self.dictionary["Text"]:
+			# Define a shortcut for the text decorator
+			text_decorator = self.dictionary["Text"]["Text decorator"]
+
+			# Get the decorator key and text
+			key = text_decorator["Key"]
+			decorator_text = self.Language.language_texts[key]
+
+			# Format the text
+
+			# Replace the text template
+			text = text_decorator["Format"].replace("{text}", decorator_text)
+
+			# Replace the data template
+			text = text.replace("{data}", self.dictionary["Text"]["Data"][self.user_language])
+
+			# Update the statistic text to be the local text
+			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Text"] = text
+
+		# Update the statistics of the current year
+		self.Update_Current_Year_Statistics(self.diary_slim["Current year"]["Statistics"])
+
 	def Write(self):
-		# Register the Task and delete the backup file if the "Item" key is inside the Text dictionary
-		if "Item" in self.dictionary["Text"]:
+		# If the "Item" key is inside the text dictionary
+		# And the "Simple format" key is not inside it
+		if (
+			"Item" in self.dictionary["Text"] and
+			"Simple format" not in self.dictionary["Text"]
+		):
 			# Import the "Register" class of the "Tasks" module
 			from Tasks.Register import Register as Register
 
@@ -480,10 +685,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Delete the task description backup file
 			self.File.Delete(self.task_dictionary["Files"]["Backup"])
 
-		# If the "Item" key is not present inside the Text dictionary
-		# That means the "Register" sub-class of the "Tasks" class was not executed and did not wrote on Diary Slim
-		# So this class needs to write on it
-		if "Item" not in self.dictionary["Text"]:
+		# If the "Item" key is not inside the text dictionary
+		# (That means the "Register" sub-class of the "Tasks" class was not executed and did not wrote on Diary Slim
+		# So this class needs to write on it)
+		# Or the "Item" key is inside the text dictionary
+		# And the "Simple format" key is inside it
+		if (
+			"Item" not in self.dictionary["Text"] or
+			"Item" in self.dictionary["Text"] and
+			"Simple format" in self.dictionary["Text"]
+		):
 			# Add a period to the end of the text if it is not present
 			if "." not in self.dictionary["Text to write"][-1]:
 				self.dictionary["Text to write"] += "."
@@ -498,6 +709,43 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			# Write the text on Diary Slim
 			Write_On_Diary_Slim_Module(dictionary)
+
+		# If the "Is statistic" state is True
+		# And the "Changed statistic" is True
+		if (
+			self.dictionary["Text"]["Is statistic"] == True and
+			self.dictionary["Text"]["Statistics"]["Changed statistic"] == True
+		):
+			# Define the statistic text to show as singular or plural depending on the number
+			number = self.dictionary["Text"]["Statistics"]["Number"]
+			singular = self.Language.language_texts["updated_statistic"]
+			plural = self.Language.language_texts["updated_statistics"]
+
+			show_text = self.Text.By_Number(number, singular, plural)
+
+			# Show the text
+			print()
+			print(show_text + ":")
+
+			# Iterate through the dictionary of statistics
+			for statistic in self.dictionary["Text"]["Statistics"]["Dictionary"].values():
+				# Define the text with the statistic text and colon
+				text = statistic["Text"]
+
+				# Add the "in [year]" text
+				text += " " + self.Language.language_texts["in"] + " " + str(self.diary_slim["Current year"]["Number"])
+
+				# Add a colon
+				text += ": "
+
+				# Add the current number of the statistic
+				text += str(statistic["Number"])
+
+				# Add the old number with the "before" text
+				text += " (" + self.Language.language_texts["before, title()"].lower() + ": " + str(statistic["Old number"]) + ")"
+
+				# Show the text and number with a tab
+				print("\t" + text)
 
 		# Open the current Diary Slim file
 		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"], verbose = False)

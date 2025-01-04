@@ -5,6 +5,8 @@ from Years.Years import Years as Years
 # Import the "importlib" module
 import importlib
 
+from copy import deepcopy
+
 class Create_Year_Summary(Years):
 	def __init__(self):
 		super().__init__()
@@ -21,19 +23,24 @@ class Create_Year_Summary(Years):
 				29,
 				30,
 				31
-			]
+			],
+			"Websites": {}
 		}
 
 		# Define the year
 		self.Define_The_Year()
 
-		#if self.switches["Testing"] == True:
-		#	self.summary["States"]["Is summary date"] = True
+		if self.switches["Testing"] == True:
+			self.summary["States"]["Is summary date"] = True
 
+		# If the year in the current class instance is not None
 		if self.year != None:
+			# Verify if today is an allowed year summary day
 			self.Check_Day()
 
+			# If it is
 			if self.summary["States"]["Is summary date"] == True:
+				# Run the methods to create the year summary
 				self.Define_Summary_Files()
 				self.Define_Year_Data()
 				self.Define_Summary_Text()
@@ -177,10 +184,14 @@ class Create_Year_Summary(Years):
 
 		self.File.Edit(self.year["Files"]["Edited in"], text_to_write, "w")
 
+		# ---------- #
+
 		# Define the summary header keys
 		self.summary["Header"] = {
 			"Author": self.years["Author"]
 		}
+
+		# ---------- #
 
 		# Define the created and edited in texts on the summary header
 		keys = [
@@ -194,6 +205,8 @@ class Create_Year_Summary(Years):
 			contents = self.File.Contents(self.year["Files"][key])
 
 			self.summary["Header"][key] = contents["lines"][0]
+
+		# ---------- #
 
 		# Define the classes to be imported
 		classes = [
@@ -213,6 +226,8 @@ class Create_Year_Summary(Years):
 
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class())
+
+		# ---------- #
 
 		# Create the Summary Numbers dictionary
 		self.summary["Numbers"] = {
@@ -247,6 +262,8 @@ class Create_Year_Summary(Years):
 			if self.Folder.Exist(folder) == True:
 				history["Folder"] = folder
 
+			# ---------- #
+
 			# Define the History entries file
 			history["Entries file"] = history["Folder"] + history["Key"] + ".json"
 
@@ -272,6 +289,8 @@ class Create_Year_Summary(Years):
 
 				# Add the number to the summary numbers dictionary
 				history["Numbers"][key] = number
+
+			# ---------- #
 
 			# Define the types list
 			history["Types list"] = [
@@ -307,6 +326,10 @@ class Create_Year_Summary(Years):
 					# Add the local folders dictionary to the per type folders dictionary
 					history["Per type folders"][entry_type] = folders
 
+			# ---------- #
+
+			# If the "Dictionary" key exists inside the "Entries" dictionary
+			# And the class object contains a method called "Define_Year_Summary_Data"
 			if (
 				"Dictionary" in history["Entries"] and
 				hasattr(history["Class object"], "Define_Year_Summary_Data")
@@ -318,6 +341,7 @@ class Create_Year_Summary(Years):
 				}
 
 				# Iterate through the entry types list
+				entry_type_number = 1
 				for entry_type in history["Types list"]:
 					# Define the normal Entries root dictionary
 					entries = history["Entries"]
@@ -334,15 +358,6 @@ class Create_Year_Summary(Years):
 						if language not in history["Data"]["Text"]:
 							history["Data"]["Text"][language] = ""
 
-						# Define the language entry type if the entry type is not "Normal"
-						if entry_type != "Normal":
-							type_dictionary = history["Types"][entry_type]
-
-							language_entry_type = type_dictionary["Plural"][language]
-
-							# Add the language entry type to the text variable
-							history["Data"]["Text"][language] += "\t" + language_entry_type
-
 						# Define the entries list
 						local_entries = list(entries.values())
 
@@ -351,6 +366,17 @@ class Create_Year_Summary(Years):
 							"Number": len(local_entries),
 							"List": local_entries
 						}
+
+						# Define the language entry type if the entry type is not "Normal"
+						if entry_type != "Normal":
+							# Get the type dictionary
+							type_dictionary = history["Types"][entry_type]
+
+							# Get the entry type
+							language_entry_type = type_dictionary["Plural"][language]
+
+							# Add the number of entries and language entry type to the text variable
+							history["Data"]["Text"][language] += "\t" + str(local_entries["Number"]) + " " + language_entry_type.lower()
 
 						# Define the i and last number numbers
 						i = local_entries["Number"]
@@ -376,10 +402,15 @@ class Create_Year_Summary(Years):
 							# Add the "last [number]" text
 							gender = type_dictionary["Gender"]
 
-							history["Data"]["Text"][language] += " (" + self.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][last_number] + ")"
+							# If the total number of entries is not zero
+							if local_entries["Number"] != 0:
+								history["Data"]["Text"][language] += " (" + self.Language.texts["last, plural, " + gender][language] + " " + self.Date.texts["number_names, type: list"][language][last_number] + ")"
 
-							# Add a colon and line break
-							history["Data"]["Text"][language] += ":" + "\n"
+								# Add a colon and line break
+								history["Data"]["Text"][language] += ":"
+
+							# Add a line break
+							history["Data"]["Text"][language] += "\n"
 
 						number = 1
 						# While the i variable is not equal to the entries number
@@ -411,6 +442,9 @@ class Create_Year_Summary(Years):
 						if entry_type != history["Types list"][-1]:
 							history["Data"]["Text"][language] += "\n"
 
+					# Add to the entry type number
+					entry_type_number += 1
+
 			# Remove the "Entries" key as it is not needed anymore
 			history.pop("Entries")
 
@@ -424,7 +458,44 @@ class Create_Year_Summary(Years):
 		# Add all History numbers to the "Things done" number
 		for history in self.summary["Histories"].values():
 			for number in history["Numbers"].values():
-				self.summary["Numbers"]["Things done"] += number
+				if history["Class"] != "Friends":
+					self.summary["Numbers"]["Things done"] += number
+
+		# ---------- #
+
+		# Get the number of memory images from the current year
+
+		# Get the dates file
+		file = self.year["Files"]["Image"]["Memories"]["Dates"]
+
+		# Get the number of lines
+		memories = self.File.Contents(file)["Length"]
+
+		# Add it to the "Numbers" dictionary
+		self.summary["Numbers"]["Memories"] = memories
+
+		# Add that number to the "Things done" number
+		self.summary["Numbers"]["Things done"] += memories
+
+		# ---------- #
+
+		# Make a copy of the root "Summary websites" dictionary
+		self.summary["Websites"] = deepcopy(self.summary_websites)
+
+		# If the list of websites where to post the year summary is not empty
+		if self.summary["Websites"]["Number"] != 0:
+			# Iterate through the list of the websites where to post the year summary
+			for name, website in self.summary["Websites"]["Dictionary"].items():
+				# Iterate through the list of links
+				for key, link in website["Links"].items():
+					# Replace the "{current_year}" template with the current year number
+					link = link.replace("{current_year}", self.year["Name"])
+
+					# Replace the link in the dictionary
+					website["Links"][key] = link
+
+				# Update the website dictionary inside the "Summary" dictionary
+				self.summary["Websites"]["Dictionary"][name] = website
 
 	def Define_Summary_Text(self):
 		# Define the summary Text dictionary
@@ -441,6 +512,17 @@ class Create_Year_Summary(Years):
 		for language in self.languages["small"]:
 			# Define the language summary text
 			self.summary["Text"][language] = ""
+
+			# Define the "Summary of my year of [Current year]" template text
+			template = self.texts["summary_of_my_year_of_{current_year}"][language]
+
+			# Replace the template inside the text
+			text = template.replace("{current_year}", self.year["Name"])
+
+			# Add it to the language summary text
+			self.summary["Text"][language] += text + "\n\n"
+
+			# ---------- #
 
 			# Add the header texts
 			for key in self.summary["Header"]:
@@ -468,6 +550,8 @@ class Create_Year_Summary(Years):
 			# Add a separator
 			self.summary["Text"][language] += "\n" + "-----" + "\n\n"
 
+			# ---------- #
+
 			# Add the "Goodbye" text if it exists and is not empty
 			folder = self.year["Folders"][language]
 
@@ -476,12 +560,18 @@ class Create_Year_Summary(Years):
 
 				contents = self.File.Contents(file)
 
+				# If the list of text lines is not empty
 				if contents["lines"] != []:
-					# Add the "Goodbye" text
+					# Add the "Goodbye:" text
+					self.summary["Text"][language] += self.texts["goodbye_text_for_the_year"][language] + ":" + "\n"
+					
+					# Add the "Goodbye" text that is inside the file
 					self.summary["Text"][language] += contents["string"]
 
 					# Add a separator
 					self.summary["Text"][language] += "\n\n" + "-----" + "\n\n"
+
+			# ---------- #
 
 			# Add the "Things done in {year}" text
 			text = self.Language.texts["things_done_in"][language] + " " + str(self.years["Current year"]["Number"]) + ": "
@@ -492,8 +582,11 @@ class Create_Year_Summary(Years):
 
 			self.summary["Text"][language] += text + "\n"
 
+			# ---------- #
+
 			# Iterate through the Histories dictionary
 			for key, history in self.summary["Histories"].items():
+				# Get the list of the number keys
 				number_keys = list(history["Numbers"].keys())
 
 				# Iterate through the History Numbers dictionary
@@ -501,7 +594,7 @@ class Create_Year_Summary(Years):
 					# Define the text key
 					text_key = number_key.lower().replace(" ", "_")
 
-					# Define the text with the number
+					# Define the text with the number of entries and the number name
 					text = self.Language.texts[text_key][language] + ": " + str(number)
 
 					# Add a line break to the text
@@ -512,8 +605,18 @@ class Create_Year_Summary(Years):
 						# Add the text to the language summary text
 						self.summary["Text"][language] += text
 
+			# ---------- #
+
+			# Add the "Memories of the year in pictures" text
+			self.summary["Text"][language] += self.texts["memories_of_the_year_in_images"][language] + ": "
+
+			# Add the number of memories in the year
+			self.summary["Text"][language] += str(self.summary["Numbers"]["Memories"])
+
 			# Add a separator
-			self.summary["Text"][language] += "\n" + "-----" + "\n\n"
+			self.summary["Text"][language] += "\n\n" + "-----" + "\n\n"
+
+			# ---------- #
 
 			# Get the Histories list
 			histories = list(self.summary["Histories"].keys())
@@ -524,6 +627,8 @@ class Create_Year_Summary(Years):
 				if history["Class"] not in self.summary["Detailed classes"]:
 					# Remove the History from the local Histories list
 					histories.remove(key)
+
+			# ---------- #
 
 			# Iterate through the Histories dictionary
 			for key in histories:
@@ -545,8 +650,11 @@ class Create_Year_Summary(Years):
 					# Define the text key
 					text_key = number_key.lower().replace(" ", "_")
 
-					# Define the number text
-					text = self.Language.texts[text_key][language]
+					# Get the number of entries
+					entries_number = list(history["Numbers"].values())[0]
+
+					# Define the entry text with the number of entries
+					text = str(entries_number) + " " + self.Language.texts[text_key][language].lower()
 
 					# Define the History Data variable for easier typing
 					data = history["Data"]
@@ -573,6 +681,34 @@ class Create_Year_Summary(Years):
 					# Add the detailed History text to the language summary text
 					self.summary["Text"][language] += text
 
+			# If the list of websites where to post the year summary is not empty
+			if self.summary["Websites"]["Number"] != 0:
+				# Add a line break to the summary text in the current language
+				self.summary["Text"][language] += "\n"
+
+				# List the keys of the websites where to post the year summary
+				keys = list(self.summary["Websites"]["Dictionary"].keys())
+
+				# Iterate through the list of the websites where to post the year summary
+				for name, website in self.summary["Websites"]["Dictionary"].items():
+					# Make the "Summary on [website name]" text
+					text = self.texts["summary_on"][language] + " " + '"' + name + '":'
+
+					# Add one line break
+					text += "\n"
+
+					# Add the link in the current language
+					text += website["Links"][language]
+
+					# If the website is not the last one
+					if name != keys[-1]:
+						text += "\n\n"
+
+					# Add the text to the summary text in the current language
+					self.summary["Text"][language] += text
+
+		# ---------- #
+
 		# Iterate through the small languages list
 		for language in self.languages["small"]:
 			# Remove the last space if it exists
@@ -586,7 +722,7 @@ class Create_Year_Summary(Years):
 			self.File.Edit(self.summary["Files"][language], text, "w")
 
 	def Show_Summary_Information(self):
-		# Show a separator
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
@@ -595,33 +731,55 @@ class Create_Year_Summary(Years):
 		print(self.language_texts["the_summary_of_this_year_was_created"] + ":")
 		print("\t" + self.year["Number"])
 
-		# Define the type text
-		type_text = self.language_texts["show_year_summary"] + "? (" + self.Language.language_texts["can_be_long, masculine"] + ")"
+		# ---------- #
 
-		# Ask the user if the program should show the summary text (can be long)
-		self.summary["States"]["Show"] = self.Input.Yes_Or_No(type_text)
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+		print()
 
-		# Show the summary text if the user wants to see it
-		if self.summary["States"]["Show"] == True:
-			# Show the summary text in the user language
-			print()
-			print(self.separators["5"])
-			print()
-			print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
-			print("\t" + "[")
+		# Show the summary text in the user language
+		print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
+		print()
+		print(self.separators["15"])
 
-			for line in self.summary["Text"][self.user_language].splitlines():
-				print("\t\t" + line)
+		for line in self.summary["Text"][self.user_language].splitlines():
+			print(line)
 
-			print("\t" + "]")
+		# Show a ten dash space separator
+		print(self.separators["15"])
 
 		# Open the user language summary file
 		self.System.Open(self.summary["Files"][self.user_language])
 
-		# Show the information about the ending of the program
+		# ---------- #
+
+		# Show the information about the creation of the year summary
 		print()
 		print(self.language_texts["the_program_has_finished_the_creation_of_the_year_summary_for"] + " " + self.year["Number"] + ".")
 
-		# Show a separator
+		# ---------- #
+
+		# Show a five dash space separator
 		print()
+		print(self.separators["5"])
+
+		# Show a text telling the user to post the summary on the summary websites
+		print()
+		print(self.language_texts["post_the_year_summary_on_these_websites"] + ":")
+
+		# If the list of websites where to post the year summary is not empty
+		if self.summary["Websites"]["Number"] != 0:
+			# Iterate through the list of the websites where to post the year summary
+			for name, website in self.summary["Websites"]["Dictionary"].items():
+				# Show the website name and link in the user language
+				print("\t" + name + ":")
+				print("\t" + website["Links"][self.user_language])
+				print()
+
+		# Else, show a space
+		else:
+			print()
+
+		# Show a five dash space separator
 		print(self.separators["5"])

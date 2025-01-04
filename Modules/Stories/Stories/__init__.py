@@ -1480,8 +1480,8 @@ class Stories(object):
 		if self.switches["Testing"] == True:
 			option = {
 				"number": 0,
-				"option": self.texts["writing, title()"]["en"],
-				"language_option": self.language_texts["writing, title()"]
+				"option": self.texts["write, type: dictionary"]["Infinitive action"]["en"],
+				"language_option": self.language_texts["write, type: dictionary"]["Infinitive action"]
 			}
 
 			print()

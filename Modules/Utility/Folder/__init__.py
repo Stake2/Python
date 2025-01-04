@@ -98,6 +98,14 @@ class Folder():
 				"system32": {
 					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
 				}
+			},
+			"Root": {
+				"root": self.hard_drive_letter,
+				"Hard drive letter": self.hard_drive_letter,
+				"Users": self.Sanitize(pathlib.Path.home().parent),
+				"System32": {
+					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
+				}
 			}
 		}
 
@@ -231,11 +239,11 @@ class Folder():
 		}
 
 		self.folders["User"] = {
-			"root": self.Sanitize(self.folders["root"]["users"] + pathlib.Path.home().name + "/")
+			"root": self.Sanitize(self.folders["Root"]["Users"] + pathlib.Path.home().name + "/")
 		}
 
 		# "User" sub folders
-		for folder in ["AppData", "Downloads", "Pictures", "Videos"]:
+		for folder in ["AppData", "Documents", "Downloads", "Pictures", "Videos"]:
 			key = folder.lower().replace(" ", "_")
 
 			self.folders["user"][key] = {
@@ -609,11 +617,15 @@ class Folder():
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
 		# Mega "Notepad" Years folders
+
+		# Define the starting year and the current year
 		starting_year = 2018
 		current_year = self.date["Units"]["Year"]
 
+		# Define the "Create year folders switch"
 		create_year_folders = False
 
+		# If it is True, create them
 		if create_year_folders == True:
 			for item in range(starting_year, current_year + 1):
 				key = str(item).lower().replace(" ", "_")

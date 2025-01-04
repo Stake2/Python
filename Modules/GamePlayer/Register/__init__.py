@@ -733,7 +733,7 @@ class Register(GamePlayer):
 		}
 
 		# Define the list text, with all the Social Networks separated by commas
-		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"])
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], and_text = False)
 
 		# Remove the "Discord" social networks
 		self.social_networks["List"].remove("Discord")
@@ -753,13 +753,20 @@ class Register(GamePlayer):
 			self.social_networks["Item text"],
 			"Discord",
 			self.social_networks["List text (without Discord)"],
-			"Bluesky " + self.Language.language_texts["and"] + " Threads"
+			"Twitter, Bluesky, " + self.Language.language_texts["and"] + " Threads"
 		]
 
 		# Format the template with the items list
 		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] + ")"
+		# Define the text to show while asking the user if they want to post on the social networks
+		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] 
+
+		# Add the "and others" text
+		text += ", " + self.Language.language_texts["and_others, feminine"]
+
+		# Add the closing parenthesis
+		text += ")"
 
 		# Show a separator
 		print()

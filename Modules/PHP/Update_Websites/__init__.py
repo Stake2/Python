@@ -196,6 +196,11 @@ class Update_Websites(PHP):
 				# Format the link template with the list of items, making the website link in the current language
 				link = template.format(*items)
 
+				# If the website title is the same as the next year
+				if website_title == str(self.current_year + 1):
+					# Add the "next_year" parameter to the link
+					link += "&next_year=true"
+
 				# Add the formatted link to the "Links" dictionary
 				website["Links"][language] = link
 
