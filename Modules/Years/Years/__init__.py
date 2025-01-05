@@ -212,7 +212,12 @@ class Years(object):
 					"Summary",
 					"This Year I",
 					"This Year I (post)",
+					"This Year I (Personal version)",
 					"Goodbye"
+				],
+				"User language files": [
+					"Yearly statistics",
+					"FutureMe"
 				]
 			},
 			"Christmas": {
@@ -296,20 +301,47 @@ class Years(object):
 					"Dictionary": {}
 				}
 
+				# Iterate through the items inside the list
 				for item_name in dict_["List"]:
+					# Define the item as a dictionary inside the local dictionary
 					dict_["Dictionary"][item_name] = {}
 
-					for language in self.languages["small"]:
+					# Define the list of small languages
+					languages = self.languages["small"]
+
+					# If the item type is "User language files"
+					if item_type == "User language files":
+						# Define the list of small languages as just the user language
+						languages = [
+							self.user_language
+						]
+
+					# Iterate through the list of small languages
+					for language in languages:
+						# Replace spaces with underscores and lowercase the item name to make the text key
 						text_key = item_name.lower().replace(" ", "_")
 
+						# Remove parenthesis from the text key
 						text_key = text_key.replace("(", "")
 						text_key = text_key.replace(")", "")
 
+						# If the "_" character is not inside the text string
 						if "_" not in text_key:
 							text_key += ", title()"
 
-						dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
+						# If the text key is inside the language texts dictionary of the "Language" class
+						if text_key in self.Language.texts:
+							# Define the text
+							text = self.Language.texts[text_key][language]
 
+						# Else, use the own item name
+						else:
+							text = item_name
+
+						# Define the folder or file name in the current language as the text
+						dict_["Dictionary"][item_name][language] = text
+
+				# Update the root folder item names dictionary to add the local dictionary
 				self.folder_item_names[folder_key][item_type] = dict_
 
 		# Iterate through the "Additional items" dictionary
@@ -325,15 +357,21 @@ class Years(object):
 					"Dictionary": {}
 				}
 
+				# Iterate through the items inside the list
 				for item_name in dict_["List"]:
+					# Define the item as a dictionary inside the local dictionary
 					dict_["Dictionary"][item_name] = {}
 
+					# Iterate through the list of small languages
 					for language in self.languages["small"]:
+						# Replace spaces with underscores and lowercase the item name to make the text key
 						text_key = item_name.lower().replace(" ", "_")
 
+						# If the "_" character is not inside the text string
 						if "_" not in text_key:
 							text_key += ", title()"
 
+						# Define the folder or file name in the current language as the text
 						dict_["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
 
 				# Example:
@@ -493,7 +531,8 @@ class Years(object):
 				"Name": year,
 				"Folders": {},
 				"Files": {},
-				"Information": {}
+				"Information": {},
+				"Statistics": {}
 			}
 
 			# Iterate through the folder type list
@@ -743,45 +782,49 @@ class Years(object):
 			self.Folder.Create(data["Local"][language]["root"])
 
 		# Create the root text folders and files
-		for item_type in ["Folders", "Files"]:
+		for item_type in ["Folders", "Files", "User language files"]:
 			# folders = ["Christmas", "Summary", "New Year"]
 			# files = ["Created in", "Edited in"]
-			for key, folder_item in self.years["Names"]["Root"][item_type]["Dictionary"].items():
-				# Define the folder
-				data["Local"][key] = {
-					"root": data["Local"]["root"] + folder_item[self.user_language] + "/"
-				}
 
-				# Define the folder item as the root folder
-				item = data["Local"][key]["root"]
+			# If the current item type is inside the dictionary of root names
+			if item_type in self.years["Names"]["Root"]:
+				for key, folder_item in self.years["Names"]["Root"][item_type]["Dictionary"].items():
+					# Define the folder
+					data["Local"][key] = {
+						"root": data["Local"]["root"] + folder_item[self.user_language] + "/"
+					}
 
-				# Define the class as "self.Folder"
-				Class = self.Folder
+					# Define the folder item as the root folder
+					item = data["Local"][key]["root"]
 
-				if item_type == "Files":
-					# Define the file
-					data["Local"][key] = data["Local"]["root"] + folder_item[self.user_language] + ".txt"
+					# Define the class as "self.Folder"
+					Class = self.Folder
 
-					# Define the class as "self.File"
-					Class = self.File
+					if item_type in ["Files", "User language files"]:
+						# Define the file
+						data["Local"][key] = data["Local"]["root"] + folder_item[self.user_language] + ".txt"
 
-					# Define the folder item as the file
-					item = data["Local"][key]
+						# Define the class as "self.File"
+						Class = self.File
 
-				# Create it
-				Class.Create(item)
+						# Define the folder item as the file
+						item = data["Local"][key]
 
-				if item_type == "Files":
-					# Add it to the "Files" dictionary
-					data["Dictionary"]["Files"][data["Folder type"]][key] = data["Local"][key]
+					# Create it
+					Class.Create(item)
+
+					if item_type in ["Files", "User language files"]:
+						# Add it to the "Files" dictionary
+						data["Dictionary"]["Files"][data["Folder type"]][key] = data["Local"][key]
 
 			# folders = ["Done tasks", "Firsts of the Year", "Game Sessions", "Watched media"]
-			# files = ["Summary", "This Year I"]
+			# files = ["Welcome", "This Year I", "This Year I (post)", "This Year I (Personal version)", "Summary", "Goodbye"]
+			# user_language_files = ["Yearly statistics", "FutureMe"]
 			keys = list(self.years["Names"]["Language"][item_type]["Dictionary"].keys())
 
 			# If the "Name" is inside the data dictionary
 			# And the dictionary name is "Texts"
-			# And the item type is "Files"
+			# And the item type is inside the list of ["Files", "User language files"]
 			# files = ["This Year I (post)"]
 			if (
 				"Name" in data["Dictionary"] and
@@ -798,32 +841,39 @@ class Years(object):
 
 				# Create the language folder text folders
 				for key in keys:
+					# Get the folder item in the language dictionary of the current item type
 					folder_item = self.years["Names"]["Language"][item_type]["Dictionary"][key]
 
-					# Define the folder
-					data["Local"][language][key] = {
-						"root": data["Local"][language]["root"] + folder_item[language] + "/"
-					}
+					# If the language key exists inside the data local dictionary
+					# And also inside the folder item dictionary
+					if (
+						language in data["Local"] and
+						language in folder_item
+					):
+						# Define the folder
+						data["Local"][language][key] = {
+							"root": data["Local"][language]["root"] + folder_item[language] + "/"
+						}
 
-					# Define the folder item as the root folder
-					item = data["Local"][language][key]["root"]
+						# Define the folder item as the root folder
+						item = data["Local"][language][key]["root"]
 
-					if item_type == "Files":
-						# Define the file
-						data["Local"][language][key] = data["Local"][language]["root"] + folder_item[language] + ".txt"
+						if item_type in ["Files", "User language files"]:
+							# Define the file
+							data["Local"][language][key] = data["Local"][language]["root"] + folder_item[language] + ".txt"
 
-						# Define the class as "self.File"
-						Class = self.File
+							# Define the class as "self.File"
+							Class = self.File
 
-						# Define the folder item as the file
-						item = data["Local"][language][key]
+							# Define the folder item as the file
+							item = data["Local"][language][key]
 
-					# Create it
-					Class.Create(item)
+						# Create it
+						Class.Create(item)
 
-					if item_type == "Files":
-						# Add it to the "Files" dictionary
-						data["Dictionary"]["Files"][data["Folder type"]][language][key] = data["Local"][language][key]
+						if item_type in ["Files", "User language files"]:
+							# Add it to the "Files" dictionary
+							data["Dictionary"]["Files"][data["Folder type"]][language][key] = data["Local"][language][key]
 
 		# ---------- #
 

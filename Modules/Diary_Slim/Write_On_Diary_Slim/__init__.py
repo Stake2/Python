@@ -581,18 +581,30 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define the statistic key
 			statistic_key = data_key
 
+		# If the "Statistic key" key is inside the text dictionary
+		if "Statistic key" in self.dictionary["Text"]:
+			# Define the local statistic key as it
+			statistic_key = self.dictionary["Text"]["Statistic key"]
+
 		# Define the "Statistics" dictionary inside the Diary Slim text dictionary
 		self.dictionary["Text"]["Statistics"] = {
 			"Number": 0,
 			"Dictionary": {
 				statistic["Key"]: {
 					"Text": text,
-					"Old number": current_year_statistics[statistic_key],
-					"Number": current_year_statistics[statistic_key]
+					"Old number": "",
+					"Number": ""
 				}
 			},
 			"Changed statistic": False
 		}
+
+		# Get the current number
+		current_number = current_year_statistics[statistic_key]
+
+		# Define the old and current number
+		self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Old number"] = current_number
+		self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"] = current_number
 
 		# Define the number to add as one
 		number = 1

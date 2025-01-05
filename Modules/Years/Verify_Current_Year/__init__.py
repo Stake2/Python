@@ -11,8 +11,9 @@ class Verify_Current_Year(Years):
 	def Verify_Current_Year(self):
 		from copy import deepcopy
 
+		# Show a five dash space separator
 		print()
-		print("-----")
+		print(self.separators["5"])
 		print()
 
 		# Define the "Files" dictionary
@@ -25,8 +26,20 @@ class Verify_Current_Year(Years):
 				"Text key": "edited_in",
 				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["edited_in"] + ".txt"
 			},
+			"Yearly statistics": {
+				"Text key": "yearly_statistics",
+				"Template": {}
+			},
 			"This Year I (post)": {
 				"Text key": "this_year_i_post",
+				"Template": {}
+			},
+			"This Year I (Personal version)": {
+				"Text key": "this_year_i_personal_version",
+				"Template": {}
+			},
+			"FutureMe": {
+				"Text": "FutureMe",
 				"Template": {}
 			},
 			"Christmas": {
@@ -45,13 +58,24 @@ class Verify_Current_Year(Years):
 			}
 		}
 
-		# Define the language "This Year I (post)" file
+		# Define some language files related to the "This Year I" text
 		for language in self.languages["small"]:
+			# Define a shortcut for the folders dictionary
+			folders = self.years["Current year"]["Folders"][language]
+
 			# Define the "This Year I (post)" file
-			self.files["This Year I (post)"][language] = self.years["Current year"]["Folders"][language][self.Language.texts["this_year_i_post"]["en"]]
+			self.files["This Year I (post)"][language] = folders[self.Language.texts["this_year_i_post"]["en"]]
 
 			# Define the template file
-			self.files["This Year I (post)"]["Template"][language] = self.years["Texts"]["Folders"][language][self.Language.texts["this_year_i_post"]["en"]]
+			self.files["This Year I (post)"]["Template"][language] = folders[self.Language.texts["this_year_i_post"]["en"]]
+
+			# Define the "This Year I (Personal version)" file
+			self.files["This Year I (Personal version)"][language] = folders[self.Language.texts["this_year_i_post"]["en"]]
+
+			# If the "FutureMe" key is inside the folders dictionary
+			if "FutureMe" in folders:
+				# Define the "FutureMe" file
+				self.files["FutureMe"][language] = folders["FutureMe"]
 
 		# If the current year did not existed in the years folder
 		# Creates the folders and files of the current year folder
@@ -233,10 +257,16 @@ class Verify_Current_Year(Years):
 
 			# Iterate through the files in the "Files" dictionary
 			for key, files in self.files.items():
-				# Define the small languages list
+				# Define the list of small languages
 				languages = self.languages["small"]
 
-				if key != "This Year I (post)":
+				# If the key is not inside the defined list
+				# Or is inside the second list
+				if (
+					key not in ["This Year I (post)"] or
+					key in ["Yearly statistics", "FutureMe"]
+				):
+					# Define the list of small languages as just the user language
 					languages = [
 						self.user_language
 					]
@@ -246,11 +276,18 @@ class Verify_Current_Year(Years):
 					# Get the file in the current language
 					file = files[language]
 
-					# Define the text key
-					text_key = files["Text key"]
+					# If the "Text key" key is inside the files dictionary
+					if "Text key" in files:
+						# Define the text key
+						text_key = files["Text key"]
 
-					# Define the language text
-					language_text = self.Language.texts[text_key][language]
+						# Define the language text
+						language_text = self.Language.texts[text_key][language]
+
+					# If the "Text" key is inside the files dictionary
+					if "Text" in files:
+						# Define the language text
+						language_text = files["Text"]
 
 					# Read the file and get its lines of text
 					lines = self.File.Contents(file)["lines"]
