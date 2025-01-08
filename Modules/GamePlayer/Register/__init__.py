@@ -680,7 +680,7 @@ class Register(GamePlayer):
 	def Define_Diary_Slim_Text(self):
 		# Define the list of items
 		items = [
-			self.dictionary["Type"]["Type"][self.user_language],
+			self.dictionary["Type"]["Type"][self.user_language].lower(),
 			self.game["Titles"]["Language"],
 			self.dictionary["Entry"]["Session duration"]["Text"][self.user_language]
 		]

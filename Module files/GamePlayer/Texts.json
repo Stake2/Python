@@ -88,8 +88,8 @@
         "pt": "Pressione Enter quando você terminar de jogar o jogo"
     },
 	"i_played_the_{}_game_called_{}_for_{}": {
-		"en": "I played the \"{}\" game called \"{}\" for {}",
-		"pt": "Eu joguei o jogo de \"{}\" chamado \"{}\" por {}"
+		"en": "I played the {} game called \"{}\" for {}",
+		"pt": "Eu joguei o jogo de {} chamado \"{}\" por {}"
 	},
 	"when_you_finished_playing": {
 		"en": "When you finished playing",

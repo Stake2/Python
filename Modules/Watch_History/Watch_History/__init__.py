@@ -3127,7 +3127,7 @@ class Watch_History(object):
 
 			# Replaced the "watching" text with "re-watching"
 			if media["States"]["Re-watching"] == True:
-				text = text.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + media["Episode"]["Re-watched"]["Texts"]["Number name"][self.user_language])
+				text = text.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + self.media["Episode"]["Re-watched"]["Texts"]["Times"][self.user_language])
 
 			# Show the text with the entry date (watched date) in the user timezone
 			print()

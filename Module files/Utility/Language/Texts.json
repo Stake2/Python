@@ -2195,7 +2195,7 @@
 	},
 	"times_i_washed_my_clothes": {
 		"en": "Times I washed my clothes",
-		"pt": "Vezes que lavei minhas roupa"
+		"pt": "Vezes que lavei minhas roupas"
 	},
 	"drawings_made": {
 		"en": "Drawings made",
@@ -2220,6 +2220,10 @@
 	"visits_of": {
 		"en": "Visits of",
 		"pt": "Visitas de"
+	},
+	"times_i_worked_on": {
+		"en": "Times I worked on",
+		"pt": "Vezes que trabalhei no"
 	},
 	"genders, type: dict": {
 		"en": {
