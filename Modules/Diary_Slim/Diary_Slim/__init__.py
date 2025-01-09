@@ -890,39 +890,45 @@ class Diary_Slim():
 
 				# ----- #
 
-				# Define the question text if it exists
-				if "Question" in statistic:
-					text_key = statistic["Question"]
+				# If the "Question" or "Questions" keys are inside the statistic dictionary
+				if (
+					"Question" in statistic or
+					"Questions" in statistic
+				):
+					# Define the list of keys to search for
+					keys = [
+						"Input text",
+						"Show text",
+						"Select text"
+					]
 
-					statistic["Question"] = self.texts[text_key]
+					# Iterate through the list of keys
+					for item in keys:
+						# If the "Question" key is inside the statistic dictionary
+						if "Question" in statistic:
+							# Define the language text for the question dictionary, using the current key
+							statistic["Question"] = self.Define_Language_Text(statistic["Question"], item)
 
-				# ----- #
+						# Iterate through the list of sub-keys
+						for sub_key in ["Questions", "Answers"]:
+							# Define the local dictionary to use
+							local_dictionary = statistic
 
-				# Define the answers text if it exists
-				if "Answers" in statistic:
-					for answer_key, answer in statistic["Answers"].items():
-						if "Text" in answer:
-							text_key = statistic["Answers"][answer_key]["Text"]
+							# If the sub-key is "Answers"
+							# And the "Question" key is inside the statistic dictionary
+							if (
+								sub_key == "Answers" and
+								"Question" in statistic
+							):
+								# Define the local dictionary as the question one
+								local_dictionary = statistic["Question"]
 
-							statistic["Answers"][answer_key]["Text"] = self.texts[text_key]
-
-						if (
-							"Type" in answer and
-							"Text" in answer["Type"]
-						):
-							text_key = statistic["Answers"][answer_key]["Type"]["Text"]
-
-							statistic["Answers"][answer_key]["Type"]["Text"] = self.texts[text_key]
-
-				# ----- #
-
-				# Define the questions text if it exists
-				if "Questions" in statistic:
-					for question_key, question in statistic["Questions"].items():
-						if "Text" in question:
-							text_key = statistic["Questions"][question_key]["Text"]
-
-							statistic["Questions"][question_key]["Text"] = self.texts[text_key]
+							# If the sub-key is inside the local dictionary
+							if sub_key in local_dictionary:
+								# Iterate through the dictionary of question, getting the question key and question dictionary
+								for question_key, question in local_dictionary[sub_key].items():
+									# Define the language text for the question dictionary, using the current key
+									local_dictionary[sub_key][question_key] = self.Define_Language_Text(question, item)
 
 				# ----- #
 
@@ -937,14 +943,18 @@ class Diary_Slim():
 					# Change the statistic key the alternative key
 					statistic_key = statistic["Alternative key"]
 
-				# If the key is not "List", add it to the local dictionary
+				# If the key is not "List"
 				if statistic["Key"] != "List":
+					# Add the statistic key to the template dictionary with a value of zero
 					template[statistic_key] = 0
 
 				# If the "Questions" key is inside the statistic dictionary
 				if "Questions" in statistic:
+					# Iterate through the questions dictionary, getting the question dictionary
 					for question in statistic["Questions"].values():
-						template[question["Key"]] = 0
+						# If the question has a key
+						if "Key" in question:
+							template[question["Key"]] = 0
 
 				# Add the local statistic dictionary to the root statistics dictionary template
 				self.statistics_template[key] = template
@@ -956,11 +966,11 @@ class Diary_Slim():
 				# And the "List" key is inside the options dictionary
 				if (
 					"Add to statistics" in dictionary and
-					"Options" in dictionary and
-					"List" in dictionary["Options"]
+					"Question" in dictionary and
+					"List" in dictionary["Question"]
 				):
 					# Add the list of the text dictionary inside the statistic dictionary
-					statistic["List"] = dictionary["Options"]["List"]
+					statistic["List"] = dictionary["Question"]["List"]
 
 					# Add each one of the items of the list to the statistics template
 					for item in statistic["List"]:
@@ -973,6 +983,9 @@ class Diary_Slim():
 
 				# Add the statistic dictionary to the root statistics dictionary
 				self.statistics["Dictionary"][key] = statistic
+
+				# Update the root statistic dictionary of the text with the local one
+				dictionary["Statistic"] = statistic
 
 				# Update the root text dictionary with the local one
 				self.diary_slim["Texts"]["Dictionary"][key] = dictionary
@@ -1027,6 +1040,26 @@ class Diary_Slim():
 
 		# Update the statistics
 		self.Update_Statistics()
+
+	def Define_Language_Text(self, question, item):
+		# If the current key is inside the question dictionary
+		if item in question:
+			# Get the text key as the value inside the dictionary, accessing it with the current key
+			text_key = question[item]
+
+			# Define the local language texts dictionary
+			language_texts = self.Language.language_texts
+
+			# If the text key is inside the language texts dictionary of this module
+			if text_key in self.language_texts:
+				# Define the local language texts dictionary as that one
+				language_texts = self.language_texts
+
+			# Define the text dictionary from the text key
+			question[item] = language_texts[text_key]
+
+		# Return the question dictionary
+		return question
 
 	def Update_Statistics(self):
 		# Update the data statistics file with the root statistics dictionary
@@ -1083,215 +1116,3 @@ class Diary_Slim():
 
 		# Update the "States.json" file
 		self.JSON.Edit(dictionary["Files"]["States"], states)
-
-	def Define_Additional_Information(self, dictionary, text_to_write = None, is_statistic = False):
-		# Define the default additional information dictionary
-		additional_information = dictionary
-
-		# If the information is not a statistic
-		if is_statistic == False:
-			# Define the text variable for easier typing
-			text = dictionary["Text"]
-
-			# Define the additional information variable for easier typing
-			additional_information = text["Additional information"]
-
-		# Define the dictionary of answers
-		answers_dictionary = {
-			"Yes or no": ["Yes", "No"],
-			"Type or select": ["Type", "Select"]
-		}
-
-		# If the "Question type" key is present
-		if "Question type" in additional_information:
-			# If the question type is "Yes or no"
-			if additional_information["Question type"] == "Yes or no":
-				# Ask the question and get the user answer
-				user_answer = self.Input.Yes_Or_No(additional_information["Question"][self.user_language])
-
-				# Define the list of booleans
-				booleans = [
-					True,
-					False
-				]
-
-				# Define the list of answers
-				answers = answers_dictionary["Yes or no"]
-
-			# If the question type is inside the defined list
-			if additional_information["Question type"] in ["Type", "Select"]:
-				# Define the list of answers
-				answers = answers_dictionary["Type or select"]
-
-		# If the "text to write" parameter is None
-		# And the key exists inside the dictionary
-		if (
-			text_to_write == None and
-			"Text to write" in dictionary
-		):
-			text_to_write = dictionary["Text to write"]
-
-		# If the information is a statistic
-		if is_statistic == True:
-			# Define the local statistic dictionary
-			statistic = {}
-
-		# Define the "Found answer" state
-		found_answer = False
-
-		# Iterate through the list of answers
-		i = 0
-		for answer in answers:
-			# Define the default expression
-			expression = True == True
-
-			# If the "Question type" key is present
-			# And the question type is "Yes or no"
-			if (
-				"Question type" in additional_information and
-				additional_information["Question type"] == "Yes or no"
-			):
-				# Get the boolean
-				boolean = booleans[i]
-
-				# Define the expression
-				expression = user_answer == boolean
-
-			# If the "Answers" key is not inside the dictionary of additional information
-			if "Answers" not in additional_information:
-				# Create the "Answers" dictionary with the type text as the question
-				additional_information["Answers"] = {
-					"Type": {
-						"Text": additional_information["Question"]
-					}
-				}
-
-			# If the answer dictionary exists
-			if answer in additional_information["Answers"]:
-				# Define the answer dictionary for easier typing
-				answer_dictionary = additional_information["Answers"][answer]
-
-				# If the answer expression is correct
-				# And the "Continue" key is not inside the "[Answer]" dictionary
-				if (
-					expression and
-					"Continue" not in answer_dictionary
-				):
-					# If the information is a statistic
-					if is_statistic == True:
-						# Add the answer key to the statistic dictionary
-						statistic["Answer"] = answer
-
-					# If the "Format" key is inside the "[Answer]" dictionary
-					if "Format" in answer_dictionary:
-						# Define the format variable for easier typing
-						format = answer_dictionary["Format"][self.user_language]
-
-						# Format the format text with the text to write
-						text_to_write = format.replace("{Text}", text_to_write)
-
-					# If the "Type" key is inside the "[Answer]" dictionary
-					# Or the answer is equal to "Type"
-					if (
-						"Type" in answer_dictionary or
-						answer == "Type"
-					):
-						# Define the type dictionary as the root answer dictionary
-						type_dictionary = answer_dictionary
-
-						# Get the type dictionary if it is truly a dictionary
-						if (
-							"Type" in answer_dictionary and
-							isinstance(answer_dictionary["Type"], dict) == True
-						):
-							type_dictionary = answer_dictionary["Type"]
-
-						# Verify the user input
-						text_to_write = self.Verify_Input(type_dictionary)
-
-						# If the information is a statistic
-						if is_statistic == True:
-							# Add the question type to the statistic dictionary
-							statistic["Question type"] = "Type"
-
-							# If the input "Type" key is inside the local type dictionary
-							if "Type" in answer_dictionary:
-								# Add it to the statistic dictionary
-								statistic["Input type"] = answer_dictionary["Type"]
-
-							# Add the response
-							statistic["Response"] = text_to_write
-
-					# If the "Questions" key is inside the "[Answer]" dictionary
-					if "Questions" in additional_information:
-						# Get the dictionary of questions
-						questions = additional_information["Questions"]
-
-						# If the information is a statistic
-						if is_statistic == True:
-							# Define the statistic dictionary
-							statistic.update({
-								"Question type": "Questions",
-								"Response": {}
-							})
-
-						# Iterate through each question inside the list of questions
-						for question in questions.values():
-							# Get the question key
-							key = question["Key"]
-
-							# Get the user response
-							response = self.Verify_Input(question)
-
-							# If the information is a statistic
-							if is_statistic == True:
-								# Add the response to the statistic dictionary
-								statistic["Response"][key] = response
-
-					# Switch the "Found answer" state to True
-					found_answer = True
-
-			# Add one to the "i" number
-			i += 1
-
-		# If the method could not find an answer
-		# And the information is a statistic
-		# And the user answer variable exists
-		if (
-			found_answer == False and
-			is_statistic == True
-		):
-			# Create the response dictionary with the key
-			statistic["Response"] = self.Input.Define_Yes_Or_No(user_answer, inverse = True)
-
-		# Define the return dictionary
-		return_dictionary = {
-			"Text": text_to_write
-		}
-
-		# If the information is a statistic
-		if is_statistic == True:
-			# Define the "Statistic" key with the "Statistic" dictionary
-			return_dictionary["Statistic"] = statistic
-
-		return return_dictionary
-
-	def Verify_Input(self, type_dictionary):
-		# Define the user language text
-		type_dictionary["Text"] = type_dictionary["Text"][self.user_language]
-
-		# Define the default regex
-		regex = None
-
-		# If the "Type" key is inside the type dictionary
-		# And its value is "Number"
-		if (
-			"Type" in type_dictionary and
-			type_dictionary["Type"] == "Number"
-		):
-			regex = r"\b[1-9][0-9]*\b; 10"
-
-		# Ask the user to type the information with the type text
-		text_to_write = self.Input.Type(type_dictionary["Text"], accept_enter = False, regex = regex)
-
-		return text_to_write

@@ -13,7 +13,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the root dictionary
 		self.dictionary = {
 			"Text": {},
-			"Text to write": ""
+			"Text to write": "",
+			"Question keys": [
+				"Question",
+				"Questions"
+			]
 		}
 
 		# Define the States dictionary
@@ -138,10 +142,236 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Change the current state to the next state
 				self.Next_State(self.dictionary["Text"])
 
-			# If the "Additional information" key is inside the "Text" dictionary
-			if "Additional information" in self.dictionary["Text"]:
-				# Define the additional information and update the text to write
-				self.dictionary["Text to write"] = self.Define_Additional_Information(self.dictionary)["Text"]
+			# Iterate through the list of question keys inside the list above
+			for key in self.dictionary["Question keys"]:
+				# If the key is inside the text dictionary
+				if key in self.dictionary["Text"]:
+					# Get the additional information about the Diary Slim text and update the text to write
+					self.dictionary["Text to write"] = self.Get_Additional_Information(self.dictionary["Text"])["Text to write"]
+
+	def Get_Additional_Information(self, dictionary, is_statistic = False):
+		# Define the default text dictionary
+		text_dictionary = dictionary
+
+		# If the information is a statistic
+		if is_statistic == True:
+			# Define the text dictionary as the statistic one
+			text_dictionary = dictionary["Statistic"]
+
+		# Define the default questions dictionary
+		questions = {}
+
+		# Define the default "Has questions" state as False
+		has_questions = False
+
+		# If there is only one question
+		if "Question" in text_dictionary:
+			# Define the first question as the only question that exists
+			questions["1"] = {
+				"Key": "1",
+				**text_dictionary["Question"]
+			}
+
+			# Change the "Has questions" state to True
+			has_questions = True
+
+		# If there are more questions
+		if "Questions" in text_dictionary:
+			# Re-define the questions dictionary as the one already inside the text dictionary
+			questions = text_dictionary["Questions"]
+
+			# Iterate through the questions inside the dictionary of questions, getting the key and question dictionary
+			for key in questions:
+				# Update the question dictionary inside the root questions dictionary
+				questions[key] = {
+					"Key": key,
+					**questions[key]
+				}
+
+			# Change the "Has questions" state to True
+			has_questions = True
+
+		# Define the default text to write
+		text_to_write = ""
+
+		# Iterate through the questions inside the dictionary, getting the key and question dictionary
+		for key, question in questions.items():
+			# If the question type is "Yes or No"
+			if question["Question type"] == "Yes or No":
+				# Get the input text
+				input_text = self.Define_Input_Text(question)
+
+				# Ask the question and get the user response, adding it to the question dictionary
+				questions[key]["Response"] = {
+					"Boolean": self.Input.Yes_Or_No(input_text)
+				}
+
+				# Get the text version of the response (from "True" or "False" to "Yes" or "No")
+				questions[key]["Response"]["Text"] = self.Input.Define_Yes_Or_No(questions[key]["Response"]["Boolean"], inverse = True)
+
+				# If the text response exists inside the answers dictionary
+				if questions[key]["Response"]["Text"] in question["Answers"]:
+					# Define the response variable for easier typing
+					response = questions[key]["Response"]["Text"]
+
+					# Get the answer dictionary
+					answer = question["Answers"][response]
+
+					# If the "Question type" is inside the answer dictionary
+					# And the question type is "Type"
+					if (
+						"Question type" in answer and
+						answer["Question type"] == "Type"
+					):
+						# Get the input text
+						answer["Text"] = self.Define_Input_Text(answer)
+
+						# Get and verify the user input, creating the "Answers" dictionary
+						questions[key]["Response"]["Answers"] = {
+							response: self.Verify_Input(answer)
+						}
+
+					# If the "Format" key is inside the answer dictionary
+					if "Format" in answer:
+						# Define the format variable for easier typing
+						format = answer["Format"][self.user_language]
+
+						# Define the text to write as the default one
+						text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+
+						# Update the text to write
+						text_to_write = format.replace("{Text}", text_to_write)
+
+						# Format the format text with the text to write
+						questions[key]["Response"] = text_to_write
+
+			# If the question type is "Type"
+			if question["Question type"] == "Type":
+				# Get the input text
+				question["Text"] = self.Define_Input_Text(question)
+
+				# Get and verify the user input
+				questions[key]["Response"] = self.Verify_Input(question)
+
+			# If the question type is "Select"
+			if question["Question type"] == "Select":
+				# Create the local texts dictionary with the show and select texts
+				texts = {
+					"Show": question["Show text"],
+					"Select": question["Select text"]
+				}
+
+				# Iterate through the texts inside the dictionary above
+				for item, value in texts.items():
+					# Define the local language texts dictionary
+					language_texts = self.Language.language_texts
+
+					# If the value (text key) is inside the language texts dictionary of this module
+					if value in self.language_texts:
+						# Define the local language texts dictionary as that one
+						language_texts = self.language_texts
+
+					# If the value (text key) is inside the local list of language texts
+					if value in language_texts:
+						# Get the language text for the current value (text key)
+						texts[item] = language_texts[value]
+
+				# Get the user response
+				questions[key]["Response"] = self.Input.Select(question["List"], show_text = texts["Show"], select_text = texts["Select"])["Option"]["Original"]
+
+				# If the "Genders" key is inside the question dictionary
+				if "Genders" in question:
+					# Define the item key
+					item_key = "{" + question["Item"] + "}"
+
+					# Iterate through the text keys inside the list of keys
+					for text_key in question["Genders"]["Keys"]:
+						# Get the text from the text key and add curly brackets
+						text = "{" + self.Language.language_texts[text_key] + "}"
+
+						# If the item text is not inside the key
+						if question["Item"] not in text_key:
+							# Define that key as the gender text key
+							gender_text_key = text
+
+						# If the text is inside the Diary Slim text
+						if text in self.dictionary["Text"]["Texts"][self.user_language]:
+							# Define the item key as the text key
+							item_key = text
+
+					# Replace the item key with the user response
+					self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(item_key, questions[key]["Response"])
+
+					# If the "Gender text" key is inside the text
+					if gender_text_key in self.dictionary["Text"]["Texts"][self.user_language]:
+						# Iterate through the list of genders
+						for gender in ["Masculine", "Feminine"]:
+							# Get the gender dictionary
+							gender = question["Genders"][gender]
+
+							# If the user response is inside the gender list of the current gender
+							if questions[key]["Response"] in gender["List"]:
+								# Get the gender text key from the current gender dictionary
+								text_key = gender["Format text"]
+
+								# Get the language text
+								text = self.Language.language_texts[text_key]
+
+								# Replace the gender text template inside the text with the correct gender text
+								self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(gender_text_key, text)
+
+					# Update the text to write
+					text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+
+		# If the text to write continues to be empty
+		if text_to_write == "":
+			# Define it as the Diary Slim text in the user language
+			text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+
+		# Define the return dictionary
+		return_dictionary = {
+			"Text to write": text_to_write,
+			"Questions": questions,
+			"Has questions": has_questions
+		}
+
+		return return_dictionary
+
+	def Define_Input_Text(self, question):
+		# Define the input text
+		input_text = question["Input text"]
+
+		# If the input text is a string
+		# And the input text is a key to a text dictionary inside the root texts dictionary of this module
+		if (
+			isinstance(input_text, str) == True and
+			input_text in self.texts
+		):
+			# Get the correct text dictionary from the text key
+			input_text = self.texts[input_text]
+
+			# Get the user language version of the input text
+			input_text = input_text[self.user_language]
+
+		# Return the language input text
+		return input_text
+
+	def Verify_Input(self, type_dictionary):
+		# Define the default regex
+		regex = None
+
+		# If the "Type" key is inside the type dictionary
+		# And its value is "Number"
+		if (
+			"Type" in type_dictionary and
+			type_dictionary["Type"] == "Number"
+		):
+			regex = r"\b[1-9][0-9]*\b; 10"
+
+		# Ask the user to type the information with the type text
+		text_to_write = self.Input.Type(type_dictionary["Text"], accept_enter = False, regex = regex)
+
+		return text_to_write
 
 	def Multi_Selection(self):
 		# Add the "[Finish selection]" text to the list of options
@@ -259,7 +489,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define the "Data" dictionary
 			self.dictionary["Text"]["Data"] = {}
 
-			# If the "Options" key is not inside the Text dictionary
+			# If the "Options" key is not inside the text dictionary
 			# That means the user must type the data (string)
 			# And not select it (from a list of options)
 			if "Options" not in self.dictionary["Text"]:
@@ -274,7 +504,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 					# Ask the user to type the data in each language
 					self.dictionary["Text"]["Data"][language] = self.Input.Type(type_text)
 
-			# If the "Options" key is inside the Text dictionary
+			# If the "Options" key is inside the text dictionary
 			# That means the user must select the data from a list of options
 			if "Options" in self.dictionary["Text"]:
 				# Define the list of options
@@ -292,52 +522,6 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Ask the user to select an option from the list of options
 				self.dictionary["Text"]["Data"][self.user_language] = self.Input.Select(options["List"], show_text = show_text)["option"]
-
-				# If the "Format" key is inside the "Options" dictionary
-				if "Format" in options:
-					# Define the item key
-					item_key = "{" + self.dictionary["Text"]["Item"] + "}"
-
-					# If the "Genders" key exist inside the "Format" dictionary
-					if "Genders" in options["Format"]:
-						# Iterate through the text keys inside the list of keys
-						for text_key in options["Format"]["Keys"]:
-							# Get the text from the text key and add curly brackets
-							text = "{" + self.Language.language_texts[text_key] + "}"
-
-							# If the item text is not inside the key
-							if self.dictionary["Text"]["Item"] not in text_key:
-								# Define that key as the gender text key
-								gender_text_key = text
-
-							# If the text is inside the Diary Slim text
-							if text in self.dictionary["Text"]["Texts"][self.user_language]:
-								# Define the item key as the text key
-								item_key = text
-
-					# Define the data
-					data = self.dictionary["Text"]["Data"][self.user_language]
-
-					# Replace the key with the selected data
-					self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(item_key, data)
-
-					# If the "Gender text" key is inside the text
-					if gender_text_key in self.dictionary["Text"]["Texts"][self.user_language]:
-						# Iterate through the list of genders
-						for gender in ["Masculine", "Feminine"]:
-							# If the data is inside the gender list of the current gender
-							if data in options[gender]:
-								# Get the gender text key from the "Format" dictionary, for the current gender
-								text_key = options["Format"]["Genders"][gender.lower()]
-
-								# Get the text
-								text = self.Language.language_texts[text_key]
-
-								# Replace the gender text template inside the text with the correct gender text
-								self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(gender_text_key, text)
-
-					# Update the text to write
-					self.dictionary["Text to write"] = self.dictionary["Text"]["Texts"][self.user_language]
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
@@ -403,32 +587,28 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Define the text item as the plural item
 				self.dictionary["Text"]["Item"] = self.dictionary["Text"]["Items"]["Plural"]
 
-			# If the text does not use a simple format (has task registration)
-			if "Simple format" not in self.dictionary["Text"]:
-				# If the text data does not contain a comma and a space
-				if ", " not in self.dictionary["Text"]["Data"][self.user_language]:
-					# If the "Quotes" setting is True
-					if self.dictionary["Text"]["Quotes"] == True:
-						# Iterate through the small languages list
-						for language in self.languages["small"]:
-							# Add quotes to the text data
-							self.dictionary["Text"]["Data"][language] = '"' + self.dictionary["Text"]["Data"][language] + '"'
+			# If the text data does not contain a comma and a space
+			if ", " not in self.dictionary["Text"]["Data"][self.user_language]:
+				# If the "Quotes" setting is True
+				if self.dictionary["Text"]["Quotes"] == True:
+					# Iterate through the small languages list
+					for language in self.languages["small"]:
+						# Add quotes to the text data
+						self.dictionary["Text"]["Data"][language] = '"' + self.dictionary["Text"]["Data"][language] + '"'
 
-				# Iterate through the small languages list
-				for language in self.languages["small"]:
-					# Add a space and the text data to the texts dictionary
-					self.dictionary["Text"]["Texts"][language] += " " + self.dictionary["Text"]["Data"][language]
+			# Iterate through the small languages list
+			for language in self.languages["small"]:
+				# Add a space and the text data to the texts dictionary
+				self.dictionary["Text"]["Texts"][language] += " " + self.dictionary["Text"]["Data"][language]
 
-		# If the text does not use a simple format (has task registration)
-		if "Simple format" not in self.dictionary["Text"]:
-			# Show a three dash space separator
-			print()
-			print(self.separators["3"])
+		# Show a three dash space separator
+		print()
+		print(self.separators["3"])
 
-			# Ask for the user to type the task descriptions
-			# It is because all Diary Slim texts that contain the "Item" key are also tasks that can be registered
-			# They can be registered using the "Tasks" Python module, and its "Register" sub-class
-			self.Type_Task_Descriptions()
+		# Ask for the user to type the task descriptions
+		# It is because all Diary Slim texts that contain the "Item" key are also tasks that can be registered
+		# They can be registered using the "Tasks" Python module, and its "Register" sub-class
+		self.Type_Task_Descriptions()
 
 	def Type_Task_Descriptions(self):
 		# Define the Task dictionary
@@ -535,15 +715,25 @@ class Write_On_Diary_Slim(Diary_Slim):
 		text_key = self.dictionary["Text"]["Key"]
 
 		# Get the statistic
-		statistic = self.statistics["Dictionary"][text_key]
+		statistic = {
+			**self.statistics["Dictionary"][text_key],
+			"Has questions": False
+		}
 
-		# Define the information dictionary
-		information = statistic
+		# Define the questions dictionary
+		questions = statistic
 
-		# If the "Question" key is inside the statistic dictionary
-		if "Question" in statistic:
-			# Define the information about the statistic
-			information = self.Define_Additional_Information(statistic, is_statistic = True)["Statistic"]
+		# Iterate through the list of question keys inside the list above
+		for question_key in self.dictionary["Question keys"]:
+			# If the key is inside the statistic dictionary
+			if question_key in self.dictionary["Text"]["Statistic"]:
+				# Get the additional information about the statistic, passing the "Is statistic" parameter as True
+				information = self.Get_Additional_Information(self.dictionary["Text"], is_statistic = True)
+
+				# Define the text to write, questions, and "Has questions" state using the values inside the local information dictionary
+				self.dictionary["Text to write"] = information["Text to write"]
+				questions = information["Questions"]
+				statistic["Has questions"] = information["Has questions"]
 
 		# Get the statistic dictionary of the Diary Slim text, in the current year
 		current_year_statistics = self.diary_slim["Current year"]["Statistics"][text_key]
@@ -553,12 +743,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the statistic text key
 		statistic_text_key = statistic["Key"].replace(" ", "_").lower()
 
+		# Define the default value for the statistic text as its key
+		statistic_text = statistic["Key"]
+
 		# Define the statistic text if the key exists inside the language texts dictionary of the "Language" class
 		if statistic_text_key in self.Language.language_texts:
-			text = self.Language.language_texts[statistic_text_key]
-
-		else:
-			text = statistic["Key"]
+			statistic_text = self.Language.language_texts[statistic_text_key]
 
 		# If the "Data" is inside the Diary Slim text dictionary
 		if (
@@ -566,11 +756,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.dictionary["Text"]["Data"][self.user_language] in current_year_statistics
 		):
 			# Get the text from it
-			text = self.dictionary["Text"]["Data"][self.user_language]
+			statistic_text = self.dictionary["Text"]["Data"][self.user_language]
 
 		# If the "Alternative text" is inside the statistic dictionary
 		if "Alternative text" in statistic:
-			text = statistic["Alternative text"][self.user_language]
+			statistic_text = statistic["Alternative text"][self.user_language]
+
+		# ---------- #
 
 		# Add to the statistic numbers of the current year
 
@@ -579,16 +771,14 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define the statistic key as the key inside the statistic dictionary
 			statistic_key = statistic["Key"]
 
-		# If the "Data" key is inside the Diary Slim text dictionary
+		# If the "Question" key is inside the statistic dictionary
+		# And the "Item" key is inside the question dictionary
 		if (
-			"Data" in self.dictionary["Text"] and
-			self.dictionary["Text"]["Data"][self.user_language] in current_year_statistics
+			"Question" in statistic and
+			"Item" in statistic["Question"]
 		):
-			# Get the data to use as a key
-			data_key = self.dictionary["Text"]["Data"][self.user_language]
-
-			# Define the statistic key
-			statistic_key = data_key
+			# Define the statistic key as the response of the first question, as there is only one
+			statistic_key = questions["1"]["Response"]
 
 		# If the "Alternative key" key is inside the statistic dictionary
 		if "Alternative key" in statistic:
@@ -600,7 +790,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Number": 0,
 			"Dictionary": {
 				statistic["Key"]: {
-					"Text": text,
+					"Text": statistic_text,
 					"Old number": "",
 					"Number": ""
 				}
@@ -618,40 +808,56 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the number to add as one
 		number = 1
 
-		# If the "Question" key is inside the statistic dictionary
-		if "Question" in statistic:
-			# Get the response
-			response = information["Response"]
+		# If the "Has questions" state is True
+		if statistic["Has questions"] == True:
+			# Iterate through the questions inside the dictionary, getting the key and question dictionary
+			for key, question in questions.items():
+				# Get the response
+				response = question["Response"]
 
-			# If the response is a number
-			if (
-				isinstance(response, dict) == False and
-				response.isdigit() == True
-			):
-				# Define the number to add as the response
-				number = int(response)
+				# If the response is a dictionary
+				if isinstance(response, dict) == True:
+					# Get the text response
+					text_response = response["Text"]
 
-			# If the response is "No" or "0"
-			if response in ["No", 0, "0"]:
-				# Define the number as zero
-				number = 0
+					# If the "Answers" key is inside the response dictionary
+					if "Answers" in response:
+						# Get the answer dictionary, using the text response as the key
+						answer = response["Answers"][text_response]
 
-			# If the "Questions" key is inside the statistic dictionary
-			if "Questions" in statistic:
-				# Iterate through the responses
-				for key, answer in response.items():
-					# Save the old number
-					old_number = current_year_statistics[key]
+						# If the answer is a digit
+						if answer.isdigit() == True:
+							number = int(answer)
 
-					# Add the answer to the statistic using the response/question key
-					current_year_statistics[key] += answer
+				# If the response is a number
+				if (
+					isinstance(response, dict) == False and
+					response.isdigit() == True
+				):
+					# Define the number to add as the response
+					number = int(response)
 
-					# Add the key to the statistic dictionary inside the Diary Slim dictionary
-					self.dictionary["Text"]["Statistics"]["Dictionary"][key] = {
-						"Text": self.language_texts[key.replace(" ", "_").lower()],
-						"Old number": old_number,
-						"Number": current_year_statistics[key]
-					}
+				# If the response is "No" or "0"
+				if response in ["No", 0, "0"]:
+					# Define the number as zero
+					number = 0
+
+				# If the "Questions" key is inside the statistic dictionary
+				if "Questions" in statistic:
+					# Iterate through the responses
+					for answer_key, answer in response.items():
+						# Save the old number
+						old_number = current_year_statistics[key]
+
+						# Add the answer to the statistic using the response/question key
+						current_year_statistics[key] += answer
+
+						# Add the key to the statistic dictionary inside the Diary Slim dictionary
+						self.dictionary["Text"]["Statistics"]["Dictionary"][key] = {
+							"Text": self.language_texts[key.replace(" ", "_").lower()],
+							"Old number": old_number,
+							"Number": current_year_statistics[key]
+						}
 
 		# Update the number of statistics
 		self.dictionary["Text"]["Statistics"]["Number"] = len(list(self.dictionary["Text"]["Statistics"]["Dictionary"].keys()))
@@ -698,10 +904,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Replace the decorator template
 			text = text_decorator["Format"].replace("{decorator}", decorator_text)
 
-			# If the "{data}" text template is inside the format template
-			if "{data}" in text:
-				# Replace the data template
-				text = text.replace("{data}", self.dictionary["Text"]["Data"][self.user_language])
+			# If the "{response}" text template is inside the format template
+			if "{response}" in text:
+				# Replace the response template with the response to the first question
+				text = text.replace("{response}", questions["1"]["Response"])
 
 			# If the "{text}" template is inside the format template
 			if "{text}" in text:
@@ -716,11 +922,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 	def Write(self):
 		# If the "Item" key is inside the text dictionary
-		# And the "Simple format" key is not inside it
-		if (
-			"Item" in self.dictionary["Text"] and
-			"Simple format" not in self.dictionary["Text"]
-		):
+		if "Item" in self.dictionary["Text"]:
 			# Import the "Register" class of the "Tasks" module
 			from Tasks.Register import Register as Register
 
@@ -733,13 +935,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# If the "Item" key is not inside the text dictionary
 		# (That means the "Register" sub-class of the "Tasks" class was not executed and did not wrote on Diary Slim
 		# So this class needs to write on it)
-		# Or the "Item" key is inside the text dictionary
-		# And the "Simple format" key is inside it
-		if (
-			"Item" not in self.dictionary["Text"] or
-			"Item" in self.dictionary["Text"] and
-			"Simple format" in self.dictionary["Text"]
-		):
+		if "Item" not in self.dictionary["Text"]:
 			# Add a period to the end of the text if it is not present
 			if "." not in self.dictionary["Text to write"][-1]:
 				self.dictionary["Text to write"] += "."
