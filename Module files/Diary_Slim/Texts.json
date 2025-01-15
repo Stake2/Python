@@ -150,5 +150,9 @@
 	"type_how_many_times_you_drove_the_car": {
 		"en": "Type how many times you drove the car",
 		"pt": "Digite quantas vezes você dirigiu o carro"
+	},
+	"type_how_many_times_you_rode_your_bike": {
+		"en": "Type how many times you rode your bike",
+		"pt": "Digite quantas vezes você andou de bicicleta"
 	}
 }

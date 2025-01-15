@@ -338,20 +338,34 @@ class Write_On_Diary_Slim(Diary_Slim):
 		return return_dictionary
 
 	def Define_Input_Text(self, question):
-		# Define the input text
-		input_text = question["Input text"]
+		# Define the default value of the input text as the question
+		input_text = question
+
+		# If the "Input text" key is inside the question dictionary
+		if "Input text" in question:
+			# Define the input text
+			input_text = question["Input text"]
 
 		# If the input text is a string
-		# And the input text is a key to a text dictionary inside the root texts dictionary of this module
-		if (
-			isinstance(input_text, str) == True and
-			input_text in self.texts
-		):
-			# Get the correct text dictionary from the text key
-			input_text = self.texts[input_text]
+		if isinstance(input_text, str) == True:
+			# If the input text is a key inside the root texts dictionary of this module
+			if input_text in self.texts:
+				# Define the dictionary of texts as that one
+				texts_dictionary = self.texts
 
-			# Get the user language version of the input text
-			input_text = input_text[self.user_language]
+			# Else, define it as the dictionary of the "Language" module
+			else:
+				texts_dictionary = self.Language.texts
+
+			# If the input text is inside the local texts dictionary
+			if input_text in texts_dictionary:
+				# Get the correct text dictionary from the text key
+				input_text = texts_dictionary[input_text]
+
+			# If the user language key is inside the input text dictionary
+			if self.user_language in input_text:
+				# Get the user language version of the input text
+				input_text = input_text[self.user_language]
 
 		# Return the language input text
 		return input_text
@@ -844,20 +858,141 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# If the "Questions" key is inside the statistic dictionary
 				if "Questions" in statistic:
-					# Iterate through the responses
-					for answer_key, answer in response.items():
-						# Save the old number
-						old_number = current_year_statistics[key]
+					# If the "Create sub-dictionary" key is inside the question dictionary
+					if "Create sub-dictionary" in question:
+						# Define the sub-dictionary key
+						sub_key = question["Response"]
 
-						# Add the answer to the statistic using the response/question key
-						current_year_statistics[key] += answer
-
-						# Add the key to the statistic dictionary inside the Diary Slim dictionary
-						self.dictionary["Text"]["Statistics"]["Dictionary"][key] = {
-							"Text": self.language_texts[key.replace(" ", "_").lower()],
-							"Old number": old_number,
-							"Number": current_year_statistics[key]
+						# Define the dictionary to add
+						to_add = {
+							"Text": statistic_text
 						}
+
+						# If the sub-key is not inside the dictionary
+						if sub_key not in to_add:
+							# Add the sub-key with the dictionary
+							to_add[sub_key] = {
+								statistic["Key"]: 0
+							}
+
+						# Update the old number
+						old_number = to_add[sub_key][statistic["Key"]]
+
+						# Add one to the number
+						to_add[sub_key][statistic["Key"]] += 1
+
+						# Define the sub-dictionaries dictionary, with the question key (question number)
+						sub_dictionaries = {
+							key: to_add[sub_key]
+						}
+
+						# Update the to add dictionary to add the keys of the root statistics dictionary
+						to_add = {
+							**to_add
+						}
+
+						# Update the numbers
+						to_add["Old number"] = old_number
+						to_add["Number"] = to_add[sub_key][statistic["Key"]]
+
+						# Add the sub-dictionary to the root statistics dictionary
+						self.dictionary["Text"]["Statistics"]["Dictionary"][statistic_key] = to_add
+
+						# Update the current year statistics in the current statistic key
+						self.diary_slim["Current year"]["Statistics"][text_key] = {
+							sub_key: to_add
+						}
+
+						# Define the current year statistics dictionary (with the current statistic key) as the "to add" one
+						current_year_statistics = self.diary_slim["Current year"]["Statistics"][text_key]
+
+					# If the "Add to sub-dictionary" key is inside the question dictionary
+					if "Add to sub-dictionary" in question:
+						# Get the sub-key
+						sub_key = question["Add to sub-dictionary"]
+
+						# If the question key is not inside the sub-dictionary
+						if question["Key"] not in sub_dictionaries[sub_key]:
+							sub_dictionaries[sub_key][question["Key"]] = 0
+
+						# Get the old number
+						old_number = sub_dictionaries[sub_key][question["Key"]]
+
+						# Add the question key with the response as value, to the selected sub-dictionary
+						sub_dictionaries[sub_key][question["Key"]] = response
+
+						# Define the sub-dictionary
+						sub_dictionary = sub_dictionaries[sub_key]
+
+						# Get the correct sub-key
+						sub_key = questions[sub_key]["Response"]
+
+						# Update the sub-dictionary on the root statistics dictionary
+						self.dictionary["Text"]["Statistics"]["Dictionary"][statistic_key].update(sub_dictionary)
+
+						# Update the current year statistics in the current statistic key
+						self.diary_slim["Current year"]["Statistics"][text_key] = {
+							sub_key: sub_dictionary
+						}
+
+						# Define the current year statistics dictionary (with the current statistic key) as the "to add" one
+						current_year_statistics = {
+							sub_key: self.diary_slim["Current year"]["Statistics"][text_key]
+						}
+
+						# ---------- #
+
+						# Define the local text key
+						local_text_key = question["Key"].replace(" ", "_").lower()
+
+						# Add the additional question key to the root statistics dictionary
+						self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]] = {
+							"Text": self.Language.language_texts[local_text_key],
+							"Old number": old_number,
+							"Number": response
+						}
+
+						# If the "Money" key is inside the question dictionary
+						if "Money" in question:
+							# Add the money key to the root statistics dictionary
+							self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]]["Money"] = question["Money"]
+
+						# ---------- #
+
+						# Change the "Changed statistic" to True
+						self.dictionary["Text"]["Statistics"]["Changed statistic"] = True
+
+						# ---------- #
+
+						# Define the number as zero
+						number = 0
+
+						# ---------- #
+
+						# Define the list of items to use
+						items = [
+							sub_key,
+							response
+						]
+
+						# If the "Money" key is inside the question dictionary
+						if "Money" in question:
+							# Define the "Use extended" variable
+							use_extended = True
+
+							# If the "Use extended money text" is inside the question dictionary
+							if "Use extended money text" in question:
+								# Define the "Use extended" variable as the one inside that key
+								use_extended = question["Use extended money text"]
+
+							# Add the money text to the response and update the item inside the list above
+							items[1] = self.Define_Money_Text(response, use_extended = use_extended)
+
+						# Get the format text
+						format_text = question["Format text"]
+
+						# Format the text with the list of items, updating the text to write
+						self.dictionary["Text to write"] = self.Language.language_texts[format_text].format(*items)
 
 		# Update the number of statistics
 		self.dictionary["Text"]["Statistics"]["Number"] = len(list(self.dictionary["Text"]["Statistics"]["Dictionary"].keys()))
@@ -875,20 +1010,26 @@ class Write_On_Diary_Slim(Diary_Slim):
 			add_to_number = False
 
 		# If the "add to number" state variable is True
-		if add_to_number == True:
+		# And the statistic key exists inside the current year statistics dictionary
+		# And the number is not equal to zero
+		if (
+			add_to_number == True and
+			statistic_key in current_year_statistics and
+			number != 0
+		):
 			# Add the defined number to the defined statistic key
 			current_year_statistics[statistic_key] += number
 
-		# Update the number inside the statistics dictionary inside the Diary Slim text dictionary
-		self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"] = current_year_statistics[statistic_key]
+			# Update the number inside the statistics dictionary inside the Diary Slim text dictionary
+			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"] = current_year_statistics[statistic_key]
 
-		# If the old number is not the same as the new number
-		old_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Old number"]
-		new_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"]
+			# If the old number is not the same as the new number
+			old_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Old number"]
+			new_number = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"]
 
-		if old_number != new_number:
-			# Change the "Changed statistic" to True
-			self.dictionary["Text"]["Statistics"]["Changed statistic"] = True
+			if old_number != new_number:
+				# Change the "Changed statistic" to True
+				self.dictionary["Text"]["Statistics"]["Changed statistic"] = True
 
 		# If the "Text decorator" is inside the statistic dictionary
 		if "Text decorator" in self.dictionary["Text"]["Statistic"]:
@@ -919,6 +1060,24 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Update the statistics of the current year
 		self.Update_Current_Year_Statistics(self.diary_slim["Current year"]["Statistics"])
+
+	def Define_Money_Text(self, number, use_extended = True):
+		# Define the default text key
+		text_key = "money_text"
+
+		# If the "Use extended" state is True
+		if use_extended == True:
+			# Add the "_extended" text to the text key
+			text_key += "_extended"
+
+		# Add the ", type: format" text to the text key
+		text_key += ", type: format"
+
+		# Format the money number with the correct money text defined before
+		number = self.Language.language_texts[text_key].format(number)
+
+		# Return the number with the money text
+		return number
 
 	def Write(self):
 		# If the "Item" key is inside the text dictionary
@@ -968,6 +1127,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 			print()
 			print(show_text + ":")
 
+			# Define a shortcut for the dictionary
+			dictionary = self.dictionary["Text"]["Statistics"]["Dictionary"]
+
 			# Iterate through the dictionary of statistics
 			for statistic in self.dictionary["Text"]["Statistics"]["Dictionary"].values():
 				# Define the text with the statistic text and colon
@@ -979,8 +1141,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Add a colon
 				text += ": "
 
+				# Define the number
+				number = str(statistic["Number"])
+
+				# If the "Money" key is inside the statistic dictionary
+				if "Money" in statistic:
+					# Define the money text
+					number = self.Define_Money_Text(number)
+
 				# Add the current number of the statistic
-				text += str(statistic["Number"])
+				text += number
 
 				# Add the old number with the "before" text
 				text += " (" + self.Language.language_texts["before, title()"].lower() + ": " + str(statistic["Old number"]) + ")"

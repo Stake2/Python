@@ -2211,7 +2211,27 @@
 	},
 	"days_that_i_worked": {
 		"en": "Days that I worked",
-		"pt": "Dias que eu trabalheiDias que trabalhei"
+		"pt": "Dias que eu trabalhei"
+	},
+	"times_i_worked_on": {
+		"en": "Times I worked on",
+		"pt": "Vezes que trabalhei no"
+	},
+	"i_worked_on_{}_and_earned_{}": {
+		"en": "I worked on {} and earned {}",
+		"pt": "Trabalhei no {} e ganhei {}"
+	},
+	"money_that_i_earned": {
+		"en": "Money that I earned",
+		"pt": "Dinheiro que eu ganhei"
+	},
+	"money_text, type: format": {
+		"en": "${}",
+		"pt": "R$ {}"
+	},
+	"money_text_extended, type: format": {
+		"en": "{} dollars",
+		"pt": "{} reais"
 	},
 	"before, title()": {
 		"en": "Before",
@@ -2220,10 +2240,6 @@
 	"visits_of": {
 		"en": "Visits of",
 		"pt": "Visitas de"
-	},
-	"times_i_worked_on": {
-		"en": "Times I worked on",
-		"pt": "Vezes que trabalhei no"
 	},
 	"genders, type: dict": {
 		"en": {

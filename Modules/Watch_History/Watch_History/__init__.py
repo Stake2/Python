@@ -3344,14 +3344,28 @@ class Watch_History(object):
 					if media["States"]["Video"] == False:
 						container = container.lower()
 
+					# Define a shortcut for the words dictionary
+					words = dictionary["Media type"]["Genders"][self.user_language]
+
 					# Define the list of items to use to format the text
 					items = [
-						dictionary["Media type"]["Genders"][self.user_language]["this"].title(),
-						dictionary["Media type"]["Genders"][self.user_language]["the"] + " " + dictionary["Media type"]["Genders"][self.user_language]["first"] + " " + container
+						words["this"].title(),
+						words["the"] + " " + words["first"] + " " + container
 					]
 
+					# Re-define the words shortcut
+					words = self.Language.language_texts["genders, type: dict, masculine"]
+
+					# If the media unit is "episode"
+					if media["texts"]["unit"]["en"] == "episode":
+						# Re-define the list of items to be in the masculine gender
+						items = [
+							words["this"].title(),
+							words["the"] + " " + words["first"] + " " + container
+						]
+
 					# Add the "in" text in the masculine gender and the current year number
-					items.append(self.Language.language_texts["genders, type: dict, masculine"]["in"] + " " + self.current_year["Number"])
+					items.append(words["in"] + " " + self.current_year["Number"])
 
 					# Define the template
 					template = self.language_texts["{}_is_{}_that_you_watched_{}"]
