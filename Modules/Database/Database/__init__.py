@@ -1116,7 +1116,7 @@ class Database(object):
 			print()
 			print(self.separators["5"])
 
-			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_info_summary"])
+			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_information_summary"])
 
 if __name__ == "__main__":
 	Database()

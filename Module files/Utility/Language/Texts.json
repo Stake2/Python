@@ -92,6 +92,10 @@
 		"en": "Type {}",
 		"pt": "Digite {}"
 	},
+	"type_the_{}": {
+		"en": "Type the {}",
+		"pt": "Digite o {}"
+	},
 	"type_or_paste_the_text": {
 		"en": "Type or paste the text",
 		"pt": "Digite ou cole o texto"
@@ -187,8 +191,8 @@
 		"en": "Press Enter when you finish",
 		"pt": "Pressione Enter quando você terminar de"
 	},
-	"press_enter_when_you_finish_reading_the_info_summary": {
-		"en": "Press Enter when you finish reading the info summary",
+	"press_enter_when_you_finish_reading_the_information_summary": {
+		"en": "Press Enter when you finish reading the information summary",
 		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
 	},
 	"press_enter_when_you": {
@@ -1894,6 +1898,10 @@
 		"en": "Chapters",
 		"pt": "Capítulos"
 	},
+	"story_chapter": {
+		"en": "Story chapter",
+		"pt": "Capítulo de história"
+	},
 	"portrait, title()": {
 		"en": "Portrait",
 		"pt": "Retrato"
@@ -2173,13 +2181,21 @@
 		"en": "Yearly statistics",
 		"pt": "Estatísticas anuais"
 	},
-	"updated_statistic": {
-		"en": "Updated statistic",
-		"pt": "Estatística atualizada"
+	"updated_year_statistic": {
+		"en": "Updated year statistic",
+		"pt": "Estatística de ano atualizada"
 	},
-	"updated_statistics": {
-		"en": "Updated statistics",
-		"pt": "Estatísticas atualizadas"
+	"updated_year_statistics": {
+		"en": "Updated year statistics",
+		"pt": "Estatísticas de ano atualizadas"
+	},
+	"updated_month_statistic": {
+		"en": "Updated month statistic",
+		"pt": "Estatística de mês atualizada"
+	},
+	"updated_month_statistics": {
+		"en": "Updated month statistics",
+		"pt": "Estatísticas de mês atualizadas"
 	},
 	"bike_rides": {
 		"en": "Bike rides",

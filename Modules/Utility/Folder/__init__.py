@@ -61,6 +61,9 @@ class Folder():
 		self.languages = self.Language.languages
 		self.date = self.Date.date
 
+		# Import the user language from the "Language" class
+		self.user_language = self.Language.user_language
+
 	def Define_Switches(self):
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
@@ -502,6 +505,9 @@ class Folder():
 
 			# "Productivity" network subfolders
 			if network["Title"] == "Productivity":
+				# Remove the "Data" folder
+				network["Subfolders"].remove("Data")
+
 				network.update({
 					"History": "Task",
 					"Type": "Task",
@@ -575,11 +581,13 @@ class Folder():
 
 					dictionary[network["Information"]][key] = dictionary[network["Information"]]["root"] + item
 
-			# Network "Data" folders and files
-			for item in ["Types.json"]:
-				key = item.replace(".json", "")
+			# If the network is not the "Productivity" one
+			if network["Title"] != "Productivity":
+				# Define the network "Data" folders and files
+				for item in ["Types.json"]:
+					key = item.replace(".json", "")
 
-				dictionary["Data"][key] = dictionary["Data"]["root"] + item
+					dictionary["Data"][key] = dictionary["Data"]["root"] + item
 
 			# "Network History" "History" file
 			dictionary[network["History"]]["History"] = dictionary[network["History"]]["root"] + "History.json"
