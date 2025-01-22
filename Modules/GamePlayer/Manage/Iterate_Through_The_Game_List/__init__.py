@@ -107,7 +107,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 					# Add to the current game number
 					g += 1
 
-					# If the "testing" switch is True
+					# If the "Testing" switch is True
 					# And the game is not the last one
 					# And the game list is not empty
 					# And the length of the game list is not one (more than one game)
@@ -120,7 +120,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 						# Ask the user to press Enter to advance to the next game type
 						self.Input.Type(self.Language.language_texts["continue, title()"])
 
-			# If the "testing" switch is True
+			# If the "Testing" switch is True
 			# And the game type is not the last one
 			# And the game type is not inside the list of game types that needs to be skipped
 			# And the game list is not empty

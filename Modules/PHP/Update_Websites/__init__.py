@@ -520,6 +520,6 @@ class Update_Websites(PHP):
 					# Define the Git file as the current file
 					git_file = file
 
-		# If the "testing" switch is False, open the Git file
+		# If the "Testing" switch is False, open the Git file
 		if self.switches["Testing"] == False:
 			self.System.Open_Link(git_file, verbose = False)

@@ -143,6 +143,7 @@ class Tasks(object):
 
 		# Define the root "Tasks" dictionary, with the "Folders" dictionary
 		self.tasks = {
+			"Module name": self.language_texts["tasks, title()"],
 			"Folders": self.folders["Notepad"]["Data Networks"]["Productivity"]
 		}
 
@@ -600,18 +601,29 @@ class Tasks(object):
 		# Return it
 		return item
 
-	def Show_Information(self, dictionary):
+	def Show_Information(self, dictionary, states):
 		# Make a shortcut for the "Task" dictionary
 		task = dictionary["Task"]
 
 		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
-		print()
+
+		# ---------- #
+
+		# If the class is being used as a module by another Python module
+		if self.states["Used as module"] == True:
+			# Show the "Class being executed" and the name of the module and class
+			# So the user is sure that this is the Tasks module, not another one
+			# "Tasks.Register()" (in the user language)
+			print()
+			print(self.Language.language_texts["class_being_executed"] + ":")
+			print("\t" + self.language_texts["Tasks.Register"])
 
 		# ---------- #
 
 		# Show the text about the registered task
+		print()
 		print(self.language_texts["this_task_was_registered"] + ":")
 
 		# Iterate through the list of small languages
@@ -676,14 +688,22 @@ class Tasks(object):
 		print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
 		print("[" + task["Descriptions"][self.user_language] + "]")
 
-		# If the "Five dash space" switch is True
-		if dictionary["Five dash space"] == True:
+		# Show the text telling the user that the class wrote on the current Diary Slim
+		# And the current Diary Slim date
+		date = self.dictionary["Diary Slim"]["Date"]["Timezone"]["DateTime"]["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
+
+		print()
+		print(self.language_texts["the_task_description_was_written_on_the_current_diary_slim"] + ":")
+		print("\t" + date)
+
+		# If the "Five dash space" state is True
+		if states["Five dash space"] == True:
 			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
 
 		# If the user finished reading the information summary
-		# And the "Input" switch is True
-		if dictionary["Input"] == True:
+		# And the "Ask for input" state is True
+		if states["Ask for input"] == True:
 			# Ask for input before ending the execution of the class
 			self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_information_summary"])

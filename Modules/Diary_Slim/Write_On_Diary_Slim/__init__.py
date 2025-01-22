@@ -34,10 +34,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define the "Input on end" state as True
 			self.states["Input on end"] = True
 
-		# If the "Item" key is inside the text dictionary
-		if "Item" in self.dictionary["Text"]:
-			# Define the text item variables
-			self.Define_Item_Variables()
+		# If the "Is task" key is inside the text dictionary
+		if "Is task" in self.dictionary["Text"]:
+			# Register the task
+			self.Register_Task()
 
 		# If the text key is inside the root "Statistics" dictionary
 		if self.dictionary["Text"]["Key"] in self.statistics["Dictionary"]:
@@ -60,9 +60,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"select_text": self.language_texts["select_a_text_to_write"]
 		}
 
-		# Change the index of the Diary Slim Texts dictionary if the text has a custom index
+		# Change the index of the Diary Slim texts dictionary if the text has a custom index
+		t = 0
 		for key in self.diary_slim["Texts"]["Options"]["Keys"]:
-			# Get the Text dictionary
+			# Get the text dictionary
 			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
 
 			# Get the user language text
@@ -86,13 +87,58 @@ class Write_On_Diary_Slim(Diary_Slim):
 				parameters["language_options"].insert(index, text)
 
 			# Remove the option if the "Multi-selection" mode is activated
-			# And the "Item" key is present inside the Text dictionary
+			# And the "Is task" key is present inside the text dictionary
 			if (
 				self.states["Multi-selection"] == True and
-				"Item" in dictionary
+				"Is task" in dictionary
 			):
 				parameters["options"].remove(key)
 				parameters["language_options"].remove(text)
+
+		# Change the index of the Diary Slim Texts dictionary if the text has a custom index
+		i = 0
+		for key in self.diary_slim["Texts"]["Options"]["Keys"]:
+			# Get the text dictionary
+			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
+
+			# If" "Is task" key is present inside the text dictionary
+			if "Is task" in dictionary:
+				# Get the user language text
+				text = dictionary["Texts"][self.user_language]
+
+				# Define the item text key
+				text_key = dictionary["Key"]
+
+				# If the "Item" key is inside the text dictionary
+				if "Item" in dictionary:
+					# Get the item text
+					text_key = dictionary["Item"]
+
+					# If the "_" (underscore) character is not inside the text key
+					if "_" not in text_key:
+						# Add the ", title()" text to the text key
+						text_key += ", title()"
+
+				# Define the texts dictionary
+				texts = self.Language.language_texts
+
+				# If the text key is inside the texts dictionary
+				if text_key in texts:
+					# Get the item text
+					item_text = self.Language.language_texts[text_key]
+
+				else:
+					# Define the item text as the text key
+					item_text = text_key
+
+				# Find the index of the text
+				index = parameters["language_options"].index(text)
+
+				# Update the text to add the item text and the three dots
+				text = "(" + item_text + ") " + text + "..."
+
+				# Update the text inside the list of language options
+				parameters["language_options"][index] = text
 
 		# Add the "[Multi-selection]" option if its mode is deactivated
 		if self.states["Multi-selection"] == False:
@@ -490,245 +536,21 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Add the language text to the texts list
 				texts.append(language_text)
 
-	def Define_Item_Variables(self):
-		# Remove the "..." (three dots) text if it is present inside the text
-		if "..." in self.dictionary["Text"]["Texts"][self.user_language]:
-			for language in self.languages["small"]:
-				self.dictionary["Text"]["Texts"][language] = self.dictionary["Text"]["Texts"][language].replace("...", "")
-
-		# Ask for the text data if the text has a type text
-		if "Type text" in self.dictionary["Text"]:
-			# Show a five dash space separator
-			print()
-			print(self.separators["5"])
-
-			# Show the text in the user language
-			print()
-			print(self.dictionary["Text"]["Texts"][self.user_language] + ":")
-
-			# Define the "Data" dictionary
-			self.dictionary["Text"]["Data"] = {}
-
-			# If the "Options" key is not inside the text dictionary
-			# That means the user must type the data (string)
-			# And not select it (from a list of options)
-			if "Options" not in self.dictionary["Text"]:
-				# Iterate through the small languages list
-				for language in self.languages["small"]:
-					# Get the translated language in the user language
-					translated_language = self.languages["full_translated"][language][self.user_language]
-
-					# Define the type text
-					type_text = self.language_texts[self.dictionary["Text"]["Type text"]] + " " + self.Language.language_texts["genders, type: dict"]["in"] + " " + translated_language
-
-					# Ask the user to type the data in each language
-					self.dictionary["Text"]["Data"][language] = self.Input.Type(type_text)
-
-			# If the "Options" key is inside the text dictionary
-			# That means the user must select the data from a list of options
-			if "Options" in self.dictionary["Text"]:
-				# Define the list of options
-				options = self.dictionary["Text"]["Options"]
-
-				# Define the text key variable
-				text_key = options["Show text"]
-
-				# Add the ", title()" text if the text key does not contain underscores
-				if "_" not in text_key:
-					text_key += ", title()"
-
-				# Get the show text using the text key
-				show_text = self.Language.language_texts[text_key]
-
-				# Ask the user to select an option from the list of options
-				self.dictionary["Text"]["Data"][self.user_language] = self.Input.Select(options["List"], show_text = show_text)["option"]
-
-			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				# If the language is not inside the "Data" dictionary
-				if language not in self.dictionary["Text"]["Data"]:
-					# Define it as the data in the user language
-					self.dictionary["Text"]["Data"][language] = self.dictionary["Text"]["Data"][self.user_language]
-
-			# Split the text data items into a list if the data contains a comma and a space
-			# Add commas between the items, and add the "and " text before the last item
-			if ", " in self.dictionary["Text"]["Data"][self.user_language]:
-				# Iterate through the small languages list
-				for language in self.languages["small"]:
-					# Split the text data with a comma and a space
-					split = self.dictionary["Text"]["Data"][language].split(", ")
-
-					# Define the text data as an empty string in the current language
-					self.dictionary["Text"]["Data"][language] = ""
-
-					# Iterate through the list of items of the text data
-					for item in split:
-						# If the item is not the first one
-						# And the number of items is two
-						if (
-							item != split[0] and
-							len(split) == 2
-						):
-							# Add a space to separate items
-							self.dictionary["Text"]["Data"][language] += " "
-
-						# If the item is the last one
-						if item == split[-1]:
-							# Add the "and " text before the last item
-							self.dictionary["Text"]["Data"][language] += self.Language.texts["and"][language] + " "
-
-						# Add the item
-						self.dictionary["Text"]["Data"][language] += item
-
-						# If the item is not the last one
-						# And the number of items is not two
-						if (
-							item != split[-1] and
-							len(split) != 2
-						):
-							# Add a comma and a space to separate the items
-							self.dictionary["Text"]["Data"][language] += ", "
-
-					# Replace the singular name with the plural name on the text
-					if "Plural" in self.dictionary["Text"]["Descriptions"]:
-						# Define the variables for easier typing
-						singular = self.dictionary["Text"]["Descriptions"]["Singular"]
-						plural = self.dictionary["Text"]["Descriptions"]["Plural"]
-
-						replace_ = self.texts[singular][language]
-						with_ = self.texts[plural][language]
-
-						# Replace singular with plural
-						self.dictionary["Text"]["Texts"][language] = self.dictionary["Text"]["Texts"][language].replace(replace_, with_)
-
-				# Replace the "Explanation text" with the plural version
-				self.dictionary["Text"]["Explanation text"] = "say_what_you_did_on_the_{}, plural"
-
-				# Define the text item as the plural item
-				self.dictionary["Text"]["Item"] = self.dictionary["Text"]["Items"]["Plural"]
-
-			# If the text data does not contain a comma and a space
-			if ", " not in self.dictionary["Text"]["Data"][self.user_language]:
-				# If the "Quotes" setting is True
-				if self.dictionary["Text"]["Quotes"] == True:
-					# Iterate through the small languages list
-					for language in self.languages["small"]:
-						# Add quotes to the text data
-						self.dictionary["Text"]["Data"][language] = '"' + self.dictionary["Text"]["Data"][language] + '"'
-
-			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				# Add a space and the text data to the texts dictionary
-				self.dictionary["Text"]["Texts"][language] += " " + self.dictionary["Text"]["Data"][language]
-
-		# Show a three dash space separator
-		print()
-		print(self.separators["3"])
-
-		# Ask for the user to type the task descriptions
-		# It is because all Diary Slim texts that contain the "Item" key are also tasks that can be registered
-		# They can be registered using the "Tasks" Python module, and its "Register" sub-class
-		self.Type_Task_Descriptions()
-
-	def Type_Task_Descriptions(self):
-		# Define the Task dictionary
-		# With the task type, titles, descriptions, entry date, and files
+	def Register_Task(self):
+		# Define the task dictionary
+		# With the task type and entry date
 		self.task_dictionary = {
 			"Type": self.dictionary["Text"]["Key"],
-			"Task": {
-				"Titles": {},
-				"Descriptions": {}
-			},
 			"Entry": {
 				"Date": self.Date.Now()
-			},
-			"Files": {}
+			}
 		}
 
-		# Show the explanation text about opening the description files for the user to type on them
-		print()
-		print(self.language_texts["opening_the_description_files_for_you_to_type_on_them, type: explanation"])
+		# Import the "Register" class of the "Tasks" module
+		from Tasks.Register import Register as Register
 
-		# Define the explanation text of the task
-		explanation_text = self.language_texts[self.dictionary["Text"]["Explanation text"]]
-
-		# Format it with the item of the text
-		explanation_text = explanation_text.format(self.language_texts[self.dictionary["Text"]["Item"]])
-
-		# Show the explanation text of the text (task)
-		print()
-		print(explanation_text + ".")
-
-		# Iterate through the small languages list
-		for language in self.languages["small"]:
-			# Get the full language
-			full_language = self.languages["full"][language]
-
-			# Define the task description file in the current language
-			self.task_dictionary["Files"][language] = self.folders["Notepad"]["Diary Slim"]["root"] + full_language + ".txt"
-
-			# Create the file
-			self.File.Create(self.task_dictionary["Files"][language])
-
-		# Define the empty languages text
-		languages_text = ""
-
-		# Define the translated languages list
-		translated_languages = []
-
-		# Iterate through the small languages list
-		for language in self.languages["small"]:
-			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.user_language]
-
-			# Add the translated language to the list
-			translated_languages.append(translated_language)
-
-		# Create the translated languages text
-		languages_text = self.Text.From_List(translated_languages)
-
-		# Iterate through the small languages list
-		for language in self.languages["small"]:
-			# Open the task description file in the current language
-			self.System.Open(self.task_dictionary["Files"][language])
-
-		# Wait for the user to finish writing the task descriptions
-		self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(languages_text))
-
-		# Define and create the backup file
-		self.task_dictionary["Files"]["Backup"] = self.folders["Notepad"]["Diary Slim"]["root"] + "Descriptions backup.txt"
-		self.File.Create(self.task_dictionary["Files"]["Backup"])
-
-		# Iterate through the small languages list
-		for language in self.languages["small"]:
-			# Define the task title in the current language as the Diary Slim text
-			self.task_dictionary["Task"]["Titles"][language] = self.dictionary["Text"]["Texts"][language]
-
-			# Define the task description in the current language as the task title with a period and two line breaks
-			self.task_dictionary["Task"]["Descriptions"][language] = self.task_dictionary["Task"]["Titles"][language] + "." + "\n\n"
-
-			# If the "testing" switch is False
-			if self.switches["Testing"] == False:
-				# Add the contents of the description file in the current language to the task description
-				self.task_dictionary["Task"]["Descriptions"][language] += self.File.Contents(self.task_dictionary["Files"][language])["string"]
-
-			# If the "testing" switch is True
-			else:
-				# Add the "[Description]" text in the current language to the task description
-				self.task_dictionary["Task"]["Descriptions"][language] += "[" + self.Language.texts["description, title()"][language] + "]"
-
-			# Define the text to add to the backup file as the task description in the current language
-			text = self.task_dictionary["Task"]["Descriptions"][language]
-
-			# If the language is not the last one, add two line breaks to the text
-			if language != self.languages["small"][-1]:
-				text += "\n\n"
-
-			# Make the backup of the task description
-			self.File.Edit(self.task_dictionary["Files"]["Backup"], text, "a", next_line = False)
-
-			# Delete the description file in the current language
-			self.File.Delete(self.task_dictionary["Files"][language])
+		# Run the "Register" class with the local Task dictionary
+		Register(self.task_dictionary)
 
 	def Manage_Statistic(self):
 		# Define the key
@@ -858,7 +680,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 				response = question["Response"]
 
 				# If the response is a dictionary
-				if isinstance(response, dict) == True:
+				if isinstance(response, dict):
 					# Get the text response
 					text_response = response["Text"]
 
@@ -879,8 +701,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 					# Define the number to add as the response
 					number = int(response)
 
-				# If the response is "No" or "0"
-				if response in ["No", 0, "0"]:
+				# Define the list of no answers
+				no_answers = ["No", 0, "0"]
+
+				# If the response is inside the list of no answers
+				# Or the response is a dictionary and the text inside of it is inside the list above
+				if (
+					response in no_answers or
+					isinstance(response, dict) and
+					response["Text"] in no_answers
+				):
 					# Define the number as zero
 					number = 0
 
@@ -1215,21 +1045,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			print("\t" + text)
 
 	def Write(self):
-		# If the "Item" key is inside the text dictionary
-		if "Item" in self.dictionary["Text"]:
-			# Import the "Register" class of the "Tasks" module
-			from Tasks.Register import Register as Register
-
-			# Run the "Register" class with the local Task dictionary
-			Register(self.task_dictionary)
-
-			# Delete the task description backup file
-			self.File.Delete(self.task_dictionary["Files"]["Backup"])
-
-		# If the "Item" key is not inside the text dictionary
+		# If the "Is task" key is not inside the text dictionary
 		# (That means the "Register" sub-class of the "Tasks" class was not executed and did not wrote on Diary Slim
 		# So this class needs to write on it)
-		if "Item" not in self.dictionary["Text"]:
+		if "Is task" not in self.dictionary["Text"]:
 			# Add a period to the end of the text if it is not present
 			if "." not in self.dictionary["Text to write"][-1]:
 				self.dictionary["Text to write"] += "."
@@ -1244,6 +1063,19 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 			# Write the text on Diary Slim
 			Write_On_Diary_Slim_Module(dictionary)
+
+		# If the "Is task" key is inside the text dictionary
+		if "Is task" in self.dictionary["Text"]:
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# Show the "Class being executed" and the name of the module and class
+			# So the user is sure that this is the Diary Slim module, not another one
+			# "Diary Slim" (in the user language)
+			print()
+			print(self.Language.language_texts["class_being_executed"] + ":")
+			print("\t" + self.language_texts["Diary_Slim.Write"])
 
 		# If the "Is statistic" state is True
 		# And the "Changed statistic" is True

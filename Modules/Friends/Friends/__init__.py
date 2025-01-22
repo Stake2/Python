@@ -1091,7 +1091,7 @@ class Friends(object):
 
 				# If the information needs to be requested from the user:
 				if information_item["States"]["Ask for information"] == True:
-					# If the "testing" switch is False
+					# If the "Testing" switch is False
 					# Or it is True and the information item is not inside the "Test information" dictionary
 					if (
 						self.switches["Testing"] == False or
@@ -1105,7 +1105,7 @@ class Friends(object):
 						# And forcing the format of the information item Regex, if it is not empty (regex = [Format])
 						information = self.Input.Type(type_text, accept_enter = accept_enter, next_line = True, tab = "\t", regex = information_item["Format"])
 
-					# If the "testing" switch is True
+					# If the "Testing" switch is True
 					# And the information item is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and
@@ -1146,7 +1146,7 @@ class Friends(object):
 
 					select_text = self.language_texts["select_the_social_network_where_you_met_{}"].format(the_friend_text)
 
-				# If the "testing" switch is False
+				# If the "Testing" switch is False
 				# Or it is True and the information item is not inside the "Test information" dictionary
 				if (
 					self.switches["Testing"] == False or
@@ -1156,7 +1156,7 @@ class Friends(object):
 					# Ask the user to select an item from the list of options
 					information = self.Input.Select(select["List"]["English"], language_options = select["List"]["Language"], show_text = select["Texts"]["Plural"], select_text = select_text)
 
-				# If the "testing" switch is True
+				# If the "Testing" switch is True
 				# And the information item is inside "Test information" dictionary
 				if (
 					self.switches["Testing"] == True and
@@ -1172,7 +1172,7 @@ class Friends(object):
 					# Define the type text for the information item
 					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.user_language] + " " + self.language_texts["custom_origin_social_network"])
 
-					# If the "testing" switch is False
+					# If the "Testing" switch is False
 					# Or it is True and the "Custom Social Network" key is not inside the "Test information" dictionary
 					if (
 						self.switches["Testing"] == False or
@@ -1182,7 +1182,7 @@ class Friends(object):
 						# Ask the user to type the information
 						information = self.Input.Type(type_text, accept_enter = False, next_line = True, tab = "\t")
 
-					# If the "testing" switch is True
+					# If the "Testing" switch is True
 					# And the "Custom Social Network" key is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and

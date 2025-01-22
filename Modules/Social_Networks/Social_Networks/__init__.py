@@ -1165,7 +1165,7 @@ class Social_Networks(object):
 
 				# If the information needs to be requested from the user:
 				if information_item["States"]["Ask for information"] == True:
-					# If the "testing" switch is False
+					# If the "Testing" switch is False
 					# Or it is True and the information item is not inside the "Test information" dictionary
 					if (
 						self.switches["Testing"] == False or
@@ -1179,7 +1179,7 @@ class Social_Networks(object):
 						# And forcing the format of the information item Regex, if it is not empty (regex = [Format])
 						information = self.Input.Type(type_text, accept_enter = accept_enter, next_line = True, tab = "\t", regex = information_item["Format"])
 
-					# If the "testing" switch is True
+					# If the "Testing" switch is True
 					# And the information item is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and
@@ -1198,7 +1198,7 @@ class Social_Networks(object):
 
 				select_text = select["Texts"]["Singular"]
 
-				# If the "testing" switch is False
+				# If the "Testing" switch is False
 				# Or it is True and the information item is not inside the "Test information" dictionary
 				if (
 					self.switches["Testing"] == False or
@@ -1208,7 +1208,7 @@ class Social_Networks(object):
 					# Ask the user to select an item from the list of options
 					information = self.Input.Select(select["List"]["English"], language_options = select["List"]["Language"], show_text = select["Texts"]["Plural"], select_text = select_text)
 
-				# If the "testing" switch is True
+				# If the "Testing" switch is True
 				# And the information item is inside "Test information" dictionary
 				if (
 					self.switches["Testing"] == True and

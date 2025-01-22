@@ -660,9 +660,11 @@ class Diary_Slim():
 
 		# ---------- #
 
-		# Define the empty "Diary Slim" dictionary
+		# Define the "Diary Slim" dictionary with the "Date" key
 		# (Not the root module "Diary Slim" dictionary, the "Diary Slim" file dictionary)
-		dictionary = {}
+		dictionary = {
+			"Date": date
+		}
 
 		# ---------- #
 
@@ -672,14 +674,9 @@ class Diary_Slim():
 		texts = datetime["Texts"]
 		formats = datetime["Formats"]
 
-		# Define the "Month" dictionary with its keys
-		dictionary["Month"] = {
-			"Name": texts["Month name with number"][self.user_language]
-		}
-
 		# ---------- #
 
-		# Define the "Day" dictionary
+		# Define the "Day" key
 		items = [
 			self.Text.Add_Leading_Zeroes(units["Day"]),
 			texts["Day name"][self.user_language],
@@ -687,6 +684,13 @@ class Diary_Slim():
 		]
 
 		dictionary["Day"] = "{} {}, {}".format(*items)
+
+		# ---------- #
+
+		# Define the "Month" dictionary with its keys
+		dictionary["Month"] = {
+			"Name": texts["Month name with number"][self.user_language]
+		}
 
 		# ---------- #
 
@@ -831,10 +835,6 @@ class Diary_Slim():
 				if self.File.Exist(dictionary["Files"][language]) == True:
 					# Read the language text file and add its contents to the "Texts" dictionary
 					dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
-
-					# Add "..." (three dots) if the "Item" key is present inside the "Data" dictionary
-					if "Item" in dictionary:
-						dictionary["Texts"][language] += "..."
 
 			# ----- #
 

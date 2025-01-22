@@ -102,7 +102,7 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		# Define the text to show as the "This text was written to the current Diary Slim" text
 		self.dictionary["Texts"]["To show"] = self.language_texts["this_text_was_written_to_the_current_diary_slim"] + ":"
 
-		# If the "testing" switch is True
+		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
 			# Update the information telling the user that the text was not written to the file
 			# Because the "testing" switch is True
@@ -140,3 +140,14 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 		):
 			# Show the text to show
 			print(self.dictionary["Texts"]["To show"])
+
+	@classmethod
+	def Return(class_, dictionary):
+		# Creates an instance of this class
+		instance = class_(dictionary)
+
+		# Get the current Diary Slim dictionary
+		current_diary_slim = instance.Current_Diary_Slim()
+
+		# Return the current Diary Slim dictionary
+		return current_diary_slim

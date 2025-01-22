@@ -3,6 +3,10 @@
 		"en": "Diary Slim",
 		"pt": "Diário Slim"
 	},
+	"Diary_Slim.Write": {
+		"en": "Diary_Slim.Write()",
+		"pt": "Diário_Slim.Escrever()"
+	},
 	"creating_a_diary_slim_for_the_current_day": {
 		"pt": "Criando um Diário Slim para o dia atual",
 		"en": "Creating a Diary Slim for the current day"
@@ -23,42 +27,6 @@
 		"en": "\"testing\" is \"True\"",
 		"pt": "\"testando\" é \"Verdadeiro\""
 	},
-	"python_module": {
-		"en": "Python module",
-		"pt": "módulo de Python"
-	},
-	"python_modules": {
-		"en": "Python modules",
-		"pt": "módulos de Python"
-	},
-	"php_website": {
-		"en": "PHP website",
-		"pt": "site em PHP"
-	},
-	"drawing": {
-		"en": "drawing",
-		"pt": "desenho"
-	},
-	"video": {
-		"en": "video",
-		"pt": "vídeo"
-	},
-	"type_the_name_of_the_module": {
-		"en": "Type the name of the module",
-		"pt": "Digite o nome do módulo"
-	},
-	"my_module": {
-		"en": "my module",
-		"pt": "o meu módulo"
-	},
-	"my_modules": {
-		"en": "my modules",
-		"pt": "os meus módulos"
-	},
-	"select_the_drawing_program": {
-		"en": "Select the drawing program",
-		"pt": "Selecione o programa de desenho"
-	},
 	"select_the_sibling": {
 		"en": "Select the sibling",
 		"pt": "Selecione o irmão"
@@ -66,18 +34,6 @@
 	"type_how_much_course_classes_you_watched_(1_one)": {
 		"en": "Type how much course classes you watched (1, one)",
 		"pt": "Digite quantas aulas de curso você assistiu (1, uma)"
-	},
-	"say_what_you_did_on_the_{}": {
-		"en": "Say what you did on the {}",
-		"pt": "Diga o que você fez no {}"
-	},
-	"say_what_you_did_on_the_{}, plural": {
-		"en": "Say what you did on the {}",
-		"pt": "Diga o que você fez nos {}"
-	},
-	"say_what_you_did_on_the_{}_but_in_english": {
-		"en": "Say what you did on the {}, but in English",
-		"pt": "Diga o que você fez no {}, mas em Inglês"
 	},
 	"texts_to_write": {
 		"en": "Texts to write",
@@ -90,18 +46,6 @@
 	"you_selected_this_option": {
 		"en": "You selected this option",
 		"pt": "Você selecionou esta opção"
-	},
-	"use_text_file_to_write_description": {
-		"en": "Use text file to write description",
-		"pt": "Usar arquivo de texto para escrever descrição"
-	},
-	"press_enter_when_you_finish_writing_and_saving_the_description_in_{}": {
-		"pt": "Pressione Enter quando você terminar de escrever e salvar a descrição em {}",
-		"en": "Press Enter when you finish writing and saving the description in {}"
-	},
-	"opening_the_description_files_for_you_to_type_on_them, type: explanation": {
-		"en": "Opening the description files for you to type on them.\nType on them, save and close them, and press Enter to continue.",
-		"pt": "Abrindo os arquivos de descrições para você digitar neles.\nDigite neles, salve-os e feche-os, e pressione Enter para continuar."
 	},
 	"did_you_wrote_this_diary_slim_on_the_phone": {
 		"en": "Did you wrote this Diary Slim on the phone",

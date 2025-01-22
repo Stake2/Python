@@ -1233,12 +1233,12 @@ class Write(Stories):
 				self.writing_mode == "Revise" and
 				update_chapter_titles == True
 			):
-				# If the "testing" switch is False
+				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
 					# Ask for the chapter title in the current language
 					chapter_title = self.Input.Type(type_text, next_line = True)
 
-				# If the "testing" switch is True
+				# If the "Testing" switch is True
 				if self.switches["Testing"] == True:
 					chapter_title = self.texts["a_new_chapter"][language].title()
 

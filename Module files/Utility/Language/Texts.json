@@ -46,6 +46,10 @@
 		"pt": "classe",
 		"en": "class"
 	},
+	"class_being_executed": {
+		"en": "Class being executed",
+		"pt": "Classe sendo executada"
+	},
 	"folder": {
 		"en": "folder",
 		"pt": "pasta"
@@ -761,6 +765,14 @@
 		"en": "Programming",
 		"pt": "Programação"
 	},
+	"python_module": {
+		"en": "Python module",
+		"pt": "módulo Python"
+	},
+	"python_modules": {
+		"en": "Python modules",
+		"pt": "módulos Python"
+	},
 	"of, neutral": {
 		"en": "of",
 		"pt": "de"
@@ -1192,6 +1204,14 @@
 	"official_website": {
 		"en": "Official website",
 		"pt": "Site oficial"
+	},
+	"php_website": {
+		"en": "PHP website",
+		"pt": "site em PHP"
+	},
+	"php_websites": {
+		"en": "PHP websites",
+		"pt": "sites em PHP"
 	},
 	"short": {
 		"en": "short",
@@ -2256,6 +2276,10 @@
 	"visits_of": {
 		"en": "Visits of",
 		"pt": "Visitas de"
+	},
+	"in": {
+		"en": "in",
+		"pt": "em"
 	},
 	"genders, type: dict": {
 		"en": {
