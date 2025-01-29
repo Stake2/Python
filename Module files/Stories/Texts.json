@@ -277,6 +277,10 @@
 		"en": "I have been {} the chapter {} of my story \"{}\" until now",
 		"pt": "Eu estive {} o capítulo {} da minha história \"{}\" até agora"
 	},
+	"i_{}_the_chapter_{}_of_my_story_{}": {
+		"en": "I {} the chapter {} of my story \"{}\"",
+		"pt": "Eu {} o capítulo {} da minha história \"{}\""
+	},
 	"i_finished_{}_the_chapter_{}_of_my_story_{}": {
 		"en": "I finished {} the chapter {} of my story \"{}\"",
 		"pt": "Eu terminei de {} o capítulo {} da minha história \"{}\""

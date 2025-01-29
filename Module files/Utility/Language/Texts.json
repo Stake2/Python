@@ -70,6 +70,10 @@
 		"en": "With file",
 		"pt": "Com arquivo"
 	},
+	"archive, title()": {
+		"en": "Archive",
+		"pt": "Arquivo"
+	},
 	"created": {
 		"en": "created",
 		"pt": {
@@ -2180,6 +2184,10 @@
 	"my, type: both genders": {
 		"en": "My",
 		"pt": "Meu/Minha"
+	},
+	"family, title()": {
+		"en": "Family",
+		"pt": "Família"
 	},
 	"siblings, title()": {
 		"en": "Siblings",

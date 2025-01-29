@@ -1378,6 +1378,45 @@ class Write(Stories):
 		# Update the "Chapters.json" file with the updated "Chapters" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Chapters"], self.story["Information"]["Chapters"])
 
+	def Make_Task_Title(self, dictionary):
+		# Get the language of the dictionary
+		language = dictionary["Language"]
+
+		# If the "Items" key does not exist in the dictionary
+		if "Items" not in dictionary:
+			# Define the list of items to use to format the template
+			dictionary["Items"] = [
+				self.dictionary["Writing mode"]["Texts"]["Infinitive action"][language],
+				self.chapter["Numbers"]["Names"][language],
+				self.story["Titles"][language]
+			]
+
+		# If this is not the first time the user writes the current chapter
+		# And is not the last one (the user did not finished writing the whole chapter)
+		if (
+			self.states["First time writing"] == False and
+			self.states["Finished writing"] == False
+		):
+			# Update the writing mode text to the "Action" one
+			dictionary["Items"][0] = self.dictionary["Writing mode"]["Texts"]["Action"][language]
+
+		# Define the task title in the current language as the template in the current language
+		task_title = dictionary["Template"][language]
+
+		# If the writing mode is "Translate"
+		if self.writing_mode == "Translate":
+			# Define the English translated language
+			translated_language = self.languages["full_translated"]["en"][language]
+
+			# Add the "from [User langauge] to English" text
+			task_title += " " + self.Language.texts["from_{}_to_{}"][language].format(dictionary["Translated user language"], translated_language)
+
+		# Format the template with the list of items
+		task_title = task_title.format(*dictionary["Items"])
+
+		# Return the task title
+		return task_title
+
 	def Register_Task(self, register_task = True):
 		# Create the task dictionary, to use it on the "Tasks" class
 		self.task_dictionary = {
@@ -1390,6 +1429,9 @@ class Write(Stories):
 
 		# Define the text template for the task as the "I started writing", for the first time
 		template = self.texts["i_started_{}_the_chapter_{}_of_my_story_{}"]
+
+		# Define an empty version of the task template
+		task_title_template = ""
 
 		# If this is not the first time the user writes the current chapter
 		# And is not the last one (the user did not finished writing the whole chapter)
@@ -1406,6 +1448,9 @@ class Write(Stories):
 			# Define the text template for the task as the "I finished writing", for the last time
 			template = self.texts["i_finished_{}_the_chapter_{}_of_my_story_{}"]
 
+			# Define the text template for the task title
+			task_title_template = self.texts["i_{}_the_chapter_{}_of_my_story_{}"]
+
 		# ---------- #
 
 		# Iterate through the list of small languages
@@ -1414,35 +1459,15 @@ class Write(Stories):
 			full_language = self.languages["full"][language]
 			translated_user_language = self.languages["full_translated"][self.user_language][language]
 
-			# Define the list of items to use to format the template
-			items = [
-				self.dictionary["Writing mode"]["Texts"]["Infinitive action"][language],
-				self.chapter["Numbers"]["Names"][language],
-				self.story["Titles"][language]
-			]
+			# Create the dictionary for the "Make_Task_Title" method
+			dictionary = {
+				"Language": language,
+				"Translated user language": translated_user_language,
+				"Template": template
+			}
 
-			# If this is not the first time the user writes the current chapter
-			# And is not the last one (the user did not finished writing the whole chapter)
-			if (
-				self.states["First time writing"] == False and
-				self.states["Finished writing"] == False
-			):
-				# Update the writing mode text to the "Action" one
-				items[0] = self.dictionary["Writing mode"]["Texts"]["Action"][language]
-
-			# Define the task title in the current language as the template in the current language
-			task_title = template[language]
-
-			# If the writing mode is "Translate"
-			if self.writing_mode == "Translate":
-				# Define the English translated language
-				translated_language = self.languages["full_translated"]["en"][language]
-
-				# Add the "from [User langauge] to English" text
-				task_title += " " + self.Language.texts["from_{}_to_{}"][language].format(translated_user_language, translated_language)
-
-			# Format the template with the list of items
-			task_title = task_title.format(*items)
+			# Create the task title and get it back
+			task_title = self.Make_Task_Title(dictionary)
 
 			# Add the task title to the "Task" dictionary
 			self.task_dictionary["Task"]["Titles"][language] = task_title
@@ -1454,6 +1479,33 @@ class Write(Stories):
 
 			# Add two line breaks
 			description += "\n\n"
+
+			# ---------- #
+
+			# Create a different task title for the task if the chapter has been finished
+
+			# If the task title template is not empty
+			if task_title_template != "":
+				# Define the list of items to use to format the template
+				items = [
+					self.dictionary["Writing mode"]["Texts"]["Done"][language],
+					self.chapter["Numbers"]["Names"][language],
+					self.story["Titles"][language]
+				]
+
+				# Create the dictionary for the "Make_Task_Title" method
+				dictionary = {
+					"Language": language,
+					"Translated user language": translated_user_language,
+					"Template": task_title_template,
+					"Items": items
+				}
+
+				# Create the task title and get it back
+				task_title = self.Make_Task_Title(dictionary)
+
+				# Update the task title in the "Task" dictionary
+				self.task_dictionary["Task"]["Titles"][language] = task_title
 
 			# ---------- #
 

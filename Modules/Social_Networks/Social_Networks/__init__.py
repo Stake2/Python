@@ -540,7 +540,13 @@ class Social_Networks(object):
 			# Iterate through the information items list
 			for item in items["List"]:
 				# If the item is "Profile link" or "Message link"
-				if item in ["Profile link", "Message link"]:
+				# Or the item is inside the list of additional items
+				# And the "link" text is inside the item
+				if (
+					item in ["Profile link", "Message link"] or
+					item in self.information_items["Additional items"][social_network] and
+					"link" in item
+				):
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
 						self.information_items["Lists"]["Do not ask for item"].append(item)
 
@@ -827,15 +833,21 @@ class Social_Networks(object):
 				# Add the addon and the plural type text
 				text_key += addon + ", type: plural"
 
+			# Define the correct texts dictionary
+			texts_dictionary = self.Language.texts
+
+			if text_key in self.texts:
+				texts_dictionary = self.texts
+
 			# If the text key is still not in the "Texts" dictionary of the "Language" module
-			if text_key not in self.Language.texts:
+			if text_key not in texts_dictionary:
 				# Define the text key as the backup
 				text_key = text_key_backup
 
 			# Iterate through the small languages list
 			for language in self.languages["small"]:
 				# Define the plural version of the information item
-				dict_["Plural"][language] = self.Language.texts[text_key][language]
+				dict_["Plural"][language] = texts_dictionary[text_key][language]
 
 			# ---------- #
 

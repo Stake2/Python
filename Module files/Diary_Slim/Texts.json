@@ -98,5 +98,21 @@
 	"type_how_many_times_you_rode_your_bike": {
 		"en": "Type how many times you rode your bike",
 		"pt": "Digite quantas vezes você andou de bicicleta"
+	},
+	"register_the_task": {
+		"en": "Register the task",
+		"pt": "Registrar a tarefa"
+	},
+	"register_the_task_progress": {
+		"en": "Register the task progress",
+		"pt": "Registrar o progresso da tarefa"
+	},
+	"list_of_actions": {
+		"en": "List of actions",
+		"pt": "Lista de ações"
+	},
+	"choose_the_action": {
+		"en": "Choose the action",
+		"pt": "Escolha a ação"
 	}
 }

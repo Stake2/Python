@@ -121,5 +121,13 @@
 	"you_can_use_the_{}_format_string_to_place_the_social_network_link, type: explanation": {
 		"pt": "Você pode usar a string de formato {} para colocar o link da rede social.\nE a string de formato {} para colocar o item, trocando o [Item] por qualquer item que você selecionou (em Inglês).",
 		"en": "You can use the {} format string to place the social network link.\nAnd the {} format string to place the item, replacing the [Item] with any item you selected."
+	},
+	"conversations_link": {
+		"pt": "Link de conversas",
+		"en": "Conversations link"
+	},
+	"conversations_link, type: plural": {
+		"pt": "Links de conversas",
+		"en": "Conversations links"
 	}
 }

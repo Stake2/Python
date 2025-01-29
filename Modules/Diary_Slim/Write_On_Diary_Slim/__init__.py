@@ -44,6 +44,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Run the method to manage statistics
 			self.Manage_Statistic()
 
+		# If the "Is task" key is inside the text dictionary
+		# And the task was not registered
+		if (
+			"Is task" in self.dictionary["Text"] and
+			self.task_dictionary["Register task"] == False
+		):
+			# Define the "Input on end" state as True
+			self.states["Input on end"] = False
+
 		# Write the Diary Slim text
 		self.Write()
 
@@ -61,7 +70,6 @@ class Write_On_Diary_Slim(Diary_Slim):
 		}
 
 		# Change the index of the Diary Slim texts dictionary if the text has a custom index
-		t = 0
 		for key in self.diary_slim["Texts"]["Options"]["Keys"]:
 			# Get the text dictionary
 			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
@@ -543,8 +551,35 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Type": self.dictionary["Text"]["Key"],
 			"Entry": {
 				"Date": self.Date.Now()
-			}
+			},
+			"Register task": True
 		}
+
+		# If the "Has task progress" key is inside the text dictionary
+		if "Has task progress" in self.dictionary["Text"]:
+			# Define the list of options
+			options = [
+				"Register task",
+				"Register task progress"
+			]
+
+			# Define the list of language options
+			language_options = [
+				self.language_texts["register_the_task"],
+				self.language_texts["register_the_task_progress"]
+			]
+
+			# Define the show and select text
+			show_text = self.language_texts["list_of_actions"]
+			select_text = self.language_texts["choose_the_action"]
+
+			# Ask if the user wants to register the task progress
+			response = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["Option"]["Original"]
+
+			# If the answer is "Register task progress"
+			if response == "Register task progress":
+				# Change the "Register task" state to False
+				self.task_dictionary["Register task"] = False
 
 		# Import the "Register" class of the "Tasks" module
 		from Tasks.Register import Register as Register
@@ -565,17 +600,24 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the questions dictionary
 		questions = statistic
 
-		# Iterate through the list of question keys inside the list above
-		for question_key in self.dictionary["Question keys"]:
-			# If the key is inside the statistic dictionary
-			if question_key in self.dictionary["Text"]["Statistic"]:
-				# Get the additional information about the statistic, passing the "Is statistic" parameter as True
-				information = self.Get_Additional_Information(self.dictionary["Text"], is_statistic = True)
+		# If the "Is task" key is not inside the text dictionary
+		# Or it is, and the task was registered
+		if (
+			"Is task" not in self.dictionary["Text"] and
+			"Is task" in self.dictionary["Text"] or
+			self.task_dictionary["Register task"] == True
+		):
+			# Iterate through the list of question keys inside the list above
+			for question_key in self.dictionary["Question keys"]:
+				# If the key is inside the statistic dictionary
+				if question_key in self.dictionary["Text"]["Statistic"]:
+					# Get the additional information about the statistic, passing the "Is statistic" parameter as True
+					information = self.Get_Additional_Information(self.dictionary["Text"], is_statistic = True)
 
-				# Define the text to write, questions, and "Has questions" state using the values inside the local information dictionary
-				self.dictionary["Text to write"] = information["Text to write"]
-				questions = information["Questions"]
-				statistic["Has questions"] = information["Has questions"]
+					# Define the text to write, questions, and "Has questions" state using the values inside the local information dictionary
+					self.dictionary["Text to write"] = information["Text to write"]
+					questions = information["Questions"]
+					statistic["Has questions"] = information["Has questions"]
 
 		# Get the statistic dictionary of the Diary Slim text, in the current year
 		current_year_statistics = self.diary_slim["Current year"]["Statistics"][text_key]
@@ -603,9 +645,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Get the text from it
 			statistic_text = self.dictionary["Text"]["Data"][self.user_language]
 
-		# If the "Alternative text" is inside the statistic dictionary
-		if "Alternative text" in statistic:
-			statistic_text = statistic["Alternative text"][self.user_language]
+		# If the "Text" key is inside the statistic dictionary
+		if "Text" in statistic:
+			statistic_text = statistic["Text"][self.user_language]
 
 		# ---------- #
 
@@ -713,6 +755,45 @@ class Write_On_Diary_Slim(Diary_Slim):
 				):
 					# Define the number as zero
 					number = 0
+
+				# If the "Key" key is inside the question dictionary
+				if "Key" in question:
+					# Define the local text key
+					local_text_key = question["Key"].replace(" ", "_").lower()
+
+					# Define the old number
+					old_number = current_year_statistics[question["Key"]]
+
+					# Define the number to add as the response number
+					number_to_add = number
+
+					# Add the additional question key to the root statistics dictionary
+					self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]] = {
+						"Text": self.Language.language_texts[local_text_key],
+						"Old number": old_number,
+						"Number": old_number + number_to_add
+					}
+
+					# Update the number in the month statistic key
+					current_year_statistics[question["Key"]] = self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]]["Number"]
+
+					# ----- #
+
+					# Define the old number
+					old_number = current_month_statistics[question["Key"]]
+
+					# Add the additional question key to the month statistics dictionary
+					self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][question["Key"]] = {
+						"Text": self.Language.language_texts[local_text_key],
+						"Old number": old_number,
+						"Number": old_number + number_to_add
+					}
+
+					# Update the number in the month statistic key
+					current_month_statistics[question["Key"]] = self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][question["Key"]]["Number"]
+
+					# Define the number as one
+					number = 1
 
 				# If the "Questions" key is inside the statistic dictionary
 				if "Questions" in statistic:
@@ -890,6 +971,38 @@ class Write_On_Diary_Slim(Diary_Slim):
 						# Format the text with the list of items, updating the text to write
 						self.dictionary["Text to write"] = self.Language.language_texts[format_text].format(*items)
 
+		# If the "Secondary statistics" key is inside the statistic dictionary
+		if "Secondary statistics" in statistic:
+			# Iterate through the keys and statistic dictionaries on the "Secondary statistics" dictionary
+			for key, local_statistic in statistic["Secondary statistics"].items():
+				# Get the current number of the current year
+				current_number = current_year_statistics[key]
+
+				# Add the additional question key to the month statistics dictionary
+				local_statistic = {
+					"Text": local_statistic["Text"][self.user_language],
+					"Old number": current_number,
+					"Number": current_number + 1
+				}
+
+				# Add the statistic dictionary to the current year statistics dictionaries
+				self.dictionary["Text"]["Statistics"]["Dictionary"][key] = local_statistic
+
+				# ----- #
+
+				# Get the current number of the current year
+				current_number = current_year_statistics[key]
+
+				# Add the additional question key to the month statistics dictionary
+				local_statistic = {
+					"Text": local_statistic["Text"][self.user_language],
+					"Old number": current_number,
+					"Number": current_number + 1
+				}
+
+				# Add the statistic dictionary to the current year and current month statistics dictionaries
+				self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][key] = local_statistic
+
 		# Update the number of statistics in the current year
 		self.dictionary["Text"]["Statistics"]["Number"] = len(list(self.dictionary["Text"]["Statistics"]["Dictionary"].keys()))
 
@@ -1065,7 +1178,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 			Write_On_Diary_Slim_Module(dictionary)
 
 		# If the "Is task" key is inside the text dictionary
-		if "Is task" in self.dictionary["Text"]:
+		# And the task was registered
+		if (
+			"Is task" in self.dictionary["Text"] and
+			self.task_dictionary["Register task"] == True
+		):
 			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
@@ -1078,9 +1195,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 			print("\t" + self.language_texts["Diary_Slim.Write"])
 
 		# If the "Is statistic" state is True
+		# And the "Statistics" key is inside the Diary Slim text dictionary
 		# And the "Changed statistic" is True
 		if (
 			self.dictionary["Text"]["Is statistic"] == True and
+			"Statistics" in self.dictionary["Text"] and
 			self.dictionary["Text"]["Statistics"]["Changed statistic"] == True
 		):
 			# Iterate through the list of date types

@@ -47,6 +47,10 @@
 		"en": "This task was registered",
 		"pt": "Esta tarefa foi registrada"
 	},
+	"the_progress_of_this_task_was_registered": {
+		"en": "The progress of this task was registered",
+		"pt": "O progresso desta tarefa foi registrado"
+	},
 	"select_a_task_type": {
 		"en": "Select a task type",
 		"pt": "Selecione um tipo de tarefa"
@@ -70,6 +74,18 @@
 	"task_description_in": {
 		"en": "Task description in",
 		"pt": "Descrição da tarefa em"
+	},
+	"the_task_description": {
+		"en": "The task description",
+		"pt": "A descrição da tarefa"
+	},
+	"the_task_progress": {
+		"en": "The task progress",
+		"pt": "O progresso da tarefa"
+	},
+	"text_of_the_task_progress_in": {
+		"en": "Text of the task progress in",
+		"pt": "Texto do progresso da tarefa em"
 	},
 	"task_text_template": {
 		"en": "Number: {}\nTask type number: {}\nType: {}\nTime: {}\nFile name: {}",
@@ -119,9 +135,13 @@
 		"pt": "Pressione Enter quando você terminar de escrever e salvar a descrição em {}",
 		"en": "Press Enter when you finish writing and saving the description in {}"
 	},
-	"the_task_description_was_written_on_the_current_diary_slim": {
-		"en": "The task description was written on the current Diary Slim",
-		"pt": "A descrição da tarefa foi escrita no Diário Slim atual"
+	"{}_was_written_on_the_current_diary_slim, gender: masculine": {
+		"en": "{} was written on the current Diary Slim",
+		"pt": "{} foi escrito no Diário Slim atual"
+	},
+	"{}_was_written_on_the_current_diary_slim, gender: feminine": {
+		"en": "{} was written on the current Diary Slim",
+		"pt": "{} foi escrita no Diário Slim atual"
 	},
 	"select_the_drawing_program": {
 		"en": "Select the drawing program",

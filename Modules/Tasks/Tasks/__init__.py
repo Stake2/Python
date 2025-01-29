@@ -622,9 +622,17 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Show the text about the registered task
+		# Define the text about the registered task
+		task_text = self.language_texts["this_task_was_registered"]
+
+		# If the "Register task" state is False
+		if self.states["Register task"] == False:
+			# Change the task text to be about the task progress
+			task_text = self.language_texts["the_progress_of_this_task_was_registered"]
+
+		# Show the text
 		print()
-		print(self.language_texts["this_task_was_registered"] + ":")
+		print(task_text + ":")
 
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
@@ -683,17 +691,38 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Show the task description in the user language
+		# Define the task description text
+		task_description_text = self.language_texts["task_description_in"]
+
+		# If the "Register task" state is False
+		if self.states["Register task"] == False:
+			# Change the task description text to be about the task progress
+			task_description_text = self.language_texts["text_of_the_task_progress_in"]
+
+		# Show the task description text and the task descriptions in the user language
 		print()
-		print(self.language_texts["task_description_in"] + " " + self.full_user_language + ":")
+		print(task_description_text + " " + self.full_user_language + ":")
 		print("[" + task["Descriptions"][self.user_language] + "]")
 
 		# Show the text telling the user that the class wrote on the current Diary Slim
 		# And the current Diary Slim date
 		date = self.dictionary["Diary Slim"]["Date"]["Timezone"]["DateTime"]["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
 
+		# Define the item to use to format the text template and the gender
+		item = self.language_texts["the_task_description"]
+		gender = "feminine"
+
+		# If the "Register task" state is False (the task was not registered)
+		if self.states["Register task"] == False:
+			# Change the item to be about the task progress, and change the gender to masculine
+			item = self.language_texts["the_task_progress"]
+			gender = "masculine"
+
+		# Format the template with the item, making the show text
+		show_text = self.language_texts["{}_was_written_on_the_current_diary_slim, gender: " + gender].format(item)
+
 		print()
-		print(self.language_texts["the_task_description_was_written_on_the_current_diary_slim"] + ":")
+		print(show_text + ":")
 		print("\t" + date)
 
 		# If the "Five dash space" state is True

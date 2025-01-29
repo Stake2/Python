@@ -29,15 +29,28 @@ class Register(Tasks):
 
 		# Define the states dictionary
 		self.states = {
-			"Used as module": False, # Indicates if the module is being used as a dependency in another place
-			"Five dash space": False, # Inditaces if the module should show a five dash space after showing the information about the registered task
-			"Ask for input": True # Ask for input after showing the information about the registered task
+			"Used as module": False,
+			# Indicates if the module is being used as a dependency in another place
+
+			"Five dash space": True,
+			# Indicates if the module should show a five dash space after showing the information about the registered task
+
+			"Ask for input": True,
+			# Ask for input after showing the information about the registered task
+
+			"Register task": True
+			# A state defining if the task is going to be registered
 		}
 
 		# If the parameter dictionary is not empty
 		if dictionary_parameter != {}:
 			# Define the "Used as module" state as True
 			self.states["Used as module"] = True
+
+		# If the "Register task" key is inside the parameter dictionary
+		if "Register task" in dictionary_parameter:
+			# Update the state inside the root states dictionary
+			self.states["Register task"] = dictionary_parameter["Register task"]
 
 		# Update the root dictionary with the parameter dictionary
 		self.dictionary.update(dictionary_parameter)
@@ -69,13 +82,6 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# If the parameter dictionary is not empty
-		if dictionary_parameter != {}:
-			# Define the "Ask for input" state as False
-			self.states["Ask for input"] = False
-
-		# ---------- #
-
 		# Define a shortcut for the task dictionary
 		self.task = self.dictionary["Task"]
 
@@ -97,10 +103,20 @@ class Register(Tasks):
 			}
 		})
 
-		# Database related methods to register the task entry
-		self.Register_In_JSON()
-		self.Create_Entry_File()
-		self.Add_Entry_File_To_Year_Folder()
+		# If the "States" key is not inside the root dictionary
+		if "States" not in self.dictionary:
+			# Add the key
+			self.dictionary["States"] = {
+				"States": {},
+				"Texts": {}
+			}
+
+		# If the "Register task" state is True
+		if self.states["Register task"] == True:
+			# Database related methods to register the task entry
+			self.Register_In_JSON()
+			self.Create_Entry_File()
+			self.Add_Entry_File_To_Year_Folder()
 
 		# Write the task description in the user language on the current iary Slim
 		self.Write_On_Diary_Slim()
@@ -144,8 +160,16 @@ class Register(Tasks):
 			# Get the translated language in the user language
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
+			# Define the task text
+			task_text = self.dictionary["Type"]["Task texts"]
+
+			# If the "Register task" state is False
+			if self.states["Register task"] == False:
+				# Change the task text to the "Task progress text"
+				task_text = self.dictionary["Type"]["Task progress text"]
+
 			# Define the task title in the current language
-			self.dictionary["Task"]["Titles"][language] = self.dictionary["Type"]["Task texts"][language]
+			self.dictionary["Task"]["Titles"][language] = task_text[language]
 
 		# If the class is being used as a module by another Python module
 		if self.states["Used as module"] == True:
@@ -325,11 +349,16 @@ class Register(Tasks):
 						# Get the response in the current language
 						response = response[language]
 
-					# Format the task title
-					title = self.dictionary["Task"]["Titles"][language].format(response)
+					# Define the task title
+					task_title = self.dictionary["Task"]["Titles"][language]
+
+					# If the format character "{}" is present in the task title in the current language
+					if "{}" in task_title:
+						# Format the task title
+						task_title = task_title.format(response)
 
 					# Update it in the root titles dictionary
-					self.dictionary["Task"]["Titles"][language] = title
+					self.dictionary["Task"]["Titles"][language] = task_title
 
 		# Return the questions
 		return questions
@@ -485,8 +514,11 @@ class Register(Tasks):
 
 		# Iterate through the small languages list
 		for language in self.languages["small"]:
+			# Define the task title
+			task_title = self.dictionary["Task"]["Titles"][language]
+
 			# Define the task description in the current language as the task title with a period and two line breaks
-			self.dictionary["Task"]["Descriptions"][language] = self.dictionary["Task"]["Titles"][language] + "." + "\n\n"
+			self.dictionary["Task"]["Descriptions"][language] = task_title + "." + "\n\n"
 
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
@@ -531,6 +563,14 @@ class Register(Tasks):
 			if "Per Task Type" in dict_["Numbers"]:
 				dict_["Numbers"]["Per Task Type"][self.task_type] += 1
 
+		# If the "States" dictionary is not inside the task dictionary
+		if "States" not in self.task:
+			# Define it with the two default states as False
+			self.task["States"] = {
+				"First task in year": False,
+				"First task type task in year": False
+			}
+
 		# If the root task number is one
 		if self.dictionaries["Tasks"]["Numbers"]["Total"] == 1:
 			# Define the "First task in year" state as True
@@ -568,14 +608,6 @@ class Register(Tasks):
 			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
 			"Lines": len(self.task["Descriptions"]["en"].splitlines())
 		}
-
-		# If the "States" dictionary is not inside the task dictionary
-		if "States" not in self.task:
-			# Define it with the two default states as False
-			self.task["States"] = {
-				"First task in year": False,
-				"First task type task in year": False
-			}
 
 		# Get the "States" dictionary
 		self.dictionary["States"] = self.Define_States_Dictionary(self.dictionary)
@@ -878,8 +910,12 @@ class Register(Tasks):
 			# Add a dot to the Diary Slim text
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "."
 
-		# If there are states, add the state texts to the Diary Slim text
-		if self.dictionary["States"]["States"] != {}:
+		# If the "Register task" state is True
+		# And there are states, add the state texts to the Diary Slim text
+		if (
+			self.states["Register task"] == False and
+			self.dictionary["States"]["States"] != {}
+		):
 			# Add two new lines, the "States" text in the user language, a colon, and a new line
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 

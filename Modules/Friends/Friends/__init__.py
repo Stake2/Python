@@ -490,18 +490,26 @@ class Friends(object):
 
 		# ---------- #
 
-		# Get the list of social networks
-		self.friends["List"] = self.JSON.To_Python(self.folders["Friends"]["Text"]["Friends"])["List"]
+		# Get the sub-folders of the "Friends" folder
+		contents = self.Folder.Contents(self.folders["Friends"]["Text"]["root"])
 
-		# Iterate through the copy of the list of friends
-		for friend in self.friends["List"].copy():
-			# Get the friend folder
-			friend_folder = self.folders["Friends"]["Text"]["root"] + friend + "/"
+		# Get the list of friends from the list of folders
+		self.friends["List"] = contents["folder"]["names"]
 
-			# If the folder does not exist
-			if self.Folder.Exist(friend_folder) == False:
-				# Remove the friend from the list of friends
-				self.friends["List"].remove(friend)
+		# Define a list of olders to remove
+		remove_list = [
+			"archive",
+			"database",
+			"family"
+		]
+
+		# Iterate through the list of folders
+		for key in remove_list:
+			# Get the folder name
+			folder = self.Language.language_texts[key + ", title()"]
+
+			# Remove the folder from the list
+			self.friends["List"].remove(folder)
 
 		# ---------- #
 

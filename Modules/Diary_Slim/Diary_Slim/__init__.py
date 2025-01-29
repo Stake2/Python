@@ -1051,6 +1051,14 @@ class Diary_Slim():
 
 				# ----- #
 
+				# If the "Secondary statistics" key is inside the statistics dictionary
+				if "Secondary statistics" in statistic:
+					# Add each one of the items of the dictionary to the statistics template
+					for item in statistic["Secondary statistics"]:
+						self.statistics_template[key][item] = 0
+
+				# ----- #
+
 				# Switch the "Is statistic" state to True
 				dictionary["Is statistic"] = True
 
