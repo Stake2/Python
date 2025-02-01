@@ -114,5 +114,9 @@
 	"choose_the_action": {
 		"en": "Choose the action",
 		"pt": "Escolha a ação"
+	},
+	"external_statistics": {
+		"en": "External statistics",
+		"pt": "Estatísticas externas"
 	}
 }

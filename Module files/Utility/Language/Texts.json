@@ -1268,6 +1268,10 @@
 		"en": "Watched media",
 		"pt": "Mídia assistida"
 	},
+	"watched_media, type: plural": {
+		"en": "Watched media",
+		"pt": "Mídias assistidas"
+	},
 	"media_information": {
 		"en": "Media information",
 		"pt": "Informações de mídia"
@@ -1925,6 +1929,10 @@
 	"story_chapter": {
 		"en": "Story chapter",
 		"pt": "Capítulo de história"
+	},
+	"story_chapters": {
+		"en": "Story chapters",
+		"pt": "Capítulos de histórias"
 	},
 	"portrait, title()": {
 		"en": "Portrait",

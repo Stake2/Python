@@ -152,6 +152,10 @@
 			"en": "wrote",
 			"pt": "escrevi"
 		},
+		"Done plural": {
+			"en": "written",
+			"pt": "escritos"
+		},
 		"Chapter": {
 			"en": "written",
 			"pt": "escrito"
@@ -178,6 +182,10 @@
 			"en": "revised",
 			"pt": "revisei"
 		},
+		"Done plural": {
+			"en": "revised",
+			"pt": "revisados"
+		},
 		"Chapter": {
 			"en": "revised",
 			"pt": "revisado"
@@ -203,6 +211,10 @@
 		"Done": {
 			"en": "translated",
 			"pt": "traduzi"
+		},
+		"Done plural": {
+			"en": "translated",
+			"pt": "traduzidos"
 		},
 		"Chapter": {
 			"en": "translated",

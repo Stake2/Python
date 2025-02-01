@@ -413,6 +413,7 @@ class GamePlayer(object):
 		if self.current_year["Number"] not in self.dictionaries["History"]["Years"]:
 			self.dictionaries["History"]["Years"].append(self.current_year["Number"])
 
+		# Define the default sessions number as zero
 		sessions = 0
 
 		# Update the number of sessions of all years
@@ -482,6 +483,222 @@ class GamePlayer(object):
 
 		# Update the "Sessions.json" file with the updated "Sessions" dictionary
 		self.JSON.Edit(self.folders["Play History"]["Current year"]["Sessions"], self.dictionaries["Sessions"])
+
+	def Create_Statistics(self, years_list):
+		# Define a local dictionary of statistics
+		statistics = {
+			"Module": "GamePlayer",
+			"Statistic key": "Game sessions played",
+			"Text": {},
+			"List": [],
+			"Years": {}
+		}
+
+		# Create a root dictionary of games
+		self.games = {
+			"List": [],
+			"Dictionary": {}
+		}
+
+		# ---------- #
+
+		# Fill the "Years" dictionary
+
+		# Update the list of years to be from the year "2021" to the current year
+		years_list = self.Date.Create_Years_List(start = 2021, function = str)
+
+		# Iterate through the list of years from 2020 to the current year
+		for year_number in years_list:
+			# Create the year dictionary
+			year = {
+				"Key": year_number,
+				"Total": 0,
+				"Numbers": {},
+				"Months": {}
+			}
+
+			# Get the year folder and the entries file
+			year_folder = self.folders["Play History"]["root"] + year_number + "/"
+			entries_file = year_folder + "Sessions.json"
+
+			# Read the "Entries.json" file, getting the "Entries" dictionary and adding it into the year dictionary
+			year["Entries"] = self.JSON.To_Python(entries_file)
+
+			# Iterate through the dictionary of entries, updating the "Numbers" dictionary of the year dictionary
+			year = self.Iterate_Through_Entries(year)
+
+			# ---------- #
+
+			# Fill the "Months" dictionary
+			for month in range(1, 13):
+				# Add leading zeroes to the month number
+				month_number = str(self.Text.Add_Leading_Zeroes(month))
+
+				# Create the month dictionary
+				month = {
+					"Key": month_number,
+					"Total": 0,
+					"Numbers": {}
+				}
+
+				# Iterate through the entries dictionary
+				for entry in year["Entries"]["Dictionary"].values():
+					# Get the local month number of the entry
+					local_month_number = entry["Entry"].split("/")[1]
+
+					# If the local month number is equal to the root month number
+					if local_month_number == month_number:
+						# Define the game dictionary (game or sub-game), and add the game played numbers
+						month = self.Define_Game_Dictionary(month, entry)
+
+						# Add one to the month total chapters number
+						month["Total"] += 1
+
+				# Add the month dictionary to the "Months" dictionary of the year dictionary
+				year["Months"][month_number] = month
+
+			# ---------- #
+
+			# Remove the "Entries" key
+			year.pop("Entries")
+
+			# Add the year dictionary to the "Years" dictionary
+			statistics["Years"][year_number] = year
+
+		# Iterate through the dictionary of years
+		for year in statistics["Years"].values():
+			# Iterate through the month keys and month dictionaries inside the year "Months" dictionary
+			for month_key, month in deepcopy(year["Months"]).items():
+				# If the number of total chapters of the month is zero
+				if month["Total"] == 0:
+					# Remove the month from the dictionary of months
+					year["Months"].pop(month_key)
+
+		# Sort the list of games in alphabetical order
+		self.games["List"] = sorted(self.games["List"], key = str.lower)
+
+		# Define the list of statistics as the list of games
+		statistics["List"] = self.games["List"]
+
+		# Return the statistics dictionary
+		return statistics
+
+	def Define_Game_Dictionary(self, dictionary, entry):
+		# Define the key to get the game title
+		key = "Original"
+
+		if "Romanized" in entry["Titles"]:
+			key = "Romanized"
+
+		# Get the game title
+		game_title = entry["Titles"][key]
+
+		# Add the game title to the root games dictionary
+		if game_title not in self.games["List"]:
+			self.games["List"].append(game_title)
+
+		# If there is a sub-game inside the entry dictionary
+		if "Sub-game" in entry:
+			# If the game title is not inside the "Numbers" dictionary
+			if game_title not in dictionary["Numbers"]:
+				# Define the root game dictionary
+				dictionary["Numbers"][game_title] = {
+					"Total": 0
+				}
+
+			# Else, if the game title key inside the "Numbers" dictionary is a number
+			elif isinstance(dictionary["Numbers"][game_title], int):
+				# Get the original number of times played
+				played_number = dictionary["Numbers"][game_title]
+
+				# Define the root game dictionary
+				dictionary["Numbers"][game_title] = {
+					"Total": played_number,
+					game_title: played_number
+				}
+
+			# Update the game variable
+			game = dictionary["Numbers"][game_title]
+
+			# Define a local title as the original sub-game title
+			sub_game_title = entry["Sub-game"]["Original"]
+
+			# Make a backup of the full game title (game and sub-game titles joined together)
+			self.games["Dictionary"][game_title] = game_title
+
+			# If the ": " string is not inside the sub-game title
+			if ": " not in sub_game_title:
+				# Add a space to the backup of the full game title
+				self.games["Dictionary"][game_title] += " "
+
+			# Add the sub-game title to the backup of the full game title
+			self.games["Dictionary"][game_title] += sub_game_title
+
+			# Add the full game title to the root games dictionary
+			if self.games["Dictionary"][game_title] not in self.games["List"]:
+				self.games["List"].append(self.games["Dictionary"][game_title])
+
+			# If the ": " string is inside the sub-game title, remove it
+			if ": " in sub_game_title:
+				sub_game_title = sub_game_title.replace(": ", "")
+
+			# Add the sub-game key to the game dictionary if it is not already present
+			if sub_game_title not in game:
+				game[sub_game_title] = 0
+
+			# Add one to the number of times the sub-game was played
+			game[sub_game_title] += 1
+
+		# Define the game inside the "Numbers" dictionary as zero if it is not there already
+		if game_title not in dictionary["Numbers"]:
+			dictionary["Numbers"][game_title] = 0
+
+		# Define a shortcut for the game variable
+		game = dictionary["Numbers"][game_title]
+
+		# If the game variable is an integer
+		if isinstance(game, int):
+			# Add one to the number of times the game was played
+			dictionary["Numbers"][game_title] += 1
+
+		else:
+			# Add one to the number of times the game was played in the "Total" key
+			game["Total"] += 1
+
+		# ---------- #
+
+		# If the game key is a dictionary
+		if isinstance(game, dict):
+			# List the keys inside the game dictionary
+			keys = list(game.keys())
+
+			# If the number of keys is equal to two
+			# And the value of the keys is equal
+			if (
+				len(keys) == 2 and
+				game[keys[0]] == game[keys[1]]
+			):
+				# Get the full game title from the root games dictionary
+				title = self.games["Dictionary"][game_title]
+
+				# Define the title inside the "Numbers" dictionary
+				dictionary["Numbers"][title] = game["Total"]
+
+				# Remove the old game title key
+				dictionary["Numbers"].pop(game_title)
+
+		return dictionary
+
+	def Iterate_Through_Entries(self, dictionary, month = True):
+		# Iterate through the entries dictionary
+		for entry in dictionary["Entries"]["Dictionary"].values():
+			# Define the game dictionary (game or sub-game), and add the game played numbers
+			dictionary = self.Define_Game_Dictionary(dictionary, entry)
+
+			# Add one to the total number of games played in the year or month
+			dictionary["Total"] += 1
+
+		return dictionary
 
 	def Get_Game_List(self, dictionary, status = None):
 		'''

@@ -189,9 +189,11 @@ class Register(Tasks):
 			print(self.language_texts["task_type"] + ":")
 			print("\t" + self.dictionary["Type"]["Names"]["Plural"][self.user_language])
 
-		# Ask the questions to the user, getting the questions dictionary back
-		# (Only if there are questions)
-		self.dictionary["Questions"]["Questions"] = self.Ask_Questions(self.dictionary["Type"])
+		# If the "Register task" state is True
+		if self.states["Register task"] == True:
+			# Ask the questions to the user, getting the questions dictionary back
+			# (Only if there are questions)
+			self.dictionary["Questions"]["Questions"] = self.Ask_Questions(self.dictionary["Type"])
 
 	def Ask_Questions(self, dictionary):
 		# Define the default questions dictionary
@@ -441,8 +443,26 @@ class Register(Tasks):
 		# Define the text key for the explanation text with the grammatical number
 		text_key = "say_what_you_did_on_the_{}_in_{}" + ", " + grammatical_number.lower()
 
+		# Define the list of languages to use
+		languages = self.languages["small"]
+
+		# Iterate through the list of languages
+		for language in languages:
+			# Define the task title
+			task_title = self.dictionary["Task"]["Titles"][language]
+
+			# Define the task description as the task title in the current language
+			self.dictionary["Task"]["Descriptions"][language] = task_title
+
+		# If the "Register task" state is False
+		if self.states["Register task"] == False:
+			# Define the list of languages as just the user language
+			languages = [
+				self.user_language
+			]
+
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in languages:
 			# Get the full language
 			full_language = self.languages["full"][language]
 
@@ -513,7 +533,7 @@ class Register(Tasks):
 		# ---------- #
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in languages:
 			# Define the task title
 			task_title = self.dictionary["Task"]["Titles"][language]
 
@@ -534,7 +554,7 @@ class Register(Tasks):
 			text = self.dictionary["Task"]["Descriptions"][language]
 
 			# If the language is not the last one, add two line breaks to the text
-			if language != self.languages["small"][-1]:
+			if language != languages[-1]:
 				text += "\n\n"
 
 			# Add the current task description to the backup file
@@ -906,7 +926,11 @@ class Register(Tasks):
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.user_language]
 
 		# If the description of the task in English is the same as the English task title
-		if self.dictionary["Task"]["Titles"]["en"] == self.dictionary["Task"]["Descriptions"]["en"]:
+		# And there is no dot at the end of the Diary Slim text
+		if (
+			self.dictionary["Task"]["Titles"]["en"] == self.dictionary["Task"]["Descriptions"]["en"] and
+			self.dictionary["Entry"]["Diary Slim"]["Text"][-1] != "."
+		):
 			# Add a dot to the Diary Slim text
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "."
 

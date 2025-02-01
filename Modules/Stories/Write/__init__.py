@@ -71,76 +71,17 @@ class Write(Stories):
 			# Run the method of the chapter writing step
 			step["Method"]()
 
-	def Define_Writing_Modes(self):
-		# Define the "Writing modes" dictionary
-		self.dictionary["Writing modes"] = {
-			"List": [
-				"Write",
-				"Revise",
-				"Translate"
-			],
-			"Dictionary": {},
-			"Verb tenses": [
-				"Infinitive",
-				"Infinitive action",
-				"Action",
-				"Item",
-				"Done",
-				"Chapter"
-			]
-		}
-
-		# Iterate through the list of writing modes
-		for key in self.dictionary["Writing modes"]["List"]:
-			# Define the writing mode dictionary
-			dictionary = {
-				"Name": key,
-				"Names": {},
-				"Texts": {},
-				"Language texts": {}
-			}
-
-			# Iterate through the list of small languages
-			for language in self.languages["small"]:
-				# Define the text key
-				text_key = key.lower() + ", title()"
-
-				# Define the text
-				text = self.Language.texts[text_key][language]
-
-				# Add it to the "Names" dictionary
-				dictionary["Names"][language] = text
-
-			# Get the text dictionary of the writing mode
-			text_key = key.lower() + ", type: dictionary"
-
-			texts = self.texts[text_key]
-
-			# Iterate through the list of verb tenses
-			for tense in self.dictionary["Writing modes"]["Verb tenses"]:
-				# Get the verb tense text
-				text = texts[tense]
-
-				# Add it to the "Texts" dictionary
-				dictionary["Texts"][tense] = text
-
-				# Add the tense in the user language to the "Language texts" dictionary
-				dictionary["Language texts"][tense] = text[self.user_language]
-
-			# Add the local dictionary to the "Writing modes" dictionary
-			self.dictionary["Writing modes"]["Dictionary"][key] = dictionary
-
 	def Select_Writing_Mode(self):
 		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
 		parameters = {
-			"options": self.dictionary["Writing modes"]["List"],
+			"options": self.stories["Writing modes"]["List"],
 			"language_options": [],
 			"show_text": self.language_texts["writing_modes"],
 			"select_text": self.language_texts["select_a_writing_mode"]
 		}
 
 		# Iterate through the dictionary of writing modes
-		for writing_mode in self.dictionary["Writing modes"]["Dictionary"].values():
+		for writing_mode in self.stories["Writing modes"]["Dictionary"].values():
 			# Add the infinitive text to the list of language options
 			parameters["language_options"].append(writing_mode["Language texts"]["Infinitive"].title())
 
@@ -151,7 +92,7 @@ class Write(Stories):
 
 		# Iterate through the list of writing modes
 		i = 0
-		for writing_mode in self.dictionary["Writing modes"]["List"]:
+		for writing_mode in self.stories["Writing modes"]["List"]:
 			# Get the chapter of the writing mode
 			chapter = self.story["Information"]["Writing"][writing_mode]["Chapter"]
 
@@ -187,7 +128,7 @@ class Write(Stories):
 				addon += text_to_add
 
 				# Add the addon to the writing mode dictionary
-				self.dictionary["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
+				self.stories["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
 
 			# If the writing mode is either "Revise" or "Translate"
 			# And the user already started writing the chapter
@@ -202,7 +143,7 @@ class Write(Stories):
 				addon += text_to_add
 
 				# Add the addon to the writing mode dictionary
-				self.dictionary["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
+				self.stories["Writing modes"]["Dictionary"][writing_mode]["Addon"] = text_to_add
 
 			# Update the language option of the writing mode to add the addon above
 			parameters["language_options"][i] = parameters["language_options"][i] + addon
@@ -215,7 +156,7 @@ class Write(Stories):
 		writing_mode = self.Input.Select(**parameters)["option"]
 
 		# Get the writing mode dictionary
-		self.dictionary["Writing mode"] = self.dictionary["Writing modes"]["Dictionary"][writing_mode]
+		self.dictionary["Writing mode"] = self.stories["Writing modes"]["Dictionary"][writing_mode]
 
 		# Define the writing mode key
 		self.writing_mode = writing_mode
@@ -478,7 +419,7 @@ class Write(Stories):
 				]
 
 				# Get the writing mode dictionary
-				writing_mode = self.dictionary["Writing modes"]["Dictionary"][key.capitalize()]
+				writing_mode = self.stories["Writing modes"]["Dictionary"][key.capitalize()]
 
 				# Get the English past writing mode (chapter)
 				past_writing_mode = writing_mode["Texts"]["Chapter"]["en"].capitalize()

@@ -688,6 +688,20 @@ class Watch_History(object):
 		# Update "Comments.json" file with the updated "Comments" dictionary
 		self.JSON.Edit(self.folders["Comments"]["Comments"], self.dictionaries["Root comments"])
 
+	def Create_Statistics(self, years_list):
+		# Define a local dictionary of statistics
+		statistics = {
+			"Module": "Watch_History",
+			"Statistic key": "Watched media",
+			"Text key": "watched_media, type: plural",
+			"Text": {},
+			"List": [],
+			"Years": {}
+		}
+
+		# Return the statistics dictionary
+		return statistics
+
 	def Get_Media_List(self, dictionary, status = None):
 		'''
 

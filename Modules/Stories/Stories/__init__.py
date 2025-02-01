@@ -790,6 +790,68 @@ class Stories(object):
 
 		# ---------- #
 
+		# Define the "Writing modes" dictionary
+		self.stories["Writing modes"] = {
+			"List": [
+				"Write",
+				"Revise",
+				"Translate"
+			],
+			"Dictionary": {},
+			"Verb tenses": [
+				"Infinitive",
+				"Infinitive action",
+				"Action",
+				"Item",
+				"Done",
+				"Done plural",
+				"Chapter"
+			]
+		}
+
+		# Iterate through the list of writing modes
+		for key in self.stories["Writing modes"]["List"]:
+			# Define the writing mode dictionary
+			dictionary = {
+				"Name": key,
+				"Names": {},
+				"Texts": {},
+				"Language texts": {}
+			}
+
+			# Iterate through the list of small languages
+			for language in self.languages["small"]:
+				# Define the text key
+				text_key = key.lower() + ", title()"
+
+				# Define the text
+				text = self.Language.texts[text_key][language]
+
+				# Add it to the "Names" dictionary
+				dictionary["Names"][language] = text
+
+			# Define the text key for the writing mode
+			text_key = key.lower() + ", type: dictionary"
+
+			# Get the text dictionary of the writing mode
+			texts = self.texts[text_key]
+
+			# Iterate through the list of verb tenses
+			for tense in self.stories["Writing modes"]["Verb tenses"]:
+				# Get the verb tense text
+				text = texts[tense]
+
+				# Add it to the "Texts" dictionary
+				dictionary["Texts"][tense] = text
+
+				# Add the tense in the user language to the "Language texts" dictionary
+				dictionary["Language texts"][tense] = text[self.user_language]
+
+			# Add the local dictionary to the "Writing modes" dictionary
+			self.stories["Writing modes"]["Dictionary"][key] = dictionary
+
+		# ---------- #
+
 		# "Stories" dictionary
 
 		# Define the empty story "Numbers" dictionary
@@ -1106,18 +1168,11 @@ class Stories(object):
 
 			# ---------- #
 
-			# Define the local list of writing modes
-			writing_modes = [
-				"Write",
-				"Revise",
-				"Translate"
-			]
-
 			# Define the default "Writing" dictionary
 			writing = {}
 
 			# Create the writing mode dictionaries inside the "Writing" dictionary
-			for writing_mode in writing_modes:
+			for writing_mode in self.stories["Writing modes"]["List"]:
 				# Define the writing mode dictionary
 				writing[writing_mode] = {
 					"Chapter": 1,
@@ -1142,7 +1197,7 @@ class Stories(object):
 				writing = self.JSON.To_Python(story["Folders"]["Information"]["Writing"])
 
 			# Create the writing mode dictionaries inside the "Writing" dictionary
-			for writing_mode in writing_modes:
+			for writing_mode in self.stories["Writing modes"]["List"]:
 				# Define the writing mode dictionary
 				if "Added" not in writing[writing_mode]["Times"]:
 					writing[writing_mode]["Times"] = {
@@ -1299,6 +1354,12 @@ class Stories(object):
 
 				k += 1
 
+			# Add the "Title" key to the top of the dictionary
+			story["Information"] = {
+				"Title": story["Title"],
+				**story["Information"]
+			}
+
 			# ---------- #
 
 			# Update the "Story.json" file with the updated story "Information" dictionary
@@ -1328,7 +1389,8 @@ class Stories(object):
 			"Directories",
 			"Information items",
 			"Story websites",
-			"Cover types"
+			"Cover types",
+			"Writing modes"
 		]
 
 		for key in keys:
@@ -1463,6 +1525,187 @@ class Stories(object):
 
 		# Return the "Story" dictionary
 		return story
+
+	def Create_Statistics(self, years_list):
+		# Define a local dictionary of statistics
+		statistics = {
+			"Module": "Stories",
+			"Statistic key": "Story chapters",
+			"Text": {},
+			"List": [],
+			"Years": {}
+		}
+
+		# ---------- #
+
+		# Create a local list of writing modes
+		writing_modes = []
+
+		# Iterate through the dictionary of writing modes
+		for writing_mode in self.stories["Writing modes"]["Dictionary"].values():
+			# Define the writing mode key as the "Chapter" tense
+			# Chapter [written/revised/translated]
+			key = writing_mode["Texts"]["Chapter"]["en"].capitalize()
+
+			# Add the key to the local writing modes list
+			writing_modes.append(key)
+
+		# Iterate through the stories dictionary
+		for story_key, story in self.stories["Dictionary"].items():
+			# Add the English story title to the statistics list
+			statistics["List"].append(story_key)
+
+		# ---------- #
+
+		# Fill the "Years" dictionary
+
+		# Iterate through the list of years from 2020 to the current year
+		for number in years_list:
+			# Create the year dictionary
+			year = {
+				"Key": number,
+				"Total": 0,
+				"Numbers": {},
+				"Months": {}
+			}
+
+			# Iterate through the stories dictionary
+			for key, story in self.stories["Dictionary"].items():
+				# Create the year numbers dictionary of the story
+				year["Numbers"][key] = {}
+
+				# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
+				for writing_mode in writing_modes:
+					# Add the writing mode key to the year numbers dictionary
+					year["Numbers"][key][writing_mode] = 0
+
+			# ---------- #
+
+			# Fill the "Months" dictionary
+			for month in range(1, 13):
+				# Add leading zeroes to the month number
+				month_number = str(self.Text.Add_Leading_Zeroes(month))
+
+				# Create the month dictionary
+				month = {
+					"Key": month_number,
+					"Total": 0,
+					"Numbers": {}
+				}
+
+				# Iterate through the stories dictionary
+				for story_key, story in self.stories["Dictionary"].items():
+					# Create the month numbers dictionary of the story
+					month["Numbers"][story_key] = {}
+
+					# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
+					for writing_mode in writing_modes:
+						# Add the writing mode key to the month numbers dictionary
+						month["Numbers"][story_key][writing_mode] = 0
+
+				# Add the month dictionary to the "Months" dictionary of the year dictionary
+				year["Months"][month_number] = month
+
+			# ---------- #
+
+			# Add the year dictionary to the "Years" dictionary
+			statistics["Years"][number] = year
+
+		# Iterate through the stories dictionary
+		for story_key, story in self.stories["Dictionary"].items():
+			# Iterate through the dictionary of story chapters
+			for chapter in story["Information"]["Chapters"]["Dictionary"].values():
+				# Make a shortcut for the "Dates" dictionary
+				dates = chapter["Dates"]
+
+				# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
+				for writing_mode in writing_modes:
+					# Get the date from the current writing mode
+					date = dates[writing_mode]
+
+					# If the date is not empty
+					if date != "":
+						# Split the date
+						split = date.split("/")
+
+						# ----- #
+
+						# Get the current year number
+						year_number = split[2]
+
+						# If the year number is inside the list of years
+						if year_number in years_list:
+							# Add one to the writing mode number inside the current year dictionary of the current story
+							statistics["Years"][year_number]["Numbers"][story_key][writing_mode] += 1
+
+							# Add one to the year total chapters number
+							statistics["Years"][year_number]["Total"] += 1
+
+							# Define a shortcut for the year dictionary
+							year_dictionary = statistics["Years"][year_number]
+
+							# ----- #
+
+							# Get the current month number of the current year
+							month_number = split[1]
+
+							# Add one to the writing mode number inside the current month dictionary that is inside the current year dictionary
+							year_dictionary["Months"][month_number]["Numbers"][story_key][writing_mode] += 1
+
+							# Add one to the month total chapters number
+							year_dictionary["Months"][month_number]["Total"] += 1
+
+		# Iterate through the dictionary of years
+		for year in statistics["Years"].values():
+			# Iterate through the stories inside the year dictionary
+			for story_key, story in deepcopy(year["Numbers"]).items():
+				# Define a local number of chapters
+				number = 0
+
+				# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
+				for writing_mode in writing_modes:
+					# Add the writing mode number to the local number
+					number += story[writing_mode]
+
+				# If the final local number is still zero, remove the story dictionary
+				if number == 0:
+					year["Numbers"].pop(story_key)
+
+			# Iterate through the month keys and month dictionaries inside the year "Months" dictionary
+			for month_key, month in deepcopy(year["Months"]).items():
+				# If the number of total chapters of the month is zero
+				if month["Total"] == 0:
+					# Remove the month from the dictionary of months
+					year["Months"].pop(month_key)
+
+				# If it is not zero
+				else:
+					# Iterate through the stories inside the month dictionary
+					for story_key, story in deepcopy(month["Numbers"]).items():
+						# Define a local number of chapters
+						number = 0
+
+						# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
+						for writing_mode in writing_modes:
+							# Add the writing mode number to the local number
+							number += story[writing_mode]
+
+						# If the final local number is still zero, remove the story dictionary
+						if number == 0:
+							year["Months"][month_key]["Numbers"].pop(story_key)
+
+		# Iterate through the dictionary of years
+		for year_key, year in deepcopy(statistics["Years"]).items():
+			# If the "Numbers" and "Months" dictionaries are empty
+			if (year["Numbers"], year["Months"]) == ({}, {}):
+				# Remove the year from the "Years" dictionary
+				statistics["Years"].pop(year_key)
+
+		# Add the local statistics dictionary to the root "Stories" dictionary
+		self.stories["Statistics"] = statistics
+
+		# Return the "Statistics" dictionary
+		return self.stories["Statistics"]
 
 	def Select_Status(self):
 		# Define the parameters dictionary for the "Select" method of the "Input" class

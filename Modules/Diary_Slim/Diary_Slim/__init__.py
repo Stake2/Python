@@ -193,8 +193,12 @@ class Diary_Slim():
 		# Define the "Data" sub-folders
 		names = [
 			"Header",
-			"Texts"
+			"Texts",
+			"External statistics"
 		]
+
+		# Define the folder for easier typing
+		folder = self.diary_slim["Folders"]["Data"]
 
 		# Iterate through the names list
 		for name in names:
@@ -207,18 +211,29 @@ class Diary_Slim():
 			if "_" not in text_key:
 				text_key += ", title()"
 
+			# Define the texts dictionary
+			texts = self.Language.language_texts
+
+			# If the text key is inside the texts dictionary of this class
+			if text_key in self.language_texts:
+				# Update the local texts dictionary to be that one
+				texts = self.language_texts
+
 			# Define the folder name
-			name = self.Language.language_texts[text_key]
+			name = texts[text_key]
 
 			# Define the folder with its key and name
-			self.diary_slim["Folders"]["Data"][key] = {
-				"root": self.diary_slim["Folders"]["Data"]["root"] + name + "/"
+			folder[key] = {
+				"root": folder["root"] + name + "/"
 			}
 
 			# Create it
-			self.Folder.Create(self.diary_slim["Folders"]["Data"][key]["root"])
+			self.Folder.Create(folder[key]["root"])
 
 		# ---------- #
+
+		# Define the folder for easier typing
+		folder = self.diary_slim["Folders"]["Data"]["Header"]
 
 		# Define the "Header" files
 		for language in self.languages["small"]:
@@ -226,10 +241,10 @@ class Diary_Slim():
 			full_language = self.languages["full"][language]
 
 			# Define the file
-			self.diary_slim["Folders"]["Data"]["Header"][language] = self.diary_slim["Folders"]["Data"]["Header"]["root"] + full_language + ".txt"
+			folder[language] = folder["root"] + full_language + ".txt"
 
 			# Create it
-			self.File.Create(self.diary_slim["Folders"]["Data"]["Header"][language])
+			self.File.Create(folder[language])
 
 		# ---------- #
 
@@ -238,12 +253,32 @@ class Diary_Slim():
 			"Texts"
 		]
 
+		# Define the folder for easier typing
+		folder = self.diary_slim["Folders"]["Data"]["Texts"]
+
 		for name in names:
 			# Define the file
-			self.diary_slim["Folders"]["Data"]["Texts"][name] = self.diary_slim["Folders"]["Data"]["Texts"]["root"] + name + ".json"
+			folder[name] = folder["root"] + name + ".json"
 
 			# Create it
-			self.File.Create(self.diary_slim["Folders"]["Data"]["Texts"][name])
+			self.File.Create(folder[name])
+
+		# ---------- #
+
+		# Define the Diary Slim "External statistics" files
+		names = [
+			"Statistics"
+		]
+
+		# Define the folder for easier typing
+		folder = self.diary_slim["Folders"]["Data"]["External statistics"]
+
+		for name in names:
+			# Define the file
+			folder[name] = folder["root"] + name + ".json"
+
+			# Create it
+			self.File.Create(folder[name])
 
 		# ---------- #
 
@@ -252,12 +287,15 @@ class Diary_Slim():
 			"History"
 		]
 
+		# Define the folder for easier typing
+		folder = self.diary_slim["Folders"]["Years"]
+
 		for name in names:
 			# Define the file
-			self.diary_slim["Folders"]["Years"][name] = self.diary_slim["Folders"]["Years"]["root"] + name + ".json"
+			folder[name] = folder["root"] + name + ".json"
 
 			# Create it
-			self.File.Create(self.diary_slim["Folders"]["Years"][name])
+			self.File.Create(folder[name])
 
 	def Define_Lists_And_Dictionaries(self):
 		# Get the "Diary Slim" header in the user language
@@ -560,8 +598,8 @@ class Diary_Slim():
 		# ---------- #
 
 		# Define and create the "Statistics.json" file
-		self.diary_slim["Current year"]["Month"]["Statistics"] = self.diary_slim["Current year"]["Month"]["Folders"]["root"] + "Statistics.json"
-		self.File.Create(self.diary_slim["Current year"]["Month"]["Statistics"])
+		self.diary_slim["Current year"]["Month"]["Folders"]["Statistics"] = self.diary_slim["Current year"]["Month"]["Folders"]["root"] + "Statistics.json"
+		self.File.Create(self.diary_slim["Current year"]["Month"]["Folders"]["Statistics"])
 
 		# ---------- #
 
@@ -951,125 +989,146 @@ class Diary_Slim():
 
 		# ---------- #
 
-		# Iterate through the keys inside the Diary Slim Texts dictionary
-		for key in self.diary_slim["Texts"]["Dictionary"].copy():
-			# Get the text dictionary
-			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
+		# Create a local dictionary of text dictionaries
+		dictionaries = {}
 
+		# Iterate through the keys and dictionaries inside the Diary Slim Texts dictionary
+		for key, dictionary in self.diary_slim["Texts"]["Dictionary"].items():
 			# If the "Statistic" key is inside the text dictionary
 			if "Statistic" in dictionary:
-				# Define a shortcut for the statistic dictionary
-				statistic = dictionary["Statistic"]
+				# Add the dictionary to the local dictionary of dictionaries
+				dictionaries[key] = dictionary
 
-				# ----- #
+		# Iterate through the keys and dictionaries inside the dictionary of text dictionaries that have a statistic
+		for key, dictionary in dictionaries.items():
+			# Define a shortcut for the statistic dictionary
+			statistic = dictionary["Statistic"]
 
-				# If the "Question" or "Questions" keys are inside the statistic dictionary
-				if (
-					"Question" in statistic or
-					"Questions" in statistic
-				):
-					# Define the list of keys to search for
-					keys = [
-						"Input text",
-						"Show text",
-						"Select text"
-					]
+			# ----- #
 
-					# Iterate through the list of keys
-					for item in keys:
-						# If the "Question" key is inside the statistic dictionary
-						if "Question" in statistic:
-							# Define the language text for the question dictionary, using the current key
-							statistic["Question"] = self.Define_Language_Text(statistic["Question"], item)
+			# If the "Question" or "Questions" keys are inside the statistic dictionary
+			if (
+				"Question" in statistic or
+				"Questions" in statistic
+			):
+				# Define the list of keys to search for
+				keys = [
+					"Input text",
+					"Show text",
+					"Select text"
+				]
 
-						# Iterate through the list of sub-keys
-						for sub_key in ["Questions", "Answers"]:
-							# Define the local dictionary to use
-							local_dictionary = statistic
+				# Iterate through the list of keys
+				for item in keys:
+					# If the "Question" key is inside the statistic dictionary
+					if "Question" in statistic:
+						# Define the language text for the question dictionary, using the current key
+						statistic["Question"] = self.Define_Language_Text(statistic["Question"], item)
 
-							# If the sub-key is "Answers"
-							# And the "Question" key is inside the statistic dictionary
-							if (
-								sub_key == "Answers" and
-								"Question" in statistic
-							):
-								# Define the local dictionary as the question one
-								local_dictionary = statistic["Question"]
+					# Iterate through the list of sub-keys
+					for sub_key in ["Questions", "Answers"]:
+						# Define the local dictionary to use
+						local_dictionary = statistic
 
-							# If the sub-key is inside the local dictionary
-							if sub_key in local_dictionary:
-								# Iterate through the dictionary of question, getting the question key and question dictionary
-								for question_key, question in local_dictionary[sub_key].items():
-									# Define the language text for the question dictionary, using the current key
-									local_dictionary[sub_key][question_key] = self.Define_Language_Text(question, item)
+						# If the sub-key is "Answers"
+						# And the "Question" key is inside the statistic dictionary
+						if (
+							sub_key == "Answers" and
+							"Question" in statistic
+						):
+							# Define the local dictionary as the question one
+							local_dictionary = statistic["Question"]
 
-				# ----- #
+						# If the sub-key is inside the local dictionary
+						if sub_key in local_dictionary:
+							# Iterate through the dictionary of question, getting the question key and question dictionary
+							for question_key, question in local_dictionary[sub_key].items():
+								# Define the language text for the question dictionary, using the current key
+								local_dictionary[sub_key][question_key] = self.Define_Language_Text(question, item)
 
-				# Define a local empty template dictionary
-				template = {}
+			# ----- #
 
-				# Define the statistic key as the root key
-				statistic_key = statistic["Key"]
+			# Define a local empty template dictionary
+			template = {}
 
-				# If the "Alternative key" key is inside the text dictionary
-				if "Alternative key" in statistic:
-					# Change the statistic key the alternative key
-					statistic_key = statistic["Alternative key"]
+			# Define the statistic key as the root key
+			statistic_key = statistic["Key"]
 
-				# If the key is not "List"
-				if statistic["Key"] != "List":
-					# Add the statistic key to the template dictionary with a value of zero
-					template[statistic_key] = 0
+			# If the "Alternative key" key is inside the text dictionary
+			if "Alternative key" in statistic:
+				# Change the statistic key the alternative key
+				statistic_key = statistic["Alternative key"]
 
-				# If the "Questions" key is inside the statistic dictionary
-				if "Questions" in statistic:
-					# Iterate through the questions dictionary, getting the question dictionary
-					for question in statistic["Questions"].values():
-						# If the question has a key
-						if "Key" in question:
-							template[question["Key"]] = 0
+			# If the key is not "List"
+			if statistic["Key"] != "List":
+				# Add the statistic key to the template dictionary with a value of zero
+				template[statistic_key] = 0
 
-				# Add the local statistic dictionary to the root statistics dictionary template
-				self.statistics_template[key] = template
+			# If the "Questions" key is inside the statistic dictionary
+			if "Questions" in statistic:
+				# Iterate through the questions dictionary, getting the question dictionary
+				for question in statistic["Questions"].values():
+					# If the question has a key
+					if "Key" in question:
+						# Add the question key to the template
+						template[question["Key"]] = 0
 
-				# ----- #
+			# If the "Question" key is inside the statistic dictionary
+			if "Question" in statistic:
+				# Define a shortcut for the question
+				question = statistic["Question"]
 
-				# If the "Add to statistics" key is inside the text dictionary
-				# And the "Options" key is inside the statistic dictionary
-				# And the "List" key is inside the options dictionary
-				if (
-					"Add to statistics" in dictionary and
-					"Question" in statistic and
-					"List" in statistic["Question"]
-				):
-					# Add the list of the text dictionary inside the statistic dictionary
-					statistic["List"] = statistic["Question"]["List"]
+				# If the question has a key
+				if "Key" in question:
+					# Add the question key to the template
+					template[question["Key"]] = 0
 
-					# Add each one of the items of the list to the statistics template
-					for item in statistic["List"]:
-						self.statistics_template[key][item] = 0
+			# Add the local statistic dictionary to the root statistics dictionary template
+			self.statistics_template[key] = template
 
-				# ----- #
+			# ----- #
 
-				# If the "Secondary statistics" key is inside the statistics dictionary
-				if "Secondary statistics" in statistic:
-					# Add each one of the items of the dictionary to the statistics template
-					for item in statistic["Secondary statistics"]:
-						self.statistics_template[key][item] = 0
+			# If the "Add to statistics" key is inside the text dictionary
+			# And the "Options" key is inside the statistic dictionary
+			# And the "List" key is inside the options dictionary
+			if (
+				"Add to statistics" in dictionary and
+				"Question" in statistic and
+				"List" in statistic["Question"]
+			):
+				# Add the list of the text dictionary inside the statistic dictionary
+				statistic["List"] = statistic["Question"]["List"]
 
-				# ----- #
+				# Add each one of the items of the list to the statistics template
+				for item in statistic["List"]:
+					self.statistics_template[key][item] = 0
 
-				# Switch the "Is statistic" state to True
-				dictionary["Is statistic"] = True
+			# ----- #
 
-				# Add the statistic dictionary to the root statistics dictionary
-				self.statistics["Dictionary"][key] = statistic
+			# If the "Secondary statistics" key is inside the statistics dictionary
+			if "Secondary statistics" in statistic:
+				# Add each one of the items of the dictionary to the statistics template
+				for item in statistic["Secondary statistics"]:
+					self.statistics_template[key][item] = 0
 
-				# Update the root statistic dictionary of the text with the local one
-				dictionary["Statistic"] = statistic
+			# ----- #
 
-				# Update the root text dictionary with the local one
-				self.diary_slim["Texts"]["Dictionary"][key] = dictionary
+			# Switch the "Is statistic" state to True
+			dictionary["Is statistic"] = True
+
+			# Add the statistic dictionary to the root statistics dictionary
+			self.statistics["Dictionary"][key] = statistic
+
+			# Update the root statistic dictionary of the text with the local one
+			dictionary["Statistic"] = statistic
+
+			# Update the root text dictionary with the local one
+			self.diary_slim["Texts"]["Dictionary"][key] = dictionary
+
+		# ---------- #
+
+		# Create the external statistics dictionary
+		self.Create_External_Statistics()
 
 		# ---------- #
 
@@ -1146,8 +1205,12 @@ class Diary_Slim():
 					month["Folders"][file] = month["Folders"]["root"] + file + ".json"
 					self.File.Create(month["Folders"][file])
 
-				# If the local month is the current month
-				if month_key == self.diary_slim["Current year"]["Month"]["Name"]:
+				# If the local year is the current year
+				# And the local month is the current month
+				if (
+					key == self.diary_slim["Current year"]["Number"] and
+					month_key == self.diary_slim["Current year"]["Month"]["Name"]
+				):
 					# Add the statistics file to the current month key
 					self.diary_slim["Current year"]["Month"]["Folders"]["Statistics"] = month["Folders"]["Statistics"]
 
@@ -1161,6 +1224,188 @@ class Diary_Slim():
 
 		# Update the statistics
 		self.Update_Statistics()
+
+	def Get_Methods(self, class_):
+		# Get the members
+		import inspect
+ 
+		members = inspect.getmembers(class_, predicate = inspect.ismethod)
+
+		# Define a list of methods to remove
+		remove_list = [
+			"__init__",
+			"Define_Basic_Variables",
+			"Define_Texts",
+			"Import_Classes"
+		]
+
+		# Define the empty list of methods
+		methods = []
+
+		# Iterate through the tuples in the members
+		for tuple_ in members.copy():
+			# Get the method name
+			method = tuple_[0]
+
+			# If the method is not in the remove list
+			if method not in remove_list:
+				# Add it to the list of methods
+				methods.append(method)
+
+		# Return the list of methods
+		return methods
+
+	def Create_External_Statistics(self):
+		# Define the dictionary of modules
+		modules = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {
+				"Stories": {
+					"Statistic key": "Story chapters"
+				},
+				"Watch_History": {
+					"Statistic key": "Watched media"
+				},
+				"GamePlayer": {
+					"Statistic key": "Game sessions played"
+				}
+			}
+		}
+
+		# Define the list of modules as the keys of the dictionary
+		modules["List"] = list(modules["Dictionary"].keys())
+
+		# Define the number of modules
+		modules["Numbers"]["Total"] = len(modules["List"])
+
+		# ---------- #
+
+		# Create the local external statistics dictionary
+		external_statistics = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Keys": [],
+			"Dictionary": {}
+		}
+
+		# Define a shortcut for the file
+		file = self.diary_slim["Folders"]["Data"]["External statistics"]["Statistics"]
+
+		# If the external statistics file is not empty
+		if self.File.Contents(file)["lines"] != []:
+			# Get the JSON dictionary
+			json_dictionary = self.JSON.To_Python(file)
+
+			# Update the root year dictionary with the local JSON one, using the "Define_Options" method
+			external_statistics = self.Define_Options(external_statistics, json_dictionary)
+
+		# ---------- #
+
+		# Iterate through the dictionary of modules
+		for module_title, module in modules["Dictionary"].items():
+			# Update the module dictionary
+			module = {
+				"Title": module_title,
+				**module
+			}
+
+			# Add the module title to the list of external statistics if it is not already present
+			if module_title not in external_statistics["List"]:
+				external_statistics["List"].append(module_title)
+
+			# Get the statistic key from the module dictionary
+			statistic_key = module["Statistic key"]
+
+			# Add the statistic key to the list of keys if it is not already present
+			if statistic_key not in external_statistics["Keys"]:
+				external_statistics["Keys"].append(statistic_key)
+
+			# If the module title is inside the external statistics dictionary
+			# And the "Years" dictionary of the external statistic is empty
+			if (
+				module["Title"] in external_statistics["Dictionary"] and
+				external_statistics["Dictionary"][module["Title"]]["Years"] == {}
+			):
+				# Import the module
+				module["Module"] = importlib.import_module("." + module["Title"], module["Title"])
+
+				# Get the class of the module
+				module["Class"] = getattr(module["Module"], module["Title"])()
+
+				# Get the methods of the module
+				module["Methods"] = self.Get_Methods(module["Class"])
+
+				# Add the module to the modules dictionary
+				modules["Dictionary"][module["Title"]] = module
+
+				# If the module contains a method called "Create_Statistics"
+				if "Create_Statistics" in module["Methods"]:
+					# Get the dictionary of statistics from the "Create_Statistics" method
+					# Passing the list of years as a parameter
+					statistics = module["Class"].Create_Statistics(self.years_list)
+
+					# Define the dictionary of parameters
+					parameters = {
+						"text": statistic_key,
+						"text_key": ""
+					}
+
+					# If the "Text key" key is present, update the parameters dictionary
+					if "Text key" in statistics:
+						parameters["text_key"] = statistics["Text key"]
+
+					# Get the texts dictionary to use as the statistic text
+					statistics["Text"] = self.Get_Text_Dictionary(**parameters)
+
+					# ----- #
+
+					# Add the statistics to the dictionary of external statistics
+					external_statistics["Dictionary"][module["Title"]] = statistics
+
+					# ----- #
+
+					# Add the local statistic dictionary to the root statistics dictionary template
+					self.statistics_template[statistic_key] = {
+						"Module": module["Title"],
+						"Total": 0
+					}
+
+			# Update the module dictionary inside the modules dictionary
+			modules["Dictionary"][module["Title"]] = module
+
+		# Update the number of external statistics
+		external_statistics["Numbers"]["Total"] = len(external_statistics["List"])
+
+		# Add the local external statistics dictionary to the root statistics dictionary
+		self.statistics["External statistics"] = external_statistics
+
+	def Get_Text_Dictionary(self, text, text_key = ""):
+		# If the text key parameter is an empty string
+		if text_key == "":
+			# Define the text key for the text
+			text_key = text.lower().replace(" ", "_")
+
+			if "_" not in text_key:
+				text_key += ", title()"
+
+		# Define the texts dictionary
+		texts = self.Language.texts
+
+		# If the text key is inside the texts dictionary of this class
+		if text_key in self.texts:
+			# Update the local texts dictionary to be that one
+			texts = self.texts
+
+		# Get the text dictionary
+		text = texts[text_key]
+
+		# Return the text dictionary
+		return text
 
 	def Define_Language_Text(self, question, item):
 		# If the current key is inside the question dictionary
@@ -1182,13 +1427,55 @@ class Diary_Slim():
 		# Return the question dictionary
 		return question
 
+	def Define_Options(self, dictionary, options):
+		for key in options:
+			if type(options[key]) == dict:
+				if (
+					key in dictionary and
+					dictionary[key] != {}
+				):
+					for sub_key in dictionary[key]:
+						if sub_key in options[key]:
+							dictionary[key][sub_key] = options[key][sub_key]
+
+					for sub_key in options[key]:
+						if sub_key not in dictionary[key]:
+							dictionary[key][sub_key] = options[key][sub_key]
+
+				if (
+					key not in dictionary or
+					dictionary[key] == {}
+				):
+					dictionary[key] = options[key]
+
+			if type(options[key]) in [str, int, list]:
+				dictionary[key] = options[key]
+
+		return dictionary
+
 	def Update_Statistics(self):
+		# Make a copy of the statistics dictionary
+		statistics_dictionary = deepcopy(self.statistics)
+
+		# Remove the unneeded keys
+		keys = [
+			"External statistics"
+		]
+
+		for key in keys:
+			statistics_dictionary.pop(key)
+
 		# Update the data statistics file with the root statistics dictionary
-		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Statistics"], self.statistics)
+		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["Statistics"], statistics_dictionary)
+
+		# ---------- #
+
+		# Create a local dictionary of years
+		years_dictionary = {}
 
 		# Iterate through the dictionary of years
 		for key, year in self.years["Dictionary"].items():
-			# Update the statistics dictionary of the year dictionary
+			# Update the "Statistics" dictionary of the year dictionary
 			year["Statistics"] = deepcopy(self.statistics_template)
 
 			# If the statistics file is not empty
@@ -1196,29 +1483,30 @@ class Diary_Slim():
 				# Get the JSON dictionary
 				json_dictionary = self.JSON.To_Python(year["Folders"]["Statistics"])
 
-				# Update the root dictionary with the local JSON one
-				year["Statistics"].update(json_dictionary)
+				# Update the root year dictionary with the local JSON one, using the "Define_Options" method
+				year["Statistics"] = self.Define_Options(year["Statistics"], json_dictionary)
 
 			# Iterate through the keys inside the year statistics dictionary
 			for statistic_key in year["Statistics"].copy():
 				# If the key is not inside the root statistics dictionary
-				if statistic_key not in self.statistics["Dictionary"]:
+				# And the key is not an external statistic
+				if (
+					statistic_key not in self.statistics["Dictionary"] and
+					statistic_key not in self.statistics["External statistics"]["Keys"]
+				):
 					# Remove it
 					year["Statistics"].pop(statistic_key)
 
-			# Write the statistics dictionary into the file
-			self.JSON.Edit(year["Folders"]["Statistics"], year["Statistics"])
-
 			# If the local year is the current year
 			if key == self.diary_slim["Current year"]["Number"]:
-				# Add the statistics dictionary to the "Current year" key
+				# Add the "Statistics" dictionary to the "Current year" key
 				self.diary_slim["Current year"]["Statistics"] = year["Statistics"]
 
 			# ---------- #
 
 			# Iterate through the dictionary of months
 			for month_key, month in year["Months"].items():
-				# Update the statistics dictionary of the month dictionary
+				# Update the "Statistics" dictionary of the month dictionary
 				month["Statistics"] = deepcopy(self.statistics_template)
 
 				# If the statistics file is not empty
@@ -1226,31 +1514,151 @@ class Diary_Slim():
 					# Get the JSON dictionary
 					json_dictionary = self.JSON.To_Python(month["Folders"]["Statistics"])
 
-					# Update the root dictionary with the local JSON one
-					month["Statistics"].update(json_dictionary)
+					# Update the root month dictionary with the local JSON one, using the "Define_Options" method
+					month["Statistics"] = self.Define_Options(month["Statistics"], json_dictionary)
 
-				# Iterate through the keys inside the month statistics dictionary
+				# Iterate through the keys inside the month "Statistics" dictionary
 				for statistic_key in month["Statistics"].copy():
 					# If the key is not inside the root statistics dictionary
-					if statistic_key not in self.statistics["Dictionary"]:
+					# And the key is not an external statistic
+					if (
+						statistic_key not in self.statistics["Dictionary"] and
+						statistic_key not in self.statistics["External statistics"]["Keys"]
+					):
 						# Remove it
 						month["Statistics"].pop(statistic_key)
 
-				# Write the statistics dictionary into the file
-				self.JSON.Edit(month["Folders"]["Statistics"], month["Statistics"])
-
-				# If the local month is the current month
-				if month_key == self.diary_slim["Current year"]["Month"]["Name"]:
+				# If the local year is the current year
+				# And the local month is the current month
+				if (
+					key == self.diary_slim["Current year"]["Number"] and
+					month_key == self.diary_slim["Current year"]["Month"]["Name"]
+				):
 					# Add the statistics dictionary to the current month key
 					self.diary_slim["Current year"]["Month"]["Statistics"] = month["Statistics"]
 
 				# Update the current month dictionary on the root year dictionary
 				year["Months"][month_key] = month
 
+			# Add the year dictionary to the local dictionary of years
+			years_dictionary[key] = year
+
 			# ---------- #
 
 			# Add the current year dictionary to the root years dictionary
 			self.years["Dictionary"][key] = year
+
+		# ---------- #
+
+		# Update the external statistics dictionaries of the years and months
+
+		# Iterate through the "External statistics" dictionary
+		for statistics in self.statistics["External statistics"]["Dictionary"].values():
+			# Define the statistic key
+			statistic_key = statistics["Statistic key"]
+
+			# Get the "Years" dictionary
+			years = statistics["Years"]
+
+			# Get the list of keys
+			keys = list(years.keys())
+
+			# Iterate through the list of keys
+			for key in keys:
+				# Get the year dictionary of that key
+				year = years[key]
+
+				# Get the root year dictionary
+				root_year = self.years["Dictionary"][year["Key"]]
+
+				# Get the root statistics dictionary
+				root_statistics = root_year["Statistics"][statistic_key]
+
+				# Add the "Total" key and the number dictionaries inside the "Numbers" to the root year statistics dictionary
+				root_year["Statistics"][statistic_key] = {
+					**root_statistics,
+					"Total": year["Total"],
+					**year["Numbers"]
+				}
+
+				# Iterate through the months inside the year dictionary
+				for month in year["Months"].values():
+					# Get the month key using the list of month names in the user language with the month number with leading zeroes
+					month_key = month["Key"] + " - " + self.Date.language_texts["month_names, type: list"][int(month["Key"])]
+
+					# If the month key exists inside the dictionary of months of the root year
+					# (I created the Diary Slim on July (07) of 2020, so the months from January to June (01 - 06) do not exist inside the "Months" dictionary)
+					if month_key in root_year["Months"]:
+						# Get the root statistics dictionary
+						root_statistics = root_year["Months"][month_key]["Statistics"][statistic_key]
+
+						# Add the "Total" key and the number dictionaries inside the "Numbers" to the root month statistics dictionary
+						root_year["Months"][month_key]["Statistics"][statistic_key] = {
+							**root_statistics,
+							"Total": month["Total"],
+							**month["Numbers"]
+						}
+
+				# Add the year dictionary to the local dictionary of years
+				years_dictionary[key] = root_year
+
+		# Iterate through the dictionary of years
+		for key, year in self.years["Dictionary"].items():
+			# Iterate through the local external statistics dictionary
+			for statistic in self.statistics["External statistics"]["Dictionary"].values():
+				# Get the statistic key
+				statistic_key = statistic["Statistic key"]
+
+				# If the statistic key is inside the year dictionary
+				if statistic_key in year["Statistics"]:
+					# Get the year statistics dictionary
+					statistics = year["Statistics"][statistic_key]
+
+					# If the only keys inside the current statistics dictionary are "Module" and "Total"
+					# (That means there is no statistic inside the dictionary and the "Total" number is zero)
+					if list(statistics.keys()) == ["Module", "Total"]:
+						# Remove the statistic from the "Statistics" dictionary
+						year["Statistics"].pop(statistic_key)
+
+			# Iterate through the months inside the root year dictionary
+			for month_key, month in year["Months"].items():
+				# Iterate through the local external statistics dictionary
+				for statistic in self.statistics["External statistics"]["Dictionary"].values():
+					# Get the statistic key
+					statistic_key = statistic["Statistic key"]
+
+					# If the statistic key is inside the month dictionary
+					if statistic_key in month["Statistics"]:
+						# Get the month statistics dictionary
+						statistics = month["Statistics"][statistic_key]
+
+						# If the only keys inside the current statistics dictionary are "Module" and "Total"
+						# (That means there is no statistic inside the dictionary and the "Total" number is zero)
+						if list(statistics.keys()) == ["Module", "Total"]:
+							# Remove the statistic from the "Statistics" dictionary
+							year["Months"][month_key]["Statistics"].pop(statistic_key)
+
+			# Add the year dictionary to the local dictionary of years
+			years_dictionary[key] = year
+
+		# ---------- #
+
+		# Update the year and month "Statistics.json" files
+
+		# Iterate through the local dictionary of years
+		for year in years_dictionary.values():
+			# Write the "Statistics" dictionary into the year "Statistics" file
+			self.JSON.Edit(year["Folders"]["Statistics"], year["Statistics"])
+
+			# Iterate through the dictionary of months
+			for month in year["Months"].values():
+				# Write the "Statistics" dictionary into the month "Statistics" file
+				self.JSON.Edit(month["Folders"]["Statistics"], month["Statistics"])
+
+		# ---------- #
+
+		# Update the "External statistics" JSON file with the "External statistics" dictionary
+		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["External statistics"]["Statistics"], self.statistics["External statistics"])
 
 	def Update_Current_Year_Statistics(self, year_statistics, month_statistics):
 		# Write the year statistics dictionary into the year statistics file
