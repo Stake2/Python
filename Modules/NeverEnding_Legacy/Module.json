@@ -1,0 +1,35 @@
+{
+	"Module": "NeverEnding_Legacy",
+	"Folders": {
+		"root": "C:/Apps/Modules/NeverEnding_Legacy/",
+		"Texts": {
+			"root": "C:/Apps/Module files/NeverEnding_Legacy/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/NeverEnding_Legacy/Descriptions.json",
+		"Module": "C:/Apps/Modules/NeverEnding_Legacy/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o jogo \"NeverEnding Legacy\"",
+		"Update_Mods": {
+			"en": "Update the mods",
+			"pt": "Atualizar os mods"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Update_Mods": {
+				"Descriptions": {
+					"en": "Update the mods",
+					"pt": "Atualizar os mods"
+				},
+				"Description": "Atualizar os mods",
+				"Object": "<class 'NeverEnding_Legacy.Update_Mods.Update_Mods'>"
+			}
+		},
+		"Descriptions": [
+			"Atualizar os mods"
+		]
+	}
+}

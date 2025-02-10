@@ -940,6 +940,19 @@ class Main():
 
 		self.Text.Copy(self.Text.From_List(lines, break_line = True))
 
+	def Copy_Folder_Names(self):
+		# Ask for the folder
+		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
+
+		# Get the folder names
+		names = self.Folder.Contents(folder, add_sub_folders = False)["folder"]["names"]
+
+		# Transform them into a text
+		names = self.Text.From_List(names, next_line = True)
+
+		# Copy the text
+		self.Text.Copy(names)
+
 	def Get_ID(self, key = "", link = ""):
 		if link == "":
 			while link == "":

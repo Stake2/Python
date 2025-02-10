@@ -46,11 +46,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# If the "Is task" key is inside the text dictionary
 		# And the task was not registered
+		# Or the "States" key is inside the "Text" dictionary
+		# And the current state in the backup is not the first one
 		if (
 			"Is task" in self.dictionary["Text"] and
-			self.task_dictionary["Register task"] == False
+			self.task_dictionary["Register task"] == False or
+			"States" in self.dictionary["Text"] and
+			self.dictionary["Text"]["States (backup)"]["Current state"] != self.dictionary["Text"]["States"]["Dictionary"]["1"]
 		):
-			# Define the "Input on end" state as True
+			# Define the "Input on end" state as False
 			self.states["Input on end"] = False
 
 		# Write the Diary Slim text

@@ -2070,6 +2070,10 @@
 		"en": "Game sessions played",
 		"pt": "Sessões de jogo jogadas"
 	},
+	"mods, title()": {
+		"en": "Mods",
+		"pt": "Modificações"
+	},
 	"watched_things": {
 		"en": "Watched things",
 		"pt": "Coisas assistidas"

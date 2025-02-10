@@ -863,7 +863,7 @@ class Watch_History(object):
 		if "Select" in dictionary["Media type"]["Singular"]:
 			text = dictionary["Media type"]["Singular"]["Select"]
 
-		dictionary["Texts"]["Select"] = self.language_texts["select_{}_to_watch"].format(dictionary["Media type"]["Genders"][self.user_language]["a"] + " " + text)
+		dictionary["Texts"]["Select"] = self.language_texts["select_{}_to_watch"].format(dictionary["Media type"]["Genders"][self.user_language]["a"] + " " + text.lower())
 
 		# Select the media
 		if "Title" not in media:

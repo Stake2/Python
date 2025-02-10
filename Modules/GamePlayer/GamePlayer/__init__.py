@@ -2423,12 +2423,12 @@ class GamePlayer(object):
 					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
 
 			# If there is a session description, show it
-			if "Description" in self.dictionary["Entry"]["Diary Slim"]:
+			if "Descriptions" in self.dictionary["Entry"]["Diary Slim"]:
 				print()
 				print(self.Language.language_texts["description, title()"] + ":")
 
-				# Define the "description" variable for easier typing and a more beautiful code
-				description = self.dictionary["Entry"]["Diary Slim"]["Description"]["lines"]
+				# Define the description variable for easier typing and a more beautiful code
+				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.user_language]["lines"]
 
 				# Show the description lines
 				for line in description:

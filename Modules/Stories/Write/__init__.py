@@ -19,7 +19,6 @@ class Write(Stories):
 			"Chapter": {},
 			"Steps": {
 				"List": [
-					"Define writing modes",
 					"Select writing mode",
 					"Define chapter",
 					"Define server",
