@@ -303,6 +303,10 @@
 		"pt": "Digite o número de vezes que você assistiu",
 		"en": "Type the number of times that you watched"
 	},
+	"times_that_i_watched_{}_{}": {
+		"en": "Times that I watched {} \"{}\"",
+		"pt": "Vezes que eu assisti {} \"{}\""
+	},
 	"re_watched, capitalize()": {
 		"pt": "Re-assistido",
 		"en": "Re-watched"

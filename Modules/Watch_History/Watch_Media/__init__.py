@@ -736,6 +736,8 @@ class Watch_Media(Watch_History):
 		if self.media["States"]["Video"] == False:
 			container = container.lower()
 
+		original_container = container
+
 		# Add "dubbed" text to media container text
 		if "Dubbing" in self.media["Episode"] and "Text" in self.media["Episode"]["Dubbing"]:
 			container = self.Language.texts["dubbed_{}"][self.user_language].format(container)
@@ -744,6 +746,7 @@ class Watch_Media(Watch_History):
 			"container": container,
 			"this": self.media["texts"]["genders"][self.user_language]["this"] + " " + container,
 			"the": self.media["texts"]["genders"][self.user_language]["the"] + " " + container,
+			"the (original)": self.media["texts"]["genders"][self.user_language]["the"] + " " + original_container,
 			"of_the": self.media["texts"]["genders"][self.user_language]["of_the"] + " " + container
 		}
 

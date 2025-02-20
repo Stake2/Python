@@ -490,5 +490,9 @@
 	"id_of_the_story_in": {
 		"en": "ID of the story in",
 		"pt": "ID da história em"
+	},
+	"chapters_of_my_story_{}_{}": {
+		"en": "Chapters of my story \"{}\" {}",
+		"pt": "Capítulos da minha história \"{}\" {}"
 	}
 }

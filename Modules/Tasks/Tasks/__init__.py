@@ -704,6 +704,8 @@ class Tasks(object):
 		print(task_description_text + " " + self.full_user_language + ":")
 		print("[" + task["Descriptions"][self.user_language] + "]")
 
+		# ---------- #
+
 		# Show the text telling the user that the class wrote on the current Diary Slim
 		# And the current Diary Slim date
 		date = self.dictionary["Diary Slim"]["Date"]["Timezone"]["DateTime"]["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
@@ -724,6 +726,15 @@ class Tasks(object):
 		print()
 		print(show_text + ":")
 		print("\t" + date)
+
+		# ---------- #
+
+		# If the "Additional text" key is inside the dictionary
+		if "Additional text" in dictionary:
+			# Show the additional text
+			print(self.dictionary["Additional text"])
+
+		# ---------- #
 
 		# If the "Five dash space" state is True
 		if states["Five dash space"] == True:

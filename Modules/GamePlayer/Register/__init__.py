@@ -58,6 +58,9 @@ class Register(GamePlayer):
 		# Write the information about the session on Diary Slim
 		self.Write_On_Diary_Slim()
 
+		# Update the statistic about the game session played
+		self.Update_Statistic()
+
 		# Show the information about the game session
 		self.Show_Information(self.dictionary)
 
@@ -818,3 +821,69 @@ class Register(GamePlayer):
 
 		# Write the entry text on Diary Slim
 		Write_On_Diary_Slim_Module(dictionary)
+
+	def Get_Game_Title(self, language = False):
+		# Define the key to get the game title
+		key = "Original"
+
+		if "Romanized" in self.game["Titles"]:
+			key = "Romanized"
+
+		# If the "language" parameter is True
+		if language == True:
+			# Define the game title key as the "Language" one
+			key = "Language"
+
+		# Define the local game title variable
+		game_title = self.game["Titles"][key]
+
+		# If there is a sub-game inside the game dictionary
+		# And the sub-game is not the root game
+		if (
+			"Sub-game" in self.game and
+			self.game["Sub-game"]["Title"] != self.game["Title"]
+		):
+			# Define the key to get the sub-game title
+			key = "Original"
+
+			if "Romanized" in self.game["Titles"]:
+				key = "Romanized"
+
+			# If the "language" parameter is True
+			if language == True:
+				# Define the game title key as the "Language" one
+				key = "Language"
+
+			# Get the sub-game title using the key
+			sub_game_title = self.game["Sub-game"]["Titles"][key]
+
+			# If the first two characters of the title are not a colon and a space
+			if sub_game_title[0] + sub_game_title[1] != ": ":
+				# Add a space
+				game_title += " "
+
+			# Add the sub-game title to the root game title
+			game_title += sub_game_title
+
+		# Return the game title
+		return game_title
+
+	def Update_Statistic(self):
+		# Get the original (sub) game title
+		game_title = self.Get_Game_Title()
+
+		# Get the language (sub) game title
+		language_game_title = self.Get_Game_Title(language = True)
+
+		# Define the game titles dictionary
+		game_titles = {
+			"Original": game_title,
+			"Language": language_game_title
+		}
+
+		# Define the game type
+		game_type = self.dictionary["Type"]["Type"][self.user_language].lower()
+
+		# Update the game statistics for the current year and month, passing the game titles and the game type
+		# And getting the statistics text back
+		self.dictionary["Statistics text"] = GamePlayer.Update_Statistics(self, game_titles, game_type)

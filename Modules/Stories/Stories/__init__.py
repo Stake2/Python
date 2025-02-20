@@ -114,6 +114,9 @@ class Stories(object):
 		# Get the current date from the Date module
 		self.date = self.Date.date
 
+		# Get the current year
+		self.current_year = str(self.date["Units"]["Year"])
+
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
@@ -1706,6 +1709,103 @@ class Stories(object):
 
 		# Return the "Statistics" dictionary
 		return self.stories["Statistics"]
+
+	def Update_Statistics(self, story_titles, writing_mode):
+		# Import the "Diary_Slim" module
+		from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
+
+		# Define the "Diary_Slim" class inside this class
+		self.Diary_Slim = Diary_Slim()
+
+		# Get the "diary_slim" dictionary from the class above
+		self.diary_slim = self.Diary_Slim.diary_slim
+
+		# ---------- #
+
+		# Create a local list of writing modes
+		writing_modes = []
+
+		# Iterate through the dictionary of writing modes
+		for item in self.stories["Writing modes"]["Dictionary"].values():
+			# Define the writing mode key as the "Chapter" tense
+			# Chapter [written/revised/translated]
+			key = item["Texts"]["Chapter"]["en"].capitalize()
+
+			# Add the key to the local writing modes list
+			writing_modes.append(key)
+
+		# ---------- #
+
+		# Define a local dictionary of statistics
+		statistics = {
+			"Module": "Stories",
+			"Statistic key": "Story chapters",
+			"Year": {},
+			"Month": {},
+			"Text": "",
+			"Dictionary": {
+				"Numbers": {
+					"Year": {
+						"Old": 0,
+						"New": 1
+					},
+					"Month": {
+						"Old": 0,
+						"New": 1
+					}
+				},
+				"Text": ""
+			}
+		}
+
+		# Define a shortcut for the statistic key
+		statistic_key = statistics["Statistic key"]
+
+		# ---------- #
+
+		# Iterate through the list of keys
+		for key in ["Year", "Month"]:
+			# Define the default dictionary as the year dictionary
+			dictionary = self.diary_slim["Current year"]
+
+			# If the key is "Month"
+			if key == "Month":
+				# Define the default dictionary as the month dictionary
+				dictionary = self.diary_slim["Current year"]["Month"]
+
+			# Get the year statistics for the "Stories" module
+			statistics[key] = dictionary["Statistics"][statistic_key]
+
+			# If the story title is not inside the dictionary of stories
+			if story_titles["en"] not in statistics[key]["Dictionary"]:
+				# Create the story statistics dictionary
+				statistics[key]["Dictionary"][story_titles["en"]] = {}
+
+				# Iterate through the local list of writing modes in the "Done" tense (Chapter [Written/Revised/Translated])
+				for item in writing_modes:
+					# Add the writing mode key to the story statistics dictionary
+					statistics[key]["Dictionary"][story_titles["en"]][item] = 0
+
+			# Add one to the total number of statistics
+			statistics[key]["Total"] += 1
+
+			# Define the old number as the current number
+			statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]]
+
+			# Update the number of chapters written in the defined writing mode
+			statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]] += writing_mode["Number"]
+
+			# Define the new number as the current number (with the added number)
+			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]]
+
+		# Define the statistic text, formatting the template with the language story title
+		statistics["Dictionary"]["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.user_language], writing_mode["Done plural"])
+
+		# ---------- #
+
+		# Update the external statistics of the current year using the "Update_External_Statistics" root method of the "Diary_Slim" class
+		# And return the statistics text
+		return self.Diary_Slim.Update_External_Statistics(statistic_key, statistics)
 
 	def Select_Status(self):
 		# Define the parameters dictionary for the "Select" method of the "Input" class

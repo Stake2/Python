@@ -400,8 +400,12 @@ class Write(Stories):
 			# Define the "insert" switch as False
 			insert = False
 
-			# If the first line of the file is not "Dates of the chapter"
-			if lines[0] != dates_of_the_chapter:
+			# If the list of lines is empty
+			# Or the first line of the file is not "Dates of the chapter"
+			if (
+				lines == [] or
+				lines[0] != dates_of_the_chapter
+			):
 				# Add the "Dates of the chapter" text to the file
 				lines.insert(0, dates_of_the_chapter)
 
@@ -433,6 +437,22 @@ class Write(Stories):
 
 				# Get the text in the current language and format it using the list of items above
 				text = item[language].format(*items) + "."
+
+				# Define a shortcut for the chapter number
+				chapter_number = str(self.chapter["Number"])
+
+				# If the chapter is not present inside the dictionary of chapters
+				if chapter_number not in self.story["Information"]["Chapters"]["Dictionary"]:
+					# Create the empty chapter dictionary inside the dictionary of chapters
+					self.story["Information"]["Chapters"]["Dictionary"][chapter_number] = {
+						"Number": chapter_number,
+						"Titles": {},
+						"Dates": {
+							"Written": "",
+							"Revised": "",
+							"Translated": ""
+						}
+					}
 
 				# Define the chapter dictionary for easier typing
 				chapter = self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])]
@@ -1053,6 +1073,9 @@ class Write(Stories):
 		# Update the chapter dictionary
 		self.Update_Chapter_Dictionary()
 
+		# Update the statistic about the written chapter 
+		self.Update_Statistic()
+
 		# Register the writing task
 		self.Register_Task()
 
@@ -1300,6 +1323,9 @@ class Write(Stories):
 				}
 			}
 
+			# Add the writing date to the "Writing dates" list
+			self.story["Information"]["Chapters"]["Writing dates"].append(date)
+
 		# Update the "Titles" key
 		self.story["Information"]["Chapters"]["Dictionary"][str(self.chapter["Number"])]["Titles"] = self.chapter["Titles"]
 
@@ -1364,7 +1390,8 @@ class Write(Stories):
 				"Titles": {},
 				"Descriptions": {},
 				"Custom task item": self.dictionary["Writing mode"]["Texts"]["Chapter"]
-			}
+			},
+			"Additional text": self.dictionary["Statistics text"]
 		}
 
 		# Define the text template for the task as the "I started writing", for the first time
@@ -1534,3 +1561,17 @@ class Write(Stories):
 
 		# Register the task with the root method
 		Stories.Register_Task(self, self.task_dictionary, register_task = register_task)
+
+	def Update_Statistic(self):
+		# Define the local story title variable
+		story_titles = self.story["Titles"]
+
+		# Define the local writing mode dictionary with the key and number
+		writing_mode = {
+			"Key": self.dictionary["Writing mode"]["Texts"]["Chapter"]["en"].capitalize(),
+			"Number": 1,
+			"Done plural": self.dictionary["Writing mode"]["Texts"]["Done plural"][self.user_language]
+		}
+
+		# Update the story statistics for the current year and month, passing the story titles and writing mode dictionary
+		self.dictionary["Statistics text"] = Stories.Update_Statistics(self, story_titles, writing_mode)

@@ -1117,7 +1117,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# ---------- #
 
-		# Define the list of parameters (statistic dictionares to update)
+		# Define the list of parameters (statistic dictionaries to update)
 		parameters = [
 			self.diary_slim["Current year"]["Statistics"],
 			self.diary_slim["Current year"]["Month"]["Statistics"]
@@ -1125,6 +1125,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Update the statistics of the current year, with the two parameters
 		self.Update_Current_Year_Statistics(*parameters)
+
+		# ---------- #
+
+		# If the "No text" key is inside the statistic dictionary
+		if "No text" in statistic:
+			# Define the text to write as an empty string
+			self.dictionary["Text to write"] = ""
 
 	def Define_Money_Text(self, number, use_extended = True):
 		# Define the default text key
@@ -1144,62 +1151,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Return the number with the money text
 		return number
 
-	def Show_Statistics(self, date_type, statistics):
-		# Define the text key
-		text_key = date_type.lower()
-
-		# Define the statistic text to show as singular or plural depending on the number
-		number = statistics["Number"]
-		singular = self.Language.language_texts["updated_" + text_key + "_statistic"]
-		plural = self.Language.language_texts["updated_" + text_key + "_statistics"]
-
-		show_text = self.Text.By_Number(number, singular, plural)
-
-		# Show the text
-		print()
-		print(show_text + ":")
-
-		# Define the default "in text" as "in [year]"
-		in_text = self.Language.language_texts["in"] + " " + str(self.diary_slim["Current year"]["Number"])
-
-		# If the date type is "Month"
-		if date_type == "Month":
-			# Re-define the in text to be "in [month name]"
-			in_text = self.Language.language_texts["in"] + " " + str(self.diary_slim["Current year"]["Month"]["Name text"])
-
-		# Iterate through the dictionary of statistics
-		for statistic in statistics["Dictionary"].values():
-			# Define the text with the statistic text and colon
-			text = statistic["Text"]
-
-			# Add the in text text
-			text += " " + in_text
-
-			# Add a colon
-			text += ": "
-
-			# Define the number
-			number = str(statistic["Number"])
-
-			# If the "Money" key is inside the statistic dictionary
-			if "Money" in statistic:
-				# Define the money text
-				number = self.Define_Money_Text(number)
-
-			# Add the current number of the statistic
-			text += number
-
-			# Add the old number with the "before" text
-			text += " (" + self.Language.language_texts["before, title()"].lower() + ": " + str(statistic["Old number"]) + ")"
-
-			# Show the text and number with a tab
-			print("\t" + text)
-
 	def Write(self):
 		# If the "Is task" key is not inside the text dictionary
 		# (That means the "Register" sub-class of the "Tasks" class was not executed and did not wrote on Diary Slim
 		# So this class needs to write on it)
-		if "Is task" not in self.dictionary["Text"]:
+		# And the text to write is not empty
+		if (
+			"Is task" not in self.dictionary["Text"] and
+			self.dictionary["Text to write"] != ""
+		):
 			# Add a period to the end of the text if it is not present
 			if "." not in self.dictionary["Text to write"][-1]:
 				self.dictionary["Text to write"] += "."
@@ -1217,15 +1177,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# If the "Is task" key is inside the text dictionary
 		# And the task was registered
-		# Or if the "Is statistic" state is True
-		# And the "Statistics" key is inside the Diary Slim text dictionary
-		# And the "Changed statistic" is True
 		if (
 			"Is task" in self.dictionary["Text"] and
-			self.task_dictionary["Register task"] == True or
-			self.dictionary["Text"]["Is statistic"] == True and
-			"Statistics" in self.dictionary["Text"] and
-			self.dictionary["Text"]["Statistics"]["Changed statistic"] == True
+			self.task_dictionary["Register task"] == True
 		):
 			# Show a five dash space separator
 			print()

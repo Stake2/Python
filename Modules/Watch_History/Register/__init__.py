@@ -29,6 +29,7 @@ class Register(Watch_History):
 		# Define the media variable to make typing the media dictionary easier
 		self.media = self.dictionary["Media"]
 
+		# Check the game status
 		self.Check_Media_Status()
 
 		if self.media["States"]["Re-watching"] == False:
@@ -53,6 +54,9 @@ class Register(Watch_History):
 
 		# Write the watched media (item) description text in the user language on the Diary Slim
 		self.Write_On_Diary_Slim()
+
+		# Update the statistic about the media watched
+		self.Update_Statistic()
 
 		# If the "Defined title" key is not inside the root dictionary
 		if "Defined title" not in self.dictionary:
@@ -1159,6 +1163,72 @@ class Register(Watch_History):
 
 		# Write the entry text on Diary Slim
 		Write_On_Diary_Slim_Module(dictionary)
+
+	def Get_The_Media_Title(self, language = False):
+		# Define the key to get the media title
+		key = "Original"
+
+		if "Romanized" in self.media["Titles"]:
+			key = "Romanized"
+
+		# If the "language" parameter is True
+		if language == True:
+			# Define the media title key as the "Language" one
+			key = "Language"
+
+		# Define the local media title variable
+		media_title = self.media["Titles"][key]
+
+		# If there is a media item inside the game dictionary
+		# And the media item is not the root game
+		if (
+			"Item" in self.media and
+			self.media["States"]["Media item is media"] == False
+		):
+			# Define the key to get the media item title
+			key = "Original"
+
+			if "Romanized" in self.media["Titles"]:
+				key = "Romanized"
+
+			# If the "language" parameter is True
+			if language == True:
+				# Define the media title key as the "Language" one
+				key = "Language"
+
+			# Get the media item title using the key
+			media_item_title = self.media["Item"]["Titles"][key]
+
+			# If the first two characters of the title are not a colon and a space
+			if media_item_title[0] + media_item_title[1] != ": ":
+				# Add a space
+				media_title += " "
+
+			# Add the media item title to the root media title
+			media_title += media_item_title
+
+		# Return the media title
+		return media_title
+
+	def Update_Statistic(self):
+		# Get the original media (item) title
+		media_title = self.Get_The_Media_Title()
+
+		# Get the language media (item) title
+		language_media_title = self.Get_The_Media_Title(language = True)
+
+		# Define the game titles dictionary
+		media_titles = {
+			"Original": media_title,
+			"Language": language_media_title
+		}
+
+		# Define the media type
+		media_type = self.media["texts"]["container_text"]["the (original)"]
+
+		# Update the media statistics for the current year and month, passing the media titles and the media type
+		# And getting the statistics text back
+		self.dictionary["Statistics text"] = Watch_History.Update_Statistics(self, media_titles, media_type)
 
 	def Show_Information(self):
 		self.dictionary["Header text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ":"

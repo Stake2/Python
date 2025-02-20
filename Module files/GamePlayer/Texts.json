@@ -155,6 +155,10 @@
 		"en": "Game sessions played in",
 		"pt": "Sessões de jogo jogadas em"
 	},
+	"times_that_i_played_the_{}_game_called_{}": {
+		"en": "Times that I played the {} game called \"{}\"",
+		"pt": "Vezes que eu joguei o jogo de {} chamado \"{}\""
+	},
 	"game_types_played_in_all_years": {
 		"en": "Game types played in all years",
 		"pt": "Tipos de jogo jogados em todos os anos"

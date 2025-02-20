@@ -537,4 +537,4 @@ class Create_New_Story(Stories):
 		]
 
 		# Execute the "Show_Story_Information" sub-class
-		Stories.Show_Story_Information(stories_list)
+		Stories.Show_Story_Information(self, stories_list)

@@ -3,6 +3,8 @@
 # Import the "importlib" module
 import importlib
 
+from copy import deepcopy
+
 # Main class Watch_History that provides variables to the classes that implement it
 class Watch_History(object):
 	def __init__(self):
@@ -265,10 +267,10 @@ class Watch_History(object):
 		}
 
 	def Define_Types(self):
-		from copy import deepcopy
-
+		# Get the media types dictionary from the "Types.json" file
 		self.media_types = self.JSON.To_Python(self.folders["Data"]["Types"])
 
+		# Update the dictionary with more keys
 		self.media_types.update({
 			"Genders": self.Language.texts["genders, type: dict"],
 			"Gender items": self.Language.texts["gender_items"],
@@ -280,6 +282,7 @@ class Watch_History(object):
 
 		# Read the root "Information.json" file if it is not empty
 		if self.File.Contents(self.folders["Media information"]["Information"])["lines"] != []:
+			# Get the media information dictionary from it
 			info_dictionary = self.JSON.To_Python(self.folders["Media information"]["Information"])
 
 		# If the root "Information.json" file is empty, add a default JSON dictionary inside it
@@ -530,7 +533,6 @@ class Watch_History(object):
 		self.history["Types folder"] = "Per Media Type"
 
 	def Define_Registry_Format(self):
-		from copy import deepcopy
 		import collections
 
 		# Define the default Entries dictionary template
@@ -699,8 +701,389 @@ class Watch_History(object):
 			"Years": {}
 		}
 
+		# Create a root dictionary of media
+		self.media = {
+			"List": [],
+			"Dictionary": {}
+		}
+
+		# Create a root dictionary of media type entries
+		self.media_type_entries = {
+		
+		}
+
+		# ---------- #
+
+		# Fill the "Years" dictionary
+
+		# Iterate through the list of years from 2020 to the current year
+		for year_number in years_list:
+			# Create the year dictionary
+			year = {
+				"Key": year_number,
+				"Total": 0,
+				"Numbers": {},
+				"Months": {}
+			}
+
+			# Get the year folder
+			year_folder = self.folders["Watch History"]["root"] + year_number + "/"
+
+			# Get the per media type folder
+			per_media_type_folder = year_folder + "Per Media Type/"
+
+			# Iterate through the English plural media types list
+			for plural_media_type in self.media_types["Plural"]["en"]:
+				# Get the media type folder
+				media_type_folder = per_media_type_folder + plural_media_type + "/"
+
+				# Get the entries file
+				entries_file = media_type_folder + "Entries.json"
+
+				# Read the "Entries.json" file, getting the "Entries" dictionary and adding it into the year dictionary
+				year["Entries"] = self.JSON.To_Python(entries_file)
+
+				# Iterate through the dictionary of entries, updating the "Numbers" dictionary of the year dictionary
+				year = self.Iterate_Through_Entries(year)
+
+				# ---------- #
+
+				# Fill the "Months" dictionary
+				for month in range(1, 13):
+					# Add leading zeroes to the month number
+					month_number = str(self.Text.Add_Leading_Zeroes(month))
+
+					# Create the month dictionary
+					month = {
+						"Key": month_number,
+						"Total": 0,
+						"Numbers": {}
+					}
+
+					# If the month number is already inside the "Months" dictionary
+					if month_number in year["Months"]:
+						# Get the month dictionary from it
+						month = year["Months"][month_number]
+
+					# Define the "has month" switch
+					has_month = False
+
+					# Iterate through the entries dictionary
+					for entry in year["Entries"]["Dictionary"].values():
+						# Split the entry date
+						split = entry["Entry"].split("/")
+
+						# If the first item inside the split list is not the entry itself (the entry date has a month)
+						if split[0] != entry["Entry"]:
+							# Define the local month number as the month number
+							local_month_number = split[1]
+
+							# If the local month number is equal to the root month number
+							if local_month_number == month_number:
+								# Define the media dictionary (media or media item), and add the media watched numbers
+								month = self.Define_Media_Dictionary(month, entry)[0]
+
+								# Add one to the month total entries number
+								month["Total"] += 1
+
+							# Define the "has month" switch as True
+							has_month = True
+
+					# If the "has month" switch is True
+					if has_month == True:
+						# Add the month dictionary to the "Months" dictionary of the year dictionary
+						year["Months"][month_number] = month
+
+				# Iterate through the media inside the "Numbers" dictionary
+				for media_title, media in deepcopy(year["Numbers"]).items():
+					# If the media key is a dictionary
+					if isinstance(media, dict):
+						# List the keys inside the media dictionary
+						keys = list(media.keys())
+
+						# If the number of keys is equal to two
+						# And the value of the keys is equal
+						if (
+							len(keys) == 2 and
+							media["Total"] == list(media["Dictionary"].values())[0]
+						):
+							# Get the full media title from the root media dictionary
+							title = self.media["Dictionary"][media_title]
+
+							# Add the new key at the position of the original key
+							# Parameters: numbers, original key, new key, new value
+							year["Numbers"] = self.Add_To_Index(year["Numbers"], media_title, title, media["Total"])
+
+				# Iterate through the list of months from 1 to 12
+				for month in range(1, 13):
+					# Add leading zeroes to the month number
+					month_number = str(self.Text.Add_Leading_Zeroes(month))
+
+					# If the month number is already inside the "Months" dictionary
+					if month_number in year["Months"]:
+						# Get the month dictionary from it
+						month = year["Months"][month_number]
+
+						# Iterate through the media inside the "Numbers" dictionary
+						for media_title, media in deepcopy(month["Numbers"]).items():
+							# If the media key is a dictionary
+							if isinstance(media, dict):
+								# List the keys inside the media dictionary
+								keys = list(media.keys())
+
+								# If the number of keys is equal to two
+								# And the value of the keys is equal
+								if (
+									len(keys) == 2 and
+									media["Total"] == list(media["Dictionary"].values())[0]
+								):
+									# Get the full media title from the root media dictionary
+									title = self.media["Dictionary"][media_title]
+
+									# Add the new key at the position of the original key
+									# Parameters: numbers, original key, new key, new value
+									month["Numbers"] = self.Add_To_Index(month["Numbers"], media_title, title, media["Total"])
+
+			# ---------- #
+
+			# Remove the "Entries" key
+			year.pop("Entries")
+
+			# Add the year dictionary to the "Years" dictionary
+			statistics["Years"][year_number] = year
+
+		# Iterate through the dictionary of years
+		for year in statistics["Years"].values():
+			# Iterate through the month keys and month dictionaries inside the year "Months" dictionary
+			for month_key, month in deepcopy(year["Months"]).items():
+				# If the number of total entries of the month is zero
+				if month["Total"] == 0:
+					# Remove the month from the dictionary of months
+					year["Months"].pop(month_key)
+
+		# Sort the list of media in alphabetical order
+		self.media["List"] = sorted(self.media["List"], key = str.lower)
+
+		# Define the list of statistics as the list of media
+		statistics["List"] = self.media["List"]
+
 		# Return the statistics dictionary
 		return statistics
+
+	def Add_To_Index(self, numbers, original_key, new_key, new_value):
+		# List the keys
+		keys = list(numbers.keys())
+
+		# Get the index
+		index = keys.index(original_key)
+
+		# Remove the original key
+		numbers.pop(original_key)
+
+		# Define a new local dictionary
+		new_numbers = {}
+
+		# Iterate through the indexes and keys of the list of keys
+		for i, key in enumerate(keys):
+			# If the "i" variable is the index we are looking for
+			if i == index:
+				# Add the new key 
+				new_numbers[new_key] = new_value
+
+			else:
+				# Add the original key
+				new_numbers[key] = numbers[key]
+
+		# Return the new numbers dictionary
+		return new_numbers
+
+	def Define_Media_Dictionary(self, dictionary, entry):
+		# Define the key to get the media title
+		key = "Original"
+
+		if "Romanized" in entry["Media"]:
+			key = "Romanized"
+
+		# Get the media title
+		media_title = entry["Media"][key]
+
+		# Add the game title to the root media dictionary
+		if media_title not in self.media["List"]:
+			self.media["List"].append(media_title)
+
+		# If there is a media item inside the entry dictionary
+		if "Item" in entry:
+			# If the media title is not inside the "Numbers" dictionary
+			if media_title not in dictionary["Numbers"]:
+				# Define the root media dictionary
+				dictionary["Numbers"][media_title] = {
+					"Total": 0,
+					"Dictionary": {}
+				}
+
+			# Else, if the media title key inside the "Numbers" dictionary is a number
+			elif isinstance(dictionary["Numbers"][media_title], int):
+				# Get the original number of times watched
+				watched_number = dictionary["Numbers"][media_title]
+
+				# Define the root media dictionary
+				dictionary["Numbers"][media_title] = {
+					"Total": watched_number,
+					"Dictionary": {
+						media_title: watched_number
+					}
+				}
+
+			# Update the media variable
+			media = dictionary["Numbers"][media_title]
+
+			# Define the key to get the media item title
+			key = "Original"
+
+			if "Romanized" in entry["Item"]:
+				key = "Romanized"
+
+			# Get the media item title
+			media_item_title = entry["Item"][key]
+
+			# Make a backup of the full media title (media and media item titles joined together)
+			self.media["Dictionary"][media_title] = media_title
+
+			# If the media title is already inside the media item title
+			if media_title in media_item_title:
+				self.media["Dictionary"][media_title] = self.media["Dictionary"][media_title].replace(media_title, "")
+
+			# Else, if the ": " string is not the first two characters of the media item
+			elif media_item_title[0] + media_item_title[1] != ": ":
+				# Add a space to the backup of the full media title
+				self.media["Dictionary"][media_title] += " "
+
+			# Add the media item title to the backup of the full media title
+			self.media["Dictionary"][media_title] += media_item_title
+
+			# Add the full media title to the root media dictionary
+			if self.media["Dictionary"][media_title] not in self.media["List"]:
+				self.media["List"].append(self.media["Dictionary"][media_title])
+
+			# If the ": " string is inside the media item title, remove it
+			if ": " in media_item_title:
+				media_item_title = media_item_title.replace(": ", "")
+
+			# Add the media item key to the media dictionary if it is not already present
+			if media_item_title not in media["Dictionary"]:
+				media["Dictionary"][media_item_title] = 0
+
+			# Add one to the number of times the media item was played
+			media["Dictionary"][media_item_title] += 1
+
+		# Define the media inside the "Numbers" dictionary as zero if it is not there already
+		if media_title not in dictionary["Numbers"]:
+			dictionary["Numbers"][media_title] = 0
+
+		# Define a shortcut for the media variable
+		media = dictionary["Numbers"][media_title]
+
+		# If the media variable is an integer
+		if isinstance(media, int):
+			# Add one to the number of times the media was watched
+			dictionary["Numbers"][media_title] += 1
+
+		else:
+			# Add one to the number of times the media was watched in the "Total" key
+			media["Total"] += 1
+
+		# ---------- #
+
+		return dictionary, media_title
+
+	def Iterate_Through_Entries(self, dictionary, month = True):
+		# Iterate through the entries dictionary
+		for entry in dictionary["Entries"]["Dictionary"].values():
+			# Define the media dictionary (media or media item), and add the media watched numbers
+			dictionary, media_title = self.Define_Media_Dictionary(dictionary, entry)
+
+			# Add one to the total number of media watched in the year or month
+			dictionary["Total"] += 1
+
+		return dictionary
+
+	def Update_Statistics(self, media_titles, media_type):
+		# Import the "Diary_Slim" module
+		from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
+
+		# Define the "Diary_Slim" class inside this class
+		self.Diary_Slim = Diary_Slim()
+
+		# Get the "diary_slim" dictionary from the class above
+		self.diary_slim = self.Diary_Slim.diary_slim
+
+		# ---------- #
+
+		# Define a local dictionary of statistics
+		statistics = {
+			"Module": "Watch_History",
+			"Statistic key": "Watched media",
+			"Year": {},
+			"Month": {},
+			"Text": "",
+			"Dictionary": {
+				"Numbers": {
+					"Year": {
+						"Old": 0,
+						"New": 1
+					},
+					"Month": {
+						"Old": 0,
+						"New": 1
+					}
+				},
+				"Text": ""
+			}
+		}
+
+		# Define a shortcut for the statistic key
+		statistic_key = statistics["Statistic key"]
+
+		# ---------- #
+
+		# Iterate through the list of keys
+		for key in ["Year", "Month"]:
+			# Define the default dictionary as the year dictionary
+			dictionary = self.diary_slim["Current year"]
+
+			# If the key is "Month"
+			if key == "Month":
+				# Define the default dictionary as the month dictionary
+				dictionary = self.diary_slim["Current year"]["Month"]
+
+			# Get the year statistics for the "Stories" module
+			statistics[key] = dictionary["Statistics"][statistic_key]
+
+			# If the story title is not inside the dictionary of stories
+			if media_titles["Original"] not in statistics[key]["Dictionary"]:
+				# Create the story statistics dictionary
+				statistics[key]["Dictionary"][media_titles["Original"]] = 0
+
+			# Add one to the total number of statistics
+			statistics[key]["Total"] += 1
+
+			# Define the old number as the current number
+			statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][media_titles["Original"]]
+
+			# Update the number of times watched played in the defined media dictionary
+			statistics[key]["Dictionary"][media_titles["Original"]] += 1
+
+			# Define the new number as the current number (with the added number)
+			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][media_titles["Original"]]
+
+		# Define the statistic text, formatting the template with the language media title
+		statistics["Dictionary"]["Text"] = self.language_texts["times_that_i_watched_{}_{}"].format(media_type, media_titles["Language"])
+
+		# ---------- #
+
+		# Update the external statistics of the current year using the "Update_External_Statistics" root method of the "Diary_Slim" class
+		# And return the statistics text
+		return self.Diary_Slim.Update_External_Statistics(statistic_key, statistics)
 
 	def Get_Media_List(self, dictionary, status = None):
 		'''
@@ -841,8 +1224,6 @@ class Watch_History(object):
 		return dictionary
 
 	def Select_Media(self, options = None, item = False, watch = False, select_media_item = False):
-		from copy import deepcopy
-
 		self.item = item
 
 		dictionary = {}
@@ -1197,8 +1578,6 @@ class Watch_History(object):
 		return dictionary
 
 	def Define_Media_Item(self, dictionary, watch = False, media_item = None, select_media_item = False):
-		from copy import deepcopy
-
 		# Get the class that called the function
 		import inspect
 
@@ -2300,8 +2679,6 @@ class Watch_History(object):
 		return dictionary
 
 	def Remove_Media_Type(self, to_remove):
-		from copy import deepcopy
-
 		if type(to_remove) == str:
 			to_remove = [
 				to_remove
@@ -3403,3 +3780,8 @@ class Watch_History(object):
 				# "This is the first cartoon that you watched in 2025."
 				print()
 				print(text + ".")
+
+		# If the "Statistics text" key is present
+		if "Statistics text" in self.dictionary:
+			# Show the statistics text
+			print(self.dictionary["Statistics text"])

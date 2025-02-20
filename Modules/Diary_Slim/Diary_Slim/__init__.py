@@ -1318,6 +1318,10 @@ class Diary_Slim():
 			if module_title not in external_statistics["List"]:
 				external_statistics["List"].append(module_title)
 
+			# Add the module title to the dictionary of external statistics if it is not already present
+			if module_title not in external_statistics["Dictionary"]:
+				external_statistics["Dictionary"][module_title] = {}
+
 			# Get the statistic key from the module dictionary
 			statistic_key = module["Statistic key"]
 
@@ -1325,11 +1329,16 @@ class Diary_Slim():
 			if statistic_key not in external_statistics["Keys"]:
 				external_statistics["Keys"].append(statistic_key)
 
-			# If the module title is inside the external statistics dictionary
+			# Define the "check empty dictionary" switch
+			check_empty_dictionary = True
+
+			# If the "check empty dictionary" switch is True
 			# And the "Years" dictionary of the external statistic is empty
+			# or the "check empty dictionary" switch is False
 			if (
-				module["Title"] in external_statistics["Dictionary"] and
-				external_statistics["Dictionary"][module["Title"]]["Years"] == {}
+				check_empty_dictionary == True and
+				external_statistics["Dictionary"][module["Title"]]["Years"] == {} or
+				check_empty_dictionary == False
 			):
 				# Import the module
 				module["Module"] = importlib.import_module("." + module["Title"], module["Title"])
@@ -1372,7 +1381,8 @@ class Diary_Slim():
 					# Add the local statistic dictionary to the root statistics dictionary template
 					self.statistics_template[statistic_key] = {
 						"Module": module["Title"],
-						"Total": 0
+						"Total": 0,
+						"Dictionary": {}
 					}
 
 			# Update the module dictionary inside the modules dictionary
@@ -1564,6 +1574,13 @@ class Diary_Slim():
 			keys = list(years.keys())
 
 			# Iterate through the list of keys
+			for key in keys.copy():
+				# If the year key is not inside the dictionary of years
+				if key not in self.years["Dictionary"]:
+					# Remove the key
+					keys.pop(key)
+
+			# Iterate through the list of keys
 			for key in keys:
 				# Get the year dictionary of that key
 				year = years[key]
@@ -1576,9 +1593,11 @@ class Diary_Slim():
 
 				# Add the "Total" key and the number dictionaries inside the "Numbers" to the root year statistics dictionary
 				root_year["Statistics"][statistic_key] = {
-					**root_statistics,
+					"Module": root_statistics["Module"],
 					"Total": year["Total"],
-					**year["Numbers"]
+					"Dictionary": {
+						**year["Numbers"]
+					}
 				}
 
 				# Iterate through the months inside the year dictionary
@@ -1594,9 +1613,11 @@ class Diary_Slim():
 
 						# Add the "Total" key and the number dictionaries inside the "Numbers" to the root month statistics dictionary
 						root_year["Months"][month_key]["Statistics"][statistic_key] = {
-							**root_statistics,
+							"Module": root_statistics["Module"],
 							"Total": month["Total"],
-							**month["Numbers"]
+							"Dictionary": {
+								**month["Numbers"]
+							}
 						}
 
 				# Add the year dictionary to the local dictionary of years
@@ -1660,12 +1681,167 @@ class Diary_Slim():
 		# Update the "External statistics" JSON file with the "External statistics" dictionary
 		self.JSON.Edit(self.diary_slim["Folders"]["Data"]["External statistics"]["Statistics"], self.statistics["External statistics"])
 
-	def Update_Current_Year_Statistics(self, year_statistics, month_statistics):
+	def Update_Current_Year_Statistics(self, year_statistics = None, month_statistics = None):
 		# Write the year statistics dictionary into the year statistics file
 		self.JSON.Edit(self.diary_slim["Current year"]["Folders"]["Statistics"], year_statistics)
 
 		# Write the month statistics dictionary into the month statistics file
 		self.JSON.Edit(self.diary_slim["Current year"]["Month"]["Folders"]["Statistics"], month_statistics)
+
+	def Update_External_Statistics(self, statistic_key, statistics):
+		# Define the list of parameters (statistic dictionaries to update)
+		parameters = [
+			self.diary_slim["Current year"]["Statistics"],
+			self.diary_slim["Current year"]["Month"]["Statistics"]
+		]
+
+		# Define the root statistics text
+		text = ""
+
+		# ---------- #
+
+		# Get the current year statistics
+		year_statistics = statistics["Year"]
+
+		# Update the statistic key inside the root year statistics dictionary
+		parameters[0][statistic_key] = year_statistics
+
+		# Get the year statistics text
+		text += self.Show_Statistics("Year", year_statistics, statistics["Dictionary"], return_text = True) + "\n"
+
+		# ---------- #
+
+		# Get the current month statistics
+		month_statistics = statistics["Month"]
+
+		# Update the statistic key inside the root month statistics dictionary
+		parameters[1][statistic_key] = month_statistics
+
+		# Get the year statistics text
+		text += self.Show_Statistics("Month", month_statistics, statistics["Dictionary"], return_text = True)
+
+		# ---------- #
+
+		# Update the statistics of the current year, with the two parameters
+		self.Update_Current_Year_Statistics(*parameters)
+
+		# Return the statistics text
+		return text
+
+	def Show_Statistics(self, date_type, statistics, dictionary = None, return_text = False):
+		# Define the text key
+		text_key = date_type.lower()
+
+		# If the "Number" key is inside the statistics dictionary
+		if "Number" in statistics:
+			# Get the number of updated statistics for the month/year
+			new_number = statistics["Number"]
+
+		# If the "dictionary" parameter is not None
+		if dictionary != None:
+			# Get the old and new numbers from the numbers dictionary (inside the date type dictionary)
+			old_number = dictionary["Numbers"][date_type]["Old"]
+			new_number = 1
+
+		# Define the statistic text to show as singular or plural depending on the number
+		singular = self.Language.language_texts["updated_" + text_key + "_statistic"]
+		plural = self.Language.language_texts["updated_" + text_key + "_statistics"]
+
+		show_text = self.Text.By_Number(new_number, singular, plural)
+
+		# If the "dictionary" parameter is not None
+		if dictionary != None:
+			# Get the new number from the numbers dictionary (inside the date type dictionary)
+			new_number = dictionary["Numbers"][date_type]["New"]
+
+		# Define the root statistics text
+		statistics_text = "\n" + \
+		show_text + ":" + "\n"
+
+		# If the "return text" parameter is False
+		if return_text == False:
+			# Show the statistics text
+			print(statistics_text)
+
+		# Define the default "in text" as "in [year]"
+		in_text = self.Language.language_texts["in"] + " " + str(self.diary_slim["Current year"]["Number"])
+
+		# If the date type is "Month"
+		if date_type == "Month":
+			# Re-define the in text to be "in [month name]"
+			in_text = self.Language.language_texts["in"] + " " + str(self.diary_slim["Current year"]["Month"]["Name text"])
+
+		# If the "dictionary" parameter is not None
+		if dictionary != None:
+			# Get the first key of the statistics dictionary
+			first_key = list(statistics["Dictionary"].keys())[0]
+
+			# Make a copy of the statistics dictionary
+			statistics = deepcopy(statistics)
+
+			# Make the dictionary only have the first key
+			statistics["Dictionary"] = {
+				first_key: statistics["Dictionary"][first_key]
+			}
+
+		# Iterate through the dictionary of statistics
+		for statistic in statistics["Dictionary"].values():
+			# If the statistic is a dictionary
+			if isinstance(statistic, dict):
+				# If the "Old number" key is inside the statistic dictionary
+				if "Old number" in statistic:
+					# Get the old number from it
+					old_number = statistic["Old number"]
+
+				# If the "Number" key is inside the statistic dictionary
+				if "Number" in statistic:
+					# Get the new number from it
+					new_number = statistic["Number"]
+
+				# If the "Text" key is inside the statistic dictionary
+				if "Text" in statistic:
+					text = statistic["Text"]
+
+			# If the "dictionary" parameter is not None
+			# And there is a "Text" key inside it
+			if (
+				dictionary != None and
+				"Text" in dictionary
+			):
+				# Get the text from it
+				text = dictionary["Text"]
+
+			# Add the in text text and a colon
+			text = "\t" + text + " " + in_text + ": "
+
+			# Define the number
+			number = str(new_number)
+
+			# If the statistic is a dictionary
+			# And the "Money" key is inside the statistic dictionary
+			if (
+				isinstance(statistic, dict) and
+				"Money" in statistic
+			):
+				# Define the money text
+				number = self.Define_Money_Text(number)
+
+			# Add the current number of the statistic
+			text += number
+
+			# Add the old number with the "before" text
+			text += " (" + self.Language.language_texts["before, title()"].lower() + ": " + str(old_number) + ")"
+
+			# Add the text to the root statistics text
+			statistics_text += text
+
+			# If the "return text" parameter is False
+			if return_text == False:
+				# Show the text and number with a tab
+				print(text)
+
+		# Return the statistics text
+		return statistics_text
 
 	def Next_State(self, dictionary):
 		# Define the states variable for easier typing
