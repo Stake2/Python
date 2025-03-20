@@ -122,10 +122,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 						#self.Check_Episodes_Titles()
 
 						# Add exact media or media item creation or release to media or media item details
-						self.Add_Date()
+						#self.Add_Date()
 
 						# Re-count comments numbers
-						self.Count_Comments_Number()
+						#self.Count_Comments_Number()
 
 						# Add anime information to anime details
 						#if self.dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:

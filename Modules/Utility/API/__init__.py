@@ -311,23 +311,26 @@ class API():
 				# Get the root YouTube link
 				link = api["link"]
 
-				# If the method is "channels", add the channel folder to the link
+				# If the method is "channels", define the link addon as the channel folder
 				if (
 					api["method"] == "channels" or
 					"Channel" in api["Dictionary"]
 				):
-					link += "channel/"
+					link_addon = "channel/"
 
-				# If the method is "playlists", add the PHP "playlist" file name and the "list" playlist parameter to the link
+				# If the method is "playlists", define the link addon as the PHP "playlist" file name and the "list" playlist parameter
 				elif (
 					api["method"] == "playlists" or
 					"Playlist" in api["Dictionary"]
 				):
-					link += "playlist?list="
+					link_addon = "playlist?list="
 
-				# If the method is "videos" or "playlistItems", add the PHP "watch" file name and the "v" video parameter to the link
-				elif api["method"] in ["videos", "playlistItems"]:
-					link += "watch?v="
+				# If the method is "videos" or "playlistItems", define the link addon as the PHP "watch" file name and the "v" video parameter
+				if api["method"] in ["videos", "playlistItems"]:
+					link_addon = "watch?v="
+
+				# Add the link addon to the link
+				link += link_addon
 
 				# Define the items dictionary as the Dictionary
 				items = api["Dictionary"]
@@ -339,6 +342,9 @@ class API():
 
 					items = items["Videos"]
 
+				# Get the item date
+				date = self.Get_Date(snippet["publishedAt"])
+
 				# Add the ID (video, playlist, or comment) to the items dictionary, with the default values
 				items[id] = {
 					"Title": "",
@@ -347,7 +353,9 @@ class API():
 					"Link": link + id,
 					"Description": "",
 					"Text": {},
-					"Date": self.Date.To_String(self.Get_Date(snippet["publishedAt"]), utc = True),
+					"Date": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+					"Date (Timezone)": date["Timezone"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
+					"Date (Timezone user format)": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
 					"Images": [],
 					"Language": ""
 				}

@@ -1740,6 +1740,7 @@ class Stories(object):
 		statistics = {
 			"Module": "Stories",
 			"Statistic key": "Story chapters",
+			"External statistic": True,
 			"Year": {},
 			"Month": {},
 			"Text": "",
@@ -1799,7 +1800,7 @@ class Stories(object):
 			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]]
 
 		# Define the statistic text, formatting the template with the language story title
-		statistics["Dictionary"]["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.user_language], writing_mode["Done plural"])
+		statistics["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.user_language], writing_mode["Done plural"])
 
 		# ---------- #
 

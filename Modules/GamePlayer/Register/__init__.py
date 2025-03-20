@@ -44,19 +44,24 @@ class Register(GamePlayer):
 		# Ask the user if it wants to write a description for the gaming session
 		self.Ask_For_Gaming_Session_Description()
 
-		# Database related methods
-		self.Register_In_JSON()
-		self.Create_Entry_File()
-		self.Add_Entry_File_To_Year_Folder()
+		# Define the "test things" switch as [the value I am using if I am testing the class]
+		test_stuff = False
 
-		# Diary Slim related methods
-		self.Define_Diary_Slim_Text()
+		# If the switch is False
+		if test_stuff == False:
+			# Database related methods
+			self.Register_In_JSON()
+			self.Create_Entry_File()
+			self.Add_Entry_File_To_Year_Folder()
 
-		# Post the gaming session on the social networks
-		self.Post_On_Social_Networks()
+			# Diary Slim related methods
+			self.Define_Diary_Slim_Text()
 
-		# Write the information about the session on Diary Slim
-		self.Write_On_Diary_Slim()
+			# Post the gaming session on the social networks
+			self.Post_On_Social_Networks()
+
+			# Write the information about the session on Diary Slim
+			self.Write_On_Diary_Slim()
 
 		# Update the statistic about the game session played
 		self.Update_Statistic()
@@ -100,7 +105,13 @@ class Register(GamePlayer):
 		print()
 		print(self.separators["5"])
 
-		self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			self.dictionary["Entry"]["Diary Slim"]["Write description"] = self.Input.Yes_Or_No(self.language_texts["write_a_description_for_the_gaming_session"])
+
+		# Else, define it as True
+		else:
+			self.dictionary["Entry"]["Diary Slim"]["Write description"] = True
 
 		# If the user wants to write a description
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
@@ -136,8 +147,29 @@ class Register(GamePlayer):
 				# Format it
 				type_text = type_text.format(translated_language)
 
-				# Ask the user to type a session description
-				self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = self.Input.Lines(type_text, **parameters)
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Ask the user to type a session description
+					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = self.Input.Lines(type_text, **parameters)
+
+				# Else, define a default session description
+				else:
+					# Define the description text
+					description = "[" + self.Language.texts["description, title()"][language] + "]"
+
+					# Show it
+					print()
+					print(type_text)
+					print(description)
+
+					# Define it inside the "Descriptions" dictionary
+					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = {
+						"lines": [
+							description
+						],
+						"string": description,
+						"length": 1
+					}
 
 	def Register_In_JSON(self):
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
@@ -694,7 +726,7 @@ class Register(GamePlayer):
 			self.game["States"]["Has sub-games"] == True and
 			self.game["Sub-game"]["Title"] != self.game["Title"]
 		):
-			items[1] = self.game["Sub-game"]["With game title"]
+			items[1] = self.game["Sub-game"]["With game title"]["Language"]
 
 		# Define the template
 		template = self.language_texts["i_played_the_{}_game_called_{}_for_{}"] + "."
@@ -775,10 +807,22 @@ class Register(GamePlayer):
 		print()
 		print(self.separators["5"])
 
-		# Ask if the user wants to post the played session status on the social networks
-		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
+		# Define the "ask for input" switch as False
+		ask_for_input = False
 
-		# If yes
+		# Define the "Post on the social networks" state as True
+		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = True
+
+		# If the "Testing" switch is False
+		# If the "ask for input" switch is True
+		if (
+			self.switches["Testing"] == False and
+			ask_for_input == True
+		):
+			# Ask if the user wants to post the played session status on the social networks
+			self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
+
+		# If the user answer is yes
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
 			# Import the "Open_Social_Network" sub-class of the "Social_Networks" module
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
@@ -796,6 +840,7 @@ class Register(GamePlayer):
 			}
 
 			# Open the social networks, one by one
+			# (Commented out because this class is not working properly)
 			#Open_Social_Network(social_networks)
 
 		# Show a separator
@@ -822,7 +867,7 @@ class Register(GamePlayer):
 		# Write the entry text on Diary Slim
 		Write_On_Diary_Slim_Module(dictionary)
 
-	def Get_Game_Title(self, language = False):
+	def Get_Game_Title(self, is_sub_game = False, sub_game = None, language = False, no_game_title = False):
 		# Define the key to get the game title
 		key = "Original"
 
@@ -837,9 +882,11 @@ class Register(GamePlayer):
 		# Define the local game title variable
 		game_title = self.game["Titles"][key]
 
-		# If there is a sub-game inside the game dictionary
+		# If the "is sub-game" parameter is True
+		# And there is a sub-game inside the game dictionary
 		# And the sub-game is not the root game
 		if (
+			is_sub_game == True and
 			"Sub-game" in self.game and
 			self.game["Sub-game"]["Title"] != self.game["Title"]
 		):
@@ -854,36 +901,64 @@ class Register(GamePlayer):
 				# Define the game title key as the "Language" one
 				key = "Language"
 
+			# If the sub-game parameter is None
+			if sub_game == None:
+				sub_game = self.game["Sub-game"]
+
 			# Get the sub-game title using the key
-			sub_game_title = self.game["Sub-game"]["Titles"][key]
+			sub_game_title = sub_game["Titles"][key]
 
 			# If the first two characters of the title are not a colon and a space
 			if sub_game_title[0] + sub_game_title[1] != ": ":
 				# Add a space
 				game_title += " "
 
+			# If the "no game title" parameter is True
+			if no_game_title == True:
+				# Reset the game title to an empty string
+				game_title = ""
+
 			# Add the sub-game title to the root game title
 			game_title += sub_game_title
+
+			# If the "no game title" parameter is True
+			# And the first two characters of the game title is a colon and a space
+			if (
+				no_game_title == True and
+				game_title[0] + game_title[1] == ": "
+			):
+				# Remove the colon and space
+				game_title = game_title[2:]
 
 		# Return the game title
 		return game_title
 
 	def Update_Statistic(self):
-		# Get the original (sub) game title
-		game_title = self.Get_Game_Title()
-
-		# Get the language (sub) game title
-		language_game_title = self.Get_Game_Title(language = True)
-
-		# Define the game titles dictionary
-		game_titles = {
-			"Original": game_title,
-			"Language": language_game_title
+		# Define a local game dictionary
+		game = {
+			"Titles": {
+				"Original": self.Get_Game_Title(),
+				"Language": self.Get_Game_Title(language = True)
+			}
 		}
+
+		# If there is a sub-game inside the game dictionary
+		if "Sub-game" in self.game:
+			# Create a sub-game titles dictionary and add it to the "Sub-item" key
+			game["Titles"]["Sub-game"] = {
+				"Original": self.Get_Game_Title(is_sub_game = True),
+				"Original (no game title)": self.Get_Game_Title(is_sub_game = True, no_game_title = True),
+				"Language": self.Get_Game_Title(is_sub_game = True, language = True)
+			}
+
+		# If the game contains sub-games
+		if "Sub-game type" in self.game:
+			# Pass the "Items" dictionary to the local game dictionary
+			game["Items"] = self.game["Sub-game type"]["Items"]
 
 		# Define the game type
 		game_type = self.dictionary["Type"]["Type"][self.user_language].lower()
 
-		# Update the game statistics for the current year and month, passing the game titles and the game type
+		# Update the game statistics for the current year and month, passing the local game dictionary and the game type
 		# And getting the statistics text back
-		self.dictionary["Statistics text"] = GamePlayer.Update_Statistics(self, game_titles, game_type)
+		self.dictionary["Statistics text"] = GamePlayer.Update_Statistics(self, game, game_type)

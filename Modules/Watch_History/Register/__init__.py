@@ -29,31 +29,39 @@ class Register(Watch_History):
 		# Define the media variable to make typing the media dictionary easier
 		self.media = self.dictionary["Media"]
 
-		# Check the game status
+		# Check the media status
 		self.Check_Media_Status()
 
+		# If the user is re-watching the media and media item
 		if self.media["States"]["Re-watching"] == False:
+			# If the user completed the media or the media item
 			if (
 				self.media["States"]["Completed media"] == True or
 				self.media["States"]["Completed media item"] == True
 			):
+				# Check the media and media item dates and the date files
 				self.Check_Media_Dates()
 
-		# Database related methods
-		self.Register_In_JSON()
-		self.Create_Entry_File()
-		self.Add_Entry_File_To_Year_Folder()
+		# Define the "test things" switch as [the value I am using if I am testing the class]
+		test_stuff = False
 
-		# Define the Diary Slim text
-		self.Define_Diary_Slim_Text()
+		# If the switch is False
+		if test_stuff == False:
+			# Database related methods
+			self.Register_In_JSON()
+			self.Create_Entry_File()
+			self.Add_Entry_File_To_Year_Folder()
 
-		# If the "Defined title" key is not inside the root dictionary
-		if "Defined title" not in self.dictionary:
-			# Post about the watched media (and item) on the social networks
-			self.Post_On_Social_Networks()
+			# Define the Diary Slim text
+			self.Define_Diary_Slim_Text()
 
-		# Write the watched media (item) description text in the user language on the Diary Slim
-		self.Write_On_Diary_Slim()
+			# If the "Defined title" key is not inside the root dictionary
+			if "Defined title" not in self.dictionary:
+				# Post about the watched media (and item) on the social networks
+				self.Post_On_Social_Networks()
+
+			# Write the watched media (item) description text in the user language on the Diary Slim
+			self.Write_On_Diary_Slim()
 
 		# Update the statistic about the media watched
 		self.Update_Statistic()
@@ -605,32 +613,38 @@ class Register(Watch_History):
 						# Update current media item file
 						self.File.Edit(self.media["Items"]["Folders"]["current"], self.media["Item"]["Next"]["Title"], "w")
 
-				# Add the "Status" key and value "Completed" to the end of the details
-				key_value = {
-					"key": self.Language.language_texts["status, title()"],
-					"value": self.Language.language_texts["completed, title()"]
-				}
+					# Add the "Status" key and value "Completed" to the end of the media item details
+					key_value = {
+						"key": self.Language.language_texts["status, title()"],
+						"value": self.Language.language_texts["completed, title()"]
+					}
 
-				self.media["Item"]["Details"] = self.JSON.Add_Key_After_Key(self.media["Item"]["Details"], key_value, add_to_end = True)
+					self.media["Item"]["Details"] = self.JSON.Add_Key_After_Key(self.media["Item"]["Details"], key_value, add_to_end = True)
 
+				# If the "Episode" key is inside the media item details
+				# And the media item is a single unit
 				if (
 					self.Language.language_texts["episode, title()"] in self.media["Item"]["Details"] and
 					self.media["States"]["Single unit"] == True
 				):
+					# Remove the "Episode" key
 					self.media["Item"]["Details"].pop(self.Language.language_texts["episode, title()"])
 
-				# Update the media item details file
+				# Update the media item details file with the updated media item details dictionary
 				self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
+				# If the media is not a video channel
+				# And the media item is not the last one on the list of media items
 				if (
 					self.media["States"]["Video"] == False and
 					len(self.media["Items"]["List"]) != 1
 				):
+					# Define the media item as completed
 					self.media["States"]["Completed media item"] = True
 
 			# If the media has no media item list
 			# And the episode title is the last one
-			# And the media unit is not a video
+			# And the media is not a video channel
 			if (
 				self.media["States"]["Media item list"] == False and
 				self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] and
@@ -960,24 +974,26 @@ class Register(Watch_History):
 				if self.media["States"]["Video"] == True:
 					self.of_the_text = self.of_the_text.format(self.language_texts["video_serie"])
 
-				# Add "of the" text next to unit ("episode" or "video") text
-				self.watched_item_text = self.watched_item_text.replace(self.media["texts"]["unit"][self.user_language], self.media["texts"]["unit"][self.user_language] + " {}".format(self.of_the_text))
+				# If the watched media is not a video channel
+				if self.media["States"]["Video"] == False:
+					# Add "of the" text next to unit ("episode" or "video") text
+					self.watched_item_text = self.watched_item_text.replace(self.media["texts"]["unit"][self.user_language], self.media["texts"]["unit"][self.user_language] + " {}".format(self.of_the_text))
 
-				# Define the media item title variable
-				media_item_title = self.Define_Title(self.media["Item"]["Titles"])
+					# Define the media item title variable
+					media_item_title = self.Define_Title(self.media["Item"]["Titles"])
 
-				# If the season text is not inside the media item title
-				if " " + self.language_texts["season, title()"] not in media_item_title:
-					# Add quotes around the media item title
-					media_item_title = '"' + media_item_title + '"'
+					# If the season text is not inside the media item title
+					if " " + self.language_texts["season, title()"] not in media_item_title:
+						# Add quotes around the media item title
+						media_item_title = '"' + media_item_title + '"'
 
-				# Add the media item title to the "of the" text
-				self.watched_item_text = self.watched_item_text.replace(self.of_the_text, self.of_the_text + " " + media_item_title)
+					# Add the media item title to the "of the" text
+					self.watched_item_text = self.watched_item_text.replace(self.of_the_text, self.of_the_text + " " + media_item_title)
 
-				# If the season text is inside the media item title
-				if " " + self.language_texts["season, title()"] in media_item_title:
-					# Remove it
-					self.watched_item_text = self.watched_item_text.replace(" " + self.language_texts["season, title()"].lower(), "")
+					# If the season text is inside the media item title
+					if " " + self.language_texts["season, title()"] in media_item_title:
+						# Remove it
+						self.watched_item_text = self.watched_item_text.replace(" " + self.language_texts["season, title()"].lower(), "")
 
 				# Replace the media title with space in the media item if it exists
 				if self.media["Title"] + " " in self.media["Item"]:
@@ -1117,10 +1133,22 @@ class Register(Watch_History):
 		# Add the closing parenthesis
 		text += ")"
 
-		# Ask if the user wants to post the played session status on the social networks
-		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
+		# Define the "ask for input" switch as False
+		ask_for_input = False
 
-		# If yes
+		# Define the "Post on the social networks" state as True
+		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = True
+
+		# If the "Testing" switch is False
+		# If the "ask for input" switch is True
+		if (
+			self.switches["Testing"] == False and
+			ask_for_input == True
+		):
+			# Ask if the user wants to post the watched media status on the social networks
+			self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
+
+		# If the user answer is yes
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
 			# Import the "Open_Social_Network" sub-class of the "Social_Networks" module
 			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
@@ -1138,9 +1166,10 @@ class Register(Watch_History):
 			}
 
 			# Open the Social Networks, one by one
+			# (Commented out because this class is not working properly)
 			#Open_Social_Network(social_networks)
 
-		# Show a separator
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
@@ -1164,7 +1193,7 @@ class Register(Watch_History):
 		# Write the entry text on Diary Slim
 		Write_On_Diary_Slim_Module(dictionary)
 
-	def Get_The_Media_Title(self, language = False):
+	def Get_The_Media_Title(self, is_media_item = False, media_item = None, language = False, no_media_title = False):
 		# Define the key to get the media title
 		key = "Original"
 
@@ -1179,16 +1208,22 @@ class Register(Watch_History):
 		# Define the local media title variable
 		media_title = self.media["Titles"][key]
 
-		# If there is a media item inside the game dictionary
-		# And the media item is not the root game
+		# If the "is media item" parameter is True
+		# And there is a media item inside the media dictionary
+		# And the media item is not the root media
 		if (
+			is_media_item == True and
 			"Item" in self.media and
 			self.media["States"]["Media item is media"] == False
 		):
+			# If the media item parameter is None
+			if media_item == None:
+				media_item = self.media["Item"]
+
 			# Define the key to get the media item title
 			key = "Original"
 
-			if "Romanized" in self.media["Titles"]:
+			if "Romanized" in media_item["Titles"]:
 				key = "Romanized"
 
 			# If the "language" parameter is True
@@ -1197,38 +1232,71 @@ class Register(Watch_History):
 				key = "Language"
 
 			# Get the media item title using the key
-			media_item_title = self.media["Item"]["Titles"][key]
+			media_item_title = media_item["Titles"][key]
 
 			# If the first two characters of the title are not a colon and a space
 			if media_item_title[0] + media_item_title[1] != ": ":
 				# Add a space
 				media_title += " "
 
+			# If the "no media title" parameter is True
+			if no_media_title == True:
+				# Reset the media title to an empty string
+				media_title = ""
+
 			# Add the media item title to the root media title
 			media_title += media_item_title
+
+			# If the "no media title" parameter is True
+			# And the first two characters of the media title are a colon and a space
+			if (
+				no_media_title == True and
+				media_title[0] + media_title[1] == ": "
+			):
+				# Remove the colon and space
+				media_title = media_title[2:]
 
 		# Return the media title
 		return media_title
 
 	def Update_Statistic(self):
-		# Get the original media (item) title
-		media_title = self.Get_The_Media_Title()
-
-		# Get the language media (item) title
-		language_media_title = self.Get_The_Media_Title(language = True)
-
-		# Define the game titles dictionary
-		media_titles = {
-			"Original": media_title,
-			"Language": language_media_title
+		# Define a local media dictionary
+		media = {
+			"Titles": {
+				"Original": self.Get_The_Media_Title(),
+				"Language": self.Get_The_Media_Title(language = True)
+			}
 		}
 
-		# Define the media type
-		media_type = self.media["texts"]["container_text"]["the (original)"]
+		# Copy the "texts" dictionary of the root media dictionary to the local one
+		media["texts"] = self.media["texts"]
 
-		# Update the media statistics for the current year and month, passing the media titles and the media type
+		# If there is a media item inside the media dictionary
+		if "Item" in self.media:
+			# Copy the "Item" dictionary of the root media dictionary to the local one
+			media["Item"] = self.media["Item"]
+
+			# Create a media item titles dictionary and add it to the "Item" key
+			media["Titles"]["Item"] = {
+				"Original": self.Get_The_Media_Title(is_media_item = True),
+				"Original (no media title)": self.Get_The_Media_Title(is_media_item = True, no_media_title = True),
+				"Language": self.Get_The_Media_Title(is_media_item = True, language = True)
+			}
+
+		# If the media contains media items
+		if "Items" in self.media:
+			# Pass the "Items" dictionary to the local media dictionary
+			media["Items"] = self.media["Items"]
+
+		# Define the media type dictionary
+		media_type = {
+			"Plural": self.media_type,
+			"The": self.media["texts"]["container_text"]["the (original)"]
+		}
+
+		# Update the media statistics for the current year and month, passing the local media dictionary and the media type
 		# And getting the statistics text back
-		self.dictionary["Statistics text"] = Watch_History.Update_Statistics(self, media_titles, media_type)
+		self.dictionary["Statistics text"] = Watch_History.Update_Statistics(self, self.dictionary, media, media_type)
 
 	def Show_Information(self):
 		self.dictionary["Header text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ":"

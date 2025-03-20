@@ -324,10 +324,11 @@ class Date():
 					object.strftime("%Z") not in ["UTC", ""] and
 					format_key == "YYYY-MM-DDTHH:MM:SSZ"
 				):
-					list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
-					list_.insert(22, ":")
+					#list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
+					#list_.insert(20, ":")
 
-					date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_)
+					#date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_)
+					true = True
 
 				i += 1
 

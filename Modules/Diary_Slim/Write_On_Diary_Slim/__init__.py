@@ -1212,8 +1212,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 				# Show the statistics, passing the date type and the local dictionary as parameters
 				self.Show_Statistics(date_type, statistics)
 
-		# Open the current Diary Slim file
-		self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"], verbose = False)
+		# If the text to write is not empty
+		if self.dictionary["Text to write"] != "":
+			# Open the current Diary Slim file
+			self.System.Open(self.diary_slim["Current year"]["Current Diary Slim file"], verbose = False)
 
 		# Show a five dash space separator
 		print()

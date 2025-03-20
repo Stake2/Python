@@ -974,7 +974,7 @@ class Convert_History(Watch_History):
 								print()
 								print(text)
 
-							# If the media is series media
+							# If the media is a series media
 							if self.media["States"]["Series media"] == True:
 								if self.media["States"]["Single unit"] == True:
 									for language in self.languages["small"]:

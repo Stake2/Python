@@ -9,6 +9,7 @@ class Play(GamePlayer):
 			# Add it to the parent class
 			setattr(GamePlayer, "arguments", self.arguments)
 
+		# Initiate the root class and import its variables and methods
 		super().__init__()
 
 		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
@@ -19,16 +20,21 @@ class Play(GamePlayer):
 		# Import sub-classes method
 		self.Import_Sub_Classes()
 
+		# Define the root dictionary and the "open game" switch
 		self.dictionary = dictionary
 		self.open_game = open_game
 
+		# Define the game dictionary
 		self.Define_Game_Dictionary()
 
+		# Show information about the game
 		self.Show_Information(self.dictionary)
 
+		# If the "open game" switch is True, open the game
 		if self.open_game == True:
 			self.Open_Game()
 
+		# Register the gaming session
 		self.Register_The_Session()
 
 	def Import_Sub_Classes(self):
@@ -90,12 +96,17 @@ class Play(GamePlayer):
 			self.File.Edit(self.game["Folders"]["dates"], self.game["Dates"], "w")
 
 	def Open_Game(self):
+		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
+			# If the "Bat" key is inside the dictionary of files
 			if "Bat" in self.game["Files"]:
+				# Open the bat file (probably a file that runs a Python created for the game)
 				self.System.Open(self.game["Files"]["Bat"])
 
+				# Ask for user input after the user finishes using the Python module of the game
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
 
+			# Open the game file
 			self.System.Open(self.game["Files"]["Shortcut"]["File"])
 
 	def Register_The_Session(self):
@@ -106,9 +117,15 @@ class Play(GamePlayer):
 
 		# ---------- #
 
-		# Ask the user to press Enter to start counting the session time
+		# Ask the user to press Enter to start counting the gaming time
 		if self.open_game == True:
-			self.Input.Type(self.language_texts["start_counting_the_session_time"], first_space = False)
+			# If the "Testing" switch is False
+			if self.switches["Testing"] == False:
+				self.Input.Type(self.language_texts["start_counting_the_gaming_time"], first_space = False)
+
+			else:
+				# Show only the text
+				print(self.language_texts["start_counting_the_gaming_time"] + ":")
 
 		# Define the Entry dictionary and the "Before" time (now)
 		self.dictionary["Entry"] = {
@@ -127,17 +144,28 @@ class Play(GamePlayer):
 		print(self.Date.language_texts["now, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
+		# if the "open game" switch is True
 		if self.open_game == True:
-			self.Input.Type(self.language_texts["press_enter_when_you_finish_playing_the_game"])
+			# If the "Testing" switch is False
+			if self.switches["Testing"] == False:
+				self.Input.Type(self.language_texts["press_enter_when_you_finish_playing_the_game"])
+
+			else:
+				# Show only the text
+				print()
+				print(self.language_texts["press_enter_when_you_finish_playing_the_game"] + ":")
 
 		# ---------- #
 
+		# Define the "Finished playing" state as True
 		self.game["States"]["Finished playing"] = True
 
 		# Define the "After" time (now, but after playing)
 		self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now()
 
+		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
+			# Add 2 hours, 30 minutes, and 28 seconds to the game session time, for testing purposes
 			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 2, minutes = 30, seconds = 28))
 
 		# Show the after time (after playing the game)

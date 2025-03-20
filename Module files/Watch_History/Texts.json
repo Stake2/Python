@@ -71,6 +71,10 @@
 		"en": "Last season",
 		"pt": "Última temporada"
 	},
+	"comment_time": {
+		"en": "Comment time",
+		"pt": "Tempo do comentário"
+	},
 	"comment_file_name": {
 		"en": "Comment file name",
 		"pt": "Nome de arquivo de comentário"
@@ -78,6 +82,14 @@
 	"loading_already_written_comment": {
 		"en": "Loading already written comment",
 		"pt": "Carregando comentário já escrito"
+	},
+	"and_its, masculine": {
+		"en": "and its",
+		"pt": "e o seu"
+	},
+	"and_its, feminine": {
+		"en": "and its",
+		"pt": "e a sua"
 	},
 	"watch": {
 		"en": "watch",
@@ -303,9 +315,9 @@
 		"pt": "Digite o número de vezes que você assistiu",
 		"en": "Type the number of times that you watched"
 	},
-	"times_that_i_watched_{}_{}": {
-		"en": "Times that I watched {} \"{}\"",
-		"pt": "Vezes que eu assisti {} \"{}\""
+	"times_that_i_watched_{}": {
+		"en": "Times that I watched {}",
+		"pt": "Vezes que eu assisti {}"
 	},
 	"re_watched, capitalize()": {
 		"pt": "Re-assistido",

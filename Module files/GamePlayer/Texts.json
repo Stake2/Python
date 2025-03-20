@@ -75,9 +75,9 @@
 		"en": "First game session of the \"{}\" category in year",
 		"pt": "Primeira sessão de jogo da categoria \"{}\" no ano"
 	},
-	"start_counting_the_session_time": {
-		"en": "Start counting the session time",
-		"pt": "Começar a contar o tempo de sessão"
+	"start_counting_the_gaming_time": {
+		"en": "Start counting the gaming time",
+		"pt": "Começar a contar o tempo de jogatina"
 	},
 	"press_enter_when_you_finish_using_the_python_module_of_the_game": {
         "en": "Press Enter when you finish using the Python module of the game",

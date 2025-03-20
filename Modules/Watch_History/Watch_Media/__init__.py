@@ -101,7 +101,7 @@ class Watch_Media(Watch_History):
 			# Define the "Re-watching" state as "True"
 			self.media["States"]["Re-watching"] = True
 
-		# If the media is a series media
+		# If the media is a series media (not a movie)
 		# And the "Select episode" key is inside the root dictionary
 		# And it is True
 		if (
@@ -222,7 +222,7 @@ class Watch_Media(Watch_History):
 			"Separator": self.media["Episode"]["Separator"]
 		})
 
-		# Definition of episode to watch if the media is series media
+		# Definition of episode to watch If the media is a series media
 		if self.media["States"]["Series media"] == True:
 			if self.media["States"]["Single unit"] == True:
 				for language in self.languages["small"]:
@@ -628,102 +628,6 @@ class Watch_Media(Watch_History):
 					"Text": " " + self.Language.language_texts["dubbed, title()"]
 				}
 
-		# Define the "Re-watched" dictionary with the times, text, re-watched text, and time text
-		if self.media["States"]["Re-watching"] == True:
-			# Define the default re-watched dictionary
-			self.media["Episode"]["Re-watched"] = {
-				"Times": "",
-				"Number name": {},
-				"Texts": {
-					"Number": {},
-					"Number name": {},
-					"Times": {}
-				}
-			}
-
-			# If there is a re-watched dictionary inside the root dictionary
-			if "Re-watched" in self.dictionary:
-				# Define the times on the local re-watched dictionary as the one on the root dictionary
-				self.media["Episode"]["Re-watched"]["Times"] = self.dictionary["Re-watched"]["Times"]
-
-			# If the "Run as module" switch is False
-			if self.run_as_module == False:
-				# Define the default watched times as an empty string
-				watched_times = ""
-
-				# If the times inside the root dictionary is not an empty string (the default value)
-				if self.media["Episode"]["Re-watched"]["Times"] != "":
-					# Update the local watched times with that value
-					watched_times = self.media["Episode"]["Re-watched"]["Times"]
-
-				# Show the title text
-				print()
-				print(self.Language.language_texts["title, title()"] + ":")
-
-				# Show the default "with media title" version of the episode
-				print("\t" + self.media["Episode"]["with_title_default"])
-
-				# While the watched times variable is not an integer
-				while not isinstance(watched_times, int):
-					# Ask for the number of times the user watched the episode or media unit
-					watched_times = self.Input.Type(self.language_texts["type_the_number_of_times_that_you_watched"])
-
-					# Try to transform the input into an integer
-					try:
-						watched_times = int(watched_times)
-
-					# Except a ValueError, define the watched time as an empty string
-					except ValueError:
-						watched_times = ""
-
-			# If the "Run as module" switch is True
-			if self.run_as_module == True:
-				# Define the watched times as one
-				watched_times = 1
-
-			# If the watched times is not zero
-			if watched_times != 0:
-				# Define the watched times in the dictionary as the local watched times
-				self.media["Episode"]["Re-watched"]["Times"] = watched_times
-
-				# Iterate through the list of small languages
-				for language in self.languages["small"]:
-					# Define the number name
-					self.media["Episode"]["Re-watched"]["Number name"][language] = self.Date.texts["number_names_feminine, type: list"][language][watched_times]
-
-					# Define the number re-watched text as the " (Re-watched [watched times]x)" text
-					# 
-					# Examples:
-					# " (Re-watched 1x)"
-					# " (Re-watched 2x)"
-					self.media["Episode"]["Re-watched"]["Texts"]["Number"][language] = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(self.media["Episode"]["Re-watched"]["Times"]) + "x)"
-
-					# ---------- #
-
-					# Define the text template for the number of watched times
-					# (Singular or plural)
-					text = self.Text.By_Number(watched_times, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
-
-					# Format the text template with the name of the number of watched times
-					# Examples: one time, two times
-					text = text.format(self.media["Episode"]["Re-watched"]["Number name"][language])
-
-					# Define the times text above inside the root times dictionary on the texts dictionary
-					self.media["Episode"]["Re-watched"]["Texts"]["Times"][language] = text
-
-					# Define the number name re-watched text as the "Re-watched [watched times]" text
-					# 
-					# Examples:
-					# Re-watched one time
-					# Re-watched two times
-					self.media["Episode"]["Re-watched"]["Texts"]["Number name"][language] = self.texts["re_watched, capitalize()"][language] + " " + text
-
-			# If the number of watched times is zero
-			# (The user never watched the media episode or unit)
-			if watched_times == 0:
-				# Turn off the re-watching state
-				self.media["States"]["Re-watching"] = False
-
 		# Define the accepted file extensions for the media unit
 		self.dictionary["File extensions"] = [
 			"mp4",
@@ -731,17 +635,24 @@ class Watch_Media(Watch_History):
 			"webm"
 		]
 
+		# Get the container for the media
 		container = self.media["texts"]["container"][self.user_language]
 
+		# Transform the container into lowercase if the media is not a video channel
 		if self.media["States"]["Video"] == False:
 			container = container.lower()
 
+		# Make a backup of the original container
 		original_container = container
 
-		# Add "dubbed" text to media container text
-		if "Dubbing" in self.media["Episode"] and "Text" in self.media["Episode"]["Dubbing"]:
+		# Add the "dubbed" text to media container text if the media has dubbing
+		if (
+			"Dubbing" in self.media["Episode"] and
+			"Text" in self.media["Episode"]["Dubbing"]
+		):
 			container = self.Language.texts["dubbed_{}"][self.user_language].format(container)
 
+		# Define the container text dictionary with its keys
 		self.media["texts"]["container_text"] = {
 			"container": container,
 			"this": self.media["texts"]["genders"][self.user_language]["this"] + " " + container,
@@ -750,11 +661,149 @@ class Watch_Media(Watch_History):
 			"of_the": self.media["texts"]["genders"][self.user_language]["of_the"] + " " + container
 		}
 
+		# If the user is re-watching the media
+		if self.media["States"]["Re-watching"] == True:
+			# Define the "Re-watched" dictionary
+			self.Define_Re_Watching()
+
 		# Define the header text to be used on the "Show_Media_Information" root method
 		self.dictionary["Header text"] = self.language_texts["opening_{}_to_watch"].format(self.media["texts"]["container_text"]["this"]) + ":"
 
+		# If the user is re-watching the media
 		if self.media["States"]["Re-watching"] == True:
+			# Replace the "watch" text with the "re-watch" text
 			self.dictionary["Header text"] = self.dictionary["Header text"].replace(self.language_texts["watch"], self.language_texts["re_watch"])
+
+	def Define_Re_Watching(self):
+		# Define the default re-watched dictionary
+		self.media["Episode"]["Re-watched"] = {
+			"Times": "",
+			"Number name": {},
+			"Texts": {
+				"Number": {},
+				"Number name": {},
+				"Times": {}
+			}
+		}
+
+		# If there is a re-watched dictionary inside the root dictionary
+		if "Re-watched" in self.dictionary:
+			# Define the times on the local re-watched dictionary as the one on the root dictionary
+			self.media["Episode"]["Re-watched"]["Times"] = self.dictionary["Re-watched"]["Times"]
+
+		# If the "Run as module" switch is False
+		if self.run_as_module == False:
+			# Define the default watched times as an empty string
+			watched_times = ""
+
+			# If the times inside the root dictionary is not an empty string (the default value)
+			if self.media["Episode"]["Re-watched"]["Times"] != "":
+				# Update the local watched times with that value
+				watched_times = self.media["Episode"]["Re-watched"]["Times"]
+
+			# Show a five dash space separator
+			print(self.separators["5"])
+
+			# Show the title text
+			print()
+			print(self.Language.language_texts["title, title()"] + ":")
+
+			# Show the default "with media title" version of the episode
+			print("\t" + self.media["Episode"]["with_title_default"])
+
+			# While the watched times variable is not an integer
+			while not isinstance(watched_times, int):
+				# Define the type text
+				type_text = self.language_texts["type_the_number_of_times_that_you_watched"]
+
+				# Add the masculine "the" text with spaces around it
+				type_text += " " + self.media_types["Genders"][self.user_language]["masculine"]["the"] + " "
+
+				# ----- #
+
+				# If the media is a series media (not a movie)
+				if self.media["States"]["Series media"] == True:
+					# Add the lowercase media unit text to the type text
+					# (Animes, series, cartoons: "episode"
+					# Videos: "video"
+					# Movies: Does not apply)
+					type_text += self.media["texts"]["unit"][self.user_language].lower()
+
+				# If the media is not a series media (is a movie)
+				if self.media["States"]["Series media"] == False:
+					# Add the lowercase media container text to the type text
+					type_text += media["texts"]["container"][self.user_language]
+
+				# ----- #
+
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Ask for the number of times the user watched the media unit (episode, single unit, or movie)
+					watched_times = self.Input.Type(type_text)
+
+				else:
+					# Define it as one
+					watched_times = 1
+
+					# Show the type text and number of watched times
+					print()
+					print(type_text + ": " + str(1))
+
+				# Try to transform the input into an integer
+				try:
+					watched_times = int(watched_times)
+
+				# Except a ValueError, define the watched time as an empty string
+				except ValueError:
+					watched_times = ""
+
+		# If the "Run as module" switch is True
+		if self.run_as_module == True:
+			# Define the watched times as one
+			watched_times = 1
+
+		# If the watched times is not zero
+		if watched_times != 0:
+			# Define the watched times in the dictionary as the local watched times
+			self.media["Episode"]["Re-watched"]["Times"] = watched_times
+
+			# Iterate through the list of small languages
+			for language in self.languages["small"]:
+				# Define the number name
+				self.media["Episode"]["Re-watched"]["Number name"][language] = self.Date.texts["number_names_feminine, type: list"][language][watched_times]
+
+				# Define the number re-watched text as the " (Re-watched [watched times]x)" text
+				# 
+				# Examples:
+				# " (Re-watched 1x)"
+				# " (Re-watched 2x)"
+				self.media["Episode"]["Re-watched"]["Texts"]["Number"][language] = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(self.media["Episode"]["Re-watched"]["Times"]) + "x)"
+
+				# ---------- #
+
+				# Define the text template for the number of watched times
+				# (Singular or plural)
+				text = self.Text.By_Number(watched_times, self.Language.texts["{}_time"][language], self.Language.texts["{}_times"][language])
+
+				# Format the text template with the name of the number of watched times
+				# Examples: one time, two times
+				text = text.format(self.media["Episode"]["Re-watched"]["Number name"][language])
+
+				# Define the times text above inside the root times dictionary on the texts dictionary
+				self.media["Episode"]["Re-watched"]["Texts"]["Times"][language] = text
+
+				# Define the number name re-watched text as the "Re-watched [watched times]" text
+				# 
+				# Examples:
+				# Re-watched one time
+				# Re-watched two times
+				self.media["Episode"]["Re-watched"]["Texts"]["Number name"][language] = self.texts["re_watched, capitalize()"][language] + " " + text
+
+		# If the number of watched times is zero
+		# (The user never watched the media episode or unit)
+		if watched_times == 0:
+			# Turn off the re-watching state
+			self.media["States"]["Re-watching"] = False
 
 	def Define_Media_Unit(self):
 		# Local media episode file definition
@@ -934,15 +983,29 @@ class Watch_Media(Watch_History):
 		self.dictionary = self.Comment_Writer(self.dictionary).dictionary
 
 	def Register_The_Media(self):
+		# Define the initial text to show when the user finishes watching the media (pressing Enter)
 		text = self.language_texts["press_enter_when_you_finish_watching"]
 
+		# Replace "watching" with "re-watching" on the text above, if the user is re-watching the media
 		if self.media["States"]["Re-watching"] == True:
 			text = text.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"])
 
-		# Text to show in the input when the user finishes watching the media (pressing Enter)
+		# Add the "the unit" text to the root text
+		# Unit is "episode" or "[media]" for single unit media
+		# Examples: the episode, the movie, the OVA, the ONA
 		text = text + " " + self.media["texts"]["the_unit"][self.user_language]
 
-		self.media["States"]["Finished watching"] = self.Input.Type(text)
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Ask the user to press enter when they finish watching
+			self.Input.Type(text)
+
+		# Else, show only the text
+		else:
+			print()
+			print(text + ":")
+
+		# Define the finished watching state as True
 		self.media["States"]["Finished watching"] = True
 
 		# Register the finished watching time

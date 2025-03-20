@@ -1390,9 +1390,13 @@ class Write(Stories):
 				"Titles": {},
 				"Descriptions": {},
 				"Custom task item": self.dictionary["Writing mode"]["Texts"]["Chapter"]
-			},
-			"Additional text": self.dictionary["Statistics text"]
+			}
 		}
+
+		# If the "Statistics text" key is present inside the root dictionary
+		if "Statistics text" in self.dictionary:
+			# Define the statistics text as the additional text for the "Tasks" class
+			self.task_dictionary["Additional text"] = self.dictionary["Statistics text"]
 
 		# Define the text template for the task as the "I started writing", for the first time
 		template = self.texts["i_started_{}_the_chapter_{}_of_my_story_{}"]

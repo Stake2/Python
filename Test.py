@@ -122,7 +122,8 @@ class Main():
 			"__init__",
 			"Define_Basic_Variables",
 			"Define_Texts",
-			"Import_Classes"
+			"Import_Classes",
+			"Get_Methods"
 		]
 
 		# Iterate through the tuples in the members
