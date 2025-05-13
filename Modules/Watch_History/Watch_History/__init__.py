@@ -710,25 +710,8 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# Create a dictionary of media types with the list and dictionary
-		# (And also define the statistics as "Per type")
-		media_types = {
-			"Lists": self.media_types["Plural"],
-			"Dictionary": {},
-			"Translation dictionary": {},
-			"Per type statistic": True
-		}
-
-		# Iterate through the English plural media types list
-		for plural_media_type in self.media_types["Plural"]["en"]:
-			# Create the media type dictionary
-			media_type = {
-				"Total": 0,
-				"Dictionary": {}
-			}
-
-			# Add it to the media types dictionary
-			media_types["Dictionary"][plural_media_type] = media_type
+		# Create the "statistic media types" dictionary
+		media_types = self.Create_Statistic_Media_Types_Dictionary()
 
 		# Add the list of media types to the "Media types" key
 		statistics["Media types"] = media_types["Lists"]
@@ -899,6 +882,33 @@ class Watch_History(object):
 
 		# Return the statistics dictionary
 		return statistics
+
+	def Create_Statistic_Media_Types_Dictionary(self):
+		# Create a dictionary of media types with the list and dictionary
+		# (And also define the statistics as "Per type")
+		media_types = {
+			"Lists": self.media_types["Plural"],
+			"Dictionary": {},
+			"Translation dictionary": {},
+			"Per type statistic": True
+		}
+
+		# Iterate through the English plural media types list
+		for plural_media_type in self.media_types["Plural"]["en"]:
+			# Create the media type dictionary
+			media_type = {
+				"Total": 0,
+				"Dictionary": {}
+			}
+
+			# Add it to the media types dictionary
+			media_types["Dictionary"][plural_media_type] = media_type
+
+		# Define the statistic media types dictionary as a variable in the root class
+		self.statistic_media_types = media_types
+
+		# Return the dictionary
+		return self.statistic_media_types
 
 	def Correct_Translation_Dictionary(self, dictionary):
 		# Define the translation dictionary as the "dictionary" parameter
@@ -1137,6 +1147,7 @@ class Watch_History(object):
 
 		# ---------- #
 
+		# Return the dictionary and the media title inside a tuple
 		return dictionary, media_title
 
 	def Iterate_Through_Entries(self, dictionary, media_type):
@@ -1243,6 +1254,11 @@ class Watch_History(object):
 
 		# ---------- #
 
+		# Create the "statistic media types" dictionary
+		self.Create_Statistic_Media_Types_Dictionary()
+
+		# ---------- #
+
 		# Iterate through the list of keys
 		for key in ["Year", "Month"]:
 			# Define the default dictionary as the year dictionary
@@ -1258,6 +1274,12 @@ class Watch_History(object):
 
 			# Add one to the total number of statistics
 			statistics[key]["Total"] += 1
+
+			# If the "Dictionary" key is not inside the "Watched Media" dictionary
+			if "Dictionary" not in statistics[key]["Dictionary"]:
+				# Define the key as a copy of the "statistic media types" default dictionary
+				statistics[key]["Dictionary"] = deepcopy(self.statistic_media_types)
+				
 
 			# Get the media type dictionary
 			media_type_dictionary = statistics[key]["Dictionary"]["Dictionary"][media_type["Plural"]]
@@ -1347,7 +1369,7 @@ class Watch_History(object):
 				# If the media item title key does not exist inside the media translation dictionary
 				if item_title not in media_dictionary:
 					# Get the media item titles
-					titles = item["Titles"]
+					item_titles = item["Titles"]
 
 					# Define the key to get the media title
 					local_title_key = "Original"
@@ -1357,18 +1379,22 @@ class Watch_History(object):
 
 					# Create a local titles dictionary for the media item
 					titles = {
-						"Original": titles[local_title_key]
+						"Original": item_titles[local_title_key]
 					}
 
 					# Iterate through the list of small languages
 					for language in self.languages["small"]:
 						# Add the current language media title if it exists
-						if language in titles:
-							titles[language] = titles[language]
+						if language in item_titles:
+							titles[language] = item_titles[language]
 
 					# Add the language media title if it exists
-					if "Language" in titles:
-						titles["Language"] = titles["Language"]
+					# And it is not already present in the local titles dictionary
+					if (
+						"Language" in item_titles and
+						item_titles["Language"] not in list(titles.values())
+					):
+						titles["Language"] = item_titles["Language"]
 
 					# Iterate through them
 					for local_title_key, title in titles.items():
@@ -3087,7 +3113,7 @@ class Watch_History(object):
 								dictionary["Media"]["States"]["Episodic"] = True
 
 							# Iterate through the alternative episode types in the list
-							# Alternative episode types: ["OVA", "ONA", "Special", "Especial", "Shorts", "Curtas"]
+							# alternative_episode_types = ["OVA", "ONA", "Special", "Especial", "Shorts", "Curtas"]
 							for alternative_episode_type in self.alternative_episode_types:
 								# If the episode type plus one or two numbers from zero to nine are inside the episode title
 								if re.search(alternative_episode_type + " [0-9]{1,2}", episode_title) != None:
@@ -3655,15 +3681,23 @@ class Watch_History(object):
 			# Remove them
 			title = title[2:]
 
+		# If a dot and a space is inside the title, remove them
 		if ". " in title:
 			title = title.replace(". ", " ")
 
-		elif "." in title:
-			if remove_dot == True:
-				title = title.replace(".", "")
+		# Else, if only a dot is inside the title
+		# And the remove dot parameter is True
+		elif (
+			"." in title and
+			remove_dot == True
+		):
+			# Remove the dot
+			title = title.replace(".", "")
 
-		title = self.Sanitize(title, restricted_characters = True)
+		# Remove restricted file characters from the title
+		title = self.File.Remove_Restricted_Characters(title)
 
+		# Return the title
 		return title
 
 	def Show_Media_Title(self, root_dictionary, is_media_item = False, include_media_title = False):
@@ -4182,7 +4216,7 @@ class Watch_History(object):
 				print()
 				print(text)
 
-		# Show the media episode title If the media is a series media (not a movie)
+		# Show the media episode title if the media is a series media (not a movie)
 		if media["States"]["Series media"] == True:
 			# If the media item is not the media (not the same title as the media)
 			if media["States"]["Media item is media"] == False:
@@ -4207,7 +4241,7 @@ class Watch_History(object):
 			# Define the media episode text as the unit text plus the " {}" format text
 			media_episode_text = unit_text + " {}"
 
-			# Define the "of the" text with the method
+			# Define the "of the" text with the "Define_Media_Item_Text" method
 			result = self.Define_Media_Item_Text(dictionary, media_episode_text)
 
 			# Get the variables from it

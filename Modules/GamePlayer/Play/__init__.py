@@ -60,6 +60,7 @@ class Play(GamePlayer):
 	def Define_Game_Dictionary(self):
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
+			# Define the default value for the game title variable
 			game_title = None
 
 			# If there is a game inside the arguments dictionary
@@ -68,9 +69,23 @@ class Play(GamePlayer):
 			if "Game" in self.arguments:
 				game_title = self.arguments["Game"]["Value"]
 
-			# Ask the user to select a game type and game
-			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title, play = True)
+			# ---------- #
 
+			# Define the default value for the sub-game title variable
+			sub_game_title = None
+
+			# If there is a sub-game inside the arguments dictionary
+			# That means the module has been run by the "Module_Selector"
+			# And the sub-game inside the arguments will be auto-selected
+			if "Sub-game" in self.arguments:
+				sub_game_title = self.arguments["Sub-game"]["Value"]
+
+			# ---------- #
+
+			# Ask the user to select a game type and game
+			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title, sub_game_title = sub_game_title, play = True)
+
+		# Define a shortcut for the "Game" dictionary
 		self.game = self.dictionary["Game"]
 
 		# Define the playing status list for "Plan to play" related statuses
@@ -86,14 +101,22 @@ class Play(GamePlayer):
 
 		# If the game "Dates.txt" file is empty
 		if self.File.Contents(self.game["Folders"]["dates"])["lines"] == []:
-			# Get the first playing time where the user started playing the game
+			# Get the first playing time where the user started playing the game (which is now)
 			self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
-			# Create the Dates text
+			# Create the game dates text in the "Dates" key, with the "When I started to play" text
 			self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
 			self.game["Dates"] += self.game["Started playing time"]
 
+			# Add that date to the "Dates.txt" file
 			self.File.Edit(self.game["Folders"]["dates"], self.game["Dates"], "w")
+
+			# Transform the "Dates" string into a dictionary
+			# With the text as key and the date as value
+			# (This is to be used in the "Show_Information" root method to show the game dates)
+			self.game["Dates"] = {
+				self.language_texts["when_i_started_to_play"]: self.game["Started playing time"]
+			}
 
 	def Open_Game(self):
 		# If the "Testing" switch is False

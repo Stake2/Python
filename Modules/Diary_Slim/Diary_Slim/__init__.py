@@ -1300,12 +1300,10 @@ class Diary_Slim():
 		# If the external statistics file is not empty
 		if self.File.Contents(file)["lines"] != []:
 			# Get the JSON dictionary
-			#json_dictionary = self.JSON.To_Python(file)
+			json_dictionary = self.JSON.To_Python(file)
 
 			# Update the root year dictionary with the local JSON one, using the "Define_Options" method
-			#external_statistics = self.Define_Options(external_statistics, json_dictionary)
-
-			test = ""
+			external_statistics = self.Define_Options(external_statistics, json_dictionary)
 
 		# ---------- #
 
@@ -1573,6 +1571,7 @@ class Diary_Slim():
 
 		# Update the external statistics dictionaries of the years and months
 
+		# Define the "update" switch as False by default
 		update = False
 
 		# Iterate through the "External statistics" dictionary
@@ -1604,6 +1603,7 @@ class Diary_Slim():
 				# Get the root statistics dictionary
 				root_statistics = root_year["Statistics"][statistic_key]
 
+				# If the "update" switch is True
 				if update == True:
 					# Add the "Total" key and the number dictionaries inside the "Numbers" to the root year statistics dictionary
 					root_year["Statistics"][statistic_key] = {
@@ -1614,6 +1614,7 @@ class Diary_Slim():
 						}
 					}
 
+				# Iterate through the months inside the year dictionary
 				for month in year["Months"].values():
 					# Get the month key using the list of month names in the user language with the month number with leading zeroes
 					month_key = month["Key"] + " - " + self.Date.language_texts["month_names, type: list"][int(month["Key"])]
@@ -1624,6 +1625,7 @@ class Diary_Slim():
 						# Get the root statistics dictionary
 						root_statistics = root_year["Months"][month_key]["Statistics"][statistic_key]
 
+						# If the "update" switch is True
 						if update == True:
 							# Add the "Total" key and the number dictionaries inside the "Numbers" to the root month statistics dictionary
 							root_year["Months"][month_key]["Statistics"][statistic_key] = {
@@ -1634,6 +1636,7 @@ class Diary_Slim():
 								}
 							}
 
+				# If the "update" switch is True
 				if update == True:
 					# Add the year dictionary to the local dictionary of years
 					years_dictionary[key] = root_year

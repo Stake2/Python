@@ -624,6 +624,52 @@ class Write(Stories):
 		# Copy the status to the clipboard
 		self.Text.Copy(self.chapter["Discord"]["Status"], verbose = False)
 
+	def Make_Backup_Of_Time(self, mode = "Create", time = "Before"):
+		# Define the backup file name as "Backup of the time of [writing mode item]"
+		file_name = self.language_texts["backup_of_the_time_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"]
+
+		# Define the backup file
+		backup_file = self.stories["Folders"]["Database"]["root"] + file_name + ".txt"
+
+		# If the mode is "Create"
+		if mode == "Create":
+			# If the file does not exist
+			if self.File.Exist(backup_file) == False:
+				# Create the backup file
+				self.File.Create(backup_file)
+
+			# If the time is "Before"
+			if time == "Before":
+				# Define the text to write as the before time
+				text_to_write = file_name + ":" + "\n" + \
+				"\n" + \
+				self.Language.language_texts["before, title()"] + ":" + "\n" + \
+				self.dictionary["Session"]["Before"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+			# If the time is "After"
+			if time == "After":
+				# Define the text to write as the after time
+				text_to_write = "\n" + \
+				"\n" + \
+				self.Language.language_texts["after, title()"] + ":" + "\n" + \
+				self.dictionary["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+			# If the time is the duration one
+			if time == "Duration":
+				# Define the text to write as the duration time
+				text_to_write = "\n" + \
+				"\n" + \
+				self.Language.language_texts["duration, title()"] + ":" + "\n" + \
+				self.dictionary["Writing"]["Duration"]["Text"][self.user_language]
+
+			# Write the text to the file in the append mode
+			self.File.Edit(backup_file, text_to_write, "a")
+
+		# If the mode is "Delete"
+		if mode == "Delete":
+			# Delete the backup file
+			self.File.Delete(backup_file)
+
 	def Start_Writing(self):
 		# Show a five dash space separator
 		print()
@@ -651,10 +697,15 @@ class Write(Stories):
 			"Duration": {}
 		}
 
-		# Show the now time
+		# Show the now (before) time
 		print()
 		print(self.Date.language_texts["now, title()"] + ":")
 		print("\t" + self.dictionary["Session"]["Before"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"])
+
+		# ---------- #
+
+		# Make a backup of the before time
+		self.Make_Backup_Of_Time("Create", "Before")
 
 		# ---------- #
 
@@ -684,12 +735,17 @@ class Write(Stories):
 		# Format the template with the items in the list, making the input text
 		input_text = template.format(*items)
 
-		# Ask if the user wants to postpone the writing session to continue writing later
-		self.states["Postpone writing session"] = self.Input.Yes_Or_No(input_text)
+		# Define the "ask to postpone" switch
+		ask_to_postpone = False
 
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
+		# If the "ask to postpone" switch is True
+		if ask_to_postpone == True:
+			# Ask if the user wants to postpone the writing session to continue writing later
+			self.states["Postpone writing session"] = self.Input.Yes_Or_No(input_text)
+
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
 
 		# ---------- #
 
@@ -713,6 +769,11 @@ class Write(Stories):
 
 		# Define the after time as None
 		after_time = None
+
+		# ---------- #
+
+		# Make a backup of the after time
+		self.Make_Backup_Of_Time("Create", "After")
 
 		# ---------- #
 
@@ -826,6 +887,11 @@ class Write(Stories):
 
 		# ---------- #
 
+		# Make a backup of the duration time
+		self.Make_Backup_Of_Time("Create", "Duration")
+
+		# ---------- #
+
 		# If this is not the first time the user writes the current chapter
 		if self.states["First time writing"] == False:
 			# Show the total writing time text in the user language
@@ -863,6 +929,11 @@ class Write(Stories):
 
 			# Register the writing task only on Diary Slim
 			self.Register_Task(register_task = False)
+
+		# ---------- #
+
+		# Delete the backup
+		self.Make_Backup_Of_Time("Delete")
 
 	def Pause_Writing(self):
 		# Ask if the user wants to pause the writing session
@@ -1171,10 +1242,13 @@ class Write(Stories):
 			full_language = self.languages["full"][language]
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
-			# Ask for the new chapter title in the current language
-			type_text = self.language_texts["type_the_new_chapter_title_in_{}"].format(translated_language)
+			# Get the " in [language]" text of the current language
+			in_language_text = " " + self.Language.texts["in_[language]"][language][self.user_language]
 
-			# Define the default "chapter title" variable
+			# Define the type text to ask for the new chapter title in the current language
+			type_text = self.language_texts["type_the_new_chapter_title"] + in_language_text
+
+			# Define the default "chapter title" variable as an empty string
 			chapter_title = ""
 
 			# If the writing mode is "Revise"
@@ -1183,9 +1257,9 @@ class Write(Stories):
 				self.writing_mode == "Revise" and
 				update_chapter_titles == True
 			):
-				# Show the old chapter title
+				# Show the old chapter title with the " in [language]" text
 				print()
-				print(self.language_texts["old_title"] + ":")
+				print(self.language_texts["old_title"] + in_language_text + ":")
 				print(self.chapter["Old chapter"][language])
 
 			# If the writing mode is "Write"

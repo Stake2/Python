@@ -1563,24 +1563,27 @@ class Stories(object):
 		# Fill the "Years" dictionary
 
 		# Iterate through the list of years from 2020 to the current year
-		for number in years_list:
+		for year_number in years_list:
 			# Create the year dictionary
 			year = {
-				"Key": number,
+				"Key": year_number,
 				"Total": 0,
 				"Numbers": {},
 				"Months": {}
 			}
 
 			# Iterate through the stories dictionary
-			for key, story in self.stories["Dictionary"].items():
+			for story_key, story in self.stories["Dictionary"].items():
 				# Create the year numbers dictionary of the story
-				year["Numbers"][key] = {}
+				year["Numbers"][story_key] = {
+					"Total": 0,
+					"Dictionary": {}
+				}
 
 				# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
 				for writing_mode in writing_modes:
 					# Add the writing mode key to the year numbers dictionary
-					year["Numbers"][key][writing_mode] = 0
+					year["Numbers"][story_key]["Dictionary"][writing_mode] = 0
 
 			# ---------- #
 
@@ -1598,13 +1601,16 @@ class Stories(object):
 
 				# Iterate through the stories dictionary
 				for story_key, story in self.stories["Dictionary"].items():
-					# Create the month numbers dictionary of the story
-					month["Numbers"][story_key] = {}
+					# Create the year numbers dictionary of the story
+					month["Numbers"][story_key] = {
+						"Total": 0,
+						"Dictionary": {}
+					}
 
 					# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
 					for writing_mode in writing_modes:
 						# Add the writing mode key to the month numbers dictionary
-						month["Numbers"][story_key][writing_mode] = 0
+						month["Numbers"][story_key]["Dictionary"][writing_mode] = 0
 
 				# Add the month dictionary to the "Months" dictionary of the year dictionary
 				year["Months"][month_number] = month
@@ -1612,7 +1618,7 @@ class Stories(object):
 			# ---------- #
 
 			# Add the year dictionary to the "Years" dictionary
-			statistics["Years"][number] = year
+			statistics["Years"][year_number] = year
 
 		# Iterate through the stories dictionary
 		for story_key, story in self.stories["Dictionary"].items():
@@ -1638,8 +1644,11 @@ class Stories(object):
 
 						# If the year number is inside the list of years
 						if year_number in years_list:
+							# Add one to the total number inside the current year dictionary of the current story
+							statistics["Years"][year_number]["Numbers"][story_key]["Total"] += 1
+
 							# Add one to the writing mode number inside the current year dictionary of the current story
-							statistics["Years"][year_number]["Numbers"][story_key][writing_mode] += 1
+							statistics["Years"][year_number]["Numbers"][story_key]["Dictionary"][writing_mode] += 1
 
 							# Add one to the year total chapters number
 							statistics["Years"][year_number]["Total"] += 1
@@ -1652,8 +1661,11 @@ class Stories(object):
 							# Get the current month number of the current year
 							month_number = split[1]
 
-							# Add one to the writing mode number inside the current month dictionary that is inside the current year dictionary
-							year_dictionary["Months"][month_number]["Numbers"][story_key][writing_mode] += 1
+							# Add one to the total number inside the current year dictionary of the current story
+							year_dictionary["Months"][month_number]["Numbers"][story_key]["Total"] += 1
+
+							# Add one to the writing mode number inside the current year dictionary of the current story
+							year_dictionary["Months"][month_number]["Numbers"][story_key]["Dictionary"][writing_mode] += 1
 
 							# Add one to the month total chapters number
 							year_dictionary["Months"][month_number]["Total"] += 1
@@ -1668,7 +1680,7 @@ class Stories(object):
 				# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
 				for writing_mode in writing_modes:
 					# Add the writing mode number to the local number
-					number += story[writing_mode]
+					number += story["Dictionary"][writing_mode]
 
 				# If the final local number is still zero, remove the story dictionary
 				if number == 0:
@@ -1691,7 +1703,7 @@ class Stories(object):
 						# Iterate through the local list of writing modes in the "Done" tense (Chapter [written/revised/translated])
 						for writing_mode in writing_modes:
 							# Add the writing mode number to the local number
-							number += story[writing_mode]
+							number += story["Dictionary"][writing_mode]
 
 						# If the final local number is still zero, remove the story dictionary
 						if number == 0:
@@ -1780,24 +1792,34 @@ class Stories(object):
 			# If the story title is not inside the dictionary of stories
 			if story_titles["en"] not in statistics[key]["Dictionary"]:
 				# Create the story statistics dictionary
-				statistics[key]["Dictionary"][story_titles["en"]] = {}
+				statistics[key]["Dictionary"][story_titles["en"]] = {
+					"Total": 0,
+					"Dictionary": {}
+				}
 
 				# Iterate through the local list of writing modes in the "Done" tense (Chapter [Written/Revised/Translated])
 				for item in writing_modes:
 					# Add the writing mode key to the story statistics dictionary
-					statistics[key]["Dictionary"][story_titles["en"]][item] = 0
+					statistics[key]["Dictionary"][story_titles["en"]]["Dictionary"][item] = 0
 
 			# Add one to the total number of statistics
 			statistics[key]["Total"] += 1
 
+			# ---------- #
+
 			# Define the old number as the current number
-			statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]]
+			statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][story_titles["en"]]["Dictionary"][writing_mode["Key"]]
+
+			# Add one to the total writing number of the story
+			statistics[key]["Dictionary"][story_titles["en"]]["Total"] += 1
 
 			# Update the number of chapters written in the defined writing mode
-			statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]] += writing_mode["Number"]
+			statistics[key]["Dictionary"][story_titles["en"]]["Dictionary"][writing_mode["Key"]] += writing_mode["Number"]
+
+			# ---------- #
 
 			# Define the new number as the current number (with the added number)
-			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][story_titles["en"]][writing_mode["Key"]]
+			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][story_titles["en"]]["Dictionary"][writing_mode["Key"]]
 
 		# Define the statistic text, formatting the template with the language story title
 		statistics["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.user_language], writing_mode["Done plural"])

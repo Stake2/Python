@@ -124,7 +124,7 @@ class Register(GamePlayer):
 				}
 			}
 
-			# Iterate through the small languages list
+			# Iterate through the list of small languages
 			for language in self.languages["small"]:
 				# If the language is not the first one
 				if language != self.languages["small"][0]:
@@ -255,6 +255,7 @@ class Register(GamePlayer):
 				if key in dict_:
 					dict_.pop(key)
 
+			# Iterate through the list of small languages
 			for language in self.languages["small"]:
 				if language in dict_:
 					if (
@@ -361,6 +362,7 @@ class Register(GamePlayer):
 			"General": self.Define_File_Text("General")
 		}
 
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
 			self.dictionary["Entry"]["Text"][language] = self.Define_File_Text(language)
 
@@ -382,10 +384,14 @@ class Register(GamePlayer):
 			self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
 
 	def Define_File_Text(self, language_parameter = None):
+		# If the language parameter is not "General"
 		if language_parameter != "General":
+			# Define the local language as the language parameter
 			language = language_parameter
 
+		# If it is
 		if language_parameter == "General":
+			# Define the local language as the user language
 			language = self.user_language
 
 		full_language = self.languages["full"][language]
@@ -436,11 +442,20 @@ class Register(GamePlayer):
 
 		# If the user wrote a description for the gaming session
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
-			# Define the description text
-			text = self.texts["gaming_session_description"][language] + ":" + "\n" + "{}"
+			# If the language parameter is not "General"
+			if language_parameter != "General":
+				# Define the gaming session description text as the singular one
+				text = self.texts["gaming_session_description"][language]
+				line_break = "\n"
 
-			# Add it to the list of lines
-			lines.append(text)
+			# If the language parameter is "General"
+			if language_parameter == "General":
+				# Define the gaming session description text as the plural one
+				text = self.texts["gaming_session_descriptions"][language]
+				line_break = "\n\n"
+
+			# Add the gaming session description and the line break(s) with a format character
+			lines.append(text + ":" + line_break + "{}" + "\n")
 
 		# ---------- #
 
@@ -526,8 +541,9 @@ class Register(GamePlayer):
 		if language_parameter == "General":
 			session_duration = ""
 
-			for language in self.languages["small"]:
-				text = self.dictionary["Entry"]["Session duration"]["Text"][language] + "\n"
+			# Iterate through the list of small languages
+			for local_language in self.languages["small"]:
+				text = self.dictionary["Entry"]["Session duration"]["Text"][local_language] + "\n"
 
 				if text not in session_duration:
 					session_duration += text
@@ -538,23 +554,34 @@ class Register(GamePlayer):
 
 		# If the user wrote a description for the gaming session
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
-			# Get the description in the current language
+			# Define an empty string to add the descriptions to
+			descriptions = ""
+
+			# Define a shortcut for the descriptions dictionary
+			descriptions_dictionary = self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
+
+			# Define the description to be added based on the language
+			# Only the description for the current language
 			if language_parameter != "General":
-				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language]["string"] + "\n"
+				descriptions = descriptions_dictionary[language]["string"]
 
-			# If the language parameter is "General"
-			if language_parameter == "General":
-				# Create the descriptions text in all languages
-				description = ""
+			# Or all language descriptions
+			else:
+				# Iterate through the list of 
+				for local_language in self.languages["small"]:
+					# Get the full language
+					full_language = self.languages["full"][local_language]
 
-				for language in self.languages["small"]:
-					text = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language]["string"] + "\n"
+					# Add the full language and the language description to the root descriptions text
+					descriptions += full_language + ":" + "\n" + descriptions_dictionary[local_language]["string"]
 
-					if text not in description:
-						description += text
+					# If the local language is not the last language in the list
+					if local_language != self.languages["small"][-1]:
+						# Add two line breaks to the root descriptions text
+						descriptions += "\n\n"
 
-			# Add the description to the list of items
-			items.append(description)
+			# Add the descriptions to the list of items
+			items.append(descriptions)
 
 		# ---------- #
 
@@ -564,15 +591,16 @@ class Register(GamePlayer):
 		return file_text.format(*items)
 
 	def Add_Entry_File_To_Year_Folder(self):
-		# Create folders
+		# Iterate through the list of small languages
 		for language in self.languages["small"]:
+			# Get the fill language
 			full_language = self.languages["full"][language]
 
-			# Folder names
+			# Get the folder names
 			root_folder = self.Language.texts["game_sessions"][language]
 			type_folder = self.dictionary["Type"]["Type"][language]
 
-			# Entries folder
+			# Define and create the entries folder
 			folder = self.current_year["Folders"][language]["root"]
 
 			self.current_year["Folders"][language]["Game sessions"] = {
@@ -633,13 +661,13 @@ class Register(GamePlayer):
 		# Define the game type variable for easier typing
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
 
-		# Define the "Ask if game was completed" state as True
-		self.game["States"]["Ask if game was completed"] = True
+		# Define the "Ask if the game was completed" state as True
+		self.game["States"]["Ask if the game was completed"] = True
 
-		# Define the list of games that do not have an ending
+		# Define the list of game types that do not have an ending
 		game_types_without_ending = []
 
-		# Define the keys
+		# Define the keys for those game types
 		keys = [
 			"FPS",
 			"Idle Clicker",
@@ -649,24 +677,27 @@ class Register(GamePlayer):
 			"Survival"
 		]
 
-		# Add the English game types
+		# Iterate through the list of keys
 		for key in keys:
+			# Get the English game type
 			game_type = self.game_types["Dictionary"][key]["Type"]["en"]
 
+			# Add it to the list of game types
 			game_types_without_ending.append(game_type)
 
-		# If the game type is inside the above list
+		# If the game type is inside the list of game types with no ending
 		if self.game_type in game_types_without_ending:
-			# Define the "Ask if game was completed" state as False
-			self.game["States"]["Ask if game was completed"] = False
+			# Define the "Ask if the game was completed" state as False
+			self.game["States"]["Ask if the game was completed"] = False
 
-		# If the state is True
-		if self.game["States"]["Ask if game was completed"] == True:
+		# If the "Ask if the game was completed" state is True
+		if self.game["States"]["Ask if the game was completed"] == True:
 			# Ask if the user completed the whole game
 			self.game["States"]["Completed game"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_game"])
 
+		# If the user completed the whole game
 		if self.game["States"]["Completed game"] == True:
-			# Update the status key in the game details
+			# Update the status key in the game details to be the "Completed" one
 			self.Change_Status(self.dictionary)
 
 	def Check_Game_Dates(self):
@@ -803,10 +834,6 @@ class Register(GamePlayer):
 		# Add the closing parenthesis
 		text += ")"
 
-		# Show a separator
-		print()
-		print(self.separators["5"])
-
 		# Define the "ask for input" switch as False
 		ask_for_input = False
 
@@ -819,6 +846,10 @@ class Register(GamePlayer):
 			self.switches["Testing"] == False and
 			ask_for_input == True
 		):
+			# Show a separator
+			print()
+			print(self.separators["5"])
+
 			# Ask if the user wants to post the played session status on the social networks
 			self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 

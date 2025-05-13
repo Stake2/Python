@@ -34,6 +34,26 @@
 		"pt": "Idioma de texto",
 		"en": "Text language"
 	},
+	"title_in_language": {
+		"pt": {
+			"pt": "Título em Português",
+			"en": "Title in Portuguese"
+		},
+		"en": {
+			"pt": "Título em Inglês",
+			"en": "Title in English"
+		}
+	},
+	"in_[language]": {
+		"pt": {
+			"pt": "em Português",
+			"en": "in Portuguese"
+		},
+		"en": {
+			"pt": "em Inglês",
+			"en": "in English"
+		}
+	},
 	"original_title": {
 		"en": "Original title",
 		"pt": "Título original"
@@ -579,6 +599,10 @@
 		"en": "{} times",
 		"pt": "{} vezes"
 	},
+	"duration, title()": {
+		"en": "Duration",
+		"pt": "Duração"
+	},
 	"duration_of": {
 		"en": "Duration of",
 		"pt": "Duração de"
@@ -706,16 +730,6 @@
 	"commented, title()": {
 		"en": "Commented",
 		"pt": "Comentou"
-	},
-	"title_in_language": {
-		"pt": {
-			"pt": "Título em Português",
-			"en": "Title in Portuguese"
-		},
-		"en": {
-			"pt": "Título em Inglês",
-			"en": "Title in English"
-		}
 	},
 	"country, title()": {
 		"pt": "País",
@@ -1459,10 +1473,6 @@
 	"session_duration": {
 		"en": "Session duration",
 		"pt": "Duração da sessão"
-	},
-	"duration, title()": {
-		"en": "Duration",
-		"pt": "Duração"
 	},
 	"category, title()": {
 		"en": "Category",
@@ -2293,6 +2303,10 @@
 		"en": "Before",
 		"pt": "Antes"
 	},
+	"after, title()": {
+		"en": "After",
+		"pt": "Depois"
+	},
 	"visits_of": {
 		"en": "Visits of",
 		"pt": "Visitas de"
@@ -2307,6 +2321,7 @@
 				"the": "the",
 				"these": "these",
 				"this": "this",
+				"this, neutral": "this",
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
@@ -2320,6 +2335,7 @@
 				"the": "the",
 				"these": "these",
 				"this": "this",
+				"this, neutral": "this",
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
@@ -2335,6 +2351,7 @@
 				"the": "o",
 				"these": "esses",
 				"this": "este",
+				"this, neutral": "esse",
 				"a": "um",
 				"of": "do",
 				"of_the": "do",
@@ -2348,6 +2365,7 @@
 				"the": "a",
 				"these": "essas",
 				"this": "esta",
+				"this, neutral": "essa",
 				"a": "uma",
 				"of": "da",
 				"of_the": "da",

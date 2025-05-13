@@ -831,6 +831,7 @@ class GamePlayer(object):
 				title_key = "Original"
 				item_key = "Original"
 
+				# Define the key as "Romanized" if that key exists inside the "Titles" dictionary, for the title and item key
 				if "Romanized" in game["Titles"]:
 					title_key = "Romanized"
 
@@ -896,6 +897,17 @@ class GamePlayer(object):
 				# Define the game title key as the sub-game title
 				game_title_key = game["Titles"]["Sub-game"][item_key]
 
+			# Define the default played title as the game title
+			played_title = game["Titles"]["Original"]
+
+			# If the "Sub-game" key is inside the game titles dictionary
+			if "Sub-game" in game["Titles"]:
+				# Define the played title as the sub-game title
+				played_title = game["Titles"]["Sub-game"]["Original (no game title)"]
+
+			# Define the "added sub-game dictionary" switch as False
+			added_sub_game_dictionary = False
+
 			# If the "Items" key exist in the local game dictionary
 			# And the "Sub-game" key is inside the game titles dictionary
 			# And the sub-game title is not the same as the game title
@@ -914,6 +926,9 @@ class GamePlayer(object):
 			):
 				# If the game title is inside the statistics dictionary of the module
 				if game_title in statistics_copy:
+					# Define the "converted dictionary" switch as False
+					converted_dictionary = False
+
 					# If the game title key is a number
 					if isinstance(statistics[key]["Dictionary"][game_title], int):
 						# Create the game statistics dictionary
@@ -922,19 +937,24 @@ class GamePlayer(object):
 							"Dictionary": {}
 						}
 
+						# Switch the "converted dictionary" switch to True
+						converted_dictionary = True
+
 					# Add one to the total number of times the root game was played
 					statistics[key]["Dictionary"][game_title]["Total"] += 1
 
 					# Iterate through the list of items
 					for item_title, item in game["Items"]["Dictionary"].items():
-						# Define a local number a zero
+						# Define the local number as zero
 						number = 0
 
 						# If the item title is the game title
 						# And the total number of played times is not zero
+						# And the "converted dictionary" switch is True
 						if (
 							item_title == game_title and
-							statistics[key]["Dictionary"][game_title]["Total"] != 0
+							statistics[key]["Dictionary"][game_title]["Total"] != 0 and
+							converted_dictionary == True
 						):
 							# Define the local number as the total number of played times
 							number = statistics[key]["Dictionary"][game_title]["Total"]
@@ -945,19 +965,13 @@ class GamePlayer(object):
 							# Remove the colon and space
 							item_title = item_title[2:]
 
-						# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
-						statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
-
-						# Define the default title as the game title
-						title = game["Titles"]["Original"]
-
-						# If the "Sub-game" key is inside the game titles dictionary
-						if "Sub-game" in game["Titles"]:
-							# Define the title as the sub-game title
-							title = game["Titles"]["Sub-game"]["Original (no game title)"]
+						# If the "converted dictionary" switch is True
+						if converted_dictionary == True:
+							# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
+							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
 
 						# If the current sub-game is the sub-game that was played
-						if item_title == title:
+						if item_title == played_title:
 							# Add one to the number of times the sub-game was played
 							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] += 1
 
@@ -1033,7 +1047,7 @@ class GamePlayer(object):
 									# Define the original key as the sub-game title
 									original_key = local_sub_game_title
 
-									# Set the "has previous key" switch to True
+									# Switch the "has previous key" switch to True
 									has_previous_key = True
 
 							# If the original key is not None (it was found)
@@ -1048,8 +1062,35 @@ class GamePlayer(object):
 
 							# If the "has previous key" switch is False
 							if has_previous_key == False:
-								# Adds the the game dictionary to the end of the statistics dictionary
-								statistics[key]["Dictionary"][game_title] = new_value
+								# If the first two characters of the item title is a colon and a space
+								# (Remove the colon and space from the item title so the sub-game title is more beautiful inside the dictionary)
+								if item_title[0] + item_title[1] == ": ":
+									# Remove the colon and space
+									item_title = item_title[2:]
+
+								# If the game title is not inside the statistics dictionary of the module
+								# And the current sub-game is the root game or sub-game that was played
+								if (
+									game_title not in statistics[key]["Dictionary"] and
+									item_title == played_title
+								):
+									# Add the the sub-game dictionary to the statistics dictionary with a value of zero
+									statistics[key]["Dictionary"][sub_game_title] = 0
+
+									# Update the game title key
+									game_title_key = sub_game_title
+
+									# Switch the "added sub-game dictionary" switch to True
+									added_sub_game_dictionary = True
+
+								# If the game title is inside the statistics dictionary of the module
+								# And the key is a number
+								if (
+									game_title in statistics[key]["Dictionary"] and
+									isinstance(statistics[key]["Dictionary"][game_title], int)
+								):
+									# Add the the game dictionary to the end of the statistics dictionary
+									statistics[key]["Dictionary"][game_title] = new_value
 
 						# If the first two characters of the item title is a colon and a space
 						# (Remove the colon and space from the item title so the sub-game title is more beautiful inside the dictionary)
@@ -1057,41 +1098,69 @@ class GamePlayer(object):
 							# Remove the colon and space
 							item_title = item_title[2:]
 
-						# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
-						statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
+						# Define the item dictionary as an empty dictionary
+						item_dictionary = {}
 
-						# Define the default title as the game title
-						title = game["Titles"]["Original"]
+						# If the sub-game title key is inside the statistics dictionary of the module
+						if sub_game_title in statistics[key]["Dictionary"]:
+							# Define a shortcut for the root sub-game dictionary as the "item dictionary" variable
+							item_dictionary = statistics[key]["Dictionary"]
 
-						# If the "Sub-game" key is inside the game titles dictionary
-						if "Sub-game" in game["Titles"]:
-							# Define the title as the sub-game title
-							title = game["Titles"]["Sub-game"]["Original (no game title)"]
+							# Define the "key to use" as the sub-game title
+							key_to_use = sub_game_title
+
+						# If the game title is inside the statistics dictionary of the module
+						if game_title in statistics[key]["Dictionary"]:
+							# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
+							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
+
+							# Define a shortcut for the sub-game dictionary on the game title dictionary as the "item dictionary" variable
+							item_dictionary = statistics[key]["Dictionary"][game_title]["Dictionary"]
+
+							# Define the "key to use" as the item title
+							key_to_use = item_title
 
 						# If the current sub-game is the root game or sub-game that was played
-						if item_title == title:
-							# Add one to the number of times the sub-game was played
-							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] += 1
+						# And the item dictionary is not an empty dictionary
+						if (
+							item_title == played_title and
+							item_dictionary != {}
+						):
+							# Add one to the number of times the sub-game was played, inside the item dictionary with the key to use
+							item_dictionary[key_to_use] += 1
 
 						# If the sub-game title is not the same as the game title
 						# And the old sub-game title (with the game title) key is present inside the root game statistics dictionary
+						# And the game title is inside the statistics dictionary of the module
 						if (
 							item_title != game_title and
-							sub_game_title in statistics[key]["Dictionary"]
+							sub_game_title in statistics[key]["Dictionary"] and
+							game_title in statistics[key]["Dictionary"]
 						):
 							# Remove the key
 							statistics[key]["Dictionary"].pop(sub_game_title)
 
-					# Reset the total number to be zero
-					statistics[key]["Dictionary"][game_title]["Total"] = 0
+					# If the game title is inside the statistics dictionary of the module
+					if game_title in statistics[key]["Dictionary"]:
+						# Reset the total number to be zero
+						statistics[key]["Dictionary"][game_title]["Total"] = 0
 
-					# Iterate through the keys inside the root game dictionary
-					for game_number in statistics[key]["Dictionary"][game_title]["Dictionary"].values():
-						# Add the game number to the total number of times the root game was played
-						statistics[key]["Dictionary"][game_title]["Total"] += game_number
+						# Iterate through the keys inside the root game dictionary
+						for game_number in statistics[key]["Dictionary"][game_title]["Dictionary"].values():
+							# Add the game number to the total number of times the root game was played
+							statistics[key]["Dictionary"][game_title]["Total"] += game_number
 
 			# Define the old number as the current number
 			statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][game_title_key]
+
+			# If the "added sub-game dictionary" switch is True
+			# And the old number is not zero
+			if (
+				added_sub_game_dictionary == True and
+				statistics["Dictionary"]["Numbers"][key]["Old"] != 0
+			):
+				# Remove one from the old number
+				statistics["Dictionary"]["Numbers"][key]["Old"] -= 1
 
 			# If the old key is a dictionary
 			if isinstance(statistics["Dictionary"]["Numbers"][key]["Old"], dict):
@@ -1100,19 +1169,15 @@ class GamePlayer(object):
 
 				# If the "Items" key does exist in the local game dictionary
 				if "Items" in game:
-					# Define the default title as the game title
-					title = game["Titles"]["Original"]
-
-					# If the "Sub-game" key is inside the game titles dictionary
-					if "Sub-game" in game["Titles"]:
-						# Define the title as the sub-game title
-						title = game["Titles"]["Sub-game"]["Original (no game title)"]
-
 					# Remove one from the number of times the sub-game was played
-					statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][game_title]["Dictionary"][title] - 1
+					statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][game_title]["Dictionary"][played_title] - 1
 
-			# If the key is a dictionary
-			if isinstance(statistics[key]["Dictionary"][game_title_key], int):
+			# If the "Items" key does not exist in the local game dictionary
+			# And the game title key is a number
+			if (
+				"Items" not in game and
+				isinstance(statistics[key]["Dictionary"][game_title_key], int)
+			):
 				# Update the number of times the root game was played
 				statistics[key]["Dictionary"][game_title_key] += 1
 
@@ -1120,8 +1185,16 @@ class GamePlayer(object):
 			# (If the "Items" key exists inside the game dictionary, the old number has already been increased by 1)
 			statistics["Dictionary"]["Numbers"][key]["New"] = statistics["Dictionary"]["Numbers"][key]["Old"]
 
+			# Make a shortcut for the old and new numbers
+			old = statistics["Dictionary"]["Numbers"][key]["Old"]
+			new = statistics["Dictionary"]["Numbers"][key]["New"]
+
 			# If the "Items" key does exist in the local game dictionary
-			if "Items" in game:
+			# Or the new and old number are equal
+			if (
+				"Items" in game or
+				old == new
+			):
 				# Add one to the new number
 				statistics["Dictionary"]["Numbers"][key]["New"] += 1
 
@@ -1266,7 +1339,7 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Select_Game(self, options = None, define_item = False, play = False, game_title = None):
+	def Select_Game(self, options = None, define_item = False, play = False, game_title = None, sub_game_title = None):
 		# Define the empty dictionary
 		dictionary = {}
 
@@ -1808,7 +1881,7 @@ class GamePlayer(object):
 				dictionary["Game"] = game
 
 				# Define the sub-games
-				value = self.Define_Sub_Games(dictionary, play = play)
+				value = self.Define_Sub_Games(dictionary, play = play, sub_game_title = sub_game_title)
 
 				if value["Game"]["Sub-game"]["Title"] != dictionary["Game"]["Title"]:
 					dictionary = value
@@ -2044,8 +2117,23 @@ class GamePlayer(object):
 			game["Sub-game"] != None and
 			game["Sub-game"] != game["Title"]
 		):
-			# Get the sub-game dictionary
-			game["Sub-game"] = game["Sub-game type"]["Items"]["Dictionary"][game["Sub-game"]]
+			# Define a shortcut for the "Items" dictionary
+			items_dictionary = game["Sub-game type"]["Items"]["Dictionary"]
+
+			# Define a shortcut for the sub-game title
+			sub_game_title = game["Sub-game"]
+
+			# If the sub-game title is present inside the dictionary
+			if sub_game_title in items_dictionary:
+				# Get the sub-game dictionary
+				game["Sub-game"] = items_dictionary[sub_game_title]
+
+			else:
+				# Add a colon and a space before the sub-game title
+				sub_game_title = ": " + sub_game_title
+
+				# Try to find the sub-game again
+				game["Sub-game"] = items_dictionary[sub_game_title]
 
 		# Else, define the sub-game dictionary as a dictionary with only the game titles
 		else:
@@ -2077,7 +2165,7 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Select_Game_Type_And_Game(self, options = None, game_title = None, play = False):
+	def Select_Game_Type_And_Game(self, options = None, game_title = None, sub_game_title = None, play = False):
 		dictionary = {
 			"Type": {
 				"Select": True,
@@ -2113,7 +2201,7 @@ class GamePlayer(object):
 						dictionary["Type"] = game_type
 
 		if dictionary["Game"]["Select"] == True:
-			dictionary["Game"] = self.Select_Game(dictionary, play = play, game_title = game_title)["Game"]
+			dictionary["Game"] = self.Select_Game(dictionary, play = play, game_title = game_title, sub_game_title = sub_game_title)["Game"]
 
 		return dictionary
 
@@ -2566,91 +2654,117 @@ class GamePlayer(object):
 		return status_to_return
 
 	def Change_Status(self, dictionary, status = ""):
+		# If the "status" parameter is an empty string
 		if status == "":
+			# Define the status variable as the "Completed" status
 			status = self.Language.language_texts["completed, title()"]
 
-		# Update the status key in the game details
+		# Update the "Status" language key in the game "Details" dictionary
 		dictionary["Game"]["Details"][self.Language.language_texts["status, title()"]] = status
 
-		# Update the game details file
+		# Update the game "Details.txt" file
 		self.File.Edit(dictionary["Game"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Game"]["Details"]), "w")
 
+		# Check the status of the game to update it inside the JSON files that lists the games
 		self.Check_Status(dictionary)
 
 	def Check_Status(self, dictionary):
+		# Define a shortcut for the game type
 		game_type = dictionary
 
+		# If the "Type" key is inside the dictionary parameter
+		# And the "JSON" key is inside the "Type" dictionary
 		if (
 			"Type" in dictionary and
 			"JSON" in dictionary["Type"]
 		):
+			# Define the game type as the "Type" dictionary
 			game_type = dictionary["Type"]
 
-			self.language_status = dictionary["Game"]["Details"][self.Language.language_texts["status, title()"]]
+			# Get the language status of the game
+			language_status = dictionary["Game"]["Details"][self.Language.language_texts["status, title()"]]
 
-			# Get the English status from the language status of the game details
-			status = self.Get_Language_Status(self.language_status)
+			# Get the English status of the game using the language status
+			status = self.Get_Language_Status(language_status)
 
+		# Read the "Information.json" file of the game type
 		dictionary["JSON"] = self.JSON.To_Python(game_type["Folders"]["Information"]["Information"])
 
-		# Update the number of games
+		# Update the number of games inside the file
 		dictionary["JSON"]["Number"] = len(dictionary["JSON"]["Titles"])
 
-		# Sort the titles list
+		# Sort the list of game titles of the game type
 		dictionary["JSON"]["Titles"] = sorted(dictionary["JSON"]["Titles"], key = str.lower)
 
+		# Make a local list of titles
 		titles = []
 
+		# If the "Type" key is inside the dictionary parameter
+		# And the "JSON" key is not inside the "Type" dictionary
 		if (
 			"Type" in dictionary and
 			"JSON" not in dictionary["Type"]
 		):
+			# Add the list of game titles from the JSON file to the local list of titles
 			titles.extend(dictionary["JSON"]["Titles"])
 
+		# If the "Type" key is inside the dictionary parameter
+		# And the "JSON" key is inside the "Type" dictionary
 		if (
 			"Type" in dictionary and
 			"JSON" in dictionary["Type"]
 		):
+			# Add the game title to the local list of titles
 			titles.append(dictionary["Game"]["Title"])
 
-		# Iterate through the statuses list
+		# Iterate through the list of playing statuses
 		for playing_status in self.texts["statuses, type: list"]["en"]:
+			# Iterate through the local list of game titles
 			for game_title in titles:
+				# If the "Type" key is inside the dictionary parameter
+				# And the "JSON" key is not inside the "Type" dictionary
 				if (
 					"Type" in dictionary and
 					"JSON" not in dictionary["Type"]
 				):
+					# Get the game folder
 					folder = game_type["Folders"]["Information"]["root"] + self.Sanitize_Title(game_title) + "/"
+
+					# Get and read the game details file
 					details_file = folder + self.Language.language_texts["details, title()"] + ".txt"
 					details = self.File.Dictionary(details_file)
 
-					self.language_status = details[self.Language.language_texts["status, title()"]]
+					# Get the language status of the game
+					language_status = details[self.Language.language_texts["status, title()"]]
 
-					# Get the English status from the language status of the game details
-					status = self.Get_Language_Status(self.language_status)
+					# Get the English status of the game using the language status
+					status = self.Get_Language_Status(language_status)
 
-				# If the game status is equal to the playing status
-				# And the game is not in the correct status list, add it to the list
+				# If the game status is equal to the current playing status on the for loop
+				# And the game is not in the correct playing status list, add it to the correct list
+				# (The list of the current playing status in the for loop)
 				if (
 					status == playing_status and
 					game_title not in dictionary["JSON"]["Status"][playing_status]
 				):
 					dictionary["JSON"]["Status"][playing_status].append(game_title)
 
-				# If the game status is not equal to the playing status
-				# And the game is in the wrong playing status list, remove it from the list
+				# If the game status is not equal to the current playing status on the for loop
+				# And the game is in the wrong playing status list, remove it from the wrong list
+				# (The list of the current playing status in the for loop)
 				if (
 					status != playing_status and
 					game_title in dictionary["JSON"]["Status"][playing_status]
 				):
 					dictionary["JSON"]["Status"][playing_status].remove(game_title)
 
-			# Sort the games list
+			# Sort the list of games for the current playing status in the for loop
 			dictionary["JSON"]["Status"][playing_status] = sorted(dictionary["JSON"]["Status"][playing_status], key = str.lower)
 
-		# Update the game type "Information.json" file
+		# Update the "Information.json" file of the game type
 		self.JSON.Edit(game_type["Folders"]["Information"]["Information"], dictionary["JSON"])
 
+		# Return the root dictionary
 		return dictionary
 
 	def Define_Title(self, title, language = None):
@@ -2877,11 +2991,15 @@ class GamePlayer(object):
 
 			# --------------- #
 
-			# Show the dates when the user started and finished playing the game, if the user finished the game
+			# If the "Dates" key exists inside the game dictionary
 			if "Dates" in game:
+				# Show the "Dates" language text
 				print()
 				print(self.Date.language_texts["dates, title()"] + ":")
 
+				# Show the dates text along with their dates
+				# (The date that the user started playing the game
+				# And if the user finished the whole game, also the date they finished playing and the duration of play)
 				for key, value in game["Dates"].items():
 					print("\t" + key + ":")
 					print("\t" + value)
@@ -2904,9 +3022,9 @@ class GamePlayer(object):
 				"Descriptions" in self.dictionary["Entry"]["Diary Slim"] and
 				self.user_language in self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
 			):
-				# Show the language "Description" text
+				# Show the user language "Gaming session description" text
 				print()
-				print(self.Language.language_texts["description, title()"] + ":")
+				print(self.language_texts["gaming_session_description"] + ":")
 
 				# Define the description variable for easier typing and a more beautiful code
 				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.user_language]["lines"]

@@ -781,12 +781,15 @@ class Register(Tasks):
 			# Add the text to the list of lines
 			lines.append(text)
 
-		# Define the "Task description(s)" text based on the language (singular or plural)
+		# If the language parameter is not "General"
 		if language_parameter != "General":
+			# Define the task description text as the singular one
 			text = self.texts["task_description"][language]
 			line_break = "\n"
 
+		# If the language parameter is "General"
 		else:
+			# Define the task description text as the plural one
 			text = self.texts["task_descriptions"][language]
 			line_break = "\n\n"
 
@@ -824,21 +827,26 @@ class Register(Tasks):
 		# Add the times to the list of items
 		items.append(times)
 
-		# Define the task descriptions to be added to the list of items
+		# Define an empty string to add the descriptions to
 		descriptions = ""
 
 		# Define the task description to be added based on the language
-		# (Only the task description for the current language, or all task descriptions)
+		# Only the description for the current language
 		if language_parameter != "General":
 			descriptions = self.task["Descriptions"][language]
 
+		# Or all language descriptions
 		else:
-			for language in self.languages["small"]:
-				full_language = self.languages["full"][language]
+			# Iterate through the list of small languages
+			for local_language in self.languages["small"]:
+				# Get the full language
+				full_language = self.languages["full"][local_language]
 
-				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][language]
+				# Add the full language and the language description to the root descriptions text
+				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][local_language]
 
-				if language != self.languages["small"][-1]:
+				# If the local language is not the last language in the list
+				if local_language != self.languages["small"][-1]:
 					descriptions += "\n\n"
 
 		# If the description of the task is not the same as the task title

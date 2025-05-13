@@ -106,7 +106,7 @@ class Comment_Writer(Watch_History):
 				self.Text.Copy(self.media["Comment"]["Text"]["String"])
 
 				# If the media (item) being watched is a local one
-				# (Because for remote media, the media unit is already opened)
+				# (Because for remote media, the remote media unit (link) is already opened)
 				if self.media["States"]["Local"] == True:
 					# Open the remote episode link
 					self.System.Open(self.media["Episode"]["Remote"]["Link"])
@@ -123,6 +123,7 @@ class Comment_Writer(Watch_History):
 		# Define the "Comment" dictionary
 		self.media["Comment"] = {
 			"File name": "",
+			"File name (sanitized)": "",
 			"Text": {
 				"String": "",
 				"Lines": []
@@ -178,10 +179,10 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["File name"] += self.media["Episode"]["Re-watched"]["Texts"]["Number"][self.user_language]
 
 		# Define the sanitized version of the comment file name
-		sanitized_file_name = self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True)
+		self.media["Comment"]["File name (sanitized)"] = self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True)
 
 		# Define and create the comment file inside the media (item) folder
-		self.media["Item"]["Folders"]["comments"]["files"]["comment"] = self.media["Item"]["Folders"]["comments"]["files"]["root"] + sanitized_file_name + ".txt"
+		self.media["Item"]["Folders"]["comments"]["files"]["comment"] = self.media["Item"]["Folders"]["comments"]["files"]["root"] + self.media["Comment"]["File name (sanitized)"] + ".txt"
 
 		self.File.Create(self.media["Item"]["Folders"]["comments"]["files"]["comment"])
 
@@ -214,7 +215,7 @@ class Comment_Writer(Watch_History):
 		# Define the show text to be shown in the "Input.Lines()" method, with the comment file name
 		show_text = self.separators["10"] + "\n\n"
 		show_text += self.language_texts["comment_file_name"] + ":" + "\n"
-		show_text += self.media["Comment"]["File name"] + "\n"
+		show_text += self.media["Comment"]["File name (sanitized)"] + "\n"
 		show_text += "\n"
 
 		# Add the gender text based on the gender "the" text of the media type and the media unit text
@@ -280,8 +281,9 @@ class Comment_Writer(Watch_History):
 			# Define a shortcut for the comment time text
 			comment_time_text = self.language_texts["comment_time"]
 
-			# Add the comment time text to the comment text
-			# (It will be replaced by the true comment time when the user finish writing the comment later)
+			# Add the user language "Comment time" text
+			# And the "[Comment time]" text to the root comment text
+			# (It will be replaced by the actual comment time when the user finishes writing the comment later)
 			self.media["Comment"]["Text"]["String"] += comment_time_text + ":" + "\n" + \
 			"[Comment time]" + "\n"
 
@@ -379,7 +381,7 @@ class Comment_Writer(Watch_History):
 
 		# If the number of lines inside the comment text is greater than or equal to 4
 		if len(self.media["Comment"]["Text"]["Lines"]) >= 4:
-			# Replace the "Comment time" text in the comment text with the correct comment time
+			# Replace the "[Comment time]" text in the comment text with the correct comment time
 			self.media["Comment"]["Text"]["Lines"][4] = self.media["Comment"]["Text"]["Lines"][4].replace("[Comment time]", comment_time)
 
 		# Update the backup file to update the comment time inside it
@@ -659,7 +661,7 @@ class Comment_Writer(Watch_History):
 				self.dictionary["Comment Writer"]["Comment"]["Titles"][self.media["Language"]] == self.media["Episode"]["Titles"][self.media["Language"]]
 			):
 				# Add the "Entry" key to be removed from the comment dictionary that will be used by the "Register" class
-				# (This means that the comment file name is the same as the media unit (episode) title, so the entry will be the same as itD)
+				# (This means that the comment file name is the same as the media unit (episode) title, so the entry will be the same as it)
 				keys_to_remove.append("Entry")
 
 		# Remove the not useful keys from the comment dictionary

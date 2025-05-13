@@ -929,27 +929,33 @@ class Register(Watch_History):
 				# Define the unit text as the media item type text
 				unit_text = self.media["Item"]["Type"][self.user_language].lower()
 
-			# Add unit and "of the" text
-			self.watched_item_text = self.Language.language_texts["genders, type: dict, masculine"]["this"] + " " + unit_text + " " + text
+			# Define the "this text"
+			this_text = self.Language.language_texts["genders, type: dict, masculine"]["this, neutral"]
 
+			# Add the unit and the "of the" text
+			self.watched_item_text = this_text + " " + unit_text + " " + text
+
+			# If the media item is not a single unit one
+			# And the media is not a video channel
 			if (
 				self.media["States"]["Single unit"] == False and
 				self.media["States"]["Video"] == False
 			):
-				# Replace "this" text with "the first" if the episode is the first one
+				# Replace "this" with "the first" if the episode is the first one
 				if self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][0]:
-					self.watched_item_text = self.watched_item_text.replace(self.Language.language_texts["genders, type: dict, masculine"]["this"], self.Language.language_texts["the_first, masculine"])
+					self.watched_item_text = self.watched_item_text.replace(this_text, self.Language.language_texts["the_first, masculine"])
 
-				# Replace "this" text with "the last" if the episode is the last one
+				# Replace "this" with "the last" if the episode is the last one
 				if (
 					self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] or
 					len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) == 1
 				):
-					self.watched_item_text = self.watched_item_text.replace(self.Language.language_texts["genders, type: dict, masculine"]["this"], self.Language.language_texts["the_last, masculine"])
+					self.watched_item_text = self.watched_item_text.replace(this_text, self.Language.language_texts["the_last, masculine"])
 
 			if "Movie" in self.media["Episode"]["Titles"][self.media["Language"]]:
 				self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.language_texts["movie"])
 
+			# Define the "of the" text template
 			self.of_the_text = self.Language.language_texts["of_the_{}"]
 
 			if (
@@ -1009,15 +1015,21 @@ class Register(Watch_History):
 		if self.media["States"]["Series media"] == False:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(self.dictionary["Media type"]["Genders"][self.user_language]["this"] + " " + self.dictionary["Media type"]["Singular"][self.user_language].lower())
 
+		# Define the local language to use to add the episode title
+		language = self.media["Language"]
+
+		# If the media language is not the user language
+		if self.media["Language"] != self.user_language:
+			# Change the local language to the user language
+			language = self.user_language
+
 		# If the media unit is not single unit, add only the language episode (or movie) title
 		if self.media["States"]["Single unit"] == False:
+			# Add a colon and a line break to the Diary Slim text
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n"
 
-			if self.media["Language"] in self.media["Episode"]["Titles"]:
-				title = self.media["Episode"]["Titles"][self.media["Language"]]
-
-			else:
-				title = self.media["Episode"]["Titles"]["Language"]
+			# Get the media or user language episode title
+			title = self.media["Episode"]["Titles"][language]
 
 			# If the length of the title is greater than one
 			# And the first two characters of the title are a space and a colon
@@ -1028,12 +1040,13 @@ class Register(Watch_History):
 				# Remove them
 				title = title[2:]
 
+			# Add the episode title to the Diary Slim text
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += title
 
 		# If the media unit is single unit, add the episode with media title
 		if self.media["States"]["Single unit"] == True:
 			# Define the episode title
-			episode_title = self.media["Episode"]["Titles"][self.media["Language"]]
+			episode_title = self.media["Episode"]["Titles"][language]
 
 			# If the length of the title is greater than one
 			# And the first two characters of the title are a space and a colon
@@ -1145,6 +1158,10 @@ class Register(Watch_History):
 			self.switches["Testing"] == False and
 			ask_for_input == True
 		):
+			# Show a separator
+			print()
+			print(self.separators["5"])
+
 			# Ask if the user wants to post the watched media status on the social networks
 			self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
 

@@ -75,16 +75,46 @@ class File():
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Sanitize(self, path, restricted_characters = False):
+		# If the "restricted characters" parameter is False
 		if restricted_characters == False:
+			# Normalize the path and replace backslashes with forward slashes
 			path = os.path.normpath(path).replace("\\", "/")
 
+		# If the "restricted characters" parameter is True
 		if restricted_characters == True:
-			self.restricted_characters_list = [":", "?", '"', "\\", "/", "|", "*", "<", ">"]
+			# Remove the restricted characters
+			path = self.Remove_Restricted_Characters(path)
 
-			for character in self.restricted_characters_list:
-				if character in path:
-					path = path.replace(character, "")
+		# Return the path
+		return path
 
+	def Remove_Restricted_Characters(self, path):
+		# Define the list of restricted characters
+		restricted_characters = [
+			":",
+			"?",
+			'"',
+			"\\",
+			"/",
+			"|",
+			"｜",
+			"*",
+			"<",
+			">"
+		]
+
+		# Iterate through the list of characters
+		for character in restricted_characters:
+			# Remove the character if it exists
+			path = path.replace(character, "")
+
+		# Remove leading and trailing spaces
+		path = path.strip()
+
+		# Replace multiple spaces with a single space
+		path = " ".join(path.split())
+
+		# Return the path
 		return path
 
 	def Name(self, file):

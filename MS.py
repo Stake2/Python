@@ -438,8 +438,11 @@ class Module_Selector():
 					# Read the "Texts.json" file of the module to get its texts
 					module["Texts"] = self.JSON.To_Python(module["Folders"]["Texts"]["Texts"])
 
+					# Define the text key
+					text_key = key
+
 					# Get the text for the custom argument
-					dictionary["Text"] = module["Texts"][key][self.user_language]
+					dictionary["Text"] = module["Texts"][text_key][self.user_language]
 
 					# If there is the "{module}" format text on the argument text
 					# Replace it with the module title
@@ -691,11 +694,20 @@ class Module_Selector():
 
 						# If the argument does not contains a custom (renamed) key
 						if "Custom key" not in argument:
-							# Make a default custom key with the original key, in title mode
-							# Replace underscores with spaces, and remove the module title and the dot
+							# Make a default custom key with the original key
 							custom_key = module["Custom arguments"][key]["Key"].replace(module["Key"] + ".", "")
-							custom_key = custom_key.title().replace("_", " ")
 
+							# If there is no space in the custom key
+							if " " not in custom_key:
+								# Make it into capitalize case
+								custom_key = custom_key.capitalize()
+
+							# If there is an underline in the custom key
+							if "_" in custom_key:
+								# Replace it with a dash
+								custom_key = custom_key.replace("_", "-")
+
+							# Define the "Custom key" key as the local custom key
 							argument["Custom key"] = custom_key
 
 						# If the argument contains a custom (renamed) key

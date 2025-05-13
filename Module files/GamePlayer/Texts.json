@@ -119,6 +119,10 @@
 		"en": "Gaming session description",
 		"pt": "Descrição da sessão de jogatina"
 	},
+	"gaming_session_descriptions": {
+		"en": "Gaming session descriptions",
+		"pt": "Descrições da sessão de jogatina"
+	},
 	"post_on_the_social_networks": {
 		"en": "Post on the Social Networks",
 		"pt": "Postar nas Redes Sociais"
@@ -138,6 +142,10 @@
 	"game": {
 		"en": "Selects a game to be opened by the {module} module",
 		"pt": "Seleciona um jogo a ser aberto pelo módulo {module}"
+	},
+	"sub_game": {
+		"en": "Selects a sub-game to be opened by the {module} module",
+		"pt": "Seleciona um sub-jogo a ser aberto pelo módulo {module}"
 	},
 	"the_game_cover": {
 		"en": "the game cover",

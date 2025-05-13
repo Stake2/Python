@@ -78,6 +78,9 @@ custom_arguments = {
 	"game": {
 		"Action": "store",
 		"Auto-class": "Play"
+	},
+	"sub_game": {
+		"Action": "store"
 	}
 }
 

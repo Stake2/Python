@@ -233,6 +233,10 @@
 		"en": "Opening the \"{}\" music player for you to listen to the soundtrack of the story",
 		"pt": "Abrindo o tocador de música \"{}\" para você ouvir a trilha sonora da história"
 	},
+	"backup_of_the_time_of": {
+		"en": "Backup of the time of",
+		"pt": "Backup do tempo de"
+	},
 	"press_enter_to_start_counting_the_time_of": {
 		"en": "Press Enter to start counting the time of",
 		"pt": "Pressione Enter para começar a contar o tempo de"
@@ -277,9 +281,9 @@
 		"en": "Old title",
 		"pt": "Título antigo"
 	},
-	"type_the_new_chapter_title_in_{}": {
-		"en": "Type the new chapter title in {}",
-		"pt": "Digite o novo título do capítulo em {}"
+	"type_the_new_chapter_title": {
+		"en": "Type the new chapter title",
+		"pt": "Digite o novo título do capítulo"
 	},
 	"i_started_{}_the_chapter_{}_of_my_story_{}": {
 		"en": "I started {} the chapter {} of my story \"{}\"",
