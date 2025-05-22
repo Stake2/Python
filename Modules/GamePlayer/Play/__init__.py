@@ -163,7 +163,7 @@ class Play(GamePlayer):
 
 		# ---------- #
 
-		# Show the now time
+		# Show the current time when the user starts playing the game
 		print(self.Date.language_texts["now, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
@@ -191,15 +191,19 @@ class Play(GamePlayer):
 			# Add 2 hours, 30 minutes, and 28 seconds to the game session time, for testing purposes
 			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 2, minutes = 30, seconds = 28))
 
-		# Show the after time (after playing the game)
+		# Show the time after the user finishes playing the game
 		print()
 		print(self.Date.language_texts["after, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["After"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# ---------- #
 
-		# Define the time difference
-		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(self.dictionary["Entry"]["Session duration"]["Before"], self.dictionary["Entry"]["Session duration"]["After"])
+		# Define shortcuts for the start and finish times
+		start_time = self.dictionary["Entry"]["Session duration"]["Before"]
+		finish_time = self.dictionary["Entry"]["Session duration"]["After"]
+
+		# Calculate the time difference between the start and finish times
+		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(start_time, finish_time)
 
 		# Get the difference text
 		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]

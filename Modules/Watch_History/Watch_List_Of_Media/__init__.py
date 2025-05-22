@@ -84,11 +84,11 @@ class Watch_List_Of_Media(Watch_History):
 
 					# If there is no comma on the data
 					if ", " not in data:
-						# Get the re-watched times
+						# Get the re-watching times
 						data = data.replace("x", "")
 
-						# Create the re-watched dictionary with the data
-						self.dictionary["Media list"]["Data"][key]["Re-watched"] = {
+						# Create the re-watching dictionary with the data
+						self.dictionary["Media list"]["Data"][key]["Re-watching"] = {
 							"Times": int(data)
 						}
 
@@ -97,12 +97,12 @@ class Watch_List_Of_Media(Watch_History):
 						# Split the data
 						data = data.split(", ")
 
-						# Get the re-watched times
+						# Get the re-watching times
 						times = data[0].replace("x", "")
 
-						# Add the re-watched times and media item keys to the media data dictionary
+						# Add the re-watching times and media item keys to the media data dictionary
 						self.dictionary["Media list"]["Data"][key].update({
-							"Re-watched": {
+							"Re-watching": {
 								"Times": int(times)
 							},
 							"Item": data[1]
@@ -283,13 +283,13 @@ class Watch_List_Of_Media(Watch_History):
 						# Switch the "Is media item" switch to True
 						self.dictionary["Switches"]["Has media item"] = True
 
-					# If the "Re-watched" key is inside the data dictionary
-					if "Re-watched" in data:
-						# Add the data re-watched dictionary to the new dictionary
-						new_dictionary["Re-watched"] = data["Re-watched"]
+					# If the "Re-watching" key is inside the data dictionary
+					if "Re-watching" in data:
+						# Add the data re-watching dictionary to the new dictionary
+						new_dictionary["Re-watching"] = data["Re-watching"]
 
 						# Create the title addon
-						addon = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(data["Re-watched"]["Times"]) + "x)"
+						addon = " (" + self.language_texts["re_watched, capitalize()"] + " " + str(data["Re-watching"]["Times"]) + "x)"
 
 				# Define more details and variables for the media using the "Watch_Media" sub-class
 				new_dictionary = Watch_Media(new_dictionary, run_as_module = True, open_media = False).dictionary

@@ -274,7 +274,7 @@ class JSON():
 		if return_text == True:
 			return json
 
-	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False):
+	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False, remove_after_key = False):
 		keys = list(dictionary.keys())
 		values = list(dictionary.values())
 
@@ -304,5 +304,8 @@ class JSON():
 			i += 1
 
 		dictionary = dict(zip(keys, values))
+
+		if remove_after_key == True:
+			dictionary.pop(after_key)
 
 		return dictionary

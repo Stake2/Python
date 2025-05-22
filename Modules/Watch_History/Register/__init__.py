@@ -2,21 +2,19 @@
 
 from Watch_History.Watch_History import Watch_History as Watch_History
 
+from copy import deepcopy
+
 class Register(Watch_History):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
 
-		# Ask for the entry information
-		if self.dictionary == {}:
-			self.Type_Entry_Information()
-
+		# Update the "Entry" dictionary with additional structured data:
+		# "Diary Slim": initializes empty fields for Diary Slim related text entries
+		# "States": sets the initial state for social network posting as False
 		self.dictionary["Entry"].update({
-			"Dates": {
-				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
-				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
-			},
 			"Diary Slim": {
 				"Text": "",
 				"Clean text": ""
@@ -42,17 +40,21 @@ class Register(Watch_History):
 				# Check the media and media item dates and the date files
 				self.Check_Media_Dates()
 
-		# Define the "test things" switch as [the value I am using if I am testing the class]
+		# Flag to control whether test-specific behavior should be executed
 		test_stuff = False
 
-		# If the switch is False
+		# Execute the full workflow only if not in test mode
 		if test_stuff == False:
-			# Database related methods
+			# Save the entry to the database in the JSON format
 			self.Register_In_JSON()
+
+			# Create the individual entry file for the watched media
 			self.Create_Entry_File()
+
+			# Create the entry files inside their corresponding year folders
 			self.Add_Entry_File_To_Year_Folder()
 
-			# Define the Diary Slim text
+			# Generate the Diary Slim text for the watched media
 			self.Define_Diary_Slim_Text()
 
 			# If the "Defined title" key is not inside the root dictionary
@@ -60,7 +62,7 @@ class Register(Watch_History):
 				# Post about the watched media (and item) on the social networks
 				self.Post_On_Social_Networks()
 
-			# Write the watched media (item) description text in the user language on the Diary Slim
+			# Write the final Diary Slim text in the user's language on the Diary Slim
 			self.Write_On_Diary_Slim()
 
 		# Update the statistic about the media watched
@@ -76,204 +78,296 @@ class Register(Watch_History):
 
 		super().__init__()
 
-	def Type_Entry_Information(self):
-		# To-Do: Make this method
-		pass
-
 	def Register_In_JSON(self):
+		# Define a shortcut for the plural form of the media type in English
 		self.media_type = self.dictionary["Media type"]["Plural"]["en"]
 
-		# Re-read the "Watched.json" file to get the most updated data
+		# ---------- #
+
+		# Re-read the "Watched.json" file to retrieve the most up-to-date data
 		self.dictionaries["Watched"] = self.JSON.To_Python(self.media["Item"]["Folders"]["Watched"]["entries"])
 
-		# Re-read the "Entries.json" file to get the most updated data
+		# If the "Defined title" key is not inside the root dictionary
 		if "Defined title" not in self.dictionary:
+			# Re-read the "Entries.json" file to retrieve the most up-to-date data
 			self.dictionaries["Entries"] = self.JSON.To_Python(self.folders["Watch History"]["Current year"]["Entries"])
 
-		# If the "Dictionaries" variable is inside the root dictionary
+		# Check if the "Dictionaries" key exists in the root dictionary
 		if "Dictionaries" in self.dictionary:
-			# Define the local "dictionaries" variable as the variable inside the root dictionary
+			# Set the local "dictionaries" variable to the value inside the root dictionary
 			self.dictionaries = self.dictionary["Dictionaries"]
 
+			# If the "Watched" key exists, add it to the local dictionaries
 			if "Watched" in self.dictionary:
 				self.dictionaries["Watched"] = self.dictionary["Watched"]
 
-		dicts = [
+		# Create a local list of dictionaries to update
+		dictionaries_to_update = [
 			self.dictionaries["Entries"],
 			self.dictionaries["Media type"][self.media_type],
 			self.dictionaries["Watched"]
 		]
 
-		# Add one to the entry, media type entry, and root media type entry numbers
-		for dict_ in dicts:
-			dict_["Numbers"]["Total"] += 1
+		# Increment the total count for entries, media type entries, and root media type entries
+		for current_dict in dictionaries_to_update:
+			current_dict["Numbers"]["Total"] += 1
 
-			if "Per Media Type" in dict_["Numbers"]:
-				dict_["Numbers"]["Per Media Type"][self.media_type] += 1
+			# If the "Per Media Type" key exists, increment the count for the specific media type
+			if "Per Media Type" in current_dict["Numbers"]:
+				current_dict["Numbers"]["Per Media Type"][self.media_type] += 1
 
-		# Define sanitized version of entry name for files
+		# ---------- #
+
+		# Get the entry time in the user timezone
+		entry_time = self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+		# Define a sanitized version of the entry name for file storage
 		self.dictionary["Entry"]["Name"] = {
-			"Normal": str(self.dictionaries["Entries"]["Numbers"]["Total"]) + ". " + self.media_type + " (" + self.dictionary["Entry"]["Dates"]["Timezone"] + ")",
+			"Normal": f"{self.dictionaries['Entries']['Numbers']['Total']}. {self.media_type} ({entry_time})",
 			"Sanitized": ""
 		}
 
+		# Create a sanitized version of the entry name by replacing invalid characters
 		self.dictionary["Entry"]["Name"]["Sanitized"] = self.dictionary["Entry"]["Name"]["Normal"].replace(":", ";").replace("/", "-")
 
-		# Add to the "Entries" lists
-		for dict_ in dicts:
-			if self.dictionary["Entry"]["Name"]["Normal"] not in dict_["Entries"]:
-				dict_["Entries"].append(self.dictionary["Entry"]["Name"]["Normal"])
+		# Add the entry name to the "Entries" lists in each dictionary
+		for current_dict in dictionaries_to_update:
+			if self.dictionary["Entry"]["Name"]["Normal"] not in current_dict["Entries"]:
+				current_dict["Entries"].append(self.dictionary["Entry"]["Name"]["Normal"])
 
-		# Update the number of Entries of all dictionaries using the length of the Entries list
-		for dict_ in dicts:
-			dict_["Numbers"]["Total"] = len(dict_["Entries"])
+		# ---------- #
 
-		# Define the local media and media item titles to remove some keys from them
+		# Update the total number of entries in all dictionaries based on the length of the "Entries" list
+		for current_dict in dictionaries_to_update:
+			current_dict["Numbers"]["Total"] = len(current_dict["Entries"])
+
+		# ---------- #
+
+		# Create local copies of the media and media item titles to modify them
 		media_titles = self.media["Titles"].copy()
 		item_titles = self.media["Item"]["Titles"].copy()
 
-		# Define the list of titles to remove some keys
+		# Define a list of title dictionaries to remove specific keys
 		titles = [
 			media_titles,
 			item_titles
 		]
 
-		# Remove the keys
-		for dict_ in titles:
-			dict_.pop("Language")
+		# Remove specified keys from each title dictionary
+		for current_dict in titles:
+			# Remove the "Language" key
+			current_dict.pop("Language")
 
+			# Remove specific language keys
 			for key in ["ja", "Sanitized"]:
-				if key in dict_:
-					dict_.pop(key)
+				current_dict.pop(key, None) # Use None to avoid KeyError if the key does not exist
 
+			# Remove language keys that match the original or romanized titles
 			for language in self.languages["small"]:
-				if language in dict_:
+				if language in current_dict:
 					if (
-						dict_["Original"] == dict_[language] or
-						"Romanized" in dict_ and
-						dict_["Romanized"] == dict_[language]
+						current_dict["Original"] == current_dict[language] or
+						("Romanized" in current_dict and current_dict["Romanized"] == current_dict[language])
 					):
-						dict_.pop(language)
+						current_dict.pop(language, None) # Use None to avoid KeyError if the key does not exist
 
-		self.key = self.dictionary["Entry"]["Name"]["Normal"]
+		# ---------- #
 
-		# Add the "Entry" dictionary to the "Entries" dictionary
-		self.dictionaries["Entries"]["Dictionary"][self.key] = {
-			"Number": self.dictionaries["Entries"]["Numbers"]["Total"],
-			"Type number": self.dictionaries["Media type"][self.media_type]["Numbers"]["Total"],
-			"Entry": self.dictionary["Entry"]["Name"]["Normal"],
-			"Media": media_titles,
-			"Item": item_titles,
+		# Get the normal entry name from the dictionary
+		self.entry_name = self.dictionary["Entry"]["Name"]["Normal"]
+
+		# Add the entry to the "Entries" dictionary
+		self.dictionaries["Entries"]["Dictionary"][self.entry_name] = {
+			"Number": self.dictionaries["Entries"]["Numbers"]["Total"], # Total number of entries
+			"Type number": self.dictionaries["Media type"][self.media_type]["Numbers"]["Total"], # Total number of media type entries
+			"Entry": self.dictionary["Entry"]["Name"]["Normal"], # Name of the entry
+			"Media": media_titles, # Media titles associated with the entry
+			"Item": item_titles, # Item titles associated with the entry
 			"Episode": {
-				"Number": 1,
-				"Titles": self.media["Episode"]["Titles"]
+				"Number": 1, # Episode number (currently fixed at 1, will be changed later)
+				"Titles": self.media["Episode"]["Titles"] # Episode titles
 			},
-			"Type": self.media_type,
-			"Date": self.dictionary["Entry"]["Dates"]["UTC"]
+			"Type": self.media_type, # The media type
+			"Times": deepcopy(self.dictionary["Entry"]["Times"])
 		}
 
-		# Remove the media item dictionary if the media does not contain a media item list,
-		# The media item title is the same as the media title,
-		# Or the media is non-series media
+		# Define a shortcut for the entry dictionary
+		self.entry_dictionary = self.dictionaries["Entries"]["Dictionary"][self.entry_name]
+
+		# Remove the media "Item" key from the dictionary if:
+		# 1. The media does not contain a media item list, OR
+		# 2. The media item title is the same as the media title
 		if (
 			self.media["States"]["Media item list"] == False or
 			self.media["States"]["Media item is media"] == True
 		):
-			self.dictionaries["Entries"]["Dictionary"][self.key].pop("Item")
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name].pop("Item")
 
-		# Remove episode titles and number keys of dictionary if media is non-series media or single unit
+		# Remove the "Episode" key from the dictionary if:
+		# 1. The media is non-series media, OR
+		# 2. The media is a single unit
 		if (
 			self.media["States"]["Series media"] == False or
 			self.media["States"]["Single unit"] == True
 		):
-			self.dictionaries["Entries"]["Dictionary"][self.key].pop("Episode")
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name].pop("Episode")
 
-		# Define episode number on dictionary if media is series media and not single unit and is episodic
+		# Define the episode number in the dictionary if:
+		# 1. The media is a series
+		# 2. The media is not a single unit
+		# 3. The media is episodic
 		if (
 			self.media["States"]["Series media"] == True and
 			self.media["States"]["Single unit"] == False and
 			self.media["States"]["Episodic"] == True
 		):
-			self.dictionaries["Entries"]["Dictionary"][self.key]["Episode"]["Number"] = self.media["Episode"]["Number"]
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Episode"]["Number"] = self.media["Episode"]["Number"]
 
-		# Remove "Number" key from Episode dictionary is the media is non-episodic
+		# ---------- #
+
+		# Define a list of time keys
+		time_keys = [
+			"Started watching",
+			"Finished watching",
+			"Finished watching (UTC)"
+		]
+
+		# Iterate through the list of time types
+		for time_key in time_keys:
+			# Define the timezone key as "Timezone"
+			timezone_key = "Timezone"
+
+			# Define the format as the timezone one
+			format = "HH:MM DD/MM/YYYY"
+
+			# If the "UTC" text is inside the time key
+			if "UTC" in time_key:
+				# Update the timezone key to be the UTC one
+				timezone_key = "UTC"
+
+				# Define the format as the UTC one
+				format = "YYYY-MM-DDTHH:MM:SSZ"
+
+			# Access the formatted time for the current time type
+			formatted_time = self.entry_dictionary["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
+
+			# Update the entry dictionary with the formatted time
+			self.entry_dictionary["Times"][time_key] = formatted_time
+
+		# Define the "Watching session duration" as the "Text" key
+		self.entry_dictionary["Times"]["Watching session duration"] = self.entry_dictionary["Times"]["Watching session duration"]["Text"]
+
+		# ---------- #
+
+		# Remove the "Number" key from the "Episode" dictionary if:
+		# 1. The "Episode" dictionary exists
+		# 2. The media is non-episodic
 		if (
-			"Episode" in self.dictionaries["Entries"]["Dictionary"][self.key] and
+			"Episode" in self.dictionaries["Entries"]["Dictionary"][self.entry_name] and
 			self.media["States"]["Episodic"] == False
 		):
-			self.dictionaries["Entries"]["Dictionary"][self.key]["Episode"].pop("Number")
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Episode"].pop("Number")
 
-		# Add episode ID if the key is present inside the episode dictionary
+		# ---------- #
+
+		# Add the episode ID to the dictionary if the "ID" key exists in the media episode dictionary
 		if "ID" in self.media["Episode"]:
-			self.dictionaries["Entries"]["Dictionary"][self.key]["ID"] = self.media["Episode"]["ID"]
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["ID"] = self.media["Episode"]["ID"]
 
-			# Add episode link
+			# Add the remote link to the dictionary if the "Remote" key exists in the media episode dictionary
 			if "Remote" in self.media["Episode"]:
-				self.dictionaries["Entries"]["Dictionary"][self.key]["Link"] = self.media["Episode"]["Remote"]["Link"]
+				self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Link"] = self.media["Episode"]["Remote"]["Link"]
 
-		# Add the "Comment" dictionary if it exists
+		# ---------- #
+
+		# Add the "Comment" dictionary if it exists in the "Comment Writer" dictionary
 		if "Comment" in self.dictionary["Comment Writer"]:
-			self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"] = self.dictionary["Comment Writer"]["Comment"]
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Comment"] = self.dictionary["Comment Writer"]["Comment"]
 
+			# Define a shortcut for the "Comment" dictionary
+			comment = self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Comment"]
+
+			# Remove the "Comment" key if it only contains the "Date" key and the date matches the entry date
 			if (
-				list(self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"].keys()) == ["Date"] and
-				self.dictionaries["Entries"]["Dictionary"][self.key]["Comment"]["Date"] == self.dictionaries["Entries"]["Dictionary"][self.key]["Date"]
+				comment.keys() == {"Date"} and # Check if the only key is "Date"
+				comment["Date"] == self.dictionary["Entry"]["Times"]["Finished watching"] # Compare the comment date with the entry date
 			):
-				self.dictionaries["Entries"]["Dictionary"][self.key].pop("Comment")
+				self.dictionaries["Entries"]["Dictionary"][self.entry_name].pop("Comment")
 
-		# Get the States dictionary
+		# ---------- #
+
+		# Get the "States" dictionary with its states and state texts using the "Define_States_Dictionary" root method
 		self.dictionary["States"] = self.Define_States_Dictionary(self.dictionary)
 
-		# Add the States dictionary into the Entry dictionary if it is not empty
-		if self.dictionary["States"]["States"] != {}:
-			self.dictionaries["Entries"]["Dictionary"][self.key]["States"] = self.dictionary["States"]["States"]
+		# Add the "States" dictionary to the entry dictionary if it is not empty
+		if self.dictionary["States"]["States"] != {}: # Check if the "States" dictionary is not empty
+			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["States"] = self.dictionary["States"]["States"]
 
-		# Add entry dictionary to media type and Watched entry dictionaries
-		for dict_ in dicts:
-			if dict_ != self.dictionaries["Entries"]:
-				dict_["Dictionary"][self.key] = self.dictionaries["Entries"]["Dictionary"][self.key].copy()
+		# ---------- #
+
+		# Add the entry dictionary to the media type and watched entry dictionaries
+		for current_dict in dictionaries_to_update:
+			if current_dict is not self.dictionaries["Entries"]: # Ensure we do not update the "Entries" dictionary itself
+				current_dict["Dictionary"][self.entry_name] = self.dictionaries["Entries"]["Dictionary"][self.entry_name].copy()
+
+		# ---------- #
 
 		# Get the "Comments" dictionary from the file
 		self.dictionaries["Comments"] = self.JSON.To_Python(self.folders["Comments"]["Comments"])
 
-		# Get the year comment number from the "Comments.json" file
+		# Get the number of comments for the current year from the "Comments.json" file
 		self.dictionaries["Entries"]["Numbers"]["Comments"] = self.dictionaries["Comments"]["Numbers"]["Years"][self.current_year["Number"]]
 
-		# Get the year media type comment number from the "Comments.json" file
+		# Get the number of comments for the current year and current media type from the "Comments.json" file
 		self.dictionaries["Media type"][self.media_type]["Numbers"]["Comments"] = self.dictionaries["Comments"]["Numbers"]["Type"][self.media_type]["Years"][self.current_year["Number"]]
 
-		# Add to the media "Watched" comments number
+		# Increment the number of comments by one if the user has written a comment for the media
 		if self.dictionary["Comment Writer"]["States"]["Write"] == True:
 			self.dictionaries["Watched"]["Numbers"]["Comments"] += 1
 
-		# Update the "Entries.json" file
+		# ---------- #
+
+		# Update the "Entries.json" file with the current entries
 		self.JSON.Edit(self.folders["Watch History"]["Current year"]["Entries"], self.dictionaries["Entries"])
 
-		# Update the media type "Entries.json" file
+		# Update the media type "Entries.json" file with the current media type entries
 		self.JSON.Edit(self.dictionary["Media type"]["Folders"]["Per Media Type"]["Entries"], self.dictionaries["Media type"][self.media_type])
 
-		# Update the media "Watched.json" file
+		# Update the media "Watched.json" file with the current watched entries
 		self.JSON.Edit(self.media["Item"]["Folders"]["Watched"]["entries"], self.dictionaries["Watched"])
 
-		# Add to the "Entry list.txt" files
+		# ---------- #
+
+		# Add the current entry name to the "Entry list.txt" file if it is not already present
 		lines = self.File.Contents(self.folders["Watch History"]["Current year"]["Entry list"])["lines"]
 
 		if self.dictionary["Entry"]["Name"]["Normal"] not in lines:
 			self.File.Edit(self.folders["Watch History"]["Current year"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
+		# ---------- #
+
+		# Add the current entry name to the media type "Entry list.txt" file if it is not already present
 		lines = self.File.Contents(self.dictionary["Media type"]["Folders"]["Per Media Type"]["Entry list"])["lines"]
 
 		if self.dictionary["Entry"]["Name"]["Normal"] not in lines:
 			self.File.Edit(self.dictionary["Media type"]["Folders"]["Per Media Type"]["Entry list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
+		# ---------- #
+
+		# Add the current entry name to the watched "entry_list.txt" file if it is not already present
 		lines = self.File.Contents(self.media["Item"]["Folders"]["Watched"]["entry_list"])["lines"]
 
 		if self.dictionary["Entry"]["Name"]["Normal"] not in lines:
 			self.File.Edit(self.media["Item"]["Folders"]["Watched"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
+		# This is a template for organizing episode information in a text file
+		# Each section contains placeholders that should be replaced with actual data
+		# The structure includes details about the episode, media type, watching times and states
+		# Optional values are indicated in parentheses
+
 		# Number: [Episode number]
-		# Type number: [Type number]
+		# Media type number: [Media type number]
 		# 
 		# Media:
 		# [Media titles]
@@ -288,8 +382,20 @@ class Register(Watch_History):
 		# Type:
 		# [Media type]
 		#
-		# Dates:
-		# [Entry dates]
+		# Times:
+		# [Entry times]
+		# 
+		# When I started watching:
+		# [Started watching time in local timezone]
+		# 
+		# When I finished watching:
+		# [Finished watching time in local timezone]
+		# 
+		# When I finished watching (UTC):
+		# [Finished watching time in UTC time]
+		# 
+		# Watching session duration:
+		# [Watching session duration]
 		# 
 		# File name:
 		# [Number. Type (Time)]
@@ -299,206 +405,346 @@ class Register(Watch_History):
 		# [State texts]
 		# )
 
-		# Define the general Entry file inside the media type folder
-		folder = self.dictionary["Media type"]["Folders"]["Per Media Type"]["Files"]["root"]
-		file = folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
-		self.File.Create(file)
+		# ---------- #
 
+		# Define the general entry file within the media type folder
+		folder = self.dictionary["Media type"]["Folders"]["Per Media Type"]["Files"]["root"]
+		file_name = self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		general_file_path = folder + file_name
+
+		# Create the general entry file
+		self.File.Create(general_file_path)
+
+		# ---------- #
+
+		# Initialize the entry text dictionary with the general text
 		self.dictionary["Entry"]["Text"] = {
 			"General": self.Define_File_Text("General")
 		}
 
+		# Populate the entry text dictionary for each specified language
 		for language in self.languages["small"]:
 			self.dictionary["Entry"]["Text"][language] = self.Define_File_Text(language)
 
-		# Write the Entry text into the general Entry file inside the media type folder
-		self.File.Edit(file, self.dictionary["Entry"]["Text"]["General"], "w")
+		# ---------- #
 
-		# Define the Entry file inside the "Watched" folder of the media (item) folder
-		file = self.media["Item"]["Folders"]["Watched"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+		# Write the general entry text into the general entry file
+		self.File.Edit(general_file_path, self.dictionary["Entry"]["Text"]["General"], "w")
 
-		# Create the file
-		self.File.Create(file)
+		# ---------- #
 
-		# Write the Entry text into the Entry file
-		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
+		# Define the entry file path inside the "Watched" folder of the media item folder
+		watched_folder = self.media["Item"]["Folders"]["Watched"]["files"]["root"]
+		watched_file_path = watched_folder + file_name
 
-	def Define_File_Text(self, language_parameter = None):
-		if language_parameter != "General":
-			language = language_parameter
+		# Create the watched entry file
+		self.File.Create(watched_file_path)
 
-		if language_parameter == "General":
-			language = self.user_language
+		# ---------- #
 
-		full_language = self.languages["full"][language]
+		# Write the entry text in the user's language into the watched entry file
+		self.File.Edit(watched_file_path, self.dictionary["Entry"]["Text"][self.user_language], "w")
 
-		# Define the Entry text lines list
-		lines = [
-			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
-			self.texts["media_type_number"][language] + ": " + str(self.dictionaries["Media type"][self.media_type]["Numbers"]["Total"]),
-			"\n" + self.Language.texts["media, title()"][language] + ":" + "\n" + "{}"
-		]
+	def Define_Titles(self, language_parameter, language, titles_dictionary):
+		# Initialize a variable to hold the media (item) titles
+		media_titles = []
 
-		# Add the item and episode titles lines
-		if self.media["States"]["Series media"] == True:
-			if (
-				self.media["States"]["Media item list"] == True and
-				self.media["States"]["Media item is media"] == False
-			):
-				lines.append(self.Language.texts["item, title()"][language] + ":" + "\n" + "{}")
-
-			if self.media["States"]["Single unit"] == False:
-				text = self.Language.texts["titles, title()"][language]
-
-				if language_parameter != "General":
-					text = self.Language.texts["title, title()"][language]
-
-				list_ = []
-
-				for title in list(self.media["Episode"]["Titles"].values()):
-					if title not in list_:
-						list_.append(title)
-
-				if len(list_) == 1:
-					text = self.Language.texts["title, title()"][language]
-
-				lines.append(text + ":" + "\n" + "{}")
-
-		lines_to_add = [
-			self.Language.texts["type, title()"][language] + ":" + "\n" + self.dictionary["Media type"]["Plural"][language] + "\n"
-		]
-
-		text = self.Date.texts["times, title()"][language] + ":" + "\n" + "{}"
-
-		if self.dictionary["Entry"]["Dates"]["UTC"] == self.dictionary["Entry"]["Dates"]["Timezone"]:
-			text = self.Date.texts["time, title()"][language] + ":" + "\n" + "{}"
-
-		lines_to_add.append(text)
-
-		lines_to_add.append(self.File.texts["file_name"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"])
-
-		lines.extend(lines_to_add)
-
-		# Add the state texts lines
-		if self.dictionary["States"]["Texts"] != {}:
-			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
-
-			for key in self.dictionary["States"]["Texts"]:
-				language_text = self.dictionary["States"]["Texts"][key][language]
-
-				text += language_text
-
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
-					text += "\n"
-
-			lines.append(text)
-
-		# Define the language entry text
-		file_text = self.Text.From_List(lines, next_line = True)
-
-		# Define the items to be added to the entry text
-		items = []
-
-		titles = ""
-
-		# Add the media titles to the items list
+		# Initialize the key to access the original media (item) title
 		key = "Original"
 
-		# If there is a romanized title, add the original title and change the key to "Romanized"
-		if "Romanized" in self.media["Titles"]:
-			titles += self.media["Titles"]["Original"] + "\n"
+		# Check if there is a romanized title available
+		if "Romanized" in titles_dictionary:
+			# If a romanized title exists, add the original title to the list of titles
+			media_titles.append(titles_dictionary["Original"])
 
+			# Update the key to access the romanized title for later use
 			key = "Romanized"
 
 		# Add the original or romanized title to the titles string
-		titles += self.media["Titles"][key]
+		media_titles.append(titles_dictionary[key])
 
-		# If the language parameter is "General"
-		# And the language title is not equal to the original or romanized title
+		# Check if the language parameter is "General"
+		# And if the language title is different from the original or romanized title
 		if (
 			language_parameter == "General" and
-			self.media["Titles"]["Language"] != self.media["Titles"][key]
+			titles_dictionary["Language"] != titles_dictionary[key]
 		):
 			# Add the language title to the titles string
-			titles += "\n" + self.media["Titles"]["Language"]
+			media_titles.append(titles_dictionary["Language"])
 
 			# Iterate through the small languages list
 			for local_language in self.languages["small"]:
-				# If the local language exists inside the dictionary of titles
-				# And the title in that language is not equal to the language title
+				# Check if the local language exists in the titles dictionary
+				# And if the title in that language is different from the language title
 				if (
-					local_language in self.media["Titles"] and
-					self.media["Titles"][local_language] != self.media["Titles"]["Language"]
+					local_language in titles_dictionary and
+					titles_dictionary[local_language] != titles_dictionary["Language"]
 				):
-					# Add the current language title to the titles string
-					titles += "\n" + self.media["Titles"][local_language]
+					# Add the current local language title to the titles string
+					media_titles.append(titles_dictionary[local_language])
 
-		# If the language parameter is not "General"
-		if language_parameter != "General" and language in self.media["Titles"]:
-			# Add the langauge title to the titles string
-			titles += "\n" + self.media["Titles"][language]
+		# Check if the language parameter is not "General"
+		# And if the specified language exists in the media (item) titles
+		if (
+			language_parameter != "General" and
+			language in titles_dictionary
+		):
+			# Add the language title to the titles string
+			media_titles.append(titles_dictionary[language])
 
-		# Add the titles string to the items list
-		items.append(titles + "\n")
+		# Return the list
+		return media_titles
 
+	def Define_File_Text(self, language_parameter = None):
+		# Check if a specific language parameter is provided
+		if language_parameter != "General":
+			language = language_parameter # Use the provided language parameter
+
+		# If the language parameter is "General", use the user's preferred language
+		if language_parameter == "General":
+			language = self.user_language
+
+		# Retrieve the full language name from the languages dictionary
+		full_language = self.languages["full"][language]
+
+		# ---------- #
+
+		# Define the entry text lines list
+		lines = [
+			# Add the total number of entries
+			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Entries"]["Numbers"]["Total"]),
+
+			# Add the total number of media type entries
+			self.texts["media_type_number"][language] + ": " + str(self.dictionaries["Media type"][self.media_type]["Numbers"]["Total"])
+		]
+
+		# ---------- #
+
+		# Define the media titles
+		media_titles = self.Define_Titles(language_parameter, language, self.media["Titles"])
+
+		# Determine the appropriate media title text based on the media titles list
+		text = self.texts["media_title"][language]
+
+		# If it has more than one title, use the plural text
+		if len(media_titles) > 1:
+			text = self.texts["media_titles"][language]
+
+		# Add a newline and the "media title(s)" text
+		lines.append("\n" + text + ":" + "\n" + "{}")
+
+		# ---------- #
+
+		# Add the item and episode titles lines if the media is a series
 		if self.media["States"]["Series media"] == True:
-			# Add the media item titles to the media item titles list
+			# Check if the media has a media item list and the media item is not the root media
 			if (
 				self.media["States"]["Media item list"] == True and
 				self.media["States"]["Media item is media"] == False
 			):
-				key = "Original"
+				# Define the media item titles
+				item_titles = self.Define_Titles(language_parameter, language, self.media["Item"]["Titles"])
 
-				item_titles = ""
+				# Determine the appropriate media item title text based on the media item titles list
+				text = self.texts["media_item_title"][language]
 
-				if "Romanized" in self.media["Item"]["Titles"]:
-					item_titles = self.media["Item"]["Titles"][key] + "\n"
+				# If it has more than one title, use the plural text
+				if len(item_titles) > 1:
+					text = self.texts["media_item_titles"][language]
 
-					key = "Romanized"
+				# Add a newline and the "media title(s)" text
+				lines.append(text + ":" + "\n" + "{}")
 
-				item_titles += self.media["Item"]["Titles"][key]
-
-				if self.media["Item"]["Titles"]["Language"] != self.media["Item"]["Titles"][key]:
-					item_titles += "\n" + self.media["Item"]["Titles"]["Language"]
-
-				items.append(item_titles + "\n")
-
+			# Check if the media is not a single unit
 			if self.media["States"]["Single unit"] == False:
-				# Add episode titles to episode titles list
+				# Determine the appropriate title text based on the language parameter
+				text = self.texts["episode_titles"][language]
+
+				if language_parameter != "General":
+					text = self.texts["episode_title"][language]
+
+				# Create a list to store unique episode titles
+				titles = []
+
+				# Iterate through the episode titles and add unique titles to the list
+				for title in list(self.media["Episode"]["Titles"].values()):
+					if title not in titles:
+						titles.append(title)
+
+				 # Determine if we should use singular or plural based on the number of titles
+				if len(titles) == 1:
+					text = self.texts["episode_title"][language] # Singular
+
+				else:
+					# Use plural only if the language parameter is "General"
+					if language_parameter == "General":
+						text = self.texts["episode_titles"][language] # Plural
+
+					else:
+						text = self.texts["episode_title"][language] # Singular for non-general
+
+				# Add the episode titles line to the list
+				lines.append(text + ":" + "\n" + "{}")
+
+		# ---------- #
+
+		# Initialize a list to hold lines to be added
+		lines_to_add = [
+			# Add the media type title and its plural form
+			self.texts["media_type"][language] + ":" + "\n" + self.dictionary["Media type"]["Plural"][language] + "\n"
+		]
+
+		# ---------- #
+
+		# Add the "When I started watching" (local timezone) title and format string
+		started_watching_text = self.texts["when_i_started_watching"][language] + ":" + "\n" + "{}"
+		lines_to_add.append(started_watching_text)
+
+		# Add the "When I finished watching" (local timezone) title and format string
+		finished_watching_timezone_text = self.texts["when_i_finished_watching"][language] + ":" + "\n" + "{}"
+		lines_to_add.append(finished_watching_timezone_text)
+
+		# Add the "When I finished watching (UTC)" title and format string
+		finished_watching_utc_text = self.texts["when_i_finished_watching"][language] + " (" + self.Date.texts["utc"][language] + ")" + ":" + "\n" + "{}"
+		lines_to_add.append(finished_watching_utc_text)
+
+		# Add the "Watching session duration" title and format string
+		duration_text = self.texts["watching_session_duration"][language] + ":" + "\n" + "{}"
+		lines_to_add.append(duration_text)
+
+		# ---------- #
+
+		# Add the file name title and the normal file name
+		lines_to_add.append(self.File.texts["file_name"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["Normal"])
+
+		# ---------- #
+
+		# Extend the main lines list with the new lines to add
+		lines.extend(lines_to_add)
+
+		# ---------- #
+
+		# Add the state texts lines if there are any state texts defined
+		if self.dictionary["States"]["Texts"] != {}:
+			# Initialize the text for the states section
+			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
+
+			# Iterate through each state text in the dictionary
+			for key in self.dictionary["States"]["Texts"]:
+				# Get the text for the current state in the specified language
+				language_text = self.dictionary["States"]["Texts"][key][language]
+
+				# Append the state text to the overall text
+				text += language_text
+
+				# Add a newline if this is not the last state text
+				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+					text += "\n"
+
+			# Append the constructed state text to the lines list
+			lines.append(text)
+
+		# ---------- #
+
+		# Define the language entry text by converting the lines list to a single text block
+		file_text = self.Text.From_List(lines, next_line = True)
+
+		# ---------- #
+
+		# Initialize the items list to hold all items for template formatting
+		items = []
+
+		# ---------- #
+
+		# Now create the string with the media titles to add to the items list
+		titles = "\n".join(media_titles) + "\n"
+
+		# Add the titles to the items list
+		items.append(titles)
+
+		# ---------- #
+
+		# Check if the media is a series media
+		if self.media["States"]["Series media"] == True:
+			# Check if the media has a media item list and the media item is not the root media
+			if (
+				self.media["States"]["Media item list"] == True and
+				self.media["States"]["Media item is media"] == False
+			):
+				# Now create the string with the media item titles to add to the items list
+				titles = "\n".join(item_titles) + "\n"
+
+				# Add the media item titles to the items list
+				items.append(titles)
+
+			# Check if the media is not a single unit
+			if self.media["States"]["Single unit"] == False:
+				# Initialize the string to hold episode titles
 				episode_titles = ""
 
+				# If the language parameter is not "General", get the episode title in the specified language
 				if language_parameter != "General":
 					episode_title = self.media["Episode"]["Titles"][language]
 
+					# If the episode title is empty, set a placeholder
 					if episode_title == "":
 						episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
 
-					episode_titles = episode_title + "\n"
+					episode_titles = episode_title + "\n" # Add the episode title to the string
 
+				# If the language parameter is "General", add titles for all languages
 				if language_parameter == "General":
-					for language in self.languages["small"]:
-						episode_title = self.media["Episode"]["Titles"][language]
+					for local_language in self.languages["small"]:
+						episode_title = self.media["Episode"]["Titles"][local_language]
 
+						# If the episode title is empty, set a placeholder
 						if episode_title == "":
 							episode_title = "[" + self.Language.texts["empty, title()"][language] + "]"
 
+						# Add the episode title if it is not already included
 						if episode_title + "\n" not in episode_titles:
 							episode_titles += episode_title + "\n"
 
+				# Append the constructed episode titles to the items list
 				items.append(episode_titles)
 
-		# Add the times to the items list
-		times = ""
+		# ---------- #
 
-		for key in ["UTC", "Timezone"]:
-			if key in self.dictionary["Entry"]["Dates"]:
-				time = self.dictionary["Entry"]["Dates"][key]
+		# Add the started watching time
+		items.append(self.entry_dictionary["Times"]["Started watching"] + "\n")
 
-				if time + "\n" not in times:
-					times += time + "\n"
+		# Iterate over the relevant keys to obtain the times
+		for time_key in ["Finished watching", "Finished watching (UTC)"]:
+			# Check if the key exists
+			if time_key in self.dictionary["Entry"]["Times"]:
+				# Define the timezone key as "Timezone"
+				timezone_key = "Timezone"
 
-		items.append(times)
+				# Define the format as the timezone one
+				format = "HH:MM DD/MM/YYYY"
 
+				# If the "UTC" text is inside the time key
+				if "UTC" in time_key:
+					# Update the timezone key to be the UTC one
+					timezone_key = "UTC"
+
+					# Define the format as the UTC one
+					format = "YYYY-MM-DDTHH:MM:SSZ"
+
+				# Retrieve the formatted datetime string from the "Times" dictionary,
+				# using the specified time key (e.g., "Finished watching"), timezone key (e.g., "UTC"),
+				# and format (e.g., "YYYY-MM-DDTHH:MM:SSZ")
+				time = self.dictionary["Entry"]["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
+
+				# Append the times to the items list
+				items.append(time + "\n")
+
+		# Add the duration (difference between the start and finished watching times)
+		items.append(self.entry_dictionary["Times"]["Watching session duration"][language] + "\n")
+
+		# ---------- #
+
+		# Return the formatted text with the items, including the times
 		return file_text.format(*items)
 
 	def Add_Entry_File_To_Year_Folder(self):
@@ -604,8 +850,6 @@ class Register(Watch_History):
 							},
 							"Number": self.media["Item"]["Number"] + 1
 						}
-
-						from copy import deepcopy
 
 						# Define other variables for the next media item
 						self.media["Item"]["Next"] = self.Define_Media_Item(deepcopy(self.dictionary), media_item = item_title)["Media"]["Item"]
@@ -748,8 +992,6 @@ class Register(Watch_History):
 					# Extend the series media list with the current media list
 					self.series_media_list[plural_media_type] = media_list
 
-			from copy import deepcopy
-
 			# Iterate through the English plural media types list
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				if plural_media_type in self.series_media_list:
@@ -811,7 +1053,7 @@ class Register(Watch_History):
 	def Check_Media_Dates(self):
 		# Completed media and media item time and date template
 		template = self.language_texts["when_i_finished_watching"] + ":" + "\n" + \
-		self.dictionary["Entry"]["Dates"]["Timezone"] + "\n" + \
+		self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -822,16 +1064,16 @@ class Register(Watch_History):
 			# Gets the item dates from the item dates file
 			self.media["Item"]["dates"] = self.File.Dictionary(self.media["Item"]["Folders"]["dates"], next_line = True)
 
-			key = self.language_texts["when_i_started_to_watch"]
+			key = self.language_texts["when_i_started_watching"]
 
 			if self.media["States"]["Single unit"] == True:
-				self.media["Item"]["dates"][key] = self.dictionary["Entry"]["Dates"]["Timezone"]
+				self.media["Item"]["dates"][key] = self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"]
 
 			# Get started watching time
 			self.media["Item"]["started_watching_item"] = self.Date.To_UTC(self.Date.From_String(self.media["Item"]["dates"][key]))
 
 			# Define the difference between the two dates
-			difference = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])
+			difference = self.Date.Difference(self.media["Item"]["started_watching_item"], self.dictionary["Entry"]["Times"]["Finished watching"]["UTC"]["Object"])
 
 			# Define time spent watching using started watching time and finished watching time
 			self.media["Item"]["Time spent watching"] = difference["Text"][self.user_language]
@@ -851,7 +1093,7 @@ class Register(Watch_History):
 			# Update item dates text file
 			self.File.Edit(self.media["Item"]["Folders"]["dates"], self.media["Item"]["Finished watching text"], "w")
 
-			self.media["Item"]["Finished watching text"] = self.media["Item"]["Finished watching text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["the_item"][self.user_language])
+			self.media["Item"]["Finished watching text"] = self.media["Item"]["Finished watching text"].replace(self.language_texts["when_i_started_watching"], self.language_texts["when_i_started_watching"] + " " + self.media["Texts"]["the_item"][self.user_language])
 
 			# Add the time template to the Diary Slim text if the media is not completed
 			if (
@@ -870,13 +1112,13 @@ class Register(Watch_History):
 			# Gets the media dates from the media dates file
 			self.media["dates"] = self.File.Dictionary(self.media["Folders"]["dates"], next_line = True)
 
-			key = self.language_texts["when_i_started_to_watch"]
+			key = self.language_texts["when_i_started_watching"]
 
 			# Get the started watching time
 			self.media["Started watching"] = self.Date.To_UTC(self.Date.From_String(self.media["dates"][key]))
 
 			# Define the difference between the two dates
-			difference = self.Date.Difference(self.media["Started watching"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])
+			difference = self.Date.Difference(self.media["Started watching"], self.dictionary["Entry"]["Times"]["Finished watching"]["UTC"]["Object"])
 
 			# Define time spent watching using started watching time and finished watching time
 			self.media["Time spent watching"] = difference["Text"][self.user_language]
@@ -897,7 +1139,7 @@ class Register(Watch_History):
 			self.File.Edit(self.media["Folders"]["dates"], self.media["Finished watching text"], "w")
 
 			# Add the time template to the Diary Slim text
-			self.media["Finished watching text"] = self.media["Finished watching text"].replace(self.language_texts["when_i_started_to_watch"], self.language_texts["when_i_started_to_watch"] + " " + self.media["texts"]["container_text"]["the"])
+			self.media["Finished watching text"] = self.media["Finished watching text"].replace(self.language_texts["when_i_started_watching"], self.language_texts["when_i_started_watching"] + " " + self.media["Texts"]["container_text"]["the"])
 
 			if "Dates" not in self.dictionary["Entry"]["Diary Slim"]["Text"]:
 				self.dictionary["Entry"]["Diary Slim"]["Dates"] = ""
@@ -909,9 +1151,7 @@ class Register(Watch_History):
 
 		# Replaced "watching" with "re-watching" text
 		if self.media["States"]["Re-watching"] == True:
-			template = template.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"])
-
-			template = template.replace(self.language_texts["re_watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + self.media["Episode"]["Re-watched"]["Texts"]["Times"][self.user_language])
+			template = template.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + self.media["Episode"]["Re-watching"]["Texts"]["Times"][self.user_language])
 
 		if self.media["States"]["Series media"] == True:
 			template += ' "{}"'
@@ -922,7 +1162,7 @@ class Register(Watch_History):
 				text = self.media_types["Genders"][self.user_language]["masculine"]["of_the"]
 
 			# Define the unit text
-			unit_text = self.media["texts"]["unit"][self.user_language]
+			unit_text = self.media["Texts"]["unit"][self.user_language]
 
 			# If the media item is a single unit one
 			if self.media["States"]["Single unit"] == True:
@@ -983,7 +1223,7 @@ class Register(Watch_History):
 				# If the watched media is not a video channel
 				if self.media["States"]["Video"] == False:
 					# Add "of the" text next to unit ("episode" or "video") text
-					self.watched_item_text = self.watched_item_text.replace(self.media["texts"]["unit"][self.user_language], self.media["texts"]["unit"][self.user_language] + " {}".format(self.of_the_text))
+					self.watched_item_text = self.watched_item_text.replace(self.media["Texts"]["unit"][self.user_language], self.media["Texts"]["unit"][self.user_language] + " {}".format(self.of_the_text))
 
 					# Define the media item title variable
 					media_item_title = self.Define_Title(self.media["Item"]["Titles"])
@@ -1006,7 +1246,7 @@ class Register(Watch_History):
 					self.watched_item_text = self.watched_item_text.replace(self.media["Title"] + " ", "")
 
 			# Add container (media type or "YouTube channel" text for video media type) to watched item text
-			self.watched_item_text += " " + self.media["texts"]["container_text"]["container"]
+			self.watched_item_text += " " + self.media["Texts"]["container_text"]["container"]
 
 			# Define the "Diary Slim" text as the template formatted with the "watched item text" and the media title per language
 			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(self.watched_item_text, self.media["Titles"]["Language"])
@@ -1065,7 +1305,7 @@ class Register(Watch_History):
 
 		# Add the Re-watching text if the user is re-watching the media
 		if self.media["States"]["Re-watching"] == True:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["Re-watched"]["Texts"]["Number"][self.user_language]
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["Re-watching"]["Texts"]["Number"][self.user_language]
 
 		# Add the episode link if it exists
 		if (
@@ -1201,7 +1441,7 @@ class Register(Watch_History):
 		# Define the "Write on Diary Slim" dictionary
 		dictionary = {
 			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
-			"Time": self.dictionary["Entry"]["Dates"]["Timezone"],
+			"Time": self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"],
 			"Add": {
 				"Dot": False
 			}
@@ -1286,7 +1526,7 @@ class Register(Watch_History):
 		}
 
 		# Copy the "texts" dictionary of the root media dictionary to the local one
-		media["texts"] = self.media["texts"]
+		media["Texts"] = self.media["Texts"]
 
 		# If there is a media item inside the media dictionary
 		if "Item" in self.media:
@@ -1308,7 +1548,7 @@ class Register(Watch_History):
 		# Define the media type dictionary
 		media_type = {
 			"Plural": self.media_type,
-			"The": self.media["texts"]["container_text"]["the (original)"]
+			"The": self.media["Texts"]["container_text"]["the (original)"]
 		}
 
 		# Update the media statistics for the current year and month, passing the local media dictionary and the media type
@@ -1316,10 +1556,10 @@ class Register(Watch_History):
 		self.dictionary["Statistics text"] = Watch_History.Update_Statistics(self, self.dictionary, media, media_type)
 
 	def Show_Information(self):
-		self.dictionary["Header text"] = self.Text.Capitalize(self.media["texts"]["container_text"]["container"]) + ":"
+		self.dictionary["Header text"] = self.Text.Capitalize(self.media["Texts"]["container_text"]["container"]) + ":"
 
 		if self.media["States"]["Completed media"] == True:
-			text = self.media["texts"]["container_text"]["this"]
+			text = self.media["Texts"]["container_text"]["this"]
 
 			self.dictionary["Header text"] = self.language_texts["you_finished_watching"] + " " + text + ":"
 

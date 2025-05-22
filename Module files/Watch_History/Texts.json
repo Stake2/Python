@@ -1,4 +1,20 @@
 {
+	"media_title": {
+		"en": "Media title",
+		"pt": "Título da mídia"
+	},
+	"media_titles": {
+		"en": "Media titles",
+		"pt": "Títulos da mídia"
+	},
+	"media_item_title": {
+		"en": "Media item title",
+		"pt": "Título do item de mídia"
+	},
+	"media_item_titles": {
+		"en": "Media item titles",
+		"pt": "Títulos do item de mídia"
+	},
 	"animes, title()": {
 		"en": "Animes",
 		"pt": "Animes"
@@ -135,6 +151,14 @@
 			"Completo"
 		]
 	},
+	"watching_session_duration": {
+		"en": "Watching session duration",
+		"pt": "Duração da sessão de visualização"
+	},
+	"watched_time_stamp": {
+		"en": "Watched time stamp",
+		"pt": "Horário do término da visualização"
+	},
 	"youtube_ids": {
 		"en": "YouTube IDs",
 		"pt": "IDs do YouTube"
@@ -166,6 +190,34 @@
 	"the_episode_cover": {
 		"en": "the episode cover",
 		"pt": "a capa do episódio"
+	},
+	"type_the_number_of_episodes": {
+		"pt": "Digite o número de episódios",
+		"en": "Type the number of episodes"
+	},
+	"type_the_number_of_all_media_episodes": {
+		"pt": "Digite o número de todos os episódios da mídia",
+		"en": "Type the number of all media episodes"
+	},
+	"paste_the_episode_title_in_{}": {
+		"pt": "Cole o título de episódio em {}",
+		"en": "Paste the episode title in {}"
+	},
+	"episode_title": {
+		"en": "Episode title",
+		"pt": "Título do episódio"
+	},
+	"episode_titles": {
+		"en": "Episode titles",
+		"pt": "Títulos do episódio"
+	},
+	"episode_number_name": {
+		"en": "Episode number name",
+		"pt": "Nome do número do episódio"
+	},
+	"episodes_duration": {
+		"en": "Episodes duration",
+		"pt": "Duração dos episódios"
 	},
 	"a_summary_video": {
 		"en": "a summary video",
@@ -243,10 +295,6 @@
 		"en": "You finished writing comment",
 		"pt": "Você terminou de escrever o comentário"
 	},
-	"press_enter_when_you_finish_watching": {
-		"pt": "Pressione Enter quando você terminar de assistir",
-		"en": "Press Enter when you finish watching"
-	},
 	"fill_titles_files": {
 		"en": "Fill titles files",
 		"pt": "Preencher arquivos de títulos"
@@ -295,22 +343,7 @@
 		"en": "You finished watching",
 		"pt": "Você terminou de assistir"
 	},
-	"type_the_number_of_episodes": {
-		"pt": "Digite o número de episódios",
-		"en": "Type the number of episodes"
-	},
-	"type_the_number_of_all_media_episodes": {
-		"pt": "Digite o número de todos os episódios da mídia",
-		"en": "Type the number of all media episodes"
-	},
-	"paste_the_episode_title_in_{}": {
-		"pt": "Cole o título de episódio em {}",
-		"en": "Paste the episode title in {}"
-	},
-	"episode_title": {
-		"en": "Episode title",
-		"pt": "Título de episódio"
-	},
+	
 	"type_the_number_of_times_that_you_watched": {
 		"pt": "Digite o número de vezes que você assistiu",
 		"en": "Type the number of times that you watched"
@@ -379,17 +412,13 @@
 		"pt": "Novo status de assistindo",
 		"en": "New watching status"
 	},
-	"when_i_started_to_watch": {
+	"when_i_started_watching": {
 		"pt": "Quando eu comecei a assistir",
-		"en": "When I started to watch"
+		"en": "When I started watching"
 	},
 	"when_i_finished_watching": {
 		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
-	},
-	"episode_number_name": {
-		"en": "Episode number name",
-		"pt": "Nome do número do episódio"
 	},
 	"watch_dubbed": {
 		"en": "Watch dubbed",
@@ -422,10 +451,6 @@
 	"replace_title": {
 		"en": "Replace title",
 		"pt": "Substituir título"
-	},
-	"episodes_duration": {
-		"en": "Episodes duration",
-		"pt": "Duração dos episódios"
 	},
 	"type_the_media_information_(some_items_can_be_left_empty_by_pressing_enter)": {
 		"en": "Type the media information (some items can be left empty by pressing Enter)",

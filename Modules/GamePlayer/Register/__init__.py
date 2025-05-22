@@ -6,6 +6,7 @@ class Register(GamePlayer):
 	def __init__(self, dictionary = {}):
 		super().__init__()
 
+		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
 
 		# Ask for the entry information
@@ -326,6 +327,11 @@ class Register(GamePlayer):
 			self.File.Edit(self.game["Sub-game"]["Folders"]["Played"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
+		# This is a template for organizing gaming session information in a text file
+		# Each section contains placeholders that should be replaced with actual data
+		# The structure includes details about the game, game type, playing times and states
+		# Optional values are indicated in parentheses
+
 		# Number: [entry number]
 		# Type number: [Type number]
 		# 
@@ -341,8 +347,8 @@ class Register(GamePlayer):
 		# Plaform:
 		# [Platform]
 		# 
-		# Dates:
-		# [Entry dates]
+		# Times:
+		# [Entry times]
 		# 
 		# Session duration:
 		# [Session duration]

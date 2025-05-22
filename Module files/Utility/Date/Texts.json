@@ -416,6 +416,14 @@
 		"en": "Time difference",
 		"pt": "Diferença de tempo"
 	},
+	"utc": {
+		"en": "UTC",
+		"pt": "UTC"
+	},
+	"local_timezone": {
+		"en": "Local timezone",
+		"pt": "Fuso horário local"
+	},
 	"{}_time": {
 		"en": "{} time",
 		"pt": "Tempo de {}"

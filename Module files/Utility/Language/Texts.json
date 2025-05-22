@@ -215,6 +215,18 @@
 		"en": "Leave empty to use the default value",
 		"pt": "Deixe vazio para usar o valor padrão"
 	},
+	"when_you_started": {
+		"pt": "Quando você começou a",
+		"en": "When you started"
+	},
+	"when_you_finished": {
+		"pt": "Quando você terminou de",
+		"en": "When you finished"
+	},
+	"press_enter_when_you_start": {
+		"en": "Press Enter when you start",
+		"pt": "Pressione Enter quando você começar a"
+	},
 	"press_enter_when_you_finish": {
 		"en": "Press Enter when you finish",
 		"pt": "Pressione Enter quando você terminar de"
@@ -1294,6 +1306,18 @@
 		"en": "Audiovisual Media",
 		"pt": "Mídia Audiovisual"
 	},
+	"watched_things": {
+		"en": "Watched things",
+		"pt": "Coisas assistidas"
+	},
+	"media_list": {
+		"en": "Media list",
+		"pt": "Lista de mídia"
+	},
+	"media_comments": {
+		"en": "Media comments",
+		"pt": "Comentários de mídia"
+	},
 	"watch, title()": {
 		"en": "Watch",
 		"pt": "Assistir"
@@ -2044,10 +2068,6 @@
 		"en": "Friends",
 		"pt": "Amigos"
 	},
-	"media_list": {
-		"en": "Media list",
-		"pt": "Lista de mídia"
-	},
 	"memories, title()": {
 		"en": "Memories",
 		"pt": "Memórias"
@@ -2083,14 +2103,6 @@
 	"mods, title()": {
 		"en": "Mods",
 		"pt": "Modificações"
-	},
-	"watched_things": {
-		"en": "Watched things",
-		"pt": "Coisas assistidas"
-	},
-	"media_comments": {
-		"en": "Media comments",
-		"pt": "Comentários de mídia"
 	},
 	"known_people": {
 		"en": "Known people",

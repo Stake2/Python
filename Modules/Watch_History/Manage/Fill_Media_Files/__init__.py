@@ -8,7 +8,7 @@ class Fill_Media_Files(Watch_History):
 	def __init__(self, dictionary = None):
 		super().__init__()
 
-		# Define the root dictionary
+		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
 
 		# Define the "Options" dictionary
