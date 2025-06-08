@@ -2807,7 +2807,7 @@ class GamePlayer(object):
 		item += self.Date.texts["duration, title()"][language] + ": " + duration + ", "
 
 		# Add the date
-		date = self.Date.texts["date, title()"][language] + ": " + self.Date.From_String(entry["Date"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+		date = self.texts["played_in"][language] + ": " + self.Date.From_String(entry["Date"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 
 		item += date
 

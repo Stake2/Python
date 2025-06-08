@@ -52,7 +52,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			# Sort the media item list as case insensitive
 			media_list = sorted(media_list, key = str.lower)
 
-			# Show language media type
+			# Show the language media type
 			print()
 			print("----------")
 			print()
@@ -67,9 +67,13 @@ class Iterate_Through_The_Media_List(Watch_History):
 			]
 
 			#string = ""
+			ask_for_input = True
 
 			# Remove a media type from the list (optional)
 			if plural_media_type not in media_types_to_remove:
+				# Define the media number
+				media_number = 1
+
 				# For media in media item list
 				for self.media_title in media_list:
 					# Define root dictionary with media type and media
@@ -80,9 +84,21 @@ class Iterate_Through_The_Media_List(Watch_History):
 						}
 					}
 
-					# Show the media title
+					# Show a three dash space separator
 					print()
-					print("---")
+					print(self.separators["3"])
+
+					# Show the media number
+					print()
+					print(self.Language.language_texts["number, title()"] + ":")
+					print("[" + str(media_number) + "/" + str(len(media_list)) + "]")
+
+					# Show the language media type
+					print()
+					print(self.language_texts["media_type"])
+					print("[" + language_media_type + "]")
+
+					# Show the media title
 					print()
 					print(self.Language.language_texts["media, title()"] + ":")
 					print("[" + self.dictionary["Media"]["Title"] + "]")
@@ -109,7 +125,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Define the media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
-						# Define the "media" variable for easier typing
+						# Define a shortcut for the "Media" dictionary for easier typing
 						self.media = self.dictionary["Media"]
 
 						# Show the media item title
@@ -118,7 +134,16 @@ class Iterate_Through_The_Media_List(Watch_History):
 							print(self.Language.language_texts["item"].title() + ":")
 							print("[" + self.media["Item"]["Title"] + "]")
 
-						# Verify if empty episodes' titles files exist
+						# Update the watched files of the media
+						#self.Update_Watched_Files()
+
+						# Update the "Comments" JSON dictionary
+						#self.Update_Comments_JSON()
+
+						# Update the text of the comment files
+						#self.Update_Comment_Files()
+
+						# Verify if there are empty episode titles files
 						#self.Check_Episodes_Titles()
 
 						# Add exact media or media item creation or release to media or media item details
@@ -155,9 +180,13 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 						self.media_item_number += 1
 
+					# Add one to the "media number"
+					media_number += 1
+
 					if (
 						self.switches["Testing"] == True and
-						self.media_title != media_list[-1]
+						self.media_title != media_list[-1] and
+						ask_for_input == True
 					):
 						self.Input.Type(self.Language.language_texts["continue, title()"])
 
@@ -187,6 +216,156 @@ class Iterate_Through_The_Media_List(Watch_History):
 		#if media_types_to_remove == []:
 			# Update the root "Comments.json" file
 			#self.JSON.Edit(self.folders["Comments"]["Comments"], self.comments_number)
+
+	def Update_Watched_Files(self):
+		# Get the watched dictionary from the watched "Entries.json" file
+		watched = self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["entries"])
+
+		# If the list of entries is not empty
+		# And the dictionary of entries is empty
+		if (
+			watched["Entries"] != [] and
+			watched["Dictionary"] == {}
+		):
+			# Iterate through the list of entries
+			for entry_name in watched["Entries"]:
+				import re
+
+				# Search for the year inside the entry name
+				match = re.search(r"\b(\d{4})\b", entry_name)
+
+				# If it exists
+				if match:
+					# Get the year from the search group
+					year = match.group(1)
+
+				# Get the year folder
+				year_folder = self.folders["Watch History"][str(year)]
+
+				# Get the entries file
+				entries_file = year_folder["root"] + "Entries.json"
+
+				# Read it
+				entries = self.JSON.To_Python(entries_file)
+
+				if entry_name not in entries["Dictionary"]:
+					print()
+					print(entry_name)
+					self.System.Open(entries_file, open = True)
+
+				# Get the entry dictionary based on the entry name
+				entry = entries["Dictionary"][entry_name]
+
+				# Add the entry dictionary to the watched "Dictionary" key
+				watched["Dictionary"][entry_name] = entry
+
+		# Update the watched "Entries.json" file with the updated watched dictionary
+		self.JSON.Edit(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["entries"], watched)
+
+	def Update_Comments_JSON(self):
+		# Get the comments dictionary from the comments file
+		comments = self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"])
+
+		# If the list of entries is not empty
+		if comments["Entries"] != []:
+			# Define the comment number
+			comment_number = 1
+
+			# Iterate through the list of entries
+			for entry in comments["Entries"]:
+				# Get the comment dictionary from the entries dictionary
+				comment = comments["Dictionary"][entry]
+
+				# Add the comment number as the first key
+				comment = {
+					"Comment number": comment_number,
+					**comment
+				}
+
+				# Replace the "Lines" key with the "Number of comment lines"
+				new_key = "Number of comment lines"
+				after_key = "Lines"
+				comment = self.JSON.Add_Key_After_Key(comment, {new_key: comment[after_key]}, after_key = after_key, remove_after_key = True)
+
+				# Update the root comment dictionary with the local comment dictionary
+				comments["Dictionary"][entry] = comment
+
+				# Add to the comment number
+				comment_number += 1
+
+		# Update the "Comments.json" file with the updated comments dictionary
+		self.JSON.Edit(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"], comments)
+
+	def Update_Comment_Files(self):
+		# Make a shortcut for the comments "Files" folder
+		files_folder = self.media["Item"]["Folders"]["comments"]["files"]["root"]
+
+		# List the comment files inside the folder
+		files = self.Folder.Contents(files_folder)["file"]["list"]
+
+		# Define the "to convert" variable to specify what should be converted
+		to_convert = "Time"
+
+		# Iterate through the files inside the list of files
+		for file in files:
+			# Get the text of the file
+			text = self.File.Contents(file)["string"]
+
+			# If the "to convert" variable is "Episode titles"
+			if to_convert == "Episode titles":
+				# Iterate through the list of texts to replace
+				for item in ["Títulos do episódio", "Título do episódio"]:
+					# Define the "with" text to add in place of the item as "Episode title"
+					with_ = self.language_texts["episode_title"]
+
+					# Get the title text template
+					title_template = self.language_texts["{}_title"]
+
+					# If the item type is not in the list of main media types
+					# And the item type is inside the list of alternative episode types
+					# alternative_episode_types = ["OVA", "ONA", "Special", "Especial", "Shorts", "Curtas"]
+					if (
+						self.media["Item"]["Type"]["en"] not in self.media_types["Singular"]["en"] and
+						self.media["Item"]["Type"]["en"] in self.alternative_episode_types
+					):
+						# Format it as "Title of the [item type]" in the user language
+						with_ = title_template.format(self.media["Item"]["Type"][self.user_language].lower())
+
+					# If the media type is "Movies"
+					# Or the media type is "Videos" and the media is not episodic
+					if (
+						self.dictionary["Media type"]["Plural"]["en"] == "Movies" or
+						(self.dictionary["Media type"]["Plural"]["en"] == "Videos" and
+						not self.media["States"]["Episodic"])
+					):
+						# Define a shortcut for the singular media type
+						singular_media_type = self.dictionary["Media type"]["Singular"][self.user_language]
+
+						# Determine the case of the singular media type based on the position of the "{}" characters
+						if title_template.startswith("{}"):
+							# If "{}" is at the beginning, use the media type as is (already in uppercase)
+							with_ = title_template.format(singular_media_type)
+
+						else:
+							# If "{}" is at the end, convert the media type to lowercase
+							with_ = title_template.format(singular_media_type.lower())
+
+					# Replace the current text with the "with" text (in the user language)
+					text = text.replace(item + ":", with_ + ":")
+
+			# If the "to convert" variable is "Time"
+			elif to_convert == "Time":
+				# Define the "replace" text as "Time" in the user language
+				replace_ = self.Date.language_texts["time, title()"]
+
+				# Define the "with" text to add in place of the item as "Comment time"
+				with_ = self.language_texts["comment_time"]
+
+				# Replace the current text with the "with" text (in the user language)
+				text = text.replace(replace_ + ":", with_ + ":")
+
+			# Update the file
+			self.File.Edit(file, text, "w")
 
 	def Check_Episodes_Titles(self):
 		# If "titles" is present in the folders dictionary and is not a single unit media item

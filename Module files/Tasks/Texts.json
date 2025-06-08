@@ -31,6 +31,10 @@
 		"en": "Task title",
 		"pt": "Título da tarefa"
 	},
+	"task_titles": {
+		"en": "Task titles",
+		"pt": "Títulos da tarefa"
+	},
 	"times, title()": {
 		"en": "Times",
 		"pt": "Tempos"
@@ -91,9 +95,13 @@
 		"en": "Number: {}\nTask type number: {}\nType: {}\nTime: {}\nFile name: {}",
 		"pt": "Número: {}\nNúmero de tipo de tarefa: {}\nTipo: {}\nTempo: {}\nNome de arquivo: {}"
 	},
-	"task_type_number": {
-		"en": "Task type number",
-		"pt": "Número de tipo de tarefa"
+	"task_number": {
+		"en": "Task number",
+		"pt": "Número da tarefa"
+	},
+	"task_number_by_task_type": {
+		"en": "Task number by task type",
+		"pt": "Número da tarefa por tipo de tarefa"
 	},
 	"completed_tasks": {
 		"en": "Completed tasks",
@@ -158,5 +166,13 @@
 	"programming_my_modules": {
 		"en": "programming my modules",
 		"pt": "programando os meus módulos"
+	},
+	"when_i_completed_the_task": {
+		"pt": "Quando eu completei a tarefa",
+		"en": "When I completed the task"
+	},
+	"when_you_completed_the_task": {
+		"pt": "Quando você completou a tarefa",
+		"en": "When you completed the task"
 	}
 }

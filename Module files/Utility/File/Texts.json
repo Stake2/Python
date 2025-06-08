@@ -104,8 +104,8 @@
         "en": "This file already exists",
         "pt": "Este arquivo já existe"
     },
-    "this_file_does_not_exists": {
-        "en": "This file does not exists",
+    "this_file_does_not_exist": {
+        "en": "This file does not exist",
         "pt": "Este arquivo não existe"
     },
     "the_file_path_is_incorrect_(it_is_a_folder)": {

@@ -202,7 +202,7 @@ class Years(object):
 			},
 			"Language": {
 				"Folders": [
-					"Done tasks",
+					"Completed tasks",
 					"Firsts of the Year",
 					"Game sessions",
 					"Watched media"

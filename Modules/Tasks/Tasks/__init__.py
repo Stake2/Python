@@ -596,7 +596,12 @@ class Tasks(object):
 
 	def Define_Year_Summary_Data(self, entry, language):
 		# Get the entry title
-		item = entry["Titles"][language]
+		item = entry["Task titles"][language]
+
+		# Add the entry date
+		date = self.Date.From_String(entry["Times"]["Finished watching (UTC)"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+
+		item += " (" + date + ")"
 
 		# Return it
 		return item
@@ -667,10 +672,13 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Show the "When" text and the entry date in the user timezone
+		# Get the "When you completed the task" text
+		text = self.language_texts["when_you_completed_the_task"]
+
+		# Print the composed text and the corresponding formatted time
 		print()
-		print(self.Language.language_texts["when, title()"] + ":")
-		print("\t" + dictionary["Entry"]["Dates"]["Timezone"])
+		print(text + ":")
+		print("\t" + dictionary["Entry"]["Times"]["Completed task"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# ---------- #
 

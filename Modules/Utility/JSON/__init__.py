@@ -180,14 +180,19 @@ class JSON():
 	def From_Python(self, items_parameter):
 		import json
 		from copy import deepcopy
+		import datetime
 
 		items = deepcopy(items_parameter)
 
-		if type(items) == dict:
-			import datetime
+		if isinstance(items, datetime.datetime) == True:
+			items = [self.Date_To_String(items)]
 
+		if type(items) == dict:
 			for key in items:
 				value = items[key]
+
+				if isinstance(items[key], datetime.datetime) == True:
+					items[key] = self.Date_To_String(items[key])
 
 				if type(value) not in [str, int, list, dict, bool, None]:
 					if isinstance(value, datetime.datetime) == False:
@@ -226,7 +231,11 @@ class JSON():
 		if type(items) == list:
 			i = 0
 			for item in items:
-				items[i] = str(items[i])
+				if isinstance(items[i], datetime.datetime) == True:
+					items[i] = self.Date_To_String(items[i])
+
+				else:
+					items[i] = str(items[i])
 
 				i += 1
 

@@ -67,9 +67,13 @@
 		"en": "Media types",
 		"pt": "Tipos de mídia"
 	},
-	"media_type_number": {
-		"en": "Media type number",
-		"pt": "Número de tipo de mídia"
+	"watched_media_number": {
+		"en": "Watched media number",
+		"pt": "Número da mídia assistida"
+	},
+	"watched_media_number_by_media_type": {
+		"en": "Watched media number by media type",
+		"pt": "Número da mídia assistida por tipo de mídia"
 	},
 	"media_unit": {
 		"en": "Media unit",
@@ -87,6 +91,10 @@
 		"en": "Last season",
 		"pt": "Última temporada"
 	},
+	"type_the_comment_for": {
+		"en": "Type the comment for",
+		"pt": "Digite o comentário para"
+	},
 	"comment_time": {
 		"en": "Comment time",
 		"pt": "Tempo do comentário"
@@ -94,6 +102,22 @@
 	"comment_file_name": {
 		"en": "Comment file name",
 		"pt": "Nome de arquivo de comentário"
+	},
+	"paste_the_comment_link_of_youtube": {
+		"en": "Paste the comment link of YouTube",
+		"pt": "Cole o link do comentário do YouTube"
+	},
+	"press_enter_when_you_finish_posting_the_comment": {
+		"en": "Press Enter when you finish posting the comment",
+		"pt": "Pressione Enter quando você terminar de postar o comentário"
+	},
+	"write_a_comment": {
+		"en": "Write a comment",
+		"pt": "Escrever um comentário"
+	},
+	"you_finished_writing_the_comment": {
+		"en": "You finished writing comment",
+		"pt": "Você terminou de escrever o comentário"
 	},
 	"loading_already_written_comment": {
 		"en": "Loading already written comment",
@@ -187,6 +211,14 @@
 		"en": "Episode list",
 		"pt": "Lista de episódio"
 	},
+	"episode_id": {
+		"en": "Episode ID",
+		"pt": "ID do episódio"
+	},
+	"episode_link": {
+		"en": "Episode link",
+		"pt": "Link do episódio"
+	},
 	"the_episode_cover": {
 		"en": "the episode cover",
 		"pt": "a capa do episódio"
@@ -219,13 +251,13 @@
 		"en": "Episodes duration",
 		"pt": "Duração dos episódios"
 	},
+	"{}_title": {
+		"en": "{} title",
+		"pt": "Título do {}"
+	},
 	"a_summary_video": {
 		"en": "a summary video",
 		"pt": "um vídeo resumo"
-	},
-	"type_the_comment_for": {
-		"en": "Type the comment for",
-		"pt": "Digite o comentário para"
 	},
 	"select_one_watching_status_from_the_status_list": {
 		"en": "Select one Watching Status from the status list",
@@ -278,22 +310,6 @@
 	"select_a_youtube_video_series": {
 		"pt": "Selecione uma série de vídeos do YouTube",
 		"en": "Select a YouTube video series"
-	},
-	"paste_the_comment_link_of_youtube": {
-		"en": "Paste the comment link of YouTube",
-		"pt": "Cole o link do comentário do YouTube"
-	},
-	"press_enter_when_you_finish_posting_the_comment": {
-		"en": "Press Enter when you finish posting the comment",
-		"pt": "Pressione Enter quando você terminar de postar o comentário"
-	},
-	"write_a_comment": {
-		"en": "Write a comment",
-		"pt": "Escrever um comentário"
-	},
-	"you_finished_writing_the_comment": {
-		"en": "You finished writing comment",
-		"pt": "Você terminou de escrever o comentário"
 	},
 	"fill_titles_files": {
 		"en": "Fill titles files",
@@ -503,5 +519,13 @@
 	"convert_history": {
 		"en": "Convert history",
 		"pt": "Converter histórico"
+	},
+	"show_plan_to_watch_media": {
+		"en": "Show \"Plan to watch\" media",
+		"pt": "Mostrar mídias \"Planejo assistir\""
+	},
+	"show_non_watching_media": {
+		"en": "Show \"Non-watching\" media",
+		"pt": "Mostrar mídias \"Não assistindo\""
 	}
 }

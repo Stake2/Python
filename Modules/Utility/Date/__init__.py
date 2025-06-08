@@ -6,6 +6,7 @@ from calendar import monthrange
 from time import sleep
 import pytz
 import pandas as pd
+from copy import deepcopy
 
 class Date():
 	def __init__(self):
@@ -94,33 +95,55 @@ class Date():
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Now(self, date_parameter = None):
+		# If the date parameter is not None
 		if date_parameter != None:
 			today = self.Datetime.now()
 
+			# Only the date
 			if type(date_parameter) == type(self.Date(today.year, today.month, today.day)):
+				# Combine the provided date with the today time
 				date_parameter = self.Combine(date_parameter, today.time())
 
+			# Only the time
 			if type(date_parameter) == type(self.Time(today.hour, today.minute)):
+				# Combine the provided time with the today date
 				date_parameter = self.Combine(self.Date(today.year, today.month, today.day), date_parameter)
 
+		# If the date parameter is None
 		if date_parameter == None:
 			date_parameter = self.Datetime.now()
 
+		# Define the user timezone variable
+		timezone = {
+			"String": str(self.user_timezone),
+			"Name": "",
+			"UTC Offset": "",
+			"Timezone info": pytz.timezone(str(self.user_timezone))
+		}
+
+		# Remove the microsecond from the date object
+		date_parameter = date_parameter.replace(microsecond = 0)
+
+		# Define the date object in the user timezone
+		user_timezone_date = deepcopy(date_parameter).astimezone(timezone["Timezone info"])
+
+		# Define the date dictionary
 		date = {
 			"User timezone": {
-				"String": self.user_timezone,
-				"UTC Offset": date_parameter.replace(microsecond = 0).astimezone().strftime("%z"),
-				"Name": date_parameter.replace(microsecond = 0).astimezone().strftime("%Z")
+				"String": timezone["String"],
+				"Name": user_timezone_date.strftime("%Z"),
+				"UTC Offset": user_timezone_date.strftime("%z"),
+				"Timezone info": timezone["Timezone info"]
 			},
 			"Object": {},
 			"Units": {},
 			"Texts": {},
 			"Formats": {},
 			"UTC": {
-				"Object": date_parameter.replace(microsecond = 0).astimezone(pytz.UTC)
+				"Object": date_parameter.astimezone(pytz.UTC)
 			},
 			"Timezone": {
-				"Object": date_parameter.replace(microsecond = 0).astimezone()
+				"Object": user_timezone_date
 			}
 		}
 
@@ -341,6 +364,10 @@ class Date():
 
 		return date
 
+	def Daylight_Saving_Time(self, date):
+		# Returns True if the DST is different from zero
+		return bool(date.dst())
+
 	def Check(self, date, utc = False):
 		if type(date) == dict:
 			if utc == False and "Object" in date:
@@ -373,6 +400,9 @@ class Date():
 
 		if format == "":
 			date = parser.parse(string)
+
+			if date.strftime("%Z") in ["UTC", "", None]:
+				date = date.replace(tzinfo = pytz.UTC)
 
 		if format != "":
 			date = self.Datetime.strptime(string, format)

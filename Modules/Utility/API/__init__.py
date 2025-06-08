@@ -356,6 +356,10 @@ class API():
 					"Date": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
 					"Date (Timezone)": date["Timezone"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
 					"Date (Timezone user format)": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
+					"Times": {
+						"Timezone": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
+						"UTC": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+					},
 					"Images": [],
 					"Language": ""
 				}

@@ -699,6 +699,10 @@
 		"en": "Entries",
 		"pt": "Entradas"
 	},
+	"entry_number": {
+		"en": "Entry number",
+		"pt": "Número da entrada"
+	},
 	"title, title()": {
 		"pt": "Título",
 		"en": "Title"
@@ -1292,10 +1296,6 @@
 	},
 	"watched_media": {
 		"en": "Watched media",
-		"pt": "Mídia assistida"
-	},
-	"watched_media, type: plural": {
-		"en": "Watched media",
 		"pt": "Mídias assistidas"
 	},
 	"media_information": {
@@ -1423,6 +1423,10 @@
 	"video, title()": {
 		"en": "Video",
 		"pt": "Vídeo"
+	},
+	"video, by language": {
+		"en": "Video",
+		"pt": "vídeo"
 	},
 	"videos, title()": {
 		"en": "Videos",
@@ -1614,6 +1618,14 @@
 	"episode, title()": {
 		"pt": "Episódio",
 		"en": "Episode"
+	},
+	"episode, by language": {
+		"pt": "episódio",
+		"en": "Episode"
+	},
+	"separator, title()": {
+		"en": "Separator",
+		"pt": "Separador"
 	},
 	"title_separator": {
 		"en": "Title separator",
@@ -2084,9 +2096,9 @@
 		"pt": "Coisas feitas em",
 		"en": "Things done in"
 	},
-	"done_tasks": {
-		"en": "Done tasks",
-		"pt": "Tarefas feitas"
+	"completed_tasks": {
+		"en": "Completed tasks",
+		"pt": "Tarefas concluídas"
 	},
 	"productive_things": {
 		"en": "Productive things",

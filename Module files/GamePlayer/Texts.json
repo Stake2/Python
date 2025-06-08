@@ -7,9 +7,17 @@
 		"en": "Game title",
 		"pt": "Título do jogo"
 	},
+	"game_titles": {
+		"en": "Game titles",
+		"pt": "Títulos do jogo"
+	},
 	"with_the_game_title": {
 		"en": "with the game title",
 		"pt": "com o título do jogo"
+	},
+	"game_type": {
+		"en": "Game type",
+		"pt": "Tipo de jogo"
 	},
 	"game_category": {
 		"en": "Game category",
@@ -158,6 +166,10 @@
 	"game_sessions_played_since_{}_until_{}": {
 		"en": "game sessions played since {} (until {})",
 		"pt": "sessões de jogo jogadas desde {} (até {})"
+	},
+	"played_in": {
+		"en": "Played in",
+		"pt": "Jogado em"
 	},
 	"game_sessions_played_in": {
 		"en": "Game sessions played in",

@@ -2020,12 +2020,23 @@ class Stories(object):
 		if "Type" not in task_dictionary:
 			task_dictionary["Type"] = "Stories"
 
+		# ---------- #
+
 		# If the "Entry" key is not inside the task dictionary
 		if "Entry" not in task_dictionary:
 			# Create it
 			task_dictionary["Entry"] = {
-				"Date": self.Date.Now()
+				"Times": {}
 			}
+
+			# Register the completed task time in the "Times" dictionary
+			time_key = "Completed task"
+			task_dictionary["Entry"]["Times"][time_key] = self.Date.Now()
+
+			# Register the completed task time in the UTC time
+			task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = task_dictionary["Entry"]["Times"][time_key]
+
+		# ---------- #
 
 		# Register the task with the "Register" class of the "Tasks" module
 		if register_task == True:
@@ -2034,6 +2045,8 @@ class Stories(object):
 
 			# Register the task
 			Register(task_dictionary)
+
+		# ---------- #
 
 		# Register the task on the current "Diary Slim" file if the "Tasks" module did not
 		if register_task == False:

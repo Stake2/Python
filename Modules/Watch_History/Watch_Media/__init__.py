@@ -71,37 +71,33 @@ class Watch_Media(Watch_History):
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class)
 
+	def Select_The_Media(self):
+		# Define the list of watching statuses to use
+		# With the "Watching" and "Re-watching" statuses
+		watching_statuses = [
+			self.texts["watching, title()"]["en"],
+			self.texts["re_watching, title()"]["en"]
+		]
+
+		# Define the default root dictionary with the "Media type" dictionary containing the watching statuses
+		# And also add the "Add status options" switch to the "Media" dictionary
+		self.dictionary = {
+			"Media type": {
+				"Status": watching_statuses
+			},
+			"Media": {
+				"Add status options": True
+			}
+		}
+
+		# Ask the user to select a media type and media
+		self.dictionary = self.Select_Media_Type_And_Media(options = self.dictionary, watch = True)
+
 	def Define_Media_Dictionary(self):
 		# Select the media type and the media if the dictionary is empty
 		if self.dictionary == {}:
-			# Define the default root dictionary with the media type dictionary containing the watching statuses
-			self.dictionary = {
-				"Media type": {
-					"Status": [
-						self.texts["plan_to_watch, title()"]["en"],
-						self.texts["watching, title()"]["en"],
-						self.texts["re_watching, title()"]["en"]
-					]
-				}
-			}
-
-			# Define the "Show non-watching media" switch
-			show_non_watching_media = False
-
-			# If the switch is True
-			if show_non_watching_media == True:
-				# Define a list of non-watching statuses
-				non_watching_statuses = [
-					self.texts["plan_to_watch, title()"]["en"],
-					self.Language.texts["on_hold, title()"]["en"],
-					self.Language.texts["completed, title()"]["en"]
-				]
-
-				# Extend the original list of status using the local list above
-				self.dictionary["Media type"]["Status"].extend(non_watching_statuses)
-
-			# Ask the user to select a media type and media
-			self.dictionary = self.Select_Media_Type_And_Media(options = self.dictionary, watch = True)
+			# Ask the user to select the media to be watched
+			self.Select_The_Media()
 
 		# Define a shortcut for the media dictionary
 		self.media = self.dictionary["Media"]
@@ -395,7 +391,7 @@ class Watch_Media(Watch_History):
 				# Define the episode number as one
 				self.media["Episode"]["Number"] = 1
 
-				# If the media item is not a single unit (that means it has episodes)
+			# If the media item is not a single unit (that means it has episodes)
 			if self.media["States"]["Single unit"] == False:
 				# Iterate through the episode titles inside the media language list of episode titles
 				# To find the current episode number
@@ -406,12 +402,15 @@ class Watch_Media(Watch_History):
 						self.media["Episode"]["Separator"] != "" and
 						self.media["Episode"]["Separator"] in episode_title
 					):
+						# Define the language title as the root episode title
+						language_title = self.media["Episode"]["Title"]
+
 						# Remove the separator and episode number from the episode title
 						episode_title = re.sub(self.media["Episode"]["Separator"] + "[0-9]{1,3} ", "", episode_title)
 
 						# Define the expression as "current episode title is inside the media episode title" (not an exact match)
 						# We remove the episode number from the current episode title to be easier to match it with the correct episode title (the one inside the "Episode" dictionary)
-						expression = episode_title in self.media["Episode"]["Title"]
+						expression = episode_title in language_title
 
 					# If the separator is not an empty string and is not present in the current episode title
 					# Or the media type is "Videos", and the media is a video channel
@@ -425,16 +424,8 @@ class Watch_Media(Watch_History):
 						self.media["States"]["Episodic"] == False or 
 						self.media["Episode"]["Separator"] == ""
 					):
-						# Define the default language title as the root episode title
+						# Define the language title as the root episode title
 						language_title = self.media["Episode"]["Title"]
-
-						# Iterate through the list of small languages
-						# (We do this to find the current language title in the correct media language)
-						for language in self.languages["small"]:
-							# If the local episode title is inside the current language titles list
-							if episode_title in language_titles[language]:
-								# Update the local language title to be the current title inside the local list
-								language_title = language_titles[language][i - 1]
 
 						# Define the expression as "current episode title is equal to the language episode title" (an exact match)
 						# For example, the current "episode title" is (EP12 "The Big Flowers")
@@ -448,22 +439,25 @@ class Watch_Media(Watch_History):
 					# Add one to the "i" number
 					i += 1
 
-			# Iterate through the list of small languages
-			for language in self.languages["small"]:
-				# Get the list of episode titles in the current language
-				episode_titles = self.media["Item"]["Episodes"]["Titles"][language]
+				# Iterate through the list of small languages
+				for language in self.languages["small"]:
+					# Get the list of episode titles in the current language
+					episode_titles = self.media["Item"]["Episodes"]["Titles"][language]
 
-				# Define the local episode title as an empty string
-				episode_title = ""
+					# Define the local episode title as an empty string
+					episode_title = ""
 
-				# If the list of episode titles is not empty
-				if episode_titles != []:
-					# Get the language episode title using the episode number
-					# (Less one because lists in Python starts in zero, and the episode number starts in one)
-					episode_title = episode_titles[self.media["Episode"]["Number"] - 1]
+					# If the list of episode titles is not empty
+					if episode_titles != []:
+						# Define the line number to use to find the episode title
+						line_number = self.media["Episode"]["Number"] - 1
 
-				# Define the episode title in the current language as the local episode title, inside the "Titles" key
-				self.media["Episode"]["Titles"][language] = episode_title
+						# Get the language episode title using the defined line number
+						# (Less one because lists in Python starts in zero, and the episode number starts in one)
+						episode_title = episode_titles[line_number]
+
+					# Define the episode title in the current language as the local episode title, inside the "Titles" key
+					self.media["Episode"]["Titles"][language] = episode_title
 
 			# For the video media type, when the media is a video channel
 			# Get the episode ID from the "IDs.txt" file using the episode number
@@ -490,9 +484,15 @@ class Watch_Media(Watch_History):
 				# Get the remote origin title from the key
 				self.media["Episode"]["Remote"]["Title"] = self.media["Details"][self.Language.language_texts["remote_origin"]]
 
-			# Get the remote origin link from the "remote origins" dictionary using the remote title as a key
-			# self.remote_origins = {"Animes Vision": "https://animes.vision/", "YouTube": "https://www.youtube.com/"}
-			self.media["Episode"]["Remote"]["Link"] = self.remote_origins[self.media["Episode"]["Remote"]["Title"]]
+			# Make a shortcut for the remote title
+			remote_title = self.media["Episode"]["Remote"]["Title"]
+
+			# Get the remote origin dictionary
+			remote_origin = self.remote_origins[remote_title]
+
+			# Define the remote link as the link inside the "remote origin" dictionary
+			# Links = {"Animes Vision": "https://animes.vision/", "YouTube": "https://www.youtube.com/"}
+			self.media["Episode"]["Remote"]["Link"] = remote_origin["Link"]
 
 			# Define a local key as "origin_location"
 			key = "origin_location"
@@ -512,31 +512,6 @@ class Watch_Media(Watch_History):
 			if text in self.media["Item"]["Details"]:
 				# Define the origin location key as the value inside that dictionary
 				self.media["Episode"]["Remote"][key] = self.media["Item"]["Details"][text]
-
-			# Define the remote origin link for the "YouTube" remote origin
-			if self.media["Episode"]["Remote"]["Title"] == "YouTube":
-				# If the "v=" (video) parameter is not inside the origin location
-				if "v=" not in self.media["Episode"]["Remote"]["origin_location"]:
-					# Add the "watch?v=" text and the episode (video) ID
-					self.media["Episode"]["Remote"]["Link"] += "watch?v=" + self.media["Episode"]["ID"]
-
-					# If the media has a media item list (seasons or video series)
-					if self.media["States"]["Media item list"] == True:
-						# Add the "list=" (playlist) parameter and the origin location of the remote origin
-						# Which is the playlist ID
-						self.media["Episode"]["Remote"]["Link"] += "&list=" + self.media["Episode"]["Remote"]["origin_location"]
-
-						# If the media is an episodic one
-						# (Video channels can be episodic if the "Episodic" key is present inside the media (item) details)
-						if self.media["States"]["Episodic"] == True:
-							# Add the "index=" (playlist video number) parameter and the episode number plus one
-							# This is to tell the index of the video inside the playlist to YouTube
-							self.media["Episode"]["Remote"]["Link"] += "&index=" + str(self.media["Episode"]["Number"] + 1)
-
-				# If the "v=" (video) parameter is inside the origin location
-				if "v=" in self.media["Episode"]["Remote"]["origin_location"]:
-					# Add only the "watch?" text and the origin location to the remote origin link
-					self.media["Episode"]["Remote"]["Link"] += "watch?" + self.media["Episode"]["Remote"]["origin_location"]
 
 			# Define the remote origin link for the "Animes Vision" remote origin
 			if self.media["Episode"]["Remote"]["Title"] == "Animes Vision":
@@ -618,6 +593,38 @@ class Watch_Media(Watch_History):
 					# https://animes.vision/animes/title-of-the-anime/episodio-12/legendado
 					# "legendado" means "subbed"
 					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["subbed, title()"][self.user_language].lower()
+
+			# Define the remote origin link for the "YouTube" remote origin
+			if self.media["Episode"]["Remote"]["Title"] == "YouTube":
+				# Define a local link as the "Video" link template
+				link = remote_origin["Link templates"]["Video"]
+
+				# If the media has a media item list (seasons or video series)
+				if self.media["States"]["Media item list"] == True:
+					# Update the link to the "Video and playlist" link template
+					link = remote_origin["Link templates"]["Video and playlist"]
+
+				# Add the video ID
+				link = link.replace("{Video}", self.media["Episode"]["ID"])
+
+				# If the media has a media item list (seasons or video series)
+				if self.media["States"]["Media item list"] == True:
+					# Add the playlist ID
+					link = link.replace("{Playlist}", self.media["Episode"]["Remote"]["origin_location"])
+
+				# If the media has a media item list (seasons or video series)
+				# And the media is an episodic one
+				# (Video channels can be episodic if the "Episodic" key is present inside the media (item) details)
+				if (
+					self.media["States"]["Media item list"] == True and
+					self.media["States"]["Episodic"] == True
+				):
+					# Add the "index" (playlist video number) parameter and the episode number plus one
+					# This is to tell the index of the video inside the playlist to YouTube
+					link += "&index=" + str(self.media["Episode"]["Number"] + 1)
+
+				# Define the remote link as the local link
+				self.media["Episode"]["Remote"]["Link"] = link
 
 			# Define the media episode unit as the remote origin link
 			self.media["Episode"]["unit"] = self.media["Episode"]["Remote"]["Link"]
@@ -882,8 +889,7 @@ class Watch_Media(Watch_History):
 			"Texts": {
 				"Number": {},
 				"Number name": {},
-				"Times": {},
-				"Watching": {}
+				"Times": {}
 			}
 		}
 
@@ -1204,7 +1210,6 @@ class Watch_Media(Watch_History):
 	def Start_Watching_Media(self):
 		# Create the "Entry" dictionary inside the root dictionary, with its default keys
 		self.dictionary["Entry"] = {
-			"Date": {},
 			"Times": {
 				"Started watching": {},
 				"Finished watching": {},

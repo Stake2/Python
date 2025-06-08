@@ -37,7 +37,8 @@
 			"pt": "Converter histórico"
 		},
 		"Remove list": [
-			"Add_To_Comments_Dictionary"
+			"Add_To_Comments_Dictionary",
+			"Convert_History"
 		]
 	},
 	"Classes": {
@@ -65,21 +66,12 @@
 				},
 				"Description": "Preencher arquivos de mídia",
 				"Object": "<class 'Watch_History.Manage.Fill_Media_Files.Fill_Media_Files'>"
-			},
-			"Convert_History": {
-				"Descriptions": {
-					"en": "Convert history",
-					"pt": "Converter histórico"
-				},
-				"Description": "Converter histórico",
-				"Object": "<class 'Watch_History.Manage.Convert_History.Convert_History'>"
 			}
 		},
 		"Descriptions": [
 			"Adicionar uma nova mídia ao Banco de Dados",
 			"Iterar através da lista de mídia",
-			"Preencher arquivos de mídia",
-			"Converter histórico"
+			"Preencher arquivos de mídia"
 		]
 	}
 }

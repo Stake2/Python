@@ -202,7 +202,7 @@ class File():
 		file = self.Sanitize(file)
 
 		if self.Exist(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 			return False
 
@@ -232,7 +232,7 @@ class File():
 		destination_file = self.Sanitize(destination_file)
 
 		if self.Exist(source_file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], source_file)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], source_file)
 
 			return False
 
@@ -263,7 +263,7 @@ class File():
 		destination_file = self.Sanitize(destination_file)
 
 		if self.Exist(source_file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], source_file)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], source_file)
 
 			return False
 
@@ -330,7 +330,7 @@ class File():
 				return False
 
 		if self.Exist(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], file_text)
 
 			return False
 
@@ -359,8 +359,13 @@ class File():
 
 			contents["Length"] = contents["length"]
 
+		# Temporary:
+		# Add the title case "Lines" and "String" keys
+		contents["Lines"] = contents["lines"]
+		contents["String"] = contents["string"]
+
 		if self.Exist(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 		return contents
 
@@ -471,7 +476,7 @@ class File():
 					self.Split(lines = lines, dict_ = dictionary, separator = dictionary_separator, next_line = next_line, convert = convert)
 
 		if self.Exist(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
+			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 		return dictionary
 

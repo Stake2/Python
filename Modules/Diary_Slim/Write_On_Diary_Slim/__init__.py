@@ -554,10 +554,21 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.task_dictionary = {
 			"Type": self.dictionary["Text"]["Key"],
 			"Entry": {
-				"Date": self.Date.Now()
+				"Times": {}
 			},
 			"Register task": True
 		}
+
+		# ---------- #
+
+		# Register the completed task time in the "Times" dictionary
+		time_key = "Completed task"
+		self.task_dictionary["Entry"]["Times"][time_key] = self.Date.Now()
+
+		# Register the completed task time in the UTC time
+		self.task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = self.task_dictionary["Entry"]["Times"][time_key]
+
+		# ---------- #
 
 		# If the "Has task progress" key is inside the text dictionary
 		if "Has task progress" in self.dictionary["Text"]:
