@@ -1,0 +1,66 @@
+{
+	"Module": "GamePlayer",
+	"Sub-module": "Manage",
+	"Folders": {
+		"root": "C:/Apps/Modules/GamePlayer/",
+		"Texts": {
+			"root": "C:/Apps/Module files/GamePlayer/"
+		},
+		"Manage": {
+			"root": "C:/Apps/Modules/GamePlayer/Manage/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/GamePlayer/Manage/Descriptions.json",
+		"Module": "C:/Apps/Modules/GamePlayer/Manage/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]",
+		"Add_A_New_Game": {
+			"en": "Add a new game to the Database",
+			"pt": "Adicionar um novo jogo ao Banco de Dados"
+		},
+		"Iterate_Through_The_Game_List": {
+			"en": "Iterate through the game list",
+			"pt": "Iterar através da lista de jogos"
+		},
+		"Convert_History": {
+			"en": "Convert history",
+			"pt": "Converter histórico"
+		},
+		"Remove list": []
+	},
+	"Classes": {
+		"Dictionary": {
+			"Add_A_New_Game": {
+				"Descriptions": {
+					"en": "Add a new game to the Database",
+					"pt": "Adicionar um novo jogo ao Banco de Dados"
+				},
+				"Description": "Adicionar um novo jogo ao Banco de Dados",
+				"Object": "<class 'GamePlayer.Manage.Add_A_New_Game.Add_A_New_Game'>"
+			},
+			"Iterate_Through_The_Game_List": {
+				"Descriptions": {
+					"en": "Iterate through the game list",
+					"pt": "Iterar através da lista de jogos"
+				},
+				"Description": "Iterar através da lista de jogos",
+				"Object": "<class 'GamePlayer.Manage.Iterate_Through_The_Game_List.Iterate_Through_The_Game_List'>"
+			},
+			"Convert_History": {
+				"Descriptions": {
+					"en": "Convert history",
+					"pt": "Converter histórico"
+				},
+				"Description": "Converter histórico",
+				"Object": "<class 'GamePlayer.Manage.Convert_History.Convert_History'>"
+			}
+		},
+		"Descriptions": [
+			"Adicionar um novo jogo ao Banco de Dados",
+			"Iterar através da lista de jogos",
+			"Converter histórico"
+		]
+	}
+}

@@ -11,13 +11,29 @@
 		"en": "Game titles",
 		"pt": "Títulos do jogo"
 	},
+	"sub_game_title": {
+		"en": "Sub-game title",
+		"pt": "Título do sub-jogo"
+	},
 	"with_the_game_title": {
 		"en": "with the game title",
 		"pt": "com o título do jogo"
 	},
+	"number_of_the_game": {
+		"en": "Number of the game",
+		"pt": "Número do jogo"
+	},
+	"number_of_the_sub_game": {
+		"en": "Number of the sub-game",
+		"pt": "Número do sub-jogo"
+	},
 	"game_type": {
 		"en": "Game type",
 		"pt": "Tipo de jogo"
+	},
+	"number_of_the_game_type": {
+		"en": "Number of the game type",
+		"pt": "Número do tipo de jogo"
 	},
 	"game_category": {
 		"en": "Game category",
@@ -75,13 +91,13 @@
 		"en": "Select one game to play",
 		"pt": "Selecione um jogo para jogar"
 	},
-	"first_game_session_in_year": {
-		"en": "First game session in year",
-		"pt": "Primeira sessão de jogo no ano"
+	"first_gaming_session_in_the_year": {
+		"en": "First gaming session in the year",
+		"pt": "Primeira sessão de jogatina no ano"
 	},
-	"first_game_session_of_the_{}_category_in_year": {
-		"en": "First game session of the \"{}\" category in year",
-		"pt": "Primeira sessão de jogo da categoria \"{}\" no ano"
+	"first_gaming_session_of_the_{}_game_category_in_the_year": {
+		"en": "First gaming session of the \"{}\" game category in the year",
+		"pt": "Primeira sessão de jogatina da categoria de jogo \"{}\" no ano"
 	},
 	"start_counting_the_gaming_time": {
 		"en": "Start counting the gaming time",
@@ -99,17 +115,17 @@
 		"en": "I played the {} game called \"{}\" for {}",
 		"pt": "Eu joguei o jogo de {} chamado \"{}\" por {}"
 	},
-	"when_you_finished_playing": {
-		"en": "When you finished playing",
-		"pt": "Quando você terminou de jogar"
-	},
-	"when_i_started_to_play": {
-		"en": "When I started to play",
+	"when_i_started_playing": {
+		"en": "When I started playing",
 		"pt": "Quando eu comecei a jogar"
 	},
 	"when_i_finished_playing": {
 		"en": "When I finished playing",
 		"pt": "Quando eu terminei de jogar"
+	},
+	"playing, infinitive action": {
+		"en": "playing",
+		"pt": "jogar"
 	},
 	"completed_the_game": {
 		"en": "Completed the game",
@@ -163,17 +179,9 @@
 		"en": "Games being played",
 		"pt": "Jogos sendo jogados"
 	},
-	"game_sessions_played_since_{}_until_{}": {
-		"en": "game sessions played since {} (until {})",
-		"pt": "sessões de jogo jogadas desde {} (até {})"
-	},
 	"played_in": {
 		"en": "Played in",
 		"pt": "Jogado em"
-	},
-	"game_sessions_played_in": {
-		"en": "Game sessions played in",
-		"pt": "Sessões de jogo jogadas em"
 	},
 	"times_that_i_played_the_{}_game_called_{}": {
 		"en": "Times that I played the {} game called \"{}\"",
@@ -183,9 +191,13 @@
 		"en": "Game types played in all years",
 		"pt": "Tipos de jogo jogados em todos os anos"
 	},
-	"number_of_played_times": {
-		"en": "Number of played times",
-		"pt": "Número de vezes jogadas"
+	"gaming_session_number": {
+		"en": "Gaming session number",
+		"pt": "Número da sessão de jogatina"
+	},
+	"gaming_session_number_by_game_type": {
+		"en": "Gaming session number by game type",
+		"pt": "Número da sessão de jogatina por tipo de jogo"
 	},
 	"sub_game_type": {
 		"en": "Sub-game type",
@@ -193,7 +205,7 @@
 	},
 	"sub_game_folder": {
 		"en": "Sub-game folder",
-		"pt": "Pasta de sub-jogo"
+		"pt": "Pasta do sub-jogo"
 	},
 	"dlc, upper()": {
 		"en": "DLC",
@@ -202,5 +214,9 @@
 	"dlcs, upper()": {
 		"en": "DLCs",
 		"pt": "DLCs"
+	},
+	"the_entry_is_not_inside_the_list_of_game_type_entries": {
+		"en": "The entry is not inside the list of game type entries",
+		"pt": "A entrada não está dentro da lista de entradas por tipo de jogo"
 	}
 }

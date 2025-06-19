@@ -107,7 +107,7 @@ class Add_A_New_Media(Watch_History):
 		media["Titles"]["Original"] = media["Title"]
 		media["Titles"]["Sanitized"] = self.Sanitize_Title(media["Title"])
 
-		# Ask for the media (item) titles per langauge
+		# Ask for the media (item) titles by langauge
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 

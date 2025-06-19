@@ -512,13 +512,9 @@
 		"en": "First watched media in the year",
 		"pt": "Primeira mídia assistida no ano"
 	},
-	"first_watched_media_per_media_type_in_the_year": {
-		"en": "First watched media per media type in the year",
+	"first_watched_media_by_media_type_in_the_year": {
+		"en": "First watched media by media type in the year",
 		"pt": "Primeira mídia assistida por tipo de mídia no ano"
-	},
-	"convert_history": {
-		"en": "Convert history",
-		"pt": "Converter histórico"
 	},
 	"show_plan_to_watch_media": {
 		"en": "Show \"Plan to watch\" media",

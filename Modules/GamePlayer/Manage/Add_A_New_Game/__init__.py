@@ -227,7 +227,7 @@ class Add_A_New_Game(GamePlayer):
 
 		# Create the game folders
 		self.game["Folders"] = {
-			"root": self.dictionary["Type"]["Folders"]["Information"]["root"] + self.Sanitize_Title(self.game["Title"]) + "/"
+			"root": self.dictionary["Type"]["Folders"]["Game information"]["root"] + self.Sanitize_Title(self.game["Title"]) + "/"
 		}
 
 		self.Folder.Create(self.game["Folders"]["root"])
@@ -243,18 +243,19 @@ class Add_A_New_Game(GamePlayer):
 		self.game.pop("folders")
 
 	def Add_To_The_Database(self):
-		self.dictionary["Type"]["JSON"] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["Information"]["info"])
+		# Get the JSON dictionary of the game type
+		self.dictionary["Type"]["JSON"] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["Game information"]["Information"])
 
-		# Add to the titles list
+		# Add the game title to the list of titles
 		self.dictionary["Type"]["JSON"]["Titles"].append(self.game["Title"])
 
-		# Add to the status titles list
+		# Add the game status to the list of statuses
 		english_status = self.Get_Language_Status(self.game["Status"])
 
 		self.dictionary["Type"]["JSON"]["Status"][english_status].append(self.game["Title"])
 
-		# Update the number of game inside the json dictionary
+		# Update the number of games inside the JSON dictionary
 		self.dictionary["Type"]["JSON"]["Number"] = len(self.dictionary["Type"]["JSON"]["Titles"])
 
 		# Edit the "Information.json" file with the updated "Information" dictionary
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Information"]["info"], self.dictionary["Type"]["JSON"])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Game information"]["Information"], self.dictionary["Type"]["JSON"])

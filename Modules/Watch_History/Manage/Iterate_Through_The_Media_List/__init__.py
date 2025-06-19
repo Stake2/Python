@@ -22,7 +22,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 		# Add missing year numbers
 		for year in range(2018, self.date["Units"]["Year"] + 1):
 			if str(year) not in self.comments_number["Numbers"]["Years"]:
-				# If the year of the entry is not inside the comment numbers per year, add it
+				# If the year of the entry is not inside the comment numbers by year, add it
 				self.comments_number["Numbers"]["Years"][str(year)] = 0
 
 				for plural_media_type in self.media_types["Plural"]["en"]:
@@ -33,7 +33,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 							"Years": {}
 						}
 
-					# If the year of the entry is not inside the comment numbers per type per year, add it
+					# If the year of the entry is not inside the comment numbers by type and by year, add it
 					if str(year) not in self.comments_number["Numbers"]["Type"][plural_media_type]["Years"]:
 						self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][str(year)] = 0
 
@@ -503,10 +503,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 						if len(entry["Date"]) == 4:
 							year = entry["Date"]
 
-						# Add one to the comments number per year
+						# Add one to the comments number by year
 						self.comments_number["Numbers"]["Years"][str(year)] += 1
 
-						# Add one to the comments number per type per year
+						# Add one to the comments number by type and by year
 						self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(year)] += 1
 
 					# If the date is empty or the date contains only the year
@@ -514,13 +514,13 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Add one to the comments without date
 						self.comments_number["Numbers"]["No time"] += 1
 
-						# Add one to the comments without time per type
+						# Add one to the comments without time by type
 						self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["No time"] += 1
 
-					# Add one to the total comments number per type
+					# Add one to the total comments number by type
 					self.comments_number["Numbers"]["Total"] += 1
 
-					# Add one to the total comments number per type
+					# Add one to the total comments number by type
 					self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Total"] += 1
 
 	def Add_Anime_Information(self):

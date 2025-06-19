@@ -21,7 +21,7 @@ class Add_Social_Network(Social_Networks):
 			}
 		}
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Has": {
 				"Image folders": False,

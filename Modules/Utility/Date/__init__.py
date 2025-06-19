@@ -594,7 +594,7 @@ class Date():
 		# Define the number of keys
 		number_of_keys = len(keys)
 
-		# Make the time texts per language
+		# Make the time texts by language
 		for key in keys:
 			for language in self.languages["small"]:
 				# Get the difference number

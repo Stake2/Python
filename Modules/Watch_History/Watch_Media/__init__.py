@@ -734,7 +734,7 @@ class Watch_Media(Watch_History):
 				# Add episode separator and title
 				self.media["Episode"]["with_title_and_item"]["Original"] += self.media["Separators"]["Episode"] + self.media["Episode"]["Title"]
 
-				# Define episode with item and episode with title and item texts per language
+				# Define episode with item and episode with title and item texts by language
 				for language in self.languages["small"]:
 					# Get the media title in the current language
 					media_title = self.Get_Media_Title(self.dictionary, language = language)
@@ -774,7 +774,7 @@ class Watch_Media(Watch_History):
 
 			self.media["Episode"]["with_title"]["Original"] = media_title + self.media["Separators"]["Title"] + self.media["Episode"]["Title"]
 
-			# Define the episode with title texts per language
+			# Define the episode with title texts by language
 			for language in self.languages["small"]:
 				media_title = self.Get_Media_Title(self.dictionary, language = language)
 

@@ -123,7 +123,8 @@ class Main():
 			"Define_Basic_Variables",
 			"Define_Texts",
 			"Import_Classes",
-			"Get_Methods"
+			"Get_Methods",
+			"Get_ID"
 		]
 
 		# Iterate through the tuples in the members

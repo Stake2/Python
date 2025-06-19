@@ -80,8 +80,8 @@ class Register(Database):
 		for dict_ in dicts:
 			dict_["Numbers"]["Total"] += 1
 
-			if "Per Type" in dict_["Numbers"]:
-				dict_["Numbers"]["Per Type"][self.type] += 1
+			if "By Type" in dict_["Numbers"]:
+				dict_["Numbers"]["By Type"][self.type] += 1
 
 		# Define sanitized version of entry name for files
 		self.dictionary["Entry"]["Name"] = {
@@ -134,14 +134,14 @@ class Register(Database):
 		self.JSON.Edit(self.folders["history"]["current_year"]["entries"], self.dictionaries["Entries"])
 
 		# Update the type "Entries.json" file
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["per_type"]["entries"], self.dictionaries["Entry type"][self.type])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["by_type"]["entries"], self.dictionaries["Entry type"][self.type])
 
 		# Update the data "Registered.json" file
 		self.JSON.Edit(self.data["Folders"]["Registered"]["entries"], self.dictionaries["Registered"])
 
 		# Add to the root, type, and data "Entry list.txt" files
 		self.File.Edit(self.folders["history"]["current_year"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
-		self.File.Edit(self.dictionary["Type"]["Folders"]["per_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
+		self.File.Edit(self.dictionary["Type"]["Folders"]["by_type"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 		self.File.Edit(self.data["Folders"]["Registered"]["entry_list"], self.dictionary["Entry"]["Name"]["Normal"], "a")
 
 	def Create_Entry_File(self):
@@ -161,7 +161,7 @@ class Register(Database):
 		# [Number. Type (Time)]
 
 		# Define the entry file
-		folder = self.dictionary["Type"]["Folders"]["per_type"]["files"]["root"]
+		folder = self.dictionary["Type"]["Folders"]["by_type"]["files"]["root"]
 		file = folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 		self.File.Create(file)
 

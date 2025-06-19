@@ -282,7 +282,7 @@ class Module_Selector():
 			# So it is safe to replace this variable now
 			argument = argument["List"][0]
 
-		# Add the arguments per language
+		# Add the arguments by language
 		# Not the English language, the other languages such as the user language (when it is not English)
 		for language in self.languages["small"]:
 			# If the language is not English

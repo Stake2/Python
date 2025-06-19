@@ -20,9 +20,13 @@ class Play(GamePlayer):
 		# Import sub-classes method
 		self.Import_Sub_Classes()
 
-		# Define the root dictionary and the "open game" switch
+		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
-		self.open_game = open_game
+
+		# Define the states dictionary, importing the "open game" parameter
+		self.states = {
+			"Open game": open_game
+		}
 
 		# Define the game dictionary
 		self.Define_Game_Dictionary()
@@ -30,8 +34,9 @@ class Play(GamePlayer):
 		# Show information about the game
 		self.Show_Information(self.dictionary)
 
-		# If the "open game" switch is True, open the game
-		if self.open_game == True:
+		# If the "Open game" state is True, open the game
+		if self.states["Open game"] == True:
+			# Open the game
 			self.Open_Game()
 
 		# Register the gaming session
@@ -105,7 +110,7 @@ class Play(GamePlayer):
 			self.game["Started playing time"] = self.Date.Now()["Formats"]["HH:MM DD/MM/YYYY"]
 
 			# Create the game dates text in the "Dates" key, with the "When I started to play" text
-			self.game["Dates"] = self.language_texts["when_i_started_to_play"] + ":\n"
+			self.game["Dates"] = self.language_texts["when_i_started_playing"] + ":\n"
 			self.game["Dates"] += self.game["Started playing time"]
 
 			# Add that date to the "Dates.txt" file
@@ -115,7 +120,7 @@ class Play(GamePlayer):
 			# With the text as key and the date as value
 			# (This is to be used in the "Show_Information" root method to show the game dates)
 			self.game["Dates"] = {
-				self.language_texts["when_i_started_to_play"]: self.game["Started playing time"]
+				self.language_texts["when_i_started_playing"]: self.game["Started playing time"]
 			}
 
 	def Open_Game(self):
@@ -141,7 +146,7 @@ class Play(GamePlayer):
 		# ---------- #
 
 		# Ask the user to press Enter to start counting the gaming time
-		if self.open_game == True:
+		if self.states["Open game"] == True:
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
 				self.Input.Type(self.language_texts["start_counting_the_gaming_time"], first_space = False)
@@ -150,15 +155,26 @@ class Play(GamePlayer):
 				# Show only the text
 				print(self.language_texts["start_counting_the_gaming_time"] + ":")
 
-		# Define the Entry dictionary and the "Before" time (now)
+		# Define the entry dictionary, the "Before" time (now)
 		self.dictionary["Entry"] = {
 			"Session duration": {
 				"Before": self.Date.Now(),
 				"After": {}
+			},
+			"Times": {
+				"Started playing": {},
+				"Finished playing": {},
+				"Finished playing (UTC)": {},
+				"Gaming session duration": {}
 			}
 		}
 
-		if self.open_game == True:
+		# Define the "Started playing" time as the "Before" time
+		self.dictionary["Entry"]["Times"]["Started playing"] = self.dictionary["Entry"]["Session duration"]["Before"]
+
+		# If the "Open game" state is True
+		if self.states["Open game"] == True:
+			# Show a space
 			print()
 
 		# ---------- #
@@ -167,10 +183,11 @@ class Play(GamePlayer):
 		print(self.Date.language_texts["now, title()"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
-		# if the "open game" switch is True
-		if self.open_game == True:
+		# If the "Open game" state is True
+		if self.states["Open game"] == True:
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
+				# Ask the user to press Enter when they finish playing the game
 				self.Input.Type(self.language_texts["press_enter_when_you_finish_playing_the_game"])
 
 			else:
@@ -180,7 +197,7 @@ class Play(GamePlayer):
 
 		# ---------- #
 
-		# Define the "Finished playing" state as True
+		# Set the "Finished playing" state to True
 		self.game["States"]["Finished playing"] = True
 
 		# Define the "After" time (now, but after playing)
@@ -188,7 +205,7 @@ class Play(GamePlayer):
 
 		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
-			# Add 2 hours, 30 minutes, and 28 seconds to the game session time, for testing purposes
+			# Add 2 hours, 30 minutes, and 28 seconds to the gaming session time, for testing purposes
 			self.dictionary["Entry"]["Session duration"]["After"] = self.Date.Now(self.dictionary["Entry"]["Session duration"]["Before"]["Object"] + self.Date.Relativedelta(hours = 2, minutes = 30, seconds = 28))
 
 		# Show the time after the user finishes playing the game
@@ -205,21 +222,22 @@ class Play(GamePlayer):
 		# Calculate the time difference between the start and finish times
 		self.dictionary["Entry"]["Session duration"]["Difference"] = self.Date.Difference(start_time, finish_time)
 
-		# Get the difference text
-		self.dictionary["Entry"]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Text"]
-
-		# Get the time units of the time difference
-		self.dictionary["Entry"]["Session duration"]["Difference"] = self.dictionary["Entry"]["Session duration"]["Difference"]["Difference"]
+		# Define the "Gaming session duration" key as the session duration difference
+		self.dictionary["Entry"]["Times"]["Gaming session duration"] = self.dictionary["Entry"]["Session duration"]["Difference"]
 
 		# Show the session duration text in the user language
 		print()
-		print(self.language_texts["session_duration"] + ":")
-		print("\t" + self.dictionary["Entry"]["Session duration"]["Text"][self.user_language])
+		print(self.Language.language_texts["gaming_session_duration"] + ":")
+		print("\t" + self.dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.user_language])
 
 		# ---------- #
 
-		# Register the finished playing time
-		self.dictionary["Entry"]["Date"] = self.dictionary["Entry"]["Session duration"]["After"]
+		# Register the finished playing time in the "Times" dictionary
+		time_key = "Finished playing"
+		self.dictionary["Entry"]["Times"][time_key] = self.dictionary["Entry"]["Session duration"]["After"]
+
+		# Register the finished playing time in the UTC time
+		self.dictionary["Entry"]["Times"][time_key + " (UTC)"] = self.dictionary["Entry"]["Times"][time_key]
 
 		# ---------- #
 

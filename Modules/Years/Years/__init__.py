@@ -204,7 +204,7 @@ class Years(object):
 				"Folders": [
 					"Completed tasks",
 					"Firsts of the Year",
-					"Game sessions",
+					"Gaming sessions",
 					"Watched media"
 				],
 				"Files": [
@@ -817,7 +817,7 @@ class Years(object):
 						# Add it to the "Files" dictionary
 						data["Dictionary"]["Files"][data["Folder type"]][key] = data["Local"][key]
 
-			# folders = ["Done tasks", "Firsts of the Year", "Game Sessions", "Watched media"]
+			# folders = ["Done tasks", "Firsts of the Year", "Gaming sessions", "Watched media"]
 			# files = ["Welcome", "This Year I", "This Year I (post)", "This Year I (Personal version)", "Summary", "Goodbye"]
 			# user_language_files = ["Yearly statistics", "FutureMe"]
 			keys = list(self.years["Names"]["Language"][item_type]["Dictionary"].keys())

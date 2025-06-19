@@ -17,7 +17,7 @@ class Update_Websites(PHP):
 			"Verbose": False
 		}
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Select website": True,
 			"First time updating": True,
@@ -327,11 +327,11 @@ class Update_Websites(PHP):
 				"List": self.websites["List"]["en"]
 			},
 			"Update all story websites": {
-				"List": self.websites["Per type"]["Story"]["en"],
+				"List": self.websites["By type"]["Story"]["en"],
 				"Item": "story"
 			},
 			"Update all year websites": {
-				"List": self.websites["Per type"]["Year"],
+				"List": self.websites["By type"]["Year"],
 				"Item": "year"
 			},
 			"Finish selection": {}

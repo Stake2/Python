@@ -262,25 +262,27 @@ class File():
 		source_file = self.Sanitize(source_file)
 		destination_file = self.Sanitize(destination_file)
 
-		if self.Exist(source_file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exist"], source_file)
-
-			return False
-
 		if (
-			self.switches["File"]["Move"] == True and
-			self.Exist(source_file) == True
+			self.Exist(source_file) == True and
+			source_file != destination_file
 		):
-			import shutil
-			shutil.move(source_file, destination_file)
+			if (
+				self.switches["File"]["Move"] == True and
+				self.Exist(source_file) == True
+			):
+				import shutil
+				shutil.move(source_file, destination_file)
 
-			self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
+				self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
 
-			return True
+				return True
 
-		if self.switches["File"]["Move"] == False:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
+			if self.switches["File"]["Move"] == False:
+				self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
 
+				return False
+
+		else:
 			return False
 
 	def Edit(self, file, text, mode = "w", next_line = True, verbose = None):

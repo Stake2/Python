@@ -25,7 +25,7 @@ class Copy_Story_Titles(Stories):
 			}
 		}
 
-		# Define the "States" dictionary
+		## Define the states dictionary
 		self.states = {
 			"First change of copy mode": True,
 			"Junction mode": False

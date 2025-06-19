@@ -215,33 +215,33 @@ class Database(object):
 
 					self.Folder.Create(self.folders[root_key][key]["root"])
 
-				# "History Per Type" folder
+				# "History By Type" folder
 				if root_folder == "History":
-					self.folders[root_key]["current_year"]["per_type"][key] = {
-						"root": self.folders[root_key]["current_year"]["per_type"]["root"] + plural_type + "/"
+					self.folders[root_key]["current_year"]["by_type"][key] = {
+						"root": self.folders[root_key]["current_year"]["by_type"]["root"] + plural_type + "/"
 					}
 
-					self.Folder.Create(self.folders[root_key]["current_year"]["per_type"][key]["root"])
+					self.Folder.Create(self.folders[root_key]["current_year"]["by_type"][key]["root"])
 
 					# Create "Entries.json" file
-					self.folders[root_key]["current_year"]["per_type"][key]["entries"] = self.folders[root_key]["current_year"]["per_type"][key]["root"] + "Entries.json"
-					self.File.Create(self.folders[root_key]["current_year"]["per_type"][key]["entries"])
+					self.folders[root_key]["current_year"]["by_type"][key]["entries"] = self.folders[root_key]["current_year"]["by_type"][key]["root"] + "Entries.json"
+					self.File.Create(self.folders[root_key]["current_year"]["by_type"][key]["entries"])
 
 					# Create "Entry list.txt" file
-					self.folders[root_key]["current_year"]["per_type"][key]["entry_list"] = self.folders[root_key]["current_year"]["per_type"][key]["root"] + "Entry list.txt"
-					self.File.Create(self.folders[root_key]["current_year"]["per_type"][key]["entry_list"])
+					self.folders[root_key]["current_year"]["by_type"][key]["entry_list"] = self.folders[root_key]["current_year"]["by_type"][key]["root"] + "Entry list.txt"
+					self.File.Create(self.folders[root_key]["current_year"]["by_type"][key]["entry_list"])
 
 					# Create "Files" folder 
-					self.folders[root_key]["current_year"]["per_type"][key]["files"] = {
-						"root": self.folders[root_key]["current_year"]["per_type"][key]["root"] + "Files/"
+					self.folders[root_key]["current_year"]["by_type"][key]["files"] = {
+						"root": self.folders[root_key]["current_year"]["by_type"][key]["root"] + "Files/"
 					}
 
-					self.Folder.Create(self.folders[root_key]["current_year"]["per_type"][key]["files"]["root"])
+					self.Folder.Create(self.folders[root_key]["current_year"]["by_type"][key]["files"]["root"])
 
 			# Define type folders and files
 			self.types[plural_type]["Folders"] = {
 				"information": self.folders["Information"][key],
-				"per_type": self.folders["history"]["current_year"]["per_type"][key]
+				"by_type": self.folders["history"]["current_year"]["by_type"][key]
 			}
 
 			# Define the "Information.json" file
@@ -350,7 +350,7 @@ class Database(object):
 	def Define_Registry_Format(self):
 		from copy import deepcopy
 
-		# Define the default Entries dictionary template
+		# Define the default entries dictionary template
 		self.template = {
 			"Numbers": {
 				"Total": 0
@@ -415,10 +415,10 @@ class Database(object):
 		# Update the "History.json" file with the updated "History" dictionary
 		self.JSON.Edit(self.folders["history"]["history"], self.dictionaries["History"])
 
-		# Create the "Per Type" key inside the "Numbers" dictionary of the "Entries" dictionary
-		self.dictionaries["Entries"]["Numbers"]["Per Type"] = {}
+		# Create the "By Type" key inside the "Numbers" dictionary of the "Entries" dictionary
+		self.dictionaries["Entries"]["Numbers"]["By Type"] = {}
 
-		# If the "Entries.json" is not empty and has entries, get the Entries dictionary from it
+		# If the "Entries.json" is not empty and has entries, get the entries dictionary from it
 		if (
 			self.File.Contents(self.folders["history"]["current_year"]["entries"])["lines"] != [] and
 			self.JSON.To_Python(self.folders["history"]["current_year"]["entries"])["Entries"] != []
@@ -432,23 +432,23 @@ class Database(object):
 			# Define default type dictionary
 			self.dictionaries["Entry type"][plural_type] = deepcopy(self.template)
 
-			# If the type "Entries.json" is not empty, get the type Entries dictionary from it
+			# If the type "Entries.json" is not empty, get the type entries dictionary from it
 			if (
-				self.File.Contents(self.folders["history"]["current_year"]["per_type"][key]["entries"])["lines"] != [] and
-				self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])["Entries"] != []
+				self.File.Contents(self.folders["history"]["current_year"]["by_type"][key]["entries"])["lines"] != [] and
+				self.JSON.To_Python(self.folders["history"]["current_year"]["by_type"][key]["entries"])["Entries"] != []
 			):
-				self.dictionaries["Entry type"][plural_type] = self.JSON.To_Python(self.folders["history"]["current_year"]["per_type"][key]["entries"])
+				self.dictionaries["Entry type"][plural_type] = self.JSON.To_Python(self.folders["history"]["current_year"]["by_type"][key]["entries"])
 
-			# Add the plural type number to the root numbers per type if it does not exist in there
-			if plural_type not in self.dictionaries["Entries"]["Numbers"]["Per Type"]:
-				self.dictionaries["Entries"]["Numbers"]["Per Type"][plural_type] = 0
+			# Add the plural type number to the root numbers by type if it does not exist in there
+			if plural_type not in self.dictionaries["Entries"]["Numbers"]["By Type"]:
+				self.dictionaries["Entries"]["Numbers"]["By Type"][plural_type] = 0
 
-			# Else, define the root total number per type as the number inside the Entries dictionary per type
-			if plural_type in self.dictionaries["Entries"]["Numbers"]["Per Type"]:
-				self.dictionaries["Entries"]["Numbers"]["Per Type"][plural_type] = self.dictionaries["Entry type"][plural_type]["Numbers"]["Total"]
+			# Else, define the root total number by type as the number inside the entries dictionary by type
+			if plural_type in self.dictionaries["Entries"]["Numbers"]["By Type"]:
+				self.dictionaries["Entries"]["Numbers"]["By Type"][plural_type] = self.dictionaries["Entry type"][plural_type]["Numbers"]["Total"]
 
-			# Update the per type "Entries.json" file with the updated per type "Entries" dictionary
-			self.JSON.Edit(self.folders["history"]["current_year"]["per_type"][key]["entries"], self.dictionaries["Entry type"][plural_type])
+			# Update the by type "Entries.json" file with the updated by type "Entries" dictionary
+			self.JSON.Edit(self.folders["history"]["current_year"]["by_type"][key]["entries"], self.dictionaries["Entry type"][plural_type])
 
 		# Update the "Entries.json" file with the updated "Entries" dictionary
 		self.JSON.Edit(self.folders["history"]["current_year"]["entries"], self.dictionaries["Entries"])
@@ -907,7 +907,7 @@ class Database(object):
 				if self.user_language in data["Titles"]:
 					data["Titles"][self.user_language] = data["Titles"][self.user_language] + " (" + data["Titles"]["Original"].split(" (")[-1]
 
-			# Define data titles per language
+			# Define the data titles by language
 			for language in self.languages["small"]:
 				key = self.Language.texts["title_in_language"][language][self.user_language]
 

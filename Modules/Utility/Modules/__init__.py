@@ -12,7 +12,7 @@ class Modules():
 		# Define the object parameter inside this class
 		self.object = object
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Select class": select_class
 		}

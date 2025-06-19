@@ -1,171 +1,371 @@
 # Iterate_Through_The_Game_List.py
 
+# Import the root "GamePlayer" class
 from GamePlayer.GamePlayer import GamePlayer as GamePlayer
+
+# Import the "collections" module
+import collections
 
 class Iterate_Through_The_Game_List(GamePlayer):
 	def __init__(self):
 		super().__init__()
 
-		# Create the "Years" dictionary
-		self.Create_Years_Dictionary()
+		# Create the states dictionary
+		self.states = {
+			"Write verbose": {
+				"JSON": False,
+				"Text": False
+			}
+		}
 
-		# Iterate through the game list
+		# Iterate through the list of games
 		self.Iterate()
 
 	def Iterate(self):
-		# Iterate through English game types list
-		i = 0
-		for game_type in self.game_types["Types"]["en"]:
-			# Define the key of the game type for getting game type folders
-			key = game_type.lower().replace(" ", "_")
+		# Define a dictionary of local game types
+		local_game_types = {
+			"To skip": [ # Game types to skip
+				#"Action",
+				#"Action and Platform",
+				#"Battle royale",
+				#"Casual",
+				#"Flash",
+				#"FPS",
+				#"Horror",
+				#"Clicker Idle",
+				#"Management",
+				#"Multiplayer",
+				#"Nintendo 64",
+				#"Open world",
+				#"Platform",
+				#"Puzzle",
+				#"Racing",
+				#"Rhythm",
+				#"RPG",
+				#"Shoot 'em up",
+				#"Simulation",
+				#"Story",
+				#"Strategy",
+				#"Super Nintendo",
+				#"Survival",
+				#"Tower Defense",
+				#"Visual Novel"
+			],
+			"To use": [] # Game types to use (exclusive mode)
+		}
 
-			# Define the language game type
-			language_game_type = self.game_types["Types"][self.user_language][i]
+		# ---------- #
 
-			# Get game with all "watching statuses", not just the "Watching" and "Re-watching" ones
-			game_list = self.Get_Game_List(self.game_types[game_type], self.texts["statuses, type: list"]["en"])
+		# Define a list of game types to use
+		game_types_list = self.game_types["Types"]["en"]
+
+		# If the "To use" list is not empty
+		if local_game_types["To use"] != []:
+			# Update the list of game types to use
+			game_types_list = local_game_types["To use"]
+
+		# Iterate through the list of game types "To skip"
+		for game_type in local_game_types["To skip"]:
+			# If the game type is inside the list of game types
+			if game_type in game_types_list:
+				# Remove it
+				game_types_list.remove(game_type)
+
+		# ---------- #
+
+		# Define a local game type number as one
+		game_type_number = 1
+
+		# Get the number of game types
+		number_of_game_types = str(len(game_types_list))
+
+		# Iterate through the English game types list
+		for english_game_type in game_types_list:
+			# Get the root game type dictionary
+			root_game_type = self.game_types[english_game_type]
+
+			# Get the language game type
+			language_game_type = root_game_type["Type"][self.user_language]
+
+			# ----- #
+
+			# Get a game list with games with all the playing statuses
+			game_list = self.Get_Game_List(root_game_type, self.texts["statuses, type: list"]["en"])
 
 			# Sort the game item list as case insensitive
 			game_list = sorted(game_list, key = str.lower)
 
-			# Show language game type
-			print()
-			print("----------")
-			print()
-			print(language_game_type + ":")
+			# ----- #
 
-			# Define the list of game types to remove
-			# (None needed until now)
-			game_types_to_skip = []
+			# Define the game type information text
+			game_type_information = f"""
+			{self.separators["10"]}
 
-			# Define the list of game types to use
-			game_types_to_use = [
-				"Survival"
-			]
+			{self.language_texts["number_of_the_game_type"]}:
+			[{game_type_number}/{number_of_game_types}]
 
-			# Remove a game type from the list (optional)
-			if (
-				game_type not in game_types_to_skip and
-				game_type in game_types_to_use or
-				game_type not in game_types_to_skip and
-				game_types_to_use == []
-			):
-				# Define the current game number and game list length number
-				g = 1
-				length = len(game_list)
+			{self.language_texts["game_type"]}:
+			[{language_game_type}]""".replace("\t", "")
 
-				# Iterate through the games list
-				for self.game_title in game_list:
-					# Define the root dictionary with the game type and the game
-					self.dictionary = {
-						"Type": self.game_types[game_type],
-						"Game": {
-							"Title": self.game_title
-						}
+			# Show the game type information text
+			print(game_type_information)
+
+			# ----- #
+
+			# Initialize the index of the current game, starting at one
+			current_game_index = 1
+
+			# Get the number of games
+			number_of_games = str(len(game_list))
+
+			# Iterate through the list of games
+			for game_title in game_list:
+				# Define the root dictionary with the game type and the game
+				dictionary = {
+					"Type": root_game_type,
+					"Game": {
+						"Title": game_title
 					}
+				}
 
-					# Select the game and define its variables, returning the game dictionary (without asking user to select the game)
-					self.dictionary = self.Select_Game(self.dictionary)
+				# Select the game and define its variables, returning the game dictionary (without asking the user to select the game)
+				dictionary = self.Select_Game(dictionary)
 
-					# Define the "game" variable for easier typing
-					self.game = self.dictionary["Game"]
+				# Define a shortcut to the "Game" dictionary for easier typing
+				game = dictionary["Game"]
 
-					# If the current game number is not one
-					# Show a separator to separate the information of the previous game from the next
-					if g != 1:
-						print()
-						print(self.separators["5"])
+				# ----- #
 
-					# If the length of the game list is not one (more than one game)
-					if length != 1:
-						# Show the current game number and the number of games inside the game list
-						print()
-						print(self.Language.language_texts["number, title()"] + ":")
-						print("\t" + "[" + str(g) + "/" + str(length) + "]")
-						print()
-						print("---")
+				# Replace the ten dash space separator from the game type information with a five dash space separator
+				game_type_information = game_type_information.replace(self.separators["10"], self.separators["5"])
 
-						# Ask the "Show_Information" method to now show its first separator
-						self.dictionary["First separator"] = False
+				# Show the game type information text
+				print(game_type_information)
 
-					# Show information about the game
-					self.Show_Information(self.dictionary)
+				# If the number of games is more than one
+				if len(game_list) > 1:
+					# Show the number of the game
+					print()
+					print(self.language_texts["number_of_the_game"] + ":")
+					print("[" + str(current_game_index) + "/" + str(number_of_games) + "]")
 
-					# Add the missing information about the game if the game year is not inside the game details file
-					if self.Date.language_texts["year, title()"] not in self.game["Details"]:
-						self.Add_Game_Information()
+				# ----- #
 
-					# Check if the game shortcut exists
-					#self.Check_If_Shortcut_Exists()
+				# Define a shortcut to the game titles dictionary
+				game_titles = game["Titles"]
 
-					# Move the gaming time files
-					#self.Move_Gaming_Time_Files()
+				# Get the language game title
+				language_game_title = self.Define_Title(game_titles)
 
-					# Fix sub-games inside entries dictionaries
-					#self.Fix_Sub_Games()
+				# Show the language game title
+				print()
+				print(self.language_texts["game_title"] + ":")
+				print("[" + language_game_title + "]")
 
-					# Add to the current game number
-					g += 1
+				# ----- #
 
-					# If the "Testing" switch is True
-					# And the game is not the last one
-					# And the game list is not empty
-					# And the length of the game list is not one (more than one game)
-					if (
-						self.switches["Testing"] == True and
-						self.game_title != game_list[-1] and
-						game_list != [] and
-						length != 1
-					):
-						# Ask the user to press Enter to advance to the next game type
-						self.Input.Type(self.Language.language_texts["continue, title()"])
+				# If the game has sub-games
+				#if game["States"]["Has sub-games"] == True:
+					# Update the sub-games
+					#self.Update_Sub_Games(dictionary)
+
+				# Add the missing information about the game if the game year is not inside the game details file
+				if self.Date.language_texts["year, title()"] not in game["Details"]:
+					self.Add_Game_Information()
+
+				# Check if the game shortcut exists
+				#self.Check_If_Shortcut_Exists()
+
+				# Move the gaming time files
+				#self.Move_Gaming_Time_Files()
+
+				# Fix sub-games inside entries dictionaries
+				#self.Fix_Sub_Games()
+
+				# ----- #
+
+				# Increment the current game index by one
+				current_game_index += 1
+
+				# ----- #
+
+				# If the "Testing" switch is True
+				# And the game is not the last one
+				# And the game list is not empty
+				# And the number of games is more than one
+				if (
+					self.switches["Testing"] == True and
+					game_title != game_list[-1] and
+					game_list != [] and
+					len(game_list) > 1
+				):
+					# Ask the user to press Enter to advance to the next game type
+					self.Input.Type(self.Language.language_texts["continue, title()"] + " ({})".format(self.language_texts["game, title()"].lower()))
+
+			# ----- #
+
+			# Add one to the game type number
+			game_type_number += 1
+
+			# ----- #
 
 			# If the "Testing" switch is True
 			# And the game type is not the last one
-			# And the game type is not inside the list of game types that needs to be skipped
 			# And the game list is not empty
+			# And the number of games is more than one
 			if (
 				self.switches["Testing"] == True and
-				game_type != self.game_types["Types"]["en"][-1] and
-				game_type not in game_types_to_skip and
+				english_game_type != game_types_list[-1] and
 				game_list != [] and
-				game_types_to_use == []
+				len(game_list) > 1
 			):
+				# Show a ten dash space separator
+				print()
+				print(self.separators["10"])
+
 				# Ask the user to press Enter to advance to the next game type
-				self.Input.Type(self.Language.language_texts["continue, title()"])
+				self.Input.Type(self.Language.language_texts["continue, title()"] + " ({})".format(self.language_texts["game_type"].lower()))
 
-			# Add to the current game type number
-			i += 1
+	def Update_Sub_Games(self, dictionary):
+		# Define a shortcut to the "Game" dictionary
+		game = dictionary["Game"]
 
-	def Create_Years_Dictionary(self):
-		# Define the "Years" dictionary with the list of years from 2021 to the current year
-		self.years = {
-			"List": self.Date.Create_Years_List(start = 2021, function = str),
+		# Initialize the index of the current sub-game, starting at one
+		current_sub_game_index = 1
+
+		# Get the number of sub-games
+		number_of_sub_games = str(game["Sub-games"]["Items"]["Number"])
+
+		# Define a dictionary of game entries
+		game_entries = {
+			"Numbers": {
+				"Total": 0
+			},
+			"Entries": [],
 			"Dictionary": {}
 		}
 
-		# Iterate through the years list
-		# Of the years that contain a "Play History" folder, from 2021 to the current year
-		for year in self.years["List"]:
-			# Define the Year dictionary with the year number and folders
-			self.year = {
-				"Number": year,
-				"Folders": {
-					"root": self.folders["Play History"]["root"] + year + "/"
-				}
-			}
+		# Iterate through the sub-games
+		for sub_game_title, sub_game in game["Sub-games"]["Items"]["Dictionary"].items():
+			# Show a three dash space separator
+			print()
+			print(self.separators["3"])
 
-			# Define the "Sessions.json" file
-			self.year["Folders"]["Entries"] = self.year["Folders"]["root"] + "Sessions.json"
+			# ----- #
 
-			# Read the "Sessions.json" file
-			self.year["Entries"] = self.JSON.To_Python(self.year["Folders"]["Entries"])
+			# Show the number of the sub-game
+			print()
+			print(self.language_texts["number_of_the_sub_game"] + ":")
+			print("[" + str(current_sub_game_index) + "/" + str(number_of_sub_games) + "]")
 
-			# Add the Year dictionary into the "Years" dictionary
-			self.years[year] = self.year
+			# ----- #
 
-		# Return the "Years" dictionary
-		return self.years
+			# Define the sub-game dictionary
+			dictionary = self.Define_Sub_Games(dictionary, sub_game_title = sub_game_title)
+
+			# Define a shortcut to the sub-game dictionary
+			sub_game = game["Sub-game"]
+
+			# ----- #
+
+			# Define a shortcut to the sub-game titles dictionary
+			sub_game_titles = sub_game["Titles"]
+
+			# Get the original sub-game title
+			sub_game_title = self.Define_Title(sub_game_titles, add_language = False)
+
+			# Get the language sub-game title
+			language_sub_game_title = self.Define_Title(sub_game_titles)
+
+			# Show the language sub-game title
+			print()
+			print(self.language_texts["sub_game_title"] + ":")
+			print("[" + language_sub_game_title + "]")
+
+			# ----- #
+
+			# Define a shortcut to the sub-game played "Entries.json" file
+			sub_game_entries_file = sub_game["Folders"]["Played"]["entries"]
+
+			# ----- #
+
+			# Read the entries file
+			sub_game_entries = self.JSON.To_Python(sub_game_entries_file)
+
+			# Add the number of entries to the game entries dictionary
+			game_entries["Numbers"]["Total"] += sub_game_entries["Numbers"]["Total"]
+
+			# Extend the list of entries of the game dictionary with the one on the sub-game dictionary
+			game_entries["Entries"].extend(sub_game_entries["Entries"])
+
+			# Update the dictionary of entries of the game dictionary with the one on the sub-game dictionary
+			game_entries["Dictionary"].update(sub_game_entries["Dictionary"])
+
+			# ----- #
+
+			# Increment the current sub-game index by one
+			current_sub_game_index += 1
+
+		# ---------- #
+
+		# Define a dictionary of entries by year
+		entries_by_year = {}
+
+		# Get the list of entry names
+		entry_names = list(game_entries["Entries"])
+
+		# Iterate through the entry names
+		for entry_name in entry_names:
+			# Get the date from the entry name
+			date = entry_name.split("(")[1].strip(")")
+
+			# Convert the date to a date dictionary
+			date = self.Date.From_String(date)
+
+			# Get the year from the date
+			year = date["Units"]["Year"]
+
+			# If the year is not present in the "entries by year" dictionary, add it
+			if year not in entries_by_year:
+				entries_by_year[year] = []
+
+			# Add the entry name to the year dictionary
+			entries_by_year[year].append(entry_name)
+
+		# Sort the keys of the dictionary of years
+		entries_by_year = dict(collections.OrderedDict(sorted(entries_by_year.items())))
+
+		# ----- #
+
+		# Create an empty local list of entries
+		entries_list = []
+
+		# Iterate through the dictionary of years, getting the year and the list of entries for that year
+		for year, year_entries in entries_by_year.items():
+			# Sort the list of year entries
+			year_entries = sorted(year_entries, key = self.Extract_Number)
+
+			# Extend the local entries list with the current list of entries
+			entries_list.extend(year_entries)
+
+		# Update the list of entries of the game to be the local one
+		game_entries["Entries"] = entries_list
+
+		# ---------- #
+
+		# Get the game played "Entries.json" file
+		game_entries_file = game["Folders"]["Played"]["entries"]
+
+		# Get the original entries
+		original_game_entries = self.JSON.To_Python(game_entries_file)
+
+		# Update the game played "Entries.json" file with the updated "Entries" dictionary
+		# (Game played "Entries.json" file)
+		self.JSON.Edit(game_entries_file, game_entries)
+
+	def Extract_Number(self, entry_name):
+		# Extracts the number from the entry name
+		return int(entry_name.split(".")[0].strip())
 
 	def Add_Game_Information(self):
 		# If the current class (Iterate_Through_The_Game_List) does not contain the "Add_A_New_Game" attribute
@@ -184,7 +384,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		}
 
 		# Define the game search link
-		link = self.duckduckgo["Format"].format(self.game["Title"])
+		link = self.duckduckgo["Format"].format(game["Title"])
 
 		# Open the game search link
 		self.System.Open(link)
@@ -194,9 +394,9 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 	def Check_If_Shortcut_Exists(self):
 		# If the game is not a remote game
-		if self.game["States"]["Remote game"] == False:
+		if game["States"]["Remote game"] == False:
 			# Define the "file" variable for easier typing
-			file = self.game["Files"]["Shortcut"]["File"]
+			file = game["Files"]["Shortcut"]["File"]
 
 			# If the file does not exist
 			if self.File.Exist(file) == False:
@@ -207,10 +407,10 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				print("\t" + file)
 
 				# Copy the game title for the user to rename the game shortcut
-				self.Text.Copy(self.game["Title"])
+				self.Text.Copy(game["Title"])
 
 				# Open the game folder for the user to create the game shortcut and rename it with the game title
-				self.System.Open(self.game["Folders"]["Local"]["root"])
+				self.System.Open(game["Folders"]["Local"]["root"])
 
 				# Tell the user to press Enter when it finishes doing that
 				input()
@@ -223,14 +423,14 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 	def Move_Gaming_Time_Files(self):
 		# Define some folder variables for easier typing
-		played_folder = self.game["Folders"]["Played"]["root"]
-		gaming_time_folder = self.game["Folders"]["Gaming time"]["root"]
+		played_folder = game["Folders"]["Played"]["root"]
+		gaming_time_folder = game["Folders"]["Gaming time"]["root"]
 
 		# Define the old time JSON file
 		time_file = played_folder + "Time.json"
 
 		# Define the new gaming time JSON file
-		gaming_time_file = self.game["Folders"]["Gaming time"]["Gaming time"]
+		gaming_time_file = game["Folders"]["Gaming time"]["Gaming time"]
 
 		if self.File.Exist(time_file) == True:
 			# Move the file
@@ -249,7 +449,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		language_gaming_time_file = played_folder + self.language_texts["gaming_time"] + ".txt"
 
 		# Define the new language gaming time file
-		new_language_gaming_time_file = self.game["Folders"]["Gaming time"]["Language gaming time"]
+		new_language_gaming_time_file = game["Folders"]["Gaming time"]["Language gaming time"]
 
 		if self.File.Exist(language_gaming_time_file) == True:
 			# Move the file
@@ -259,28 +459,28 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		self.dictionary = self.Select_Game(self.dictionary)
 
 		# Define the "game" variable for easier typing
-		self.game = self.dictionary["Game"]
+		game = self.dictionary["Game"]
 
 	def Fix_Sub_Games(self):
 		# Only for the "Don't Starve" game, which has been registered with sub-game types (DLCs, the "Hamlet" DLC)
 		if (
-			self.game["Title"] == "Don't Starve"
+			game["Title"] == "Don't Starve"
 		):
 			# Define the "Hamlet" sub-game
 			self.dictionary = self.Define_Sub_Games(self.dictionary, sub_game_title = "Hamlet")
 
 			# Define the "game" variable for easier typing
-			self.game = self.dictionary["Game"]
+			game = self.dictionary["Game"]
 
 			# Define the "sub-game" variable for easier typing
-			sub_game = self.game["Sub-game"]
+			sub_game = game["Sub-game"]
 
 			# Get the sub-game played entries
 			entries = list(sub_game["Played"]["Dictionary"].keys())
 
 			years = {}
 
-			# Iterate through the played Entries dictionary
+			# Iterate through the played entries dictionary
 			for entry in entries:
 				# Get the Entry dictionary
 				entry = sub_game["Played"]["Dictionary"][entry]
@@ -297,7 +497,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 				entry = self.JSON.Add_Key_After_Key(entry, key_value, after_key = "Titles")
 
-				# Update the entry inside the Entries dictionary
+				# Update the entry inside the entries dictionary
 				sub_game["Played"]["Dictionary"][entry["Entry"]] = entry
 
 				# Get the year of the entry

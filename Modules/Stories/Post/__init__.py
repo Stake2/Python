@@ -19,7 +19,7 @@ class Post(Stories):
 			"Chapter": {}
 		}
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Run as module": run_as_module,
 			"Select chapter": False,

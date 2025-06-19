@@ -291,33 +291,33 @@ class Tasks(object):
 
 			# ----- #
 
-			# Define a shortcut for the per task type folder, to not be ugly and big
-			per_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["Per Task Type"]
+			# Define a shortcut for the by task type folder, to not be ugly and big
+			by_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["By task type"]
 
-			# Create the "Per Task Type" task type folder for the current year
-			per_task_type_folder[task_type] = {
-				"root": per_task_type_folder["root"] + task_type + "/"
+			# Create the "By task type" task type folder for the current year
+			by_task_type_folder[task_type] = {
+				"root": by_task_type_folder["root"] + task_type + "/"
 			}
 
-			self.Folder.Create(per_task_type_folder[task_type]["root"])
+			self.Folder.Create(by_task_type_folder[task_type]["root"])
 
-			# Create the "Tasks.json" file in the "Per Task Type" task type folder
-			per_task_type_folder[task_type]["Tasks"] = per_task_type_folder[task_type]["root"] + "Tasks.json"
-			self.File.Create(per_task_type_folder[task_type]["Tasks"])
+			# Create the "Tasks.json" file in the "By task type" task type folder
+			by_task_type_folder[task_type]["Tasks"] = by_task_type_folder[task_type]["root"] + "Tasks.json"
+			self.File.Create(by_task_type_folder[task_type]["Tasks"])
 
-			# Create the "Entry list.txt" file in the "Per Task Type" task type folder
-			per_task_type_folder[task_type]["Entry list"] = per_task_type_folder[task_type]["root"] + "Entry list.txt"
-			self.File.Create(per_task_type_folder[task_type]["Entry list"])
+			# Create the "Entry list.txt" file in the "By task type" task type folder
+			by_task_type_folder[task_type]["Entry list"] = by_task_type_folder[task_type]["root"] + "Entry list.txt"
+			self.File.Create(by_task_type_folder[task_type]["Entry list"])
 
-			# Create the "Files" folder on the "Per Task Type" task type folder
-			per_task_type_folder[task_type]["Files"] = {
-				"root": per_task_type_folder[task_type]["root"] + "Files/"
+			# Create the "Files" folder on the "By task type" task type folder
+			by_task_type_folder[task_type]["Files"] = {
+				"root": by_task_type_folder[task_type]["root"] + "Files/"
 			}
 
-			self.Folder.Create(per_task_type_folder[task_type]["Files"]["root"])
+			self.Folder.Create(by_task_type_folder[task_type]["Files"]["root"])
 
-			# Define the per task type folder inside the folders dictionary
-			dictionary["Folders"]["Per Task Type"] = per_task_type_folder[task_type]
+			# Define the by task type folder inside the folders dictionary
+			dictionary["Folders"]["By task type"] = by_task_type_folder[task_type]
 
 			# ----- #
 
@@ -469,8 +469,8 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Create the "Per Task Type" key inside the "Numbers" dictionary of the "Tasks" dictionary
-		self.dictionaries["Tasks"]["Numbers"]["Per Task Type"] = {}
+		# Create the "By task type" key inside the "Numbers" dictionary of the "Tasks" dictionary
+		self.dictionaries["Tasks"]["Numbers"]["By task type"] = {}
 
 		# Define a shortcut for the "Tasks.json" file
 		tasks_file = self.tasks["Folders"]["Task History"]["Current year"]["Tasks"]
@@ -491,7 +491,7 @@ class Tasks(object):
 			self.dictionaries["Task type"][key] = deepcopy(self.template)
 
 			# Define a shortcut for the file for the "if" not to be ugly and big
-			file = task_type["Folders"]["Per Task Type"]["Tasks"]
+			file = task_type["Folders"]["By task type"]["Tasks"]
 
 			# If the task type "Tasks.json" file is not empty and the list of years is not an empty list
 			if (
@@ -504,15 +504,15 @@ class Tasks(object):
 			# Define the number to use as zero
 			number_to_use = 0
 
-			# If the plural task type is inside the "Per Task Type" dictionary of numbers
-			if key in self.dictionaries["Tasks"]["Numbers"]["Per Task Type"]:
+			# If the plural task type is inside the "By task type" dictionary of numbers
+			if key in self.dictionaries["Tasks"]["Numbers"]["By task type"]:
 				# Define the number to use as it
 				number_to_use = self.dictionaries["Task type"][key]["Numbers"]["Total"]
 
 			# Define the number inside the task type number key
-			self.dictionaries["Tasks"]["Numbers"]["Per Task Type"][key] = number_to_use
+			self.dictionaries["Tasks"]["Numbers"]["By task type"][key] = number_to_use
 
-			# Update the per task type "Tasks.json" file with the updated per type tasks dictionary
+			# Update the by task type "Tasks.json" file with the updated by type tasks dictionary
 			self.JSON.Edit(file, self.dictionaries["Task type"][key])
 
 		# Update the "Tasks.json" file with the updated "Tasks" dictionary

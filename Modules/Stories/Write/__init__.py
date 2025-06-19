@@ -35,7 +35,7 @@ class Write(Stories):
 			"Session": {}
 		}
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"First time writing": False,
 			"Pause writing session": False,
@@ -785,7 +785,7 @@ class Write(Stories):
 			# Define the addon as the text about the writing time with the pause time subtracted
 			addon = " (" + self.language_texts["with_the_pause_time_subtracted"] + ")"
 
-			# Define the subtract dictionary
+			# Define a subtract dictionary
 			subtract = {}
 
 			# Fill the subtract dictionary
@@ -795,7 +795,7 @@ class Write(Stories):
 			# Define the relative delta
 			relative_delta = self.Date.Relativedelta(**subtract)
 
-			# Subtract the subtract time from the after time
+			# Subtract the subtract time from the after time, creating the after time
 			self.dictionary["Session"]["After (copy)"] = self.Date.Now(self.dictionary["Session"]["After (copy)"]["Object"] - relative_delta)
 
 			# Update the after time
@@ -1130,7 +1130,7 @@ class Write(Stories):
 					# Update the after time
 					dictionary["After"] = after_time
 
-		# Get the time difference
+		# Get the time difference between the before and the after times
 		difference = self.Date.Difference(dictionary["Before"], after_time)
 
 		return difference

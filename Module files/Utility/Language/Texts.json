@@ -90,6 +90,10 @@
 		"en": "With file",
 		"pt": "Com arquivo"
 	},
+	"file_format, type: format": {
+		"en": "\"file:///{}\"",
+		"pt": "\"file:///{}\""
+	},
 	"archive, title()": {
 		"en": "Archive",
 		"pt": "Arquivo"
@@ -675,6 +679,10 @@
 		"pt": "Este Ano Eu (Versão pessoal)",
 		"en": "This Year I (Personal version)"
 	},
+	"next, title()": {
+		"en": "Next",
+		"pt": "Próximo"
+	},
 	"welcome, title()": {
 		"en": "Welcome",
 		"pt": "Bem-vindo"
@@ -699,8 +707,12 @@
 		"en": "Entries",
 		"pt": "Entradas"
 	},
-	"entry_number": {
-		"en": "Entry number",
+	"entry_name": {
+		"en": "Entry name",
+		"pt": "Nome da entrada"
+	},
+	"number_of_the_entry": {
+		"en": "Number of the entry",
 		"pt": "Número da entrada"
 	},
 	"title, title()": {
@@ -1322,10 +1334,6 @@
 		"en": "Watch",
 		"pt": "Assistir"
 	},
-	"games, title()": {
-		"en": "Games",
-		"pt": "Jogos"
-	},
 	"database, title()": {
 		"en": "Database",
 		"pt": "Banco de Dados"
@@ -1501,6 +1509,10 @@
 	"session_duration": {
 		"en": "Session duration",
 		"pt": "Duração da sessão"
+	},
+	"gaming_session_duration": {
+		"en": "Gaming session duration",
+		"pt": "Duração da sessão de jogatina"
 	},
 	"category, title()": {
 		"en": "Category",
@@ -2104,13 +2116,25 @@
 		"en": "Productive things",
 		"pt": "Coisas produtivas"
 	},
-	"game_sessions": {
-		"en": "Game sessions",
-		"pt": "Sessões de jogo"
+	"games, title()": {
+		"en": "Games",
+		"pt": "Jogos"
 	},
-	"game_sessions_played": {
-		"en": "Game sessions played",
-		"pt": "Sessões de jogo jogadas"
+	"gaming_session": {
+		"en": "Gaming session",
+		"pt": "Sessão de jogatina"
+	},
+	"gaming_sessions": {
+		"en": "Gaming sessions",
+		"pt": "Sessões de jogatina"
+	},
+	"gaming_sessions_played": {
+		"en": "Gaming sessions played",
+		"pt": "Sessões de jogatina jogadas"
+	},
+	"game_information": {
+		"en": "Game information",
+		"pt": "Informações de jogos"
 	},
 	"mods, title()": {
 		"en": "Mods",
@@ -2168,7 +2192,7 @@
 		"en": "Years"
 	},
 	"console, title()": {
-		"pt": "Video game",
+		"pt": "Vídeo game",
 		"en": "Console"
 	},
 	"mobile, title()": {
@@ -2441,5 +2465,13 @@
 			"Bissexual",
 			"Pansexual"
 		]
+	},
+	"convert_history": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"computer, title()": {
+		"en": "Computer",
+		"pt": "Computador"
 	}
 }

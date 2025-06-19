@@ -454,7 +454,7 @@ class Folder():
 		}
 
 		for network, folder in networks.items():
-			# Network dictionary
+			# Define the default network information
 			network = {
 				"Title": network,
 				"Information": "",
@@ -466,72 +466,90 @@ class Folder():
 				]
 			}
 
+			# Define the default network dictionary
 			dictionary = {
 				"root": self.folders["Notepad"]["Data Networks"]["root"] + folder + "/"
 			}			
 
+			# Define the default network starting year
 			starting_year = 2023
 
-			# "Audiovisual Media" network subfolders
+			# Define the "Audiovisual Media" network information
 			if network["Title"] == "Audiovisual Media":
+				# Add the "Comments" folder as a sub-folder
 				network["Subfolders"].append("Comments")
 
+				# Add some name information
 				network.update({
 					"Information": "Media",
+					"Lowercase information": True,
 					"History": "Watch",
 					"Type": "Media"
 				})
 
+				# Define the starting year as 2018
 				starting_year = 2018
 
-			# "Database" network subfolders
+			# Define the "Database" network information
 			if network["Title"] == "Database":
+				# Add some name information
 				network.update({
 					"Information": None,
 					"History": None,
 					"Type": None
 				})
 
-			# "Games" network subfolders
+			# Define the "Games" network information
 			if network["Title"] == "Games":
+				# Add some name information
 				network.update({
-					"Information": None,
+					"Information": "Game",
+					"Lowercase information": True,
 					"History": "Play",
 					"Type": "Game",
 					"Entries": "Sessions"
 				})
 
+				# Define the starting year as 2021
 				starting_year = 2021
 
-			# "Productivity" network subfolders
+			# Define the "Productivity" network information
 			if network["Title"] == "Productivity":
-				# Remove the "Data" folder
+				# Remove the "Data" folder from the list of sub-folders
 				network["Subfolders"].remove("Data")
 
+				# Add some name information
 				network.update({
 					"History": "Task",
 					"Type": "Task",
 					"Entries": "Tasks"
 				})
 
+				# Define the starting year as 2018
 				starting_year = 2018
 
-			# Network subfolder items
+			# Define the network sub-folder items
 			for item in ["Information", "History"]:
+				# If the sub-folder item is not empty
 				if network[item] != "":
+					# Define the item name as the item
 					item_name = item
 
-					if (
-						item == "Information" and
-						network["Title"] in ["Database", "Games"]
-					):
-						item_name = "Information"
+					# If the item is "Information"
+					if item == "Information":
+						# If the "Lowercase information" key is not in the network dictionary
+						if "Lowercase information" not in network:
+							# Define the item name as "Information"
+							item_name = "Information"
 
-					if (
-						item == "Information" and
-						network["Title"] == "Audiovisual Media"
-					):
-						item_name = "information"
+						# If the "Lowercase information" key is in the network dictionary
+						# And it is True
+						if (
+							"Lowercase information" in network and
+							network["Lowercase information"] == True
+						):
+							# Define the item name as "information" (lowercase)
+							item_name = "information"
 
 					if network[item] != None:
 						network[item] = network[item] + " " + item_name
@@ -549,10 +567,7 @@ class Folder():
 				if "_" not in text_key:
 					text_key += ", title()"
 
-				if (
-					text_key in self.Language.language_texts and
-					sub_folder in ["Media information", "Comments"]
-				):
+				if text_key in self.Language.language_texts:
 					sub_folder = self.Language.language_texts[text_key]
 
 				dictionary[key] = {
@@ -596,7 +611,7 @@ class Folder():
 			current_year = self.date["Units"]["Year"]
 
 			if network["Type"] != None:
-				network["Type"] = " " + network["Type"] + " "
+				network["Type"] = " " + network["Type"].lower() + " "
 
 			if network["Type"] == None:
 				network["Type"] = " "
@@ -608,8 +623,8 @@ class Folder():
 					"root": dictionary[network["History"]]["root"] + str(item) + "/"
 				}
 
-				# Per Type folder
-				folder = "Per" + network["Type"] + "Type"
+				# Define the by type folder
+				folder = "By" + network["Type"] + "type"
 
 				dictionary[network["History"]][item][folder] = {
 					"root": dictionary[network["History"]][item]["root"] + folder + "/"
@@ -624,13 +639,13 @@ class Folder():
 			# Define the Network "Folders" dictionary as the local "Folders" dictionary
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
-		# Mega "Notepad" Years folders
+		# Define the mega notepad "Years" folders
 
 		# Define the starting year and the current year
 		starting_year = 2018
 		current_year = self.date["Units"]["Year"]
 
-		# Define the "Create year folders switch"
+		# Define the "Create year folders" switch
 		create_year_folders = False
 
 		# If it is True, create them
@@ -643,7 +658,7 @@ class Folder():
 				}
 
 				if key == str(self.date["Units"]["Year"]):
-					# Per language years folder
+					# Create the years folders by language
 					for language in self.languages["small"]:
 						full_language = self.languages["full"][language]
 

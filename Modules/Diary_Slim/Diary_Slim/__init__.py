@@ -1271,7 +1271,7 @@ class Diary_Slim():
 					"Statistic key": "Watched media"
 				},
 				"GamePlayer": {
-					"Statistic key": "Game sessions played"
+					"Statistic key": "Gaming sessions played"
 				}
 			}
 		}

@@ -108,7 +108,7 @@ class Fill_Media_Files(Watch_History):
 
 		print(self.language_texts[key] + "...")
 
-		# Show the files of episode titles per language
+		# Show the files of episode titles by language
 		for language in self.languages["small"]:
 			translated_language = self.languages["full_translated"][language][self.user_language]
 
@@ -240,7 +240,7 @@ class Fill_Media_Files(Watch_History):
 			print(progress)
 			print()
 
-			# Ask for episode titles per language
+			# Ask for episode titles by language
 			for language in self.languages["small"]:
 				full_language = self.languages["full"][language]
 

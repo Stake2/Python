@@ -10,29 +10,23 @@ from copy import deepcopy
 
 class Convert_History(Watch_History):
 	def __init__(self):
+		# Import the root "Watch_History" class to import its variables and methods
 		super().__init__()
 
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
-		print(self.language_texts["convert_history"] + ":")
 
-		self.Per_Year()
-		#self.Per_Media()
-		#self.With_File()
-		#self.By_Year()
-		#self.Fix_Comment_Dictionaries()
+		# Show the "Convert history" text in the user language
+		print(self.Language.language_texts["convert_history"] + ":")
 
-	def Per_Year(self):
-		# Define the first year
-		first_year = 2018
+		# Convert the watched media history by year
+		self.By_Year()
 
-		# Define the last year (the current year)
-		last_year = self.date["Units"]["Year"]
-
-		# Define the list of years 
-		# We add one to the last year because range returns [1, 2] if you input (1, 3)
-		self.years_list = range(first_year, last_year + 1)
+	def By_Year(self):
+		# Create a list of years starting from 2018 to the current year
+		years_list = self.Date.Create_Years_List()
 
 		# Define the "write to file" switch as True by default
 		self.write_to_file = True
@@ -56,13 +50,14 @@ class Convert_History(Watch_History):
 
 			# ---------- #
 
-			# Show a ten dash space separator
+			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
 			print()
 
 			# Show the year number
-			print(self.Date.language_texts["year, title()"] + ": " + self.year["Number"])
+			print(self.Date.language_texts["year, title()"] + ":")
+			print("[" + str(self.year["Number"]) + "]")
 
 			# ---------- #
 
@@ -123,7 +118,7 @@ class Convert_History(Watch_History):
 			# ---------- #
 
 			# Define the history folders
-			for folder_name in ["Per Media Type"]:
+			for folder_name in ["By media type"]:
 				# Define the folder
 				self.year["Folders"][folder_name] = {
 					"root": self.year["Folders"]["root"] + folder_name + "/"
@@ -139,21 +134,21 @@ class Convert_History(Watch_History):
 				media_type = self.media_types[plural_media_type]
 
 				# Define the media type folder
-				self.year["Folders"]["Per Media Type"][plural_media_type] = {
-					"root": self.year["Folders"]["Per Media Type"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["By media type"][plural_media_type] = {
+					"root": self.year["Folders"]["By media type"]["root"] + plural_media_type + "/"
 				}
 
 				# Define the "Files" folder
-				self.year["Folders"]["Per Media Type"][plural_media_type]["Files"] = {
-					"root": self.year["Folders"]["Per Media Type"][plural_media_type]["root"] + "Files/"
+				self.year["Folders"]["By media type"][plural_media_type]["Files"] = {
+					"root": self.year["Folders"]["By media type"][plural_media_type]["root"] + "Files/"
 				}
 
 				# Define and create the media type "Entries.json" file
-				self.year["Folders"]["Per Media Type"][plural_media_type]["Entries"] = self.year["Folders"]["Per Media Type"][plural_media_type]["root"] + "Entries.json"
-				self.File.Create(self.year["Folders"]["Per Media Type"][plural_media_type]["Entries"])
+				self.year["Folders"]["By media type"][plural_media_type]["Entries"] = self.year["Folders"]["By media type"][plural_media_type]["root"] + "Entries.json"
+				self.File.Create(self.year["Folders"]["By media type"][plural_media_type]["Entries"])
 
 				# Define a shortcut for the media type "Entries.json" file
-				entries_file = self.year["Folders"]["Per Media Type"][plural_media_type]["Entries"]
+				entries_file = self.year["Folders"]["By media type"][plural_media_type]["Entries"]
 
 				# If the media type "Entries.json" is not empty and has entries, get the "Entries" dictionary from it
 				if (
@@ -163,7 +158,7 @@ class Convert_History(Watch_History):
 					self.year["Media type entries"][plural_media_type] = self.JSON.To_Python(entries_file)
 
 				# Define the media type "Entry list.txt" file
-				self.year["Folders"]["Per Media Type"][plural_media_type]["Entry list"] = self.year["Folders"]["Per Media Type"][plural_media_type]["root"] + "Entry list.txt"
+				self.year["Folders"]["By media type"][plural_media_type]["Entry list"] = self.year["Folders"]["By media type"][plural_media_type]["root"] + "Entry list.txt"
 
 				# Iterate through the list of small languages
 				for language in self.languages["small"]:
@@ -191,9 +186,9 @@ class Convert_History(Watch_History):
 				self.year["Entries"]["Dictionary"][entry_title] = entry
 
 			# If the "write to file" switch is True
-			if self.write_to_file == True:
-				# Update the year "Entries.json" file with the updated year "Entries" dictionary
-				self.JSON.Edit(self.year["Folders"]["Entries"], self.year["Entries"])
+			#if self.write_to_file == True:
+			#	# Update the year "Entries.json" file with the updated year "Entries" dictionary
+			#	self.JSON.Edit(self.year["Folders"]["Entries"], self.year["Entries"])
 
 			# ---------- #
 
@@ -204,7 +199,7 @@ class Convert_History(Watch_History):
 					# Iterate through the media type dictionary of entries
 					for entry_title, entry in self.year["Media type entries"][plural_media_type]["Dictionary"].items():
 						# Process the entry dictionary and add the "Times" key
-						entry, entry_title, entries = self.Process_Entry(entry, plural_media_type, self.year["Media type entries"][plural_media_type], entry_list_file = self.year["Folders"]["Per Media Type"][plural_media_type]["Entry list"])
+						entry, entry_title, entries = self.Process_Entry(entry, plural_media_type, self.year["Media type entries"][plural_media_type], entry_list_file = self.year["Folders"]["By media type"][plural_media_type]["Entry list"])
 
 						# Update the root entries dictionary
 						self.year["Media type entries"][plural_media_type] = entries
@@ -213,9 +208,9 @@ class Convert_History(Watch_History):
 						self.year["Media type entries"][plural_media_type]["Dictionary"][entry_title] = entry
 
 					# If the "write to file" switch is True
-					if self.write_to_file == True:
-						# Update the year media type "Entries.json" file with the updated media type "Entries" dictionary
-						self.JSON.Edit(self.year["Folders"]["Per Media Type"][plural_media_type]["Entries"], self.year["Media type entries"][plural_media_type])
+					#if self.write_to_file == True:
+					#	# Update the year media type "Entries.json" file with the updated media type "Entries" dictionary
+					#	self.JSON.Edit(self.year["Folders"]["By media type"][plural_media_type]["Entries"], self.year["Media type entries"][plural_media_type])
 
 			# If the "Testing" switch is True
 			# And the year is not the last one from the list
@@ -223,212 +218,10 @@ class Convert_History(Watch_History):
 				self.switches["Testing"] == True and
 				self.year["Number"] != str(self.years_list[-1])
 			):
-				# Ask for the user input before continuing execution
+				# Ask for the user input before continuing the execution
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 	def Process_Entry(self, entry, plural_media_type = None, entries = None, entry_list_file = None):
-		# If the "Number" key is in the entry dictionary
-		if "Number" in entry:
-			# Change the "Number" key to "Watched media number"
-			old_key = "Number"
-			new_key = "Watched media number"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Type number" key is in the entry dictionary
-		if "Type number" in entry:
-			# Change the "Type number" key to "Watched media number by media type"
-			old_key = "Type number"
-			new_key = "Watched media number by media type"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Type" key is in the entry dictionary
-		if "Type" in entry:
-			# Add the "Media type" key after the "Watched media number by media type" key, then remove the "Type" key
-			after_key = "Watched media number by media type"
-			entry = self.JSON.Add_Key_After_Key(entry, {"Media type": entry["Type"]}, after_key = after_key)
-			entry.pop("Type")
-
-		# ---------- #
-
-		# Make a backup of the "Times" dictionary and remove it
-		times = deepcopy(entry["Times"])
-
-		# Make a backup of the entry time
-		entry_time_backup = times["Finished watching"]
-
-		# If the finished watching time in the UTC format is not only four digits (only the year)
-		if len(times["Finished watching (UTC)"]) != 4:
-			# Transform the "Finished watching (UTC)" key into a date dictionary
-			date = self.Date.From_String(times["Finished watching (UTC)"])
-
-			# Update the "Finished watching" with the "HH:MM DD/MM/YYYY" format in the user timezone
-			times["Finished watching"] = date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
-
-		# Remove the "Times" key
-		entry.pop("Times")
-
-		# Add the "Times" key after the "Media type" key
-		after_key = "Media type"
-		entry = self.JSON.Add_Key_After_Key(entry, {"Times": times}, after_key = after_key)
-
-		# ---------- #
-
-		# If the "Media" key is in the entry dictionary
-		if "Media" in entry:
-			# Change the "Media" key to "Media titles"
-			old_key = "Media"
-			new_key = "Media titles"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Item" key exists in the entry dictionary
-		if "Item" in entry:
-			# Change the "Item" key to "Media item titles"
-			old_key = "Item"
-			new_key = "Media item titles"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "ID" key exists in the entry dictionary
-		if "ID" in entry:
-			# Create the "Episode link" dictionary
-			episode_link = {
-				"ID": entry["ID"],
-				"Link": entry["Link"]
-			}
-
-			# Remove the "ID" and "Link" keys
-			entry.pop("ID")
-			entry.pop("Link")
-
-			# If the "Media item titles" key exists in the entry dictionary
-			if "Media item titles" in entry:
-				# Define the after key as "Media item titles"
-				after_key = "Media item titles"
-
-			# If the "Episode" key exists in the entry dictionary
-			if "Episode" in entry:
-				# Define the after key as "Episode"
-				after_key = "Episode"
-
-			# Add the "Episode link" dictionary after the after key
-			entry = self.JSON.Add_Key_After_Key(entry, {"Episode link": episode_link}, after_key = after_key)
-
-		# ---------- #
-
-		# If the "Comment" key exists in the entry dictionary
-		if "Comment" in entry:
-			# Get the comment dictionary
-			comment = entry["Comment"]
-
-			# ---------- #
-
-			# If the "Number" key exists in the comment dictionary
-			if "Number" in comment:
-				# Change the "Number" key to "Comment number"
-				old_key = "Number"
-				new_key = "Comment number"
-				comment = self.JSON.Add_Key_After_Key(comment, {new_key: comment[old_key]}, after_key = old_key, remove_after_key = True)
-
-			# ---------- #
-
-			# If the "Date" key is inside the comment dictionary
-			if "Date" in comment:
-				# Get the date of the comment and transform it into a date dictionary
-				comment_date = self.Date.From_String(comment["Date"])
-
-				# Define the comment times dictionary
-				times = {
-					"Timezone": comment_date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
-					"UTC": comment_date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
-				}
-
-				# Define the new key
-				new_key = "Times"
-
-				# ---------- #
-
-				# If the "Entry" key is inside the comment dictionary
-				if "Entry" in comment:
-					# Define the after key as "Entry"
-					after_key = "Entry"
-
-					# Add the new key after the after key
-					comment = self.JSON.Add_Key_After_Key(comment, {new_key: times}, after_key = after_key)
-
-				# ---------- #
-
-				# If the "ID" key is inside the comment dictionary
-				if "ID" in comment:
-					# Add the new key to the top of the comment dictionary
-					comment = {
-						new_key: times,
-						**comment
-					}
-
-				# ---------- #
-
-				# If the only key is the "Date" key
-				if list(comment.keys()) == ["Date"]:
-					# Just add the "Times" dictionary
-					comment["Times"] = times
-
-				# Remove the "Date" key
-				comment.pop("Date")
-
-			# ---------- #
-
-			# If the "ID" key exists in the comment dictionary
-			if "ID" in comment:
-				# Create the "Comment link" dictionary
-				comment_link = {
-					"ID": comment["ID"],
-					"Link": comment["Link"]
-				}
-
-				# Remove the "Link" key
-				comment.pop("Link")
-
-				# Add the "Link" dictionary after the "ID" key
-				new_key = "Link"
-				after_key = "ID"
-				comment = self.JSON.Add_Key_After_Key(comment, {new_key: comment_link}, after_key = after_key)
-
-				# Remove the "ID" key
-				comment.pop("ID")
-
-				# ---------- #
-
-				# Get the date of the video and transform it into a date dictionary
-				video_date = self.Date.From_String(comment["Video"]["Date"])
-
-				# Make a new video dictionary
-				comment["Video"]["Times"] = {
-					"Timezone": video_date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
-					"UTC": video_date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
-				}
-
-				# Remove the "Date" key
-				comment["Video"].pop("Date")
-
-			# ---------- #
-
-			# Update the "Comment" key in the entry dictionary
-			entry["Comment"] = comment
-
-			# If the only keys inside the comment dictionary are the "Comment number" and "Entry" ones
-			if list(comment.keys()) == ["Comment number", "Entry"]:
-				# Remove the comment dictionary
-				entry.pop("Comment")
-
-		# ---------- #
-
 		# Define a dictionary of folders where to search for entry files
 		folders = {}
 
@@ -463,10 +256,10 @@ class Convert_History(Watch_History):
 			# ---------- #
 
 			# Update the "Media type files" key to add the files folder
-			folders["Media type files"] = self.year["Folders"]["Per Media Type"][plural_media_type]["Files"]["root"]
+			folders["Media type files"] = self.year["Folders"]["By media type"][plural_media_type]["Files"]["root"]
 
 			# Get the media type entry list file
-			media_type_entry_list_file = self.year["Folders"]["Per Media Type"][plural_media_type]["root"] + "Entry list.txt"
+			media_type_entry_list_file = self.year["Folders"]["By media type"][plural_media_type]["root"] + "Entry list.txt"
 
 			# ---------- #
 
@@ -554,30 +347,6 @@ class Convert_History(Watch_History):
 			# Get the watched "Entries.json" file
 			watched_entries_file = watched_folder + "Entries.json"
 
-			# If the watched "Entries.json" file is not empty
-			if (
-				self.File.Contents(watched_entries_file)["lines"] != [] and
-				self.JSON.To_Python(watched_entries_file)["Entries"] != []
-			):
-				# Read it
-				watched_entries = self.JSON.To_Python(watched_entries_file)
-
-				# Update the entry dictionary
-				watched_entries["Dictionary"][entry["Entry"]] = entry
-
-				# If the "write to file" switch is True
-				if self.write_to_file == True:
-					# Update the "Entries.json" file with the updated watched "Entries" dictionary
-					self.JSON.Edit(watched_entries_file, watched_entries)
-
-				# Add the watched folder to the list of folders
-				folders["Watched"] = files_folder
-
-			# ---------- #
-
-			# Update the "Comments.json" file of the media
-			self.Update_Comments_JSON(media_folder)
-
 			# ---------- #
 
 			# Get the watched "Entry list.txt" file
@@ -590,6 +359,9 @@ class Convert_History(Watch_History):
 
 		# Make a backup of the entry name
 		entry_name_backup = entry["Entry"]
+
+		# Make a backup of the entry time
+		entry_time_backup = entry["Times"]["Finished watching"]
 
 		# ---------- #
 
@@ -609,8 +381,8 @@ class Convert_History(Watch_History):
 
 			# If the folder is "Media type files"
 			if folder_name == "Media type files":
-				# Change the language to English
-				language = "en"
+				# Change the language to the user language
+				language = self.user_language
 
 			# If the "Watched media" or "Firsts of the Year" texts are inside the folder name
 			if (
@@ -636,7 +408,10 @@ class Convert_History(Watch_History):
 			new_entry_file = ""
 
 			# If the entry time backup is not the same as the probably updated entry time
-			if entry_time_backup != entry["Times"]["Finished watching"]:
+			if (
+				entry_time_backup != entry["Times"]["Finished watching"] or
+				entry_time_backup not in entry_name_backup
+			):
 				# Update the entry name to update the time to the new one
 				new_entry_name = new_entry_name.replace(entry_time_backup, entry["Times"]["Finished watching"])
 
@@ -657,11 +432,16 @@ class Convert_History(Watch_History):
 			old_key = entry_name_backup
 			new_key = new_entry_name
 
+			print(old_key)
+			print(new_key)
+
 			# If the two keys are not the same
 			# Or the local language is not English
+			# And the folder is not "Media type files"
 			if (
 				old_key != new_key or
-				language != "en"
+				language != "en" and
+				folder_name != "Media type files"
 			):
 				# If the old key is inside the entries dictionary
 				if old_key in entries["Dictionary"]:
@@ -746,72 +526,90 @@ class Convert_History(Watch_History):
 				# If the first and second file are not the same file
 				if entry_file != new_entry_file:
 					# Rename the file
-					self.File.Move(entry_file, new_entry_file)
+					#self.File.Move(entry_file, new_entry_file)
 
 					# Update the variable
 					entry_file = new_entry_file
 
 				# ---------- #
 
-			# Get the contents of the file as a string
-			text = self.File.Contents(entry_file)["String"]
+			# Get the contents of the file
+			contents = self.File.Contents(entry_file)
+
+			# Get the text as a string
+			text = contents["String"]
+
+			# Get the text as a list
+			text_lines = contents["Lines"]
+
+			# Make a backup of the old text
+			old_text = text
 
 			# Replace the file text to correct text order
-			text = self.Replace_Text(entry, text, language)
+			text = self.Replace_Text(entry, text, text_lines, language)
 
-			# Write the updated contents into the entry file
-			self.File.Edit(entry_file, text, "w")
+			# If the old text and the new one are not the same
+			if old_text != text:
+				# Write the updated contents into the entry file
+				self.File.Edit(entry_file, text, "w")
 
 		# Return the entry dictionary
 		return entry, entry_title, entries
 
-	def Replace_Text(self, entry, text, language):
+	def Replace_Text(self, entry, text, text_lines, language):
 		# Import the regex module
 		import re
 
 		# ---------- #
 
-		# Define the search text as the "Media type" text
-		search_text = self.texts["media_type"][language]
+		self.JSON.Show(text_lines)
 
-		# Make a backup of the search line and remove it
-		search_result = re.search(rf"{search_text}:\n(.+)\n\n", text)
-		text = re.sub(rf"{search_text}:\n(.+)\n\n", "", text)
+		if self.texts["media_type"][language] not in text_lines[6]:
+			# Define the search text as the "Media type" text
+			search_text = self.texts["media_type"][language]
 
-		# Define the after line as "Watched media number by media type" text
-		after_line = self.texts["watched_media_number_by_media_type"][language]
+			# Make a backup of the search line and remove it
+			search_result = re.search(rf"{search_text}:\n(.+)\n\n", text)
+			text = re.sub(rf"{search_text}:\n(.+)\n\n", "", text)
 
-		# Re-add the line after the after line
-		if search_result:
-			media_type = "\n" + (search_result.group(0))[:-1]
+			# Define the after line as "Watched media number by media type" text
+			after_line = self.texts["watched_media_number_by_media_type"][language]
 
-			text = re.sub(
-				rf"({after_line}:\n.*\n)",
-				r"\1" + media_type,
-				text
-			)
+			# Re-add the line after the after line
+			if search_result:
+				media_type = "\n" + (search_result.group(0))[:-1]
+
+				text = re.sub(
+					rf"({after_line}:\n.*\n)",
+					r"\1" + media_type,
+					text
+				)
 
 		# ---------- #
 
 		# Define the search text as the "Entry" text
 		search_text = self.Language.texts["entry, title()"][language]
 
-		# Make a backup of the search line and remove it
-		search_result = re.search(rf"{search_text}:\n(.*)", text)
-		text = re.sub(rf"(?:\n\n)?{search_text}:\n(.*)", "", text)
+		if search_text not in text_lines[9]:
+			# Define the search text as the "Entry" text
+			search_text = self.Language.texts["entry, title()"][language]
 
-		# Define the after line as "Media type" text
-		after_line = self.texts["media_type"][language]
+			# Make a backup of the search line and remove it
+			search_result = re.search(rf"{search_text}:\n(.*)", text)
+			text = re.sub(rf"(?:\n\n)?{search_text}:\n(.*)", "", text)
 
-		# Re-add the line after the after line
-		if search_result:
-			media_type = "\n" + (search_result.group(0)) + "\n"
+			# Define the after line as "Media type" text
+			after_line = self.texts["media_type"][language]
 
-			text = re.sub(
-				rf"({after_line}:\n.*\n)",
-				r"\1" + media_type,
-				text
-			)
+			# Re-add the line after the after line
+			if search_result:
+				media_type = "\n" + (search_result.group(0)) + "\n"
+
+				text = re.sub(
+					rf"({after_line}:\n.*\n)",
+					r"\1" + media_type,
+					text
+				)
 
 		# ---------- #
 
@@ -1035,6 +833,38 @@ class Convert_History(Watch_History):
 
 		# ---------- #
 
+		# Split the text into a list of lines
+		lines = text.splitlines()
+
+		# Define a list of lines to keep
+		lines_to_keep = []
+
+		# Iterate through each line
+		for line in lines:
+			# Define the "keep line" switch as False
+			keep_line = False
+
+			# Check if the line contains only numbers
+			if line.strip().isdigit():
+				keep_line = True # Keep lines that contain only numbers
+
+			# Check if the line is not just numbers and not already in the list
+			# Or the line is empty
+			elif (
+				line not in lines_to_keep or
+				line == ""
+			):
+				keep_line = True # Keep lines that are not just numbers and not in the list
+
+			# If the "keep line" switch is True
+			if keep_line == True:
+				lines_to_keep.append(line)
+
+		# Transform the list of lines into a text string
+		text = self.Text.From_List(lines_to_keep, next_line = True)
+
+		# ---------- #
+
 		# Return the text
 		return text
 
@@ -1131,7 +961,7 @@ class Convert_History(Watch_History):
 			# Update the "Comments.json" file with the updated "Comments" dictionary
 			self.JSON.Edit(comments_file, comments)
 
-	def Per_Media(self):
+	def By_Media(self):
 		# Define the root dictionary with the media type and media
 		self.dictionary = {
 			"Media type": self.media_types["Videos"],
@@ -1173,7 +1003,7 @@ class Convert_History(Watch_History):
 			self.watched["Correct titles"] = self.File.Contents(self.watched["Correct titles"])["lines"]
 
 		#self.Iterate_Through_Watched_Entries()
-		self.Per_Media_Run()
+		self.By_Media_Run()
 
 	def Iterate_Through_Watched_Entries(self):
 		entries = list(self.watched["Entries"]["Dictionary"].values())
@@ -1218,7 +1048,7 @@ class Convert_History(Watch_History):
 
 			i += 1
 
-	def Per_Media_Run(self):
+	def By_Media_Run(self):
 		# Get the Entries keys list
 		entry_keys = self.watched["Entries"]["Entries"]
 
@@ -1241,7 +1071,7 @@ class Convert_History(Watch_History):
 				year_dictionary[year] = {
 					"Entries file": self.folders["Watch History"][year]["entries"],
 					"Entries": "",
-					"Media type Entries file": self.folders["Watch History"][year]["Per media type"][media_type_key]["entries"],
+					"Media type Entries file": self.folders["Watch History"][year]["By media type"][media_type_key]["entries"],
 					"Media type Entries": ""
 				}
 
@@ -1287,9 +1117,9 @@ class Convert_History(Watch_History):
 					"Current year": self.Years.years["Dictionary"][year]
 				}
 
-				# Update the episode title in the year Entry file
-				per_media_type_folder = self.folders["Watch History"][year]["Per media type"][media_type_key]["files"]["root"]
-				year_entry_file = per_media_type_folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
+				# Update the episode title in the year entry file
+				by_media_type_folder = self.folders["Watch History"][year]["By media type"][media_type_key]["files"]["root"]
+				year_entry_file = by_media_type_folder + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 				# Get the Entry file lines
 				lines = self.File.Contents(year_entry_file)["lines"]
@@ -1313,14 +1143,14 @@ class Convert_History(Watch_History):
 					folder = self.dictionary["Entry"]["current_year"]["Folders"][full_language][root_folder][type_folder]["root"]
 					file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
 
-					# Get the year Entry file per language
+					# Get the year Entry file by language
 					file = folder + file_name + ".txt"
 
 					# Get the file and update the episode title inside it
 					lines = self.File.Contents(file)["lines"]
 					lines[10] = titles[language]
 
-					# Update the year Entry file per language
+					# Update the year Entry file by language
 					self.File.Edit(file, self.Text.From_List(lines, next_line = True), "w")
 
 				# Update the episode title in the Watched Entry file
@@ -1788,7 +1618,7 @@ class Convert_History(Watch_History):
 
 			e += 1
 
-	def By_Year(self):
+	def By_Year_2(self):
 		# Copy the switches dictionary
 		switches_dictionary = deepcopy(self.switches)
 
@@ -1818,7 +1648,7 @@ class Convert_History(Watch_History):
 				"Folders": {
 					"root": self.folders["Watch History"]["root"] + self.year + "/"
 				},
-				"Entries dictionary": deepcopy(self.template),
+				"entries dictionary": deepcopy(self.template),
 				"Lists": {}
 			}
 
@@ -1828,7 +1658,7 @@ class Convert_History(Watch_History):
 			print(self.Date.language_texts["year, title()"] + ": " + self.year["Number"])
 
 			# Define the history folders
-			for folder_name in ["Per Media Type"]:
+			for folder_name in ["By media type"]:
 				key = folder_name.lower().replace(" ", "_")
 
 				# Define the folder
@@ -1838,9 +1668,9 @@ class Convert_History(Watch_History):
 
 				self.Folder.Create(self.year["Folders"][key]["root"])
 
-			# Define the "Files" folder inside the "Per Media Type"
-			self.year["Folders"]["Per media type"]["files"] = {
-				"root": self.year["Folders"]["Per media type"]["root"] + "Files/"
+			# Define the "Files" folder inside the "By media type"
+			self.year["Folders"]["By media type"]["Files"] = {
+				"root": self.year["Folders"]["By media type"]["root"] + "Files/"
 			}
 
 			exist = False
@@ -1857,44 +1687,44 @@ class Convert_History(Watch_History):
 			self.year["Folders"]["entry_list"] = self.year["Folders"]["root"] + "Entry list.txt"
 			self.File.Create(self.year["Folders"]["entry_list"])
 
-			# Define the per media type "Files" folders
+			# Define the by media type "Files" folders
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				key = plural_media_type.lower().replace(" ", "_")
 
 				# Create the media type folder
-				self.year["Folders"]["Per media type"][key] = {
-					"root": self.year["Folders"]["Per media type"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["By media type"][key] = {
+					"root": self.year["Folders"]["By media type"]["root"] + plural_media_type + "/"
 				}
 
-				self.Folder.Create(self.year["Folders"]["Per media type"][key]["root"])
+				self.Folder.Create(self.year["Folders"]["By media type"][key]["root"])
 
 				# Create the "Files" media type folder
-				self.year["Folders"]["Per media type"][key]["files"] = {
-					"root": self.year["Folders"]["Per media type"][key]["root"] + "Files/"
+				self.year["Folders"]["By media type"][key]["files"] = {
+					"root": self.year["Folders"]["By media type"][key]["root"] + "Files/"
 				}
 
-				self.Folder.Create(self.year["Folders"]["Per media type"][key]["files"]["root"])
+				self.Folder.Create(self.year["Folders"]["By media type"][key]["files"]["root"])
 
 				# Define and create the media type "Entries.json" file
-				self.year["Folders"]["Per media type"][key]["entries"] = self.year["Folders"]["Per media type"][key]["root"] + "Entries.json"
-				self.File.Create(self.year["Folders"]["Per media type"][key]["entries"])
+				self.year["Folders"]["By media type"][key]["entries"] = self.year["Folders"]["By media type"][key]["root"] + "Entries.json"
+				self.File.Create(self.year["Folders"]["By media type"][key]["entries"])
 
 				# Define and create the media type "Entry list.txt" file
-				self.year["Folders"]["Per media type"][key]["entry_list"] = self.year["Folders"]["Per media type"][key]["root"] + "Entry list.txt"
-				self.File.Create(self.year["Folders"]["Per media type"][key]["entry_list"])
+				self.year["Folders"]["By media type"][key]["entry_list"] = self.year["Folders"]["By media type"][key]["root"] + "Entry list.txt"
+				self.File.Create(self.year["Folders"]["By media type"][key]["entry_list"])
 
 				# Define the media type "Files" folder
-				self.year["Folders"]["Per media type"]["files"][key] = {
-					"root": self.year["Folders"]["Per media type"]["files"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["By media type"]["files"][key] = {
+					"root": self.year["Folders"]["By media type"]["files"]["root"] + plural_media_type + "/"
 				}
 
 				# Define the media type "Episodes" file
-				self.year["Folders"]["Per media type"]["files"][key]["episodes"] = self.year["Folders"]["Per media type"]["files"][key]["root"] + "Episodes.txt"
+				self.year["Folders"]["By media type"]["files"][key]["episodes"] = self.year["Folders"]["By media type"]["files"][key]["root"] + "Episodes.txt"
 
-				if self.Folder.Exist(self.year["Folders"]["Per media type"]["files"][key]["root"]) == True:
+				if self.Folder.Exist(self.year["Folders"]["By media type"]["files"][key]["root"]) == True:
 					# Create media type lists dictionary and read "Episodes" file
 					self.year["Lists"][plural_media_type] = {
-						"Episodes": self.File.Contents(self.year["Folders"]["Per media type"]["files"][key]["episodes"])["lines"]
+						"Episodes": self.File.Contents(self.year["Folders"]["By media type"]["files"][key]["episodes"])["lines"]
 					}
 
 			# Define the entry files
@@ -1913,8 +1743,8 @@ class Convert_History(Watch_History):
 
 			if "Episodes" in self.year["Lists"]:
 				# Add to the total and comments numbers
-				self.year["Entries dictionary"]["Numbers"]["Total"] = len(self.year["Lists"]["Episodes"])
-				self.year["Entries dictionary"]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Years"][self.year["Number"]]
+				self.year["entries dictionary"]["Numbers"]["Total"] = len(self.year["Lists"]["Episodes"])
+				self.year["entries dictionary"]["Numbers"]["Comments"] = self.dictionaries["Root comments"]["Numbers"]["Years"][self.year["Number"]]
 
 				# Define the media type dictionaries
 				self.media_type_dictionaries = {}
@@ -1940,7 +1770,7 @@ class Convert_History(Watch_History):
 					"Change year": True
 				}
 
-				# If the "Entries.json" is not empty and has entries, get Entries dictionary from it
+				# If the "Entries.json" is not empty and has entries, get entries dictionary from it
 				if self.File.Contents(self.year["Folders"]["entries"])["lines"] != [] and self.JSON.To_Python(self.year["Folders"]["entries"])["Entries"] != []:
 					self.dictionaries["Entries"] = self.JSON.To_Python(self.year["Folders"]["entries"])
 
@@ -2011,7 +1841,7 @@ class Convert_History(Watch_History):
 									# Select media and define its variables, returning the media dictionary (without asking user to select the media)
 									self.dictionary = self.Select_Media(self.dictionary)
 
-									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["Per Media Type"], str(self.date["Units"]["Year"]), self.year["Number"])
+									self.Replace_Year_Number(self.dictionary["Media type"]["Folders"]["By media type"], str(self.date["Units"]["Year"]), self.year["Number"])
 
 						if self.dictionary != {}:
 							self.dictionary["Old history"] = self.old_history
@@ -2400,9 +2230,9 @@ class Convert_History(Watch_History):
 					# Delete the entry file
 					self.File.Delete(self.year["Folders"][key])
 
-				# Delete the "Per Media Type" folders
+				# Delete the "By media type" folders
 				for folder_name in ["Files", "Folders"]:
-					folder = self.year["Folders"]["Per media type"]["root"] + folder_name + "/"
+					folder = self.year["Folders"]["By media type"]["root"] + folder_name + "/"
 					self.Folder.Delete(folder)
 
 			from Watch_History.Watch_History import Watch_History as Watch_History
@@ -2465,7 +2295,7 @@ class Convert_History(Watch_History):
 			print(self.Date.language_texts["year, title()"] + ": " + self.year["Number"])
 
 			# Define the history folders
-			for folder_name in ["Per Media Type"]:
+			for folder_name in ["By media type"]:
 				key = folder_name.lower().replace(" ", "_")
 
 				# Define the folder
@@ -2475,36 +2305,36 @@ class Convert_History(Watch_History):
 
 				self.Folder.Create(self.year["Folders"][key]["root"])
 
-			# Define the "Files" folder inside the "Per Media Type"
-			self.year["Folders"]["Per media type"]["files"] = {
-				"root": self.year["Folders"]["Per media type"]["root"] + "Files/"
+			# Define the "Files" folder inside the "By media type"
+			self.year["Folders"]["By media type"]["files"] = {
+				"root": self.year["Folders"]["By media type"]["root"] + "Files/"
 			}
 
 			# Define and create the "Entries.json" file
 			self.year["Folders"]["entries"] = self.year["Folders"]["root"] + "Entries.json"
 			self.File.Create(self.year["Folders"]["entries"])
 
-			# Define the Per Media Type files and folders
+			# Define the by media type files and folders
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				key = plural_media_type.lower().replace(" ", "_")
 
 				# Create the media type folder
-				self.year["Folders"]["Per media type"][key] = {
-					"root": self.year["Folders"]["Per media type"]["root"] + plural_media_type + "/"
+				self.year["Folders"]["By media type"][key] = {
+					"root": self.year["Folders"]["By media type"]["root"] + plural_media_type + "/"
 				}
 
-				self.Folder.Create(self.year["Folders"]["Per media type"][key]["root"])
+				self.Folder.Create(self.year["Folders"]["By media type"][key]["root"])
 
 				# Define and create the media type "Entries.json" file
-				self.year["Folders"]["Per media type"][key]["entries"] = self.year["Folders"]["Per media type"][key]["root"] + "Entries.json"
-				self.File.Create(self.year["Folders"]["Per media type"][key]["entries"])
+				self.year["Folders"]["By media type"][key]["entries"] = self.year["Folders"]["By media type"][key]["root"] + "Entries.json"
+				self.File.Create(self.year["Folders"]["By media type"][key]["entries"])
 
-				self.year["Media type entries"][plural_media_type] = self.JSON.To_Python(self.year["Folders"]["Per media type"][key]["entries"])
+				self.year["Media type entries"][plural_media_type] = self.JSON.To_Python(self.year["Folders"]["By media type"][key]["entries"])
 
-			# Get the Entries dictionary
+			# Get the entries dictionary
 			self.year["Entries"] = self.JSON.To_Python(self.year["Folders"]["entries"])
 
-			# Iterate through the Entries dictionary
+			# Iterate through the entries dictionary
 			e = 0
 			for entry_key, entry in self.year["Entries"]["Dictionary"].items():
 				# If the "States" key is inside the Entry dictionary
@@ -2604,7 +2434,7 @@ class Convert_History(Watch_History):
 					print("Arquivo de Assistido:")
 					print("[" + self.medias[self.media_title]["Watched"]["Entries file"] + "]")
 
-					# Get the Watched Entries dictionary
+					# Get the Watched entries dictionary
 					self.medias[self.media_title]["Watched"]["Entries"] = self.JSON.To_Python(self.medias[self.media_title]["Watched"]["Entries file"])
 
 					# Read the "Comments.json" file to get the Comments dictionary
@@ -2880,12 +2710,12 @@ class Convert_History(Watch_History):
 			# Update the year "Entries.json" file with the updated year "Entries" dictionary
 			self.JSON.Edit(self.year["Folders"]["entries"], self.year["Entries"])
 
-			# Update the Per Media Type files
+			# Update the by media type files
 			for plural_media_type in self.media_types["Plural"]["en"]:
 				key = plural_media_type.lower().replace(" ", "_")
 
-				# Update the Per Media Type "Entries.json" file with the updated media type "Entries" dictionary
-				self.JSON.Edit(self.year["Folders"]["Per media type"][key]["entries"], self.year["Media type entries"][plural_media_type])
+				# Update the by media type "Entries.json" file with the updated media type "Entries" dictionary
+				self.JSON.Edit(self.year["Folders"]["By media type"][key]["entries"], self.year["Media type entries"][plural_media_type])
 
 	def Replace_Year_Number(self, folders, to_replace, replace_with):
 		for key, value in folders.items():

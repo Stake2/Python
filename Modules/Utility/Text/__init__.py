@@ -227,6 +227,9 @@ class Text():
 
 		return string
 
+	def Has_Duplicates(self, item_list):
+		return len(item_list) != len(set(item_list))
+
 	def Get_Clipboard(self): 
 		import win32clipboard
 
@@ -235,10 +238,3 @@ class Text():
 		win32clipboard.CloseClipboard()
 
 		return data
-
-	def Open_Link(self, link):
-		import webbrowser
-
-		self.Verbose(self.language_texts["opening, title()"], link, verbose = True)
-
-		webbrowser.open(link)

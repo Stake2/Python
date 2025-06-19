@@ -37,12 +37,12 @@ class Convert_History(Tasks):
 				"Folders": {
 					"root": self.tasks["Folders"]["Task History"]["root"] + self.year + "/"
 				},
-				"Entries dictionary": deepcopy(self.template),
+				"entries dictionary": deepcopy(self.template),
 				"Lists": {}
 			}
 
 			# Define the history folders
-			for folder_name in ["Per Task Type"]:
+			for folder_name in ["By task type"]:
 				key = folder_name.lower().replace(" ", "_")
 
 				# Define the folder
@@ -56,11 +56,11 @@ class Convert_History(Tasks):
 			self.year["Folders"]["tasks"] = self.year["Folders"]["root"] + "Tasks.json"
 			self.File.Create(self.year["Folders"]["tasks"])
 
-			self.year["Entries dictionary"] = self.JSON.To_Python(self.year["Folders"]["tasks"])
+			self.year["entries dictionary"] = self.JSON.To_Python(self.year["Folders"]["tasks"])
 
-			for task_type in self.year["Entries dictionary"]["Numbers"]["Per Task Type"]:
+			for task_type in self.year["entries dictionary"]["Numbers"]["By task type"]:
 				self.year["Folders"][task_type] = {
-					"root": self.year["Folders"]["Per Task Type"]["root"] + task_type + "/"
+					"root": self.year["Folders"]["By task type"]["root"] + task_type + "/"
 				}
 
 				self.Folder.Create(self.year["Folders"][task_type]["root"])
@@ -83,8 +83,8 @@ class Convert_History(Tasks):
 
 			# Iterate through the English Tasks list
 			i = 1
-			for entry in self.year["Entries dictionary"]["Entries"]:
-				entry = self.year["Entries dictionary"]["Dictionary"][entry]
+			for entry in self.year["entries dictionary"]["Entries"]:
+				entry = self.year["entries dictionary"]["Dictionary"][entry]
 
 				task_type = entry["Type"]
 
@@ -100,7 +100,7 @@ class Convert_History(Tasks):
 				i += 1
 
 			# "Per Task Type/[Task Type]/Tasks.json"
-			for task_type in self.year["Entries dictionary"]["Numbers"]["Per Task Type"]:
+			for task_type in self.year["entries dictionary"]["Numbers"]["By task type"]:
 				self.JSON.Edit(self.year["Folders"][task_type]["tasks"], self.year[task_type])
 
 				# "Entry list.txt"

@@ -6,7 +6,7 @@ class Copy_Chapter_Titles(Stories):
 	def __init__(self):
 		super().__init__()
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Select language": False
 		}

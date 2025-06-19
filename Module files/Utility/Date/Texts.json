@@ -276,6 +276,10 @@
 		"en": "Years",
 		"pt": "Anos"
 	},
+	"number_of_the_year": {
+		"en": "Number of the year",
+		"pt": "Número do ano"
+	},
 	"years_list": {
 		"en": "Years list",
 		"pt": "Lista de Anos"

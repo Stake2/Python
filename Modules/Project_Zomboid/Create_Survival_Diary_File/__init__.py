@@ -30,7 +30,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 					# Update the key in the root dictionary
 					self.dictionary[key] = dictionary[key]
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Used pre-defined values": False
 		}

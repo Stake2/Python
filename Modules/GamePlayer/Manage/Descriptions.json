@@ -10,5 +10,10 @@
 	"Iterate_Through_The_Game_List": {
 		"en": "Iterate through the game list",
 		"pt": "Iterar através da lista de jogos"
-	}
+	},
+	"Convert_History": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"Remove list": []
 }

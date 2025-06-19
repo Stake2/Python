@@ -538,8 +538,10 @@ class Register(Tasks):
 			# Open the file
 			self.System.Open(files[language])
 
-			# Wait for the user to finish writing the task description
-			self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(translated_language))
+			# If the "Testing" switch is False
+			if self.switches["Testing"] == False:
+				# Wait for the user to finish writing the task description
+				self.Input.Type(self.language_texts["press_enter_when_you_finish_writing_and_saving_the_description_in_{}"].format(translated_language))
 
 		# Define and create the backup file
 		files["Backup"] = self.tasks["Folders"]["root"] + "Backup of the descriptions.txt"
@@ -562,8 +564,11 @@ class Register(Tasks):
 
 			# If the "Testing" switch is True
 			else:
-				# Add the "[Description]" text in the current language to the task description
-				self.dictionary["Task"]["Descriptions"][language] += "[" + self.Language.texts["description, title()"][language] + "]"
+				# Define the "[Description]" text in the current language
+				description_text = "[" + self.Language.texts["description, title()"][language] + "]"
+
+				# Add the text to the task description
+				self.dictionary["Task"]["Descriptions"][language] += description_text
 
 			# Define the text to add to the backup file as the task description in the current language
 			text = self.dictionary["Task"]["Descriptions"][language]
@@ -589,7 +594,7 @@ class Register(Tasks):
 
 		# Re-read the "Tasks.json" and media type "Tasks.json" files to retrieve the most up-to-date data
 		self.dictionaries["Tasks"] = self.JSON.To_Python(self.tasks["Folders"]["Task History"]["Current year"]["Tasks"])
-		self.dictionaries["Task type"][self.task_type] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["Per Task Type"]["Tasks"])
+		self.dictionaries["Task type"][self.task_type] = self.JSON.To_Python(self.dictionary["Type"]["Folders"]["By task type"]["Tasks"])
 
 		# ---------- #
 
@@ -603,9 +608,9 @@ class Register(Tasks):
 		for current_dict in dictionaries_to_update:
 			current_dict["Numbers"]["Total"] += 1
 
-			# If the "Per Task Type" key exists, increment the count for the specific task type
-			if "Per Task Type" in current_dict["Numbers"]:
-				current_dict["Numbers"]["Per Task Type"][self.task_type] += 1
+			# If the "By task type" key exists, increment the count for the specific task type
+			if "By task type" in current_dict["Numbers"]:
+				current_dict["Numbers"]["By task type"][self.task_type] += 1
 
 		# ---------- #
 
@@ -766,14 +771,14 @@ class Register(Tasks):
 		self.JSON.Edit(self.tasks["Folders"]["Task History"]["Current year"]["Tasks"], self.dictionaries["Tasks"])
 
 		# Update the task type current year "Tasks.json" file
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Per Task Type"]["Tasks"], self.dictionaries["Task type"][self.task_type])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["By task type"]["Tasks"], self.dictionaries["Task type"][self.task_type])
 
 		# ---------- #
 
 		# Make a list of "Entry list.txt" files to add to
 		files = [
 			self.tasks["Folders"]["Task History"]["Current year"]["Entry list"],
-			self.dictionary["Type"]["Folders"]["Per Task Type"]["Entry list"]
+			self.dictionary["Type"]["Folders"]["By task type"]["Entry list"]
 		]
 
 		# Iterate through those files
@@ -826,12 +831,12 @@ class Register(Tasks):
 		# English:
 		# [English task description]
 
-		# Define the per task type task folder, file name, and file
-		per_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["Per Task Type"][self.task_type]["Files"]["root"]
+		# Define the task folder, file name, and file by task type
+		by_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["By task type"][self.task_type]["Files"]["root"]
 		file_name = self.task["Name"]["en"]["Sanitized"]
-		file = per_task_type_folder + file_name + ".txt"
+		file = by_task_type_folder + file_name + ".txt"
 
-		# Create the task file inside the "Per Task Type" folder
+		# Create the task file inside the "By task type" folder
 		self.File.Create(file)
 
 		# ---------- #
@@ -850,7 +855,7 @@ class Register(Tasks):
 		# Write the general task text into the general task file
 		self.File.Edit(file, self.dictionary["Text"]["General"], "w")
 
-	# Define the task file text per language
+	# Define the task file text by language
 	def Define_File_Text(self, language_parameter = None):
 		# If the language parameter is not general
 		if language_parameter != "General":
@@ -867,7 +872,7 @@ class Register(Tasks):
 		# ---------- #
 
 		# Define the list of lines for the task text
-		# Starting with the total number of tasks and the task number per task type
+		# Starting with the total number of tasks and the task number by task type
 		lines = [
 			self.texts["task_number"][language] + ":" + "\n" + str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + "\n",
 			self.texts["task_number_by_task_type"][language] + ":" + "\n" + str(self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"])

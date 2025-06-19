@@ -30,7 +30,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		# Define the Diary Slim file
 		self.dictionary["File"] = self.dictionary["Current Diary Slim"]["File"]
 
-		# Define the "States" dictionary
+		# Define the states dictionary
 		self.states = {
 			"Diary Slim exists": False,
 			"Skipped Diary Slims": {

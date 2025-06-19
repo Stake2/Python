@@ -11,18 +11,17 @@ class Register(GamePlayer):
 		# Define the class dictionary as the parameter dictionary
 		self.dictionary = dictionary
 
-		# Ask for the entry information
+		# If the class dictionary is empty
 		if self.dictionary == {}:
+			# Ask for the entry information
 			self.Type_Entry_Information()
 
+		# Update the "Entry" dictionary with additional structured data:
+		# "Diary Slim": initializes empty fields for Diary Slim related text entries
+		# "States": sets the initial state for social network posting as False
 		self.dictionary["Entry"].update({
-			"Dates": {
-				"UTC": self.dictionary["Entry"]["Date"]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"],
-				"Timezone": self.dictionary["Entry"]["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
-			},
 			"Diary Slim": {
 				"Text": "",
-				"Clean text": "",
 				"Descriptions": {},
 				"Write description": False
 			},
@@ -37,6 +36,8 @@ class Register(GamePlayer):
 		# Check the game status
 		self.Check_Game_Status()
 
+		# If the user is not replaying the game
+		# And they completed the game
 		if (
 			self.game["States"]["Re-playing"] == False and
 			self.game["States"]["Completed game"] == True
@@ -55,7 +56,7 @@ class Register(GamePlayer):
 			# Save the entry to the database in the JSON format
 			self.Register_In_JSON()
 
-			# Create the individual entry file for the watched media
+			# Create the individual entry file for the played game
 			self.Create_Entry_File()
 
 			# Create the entry files inside their corresponding year folders
@@ -70,10 +71,10 @@ class Register(GamePlayer):
 			# Write the information about the session on Diary Slim
 			self.Write_On_Diary_Slim()
 
-		# Update the statistic about the game session played
+		# Update the statistic about the gaming session played
 		self.Update_Statistic()
 
-		# Show the information about the game session
+		# Show the information about the gaming session
 		self.Show_Information(self.dictionary)
 
 		# Re-initiate the root class to update the files
@@ -187,7 +188,7 @@ class Register(GamePlayer):
 
 		# Re-read the main JSON files to retrieve the most up-to-date data
 		self.dictionaries["Sessions"] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Sessions"])
-		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["Per Game Type"][self.sanitized_game_type]["Sessions"])
+		self.dictionaries["Game type"][self.game_type] = self.JSON.To_Python(self.folders["Play History"]["Current year"]["By game type"][self.sanitized_game_type]["Sessions"])
 		self.dictionaries["Played"] = self.JSON.To_Python(self.game["Folders"]["Played"]["entries"])
 
 		# If the game has sub-games
@@ -200,19 +201,19 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Define the "First game session in year" state
-		self.game["States"]["First game session in year"] = False
+		# Define the "First gaming session in the year" state as False by default
+		self.game["States"]["First gaming session in the year"] = False
 
-		# If the total number of entries is zero, the game session is the first in the year
+		# If the total number of entries is zero, the gaming session is the first one in the year
 		if self.dictionaries["Sessions"]["Numbers"]["Total"] == 0:
-			self.game["States"]["First game session in year"] = True
+			self.game["States"]["First gaming session in the year"] = True
 
-		# Define the "First game type session in year" state
-		self.game["States"]["First game type session in year"] = False
+		# Define the "First gaming session by game type in the year" state as False by default
+		self.game["States"]["First gaming session by game type in the year"] = False
 
-		# If the total number of game type entries is zero, the game type game session is the first in the year
+		# If the total number of game type entries is zero, the gaming session by game type is the first one in the year
 		if self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"] == 0:
-			self.game["States"]["First game type session in year"] = True
+			self.game["States"]["First gaming session by game type in the year"] = True
 
 		# ---------- #
 
@@ -232,24 +233,21 @@ class Register(GamePlayer):
 		for current_dict in dictionaries_to_update:
 			current_dict["Numbers"]["Total"] += 1
 
-			# If the "Per Game Type" key exists, increment the count for the specific game type
-			if "Per Game Type" in current_dict["Numbers"]:
-				current_dict["Numbers"]["Per Game Type"][self.game_type] += 1
+			# If the "By game type" key exists, increment the count for the specific game type
+			if "By game type" in current_dict["Numbers"]:
+				current_dict["Numbers"]["By game type"][self.game_type] += 1
 
 		# ---------- #
 
 		# Define shortcuts for the total entries number and the entry times 
 		entries_number = self.dictionaries["Sessions"]["Numbers"]["Total"]
-		entry_time = self.dictionary["Entry"]["Dates"]["Timezone"]
+		entry_time = self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Define the entry "Name" dictionary
 		self.dictionary["Entry"]["Name"] = {}
 
 		# Define the template for the entry name
 		template = "{}. {} ({})"
-
-		# Define sanitized version of entry name for files
-		self.dictionary["Entry"]["Name"] = {}
 
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
@@ -331,21 +329,20 @@ class Register(GamePlayer):
 
 		# Add the "Entry" dictionary to the "Dictionary" dictionary
 		self.dictionaries["Sessions"]["Dictionary"][self.entry_name] = {
-			"Number": self.dictionaries["Sessions"]["Numbers"]["Total"],
-			"Type number": self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"],
-			"Entry": self.dictionary["Entry"]["Name"]["en"]["Normal"],
-			"Titles": game_titles,
-			"Sub-game": sub_game_titles,
-			"Type": self.game_type,
-			"Platform": self.game["Platform"]["en"],
-			"Date": self.dictionary["Entry"]["Dates"]["UTC"],
-			"Session duration": self.dictionary["Entry"]["Session duration"]["Difference"]
+			"Gaming session number": self.dictionaries["Sessions"]["Numbers"]["Total"], # The number of the gaming session, by year
+			"Gaming session number by game type": self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"], # The number of the gaming session by game type and by year
+			"Game type": self.game_type, # The game type
+			"Times": deepcopy(self.dictionary["Entry"]["Times"]), # The dictionary of the played times, including the started and finished playing time and the duration between those two
+			"Entry": self.dictionary["Entry"]["Name"]["en"]["Normal"], # The English name of the entry
+			"Game titles": game_titles, # The dictionary of the game titles
+			"Sub-game titles": sub_game_titles, # The dictionary of the sub-game titles
+			"Platform": self.game["Platform"]["en"], # The platform where the game was played
 		}
 
 		# Define a shortcut for the entry dictionary
 		self.entry_dictionary = self.dictionaries["Sessions"]["Dictionary"][self.entry_name]
 
-		# Remove the media "Sub-game" key from the dictionary if:
+		# Remove the media "Sub-game titles" key from the dictionary if:
 		# 1. The game does not contain sub-games
 		# 2. The game contains sub-games and the sub-game is the root game
 		if (
@@ -353,12 +350,47 @@ class Register(GamePlayer):
 			self.game["States"]["Has sub-games"] == True and
 			self.game["Sub-game"]["Title"] == self.game["Title"]
 		):
-			self.dictionaries["Sessions"]["Dictionary"][self.entry_name].pop("Sub-game")
+			self.dictionaries["Sessions"]["Dictionary"][self.entry_name].pop("Sub-game titles")
 
 		# ---------- #
 
-		# Change the session duration "Text" dictionary into the English session duration text
-		self.dictionaries["Sessions"]["Dictionary"][self.entry_name]["Session duration"]["Text"] = self.dictionary["Entry"]["Session duration"]["Text"]["en"]
+		# Define a list of time keys
+		time_keys = [
+			"Started playing",
+			"Finished playing",
+			"Finished playing (UTC)"
+		]
+
+		# Iterate through the list of time types
+		for time_key in time_keys:
+			# Define the timezone key as "Timezone"
+			timezone_key = "Timezone"
+
+			# Define the format as the timezone one
+			format = "HH:MM DD/MM/YYYY"
+
+			# If the "UTC" text is inside the time key
+			if "UTC" in time_key:
+				# Update the timezone key to be the UTC one
+				timezone_key = "UTC"
+
+				# Define the format as the UTC one
+				format = "YYYY-MM-DDTHH:MM:SSZ"
+
+			# Get the time for the current time type, timezone, and format
+			time = self.entry_dictionary["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
+
+			# Update the entry dictionary with the obtained time
+			self.entry_dictionary["Times"][time_key] = time
+
+		# Define a shortcut to the "Gaming session duration" dictionary
+		dictionary = self.entry_dictionary["Times"]["Gaming session duration"]
+
+		# Update the dictionary
+		self.entry_dictionary["Times"]["Gaming session duration"] = {
+			**dictionary["Difference"], # Extract the keys and values of the "Difference" dictionary
+			"Text": dictionary["Text"]
+		}
 
 		# ---------- #
 
@@ -380,7 +412,7 @@ class Register(GamePlayer):
 		self.JSON.Edit(self.folders["Play History"]["Current year"]["Sessions"], self.dictionaries["Sessions"])
 
 		# Update the type current year "Entries.json" file
-		self.JSON.Edit(self.dictionary["Type"]["Folders"]["Per Game Type"]["Sessions"], self.dictionaries["Game type"][self.game_type])
+		self.JSON.Edit(self.dictionary["Type"]["Folders"]["By game type"]["Sessions"], self.dictionaries["Game type"][self.game_type])
 
 		# Update the game "Played.json" file
 		self.JSON.Edit(self.game["Folders"]["Played"]["entries"], self.dictionaries["Played"])
@@ -394,7 +426,7 @@ class Register(GamePlayer):
 		# Make a list of "Entry list.txt" files to add to
 		files = [
 			self.folders["Play History"]["Current year"]["Entry list"],
-			self.dictionary["Type"]["Folders"]["Per Game Type"]["Entry list"],
+			self.dictionary["Type"]["Folders"]["By game type"]["Entry list"],
 			self.game["Folders"]["Played"]["entry_list"]
 		]
 
@@ -413,44 +445,60 @@ class Register(GamePlayer):
 				self.File.Edit(file, self.entry_name, "a")
 
 	def Create_Entry_File(self):
-		# This is a template for organizing gaming session information in a text file
+		# This is a template for organizing the gaming session information in a text file
 		# Each section contains placeholders that should be replaced with actual data
 		# The structure includes details about the game, game type, playing times and states
 		# Optional values are indicated in parentheses
 
-		# Number: [entry number]
-		# Type number: [Type number]
+		# Gaming session number:
+		# [Gaming session number]
 		# 
-		# Game title:
-		# [Game title]
-		# 
-		# Sub-game title:
-		# [Sub-game title]
+		# Gaming session number by game type:
+		# [Gaming session number by game type]
 		# 
 		# Game type:
 		# [Game type]
+		# 
+		# Entry:
+		# [Gaming session number. Game type (Finished playing time)]
+		# 
+		# Game titles:
+		# [Game titles]
+		# 
+		# (
+		# Sub-game titles:
+		# [Sub-game titles]
+		# )
 		#
 		# Platform:
 		# [Platform]
 		# 
-		# Times:
-		# [Game session times]
+		# When I started playing:
+		# [Started playing time in local timezone]
 		# 
-		# Session duration:
-		# [Session duration]
+		# When I finished playing:
+		# [Finished playing time in the local timezone]
+		# 
+		# When I finished playing (UTC):
+		# [Finished playing time in the UTC time]
+		# 
+		# Gaming session duration:
+		# [Gaming session duration]
 		#
 		# Gaming session description:
 		# [Gaming session description]
 		# 
-		# Entry:
-		# [Number. Type (Time)]
+		# (
+		# States:
+		# [State texts]
+		# )
 
-		# Define the per game type gaming session folder, file name, and file
-		per_game_type_folder = self.dictionary["Type"]["Folders"]["Per Game Type"]["Files"]["root"]
+		# Define the gaming session folder, file name, and file by game type
+		by_game_type_folder = self.dictionary["Type"]["Folders"]["By game type"]["Files"]["root"]
 		file_name = self.dictionary["Entry"]["Name"]["en"]["Sanitized"]
-		file = per_game_type_folder + file_name + ".txt"
+		file = by_game_type_folder + file_name + ".txt"
 
-		# Create the gaming session file inside the "Per Game Type" folder
+		# Create the gaming session file inside the "By game type" folder
 		self.File.Create(file)
 
 		# ---------- #
@@ -494,40 +542,103 @@ class Register(GamePlayer):
 			# Create the played sub-game entry file
 			self.File.Create(file)
 
-		# Write the entry text in the user's language into the played sub-game entry file
+			# Write the entry text in the user's language into the played sub-game entry file
 			self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
 
+	def Define_Titles(self, language_parameter, language, titles_dictionary):
+		# Initialize a variable to hold the game or sub-game titles
+		game_titles = []
+
+		# Initialize the key to access the original game or sub-game title
+		key = "Original"
+
+		# Check if there is a romanized title available
+		if "Romanized" in titles_dictionary:
+			# If a romanized title exists, add the original title to the list of titles
+			game_titles.append(titles_dictionary["Original"])
+
+			# Update the key to access the romanized title for later use
+			key = "Romanized"
+
+		# Add the original or romanized title to the list of titles
+		game_titles.append(titles_dictionary[key])
+
+		# Check if the language parameter is "General"
+		# And if the language title is different from the original or romanized title
+		if (
+			language_parameter == "General" and
+			titles_dictionary["Language"] != titles_dictionary[key]
+		):
+			# Add the language title to the list of titles
+			game_titles.append(titles_dictionary["Language"])
+
+			# Iterate through the small languages list
+			for local_language in self.languages["small"]:
+				# Check if the local language exists in the titles dictionary
+				# And if the title in that language is different from the language title
+				if (
+					local_language in titles_dictionary and
+					titles_dictionary[local_language] != titles_dictionary["Language"]
+				):
+					# Add the current local language title to the list of titles
+					game_titles.append(titles_dictionary[local_language])
+
+		# Check if the language parameter is not "General"
+		# And if the specified language exists in the media (item) titles
+		if (
+			language_parameter != "General" and
+			language in titles_dictionary
+		):
+			# Add the language title to the list of titles
+			game_titles.append(titles_dictionary[language])
+
+		# Return the list of titles
+		return game_titles
+
 	def Define_File_Text(self, language_parameter = None):
-		# If the language parameter is not "General"
+		# Check if a specific language parameter is provided
 		if language_parameter != "General":
 			# Define the local language as the language parameter
-			language = language_parameter
+			language = language_parameter # Use the provided language parameter
 
-		# If it is
+		# If the language parameter is "General", use the user's preferred language
 		if language_parameter == "General":
-			# Define the local language as the user language
 			language = self.user_language
 
+		# Retrieve the full language name from the languages dictionary
 		full_language = self.languages["full"][language]
 
 		# ---------- #
 
-		# Define the entry text lines
+		# Define the list of entry text lines
 		lines = [
-			self.Language.texts["number, title()"][language] + ": " + str(self.dictionaries["Sessions"]["Numbers"]["Total"]),
-			self.Language.texts["type_number"][language] + ": " + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"])
+			# Add the gaming session number
+			self.texts["gaming_session_number"][language] + ":" + "\n" + str(self.dictionaries["Sessions"]["Numbers"]["Total"]) + "\n",
+
+			# Add the gaming session number by game type
+			self.texts["gaming_session_number_by_game_type"][language] + ":" + "\n" + str(self.dictionaries["Game type"][self.game_type]["Numbers"]["Total"]) + "\n",
+
+			# Add the game type
+			self.texts["game_type"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
+
+			# Add the entry text and the entry name
+			self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["en"]["Normal"] + "\n"
 		]
 
 		# ---------- #
 
-		# Add the entry title lines
-		if language_parameter != "General":
-			text = self.texts["game_title"][language]
+		# Define the game titles
+		game_titles = self.Define_Titles(language_parameter, language, self.game["Titles"])
 
-		if language_parameter == "General":
+		# Determine the appropriate game title text based on the list of game titles
+		text = self.texts["game_title"][language]
+
+		# If it has more than one title, use the plural text
+		if len(game_titles) > 1:
 			text = self.texts["game_titles"][language]
 
-		lines.append("\n" + text + ":" + "\n" + "{}")
+		# Add a newline and the "game title(s)" text
+		lines.append(text + ":" + "\n" + "{}")
 
 		# ---------- #
 
@@ -537,60 +648,85 @@ class Register(GamePlayer):
 			self.game["States"]["Has sub-games"] == True and
 			self.game["Sub-game"]["Title"] != self.game["Title"]
 		):
-			# Add the sub-game title
-			text = self.game["Sub-game type"]["Texts"]["Singular"][language]
+			# Define the sub-game titles
+			sub_game_titles = self.Define_Titles(language_parameter, language, self.game["Sub-game"]["Titles"])
 
+			# Determine the appropriate sub-game title text based on the list of sub-game titles
+			text = self.game["Sub-games"]["Texts"]["Singular"][language]
+
+			# If it has more than one title, use the plural text
+			if len(sub_game_titles) > 1:
+				text = self.game["Sub-games"]["Texts"]["Singular"][language]
+
+			# Add a newline and the sub-game title text
 			lines.append(text + ":" + "\n" + "{}")
 
 		# ---------- #
 
-		# Add the rest of the lines
-		lines.extend([
-			self.texts["game_type"][language] + ":" + "\n" + self.dictionary["Type"]["Type"][language] + "\n",
-			self.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n",
-			self.Date.texts["times, title()"][language] + ":" + "\n" + "{}",
-			self.Language.texts["session_duration"][language] + ":" + "\n" + "{}"
-		])
+		# Add the "Platform" text and the platform where the user played the game
+		lines.append(self.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n")
+
+		# ---------- #
+
+		# Add the "When I started playing" (local timezone) title and format string
+		started_playing_text = self.texts["when_i_started_playing"][language] + ":" + "\n" + "{}"
+		lines.append(started_playing_text)
+
+		# Add the "When I finished playing" (local timezone) title and format string
+		finished_playing_timezone_text = self.texts["when_i_finished_playing"][language] + ":" + "\n" + "{}"
+		lines.append(finished_playing_timezone_text)
+
+		# Add the "When I finished playing (UTC)" title and format string
+		finished_playing_utc_text = self.texts["when_i_finished_playing"][language] + " (" + self.Date.texts["utc"][language] + ")" + ":" + "\n" + "{}"
+		lines.append(finished_playing_utc_text)
+
+		# Add the "Gaming session duration" title and format string
+		duration_text = self.Language.texts["gaming_session_duration"][language] + ":" + "\n" + "{}"
+		lines.append(duration_text)
 
 		# ---------- #
 
 		# If the user wrote a description for the gaming session
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
+			# Define the gaming session description text as the plural one by default
+			text = self.texts["gaming_session_descriptions"][language]
+			line_break = "\n\n"
+
 			# If the language parameter is not "General"
 			if language_parameter != "General":
 				# Define the gaming session description text as the singular one
 				text = self.texts["gaming_session_description"][language]
 				line_break = "\n"
 
-			# If the language parameter is "General"
-			if language_parameter == "General":
-				# Define the gaming session description text as the plural one
-				text = self.texts["gaming_session_descriptions"][language]
-				line_break = "\n\n"
-
 			# Add the gaming session description and the line break(s) with a format character
-			lines.append(text + ":" + line_break + "{}" + "\n")
+			lines.append("\n" + text + ":" + line_break + "{}")
 
 		# ---------- #
 
-		# Add the entry text and the entry name
-		lines.append(self.Language.texts["entry, title()"][language] + ":" + "\n" + self.dictionary["Entry"]["Name"]["en"]["Normal"])
-
-		# ---------- #
-
-		# Add the states text lines
+		# Add the state texts lines if there are any state texts defined
 		if self.dictionary["States"]["Texts"] != {}:
+			# Initialize the text for the states section
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
+			# Iterate through each state text in the dictionary
 			for key in self.dictionary["States"]["Texts"]:
+				# Get the text for the current state in the specified language
 				language_text = self.dictionary["States"]["Texts"][key][language]
 
+				# Append the current state text to the overall text
 				text += language_text
 
+				# Add a newline if this is not the last state text
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					text += "\n"
 
+			# Append the constructed state text to the list of lines
 			lines.append(text)
+
+		# ---------- #
+
+		# Define the language entry text by converting the list of lines to a single text block
+		file_text = self.Text.From_List(lines, next_line = True)
 
 		# ---------- #
 
@@ -599,29 +735,11 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Add the entry titles to the items list
-		titles = []
+		# Now create the string with the game titles to add to the list of items
+		titles = "\n".join(game_titles) + "\n"
 
-		key = "Original"
-
-		if "Romanized" in self.game["Titles"]:
-			key = "Romanized"
-
-		titles.append(self.game["Titles"][key])
-
-		if self.game["Titles"]["Language"] != self.game["Titles"][key]:
-			titles.append("\n" + self.game["Titles"]["Language"])
-
-		i = 0
-		for line in lines:
-			if self.Language.texts["titles, title()"][language] in line:
-				line = line.replace(self.Language.texts["titles, title()"][language], self.Language.texts["title, title()"][language])
-
-				lines[i] = line
-
-			i += 1
-
-		items.append(self.Text.From_List(titles, next_line = True) + "\n")
+		# Add the game titles to the list of items
+		items.append(titles)
 
 		# ---------- #
 
@@ -631,36 +749,48 @@ class Register(GamePlayer):
 			self.game["States"]["Has sub-games"] == True and
 			self.game["Sub-game"]["Title"] != self.game["Title"]
 		):
-			# Add the sub-game title
-			items.append(self.game["Sub-game"]["Titles"]["Language sanitized"] + "\n")
+			# Remove ": " from the beginning of the titles, if it exists
+			sub_game_titles = [title.lstrip(": ") for title in sub_game_titles]
 
-		# Add times to items list
-		times = ""
+			# Now create the string with the sub-game titles to add to the list of items
+			titles = "\n".join(sub_game_titles) + "\n"
 
-		for key in ["UTC", "Timezone"]:
-			time = self.dictionary["Entry"]["Dates"][key]
-
-			times += time + "\n"
-
-		items.append(times)
+			# Add the sub-game titles to the list of items
+			items.append(titles)
 
 		# ---------- #
 
-		# Add the session duration to the list of items
-		if language_parameter != "General":
-			session_duration = self.dictionary["Entry"]["Session duration"]["Text"][language] + "\n"
+		# Add the started playing time
+		items.append(self.entry_dictionary["Times"]["Started playing"] + "\n")
 
-		if language_parameter == "General":
-			session_duration = ""
+		# Iterate over the relevant keys to obtain the times
+		for time_key in ["Finished playing", "Finished playing (UTC)"]:
+			# Check if the key exists
+			if time_key in self.dictionary["Entry"]["Times"]:
+				# Define the timezone key as "Timezone"
+				timezone_key = "Timezone"
 
-			# Iterate through the list of small languages
-			for local_language in self.languages["small"]:
-				text = self.dictionary["Entry"]["Session duration"]["Text"][local_language] + "\n"
+				# Define the format as the timezone one
+				format = "HH:MM DD/MM/YYYY"
 
-				if text not in session_duration:
-					session_duration += text
+				# If the "UTC" text is inside the time key
+				if "UTC" in time_key:
+					# Update the timezone key to be the UTC one
+					timezone_key = "UTC"
 
-		items.append(session_duration)
+					# Define the format as the UTC one
+					format = "YYYY-MM-DDTHH:MM:SSZ"
+
+				# Retrieve the formatted datetime string from the "Times" dictionary,
+				# using the specified time key (e.g., "Finished playing"), timezone key (e.g., "UTC"),
+				# and format (e.g., "YYYY-MM-DDTHH:MM:SSZ")
+				time = self.dictionary["Entry"]["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
+
+				# Append the times to the list of items
+				items.append(time + "\n")
+
+		# Add the gaming session duration (the difference between the start and finished playing times)
+		items.append(self.entry_dictionary["Times"]["Gaming session duration"]["Text"][language])
 
 		# ---------- #
 
@@ -679,7 +809,7 @@ class Register(GamePlayer):
 
 			# Or all language descriptions
 			else:
-				# Iterate through the list of 
+				# Iterate through the list of small languages
 				for local_language in self.languages["small"]:
 					# Get the full language
 					full_language = self.languages["full"][local_language]
@@ -697,9 +827,7 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Define the language entry text
-		file_text = self.Text.From_List(lines, next_line = True)
-
+		# Return the formatted text with the items, including the times
 		return file_text.format(*items)
 
 	def Add_Entry_File_To_Year_Folder(self):
@@ -708,56 +836,45 @@ class Register(GamePlayer):
 			# Get the full language
 			full_language = self.languages["full"][language]
 
-			# Get the folder names
-			root_folder = self.Language.texts["game_sessions"][language]
-			type_folder = self.dictionary["Type"]["Type"][language]
+			# Define a shortcut for the folder
+			folder = self.current_year["Folders"][language]["Gaming sessions"]
 
-			# Define and create the entries folder
-			folder = self.current_year["Folders"][language]["root"]
+			# Define the game type folder name
+			game_type_folder = self.dictionary["Type"]["Type"][language]
 
-			self.current_year["Folders"][language]["Game sessions"] = {
-				"root": folder + root_folder + "/"
+			# Define and create the game type folder
+			folder["Game type"] = {
+				"root": folder["root"] + game_type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Game sessions"]["root"])
+			self.Folder.Create(folder["Game type"]["root"])
 
-			# Game type folder
-			folder = self.current_year["Folders"][language]["Game sessions"]["root"]
+			# Update the folder to be the game type folder
+			folder = folder["Game type"]
 
-			self.current_year["Folders"][language]["Game sessions"][type_folder] = {
-				"root": folder + type_folder + "/"
-			}
+			# Get the entry file name
+			entry_file_name = self.dictionary["Entry"]["Name"][language]["Sanitized"]
 
-			self.Folder.Create(self.current_year["Folders"][language]["Game sessions"][type_folder]["root"])
+			# Define and create the entry file
+			folder["Entry file"] = folder["root"] + entry_file_name + ".txt"
+			self.File.Create(folder["Entry file"])
 
-			# Session file
-			folder = self.current_year["Folders"][language]["Game sessions"][type_folder]["root"]
-			file_name = self.dictionary["Entry"]["Name"][language]["Sanitized"]
-			self.current_year["Folders"][language]["Game sessions"][type_folder][file_name] = folder + file_name + ".txt"
+			# Write the entry text by language inside the year entry file
+			self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
 
-			self.File.Create(self.current_year["Folders"][language]["Game sessions"][type_folder][file_name])
+			# ---------- #
 
-			self.File.Edit(self.current_year["Folders"][language]["Game sessions"][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+			# Create the "First of the Year" entry file
+			if self.game["States"]["First gaming session by game type in the year"] == True:
+				# Define the folder shortcut
+				folder = self.current_year["Folders"][language]["Firsts of the Year"]["Gaming sessions"]
 
-			# Firsts Of The Year subfolder folder
-			subfolder_name = self.Language.texts["game_sessions"][language]
+				# Define and create the "First of the Year" entry file
+				folder["Entry file"] = folder["root"] + entry_file_name + ".txt"
+				self.File.Create(folder["Entry file"])
 
-			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
-
-			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name] = {
-				"root": folder + subfolder_name + "/"
-			}
-
-			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"])
-
-			# First game type session in year file
-			if self.game["States"]["First game type session in year"] == True:
-				folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"]
-
-				self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name])
-
-				self.File.Edit(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name], self.dictionary["Entry"]["Text"][language], "w")
+				# Write the entry text by language inside the "First of the Year" entry file
+				self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Game_Status(self):
 		# Define the game type variable for easier typing
@@ -773,7 +890,7 @@ class Register(GamePlayer):
 		keys = [
 			"FPS",
 			"Idle Clicker",
-			"MMO",
+			"Multiplayer",
 			"Rhythm",
 			"RPG",
 			"Survival"
@@ -805,7 +922,7 @@ class Register(GamePlayer):
 	def Check_Game_Dates(self):
 		# Completed game time and date template
 		template = self.language_texts["when_i_finished_playing"] + ":" + "\n" + \
-		self.dictionary["Entry"]["Dates"]["Timezone"] + "\n" + \
+		self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"] + "\n" + \
 		"\n" + \
 		self.Date.language_texts["duration, title()"] + ":" + "\n" + \
 		"{}"
@@ -815,13 +932,14 @@ class Register(GamePlayer):
 			# Gets the game dates from the game dates file
 			self.game["Dates"] = self.File.Dictionary(self.game["Folders"]["dates"], next_line = True)
 
-			key = self.language_texts["when_i_started_to_play"]
+			# Define the key to search for the date
+			key = self.language_texts["when_i_started_playing"]
 
 			# Get the started playing time
 			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["Dates"][key]))
 
 			# Define time spent playing using started playing time and finished playing time
-			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
+			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Times"]["Finished playing (UTC)"])["Text"][self.user_language]
 
 			if self.game["Time spent playing"][0] + self.game["Time spent playing"][1] == ", ":
 				self.game["Time spent playing"] = self.game["Time spent playing"][2:]
@@ -841,7 +959,7 @@ class Register(GamePlayer):
 			text = self.game_types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["game, title()"].lower()
 
 			# Add the time template to the Diary Slim text
-			self.game["Finished playing text"] = self.game["Finished playing text"].replace(self.language_texts["when_i_started_to_play"], self.language_texts["when_i_started_to_play"] + " " + text)
+			self.game["Finished playing text"] = self.game["Finished playing text"].replace(self.language_texts["when_i_started_playing"], self.language_texts["when_i_started_playing"] + " " + text)
 
 			self.dictionary["Entry"]["Diary Slim"]["Dates"] = "\n\n" + self.game["Finished playing text"]
 
@@ -850,10 +968,10 @@ class Register(GamePlayer):
 		items = [
 			self.dictionary["Type"]["Type"][self.user_language].lower(),
 			self.game["Titles"]["Language"],
-			self.dictionary["Entry"]["Session duration"]["Text"][self.user_language]
+			self.dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.user_language]
 		]
 
-		# Replace the title inside the items list if the game has sub-games
+		# Replace the title inside the list of items if the game has sub-games
 		# And the sub-game title is not the game title
 		if (
 			self.game["States"]["Has sub-games"] == True and
@@ -866,8 +984,6 @@ class Register(GamePlayer):
 
 		# Format the template with the items
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(*items)
-
-		self.dictionary["Entry"]["Diary Slim"]["Clean text"] = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
 		# If the user wants to write a description
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
@@ -916,7 +1032,7 @@ class Register(GamePlayer):
 		# Define the "posted" template
 		self.social_networks["Template"] = self.language_texts["i_posted_the_played_game_text, type: template"] + "."
 
-		# Define the template items list
+		# Define the template list of items
 		self.social_networks["Items"] = [
 			self.social_networks["Item text"],
 			"Discord",
@@ -924,7 +1040,7 @@ class Register(GamePlayer):
 			"Twitter, Bluesky, " + self.Language.language_texts["and"] + " Threads"
 		]
 
-		# Format the template with the items list
+		# Format the template with the list of items
 		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
@@ -991,7 +1107,7 @@ class Register(GamePlayer):
 		# Define the "Write on Diary Slim" dictionary
 		dictionary = {
 			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
-			"Time": self.dictionary["Entry"]["Dates"]["Timezone"],
+			"Time": self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"],
 			"Add": {
 				"Dot": False
 			}
@@ -1085,9 +1201,9 @@ class Register(GamePlayer):
 			}
 
 		# If the game contains sub-games
-		if "Sub-game type" in self.game:
+		if "Sub-games" in self.game:
 			# Pass the "Items" dictionary to the local game dictionary
-			game["Items"] = self.game["Sub-game type"]["Items"]
+			game["Items"] = self.game["Sub-games"]["Items"]
 
 		# Define the game type
 		game_type = self.dictionary["Type"]["Type"][self.user_language].lower()

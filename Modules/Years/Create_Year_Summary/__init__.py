@@ -279,7 +279,7 @@ class Create_Year_Summary(Years):
 				if number_key == "":
 					number_key = "Total"
 
-				# Get the number from the Entries file
+				# Get the number from the entries file
 				number = numbers[number_key]
 
 				# If the number is a dictionary
@@ -297,34 +297,34 @@ class Create_Year_Summary(Years):
 				"Normal"
 			]
 
-			# Define Entries per type if they exists
-			if "Per type" in history:
+			# Define the entries by type if they exists
+			if "By type" in history:
 				# Define the types list as the English plural types of the class
 				history["Types list"] = history["Types"]["Plural"]["en"]
 
-				# Define the per type folders
-				history["Per type folders"] = {
+				# Define the by type folders
+				history["By type folders"] = {
 					"root": history["Folder"] + history["Types folder"] + "/"
 				}
 
-				# Define the per type Entries dictionary
-				history["Entries per type"] = {}
+				# Define the by type entries dictionary
+				history["Entries by type"] = {}
 
 				# Iterate through the English plural types list
 				for entry_type in history["Types list"]:
 					# Define the local folders dictionary
 					folders = {
-						"root": history["Per type folders"]["root"] + entry_type + "/"
+						"root": history["By type folders"]["root"] + entry_type + "/"
 					}
 
 					# Define the "Entries.json" file
 					folders["Entries"] = folders["root"] + "Entries.json"
 
-					# Read the per type "Entries.json" file
-					history["Entries per type"][entry_type] = self.JSON.To_Python(folders["Entries"])
+					# Read the by type "Entries.json" file
+					history["Entries by type"][entry_type] = self.JSON.To_Python(folders["Entries"])
 
-					# Add the local folders dictionary to the per type folders dictionary
-					history["Per type folders"][entry_type] = folders
+					# Add the local folders dictionary to the by type folders dictionary
+					history["By type folders"][entry_type] = folders
 
 			# ---------- #
 
@@ -346,11 +346,11 @@ class Create_Year_Summary(Years):
 					# Define the normal Entries root dictionary
 					entries = history["Entries"]
 
-					# Define the Entries root dictionary per type if the entry type is not empty
+					# Define the Entries root dictionary by type if the entry type is not empty
 					if entry_type != "Normal":
-						entries = history["Entries per type"][entry_type]
+						entries = history["Entries by type"][entry_type]
 
-					# Get the Entries dictionary
+					# Get the entries dictionary
 					entries = entries["Dictionary"]
 
 					for language in self.languages["small"]:
@@ -361,7 +361,7 @@ class Create_Year_Summary(Years):
 						# Define the entries list
 						local_entries = list(entries.values())
 
-						# Define the Entries dictionary with the entries number and list
+						# Define the entries dictionary with the entries number and list
 						local_entries = {
 							"Number": len(local_entries),
 							"List": local_entries
@@ -448,9 +448,9 @@ class Create_Year_Summary(Years):
 			# Remove the "Entries" key as it is not needed anymore
 			history.pop("Entries")
 
-			if "Per type" in history:
-				# Remove the "Entries per type" key per type as they is not needed anymore
-				history.pop("Entries per type")
+			if "By type" in history:
+				# Remove the "Entries by type" key by type as they is not needed anymore
+				history.pop("Entries by type")
 
 			# Add the History dictionary to the Summary dictionary
 			self.summary["Histories"][history["Class"]] = history
@@ -660,7 +660,7 @@ class Create_Year_Summary(Years):
 					data = history["Data"]
 
 					# Only add the " (last [number])" text if the "per type" mode is not activated on the History
-					if "Per type" not in history:
+					if "By type" not in history:
 						gender = "feminine"
 
 						if "Gender" in history:
