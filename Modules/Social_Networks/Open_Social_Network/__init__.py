@@ -187,7 +187,7 @@ class Open_Social_Network(Social_Networks):
 		# Define the text template items
 		items = [
 			self.social_network["Name"],
-			self.dictionary["Link type"][self.user_language].lower()
+			self.dictionary["Link type"][self.language["Small"]].lower()
 		]
 
 		# Format the text template with the items

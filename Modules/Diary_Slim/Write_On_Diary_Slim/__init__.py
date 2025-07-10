@@ -68,7 +68,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
 		parameters = {
 			"options": deepcopy(self.diary_slim["Texts"]["Options"]["Keys"]),
-			"language_options": deepcopy(self.diary_slim["Texts"]["Options"][self.user_language]),
+			"language_options": deepcopy(self.diary_slim["Texts"]["Options"][self.language["Small"]]),
 			"show_text": self.language_texts["texts_to_write"],
 			"select_text": self.language_texts["select_a_text_to_write"]
 		}
@@ -79,7 +79,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			dictionary = self.diary_slim["Texts"]["Dictionary"][key]
 
 			# Get the user language text
-			text = dictionary["Texts"][self.user_language]
+			text = dictionary["Texts"][self.language["Small"]]
 
 			# If the "Index" key is inside the dictionary
 			if "Index" in dictionary:
@@ -116,7 +116,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# If" "Is task" key is present inside the text dictionary
 			if "Is task" in dictionary:
 				# Get the user language text
-				text = dictionary["Texts"][self.user_language]
+				text = dictionary["Texts"][self.language["Small"]]
 
 				# Define the item text key
 				text_key = dictionary["Key"]
@@ -183,12 +183,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 				self.dictionary["Text"] = self.diary_slim["Texts"]["Dictionary"][option]
 
 				# Define the "Text to write" as the language text
-				self.dictionary["Text to write"] = self.dictionary["Text"]["Texts"][self.user_language]
+				self.dictionary["Text to write"] = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
 				# If the "States" key is inside the "Text" dictionary
 				if "States" in self.dictionary["Text"]:
 					# Get the current state
-					self.dictionary["Text to write"] = self.dictionary["Text"]["States"]["Current state"][self.user_language]
+					self.dictionary["Text to write"] = self.dictionary["Text"]["States"]["Current state"][self.language["Small"]]
 
 			# If the option is the "[Multi-selection]" one
 			if option == "[Multi-selection]":
@@ -298,10 +298,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 					# If the "Format" key is inside the answer dictionary
 					if "Format" in answer:
 						# Define the format variable for easier typing
-						format = answer["Format"][self.user_language]
+						format = answer["Format"][self.language["Small"]]
 
 						# Define the text to write as the default one
-						text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+						text_to_write = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
 						# Update the text to write
 						text_to_write = format.replace("{Text}", text_to_write)
@@ -359,15 +359,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 							gender_text_key = text
 
 						# If the text is inside the Diary Slim text
-						if text in self.dictionary["Text"]["Texts"][self.user_language]:
+						if text in self.dictionary["Text"]["Texts"][self.language["Small"]]:
 							# Define the item key as the text key
 							item_key = text
 
 					# Replace the item key with the user response
-					self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(item_key, questions[key]["Response"])
+					self.dictionary["Text"]["Texts"][self.language["Small"]] = self.dictionary["Text"]["Texts"][self.language["Small"]].replace(item_key, questions[key]["Response"])
 
 					# If the "Gender text" key is inside the text
-					if gender_text_key in self.dictionary["Text"]["Texts"][self.user_language]:
+					if gender_text_key in self.dictionary["Text"]["Texts"][self.language["Small"]]:
 						# Iterate through the list of genders
 						for gender in ["Masculine", "Feminine"]:
 							# Get the gender dictionary
@@ -382,15 +382,15 @@ class Write_On_Diary_Slim(Diary_Slim):
 								text = self.Language.language_texts[text_key]
 
 								# Replace the gender text template inside the text with the correct gender text
-								self.dictionary["Text"]["Texts"][self.user_language] = self.dictionary["Text"]["Texts"][self.user_language].replace(gender_text_key, text)
+								self.dictionary["Text"]["Texts"][self.language["Small"]] = self.dictionary["Text"]["Texts"][self.language["Small"]].replace(gender_text_key, text)
 
 					# Update the text to write
-					text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+					text_to_write = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
 		# If the text to write continues to be empty
 		if text_to_write == "":
 			# Define it as the Diary Slim text in the user language
-			text_to_write = self.dictionary["Text"]["Texts"][self.user_language]
+			text_to_write = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
 		# Define the return dictionary
 		return_dictionary = {
@@ -427,9 +427,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 				input_text = texts_dictionary[input_text]
 
 			# If the user language key is inside the input text dictionary
-			if self.user_language in input_text:
+			if self.language["Small"] in input_text:
 				# Get the user language version of the input text
-				input_text = input_text[self.user_language]
+				input_text = input_text[self.language["Small"]]
 
 		# Return the language input text
 		return input_text
@@ -513,19 +513,19 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Remove the selected text from the parameters dictionary
 				parameters["options"].remove(option)
-				parameters["language_options"].remove(self.dictionary["Text"]["Texts"][self.user_language])
+				parameters["language_options"].remove(self.dictionary["Text"]["Texts"][self.language["Small"]])
 
 				# Add two line breaks if the text is not the first one
 				if texts != []:
 					self.dictionary["Text to write"] += "\n\n"
 
 				# Define the language text
-				language_text = self.dictionary["Text"]["Texts"][self.user_language]
+				language_text = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
 				# If the "States" key is inside the "Text" dictionary
 				if "States" in self.dictionary["Text"]:
 					# Get the current state
-					language_text = self.dictionary["Text"]["States"]["Current state"][self.user_language]
+					language_text = self.dictionary["Text"]["States"]["Current state"][self.language["Small"]]
 
 					# Change the current state to the next state
 					self.Next_State(self.dictionary["Text"])
@@ -655,14 +655,14 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# If the "Data" is inside the Diary Slim text dictionary
 		if (
 			"Data" in self.dictionary["Text"] and
-			self.dictionary["Text"]["Data"][self.user_language] in current_year_statistics
+			self.dictionary["Text"]["Data"][self.language["Small"]] in current_year_statistics
 		):
 			# Get the text from it
-			statistic_text = self.dictionary["Text"]["Data"][self.user_language]
+			statistic_text = self.dictionary["Text"]["Data"][self.language["Small"]]
 
 		# If the "Text" key is inside the statistic dictionary
 		if "Text" in statistic:
-			statistic_text = statistic["Text"][self.user_language]
+			statistic_text = statistic["Text"][self.language["Small"]]
 
 		# ---------- #
 
@@ -1013,7 +1013,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Add the additional question key to the month statistics dictionary
 				local_statistic = {
-					"Text": local_statistic["Text"][self.user_language],
+					"Text": local_statistic["Text"][self.language["Small"]],
 					"Old number": current_number,
 					"Number": current_number + 1
 				}
@@ -1028,7 +1028,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Add the additional question key to the month statistics dictionary
 				local_statistic = {
-					"Text": local_statistic["Text"][self.user_language],
+					"Text": local_statistic["Text"][self.language["Small"]],
 					"Old number": current_number,
 					"Number": current_number + 1
 				}

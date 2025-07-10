@@ -55,7 +55,7 @@ class Create_New_Story(Stories):
 		# Ask for the titles of the story
 		for language in self.languages["small"]:
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Ask for the story title
 			text = self.language_texts["story_title_in"] + " " + translated_language
@@ -131,7 +131,7 @@ class Create_New_Story(Stories):
 				format = information_item["Format"]
 
 				# Define the text of the information item
-				text = information_item["Texts"][self.user_language]
+				text = information_item["Texts"][self.language["Small"]]
 
 				# Update the information text to add the example
 				new_text = text + ":" + "\n" + \
@@ -176,7 +176,7 @@ class Create_New_Story(Stories):
 				# Iterate through the list of small languages
 				for language in self.languages["small"]:
 					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.user_language]
+					translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 					# Define the type text
 					type_text = self.language_texts["story_synopsis_in"] + " " + translated_language
@@ -379,7 +379,7 @@ class Create_New_Story(Stories):
 		# Define and create the story folder
 		root_folder = self.stories["Folders"]["root"]
 
-		self.story["Folders"]["root"] = root_folder + self.story["Titles"][self.user_language] + "/"
+		self.story["Folders"]["root"] = root_folder + self.story["Titles"][self.language["Small"]] + "/"
 		self.Folder.Create(self.story["Folders"]["root"])
 
 		# Create the sub-folders and files of the story
@@ -501,7 +501,7 @@ class Create_New_Story(Stories):
 
 		# Add to the list of story titles in the user language, in the correct index
 		index = self.stories["List"].index(self.story["Title"])
-		language_story_title = self.story["Titles"][self.user_language]
+		language_story_title = self.story["Titles"][self.language["Small"]]
 
 		self.stories["Titles"]["Language"].insert(index, language_story_title)
 

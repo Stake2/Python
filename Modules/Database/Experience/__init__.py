@@ -44,8 +44,8 @@ class Experience(Database):
 
 		# Define the experiencing status list for "Plan to experience" related statuses
 		status_list = [
-			self.texts["plan_to_experience, title()"][self.user_language],
-			self.Language.texts["on_hold, title()"][self.user_language]
+			self.texts["plan_to_experience, title()"][self.language["Small"]],
+			self.Language.texts["on_hold, title()"][self.language["Small"]]
 		]
 
 		# If the game experiencing status is inside the status list

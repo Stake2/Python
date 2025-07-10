@@ -15,7 +15,7 @@ class Start_Christmas(Christmas):
 				"Christmas": self.christmas["Date"]
 			},
 			"Files": {
-				"Planning": self.year_texts["Folders"]["Christmas"]["Planning"][self.user_language],
+				"Planning": self.year_texts["Folders"]["Christmas"]["Planning"][self.language["Small"]],
 				"Objects": self.year_texts["Folders"]["Christmas"]["Planning"]["Objects"]
 			},
 			"Dictionaries": {}
@@ -60,7 +60,7 @@ class Start_Christmas(Christmas):
 		# Show the current date text
 		print(self.Language.language_texts["today_is"] + ":")
 
-		date_text = date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
+		date_text = date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.language["Small"]]
 
 		print("\t" + date_text)
 		print()
@@ -83,7 +83,7 @@ class Start_Christmas(Christmas):
 			print(self.language_texts["today_is_not_christmas_day_wait_until"] + ":")
 
 			# Show the Christmas date text
-			date_text = christmas_date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
+			date_text = christmas_date["Formats"]["[Day name], [Day] [Month name] [Year]"][self.language["Small"]]
 
 			print("\t" + date_text)
 

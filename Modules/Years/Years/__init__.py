@@ -54,7 +54,7 @@ class Years(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -65,40 +65,54 @@ class Years(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
-		# Define the "Separators" dictionary
+		# Define the "separators" dictionary
 		self.separators = {}
 
 		# Create separators from one to ten characters
@@ -313,7 +327,7 @@ class Years(object):
 					if item_type == "User language files":
 						# Define the list of small languages as just the user language
 						languages = [
-							self.user_language
+							self.language["Small"]
 						]
 
 					# Iterate through the list of small languages
@@ -512,7 +526,7 @@ class Years(object):
 		self.current_year_number = current_year
 
 		# If the current year folder does not exist
-		if self.Folder.Exist(current_year_folder) == False:
+		if self.Folder.Exists(current_year_folder) == False:
 			# Define the "Current year folder exists" as False
 			self.years["States"]["Current year folder exists"] = False
 
@@ -791,7 +805,7 @@ class Years(object):
 				for key, folder_item in self.years["Names"]["Root"][item_type]["Dictionary"].items():
 					# Define the folder
 					data["Local"][key] = {
-						"root": data["Local"]["root"] + folder_item[self.user_language] + "/"
+						"root": data["Local"]["root"] + folder_item[self.language["Small"]] + "/"
 					}
 
 					# Define the folder item as the root folder
@@ -802,7 +816,7 @@ class Years(object):
 
 					if item_type in ["Files", "User language files"]:
 						# Define the file
-						data["Local"][key] = data["Local"]["root"] + folder_item[self.user_language] + ".txt"
+						data["Local"][key] = data["Local"]["root"] + folder_item[self.language["Small"]] + ".txt"
 
 						# Define the class as "self.File"
 						Class = self.File
@@ -883,7 +897,7 @@ class Years(object):
 		# keys = ["Planning", "Merry Christmas"]
 		for key, folder in self.years["Names"]["Christmas"]["Folders"]["Dictionary"].items():
 			data["Local"]["Christmas"][key] = {
-				"root": data["Local"]["Christmas"]["root"] + folder[self.user_language] + "/"
+				"root": data["Local"]["Christmas"]["root"] + folder[self.language["Small"]] + "/"
 			}
 
 			self.Folder.Create(data["Local"]["Christmas"][key]["root"])
@@ -909,7 +923,7 @@ class Years(object):
 			# keys = ["Texts"]
 			for key, file in dictionary.items():
 				# Define the file
-				folder[key] = folder["root"] + file[self.user_language] + ".txt"
+				folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
 
 				# Create it
 				self.File.Create(folder[key])
@@ -949,7 +963,7 @@ class Years(object):
 
 				# Define the file name and extension
 				# (Language file name and "txt")
-				file_name = file[self.user_language]
+				file_name = file[self.language["Small"]]
 
 				extension = "txt"
 
@@ -983,7 +997,7 @@ class Years(object):
 			for key, folder_name in dictionary["Folders"]["Dictionary"].items():
 				# Define the root folder
 				folder[key] = {
-					"root": folder["root"] + folder_name[self.user_language] + "/"
+					"root": folder["root"] + folder_name[self.language["Small"]] + "/"
 				}
 
 				# Create the folder
@@ -1009,7 +1023,7 @@ class Years(object):
 		for key, folder_name in dictionary["Folders"]["Dictionary"].items():
 			# Define the root folder
 			folder[key] = {
-				"root": folder["root"] + folder_name[self.user_language] + "/"
+				"root": folder["root"] + folder_name[self.language["Small"]] + "/"
 			}
 
 			# Create it
@@ -1033,7 +1047,7 @@ class Years(object):
 		# Iterate through the files dictionary
 		for key, file in dictionary["Files"]["Dictionary"].items():
 			# Define the file
-			folder[key] = folder["root"] + file[self.user_language] + ".txt"
+			folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
 
 			# Create it
 			self.File.Create(folder[key])
@@ -1081,7 +1095,7 @@ class Years(object):
 					file = files["Dictionary"][key]
 
 					# Define the file
-					folder[key] = folder["root"] + file[self.user_language] + ".txt"
+					folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
 
 					# Create it
 					self.File.Create(folder[key])
@@ -1122,7 +1136,7 @@ class Years(object):
 
 			# Iterate through the files dictionary
 			for key, file in self.years["Names"]["New Year"]["Files"]["Dictionary"].items():
-				folder[key] = folder["root"] + file[self.user_language] + ".txt"
+				folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
 
 				self.File.Create(folder[key])
 

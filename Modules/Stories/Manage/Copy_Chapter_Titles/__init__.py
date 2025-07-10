@@ -42,7 +42,7 @@ class Copy_Chapter_Titles(Stories):
 			# Iterate through the list of small languages
 			for language in self.languages["small"]:
 				# Get the translated language in the user language
-				translated_language = self.languages["full_translated"][language][self.user_language]
+				translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 				# Add it to the list
 				translated_languages.append(translated_language)
@@ -54,7 +54,7 @@ class Copy_Chapter_Titles(Stories):
 			languages.append(language)
 
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Show some space separators and a five dash space separator
 			print()
@@ -89,7 +89,7 @@ class Copy_Chapter_Titles(Stories):
 				edited_title = str(i) + " - " + title
 
 				# Show the chapter title in the current language
-				print(self.Language.texts["title_in_language"][language][self.user_language] + ":")
+				print(self.Language.texts["title_in_language"][language][self.language["Small"]] + ":")
 				print("[" + edited_title + "]")
 
 				# Copy the chapter title with the chapter number
@@ -111,7 +111,7 @@ class Copy_Chapter_Titles(Stories):
 
 		# Show the information text with the story title in the user language
 		print(self.language_texts["you_finished_copying_the_chapter_titles_of_this_story"] + ":")
-		print(self.story["Titles"][self.user_language])
+		print(self.story["Titles"][self.language["Small"]])
 		print()
 
 		# Show a five dash space separator

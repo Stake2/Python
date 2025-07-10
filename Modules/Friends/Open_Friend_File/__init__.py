@@ -22,7 +22,7 @@ class Open_Friend_File(Friends):
 		}
 
 		# Ask the user if they want to search for the friend file
-		self.dictionary["States"]["Search"] = self.Input.Yes_Or_No(self.language_texts["search_for_friend_{}_file"].format(self.file_name[self.user_language]))
+		self.dictionary["States"]["Search"] = self.Input.Yes_Or_No(self.language_texts["search_for_friend_{}_file"].format(self.file_name[self.language["Small"]]))
 
 		# Search for a friend if the search is activated
 		if self.dictionary["States"]["Search"] == True:
@@ -238,7 +238,7 @@ class Open_Friend_File(Friends):
 			self.dictionary["States"]["Search"] == True
 		):
 			# Update the language information item to add the Social Network name
-			self.information_item[self.user_language] = self.information_item[self.user_language].lower() + " " + self.language_texts["of_the_social_network"] + ' "' + self.social_network["Name"] + '"'
+			self.information_item[self.language["Small"]] = self.information_item[self.language["Small"]].lower() + " " + self.language_texts["of_the_social_network"] + ' "' + self.social_network["Name"] + '"'
 
 		# Define the local file name
 		file_name = self.file_name
@@ -246,7 +246,7 @@ class Open_Friend_File(Friends):
 		if self.file_name["en"] == "Information":
 			file_name = file_name["Plural"]
 
-		file_name = file_name[self.user_language].lower()
+		file_name = file_name[self.language["Small"]].lower()
 
 		# Show a separator
 		separator = self.separators["5"]
@@ -321,7 +321,7 @@ class Open_Friend_File(Friends):
 			"[Additional information]"
 
 			# Define the local information item
-			information_item = self.information_item[self.user_language]
+			information_item = self.information_item[self.language["Small"]]
 
 			if self.file_name["en"] != "Social Network":
 				# Transform the information item into lowercase
@@ -348,7 +348,7 @@ class Open_Friend_File(Friends):
 					item = self.information_item["Gender"]["Words"]["This"]
 
 				# Define the user language version of the item
-				item = item[self.user_language]
+				item = item[self.language["Small"]]
 
 				# Add it
 				items.append(item)
@@ -372,7 +372,7 @@ class Open_Friend_File(Friends):
 
 				# Define the list of items to be used to format the text template
 				items = [
-					self.information_item["Gender"]["Words"]["This"][self.user_language] + " " + information_item,
+					self.information_item["Gender"]["Words"]["This"][self.language["Small"]] + " " + information_item,
 					file_name,
 					self.dictionary["Search"]["Query"],
 					file_name

@@ -1,7 +1,12 @@
 # Language.py
 
+# Import some useful module
 import os
 import re
+import pytz
+from datetime import datetime
+import locale as locale_module
+from encodings.aliases import aliases as encoding_aliases
 
 class Language():
 	def __init__(self):
@@ -20,11 +25,14 @@ class Language():
 		# Define the languages
 		self.Define_Languages()
 
+		# Create the mapping dictionary
+		self.Create_Mapping_Dictionary()
+
+		# Create the locale dictionary
+		self.Create_Locale_Dictionary()
+
 		# Get information about the system
 		self.Get_System_Information()
-
-		# Define the settings
-		self.Define_App_Settings()
 
 		# Define the texts of the module
 		self.Define_Texts()
@@ -32,8 +40,8 @@ class Language():
 		# Define the language texts
 		self.Define_Language_Texts()
 
-		# Read the settings file
-		self.Read_Settings_File()
+		# Process the user settings
+		self.Process_Settings()
 
 	def Import_Classes(self):
 		import importlib
@@ -134,40 +142,211 @@ class Language():
 				# Remove it from the "small" list
 				self.languages["small"].remove(language)
 
-	def Get_System_Information(self):
-		import locale
-		import pathlib
-
-		self.system_information = {
-			"User folder": str(pathlib.Path.home()),
-			"User name": str(pathlib.Path.home().name),
-			"Locale": locale.getdefaultlocale()
+	def Create_Mapping_Dictionary(self):
+		# Define the default mapping dictionary
+		self.mapping = {
+			"Locales": {},
+			"Encodings": {}
 		}
 
-		self.system_information["Encoding"] = self.system_information["Locale"][1]
+		# Invert the keys and values of the "locale alias" dictionary
+		for alias, locale_name in locale_module.locale_alias.items():
+			# Remove the encoding from the locale name
+			locale_name = locale_name.split(".")[0]
 
-		self.system_information["Language with country"] = self.system_information["Locale"][0]
+			# If the locale list is not present inside the "Locales" dictionary
+			if locale_name not in self.mapping["Locales"]:
+				# Create it
+				self.mapping["Locales"][locale_name] = []
 
-		self.system_information["Language"] = self.system_information["Language with country"]
+			# Add the alias to the list of aliases
+			self.mapping["Locales"][locale_name].append(alias)
 
-		if "_" in self.system_information["Language"]:
-			self.system_information["Language"] = self.system_information["Language"].split("_")[0]
+			# If the locale name is not inside the list of aliases
+			if locale_name not in self.mapping["Locales"][locale_name]:
+				# Add the locale name to the list of aliases
+				self.mapping["Locales"][locale_name].append(locale_name)
 
-		if self.system_information["Language"] in self.languages["full"]:
-			self.system_information["Full language"] = self.languages["full"][self.system_information["Language"]]
+		# Invert the keys and values of the "encoding aliases" dictionary
+		for alias, encoding in encoding_aliases.items():
+			# If the encoding list is not present inside the "Encodings" dictionary
+			if encoding not in self.mapping["Encodings"]:
+				# Create it
+				self.mapping["Encodings"][encoding] = []
 
-		self.system_information["Resolution"] = {}
+			# Add the alias to the list of aliases
+			self.mapping["Encodings"][encoding].append(alias)
 
+			# If the encoding is not inside the list of aliases
+			if encoding not in self.mapping["Encodings"][encoding]:
+				# Add the encoding to the list of aliases
+				self.mapping["Encodings"][encoding].append(encoding)
+
+	def Create_Locale_Dictionary(self):
+		# Define the default locale dictionary
+		self.locale = {
+			"Locale": {
+				"Original": locale_module.getdefaultlocale(),
+				"Mapped": "",
+				"Locale": "",
+				"List": [],
+				"Information": {}
+			},
+			"Encoding": {
+				"Original": "",
+				"Mapped": "",
+				"List": []
+			},
+			"Module": locale_module
+		}
+
+		# Updated the mapped lists of locales and encodings based on the original locale
+		self.Updated_Mapped_Lists(self.locale["Locale"]["Original"])
+
+		# Define the original encoding
+		self.locale["Encoding"]["Original"] = self.locale["Locale"]["Original"][1]
+
+		# Set the locale using the mapped locale
+
+		# Iterate through the list of locales
+		for locale in self.locale["Locale"]["List"]:
+			# Iterate through the list of encodings
+			for encoding in self.locale["Encoding"]["List"]:
+				# Map the two
+				mapped = locale + "." + encoding
+
+				# Try to set the locale
+				try:
+					locale_module.setlocale(locale_module.LC_ALL, mapped)
+
+					# ----- #
+
+					# Update the full locale (locale + encoding)
+					self.locale["Locale"]["Mapped"] = mapped
+
+					# ----- #
+
+					# Update the mapped encoding
+					self.locale["Encoding"]["Mapped"] = encoding
+
+					# ----- #
+
+					# Update the locale
+					self.locale["Locale"]["Locale"] = locale
+
+				except locale_module.Error as e:
+					pass
+
+		# Update the locale information
+		self.locale["Locale"]["Information"] = locale_module.localeconv()
+
+		# Update the "Module" key
+		self.locale["Module"] = locale_module
+
+	def Updated_Mapped_Lists(self, locale):
+		# Get the list of locales
+		locales = self.mapping["Locales"][locale[0]]
+
+		# Fill the locales list
+		self.locale["Locale"]["List"] = locales
+
+		# ----- #
+
+		# Get the list of encodings
+		encodings = self.mapping["Encodings"][locale[1]]
+
+		# Fill the encodings list
+		self.locale["Encoding"]["List"] = encodings
+
+	def Get_System_Information(self):
+		# Import some useful modules
+		import platform
+		import pathlib
 		import ctypes
+		from tzlocal import get_localzone
 
+		# ---------- #
+
+		# Define the "system" dictionary
+		self.system = {
+			"Name": platform.system(), # The name of the system
+			"Resolution": {} # The resolution of the system
+		}
+
+		# Get the "user32" class
 		user32 = ctypes.windll.user32
 
-		self.system_information["Resolution"].update({
-			"Width": str(user32.GetSystemMetrics(0)),
-			"Height": str(user32.GetSystemMetrics(1)),
-		})
+		# Add the width
+		self.system["Resolution"]["Width"] = str(user32.GetSystemMetrics(0))
 
-		self.system_information["Resolution"]["Joined"] = self.system_information["Resolution"]["Width"] + "x" + self.system_information["Resolution"]["Height"]
+		# Add the height
+		self.system["Resolution"]["Height"] = str(user32.GetSystemMetrics(1))
+
+		# Join the two dimensions
+		self.system["Resolution"]["Dimensions"] = self.system["Resolution"]["Width"] + "x" + self.system["Resolution"]["Height"]
+
+		# ---------- #
+
+		# Define the "user" dictionary
+		self.user = {
+			# Get the user name, folder, and timezone
+			"Name": str(pathlib.Path.home().name), 
+			"Folder": self.Sanitize(str(pathlib.Path.home())),
+			"Timezone": get_localzone(),
+
+			# Get the user (system) locale
+			"Locale": self.locale,
+
+			# Define the user "Language" dictionary
+			"Language": {
+				"Small": "",
+				"With country": "",
+				"Full": ""
+			}
+		}
+
+		# ---------- #
+
+		# Define a shortcut to the user timezone
+		user_timezone = str(self.user["Timezone"])
+
+		# Define a default date
+		date = datetime.now()
+
+		# Remove the microsecond from the date object
+		date = date.replace(microsecond = 0)
+
+		# Define the date object in the user timezone
+		user_timezone_date = date.astimezone(self.user["Timezone"])
+
+		# Update the user "Timezone" dictionary
+		self.user["Timezone"] = {
+			"String": user_timezone,
+			"Name": user_timezone_date.strftime("%Z"),
+			"UTC offset": user_timezone_date.strftime("%z"),
+			"Timezone information": pytz.timezone(user_timezone)
+		}
+
+		# ---------- #
+
+		# Define a shortcut to the user locale
+		locale_shortcut = self.user["Locale"]["Locale"]["Original"]
+
+		# Define the "Small" and "With country" language keys
+		self.user["Language"]["Small"] = locale_shortcut[0].split("_")[0]
+		self.user["Language"]["With country"] = locale_shortcut[0]
+
+		# Define a shortcut to the small language
+		small_language = self.user["Language"]["Small"]
+
+		# Define the full language keys
+		self.user["Language"]["Full"] = self.languages["full"][small_language]
+		self.user["Language"]["Full translated"] = self.languages["full_translated"][small_language]
+
+		# ---------- #
+
+		# Define a shortcut to the user "Language" dictionary
+		self.language = self.user["Language"]
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
@@ -200,14 +379,19 @@ class Language():
 			print("\t" + text + ":")
 			print("\t" + item)
 
-	def Exist(self, file):
+	def File_Exists(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		if os.path.isfile(file) == True:
-			return True
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
-		if os.path.isfile(file) == False:
-			return False
+	def Folder_Exists(self, folder):
+		# Sanitize the folder path
+		folder = self.Sanitize(folder)
+
+		# Checks if the folder exists and returns True if it does or False if it does not
+		return os.path.isdir(folder)
 
 	def Create(self, item = None, text = None):
 		if item == None:
@@ -218,14 +402,14 @@ class Language():
 		if os.path.splitext(item)[-1] == "":
 			if (
 				self.switches["Folder"]["Create"] == True and
-				os.path.isdir(item) == False
+				self.Folder_Exists(item) == False
 			):
 				os.mkdir(item)
 
 		if os.path.splitext(item)[-1] != "":
 			if (
 				self.switches["File"]["Create"] == True and
-				os.path.isfile(item) == False
+				self.File_Exists(item) == False
 			):
 				create = open(item, "w", encoding = "utf8")
 				create.close()
@@ -243,7 +427,7 @@ class Language():
 			"length": 0
 		}
 
-		if self.Exist(file) == True:
+		if self.File_Exists(file) == True:
 			contents["string"] = open(file, "r", encoding = "utf8").read()
 			contents["size"] += os.path.getsize(file)
 
@@ -255,7 +439,7 @@ class Language():
 
 			contents["length"] = len(contents["lines"])
 
-		if self.Exist(file) == False:
+		if self.File_Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
 
 		return contents
@@ -355,7 +539,7 @@ class Language():
 		contents = self.Contents(file)
 		length = contents["length"]
 
-		if self.Exist(file) == True:
+		if self.File_Exists(file) == True:
 			if (
 				self.switches["File"]["Edit"] == True and
 				contents["string"] != text
@@ -579,24 +763,9 @@ class Language():
 
 		return typed
 
-	def Define_App_Settings(self):
-		import pathlib
-
-		self.app_settings = {
-			"Language": self.system_information["Language"]
-		}
-
-		self.username = pathlib.Path.home().name
-		self.user_language = self.app_settings["Language"]
-		self.full_user_language = self.languages["full"][self.user_language]
-
-		from tzlocal import get_localzone
-
-		self.user_timezone = get_localzone()
-
 	def Item(self, texts, user_language = None):
 		if user_language == None:
-			user_language = self.user_language
+			user_language = self.language["Small"]
 
 		if user_language in texts:
 			return texts[user_language]
@@ -809,7 +978,7 @@ class Language():
 
 	def Split(self, text, languages, separator = ", ", user_language = None):
 		if user_language == None:
-			user_language = self.user_language
+			user_language = self.language["Small"]
 
 		i = 0
 		for language in languages:
@@ -824,6 +993,21 @@ class Language():
 		# Define the "Texts" dictionary
 		self.texts = self.To_Python(self.module["Files"]["Texts"])
 
+		# Define the "separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the Separators dictionary
+			self.separators[str(number)] = string
+
 	def Define_Language_Texts(self):
 		self.language_texts = self.Item(self.texts)
 
@@ -832,59 +1016,64 @@ class Language():
 
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
-		self.settings_file = os.path.join(self.folders["Apps"]["root"], self.language_texts["settings"].capitalize() + ".json")
+		self.settings_file = self.folders["Apps"]["root"] + self.language_texts["settings"].capitalize() + ".json"
 
-		if os.path.isfile(self.settings_file) == False:
+		if self.File_Exists(self.settings_file) == False:
 			self.Create(self.settings_file)
 			self.Edit(self.settings_file, self.From_Python({}), "w")
 
-	def Read_Settings_File(self):
-		if os.path.isfile(self.settings_file) == True:
-			self.settings = self.To_Python(self.settings_file)
+	def Process_Settings(self):
+		# Define the default root settings dictionary
+		self.settings = {}
 
+		# If the settings file exists
+		if self.File_Exists(self.settings_file) == True:
+			# Read the "Settings.json" file to get the settings dictionary
+			settings = self.To_Python(self.settings_file)
+
+			# Iterate through the setting names inside the "setting names" list
 			for setting_name in self.setting_names:
 				possible_setting_names = self.setting_names[setting_name]["list"]
 
 				for possible_setting_name in possible_setting_names:
-					if possible_setting_name in self.settings:
-						setting = self.settings[possible_setting_name]
+					if possible_setting_name in settings:
+						setting = settings[possible_setting_name]
 
-						if setting_name == "language":
-							if setting in list(self.languages["full"].values()):
-								for language in self.languages["full"]:
-									full_language = self.languages["full"][language]
+						# If the setting name is "Language"
+						if setting_name == "Language":
+							# Get the locale based on the setting
+							locale_shortcut = setting
 
-									if setting == full_language:
-										setting = language
+							# Define the "Language" dictionary keys
+							self.system["Language"]["Small"] = locale_shortcut[0].split("_")[0]
+							self.system["Language"]["With country"] = locale_shortcut[0]
+							self.system["Language"]["Full"] = self.languages["full"][self.system["Language"]["Small"]]
 
-							if setting in self.languages["small"]:
-								self.user_language = setting
-								self.full_user_language = self.languages["full"][setting]
+						self.settings[setting_name.replace("_", " ").capitalize()] = setting
 
-						self.app_settings[setting_name.replace("_", " ").capitalize()] = setting
+						key = self.setting_names[setting_name]["name"][self.language["Small"]].replace("_", " ").capitalize()
 
-						key = self.setting_names[setting_name]["name"][self.user_language].replace("_", " ").capitalize()
-
-						self.app_settings[key] = setting
-
-			self.settings = self.app_settings
+						self.settings[key] = setting
 
 			self.Define_Language_Texts()
 
+			# Update the "Settings.json" file with the new settings dictionary
 			self.Edit(self.settings_file, self.From_Python(self.settings), "w")
 
 			# ----- #
 
+			# Create 
 			settings = {
-				"Language": self.app_settings["Language"]
+				"Language": self.settings["Language"]
 			}
 
-			self.global_settings_file = os.path.join(self.folders["Apps"]["root"], "Settings.json")
+			self.global_settings_file = self.folders["Apps"]["root"] + "Settings.json"
 
 			self.Create(self.global_settings_file)
 			self.Edit(self.global_settings_file, self.From_Python(settings), "w")
 
-		if os.path.isfile(self.settings_file) == False:
+		# If the settings file does not exist
+		if self.File_Exists(self.settings_file) == False:
 			texts = {
 				"en": "Default settings file not found, do you want to select settings",
 				"pt": "Arquivo padrão de configurações não encontrado, você quer selecionar configurações",
@@ -899,7 +1088,7 @@ class Language():
 		# Create folder
 		folder = self.Create(None, self.texts["type_or_paste_the_folder_where_you_want_to_create_the_settings_file"])
 
-		settings_file = os.path.join(folder, self.language_texts["settings"].title() + ".txt")
+		settings_file = folder + self.language_texts["settings"].title() + ".txt"
 
 		# Create file
 		self.Create(settings_file)
@@ -983,48 +1172,140 @@ class Language():
 		return text
 
 	def Show_User_Information(self):
-		import getpass
-		print()
-		print(self.language_texts["class, title()"] + ' "' + self.module["Name"] + '", ' + self.language_texts["the_user_information"] + ":")
-
-		print("\t" + self.language_texts["username, title()"] + ":")
-		print("\t\t" + self.system_information["User folder"])
-		print("\t\t" + self.system_information["User name"])
+		# Show the class and method names and the "Showing user information" text
+		print(self.language_texts["language_class"] + ", " + self.language_texts["show_user_information_method"] + ":")
+		print("\t" + self.language_texts["showing_user_information"] + "...")
 		print()
 
-		for language_type in self.languages["types"]:
-			language_type = language_type.lower().replace(" ", "_")
+		# Define a quotes template
+		quotes = '"{}"'
 
-			print("\t" + self.language_texts[language_type].capitalize() + ":")
+		# ---------- #
 
-			if language_type in self.system_information:
-				language = self.system_information[language_type]
+		# Show the user name
+		print(self.language_texts["username, title(), type: self"] + ":")
+		print("\t" + self.user["Name"])
+		print()
 
-			else:
-				language = self.system_information[language_type.capitalize().replace("_", " ")]
+		# Show the user folder
+		print(self.language_texts["user_folder"] + ":")
+		print("\t" + self.user["Folder"])
+		print()
 
-			print("\t\t" + language)
+		# ---------- #
 
-			if language_type != self.languages["types"][-1]:
+		# Show the user timezone
+		print(self.language_texts["user_timezone"] + ":")
+
+		# Show the timezone string
+		print("\t" + self.language_texts["text, title()"] + ":")
+		print("\t" + quotes.format(self.user["Timezone"]["String"]))
+		print()
+
+		# Show the timezone name
+		print("\t" + self.language_texts["name, title()"] + ":")
+		print("\t" + quotes.format(self.user["Timezone"]["Name"]))
+		print()
+
+		# Show the UTC offset
+		print("\t" + self.language_texts["difference_from_utc"] + ":")
+
+		utc_offset = self.user["Timezone"]["UTC offset"]
+
+		if "-" in utc_offset:
+			utc_offset = "UTC" + utc_offset
+
+		print("\t" + utc_offset)
+		print()
+
+		# Show the timezone information
+		print("\t" + self.language_texts["timezone_information"] + ":")
+		print("\t" + str([self.user["Timezone"]["Timezone information"]]))
+		print()
+
+		# ---------- #
+
+		# Show the user language information
+		print(self.language_texts["user_language"] + ":")
+
+		# Show the small language
+		print("\t" + self.language_texts["small, title()"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["Small"]))
+		print()
+
+		# Show the language with country
+		print("\t" + self.language_texts["with_country"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["With country"]))
+		print()
+
+		# Show the full language
+		print("\t" + self.language_texts["full, title()"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["Full"]))
+		print()
+
+		# Show the full language translated
+		print("\t" + self.language_texts["full_translated"] + ":")
+
+		# Iterate through the list of small languages
+		for language in self.languages["small"]:
+			# If the language is not the user language
+			if language != self.language["Small"]:
+				# Get the translated language
+				# (First the current language then the user language)
+				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+
+				# Get the translated user language
+				# (First the user language then the current language)
+				translated_user_language = self.languages["full_translated"][self.language["Small"]][language]
+
+				# Show the current language
+				print("\t\t" + translated_language + ":")
+
+				# Show the user language but translated to the current language
+				print("\t\t" + quotes.format(translated_user_language))
 				print()
 
-		if "language" in self.app_settings and self.user_language != self.system_information["Language"]:
-			print()
-			print("\t" + self.language_texts["your_{}_is"].format(self.language_texts["custom_language"]) + ":")
-			print("\t\t" + self.user_language + ", " + self.languages["full"][self.user_language])
+		# ---------- #
 
-		print()
-		print("\t" + self.language_texts["resolution, title()"] + ":")
-		print("\t\t" + self.system_information["Resolution"]["Width"])
-		print("\t\t" + self.system_information["Resolution"]["Height"])
-		print("\t\t" + self.system_information["Resolution"]["Joined"])
+		# Show the system information
+		print(self.language_texts["system_information"] + ":")
 
+		# Show the system name
+		print("\t" + self.language_texts["name, title()"] + ":")
+		print("\t" + quotes.format(self.system["Name"]))
 		print()
-		print("\t" + self.language_texts["time_zone"] + ":")
-		print("\t\t" + str(self.user_timezone))
 
-		print()
-		print("-----")
+		# Show the system resolution
+		print(self.language_texts["resolution, title()"] + ":")
+
+		# Iterate through the list of sizes
+		for key in ["Width", "Height", "Dimensions"]:
+			# Define a text key
+			text_key = key
+
+			# If the size is "Dimensions"
+			if key == "Dimensions":
+				# Update the text key to "full"
+				text_key = "Full"
+
+			# Get the text for the size
+			text = self.language_texts[text_key.lower() + ", title()"]
+
+			# Get the size
+			size = self.system["Resolution"][key]
+
+			# If the size is not "Dimensions"
+			if key != "Dimensions":
+				# Add "px" to the size
+				size += "px"
+
+			# Show the text and the size
+			print("\t" + text + ":")
+			print("\t" + size)
+
+			# If the key is not the last one
+			if key != "Dimensions":
+				print()
 
 	def Text_From_List(self, list_, next_line = True, separator = ""):
 		string = ""
@@ -1054,7 +1335,7 @@ class Language():
 		if type(text_lines_to_write) == str:
 			text_lines_to_write = text_lines_to_write.splitlines()
 
-		self.settings = filters
+		settings = filters
 
 		# Define the difference dictionary
 		dictionary = {
@@ -1091,10 +1372,10 @@ class Language():
 			"Separators": True
 		}
 
-		# Check the Settings dictionary
+		# Check the settings dictionary
 		for key, default in self.default_settings.items():
-			if key not in self.settings:
-				self.settings[key] = default
+			if key not in settings:
+				settings[key] = default
 
 		i = 0
 		line_number = 0
@@ -1104,7 +1385,7 @@ class Language():
 			# If the "Separators" filter is on
 			# And the "i" number is zero
 			if (
-				self.settings["Separators"] == True and
+				settings["Separators"] == True and
 				i == 0
 			):
 				# Add a text to start the changes text
@@ -1124,7 +1405,7 @@ class Language():
 				# If the number of file lines is greater than or equal to number of text lines
 				if len(file_text) >= len(text_lines_to_write):
 					# If the "Full text" filter is off
-					if self.settings["Filters"]["Full text"] == False:
+					if settings["Filters"]["Full text"] == False:
 						# If the current file line is not the same as the current text line
 						# Or the line is not inside the file lines list
 						if (
@@ -1137,7 +1418,7 @@ class Language():
 					# If the "Full text" filter is on
 					# And the current file line is not the same as the current text line
 					if (
-						self.settings["Filters"]["Full text"] == True and
+						settings["Filters"]["Full text"] == True and
 						file_text[i] != text_lines_to_write[i]
 					):
 						# Add the line to the text difference list
@@ -1162,7 +1443,7 @@ class Language():
 					# If the "Full text" filter is off
 					# And the line is not inside the file lines list
 					if (
-						self.settings["Filters"]["Full text"] == False and
+						settings["Filters"]["Full text"] == False and
 						line not in file_text
 					):
 						# Add the line to the text difference list
@@ -1171,7 +1452,7 @@ class Language():
 					# If the "Full text" filter is on
 					# And the "i" number plus one is lesser than or equal to the number of file text lines
 					if (
-						self.settings["Filters"]["Full text"] == True and
+						settings["Filters"]["Full text"] == True and
 						(i + 1) <= len(file_text)
 					):
 						# Add the line to the text difference list
@@ -1226,7 +1507,7 @@ class Language():
 					# If the "Deletions mode" filter is on
 					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
 					if (
-						self.settings["Filters"]["Deletions mode"] == True and
+						settings["Filters"]["Deletions mode"] == True and
 						(i + 1) <= len(file_text)
 					):
 						# If the "i" number plus one is equal to the number of lines inside the file
@@ -1250,7 +1531,7 @@ class Language():
 					# If the "i" number plus one is lesser than or equal to the number of lines inside the file
 					if (i + 1) <= len(file_text):
 						# If the "Deletions mode" filter is off
-						if self.settings["Filters"]["Deletions mode"] == False:
+						if settings["Filters"]["Deletions mode"] == False:
 							symbol = "~"
 
 						# Add to the changes number
@@ -1270,7 +1551,7 @@ class Language():
 					# And the "i" number plus one is lesser than or equal to the number of lines inside the file
 					# And the previous line is not a space
 					if (
-						self.settings["Filters"]["Deletions mode"] == True and
+						settings["Filters"]["Deletions mode"] == True and
 						(i + 1) <= len(file_text) and
 						dictionary["Difference"]["Lines"][-1] != ""
 					):
@@ -1291,7 +1572,7 @@ class Language():
 			# And the "i" number plus one is lesser than or equal to the number of lines inside the file
 			# And the "Additions" number is not zero
 			if (
-				self.settings["Separators"] == True and
+				settings["Separators"] == True and
 				added_space == False and
 				(i + 1) == len(file_text) and
 				dictionary["Additions"] != 0
@@ -1299,7 +1580,7 @@ class Language():
 				# Add a text to separate the lines
 
 				# If the "Deletions mode" filter is off
-				if self.settings["Filters"]["Deletions mode"] == False:
+				if settings["Filters"]["Deletions mode"] == False:
 					dictionary["Difference"]["Lines"].append("")
 
 				dictionary["Difference"]["Lines"].append(tab + "-----")
@@ -1412,34 +1693,43 @@ class Language():
 
 		return dictionary["Difference"]["Text"]
 
-	def Check_Text_Difference(self, file_text, text_lines_to_write, settings = {}):
-		# Define the maximum number of lines to use the text difference
-		self.maximum_lines = 20
+	def Check_Text_Difference(self, file_text, text_lines_to_write, settings = {}, full_verbose = False):
+		# Define the maximum number of lines of when to not use the text difference
+		# Any changes that exceed this limit activate the full verbose mode
+		maximum_lines = 20
 
-		self.make_difference = True
+		# Define the "make text difference" switch as True by default
+		make_text_difference = True
 
-		# Define the default verbose text for non-verbose mode
+		# If the "full verbose" parameter is True
+		if full_verbose == True:
+			# Change the "make text difference" switch to False
+			make_text_difference = False
+
+		# Define the default verbose text for the non-verbose mode
 		verbose_text = self.language_texts["text, title()"] + ":\n[" + \
 		text_lines_to_write + \
 		"]"
 
-		self.settings = settings
-
 		# If the verbose mode is activated
+		# And the "make text difference" switch is True
+		# And the number of lines of the text file is greater than the maximum number of lines to show
+		# And the file is not empty
+		# Show only the text difference, not the full text to write
 		if (
 			self.switches["Verbose"] == True and
-			self.make_difference == True
+			make_text_difference == True and
+			len(file_text["lines"]) > maximum_lines and
+			file_text["lines"] != []
 		):
-			# If the number of lines is greater than the maximum number of lines to show
-			# And the file is not empty
-			# Show only the text difference
-			if len(file_text["lines"]) > self.maximum_lines and file_text["lines"] != []:
-				# Make the text difference between the text inside the file and the text to be written
-				text_difference = self.Text_Difference(file_text, text_lines_to_write, settings)
+			# Make the text difference between the text inside the file and the text to be written
+			text_difference = self.Text_Difference(file_text, text_lines_to_write, settings)
 
-				verbose_text = self.language_texts["text_difference"] + ":\n" + \
-				"\t[\n" + \
-				text_difference + \
-				"\n\t]"
+			# Update the verbose text to add the text difference
+			verbose_text = self.language_texts["text_difference"] + ":\n" + \
+			"\t[\n" + \
+			text_difference + \
+			"\n\t]"
 
+		# Return the verbose text
 		return verbose_text

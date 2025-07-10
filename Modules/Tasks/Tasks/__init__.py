@@ -18,7 +18,7 @@ class Tasks(object):
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import the usage classes
+		# Import some usage classes
 		self.Import_Usage_Classes()
 
 		# Folders and files method
@@ -55,7 +55,7 @@ class Tasks(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -66,36 +66,50 @@ class Tasks(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -104,21 +118,6 @@ class Tasks(object):
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Import_Usage_Classes(self):
 		# Define the classes to be imported
@@ -243,7 +242,7 @@ class Tasks(object):
 
 			# If the task type "Type.json" file exists and it is not empty
 			if (
-				self.File.Exist(dictionary["Files"]["Type"]) == True and
+				self.File.Exists(dictionary["Files"]["Type"]) == True and
 				self.File.Contents(dictionary["Files"]["Type"])["lines"] != []
 			):
 				# Update the local dictionary with the one inside the file
@@ -443,7 +442,7 @@ class Tasks(object):
 
 			# If the file exists and it is not empty
 			if (
-				self.File.Exist(entries_file) == True and
+				self.File.Exists(entries_file) == True and
 				self.File.Contents(entries_file)["lines"] != []
 			):
 				# Add the number of lines of the file to the local number of tasks
@@ -642,7 +641,7 @@ class Tasks(object):
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Show the translated language and the task title in the current language
 			print("\t" + translated_language + ":")
@@ -651,8 +650,8 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Show the "Type" text
-		print(self.Language.language_texts["type, title()"] + ":")
+		# Show the "Task type" text
+		print(self.language_texts["task_type"] + ":")
 
 		# Define an empty list of texts
 		texts = []
@@ -693,7 +692,7 @@ class Tasks(object):
 
 			# Show the state texts in the user language
 			for key in dictionary["States"]["Texts"]:
-				language_text = dictionary["States"]["Texts"][key][self.user_language]
+				language_text = dictionary["States"]["Texts"][key][self.language["Small"]]
 
 				print("\t" + language_text)
 
@@ -709,14 +708,14 @@ class Tasks(object):
 
 		# Show the task description text and the task descriptions in the user language
 		print()
-		print(task_description_text + " " + self.full_user_language + ":")
-		print("[" + task["Descriptions"][self.user_language] + "]")
+		print(task_description_text + " " + self.language["Full"] + ":")
+		print("[" + task["Descriptions"][self.language["Small"]] + "]")
 
 		# ---------- #
 
 		# Show the text telling the user that the class wrote on the current Diary Slim
 		# And the current Diary Slim date
-		date = self.dictionary["Diary Slim"]["Date"]["Timezone"]["DateTime"]["Formats"]["[Day name], [Day] [Month name] [Year]"][self.user_language]
+		date = self.dictionary["Diary Slim"]["Date"]["Timezone"]["DateTime"]["Formats"]["[Day name], [Day] [Month name] [Year]"][self.language["Small"]]
 
 		# Define the item to use to format the text template and the gender
 		item = self.language_texts["the_task_description"]

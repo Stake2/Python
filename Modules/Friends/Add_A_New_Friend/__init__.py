@@ -101,7 +101,7 @@ class Add_A_New_Friend(Friends):
 		# Iterate through the Information items dictionary
 		for key, information_item in self.information_items["Dictionary"].items():
 			# Get the language information item
-			language_information_item = information_item[self.user_language]
+			language_information_item = information_item[self.language["Small"]]
 
 			# If the information item is "Origin Social Network"
 			if key == "Origin Social Network":
@@ -335,7 +335,7 @@ class Add_A_New_Friend(Friends):
 				file_name_dictionary = self.friends["File names"]["Dictionary"][key]
 
 				# Define the file name and folder
-				file_name = file_name_dictionary["Plural"][self.user_language]
+				file_name = file_name_dictionary["Plural"][self.language["Small"]]
 
 				folder_dictionary = dict_
 
@@ -598,7 +598,7 @@ class Add_A_New_Friend(Friends):
 				information = self.friend["Information"][key]
 
 				# Show the information item name in the user language
-				print("\t" + information_item[self.user_language] + ":")
+				print("\t" + information_item[self.language["Small"]] + ":")
 
 				# Show the Friend information
 				print("\t" + information)
@@ -663,7 +663,7 @@ class Add_A_New_Friend(Friends):
 			# Iterate through the "Information items" dictionary
 			for key, information_item in self.social_network["Information items"]["Dictionary"].items():
 				# Define the language information item
-				language_information_item = information_item[self.user_language]
+				language_information_item = information_item[self.language["Small"]]
 
 				# Get the current information
 				current_information = information[key]

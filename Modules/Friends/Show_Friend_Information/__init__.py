@@ -17,12 +17,12 @@ class Show_Friend_Information(Friends):
 		self.information_item_dict = {
 			self.Language.texts["information, title()"]["en"]: {
 				"English": self.information_items["en"],
-				self.full_user_language: self.information_items["information_items, type: dict, en: " + self.user_language],
+				self.language["Full"]: self.information_items["information_items, type: dict, en: " + self.language["Small"]],
 			},
 
 			"Social Networks": {
 				"English": self.Social_Networks.texts["information_items, type: list"]["en"],
-				self.full_user_language: self.Social_Networks.texts["information_items, type: list"]["information_items, type: dict, en: " + self.user_language]
+				self.language["Full"]: self.Social_Networks.texts["information_items, type: list"]["information_items, type: dict, en: " + self.language["Small"]]
 			}
 		}
 
@@ -30,8 +30,8 @@ class Show_Friend_Information(Friends):
 
 		self.english_information_items = self.information_item_dict[self.file_name]["English"]
 
-		self.information_items[self.user_language] = self.information_item_dict[self.file_name][self.full_user_language]
-		self.language_information_items_backup = self.information_items[self.user_language].copy()
+		self.information_items[self.language["Small"]] = self.information_item_dict[self.file_name][self.language["Full"]]
+		self.language_information_items_backup = self.information_items[self.language["Small"]].copy()
 
 	def Create_Information_Items(self):
 		self.friend_information_items = {}
@@ -97,8 +97,8 @@ class Show_Friend_Information(Friends):
 					if information_item in self.english_information_items:
 						self.english_information_items.remove(information_item)
 
-					if information_item in self.information_items[self.user_language]:
-						self.information_items[self.user_language].pop(information_item)
+					if information_item in self.information_items[self.language["Small"]]:
+						self.information_items[self.language["Small"]].pop(information_item)
 
 		if self.file_name == "Social Networks":
 			for friend in self.friends:
@@ -109,21 +109,21 @@ class Show_Friend_Information(Friends):
 						if string[len(string)-2:] == ", ":
 							self.social_networks_information_items[information_item] = string[:-2]
 
-						self.information_items[self.user_language][information_item] = self.social_networks_information_items[information_item] + ": " + self.language_information_items_backup[information_item]
+						self.information_items[self.language["Small"]][information_item] = self.social_networks_information_items[information_item] + ": " + self.language_information_items_backup[information_item]
 
 	def Select_Information_Item(self):
 		show_text = self.Language.language_texts["information_items"]
 		select_text = self.Language.language_texts["select_one_information_item"]
 
-		self.option_info = self.Input.Select(self.english_information_items, list(self.information_items[self.user_language].values()), show_text = show_text, select_text = select_text)
+		self.option_info = self.Input.Select(self.english_information_items, list(self.information_items[self.language["Small"]].values()), show_text = show_text, select_text = select_text)
 
 		self.information_item = self.option_info["option"]
 		self.information_item_number = self.option_info["number"]
 
 		if self.file_name == "Social Networks":
-			self.language_information_item_with_social_network = self.information_items[self.user_language][self.information_item]
+			self.language_information_item_with_social_network = self.information_items[self.language["Small"]][self.information_item]
 
-		self.language_information_item = self.information_items[self.user_language].copy()[self.information_item]
+		self.language_information_item = self.information_items[self.language["Small"]].copy()[self.information_item]
 
 		for friend in self.friends.copy():
 			for social_network in self.friend_social_networks[friend].copy():

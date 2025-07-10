@@ -143,7 +143,7 @@ class Register(Tasks):
 	def Select_Task_Type(self):
 		# Define the list of options and language options
 		options = self.tasks["Types"]["Lists"]["Plural"]["en"]
-		language_options = self.tasks["Types"]["Lists"]["Plural"][self.user_language]
+		language_options = self.tasks["Types"]["Lists"]["Plural"][self.language["Small"]]
 
 		# Define the "t" variable for task type number
 		t = 0
@@ -173,7 +173,7 @@ class Register(Tasks):
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Define the task text
 			task_text = self.dictionary["Type"]["Task texts"]
@@ -202,7 +202,7 @@ class Register(Tasks):
 			# Show the task type
 			print()
 			print(self.language_texts["task_type"] + ":")
-			print("\t" + self.dictionary["Type"]["Names"]["Plural"][self.user_language])
+			print("\t" + self.dictionary["Type"]["Names"]["Plural"][self.language["Small"]])
 
 		# If the "Register task" state is True
 		if self.states["Register task"] == True:
@@ -256,7 +256,7 @@ class Register(Tasks):
 				# Iterate through the list of small languages
 				for language in self.languages["small"]:
 					# Get the translated language in the user language
-					translated_language = self.languages["full_translated"][language][self.user_language]
+					translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 					# Change the input text to add the current language
 					question["Text"] = self.Define_Input_Text(question)
@@ -406,14 +406,14 @@ class Register(Tasks):
 				input_text = texts_dictionary[input_text]
 
 			# If the user language key is inside the input text dictionary
-			if self.user_language in input_text:
+			if self.language["Small"] in input_text:
 				# Get the user language version of the input text
-				input_text = input_text[self.user_language]
+				input_text = input_text[self.language["Small"]]
 
 			# If the format character is inside the input text
 			if "{}" in input_text:
 				# Define the item as the singular version of the task type name in the user language
-				item = self.dictionary["Type"]["Names"]["Singular"][self.user_language]
+				item = self.dictionary["Type"]["Names"]["Singular"][self.language["Small"]]
 
 				# Format the input text with the item
 				input_text = input_text.format(item)
@@ -473,7 +473,7 @@ class Register(Tasks):
 		if self.states["Register task"] == False:
 			# Define the list of languages as just the user language
 			languages = [
-				self.user_language
+				self.language["Small"]
 			]
 
 		# Iterate through the small languages list
@@ -482,7 +482,7 @@ class Register(Tasks):
 			full_language = self.languages["full"][language]
 
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Define the item of the task type
 			texts = self.dictionary["Type"]["Names"]["Singular"]
@@ -506,7 +506,7 @@ class Register(Tasks):
 				texts = self.Language.texts[item]
 
 			# Get the text for the item in the current language
-			item_text = texts[self.user_language]
+			item_text = texts[self.language["Small"]]
 
 			# If the "No lowercase" key is not inside the task type dictionary
 			if "No lowercase" not in self.dictionary["Type"]:
@@ -519,7 +519,7 @@ class Register(Tasks):
 			]
 
 			# Format the explanation text with the item of the text
-			explanation_text = self.texts[text_key][self.user_language].format(*items)
+			explanation_text = self.texts[text_key][self.language["Small"]].format(*items)
 
 			# Show a three dash space separator
 			print()
@@ -864,7 +864,7 @@ class Register(Tasks):
 
 		# If it is, define the local language as the user language
 		else:
-			language = self.user_language
+			language = self.language["Small"]
 
 		# Define the full language based on the local language
 		full_language = self.languages["full"][language]
@@ -1094,7 +1094,7 @@ class Register(Tasks):
 
 	def Write_On_Diary_Slim(self):
 		# Define the Diary Slim text as the task description in the user language
-		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.user_language]
+		self.dictionary["Entry"]["Diary Slim"]["Text"] = self.task["Descriptions"][self.language["Small"]]
 
 		# If the description of the task in English is the same as the English task title
 		# And there is no dot at the end of the Diary Slim text
@@ -1117,7 +1117,7 @@ class Register(Tasks):
 			# Iterate through the state keys inside the states dictionary
 			for key in self.dictionary["States"]["Texts"]:
 				# Get the state text in the user language
-				language_text = self.dictionary["States"]["Texts"][key][self.user_language]
+				language_text = self.dictionary["States"]["Texts"][key][self.language["Small"]]
 
 				# Add the language state text to the Diary Slim text
 				self.dictionary["Entry"]["Diary Slim"]["Text"] += language_text

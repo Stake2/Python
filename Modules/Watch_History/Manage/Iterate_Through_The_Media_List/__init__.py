@@ -44,7 +44,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			key = plural_media_type.lower().replace(" ", "_")
 
 			# Define the language media type
-			language_media_type = self.media_types["Plural"][self.user_language][i]
+			language_media_type = self.media_types["Plural"][self.language["Small"]][i]
 
 			# Get media with all "watching statuses", not just the "Watching" and "Re-watching" ones
 			media_list = self.Get_Media_List(self.media_types[plural_media_type], self.texts["statuses, type: list"]["en"])
@@ -115,7 +115,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					]
 
 					# For media with the media item list, get the actual media items
-					if self.media["States"]["Media item list"] == True:
+					if self.media["States"]["Has a list of media items"] == True:
 						self.media_items_list = self.media["Items"]["List"]
 
 					# Iterate through the media items list
@@ -163,8 +163,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 						#	self.Add_Last_Playlist_Date()
 
 						#if self.dictionary["Media type"]["Plural"]["en"] == self.texts["movies, title()"]["en"]:
-						#	if self.user_language in self.media["Item"]["Titles"]:
-						#		string += self.media["Item"]["Titles"][self.user_language]
+						#	if self.language["Small"] in self.media["Item"]["Titles"]:
+						#		string += self.media["Item"]["Titles"][self.language["Small"]]
 						#		string += " (" + self.media["Title"].split(" (")[-1] + "\n"
 
 						# Watch the media for testing purposes
@@ -329,7 +329,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						self.media["Item"]["Type"]["en"] in self.alternative_episode_types
 					):
 						# Format it as "Title of the [item type]" in the user language
-						with_ = title_template.format(self.media["Item"]["Type"][self.user_language].lower())
+						with_ = title_template.format(self.media["Item"]["Type"][self.language["Small"]].lower())
 
 					# If the media type is "Movies"
 					# Or the media type is "Videos" and the media is not episodic
@@ -339,7 +339,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						not self.media["States"]["Episodic"])
 					):
 						# Define a shortcut for the singular media type
-						singular_media_type = self.dictionary["Media type"]["Singular"][self.user_language]
+						singular_media_type = self.dictionary["Media type"]["Singular"][self.language["Small"]]
 
 						# Determine the case of the singular media type based on the position of the "{}" characters
 						if title_template.startswith("{}"):
@@ -396,7 +396,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def Add_Date(self):
 		item_types = ["Media"]
 
-		if self.dictionary["Media"]["States"]["Media item list"] == True:
+		if self.dictionary["Media"]["States"]["Has a list of media items"] == True:
 			item_types.append("Item")
 
 		# Iterate through the item_types list
@@ -424,7 +424,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				year = self.date_dictionary["Details"][self.Date.language_texts["year, title()"]]
 
 				# If the media has a media item list
-				if media_dictionary["States"]["Media item list"] == True:
+				if media_dictionary["States"]["Has a list of media items"] == True:
 					# If the media title is equal to the media item title and the date is already present in the media details
 					if self.dictionary["Media"]["Title"] == self.dictionary["Media"]["Item"]["Title"] and self.Date.language_texts["start_date"] in self.dictionary["Media"]["Details"]:
 						# Get the date from the media details
@@ -439,7 +439,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						ask = True
 
 				# If the media has no media item list, ask for the full date
-				if media_dictionary["States"]["Media item list"] == False:
+				if media_dictionary["States"]["Has a list of media items"] == False:
 					ask = True
 
 				if ask == True:
@@ -526,7 +526,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def Add_Anime_Information(self):
 		item_types = ["Media"]
 
-		if self.dictionary["Media"]["States"]["Media item list"] == True:
+		if self.dictionary["Media"]["States"]["Has a list of media items"] == True:
 			item_types.append("Item")
 
 		for item_type in item_types:
@@ -549,15 +549,15 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 				if (
 					# If media has media item list and the media item is not the same as the the root media
-					self.dictionary["Media"]["States"]["Media item list"] == True and
+					self.dictionary["Media"]["States"]["Has a list of media items"] == True and
 					self.dictionary["Media"]["Item"]["Title"] != self.dictionary["Media"]["Title"] or
 
 					# If media has media item list and the media item is not the same as the the root media
-					self.dictionary["Media"]["States"]["Media item list"] == True and
+					self.dictionary["Media"]["States"]["Has a list of media items"] == True and
 					self.dictionary["Media"]["Item"]["Title"] == self.dictionary["Media"]["Title"] or
 
 					# Or the media does not have a media item list and the media item is the same as the root media and the "ID" key is not present inside the media details
-					self.dictionary["Media"]["States"]["Media item list"] == False and
+					self.dictionary["Media"]["States"]["Has a list of media items"] == False and
 					self.dictionary["Media"]["Item"]["Title"] == self.dictionary["Media"]["Title"] and
 					"ID" not in self.dictionary["Media"]["Details"]
 
@@ -669,7 +669,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				# Add the episode duration after the "Episodes" key
 				key_value = {
 					"key": self.Date.language_texts["duration, title()"],
-					"value": media_dictionary["Information"]["Dictionary"]["Duration"]["Text"][self.user_language]
+					"value": media_dictionary["Information"]["Dictionary"]["Duration"]["Text"][self.language["Small"]]
 				}
 
 				if key_value["value"] == "":
@@ -696,8 +696,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 						"value": ""
 					}
 
-					if self.user_language in media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"]:
-						key_value["value"] = media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"][self.user_language]
+					if self.language["Small"] in media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"]:
+						key_value["value"] = media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"][self.language["Small"]]
 
 					else:
 						key_value["value"] = media_dictionary["Information"]["Dictionary"]["Links"]["Wikipedia"]["en"]
@@ -1022,7 +1022,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def Add_Media_Information(self):
 		item_types = ["Media"]
 
-		if self.dictionary["Media"]["States"]["Media item list"] == True:
+		if self.dictionary["Media"]["States"]["Has a list of media items"] == True:
 			item_types.append("Item")
 
 		for item_type in item_types:
@@ -1135,7 +1135,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				for language in link["Languages"]:
 					if language in self.languages["full_translated"][language]:
 						# Get transtaled language
-						translated_full_language = self.languages["full_translated"][language][self.user_language]
+						translated_full_language = self.languages["full_translated"][language][self.language["Small"]]
 
 					else:
 						translated_full_language = language
@@ -1144,8 +1144,8 @@ class Iterate_Through_The_Media_List(Watch_History):
 						link["Gender"] = "masculine"
 
 					# Define of and in texts
-					of_text = self.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["of"]
-					in_text = self.Language.texts["genders, type: dict"][self.user_language][link["Gender"]]["in"]
+					of_text = self.Language.texts["genders, type: dictionary"][self.language["Small"]][link["Gender"]]["of"]
+					in_text = self.Language.texts["genders, type: dictionary"][self.language["Small"]][link["Gender"]]["in"]
 
 					# Define text to show when asking for user to paste the website link
 					text = self.Language.language_texts["{}_website_link"].format(in_text + " " + translated_full_language + " " + of_text + " " + link_key)
@@ -1314,7 +1314,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 		new_folder = self.folders["Media"][media_type_key]["root"] + self.media["Titles"]["Sanitized"] + "/"
 
-		if self.Folder.Exist(old_folder) == True and self.Folder.Exist(new_folder) == False and self.media_item_number == 0:
+		if self.Folder.Exists(old_folder) == True and self.Folder.Exists(new_folder) == False and self.media_item_number == 0:
 			self.Folder.Create(new_folder)
 
 			# Move the "C:/" folder
@@ -1333,7 +1333,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 		import os
 
-		if self.Folder.Exist(old_folder) == True:
+		if self.Folder.Exists(old_folder) == True:
 			file_list = self.Folder.Contents(old_folder)["file"]["list"]
 
 			if file_list == []:

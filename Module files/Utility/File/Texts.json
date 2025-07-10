@@ -203,5 +203,9 @@
 	"already_existed": {
 		"en": "already existed",
 		"pt": "já existia"
-	}
+	},
+	"file_link": {
+        "pt": "Link do arquivo",
+        "en": "File link"
+    }
 }

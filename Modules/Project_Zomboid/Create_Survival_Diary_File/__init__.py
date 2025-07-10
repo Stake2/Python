@@ -115,7 +115,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# Define the list of items of the file name template
 		items = [
 			str(self.diary["Numbers"]["Survival day"]), # The survival day
-			self.dictionary["Date"]["Texts"]["Day name"][self.user_language], # The day name in the user language
+			self.dictionary["Date"]["Texts"]["Day name"][self.language["Small"]], # The day name in the user language
 			self.dictionary["Date"]["Formats"]["DD-MM-YYYY"] # And the "Day-Month-Year" format of the current date
 		]
 
@@ -134,11 +134,11 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		# Define the list of items of the diary template
 		items = [
 			day_number_name.lower(), # The day number name
-			self.dictionary["Date"]["Texts"]["Month name"][self.user_language], # The month name
+			self.dictionary["Date"]["Texts"]["Month name"][self.language["Small"]], # The month name
 			self.dictionary["Date"]["Units"]["Year"], # The year
 			self.dictionary["Date"]["Formats"]["DD/MM/YYYY"], # The "Day-Month-Year" format of the current date
-			self.dictionary["Date"]["Texts"]["Day gender"][self.user_language], # The day gender
-			self.dictionary["Date"]["Texts"]["Day name"][self.user_language] # And the day name
+			self.dictionary["Date"]["Texts"]["Day gender"][self.language["Small"]], # The day gender
+			self.dictionary["Date"]["Texts"]["Day name"][self.language["Small"]] # And the day name
 		]
 
 		# Create the diary header by formatting the template with the items
@@ -169,7 +169,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 
 		# Show the locality
 		print(self.Language.language_texts["locality, title()"] + ":")
-		print("\t" + self.dictionary["City"]["Locality"][self.user_language])
+		print("\t" + self.dictionary["City"]["Locality"][self.language["Small"]])
 		print()
 
 		# Show the survival diary file name and file

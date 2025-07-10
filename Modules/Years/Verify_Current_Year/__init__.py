@@ -20,11 +20,11 @@ class Verify_Current_Year(Years):
 		self.files = {
 			"Created in": {
 				"Text key": "created_in",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["created_in"] + ".txt"
+				self.language["Small"]: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["created_in"] + ".txt"
 			},
 			"Edited in": {
 				"Text key": "edited_in",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["edited_in"] + ".txt"
+				self.language["Small"]: self.years["Current year"]["Folders"]["Text"]["root"] + self.Language.language_texts["edited_in"] + ".txt"
 			},
 			"Yearly statistics": {
 				"Text key": "yearly_statistics",
@@ -44,16 +44,16 @@ class Verify_Current_Year(Years):
 			},
 			"Christmas": {
 				"Text key": "texts, title()",
-				self.user_language: self.years["Current year"]["Folders"]["Text"]["Christmas"]["Merry Christmas"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
+				self.language["Small"]: self.years["Current year"]["Folders"]["Text"]["Christmas"]["Merry Christmas"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
 				"Template": {
-					self.user_language: self.years["Texts"]["Files"]["Christmas"]["Merry Christmas"]["Texts"]
+					self.language["Small"]: self.years["Texts"]["Files"]["Christmas"]["Merry Christmas"]["Texts"]
 				}
 			},
 			"New Year": {
 				"Text key": "texts, title()",
-				self.user_language: self.years["Current year"]["Folders"]["New Year"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
+				self.language["Small"]: self.years["Current year"]["Folders"]["New Year"]["root"] + self.Language.language_texts["texts, title()"] + ".txt",
 				"Template": {
-					self.user_language: self.years["Texts"]["Files"]["New Year"]["Texts"]
+					self.language["Small"]: self.years["Texts"]["Files"]["New Year"]["Texts"]
 				}
 			}
 		}
@@ -87,7 +87,7 @@ class Verify_Current_Year(Years):
 
 				if key != "This Year I (post)":
 					languages = [
-						self.user_language
+						self.language["Small"]
 					]
 
 				# Iterate through the languages list
@@ -268,7 +268,7 @@ class Verify_Current_Year(Years):
 				):
 					# Define the list of small languages as just the user language
 					languages = [
-						self.user_language
+						self.language["Small"]
 					]
 
 				# Iterate through the languages list

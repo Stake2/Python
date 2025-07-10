@@ -19,6 +19,8 @@ class JSON():
 	def Import_Classes(self):
 		import importlib
 
+		# ---------- #
+
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -100,14 +102,12 @@ class JSON():
 			print("\t" + text + ":")
 			print("\t" + item)
 
-	def Exist(self, file):
+	def Exists(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		if os.path.isfile(file) == True:
-			return True
-
-		if os.path.isfile(file) == False:
-			return False
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
 	def Contents(self, file):
 		file = self.Sanitize(file)
@@ -120,7 +120,7 @@ class JSON():
 			"length": 0,
 		}
 
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			contents["string"] = open(file, "r", encoding = "utf8").read()
 			contents["size"] += os.path.getsize(file)
 
@@ -132,47 +132,84 @@ class JSON():
 
 			contents["length"] = len(contents["lines"])
 
-		if self.Exist(file) == False:
+		if self.Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
 
 		return contents
 
-	def Edit(self, file, text, next_line = True, verbose = None, edit = False):
+	def Edit(self, file, text, next_line = True, verbose = None, full_verbose = False, edit = False):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
+		# Get the contents of the file
 		contents = self.Contents(file)
 
+		# Transform the text into the JSON format
 		text = self.From_Python(text)
 
-		verbose_text = self.Language.Check_Text_Difference(contents, text)
+		# Get the verbose text for the file
+		verbose_text = self.Language.Check_Text_Difference(contents, text, full_verbose = full_verbose)
 
-		file_text = file + "\n\n\t" + verbose_text
+		# Define the file text as the file plus two line breaks, one tab, and the verbose text
+		file_text = file + "\n" + \
+		"\n" + \
+		"\t" + verbose_text
 
-		if self.Exist(file) == True:
+		# If the file exists
+		if self.Exists(file) == True:
+			# If the file "Edit" switch is True
+			# Or the "edit" parameter is True
 			if (
 				self.switches["File"]["Edit"] == True or
 				edit == True
 			):
+				# If the file text string is not equal to the parameter text
 				if contents["string"] != text:
+					# Open the file handle
 					edit = open(file, "w", encoding = "UTF8")
+
+					# Write the text into the file
 					edit.write(text)
+
+					# Close the file handle
 					edit.close()
 
+					# Define the show text to tell the user that the file was edited
 					show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
-			if self.switches["File"]["Edit"] == False:
+			# If the file "Edit" switch is False
+			# And the "edit" parameter is False
+			if (
+				self.switches["File"]["Edit"] == False and
+				edit == False
+			):
+				# Define the show text to tell the user that it was not possible to edit the file due to lack of permissions
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
+			# If the file text string is not equal to the parameter text
 			if contents["string"] != text:
+				# Show the verbose text
 				self.Verbose(show_text, file_text, verbose = verbose)
 
-			if self.switches["File"]["Edit"] == True:
+			# If the file "Edit" switch is True
+			# And the "edit" parameter is True
+			if (
+				self.switches["File"]["Edit"] == True or
+				edit == True
+			):
 				return True
 
-			if self.switches["File"]["Edit"] == False:
+			# If the file "Edit" switch is False
+			# And the "edit" parameter is False
+			if (
+				self.switches["File"]["Edit"] == False and
+				edit == False
+			):
 				return False
 
-		if self.Exist(file) == False:
+		# If the file does not exist
+		if self.Exists(file) == False:
+			# Show the verbose text to tell the user that the file does not exist and return False
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text, verbose = verbose)
 
 			return False
@@ -181,11 +218,24 @@ class JSON():
 		import json
 		from copy import deepcopy
 		import datetime
+		import types
+
+		if type(items_parameter) == dict:
+			items_parameter = dict(items_parameter)
+
+			for key, value in items_parameter.items():
+				if (
+					type(value).__name__ in ["Credentials", "Resource"] or
+					type(value) not in [int, dict, list]
+				):
+					items_parameter[key] = str(value)
 
 		items = deepcopy(items_parameter)
 
 		if isinstance(items, datetime.datetime) == True:
-			items = [self.Date_To_String(items)]
+			items = [
+				self.Date_To_String(items)
+			]
 
 		if type(items) == dict:
 			for key in items:
@@ -264,12 +314,12 @@ class JSON():
 	def To_Python(self, item):
 		import json
 
-		if os.path.isfile(item) == True:
+		if self.Exists(item) == True:
 			item = self.Sanitize(item)
 
 			dictionary = json.load(open(item, encoding = "utf8"))
 
-		if os.path.isfile(item) == False:
+		if self.Exists(item) == False:
 			dictionary = json.loads(item)
 
 		return dictionary
@@ -318,3 +368,37 @@ class JSON():
 			dictionary.pop(after_key)
 
 		return dictionary
+
+	def Sort_Item_List(self, items, order):
+		# Define the new items as an empty dictionary
+		new_items = {}
+
+		# If the items is a list
+		if type(items) == list:
+			# Update it to be an empty list
+			new_items = []
+
+		# Iterate through the items in the order list
+		i = 0
+		for item in order:
+			# If the items is a dictionary
+			if type(items) == dict:
+				# Get the value from the dictionary of items
+				value = items[item]
+
+				# Add the key and value to the new dictionary of items
+				new_items[item] = value
+
+			# If the items is a list
+			if type(items) == list:
+				# Get the value from the items list
+				value = items[i]
+
+				# Add the key and value to the new list of items
+				new_items.append(value)
+
+			# Add it to the "i" number
+			i += 1
+
+		# Return the new items
+		return new_items

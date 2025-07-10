@@ -38,7 +38,7 @@ class Global_Switches():
 			"Reset": {
 				"Testing": False,
 				"Verbose": False,
-				"User information": False,
+				"Show user information": False,
 				"Has active switches": False
 			},
 			"Global": {},
@@ -79,14 +79,12 @@ class Global_Switches():
 
 		return path
 
-	def Exist(self, file):
+	def Exists(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		if os.path.isfile(file) == True:
-			return True
-
-		if os.path.isfile(file) == False:
-			return False
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
 	def JSON_To_Python(self, file):
 		import json
@@ -120,7 +118,7 @@ class Global_Switches():
 		}
 
 		# If the file exists
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			# Iterate through the lines in the file
 			for line in open(file, "r", encoding = "utf8").readlines():
 				# Replace the line breaks in the line
@@ -140,7 +138,7 @@ class Global_Switches():
 		text = self.JSON_From_Python(text)
 
 		# If the file exists
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			# Edit the file with the text
 			edit = open(file, "w", encoding = "UTF8")
 			edit.write(text)

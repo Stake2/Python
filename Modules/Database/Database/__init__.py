@@ -15,7 +15,7 @@ class Database(object):
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import the usage classes
+		# Import some usage classes
 		self.Import_Usage_Classes()
 
 		# Folders and files method
@@ -52,7 +52,7 @@ class Database(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -63,36 +63,50 @@ class Database(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -101,21 +115,6 @@ class Database(object):
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Import_Usage_Classes(self):
 		# Define the classes to be imported
@@ -150,7 +149,7 @@ class Database(object):
 		self.types = self.JSON.To_Python(self.folders["Data"]["types"])
 
 		self.types.update({
-			"Genders": self.Language.texts["genders, type: dict"],
+			"Genders": self.Language.texts["genders, type: dictionary"],
 			"Gender items": self.Language.texts["gender_items"],
 			"Data list": {
 				"Number": 0,
@@ -179,7 +178,7 @@ class Database(object):
 		for plural_type in self.types["Plural"]["en"]:
 			key = plural_type.lower().replace(" ", "_")
 
-			language_type = self.types["Plural"][self.user_language][i]
+			language_type = self.types["Plural"][self.language["Small"]][i]
 
 			# Create type dictionary
 			self.types[plural_type] = {
@@ -327,11 +326,11 @@ class Database(object):
 
 			# Define the entry item
 			for language in self.languages["small"]:
-				self.types[plural_type]["Items"][language] = self.types["items, type: dict"][plural_type][language]
+				self.types[plural_type]["Items"][language] = self.types["items, type: dictionary"][plural_type][language]
 
 			# Add the data list length numbers to the data types list to show on select data type
 			for text_type in ["Singular", "Plural"]:
-				self.types[plural_type][text_type]["Show"] = self.types[plural_type][text_type][self.user_language] + " (" + str(len(self.types[plural_type]["Data list"])) + ")"
+				self.types[plural_type][text_type]["Show"] = self.types[plural_type][text_type][self.language["Small"]] + " (" + str(len(self.types[plural_type]["Data list"])) + ")"
 
 			# Update the "Show" text
 			self.types[plural_type]["Texts"]["Show"] = self.Text.By_Number(self.types[plural_type]["Data list"], self.types[plural_type]["Singular"]["Show"], self.types[plural_type]["Plural"]["Show"])
@@ -393,7 +392,7 @@ class Database(object):
 
 			# If the file exists and it is not empty
 			if (
-				self.File.Exist(entries_file) == True and
+				self.File.Exists(entries_file) == True and
 				self.File.Contents(entries_file)["lines"] != []
 			):
 				# Add the number of lines of the file to the local number of entries
@@ -504,7 +503,7 @@ class Database(object):
 			},
 			"List": {
 				"en": self.types["Plural"]["en"].copy(),
-				self.user_language: self.types["Plural"][self.user_language].copy()
+				self.language["Small"]: self.types["Plural"][self.language["Small"]].copy()
 			},
 			"Status": [
 				self.texts["plan_to_experience, title()"]["en"],
@@ -534,7 +533,7 @@ class Database(object):
 			"option" not in dictionary and
 			"number" not in dictionary
 		):
-			dictionary["option"] = self.Input.Select(dictionary["List"]["en"], dictionary["List"][self.user_language], show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
+			dictionary["option"] = self.Input.Select(dictionary["List"]["en"], dictionary["List"][self.language["Small"]], show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
 
 			dictionary["option"] = dictionary["option"].split(" (")[0]
 
@@ -554,7 +553,7 @@ class Database(object):
 		# Add the data list length numbers to the data types list to show on the select data
 		for language in self.languages["small"]:
 			for text_type in ["Singular", "Plural"]:
-				dictionary[text_type]["Show"] = dictionary[text_type][self.user_language] + " (" + str(len(dictionary["Data list"])) + ")"
+				dictionary[text_type]["Show"] = dictionary[text_type][self.language["Small"]] + " (" + str(len(dictionary["Data list"])) + ")"
 
 		# Update the "Show" text
 		dictionary["Texts"]["Show"] = self.Text.By_Number(dictionary["Data list"], dictionary["Singular"]["Show"], dictionary["Plural"]["Show"])
@@ -574,7 +573,7 @@ class Database(object):
 		dictionary["Texts"] = dictionary["Type"]["Texts"]
 
 		# Define the select text
-		text = dictionary["Type"]["Singular"][self.user_language]
+		text = dictionary["Type"]["Singular"][self.language["Small"]]
 
 		if "Select" in dictionary["Type"]["Singular"]:
 			text = dictionary["Type"]["Singular"]["Select"]
@@ -692,7 +691,7 @@ class Database(object):
 		self.File.Edit(data["Folders"]["details"], self.Text.From_Dictionary(data["Details"]), "w")
 
 		# Define the default data language as the user language
-		data["Language"] = self.full_user_language
+		data["Language"] = self.language["Full"]
 
 		# Change user language to original data language if the key exists inside the data details
 		if self.Language.language_texts["original_language"] in data["Details"]:
@@ -879,7 +878,7 @@ class Database(object):
 	def Define_Data_Titles(self, dictionary):
 		data = dictionary["Data"]
 
-		if self.File.Exist(data["Folders"]["details"]) == True:
+		if self.File.Exists(data["Folders"]["details"]) == True:
 			data["Details"] = self.File.Dictionary(data["Folders"]["details"])
 
 			# Define titles key
@@ -904,22 +903,22 @@ class Database(object):
 			if " (" in data["Titles"]["Original"] and " (" not in data["Titles"]["Language"]:
 				data["Titles"]["Language"] = data["Titles"]["Language"] + " (" + data["Titles"]["Original"].split(" (")[-1]
 
-				if self.user_language in data["Titles"]:
-					data["Titles"][self.user_language] = data["Titles"][self.user_language] + " (" + data["Titles"]["Original"].split(" (")[-1]
+				if self.language["Small"] in data["Titles"]:
+					data["Titles"][self.language["Small"]] = data["Titles"][self.language["Small"]] + " (" + data["Titles"]["Original"].split(" (")[-1]
 
 			# Define the data titles by language
 			for language in self.languages["small"]:
-				key = self.Language.texts["title_in_language"][language][self.user_language]
+				key = self.Language.texts["title_in_language"][language][self.language["Small"]]
 
 				if key in data["Details"]:
 					data["Titles"][language] = data["Details"][key]
 
 			data["Titles"]["Language"] = data["Titles"]["Original"]
 
-			if self.user_language in data["Titles"]:
-				data["Titles"]["Language"] = data["Titles"][self.user_language]
+			if self.language["Small"] in data["Titles"]:
+				data["Titles"]["Language"] = data["Titles"][self.language["Small"]]
 
-			if self.user_language not in data["Titles"] and "Romanized" in data["Titles"]:
+			if self.language["Small"] not in data["Titles"] and "Romanized" in data["Titles"]:
 				data["Titles"]["Language"] = data["Titles"]["Romanized"]
 
 			# Sanitize data title
@@ -947,7 +946,7 @@ class Database(object):
 	def Get_Language_Status(self, status):
 		return_english = False
 
-		if status in self.texts["statuses, type: list"][self.user_language]:
+		if status in self.texts["statuses, type: list"][self.language["Small"]]:
 			return_english = True
 
 		w = 0
@@ -957,12 +956,12 @@ class Database(object):
 				return_english == False and
 				english_status == status
 			):
-				status_to_return = self.texts["statuses, type: list"][self.user_language][w]
+				status_to_return = self.texts["statuses, type: list"][self.language["Small"]][w]
 
 			# Return the English status
 			if (
 				return_english == True and
-				status == self.texts["statuses, type: list"][self.user_language][w]
+				status == self.texts["statuses, type: list"][self.language["Small"]][w]
 			):
 				status_to_return = english_status
 
@@ -1076,7 +1075,7 @@ class Database(object):
 
 		for language in self.languages["small"]:
 			if language in self.data["Titles"]:
-				translated_language = self.languages["full_translated"][language][self.user_language]
+				translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 				print("\t" + translated_language + ":")
 				print("\t" + self.data["Titles"][language])
@@ -1110,7 +1109,7 @@ class Database(object):
 				print(self.Language.language_texts["states, title()"] + ":")
 
 				for key in dictionary["States"]["Texts"]:
-					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
+					print("\t" + dictionary["States"]["Texts"][key][self.language["Small"]])
 
 			# If the user finished experiencing, ask for input before ending execution
 			print()

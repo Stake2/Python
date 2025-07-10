@@ -48,7 +48,7 @@ class Add_A_New_Game(GamePlayer):
 				title = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
 			if self.switches["Testing"] == True:
-				title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Type"]["Type"][self.user_language] + ")"
+				title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Type"]["Type"][self.language["Small"]] + ")"
 
 				if self.game["Title"] == "":
 					self.game["Title"] = title
@@ -56,7 +56,7 @@ class Add_A_New_Game(GamePlayer):
 				self.game["Titles"]["Original"] = self.game["Title"]
 
 			for language in self.languages["small"]:
-				translated_language = self.languages["full_translated"][language][self.user_language]
+				translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 				title = ""
 
@@ -135,10 +135,10 @@ class Add_A_New_Game(GamePlayer):
 			select_text = self.Language.language_texts["platform, title()"]
 
 			if self.switches["Testing"] == False:
-				platform = self.Input.Select(show_text = show_text, select_text = select_text, options = self.game_types["Platforms"][self.user_language])["option"]
+				platform = self.Input.Select(show_text = show_text, select_text = select_text, options = self.game_types["Platforms"][self.language["Small"]])["option"]
 
 			if self.switches["Testing"] == True:
-				platform = self.game_types["Platforms"][self.user_language][0]
+				platform = self.game_types["Platforms"][self.language["Small"]][0]
 
 			if "Platform" not in self.game:
 				self.game["Platform"] = platform
@@ -182,7 +182,7 @@ class Add_A_New_Game(GamePlayer):
 			}
 
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
@@ -209,7 +209,7 @@ class Add_A_New_Game(GamePlayer):
 		):
 			self.game["Details"][self.Language.language_texts["original_language"]] = self.game["Language"]
 
-		self.game["Details"][self.Language.language_texts["platform, title()"]] = self.game["Platform"][self.user_language]
+		self.game["Details"][self.Language.language_texts["platform, title()"]] = self.game["Platform"][self.language["Small"]]
 
 		for key in ["developers", "publishers", "distributors"]:
 			text_key = key

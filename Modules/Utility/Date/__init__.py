@@ -56,6 +56,8 @@ class Date():
 	def Import_Classes(self):
 		import importlib
 
+		# ---------- #
+
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -79,13 +81,18 @@ class Date():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class)
 
+		# ---------- #
+
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
 		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
-		self.user_language = self.Language.user_language
-		self.user_timezone = self.Language.user_timezone
+
+		# Import the "user" dictionary
+		self.user = self.Language.user
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
@@ -113,27 +120,30 @@ class Date():
 		if date_parameter == None:
 			date_parameter = self.Datetime.now()
 
+		# Define a shortcut to the user timezone
+		user_timezone = self.user["Timezone"]
+
 		# Define the user timezone variable
 		timezone = {
-			"String": str(self.user_timezone),
+			"String": str(user_timezone["String"]),
 			"Name": "",
-			"UTC Offset": "",
-			"Timezone info": pytz.timezone(str(self.user_timezone))
+			"UTC offset": "",
+			"Timezone information": user_timezone["Timezone information"]
 		}
 
 		# Remove the microsecond from the date object
 		date_parameter = date_parameter.replace(microsecond = 0)
 
 		# Define the date object in the user timezone
-		user_timezone_date = deepcopy(date_parameter).astimezone(timezone["Timezone info"])
+		user_timezone_date = deepcopy(date_parameter).astimezone(timezone["Timezone information"])
 
 		# Define the date dictionary
 		date = {
 			"User timezone": {
 				"String": timezone["String"],
 				"Name": user_timezone_date.strftime("%Z"),
-				"UTC Offset": user_timezone_date.strftime("%z"),
-				"Timezone info": timezone["Timezone info"]
+				"UTC offset": user_timezone_date.strftime("%z"),
+				"Timezone information": timezone["Timezone information"]
 			},
 			"Object": {},
 			"Units": {},

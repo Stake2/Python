@@ -56,7 +56,7 @@ class NeverEnding_Legacy(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -67,40 +67,54 @@ class NeverEnding_Legacy(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
-		# Define the "Separators" dictionary
+		# Define the "separators" dictionary
 		self.separators = {}
 
 		# Create separators from one to ten characters
@@ -316,7 +330,7 @@ class NeverEnding_Legacy(object):
 			archive_file = author["Folders"]["root"] + "Archive.txt"
 
 			# If the file exists
-			if self.File.Exist(archive_file) == True:
+			if self.File.Exists(archive_file) == True:
 				# Define the "Archive" dictionary using the archive file
 				author = self.Define_Archive(author, archive_file)
 
@@ -389,7 +403,7 @@ class NeverEnding_Legacy(object):
 				dictionary = {}
 
 				# If the file exists
-				if self.File.Exist(information_file) == True:
+				if self.File.Exists(information_file) == True:
 					# Get the file dictionary from the information file
 					dictionary = self.File.Dictionary(information_file, next_line = True)
 
@@ -452,7 +466,7 @@ class NeverEnding_Legacy(object):
 				archive_file = mod["Folders"]["root"] + "Archive.txt"
 
 				# If the file exists
-				if self.File.Exist(archive_file) == True:
+				if self.File.Exists(archive_file) == True:
 					# Define the "Archive" dictionary using the archive file
 					mod = self.Define_Archive(mod, archive_file)
 
@@ -473,7 +487,7 @@ class NeverEnding_Legacy(object):
 				additional_files_file = mod["Folders"]["root"] + "Additional files.txt"
 
 				# If the file exists
-				if self.File.Exist(additional_files_file) == True:
+				if self.File.Exists(additional_files_file) == True:
 					# Get the file lines from the additional files file
 					files = self.File.Contents(additional_files_file)["lines"]
 
@@ -666,7 +680,7 @@ class NeverEnding_Legacy(object):
 
 		# If the "translate" switch is True
 		if translate == True:
-			language = self.user_language
+			language = self.language["Small"]
 
 		# Define the language text based on the defined language
 		language_text = self.texts["lists_of_authors_and_their_mods"][language]

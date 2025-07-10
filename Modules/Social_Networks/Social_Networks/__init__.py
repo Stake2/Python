@@ -61,7 +61,7 @@ class Social_Networks(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -72,36 +72,50 @@ class Social_Networks(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -110,21 +124,6 @@ class Social_Networks(object):
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Define_Folders_And_Files(self):
 		# Define the "Social Networks" folder dictionary
@@ -402,7 +401,7 @@ class Social_Networks(object):
 						file_name = file_name["Plural"]
 
 					# Define the file name language
-					language = self.user_language
+					language = self.language["Small"]
 
 					if key in ["Items", "Social Network"]:
 						language = "en"
@@ -445,7 +444,7 @@ class Social_Networks(object):
 					# And the settings file exists
 					if (
 						key == "Settings" and
-						self.File.Exist(dict_[key]) == True
+						self.File.Exists(dict_[key]) == True
 					):
 						# Add the file to the "Files" dictionary
 						dictionary["Files"][item][key] = dict_[key]
@@ -464,7 +463,7 @@ class Social_Networks(object):
 							# Get the English and language setting texts
 							english_text = texts_dictionary[setting]["en"]
 
-							language_text = texts_dictionary[setting][self.user_language]
+							language_text = texts_dictionary[setting][self.language["Small"]]
 
 							# If the language setting is inside the Settings dictionary
 							if language_text in settings:
@@ -882,7 +881,7 @@ class Social_Networks(object):
 						words[item][language] = {}
 
 					# Define the gender text of the item in the current language
-					words[item][language] = self.Language.texts["genders, type: dict"][language][gender][text_key]
+					words[item][language] = self.Language.texts["genders, type: dictionary"][language][gender][text_key]
 
 				# Define the gender inside the "Gender" dictionary
 				dict_["Gender"]["Text"] = gender
@@ -1016,7 +1015,7 @@ class Social_Networks(object):
 			# Iterate through the English keys and values of the root default information items dictionary
 			for key, information_item in self.information_items["Dictionary"].items():
 				# Get the language key of the information item
-				language_key = information_item[self.user_language]
+				language_key = information_item[self.language["Small"]]
 
 				# If the local current (English) key is the same as the root (user language) key
 				# Or the root (user language) key is the same as the language key
@@ -1108,7 +1107,7 @@ class Social_Networks(object):
 		language_options = []
 
 		for option in options:
-			option = information_items["Dictionary"][option][self.user_language]
+			option = information_items["Dictionary"][option][self.language["Small"]]
 
 			language_options.append(option)
 
@@ -1161,7 +1160,7 @@ class Social_Networks(object):
 			if information_item["Name"] not in information_items["Lists"]["Select"]:
 				if type_text == None:
 					# Define the type text
-					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.user_language] + " " + information_item[self.user_language].lower())
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.language["Small"]] + " " + information_item[self.language["Small"]].lower())
 
 				# Define the "accept_enter" variable
 				accept_enter = False
@@ -1238,7 +1237,7 @@ class Social_Networks(object):
 			information_item["Test information"] != {}
 		):
 			print()
-			print(information_item[self.user_language] + ":")
+			print(information_item[self.language["Small"]] + ":")
 			print("\t" + information)
 
 		# Return the dictionary with the Information item dictionary and the information text
@@ -1291,7 +1290,7 @@ class Social_Networks(object):
 			# If the information item is not inside the "Remove from search" list
 			if key not in self.information_items["Lists"]["Remove from search"]:
 				# Get the language information item
-				language_information_item = information_item[self.user_language]
+				language_information_item = information_item[self.language["Small"]]
 
 				# If the user needs to type the information
 				if information_item["States"]["Ask for information"] == True:

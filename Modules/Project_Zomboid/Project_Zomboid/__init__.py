@@ -56,7 +56,7 @@ class Project_Zomboid(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -67,36 +67,50 @@ class Project_Zomboid(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -105,21 +119,6 @@ class Project_Zomboid(object):
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Define_Folders_And_Files(self):
 		# Define the root "Project Zomboid" dictionary
@@ -399,7 +398,7 @@ class Project_Zomboid(object):
 			self.Folder.Create(survivor["Diary"]["Folders"]["Year"]["root"])
 
 			# Get the month name with number in the user language
-			month_name_with_number = date["Texts"]["Month name with number"][self.user_language]
+			month_name_with_number = date["Texts"]["Month name with number"][self.language["Small"]]
 
 			# Define and create the month folder
 			survivor["Diary"]["Folders"]["Year"]["Month"] = {
@@ -562,7 +561,7 @@ class Project_Zomboid(object):
 		self.dictionary = self.Define_Date_Dictionary(self.dictionary)
 
 		# Get the month name with number in the user language
-		month_name_with_number = self.dictionary["Date"]["Texts"]["Month name with number"][self.user_language]
+		month_name_with_number = self.dictionary["Date"]["Texts"]["Month name with number"][self.language["Small"]]
 
 		# Define and create the month folder
 		diary["Folders"]["Year"]["Month"] = {

@@ -38,7 +38,7 @@ class Show_Story_Information(Stories):
 
 			# Show the titles of the story in all languages
 			for language in self.languages["small"]:
-				translated_language = self.languages["full_translated"][language][self.user_language]
+				translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 				print("\t" + translated_language + ":")
 				print("\t" + story["Titles"][language])
@@ -59,7 +59,7 @@ class Show_Story_Information(Stories):
 					text = information_item["Plural"]
 
 				# Get the text in the user language
-				text = text[self.user_language]
+				text = text[self.language["Small"]]
 
 				# Show the text
 				print(text + ":")
@@ -75,8 +75,8 @@ class Show_Story_Information(Stories):
 						information = story["Information"]["Authors"]
 
 					# If the user language is inside the information, get it
-					if self.user_language in information:
-						information = information[self.user_language]
+					if self.language["Small"] in information:
+						information = information[self.language["Small"]]
 
 					# If the type of the information is not a dictionary
 					if type(information) != dict:
@@ -100,10 +100,10 @@ class Show_Story_Information(Stories):
 							# And the user language is present in that dictionary
 							if (
 								type(item) == dict and
-								self.user_language in item
+								self.language["Small"] in item
 							):
 								# Get the user language value
-								item = item[self.user_language]
+								item = item[self.language["Small"]]
 
 							# If the information item key not is "Status"
 							# Or it is
@@ -119,7 +119,7 @@ class Show_Story_Information(Stories):
 				# If the information item key is the "Synopsis" one
 				if key == "Synopsis":
 					# Show each line of the synopsis of the story in the user language
-					for line in story["Information"][key][self.user_language].splitlines():
+					for line in story["Information"][key][self.language["Small"]].splitlines():
 						print("\t" + line)
 
 				print()
@@ -137,7 +137,7 @@ class Show_Story_Information(Stories):
 				print("\t" + self.Language.language_texts["titles, title()"] + ":")
 
 				t = 1
-				for title in story["Information"]["Chapters"]["Titles"][self.user_language]:
+				for title in story["Information"]["Chapters"]["Titles"][self.language["Small"]]:
 					print("\t\t" + str(t) + " - " + title)
 
 					t += 1
@@ -169,7 +169,7 @@ class Show_Story_Information(Stories):
 					# Show the story website information of the story
 					for language in self.languages["small"]:
 						# Get the translated language
-						translated_language = self.languages["full_translated"][language][self.user_language]
+						translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 						# Get the item (link)
 						item = story["Information"]["Links"][key]

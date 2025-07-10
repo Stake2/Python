@@ -194,8 +194,8 @@ class Convert_History(GamePlayer):
 				# Read the file to get the file lines
 				lines = self.File.Contents(game_type_folders["Entry list"])["Lines"]
 
-				# Add the text contents dictionary to the play history (by game type) "Entry list" dictionary of the current game type
-				year["Entry list"]["Play History (by game type)"][english_game_type] = contents["Lines"]
+				# Add the text lines to the play history (by game type) "Entry list" dictionary of the current game type
+				year["Entry list"]["Play History (by game type)"][english_game_type] = lines
 
 				# ----- #
 
@@ -297,7 +297,7 @@ class Convert_History(GamePlayer):
 
 		# Define a list of entry text files to update:
 		# Action:
-		# Iterate through the years inside the years dictionary to update the root and sub-game "Played" entry text files with the "Replace_Text" method
+		# Iterate through the years inside the years dictionary to update the root and sub-game "Played" entry text files with the "Update_Entry_Text" method
 		# 
 		# [X] - Game "Played" entry text files
 
@@ -341,7 +341,7 @@ class Convert_History(GamePlayer):
 				root_game_type = self.game_types[english_game_type]
 
 				# Get the language game type for the user language
-				language_game_type = root_game_type["Type"][self.user_language]
+				language_game_type = root_game_type["Type"][self.language["Small"]]
 
 				# Get the game type folders
 				game_type_folders = year["Folders"]["Play History (by game type)"][english_game_type]["Folders"]
@@ -423,7 +423,7 @@ class Convert_History(GamePlayer):
 				root_game_type = self.game_types[english_game_type]
 
 				# Get the language game type for the user language
-				language_game_type = root_game_type["Type"][self.user_language]
+				language_game_type = root_game_type["Type"][self.language["Small"]]
 
 				# Get the "Entries" dictionary of the current game type
 				game_type_entries = year["Entries"]["Play History (by game type)"][english_game_type]
@@ -438,7 +438,7 @@ class Convert_History(GamePlayer):
 				game_type_folders = year["Folders"]["Play History (by game type)"][english_game_type]["Folders"]
 
 				# Get the game type "Game information" folder
-				game_information_folder = self.game_types[english_game_type]["Folders"]["Game information"]
+				game_information_folder = root_game_type["Folders"]["Game information"]
 
 				# ----- #
 
@@ -622,14 +622,13 @@ class Convert_History(GamePlayer):
 						# Define a shortcut to the sub-game "Played" folder
 						played_folder = game["Root dictionary"]["Game"]["Sub-game"]["Folders"]["Played"]
 
-						# Define the sub-game dictionary
-						game["Folders"]["Played (sub-games)"][sub_game_title] = {}
-
-						# Import the "Played" folders and files
-						game["Folders"]["Played (sub-games)"][sub_game_title]["root"] = played_folder["root"]
-						game["Folders"]["Played (sub-games)"][sub_game_title]["Entries"] = played_folder["entries"]
-						game["Folders"]["Played (sub-games)"][sub_game_title]["Entry list"] = played_folder["entry_list"]
-						game["Folders"]["Played (sub-games)"][sub_game_title]["Files"] = played_folder["files"]
+						# Define the sub-game folders dictionary by copying the keys from the original dictionary and converting them to title case
+						game["Folders"]["Played (sub-games)"][sub_game_title] = {
+							"root": played_folder["root"],
+							"Entries": played_folder["root"],
+							"Entry list": played_folder["entry_list"],
+							"Files": played_folder["files"]
+						}
 
 						# Define a default played (sub-games) "Entries" dictionary
 						game["Entries"]["Played (sub-games)"][sub_game_title] = {
@@ -697,7 +696,7 @@ class Convert_History(GamePlayer):
 
 				# Iterate through the list of small languages
 				for language in self.languages["small"]:
-					# Define the normal file name of the current language with the current language media type
+					# Define the normal file name of the current language with the current language game type
 					file_names["Normal"][language] = template.format(root_game_type["Type"][language])
 
 					# Define the sanitized version of it
@@ -716,9 +715,9 @@ class Convert_History(GamePlayer):
 					"Played (sub-game)": {}
 				}
 
-				# Define the play history (by game type) entry file dictionary
+				# Define the "Play History (by game type)" entry file dictionary
 				entry_files["Play History (by game type)"] = {
-					"Language": self.user_language,
+					"Language": self.language["Small"],
 					"File": game_type_folders["Files"]["root"] + file_names["Sanitized"]["en"] + ".txt"
 				}
 
@@ -727,7 +726,7 @@ class Convert_History(GamePlayer):
 					# Get the full language
 					full_language = self.languages["full"][language]
 
-					# Define the language gaming sessions entry file dictionary
+					# Define the language "Gaming sessions" entry file dictionary
 					entry_files["Gaming sessions ({})".format(full_language)] = {
 						"Language": language,
 						"File": year["Folders"]["Year"]["Gaming sessions"][language][english_game_type]["root"] + file_names["Sanitized"][language] + ".txt"
@@ -735,7 +734,7 @@ class Convert_History(GamePlayer):
 
 					# If the gaming session is the first one in the year
 					if gaming_session_number == 1:
-						# Define the language firsts of the year entry file dictionary
+						# Define the language "Firsts of the Year" entry file dictionary
 						entry_files["Firsts of the Year ({})".format(full_language)] = {
 							"Language": language,
 							"File": year["Folders"]["Year"]["Firsts of the Year"][language]["root"] + file_names["Sanitized"][language] + ".txt"
@@ -750,16 +749,16 @@ class Convert_History(GamePlayer):
 				old_file = folder + file_names["Sanitized"]["en"] + ".txt"
 
 				# Define the new file
-				new_file = folder + file_names["Sanitized"][self.user_language] + ".txt"
+				new_file = folder + file_names["Sanitized"][self.language["Small"]] + ".txt"
 
 				# If the new file does not exist
-				if self.File.Exist(new_file) == False:
+				if self.File.Exists(new_file) == False:
 					# Rename the file
 					self.File.Move(old_file, new_file)
 
 				# Define the game "Played" entry file
 				entry_files["Played"] = {
-					"Language": self.user_language,
+					"Language": self.language["Small"],
 					"File": new_file
 				}
 
@@ -774,20 +773,20 @@ class Convert_History(GamePlayer):
 					# Define a shortcut to the folder
 					folder = game["Folders"]["Played (sub-games)"][sub_game_title]["Files"]["root"]
 
-					# Define the old file	
+					# Define the old file
 					old_file = folder + file_names["Sanitized"]["en"] + ".txt"
 
 					# Define the new file
-					new_file = folder + file_names["Sanitized"][self.user_language] + ".txt"
+					new_file = folder + file_names["Sanitized"][self.language["Small"]] + ".txt"
 
 					# If the new file does not exist
-					if self.File.Exist(new_file) == False:
+					if self.File.Exists(new_file) == False:
 						# Rename the file
 						self.File.Move(old_file, new_file)
 
 					# Define the sub-game "Played" entry file
 					entry_files["Played (sub-game)"] = {
-						"Language": self.user_language,
+						"Language": self.language["Small"],
 						"File": new_file
 					}
 
@@ -807,7 +806,7 @@ class Convert_History(GamePlayer):
 						contents = self.File.Contents(entry_file)
 
 						# If the file does not exist
-						if self.File.Exist(entry_file) == False:
+						if self.File.Exists(entry_file) == False:
 							# Show a ten dash space separator
 							print()
 							print(self.separators["10"])
@@ -1388,463 +1387,3 @@ class Convert_History(GamePlayer):
 
 		# Return the text
 		return text
-
-	def Process_Entry(self, entry, english_game_type = None, entries = None, entry_list_file = None):
-		# If the "Number" key is in the entry dictionary
-		if "Number" in entry:
-			# Change the "Number" key to "Gaming session number"
-			old_key = "Number"
-			new_key = "Gaming session number"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Type number" key is in the entry dictionary
-		if "Type number" in entry:
-			# Change the "Type number" key to "Gaming session number by game type"
-			old_key = "Type number"
-			new_key = "Gaming session number by game type"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Type" key is in the entry dictionary
-		if "Type" in entry:
-			# Add the "Game type" key after the "Gaming session number by game type" key, then remove the "Type" key
-			after_key = "Gaming session number by game type"
-			entry = self.JSON.Add_Key_After_Key(entry, {"Game type": entry["Type"]}, after_key = after_key)
-			entry.pop("Type")
-
-		# ---------- #
-
-		# If the "Date" key is in the entry dictionary
-		if "Date" in entry:
-			# Make a backup of the entry time
-			entry_time_backup = entry["Date"]
-
-			# Get the "Date" key of the entry dictionary and transform it into a date dictionary
-			date = self.Date.From_String(entry["Date"])
-
-			# Create a "Times" dictionary based on the date dictionary
-			times = {
-				"Started playing": "", # The time when the user started playing the game
-
-				"Finished playing": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"], # The "Finished playing" with the "HH:MM DD/MM/YYYY" format in the user timezone
-
-				"Finished playing (UTC)": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"], # The "Finished playing" in the ISO-8601 format and UTC time
-
-				"Gaming session duration": {} # The gaming session duration dictionary
-			}
-
-			# Get the after time as the current time
-			after_time = date
-
-			# Define a subtract dictionary
-			subtract = {}
-
-			# Fill the subtract dictionary
-			for key, value in entry["Session duration"].items():
-				# If the key is not "Text"
-				if key != "Text":
-					subtract[key.lower()] = value
-
-			# Define the relative delta
-			relative_delta = self.Date.Relativedelta(**subtract)
-
-			# Subtract the subtract time from the after time, creating the after time
-			before_time = self.Date.Now(after_time["Object"] - relative_delta)
-
-			# Update the "Started playing" time to be the before time
-			times["Started playing"] = before_time["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
-
-			# Get the time difference between the before and the after times
-			difference = self.Date.Difference(before_time, after_time)
-
-			# Update the difference dictionary
-			difference = {
-				**difference["Difference"], # Extract the keys and values of the "Difference" sub-dictionary
-				"Text": difference["Text"]
-			}
-
-			# Update the root "Gaming session duration" dictionary
-			times["Gaming session duration"] = difference
-
-			# Add the "Times" key after the "Game type" key
-			after_key = "Game type"
-			entry = self.JSON.Add_Key_After_Key(entry, {"Times": times}, after_key = after_key)
-
-			# Remove the "Date" key
-			entry.pop("Date")
-
-			# Remove the "Session duration" key
-			entry.pop("Session duration")
-
-		# ---------- #
-
-		# If the "Titles" key is in the entry dictionary
-		if "Titles" in entry:
-			# Change the "Titles" key to "Game titles"
-			old_key = "Titles"
-			new_key = "Game titles"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Sub-game" key exists in the entry dictionary
-		if "Sub-game" in entry:
-			# Change the "Sub-game" key to "Sub-game titles"
-			old_key = "Sub-game"
-			new_key = "Sub-game titles"
-			entry = self.JSON.Add_Key_After_Key(entry, {new_key: entry[old_key]}, after_key = old_key, remove_after_key = True)
-
-		# ---------- #
-
-		# If the "Platform" value is "PC"
-		if entry["Platform"] == "PC":
-			# Change it to "Computer"
-			entry["Platform"] = "Computer"
-
-		# ---------- #
-
-		# Define a dictionary of files to update
-		files = {
-			"Entry file": {},
-			"Entry list": {},
-			"JSON": {}
-		}
-
-		# ---------- #
-
-		# If the English game type parameter is not None
-		if english_game_type != None:
-			# Define the local entry name dictionary
-			entry_name = {
-				"en": entry["Entry"]
-			}
-
-			# Get the game type dictionary
-			game_type = self.game_types[english_game_type]
-
-			# Get the language game type for the current language
-			language_game_type = game_type["Type"][language]
-
-			# Create the language entry name by changing the English game type with the language game type
-			entry_name[self.user_language] = entry_name["en"].replace(english_game_type, language_game_type)
-
-			# ---------- #
-
-			# By game type
-
-			# Get the by game type folder
-			by_game_type_folder = year["Folders"]["By game type"][english_game_type]
-
-			# Get the files folder
-			files_folder = by_game_type_folder["Files"]["root"]
-
-			# Get the entry list file by game type
-			files["Entry list"]["By game type"] = by_game_type_folder["root"] + "Entry list.txt"
-
-			# ---------- #
-
-			# Iterate through the list of small languages
-			for language in self.languages["small"]:
-				# Define the key addon
-				key_addon = " ({})".format(language)
-
-				# Get the played game folder of the current year, language, and game type
-				folder = year["Folders"][language]["Gaming sessions"][english_game_type]["root"]
-
-				# Get the entry file
-				files["Entry file"]["Gaming sessions"] = folder + entry_name[language] + ".txt"
-
-				# If the entry is the first for the curremt game type
-				if entry["Gaming session number by game type"] == 1:
-					# Get the "Firsts of the Year" folder of the current year and language
-					folder = year["Folders"][language]["Firsts of the Year"]["root"]
-
-					# Get the entry file
-					files["Entry file"]["Firsts of the Year"] = folder + entry_name[language] + ".txt"
-
-			# ---------- #
-
-			# Get the game information folder
-			game_information_folder = self.game_types[english_game_type]["Folders"]["Game information"]
-
-			# ---------- #
-
-			# Define the title key as "Original"
-			title_key = "Original"
-
-			# If the "Romanized" key is in the "Game titles" dictionary
-			if "Romanized" in entry["Game titles"]:
-				# Define the alternative key as "Romanized"
-				alternative_key = "Romanized"
-
-				# Get the alternative folder
-				alternative_folder = game_information_folder["root"] + self.Sanitize_Title(entry["Game titles"][alternative_key]) + "/"
-
-				# If the alternative folder exists
-				if self.Folder.Exist(alternative_folder) == True:
-					# Change the title key to be the alternative key
-					title_key = alternative_key
-
-			# Get the game title
-			game_title = self.Sanitize_Title(entry["Game titles"][title_key])
-
-			# Get the game folder
-			game_folder = game_information_folder["root"] + game_title + "/"
-
-			# ---------- #
-
-			# Define the sub-games folder as an empty string
-			sub_games_folder = ""
-
-			# If the DLCs folder exists
-			dlcs_folder = game_folder + self.language_texts["dlcs, upper()"] + "/"
-
-			if self.Folder.Exist(dlcs_folder) == True:
-				# Define it as the sub-games folder
-				sub_games_folder = dlcs_folder
-
-			# If the "Sub-game titles" key is not in the entry dictionary
-			# And the sub-games folder is not empty
-			if (
-				"Sub-game titles" not in entry and
-				sub_games_folder != ""
-			):
-				# Update the game folder to add the root game title
-				game_folder = sub_games_folder + game_title + "/"
-
-			# ---------- #
-
-			# If the "Sub-game titles" key is in the entry dictionary
-			if "Sub-game titles" in entry:
-				# Define the title key as "Original"
-				title_key = "Original"
-
-				# If the "Romanized" key is in the "Sub-game titles" dictionary
-				if "Romanized" in entry["Sub-game titles"]:
-					# Define the title key as "Romanized"
-					title_key = "Romanized"
-
-				# Get the sub-game title
-				sub_game_title = self.Sanitize_Title(entry["Sub-game titles"][title_key])
-
-				# Update the game folder to add the sub-game title
-				game_folder = sub_games_folder + sub_game_title + "/"
-
-			# ---------- #
-
-			# Get the "Played" folder
-			played_folder = game_folder + self.Language.language_texts["played, title()"] + "/"
-
-			# Get the played files folder
-			files_folder = played_folder + self.File.language_texts["files, title()"] + "/"
-
-			# Get the played "Sessions.json" file
-			played_entries_file = played_folder + "Entries.json"
-
-			# If the played "Sessions.json" file is not empty
-			if (
-				self.File.Contents(played_entries_file)["lines"] != [] and
-				self.JSON.To_Python(played_entries_file)["Entries"] != []
-			):
-				# Read it
-				played_entries = self.JSON.To_Python(played_entries_file)
-
-				# Update the entry dictionary
-				played_entries["Dictionary"][entry["Entry"]] = entry
-
-				# Add the played folder to the list of folders
-				folders["Played"] = files_folder
-
-			# ---------- #
-
-			# Get the played "Entry list.txt" file
-			played_entry_list_file = played_folder + "Entry list.txt"
-
-		# ---------- #
-
-		# Define the local entry title
-		entry_title = entry["Entry"]
-
-		# Make a backup of the entry name
-		entry_name_backup = entry["Entry"]
-
-		# ---------- #
-
-		# Iterate through the folders in the folders dictionary
-		for folder_name, folder in deepcopy(folders).items():
-			# If the folder is empty
-			if folder == "":
-				# Remove the folder key
-				folders.pop(folder_name)
-
-		# ---------- #
-
-		# Iterate through the folders in the folders dictionary
-		for folder_name, folder in folders.items():
-			# Define the language as the user language by default
-			language = self.user_language
-
-			# If the folder is "Game type files"
-			if folder_name == "Game type files":
-				# Change the language to the user language
-				language = self.user_language
-
-			# If the "Gaming sessions" or "Firsts of the Year" texts are in the folder name
-			if (
-				"Gaming sessions" in folder_name or
-				"Firsts of the Year" in folder_name
-			):
-				# Get the folder name, remove the folder name and keep only the language
-				language = folder_name.split(" (")[1].replace(")", "")
-
-			# ---------- #
-
-			# Get the sanitized entry name
-			entry_name = entry_name_backup.replace(":", ";").replace("/", "-")
-
-			# Get the entry file
-			entry_file = folder + entry_name + ".txt"
-
-			# Make a backup of the entry file
-			entry_file_backup = entry_file
-
-			# Define the default new entry name and file
-			new_entry_name = entry["Entry"]
-			new_entry_file = ""
-
-			# ---------- #
-
-			# Get the game type dictionary
-			game_type = self.game_types[english_game_type]
-
-			# Get the language game type for the current language
-			language_game_type = game_type["Type"][language]
-
-			# Create the language entry name by changing the English game type with the language game type
-			language_entry_name = new_entry_name.replace(english_game_type, language_game_type)
-
-			# Define the "renamed file" switch as False
-			renamed_file = False
-
-			# ---------- #
-
-			# Define shortcuts for the old and new keys
-			old_key = entry_name_backup
-			new_key = new_entry_name
-
-			# If the two keys are not the same
-			# Or the local language is not English
-			# And the folder is not "Game type files"
-			if (
-				old_key != new_key or
-				language != "en" and
-				folder_name != "Game type files"
-			):
-				# If the old key is in the entries dictionary
-				if old_key in entries["Dictionary"]:
-					# Make a backup of the entry dictionary
-					entry_dictionary = deepcopy(entries["Dictionary"][old_key])
-
-					# Change the key in the root dictionary
-					entries["Dictionary"] = self.JSON.Add_Key_After_Key(entries["Dictionary"], {new_key: entry_dictionary}, after_key = old_key, remove_after_key = True)
-
-					# ---------- #
-
-					# If the played entries file is not an empty string
-					if played_entries_file != "":
-						# Read it
-						played_entries = self.JSON.To_Python(played_entries_file)
-
-						# Update the entry in the dictionary
-						entry["Entry"] = new_entry_name
-
-						# If the old key is in the dictionary
-						if old_key in played_entries["Dictionary"]:
-							# Change the key in the played dictionary
-							played_entries["Dictionary"] = self.JSON.Add_Key_After_Key(played_entries["Dictionary"], {new_key: entry}, after_key = old_key, remove_after_key = True)
-
-				# ---------- #
-
-				# Iterate through the entries in the list of entries
-				e = 0
-				for local_entry in entries["Entries"]:
-					# If the local entry is the current entry
-					if local_entry == entry_name_backup:
-						# Replace it with the new entry name
-						entries["Entries"][e] = new_entry_name
-
-				# ---------- #
-
-				# If the game type entry list file is not an empty string
-				if game_type_entry_list_file != "":
-					# Read the file
-					file_text = self.File.Contents(game_type_entry_list_file)["String"]
-
-					# Replace the old entry name with the new one
-					file_text = file_text.replace(entry_name_backup, new_entry_name)
-
-					# If the "write to file" switch is True
-					if self.write_to_file == True:
-						# Update the text in the file
-						self.File.Edit(game_type_entry_list_file, file_text, "w")
-
-				# ---------- #
-
-				# If the played entry list file is not an empty string
-				if played_entry_list_file != "":
-					# Read the file
-					file_text = self.File.Contents(played_entry_list_file)["String"]
-
-					# Replace the old entry name with the new one
-					file_text = file_text.replace(entry_name_backup, new_entry_name)
-
-					# If the "write to file" switch is True
-					if self.write_to_file == True:
-						# Update the text in the file
-						self.File.Edit(played_entry_list_file, file_text, "w")
-
-				# ---------- #
-
-				# Update the entry in the dictionary
-				entry["Entry"] = new_entry_name
-
-				# Update the local entry title
-				entry_title = new_entry_name
-
-				# Sanitize the entry name
-				sanitized_entry_name = language_entry_name.replace(":", ";").replace("/", "-")
-
-				# Define a new (renamed) entry file
-				new_entry_file = folder + sanitized_entry_name + ".txt"
-
-				# If the first and second file are not the same file
-				if entry_file != new_entry_file:
-					# Rename the file
-					self.File.Move(entry_file, new_entry_file)
-
-					# Update the entry file variable
-					entry_file = new_entry_file
-
-					# Set the "renamed file" switch to True
-					renamed_file = True
-
-				# ---------- #
-
-			# Get the contents of the file as a string
-			text = self.File.Contents(entry_file)["String"]
-
-			# Replace the file text to correct text order
-			text = self.Replace_Text(entry, text, language)
-
-			if "By game type" in entry_file:
-				print(entry_file)
-				print("[{}]".format(text))
-
-			# Write the updated contents into the entry file
-			self.File.Edit(entry_file, text, "w")
-
-		# Return the entry dictionary, entry title, and entries dictionary
-		return entry, entry_title, entries

@@ -101,7 +101,7 @@ class Update_Websites(PHP):
 		# Show the list of updated websites
 		for website in self.dictionary["Websites"]["Dictionary"].values():
 			# Get the website title
-			website_title = website["Titles"][self.user_language]
+			website_title = website["Titles"][self.language["Small"]]
 
 			# Show it with a tab
 			print("\t" + website_title)
@@ -221,7 +221,7 @@ class Update_Websites(PHP):
 			# Define the dictionary for the "Select" method of the "Input" module
 			dictionary = {
 				"options": self.websites["List"]["en"],
-				"language_options": self.websites["List"][self.user_language],
+				"language_options": self.websites["List"][self.language["Small"]],
 				"show_text": self.language_texts["websites, title()"],
 				"select_text": self.language_texts["select_a_website_to_update_its_html_contents"]
 			}
@@ -240,7 +240,7 @@ class Update_Websites(PHP):
 		# Define the parameters dictionary to use to select the websites
 		parameters = {
 			"options": self.websites["List"]["en"].copy(),
-			"language_options": self.websites["List"][self.user_language].copy(),
+			"language_options": self.websites["List"][self.language["Small"]].copy(),
 			"show_text": self.language_texts["websites, title()"],
 			"select_text": self.language_texts["select_a_website_to_add_it_to_the_list"]
 		}
@@ -271,9 +271,9 @@ class Update_Websites(PHP):
 			print(self.Language.language_texts["list, title()"] + ":")
 
 			# If the "Selected" list in the user language is not empty
-			if dictionary["Selected"][self.user_language] != []:
+			if dictionary["Selected"][self.language["Small"]] != []:
 				# Show the website titles with a tab before them
-				for title in dictionary["Selected"][self.user_language]:
+				for title in dictionary["Selected"][self.language["Small"]]:
 					print("\t" + title)
 
 			# If the list is empty, show the "[Empty]" text
@@ -294,7 +294,7 @@ class Update_Websites(PHP):
 					# Define the key to be used to get the option for the current language
 					key = "option"
 
-					if language == self.user_language:
+					if language == self.language["Small"]:
 						key = "language_option"
 
 					# Add the selected website to the "Selected" list of the current language
@@ -341,11 +341,11 @@ class Update_Websites(PHP):
 		for key, option in dictionary["Custom options"].items():
 			# Iterate through the languages inside the defined list
 			# (The English language and the user language)
-			for language in ["en", self.user_language]:
+			for language in ["en", self.language["Small"]]:
 				# Define the default parameter key for the dictionary
 				parameter_key = "options"
 
-				if language == self.user_language:
+				if language == self.language["Small"]:
 					parameter_key = "language_options"
 
 				# Define the text key for the custom option
@@ -382,7 +382,7 @@ class Update_Websites(PHP):
 					text = text.format(item_text)
 
 				# If the current language is the user language
-				if language == self.user_language:
+				if language == self.language["Small"]:
 					# Add brackets around the text
 					text = "[" + text + "]"
 
@@ -416,7 +416,7 @@ class Update_Websites(PHP):
 			# Show the list of websites
 			for website in self.dictionary["Websites"]["Dictionary"].values():
 				# Get the website title
-				website_title = website["Titles"][self.user_language]
+				website_title = website["Titles"][self.language["Small"]]
 
 				# Show it with a tab
 				print("\t" + website_title)
@@ -433,7 +433,7 @@ class Update_Websites(PHP):
 		# Iterate through the website dictionaries inside the "Dictionary" key
 		for key, website in self.dictionary["Websites"]["Dictionary"].items():
 			# Show the website title in the user language
-			website_title = website["Titles"][self.user_language]
+			website_title = website["Titles"][self.language["Small"]]
 
 			# Show a five dash space separator
 			print()
@@ -456,7 +456,7 @@ class Update_Websites(PHP):
 			# Iterate through the list of small languages inside the "Languages" dictionary
 			for language in self.dictionary["Languages"]["Small"]:
 				# Get the translated language in the user language
-				translated_language = self.dictionary["Languages"]["Full translated"][language][self.user_language]
+				translated_language = self.dictionary["Languages"]["Full translated"][language][self.language["Small"]]
 
 				# Get the link of the website in the current language
 				link = website["Links"][language]

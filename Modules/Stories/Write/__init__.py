@@ -105,7 +105,7 @@ class Write(Stories):
 				parameters["options"].remove(writing_mode)
 
 			# Define the addon as the " the chapter [number name]" text
-			addon = " " + self.Language.texts["genders, type: dict"][self.user_language]["masculine"]["the"] + " "
+			addon = " " + self.Language.texts["genders, type: dictionary"][self.language["Small"]]["masculine"]["the"] + " "
 
 			# Add the "chapter " text
 			addon += self.Language.language_texts["chapter, title()"].lower() + " "
@@ -267,7 +267,7 @@ class Write(Stories):
 			# (The chapters are always written in the user language)
 			if (
 				self.writing_mode == "Write" and
-				language == self.user_language
+				language == self.language["Small"]
 			):
 				# Create the file
 				self.File.Create(self.dictionary["Chapter"]["Files"][language])
@@ -277,7 +277,7 @@ class Write(Stories):
 			# (The chapters are always written or revised in the user language)
 			if (
 				self.writing_mode in ["Write", "Revise"] and
-				language == self.user_language
+				language == self.language["Small"]
 			):
 				# Define the destination language of the chapter as the current small and full language
 				self.dictionary["Chapter"]["Language"]["Destination"] = {
@@ -322,7 +322,7 @@ class Write(Stories):
 
 		# Show the story title in the user language
 		print(self.Language.language_texts["story, title()"] + ":")
-		print("\t" + self.story["Titles"][self.user_language])
+		print("\t" + self.story["Titles"][self.language["Small"]])
 		print()
 
 		# Define the show text
@@ -333,7 +333,7 @@ class Write(Stories):
 		print(show_text + ":")
 
 		# Define the chapter title
-		chapter_title = self.chapter["Titles (with leading zeroes)"][self.user_language]
+		chapter_title = self.chapter["Titles (with leading zeroes)"][self.language["Small"]]
 
 		# If there is an addon, add it
 		if "Addon" in self.dictionary["Writing mode"]:
@@ -347,7 +347,7 @@ class Write(Stories):
 		# Iterate through the list of small languages
 		for language in self.languages["small"]:
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Get the chapter file
 			file = self.dictionary["Chapter"]["Files"][language]
@@ -385,7 +385,7 @@ class Write(Stories):
 				self.states["First time writing"] == True
 			):
 				# Update the list of lines to be the chapter text of the original (user) chapter language
-				lines = self.File.Contents(self.dictionary["Chapter"]["Files"][self.user_language])["lines"]
+				lines = self.File.Contents(self.dictionary["Chapter"]["Files"][self.language["Small"]])["lines"]
 
 				# Remove the first five lines that come from the original version of the chapter text
 				i = 1
@@ -550,7 +550,7 @@ class Write(Stories):
 		print(self.separators["3"])
 
 		# Define and show the text about opening the story website
-		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Destination"]["Translated"][self.user_language]
+		text = self.language_texts["opening_the_story_website_in"] + " " + self.dictionary["Chapter"]["Language"]["Destination"]["Translated"][self.language["Small"]]
 
 		print()
 		print(text + "...")
@@ -605,8 +605,8 @@ class Write(Stories):
 		# Define the list of items
 		items = [
 			self.dictionary["Writing mode"]["Language texts"]["Action"].title(), # The action of the writing mode
-			self.dictionary["Chapter"]["Numbers"]["Names"][self.user_language], # The number name of the chapter in the user language
-			'"' + self.story["Titles"][self.user_language] + '"' # The story title in the user language, with quotes around it
+			self.dictionary["Chapter"]["Numbers"]["Names"][self.language["Small"]], # The number name of the chapter in the user language
+			'"' + self.story["Titles"][self.language["Small"]] + '"' # The story title in the user language, with quotes around it
 		]
 
 		# Format the template with the items, making the Discord status
@@ -634,7 +634,7 @@ class Write(Stories):
 		# If the mode is "Create"
 		if mode == "Create":
 			# If the file does not exist
-			if self.File.Exist(backup_file) == False:
+			if self.File.Exists(backup_file) == False:
 				# Create the backup file
 				self.File.Create(backup_file)
 
@@ -660,7 +660,7 @@ class Write(Stories):
 				text_to_write = "\n" + \
 				"\n" + \
 				self.Language.language_texts["duration, title()"] + ":" + "\n" + \
-				self.dictionary["Writing"]["Duration"]["Text"][self.user_language]
+				self.dictionary["Writing"]["Duration"]["Text"][self.language["Small"]]
 
 			# Write the text to the file in the append mode
 			self.File.Edit(backup_file, text_to_write, "a")
@@ -680,7 +680,7 @@ class Write(Stories):
 			# Show the total writing time text in the user language
 			print()
 			print(self.Language.language_texts["total_duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
-			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.user_language])
+			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.language["Small"]])
 
 		# ---------- #
 
@@ -834,7 +834,7 @@ class Write(Stories):
 		print(text)
 
 		# Show the writing duration (subtracting the pause time)
-		print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.user_language])
+		print("\t" + self.dictionary["Session"]["Duration"]["Text"][self.language["Small"]])
 
 		# Show the pause duration time in the user language
 		text = self.Language.language_texts["duration_of"] + " " + self.Language.language_texts["pause, type: item"].lower()
@@ -848,7 +848,7 @@ class Write(Stories):
 
 			print()
 			print(text + ":")
-			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.user_language])
+			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.language["Small"]])
 
 		# ---------- #
 
@@ -897,7 +897,7 @@ class Write(Stories):
 			# Show the total writing time text in the user language
 			print()
 			print(self.Language.language_texts["total_duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
-			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.user_language])
+			print("\t" + self.dictionary["Writing"]["Duration"]["Text"][self.language["Small"]])
 
 		# ---------- #
 
@@ -963,7 +963,7 @@ class Write(Stories):
 			# Show the writing duration time in the user language
 			print()
 			print(self.Language.language_texts["duration_of"] + " " + self.dictionary["Writing mode"]["Language texts"]["Item"] + ":")
-			print("\t" + self.dictionary["Session"]["Duration"]["Text (with time units)"][self.user_language])
+			print("\t" + self.dictionary["Session"]["Duration"]["Text (with time units)"][self.language["Small"]])
 
 			# ---------- #
 
@@ -1073,7 +1073,7 @@ class Write(Stories):
 			# Show the writing duration time in the user language (subtracting the pause time)
 			print()
 			print(text)
-			print("\t" + difference["Text (with time units)"][self.user_language])
+			print("\t" + difference["Text (with time units)"][self.language["Small"]])
 
 			# ---------- #
 
@@ -1083,7 +1083,7 @@ class Write(Stories):
 
 			print()
 			print(text + ":")
-			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.user_language])
+			print("\t" + self.dictionary["Session"]["Pause"]["Duration"]["Text"][self.language["Small"]])
 
 	def Calculate_Duration(self, dictionary, add = True, after_time = None):
 		# If the "After" key is an empty dictionary
@@ -1240,10 +1240,10 @@ class Write(Stories):
 		for language in self.languages["small"]:
 			# Get the full and translated languages
 			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Get the " in [language]" text of the current language
-			in_language_text = " " + self.Language.texts["in_[language]"][language][self.user_language]
+			in_language_text = " " + self.Language.texts["in_[language]"][language][self.language["Small"]]
 
 			# Define the type text to ask for the new chapter title in the current language
 			type_text = self.language_texts["type_the_new_chapter_title"] + in_language_text
@@ -1351,7 +1351,7 @@ class Write(Stories):
 			# And the "update chapter titles" variable is True
 			if (
 				self.writing_mode == "Write" and
-				language == self.user_language or
+				language == self.language["Small"] or
 				self.writing_mode == "Revise" and
 				update_chapter_titles == True
 			):
@@ -1361,7 +1361,7 @@ class Write(Stories):
 			# If the current language is not the user language
 			# And the writing mode is not "Revise"
 			if (
-				language != self.user_language and
+				language != self.language["Small"] and
 				self.writing_mode != "Revise"
 			):
 				# Create the file
@@ -1502,7 +1502,7 @@ class Write(Stories):
 		for language in self.languages["small"]:
 			# Get the full and translated user languages
 			full_language = self.languages["full"][language]
-			translated_user_language = self.languages["full_translated"][self.user_language][language]
+			translated_user_language = self.languages["full_translated"][self.language["Small"]][language]
 
 			# Create the dictionary for the "Make_Task_Title" method
 			dictionary = {
@@ -1648,7 +1648,7 @@ class Write(Stories):
 		writing_mode = {
 			"Key": self.dictionary["Writing mode"]["Texts"]["Chapter"]["en"].capitalize(),
 			"Number": 1,
-			"Done plural": self.dictionary["Writing mode"]["Texts"]["Done plural"][self.user_language]
+			"Done plural": self.dictionary["Writing mode"]["Texts"]["Done plural"][self.language["Small"]]
 		}
 
 		# Update the story statistics for the current year and month, passing the story titles and writing mode dictionary

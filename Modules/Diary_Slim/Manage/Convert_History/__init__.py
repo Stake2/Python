@@ -62,7 +62,7 @@ class Convert_History(Diary_Slim):
 				month["Names"] = date["Texts"]["Month name"]
 
 				# Define the month key
-				month["Formats"]["Diary Slim"] = str(self.Text.Add_Leading_Zeroes(month["Numbers"]["Month"])) + " - " + month["Names"][self.user_language]
+				month["Formats"]["Diary Slim"] = str(self.Text.Add_Leading_Zeroes(month["Numbers"]["Month"])) + " - " + month["Names"][self.language["Small"]]
 
 				self.year["Year"]["Months"][month["Formats"]["Diary Slim"]] = month
 

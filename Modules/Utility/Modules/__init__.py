@@ -48,7 +48,7 @@ class Modules():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class())
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
 	def Define_Module(self):

@@ -21,7 +21,7 @@
 			"pt": "Adicionar uma nova mídia ao Banco de Dados"
 		},
 		"Iterate_Through_The_Media_List": {
-			"en": "Iterate through the media list",
+			"en": "Iterate through the list of media",
 			"pt": "Iterar através da lista de mídia"
 		},
 		"Add_To_Comments_Dictionary": {
@@ -37,8 +37,7 @@
 			"pt": "Converter histórico"
 		},
 		"Remove list": [
-			"Add_To_Comments_Dictionary",
-			"Convert_History"
+			"Add_To_Comments_Dictionary"
 		]
 	},
 	"Classes": {
@@ -53,7 +52,7 @@
 			},
 			"Iterate_Through_The_Media_List": {
 				"Descriptions": {
-					"en": "Iterate through the media list",
+					"en": "Iterate through the list of media",
 					"pt": "Iterar através da lista de mídia"
 				},
 				"Description": "Iterar através da lista de mídia",
@@ -66,12 +65,21 @@
 				},
 				"Description": "Preencher arquivos de mídia",
 				"Object": "<class 'Watch_History.Manage.Fill_Media_Files.Fill_Media_Files'>"
+			},
+			"Convert_History": {
+				"Descriptions": {
+					"en": "Convert history",
+					"pt": "Converter histórico"
+				},
+				"Description": "Converter histórico",
+				"Object": "<class 'Watch_History.Manage.Convert_History.Convert_History'>"
 			}
 		},
 		"Descriptions": [
 			"Adicionar uma nova mídia ao Banco de Dados",
 			"Iterar através da lista de mídia",
-			"Preencher arquivos de mídia"
+			"Preencher arquivos de mídia",
+			"Converter histórico"
 		]
 	}
 }

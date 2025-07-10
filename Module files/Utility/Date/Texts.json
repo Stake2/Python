@@ -208,6 +208,49 @@
 		"pt": " e ",
 		"en": " "
 	},
+	"ordinal_numbers, type: list": {
+		"en": [
+			"first",
+			"second",
+			"third",
+			"fourth",
+			"fifth",
+			"sixth",
+			"seventh",
+			"eighth",
+			"ninth",
+			"tenth",
+			"eleventh"
+		],
+		"pt": {
+			"masculine": [
+				"primeiro",
+				"segundo",
+				"terceiro",
+				"quarto",
+				"quinto",
+				"sexto",
+				"sétimo",
+				"oitavo",
+				"nono",
+				"décimo",
+				"décimo primeiro"
+			],
+			"feminine": [
+				"primeira",
+				"segunda",
+				"terceira",
+				"quarta",
+				"quinta",
+				"sexta",
+				"sétima",
+				"oitava",
+				"nona",
+				"décima",
+				"décima primeira"
+			]
+		}
+	},
 	"day": {
 		"en": "day",
 		"pt": "dia"
@@ -423,6 +466,10 @@
 	"utc": {
 		"en": "UTC",
 		"pt": "UTC"
+	},
+	"utc_time": {
+		"en": "UTC time",
+		"pt": "Tempo em UTC"
 	},
 	"local_timezone": {
 		"en": "Local timezone",

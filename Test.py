@@ -16,9 +16,8 @@ class Main():
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
 
-		# Module related methods
+		# Define the basic variables of the class
 		self.Define_Basic_Variables()
-		self.Define_Texts()
 
 		# Class methods
 
@@ -48,11 +47,13 @@ class Main():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class)
 
+		# ---------- #
+
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -63,53 +64,46 @@ class Main():
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
-
-		# Get the current date from the Date module
-		self.date = self.Date.date
-
-	def Define_Texts(self):
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Get_Methods(self):
 		# Get the members
@@ -213,7 +207,7 @@ class Main():
 
 		file = self.File.Sanitize(self.Input.Type("File to write to"))
 
-		self.File.Edit(file, self.Text.From_List(files, break_line = True))
+		self.File.Edit(file, self.Text.From_List(files, next_line = True))
 
 	def Make_Dual_Audio_Of_Media(self):
 		import os
@@ -802,7 +796,7 @@ class Main():
 
 					i += 1
 
-				self.Text.Copy(self.Text.From_List(clipboard, break_line = True))
+				self.Text.Copy(self.Text.From_List(clipboard, next_line = True))
 
 	def Remove_Line_Of_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -845,7 +839,7 @@ class Main():
 					lines = self.File.Contents(file)["lines"]
 					lines.pop(number)
 
-					self.File.Edit(file, self.Text.From_List(lines, break_line = True))
+					self.File.Edit(file, self.Text.From_List(lines, next_line = True))
 
 	def Add_Line_To_Files(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -898,7 +892,7 @@ class Main():
 
 					print("\t" + "[" + text + "]")
 
-					self.File.Edit(file, self.Text.From_List(lines, break_line = True))
+					self.File.Edit(file, self.Text.From_List(lines, next_line = True))
 
 					if file == list(files.values())[2]:
 						file_lines = self.File.Contents(list(files.values())[2])["lines"]
@@ -914,7 +908,7 @@ class Main():
 
 			i += 1
 
-		string = self.Text.From_List(lines, break_line = True)
+		string = self.Text.From_List(lines, next_line = True)
 
 		self.Text.Copy(string, verbose = False)
 
@@ -940,7 +934,7 @@ class Main():
 
 			i += 1
 
-		self.Text.Copy(self.Text.From_List(lines, break_line = True))
+		self.Text.Copy(self.Text.From_List(lines, next_line = True))
 
 	def Copy_Folder_Names(self):
 		# Ask for the folder
@@ -977,7 +971,7 @@ class Main():
 
 		return id
 
-	def Get_Comment_Info(self):
+	def Get_Comment_Information(self):
 		id = self.Get_ID("comment")
 
 		youtube = {
@@ -985,25 +979,32 @@ class Main():
 			"id": id
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
-		self.JSON.Show(dict_)
+		self.JSON.Show(dictionary)
 
-	def Get_Video_Info(self):
+	def Get_Video_Information(self):
+		# Get the video ID
 		id = self.Get_ID("video")
 
+		# Define the API dictionary with the ID
 		youtube = {
 			"item": "videos",
 			"id": id
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		# Make the API call for YouTube
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
-		self.JSON.Show(dict_)
+		# Show the response dictionary
+		print()
+		self.JSON.Show(dictionary)
 
-	def Get_Channel_Info(self):
+	def Get_Channel_Information(self):
+		# Ask for the user name
 		username = self.Input.Type("Username")
 
+		# Define the API dictionary
 		youtube = {
 			"item": "search",
 			"parameters": {
@@ -1013,13 +1014,29 @@ class Main():
 			}
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		# Get the API response
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
-		self.JSON.Show(dict_["Channel"])
+		self.JSON.Show(dictionary)
 
-		self.Text.Copy(dict_["Channel"])
+		# Get the channel information dictionary
+		channel = dictionary["Channel"]
 
-		return dict_
+		# Add the "Channel creation times" after the "Times" key and remove the "Times" key
+		key_value = {
+			"Channel creation times": channel["Times"]
+		}
+
+		channel = self.JSON.Add_Key_After_Key(channel, key_value, after_key = "Times", remove_after_key = True)
+
+		# Show the channel information dictionary
+		self.JSON.Show(channel)
+
+		# Copy it as JSON dictionary
+		self.Text.Copy(self.JSON.From_Python(channel), verbose = False)
+
+		# And return it
+		return channel
 
 	def Get_Video_Images(self):
 		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
@@ -1081,49 +1098,111 @@ class Main():
 
 			i += 1
 
-	def Get_Playlist_IDs_And_Titles(self, ask_for_input = True):
+	def Get_Playlist_IDs_And_Titles(self):
+		# Get the playlist ID
 		id = self.Get_ID("playlist")
 
+		# Define the API dictionary
 		youtube = {
 			"item": "playlistItems",
-			"id": id
+			"id": id,
+			"Remove private videos": False
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		# Get the API response dictionary
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
+		# Define a dictionary of lists
+		lists = {
+			"IDs": [],
+			"Titles": [],
+			"Dates": []
+		}
+
+		# Iterate through the list of videos
+		for id in dictionary["Videos"]:
+			# Add the video ID to the list of IDs
+			lists["IDs"].append(id)
+
+			# Get the video dictionary
+			video = dictionary["Videos"][id]
+
+			# Add the video title to the list of titles
+			lists["Titles"].append(video["Title"])
+
+			# Add the video date to the list of dates
+			date = video["Times"]["Timezone"]
+
+			lists["Dates"].append(date)
+
+		# Show a five dash space separator
 		print()
-		self.JSON.Show(dict_)
+		print(self.separators["5"])
 		print()
 
-		if ask_for_input == False:
-			from copy import deepcopy
+		# List the keys of the lists dictionary
+		keys = list(lists.keys())
 
-			local_dict = deepcopy(dict_)
+		# Iterate through the dictionary of lists
+		for key, item in lists.items():
+			# Show the list key
+			print(key + ":")
 
-			if "Videos" in local_dict:
-				local_dict.pop("Videos")
+			# Transform the list into a text string
+			item = self.Text.From_List(item, next_line = True)
 
-			self.JSON.Show(local_dict)
+			# Copy the list
+			self.Text.Copy(item)
 
-		if ask_for_input == True:
-			self.JSON.Show(dict_)
+			# If the key is not the last one
+			if key != keys[-1]:
+				# Ask for user input before continuing
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
-			ids = []
-			titles = []
+				# Show a space
+				print()
 
-			for id in dict_["Videos"]:
-				ids.append(id)
+	def Get_Playlist_Dates(self):
+		# Get the IDs file
+		ids_file = self.Sanitize(self.Input.Type("IDs file"))
 
-				title = dict_["Videos"][id]["Title"]
-				titles.append(title)
+		# Get the dates file
+		dates_file = self.Sanitize(self.Input.Type("Dates file"))
 
-			self.Text.Copy(self.Text.From_List(ids, break_line = True))
+		# Get the IDs from the IDs file
+		ids = self.File.Contents(ids_file)["lines"]
 
-			input()
+		# Define a list of dates
+		dates = []
 
-			self.Text.Copy(self.Text.From_List(titles, break_line = True))
+		# Iterate through the IDs in the list
+		for id in ids:
+			# Define the API dictionary
+			youtube = {
+				"item": "videos",
+				"id": id
+			}
 
-		return dict_
+			# Get the API response dictionary
+			dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
+
+			# Get the video dictionary
+			video = dictionary["Video"]
+
+			self.JSON.Show(dictionary)
+
+			# Get the video date and add it to the list of dates
+			date = video["Times"]["Timezone"]
+
+			dates.append(date)
+
+		# Transform the list of dates into a text string
+		dates = self.Text.From_List(dates, next_line = True)
+
+		self.Text.Copy(dates)
+
+		# Write the list of dates into the dates file
+		#self.File.Edit(dates_file, dates, "w")
 
 	def Get_Channel_ID(self):
 		username = self.Input.Type("Username")
@@ -1137,13 +1216,13 @@ class Main():
 			}
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
-		self.JSON.Show(dict_)
+		self.JSON.Show(dictionary)
 
-		self.Text.Copy(dict_["Channel"]["ID"])
+		self.Text.Copy(dictionary["Channel"]["ID"])
 
-		return dict_
+		return dictionary
 
 	def Get_Video(self, link):
 		id = self.Get_ID("video", link)
@@ -1153,11 +1232,11 @@ class Main():
 			"id": id
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
-		self.JSON.Show(dict_)
+		self.JSON.Show(dictionary)
 
-		return dict_
+		return dictionary
 
 	def Ask_For_Video(self):
 		link = "Link"
@@ -1171,9 +1250,9 @@ class Main():
 			link = self.Input.Type("Video link or ID")
 
 			if link not in ["", "Link"]:
-				dict_ = self.Get_Video(link)
+				dictionary = self.Get_Video(link)
 
-				dictionary[id] = dict_["Video"]
+				dictionary[id] = dictionary["Video"]
 
 		return dictionary
 
@@ -1191,13 +1270,13 @@ class Main():
 			"description": description
 		}
 
-		dict_ = self.API.Call("YouTube", youtube)["Dictionary"]
+		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
 
 		print()
 
-		self.JSON.Show(dict_)
+		self.JSON.Show(dictionary)
 
-		return dict_
+		return dictionary
 
 	def Add_To_Playlist(self, playlist_dictionary = None, videos = None):
 		if playlist_dictionary == None:
@@ -1406,7 +1485,7 @@ class Main():
 		for key in dictionary["titles"]:
 			list_ = dictionary["titles"][key]
 			print(key + ":")
-			self.Text.Copy(self.Text.From_List(list_, break_line = True))
+			self.Text.Copy(self.Text.From_List(list_, next_line = True))
 			input()
 
 	def Play_Sound(self):

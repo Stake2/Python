@@ -43,7 +43,7 @@ class Add_A_New_Data(Database):
 		self.data["Titles"]["Original"] = self.data["Title"]
 
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
@@ -108,7 +108,7 @@ class Add_A_New_Data(Database):
 		}
 
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 

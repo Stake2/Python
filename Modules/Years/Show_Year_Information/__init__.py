@@ -41,7 +41,7 @@ class Show_Year_Information(Years):
 
 			if (
 				type(self.year["Files"][key]) == str and
-				self.File.Exist(self.year["Files"][key]) == True
+				self.File.Exists(self.year["Files"][key]) == True
 			):
 				file = self.year["Files"][key]
 
@@ -67,11 +67,11 @@ class Show_Year_Information(Years):
 						text = self.languages["full"][sub_key]
 
 					if sub_key in self.years["Names"]["Root"]["Files"]["Dictionary"]:
-						text = self.years["Names"]["Root"]["Files"]["Dictionary"][sub_key][self.user_language]
+						text = self.years["Names"]["Root"]["Files"]["Dictionary"][sub_key][self.language["Small"]]
 
 					if (
 						type(sub_dictionary) == str and
-						self.File.Exist(sub_dictionary) == True
+						self.File.Exists(sub_dictionary) == True
 					):
 						file = sub_dictionary
 
@@ -98,10 +98,10 @@ class Show_Year_Information(Years):
 
 							for item in ["Root", "Language", "Christmas", "New Year"]:
 								if sub_sub_key in self.years["Names"][item]["Files"]["Dictionary"]:
-									text = self.years["Names"][item]["Files"]["Dictionary"][sub_sub_key][self.user_language]
+									text = self.years["Names"][item]["Files"]["Dictionary"][sub_sub_key][self.language["Small"]]
 
 							if type(file) == str:
-								if self.File.Exist(file) == True:
+								if self.File.Exists(file) == True:
 									print("            " + text + self.language_texts["_(file)"] + ":")
 
 									self.Show_File_Text(file, "\t\t")
@@ -124,13 +124,13 @@ class Show_Year_Information(Years):
 										local_dictionary = self.years["Names"][item]["Files"]["Dictionary"]
 
 										if sub_sub_sub_key in local_dictionary:
-											text = local_dictionary[sub_sub_sub_key][self.user_language]
+											text = local_dictionary[sub_sub_sub_key][self.language["Small"]]
 
 									for item in ["Planning", "Merry Christmas"]:
 										local_dictionary = self.years["Names"]["Additional items"]["Christmas"][item]["Files"]["Dictionary"]
 
 										if sub_sub_sub_key in local_dictionary:
-											text = local_dictionary[sub_sub_sub_key][self.user_language]
+											text = local_dictionary[sub_sub_sub_key][self.language["Small"]]
 
 									print("            " + text + self.language_texts["_(file)"] + ":")
 

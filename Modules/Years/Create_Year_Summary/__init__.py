@@ -62,7 +62,7 @@ class Create_Year_Summary(Years):
 			self.year = self.years["Dictionary"][year]
 
 			# Get the English files dictionary
-			files = self.year["Files"][self.user_language]
+			files = self.year["Files"][self.language["Small"]]
 
 			# If the "Summary" file in English exists
 			# And the summary file is not empty
@@ -117,7 +117,7 @@ class Create_Year_Summary(Years):
 				# Define the list of items
 				items = [
 					date["Units"]["Day"], # Day number
-					date["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language], # Month name in the user language
+					date["Timezone"]["DateTime"]["Texts"]["Month name"][self.language["Small"]], # Month name in the user language
 					self.years["Current year"]["Number"] # Current year number
 				]
 
@@ -140,7 +140,7 @@ class Create_Year_Summary(Years):
 			print(self.language_texts["allowed_days"] + ":")
 
 			for day in self.summary["Days"]:
-				december = self.summary["Date"]["Timezone"]["DateTime"]["Texts"]["Month name"][self.user_language]
+				december = self.summary["Date"]["Timezone"]["DateTime"]["Texts"]["Month name"][self.language["Small"]]
 				year = self.years["Current year"]["Number"]
 
 				# Define the list of items
@@ -259,7 +259,7 @@ class Create_Year_Summary(Years):
 			# If the year folder exists, define it as the history folder
 			folder = history["Folder"] + current_year + "/"
 
-			if self.Folder.Exist(folder) == True:
+			if self.Folder.Exists(folder) == True:
 				history["Folder"] = folder
 
 			# ---------- #
@@ -739,18 +739,18 @@ class Create_Year_Summary(Years):
 		print()
 
 		# Show the summary text in the user language
-		print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.user_language] + ":")
+		print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.language["Small"]] + ":")
 		print()
 		print(self.separators["15"])
 
-		for line in self.summary["Text"][self.user_language].splitlines():
+		for line in self.summary["Text"][self.language["Small"]].splitlines():
 			print(line)
 
 		# Show a ten dash space separator
 		print(self.separators["15"])
 
 		# Open the user language summary file
-		self.System.Open(self.summary["Files"][self.user_language])
+		self.System.Open(self.summary["Files"][self.language["Small"]])
 
 		# ---------- #
 
@@ -774,7 +774,7 @@ class Create_Year_Summary(Years):
 			for name, website in self.summary["Websites"]["Dictionary"].items():
 				# Show the website name and link in the user language
 				print("\t" + name + ":")
-				print("\t" + website["Links"][self.user_language])
+				print("\t" + website["Links"][self.language["Small"]])
 				print()
 
 		# Else, show a space

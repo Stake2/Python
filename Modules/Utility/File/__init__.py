@@ -19,6 +19,8 @@ class File():
 	def Import_Classes(self):
 		import importlib
 
+		# ---------- #
+
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -41,6 +43,8 @@ class File():
 
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class)
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
@@ -159,14 +163,12 @@ class File():
 			print("\t" + text + ":")
 			print("\t" + item)
 
-	def Exist(self, file):
+	def Exists(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		if os.path.isfile(file) == True:
-			return True
-
-		if os.path.isfile(file) == False:
-			return False
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
 	def Type(self, text = None):
 		if text == None:
@@ -179,12 +181,12 @@ class File():
 	def Create(self, file):
 		file = self.Sanitize(file)
 
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			return False
 
 		if (
 			self.switches["File"]["Create"] == True and
-			self.Exist(file) == False
+			self.Exists(file) == False
 		):
 			create = open(file, "w", encoding = "utf8")
 			create.close()
@@ -201,14 +203,14 @@ class File():
 	def Delete(self, file):
 		file = self.Sanitize(file)
 
-		if self.Exist(file) == False:
+		if self.Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 			return False
 
 		if (
 			self.switches["File"]["Delete"] == True and
-			self.Exist(file) == True
+			self.Exists(file) == True
 		):
 			os.remove(file)
 
@@ -231,14 +233,14 @@ class File():
 		source_file = self.Sanitize(source_file)
 		destination_file = self.Sanitize(destination_file)
 
-		if self.Exist(source_file) == False:
+		if self.Exists(source_file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exist"], source_file)
 
 			return False
 
 		if (
 			self.switches["File"]["Copy"] == True and
-			self.Exist(source_file) == True
+			self.Exists(source_file) == True
 		):
 			import shutil
 			shutil.copy(source_file, destination_file)
@@ -263,12 +265,12 @@ class File():
 		destination_file = self.Sanitize(destination_file)
 
 		if (
-			self.Exist(source_file) == True and
+			self.Exists(source_file) == True and
 			source_file != destination_file
 		):
 			if (
 				self.switches["File"]["Move"] == True and
-				self.Exist(source_file) == True
+				self.Exists(source_file) == True
 			):
 				import shutil
 				shutil.move(source_file, destination_file)
@@ -285,53 +287,80 @@ class File():
 		else:
 			return False
 
-	def Edit(self, file, text, mode = "w", next_line = True, verbose = None):
+	def Edit(self, file, text, mode = "w", next_line = True, verbose = None, full_verbose = False):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
+		# Get the contents of the file
 		contents = self.Contents(file)
+
+		# Define a shortcut to the file length
 		length = contents["length"]
 
+		# Define the line break as an empty string
 		line_break = ""
 
+		# If the "next line" parameter is True
+		# And the file length is not zero
+		# And the mode is "a" (append)
 		if (
 			next_line == True and
 			length != 0 and
 			mode == "a"
 		):
+			# Define the line break as the new line caracter
 			line_break = "\n"
 
-		verbose_text = self.Language.Check_Text_Difference(contents, text)
+		# Get the verbose text for the file
+		verbose_text = self.Language.Check_Text_Difference(contents, text, full_verbose = full_verbose)
 
+		# Add the line break to the text
 		text = line_break + text
 
+		# Define the file text as the file plus two line breaks, one tab, and the verbose text
 		file_text = file + "\n" + \
 		"\n" + \
 		"\t" + verbose_text
-
-		if self.Exist(file) == True:
+		
+		# If the file exists
+		if self.Exists(file) == True:
+			# If the file "Edit" switch is True
+			# And the file text string is not equal to the parameter text
 			if (
 				self.switches["File"]["Edit"] == True and
 				contents["string"] != text
 			):
-				edit = open(file, mode, encoding = "UTF8")
+				# Open the file handle
+				edit = open(file, "w", encoding = "UTF8")
+
+				# Write the text into the file
 				edit.write(text)
+
+				# Close the file handle
 				edit.close()
 
+				# Define the show text to tell the user that the file was edited
 				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
 
+			# If the file "Edit" switch is False
 			if self.switches["File"]["Edit"] == False:
+				# Define the show text to tell the user that it was not possible to edit the file due to lack of permissions
 				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
 
+			# If the file text string is not equal to the parameter text
 			if contents["string"] != text:
+				# Show the verbose text
 				self.Verbose(show_text, file_text, verbose = verbose)
 
+			# If the file "Edit" switch is True, return True
 			if self.switches["File"]["Edit"] == True:
 				return True
 
+			# If the file "Edit" switch is False, return False
 			if self.switches["File"]["Edit"] == False:
 				return False
 
-		if self.Exist(file) == False:
+		if self.Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file_text)
 
 			return False
@@ -347,7 +376,7 @@ class File():
 			"length": 0
 		}
 
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			contents["string"] = open(file, "r", encoding = "utf8").read()
 			contents["size"] += os.path.getsize(file)
 
@@ -359,14 +388,12 @@ class File():
 
 			contents["length"] = len(contents["lines"])
 
-			contents["Length"] = contents["length"]
-
 		# Temporary:
-		# Add the title case "Lines" and "String" keys
-		contents["Lines"] = contents["lines"]
-		contents["String"] = contents["string"]
+		# Add the title case to the "Lines", "String", and "Length" keys
+		for key in ["Lines", "String", "Length"]:
+			contents[key] = contents[key.lower()]
 
-		if self.Exist(file) == False:
+		if self.Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 		return contents
@@ -444,7 +471,7 @@ class File():
 		lines = self.Contents(file)["lines"]
 		string = self.Contents(file)["string"]
 
-		if self.Exist(file) == True:
+		if self.Exists(file) == True:
 			if next_line == False:
 				import re
 
@@ -477,7 +504,7 @@ class File():
 				for dictionary_separator in dictionary_separators:
 					self.Split(lines = lines, dict_ = dictionary, separator = dictionary_separator, next_line = next_line, convert = convert)
 
-		if self.Exist(file) == False:
+		if self.Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 		return dictionary

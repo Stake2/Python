@@ -22,13 +22,37 @@
 		"pt": "idiomas",
 		"en": "languages"
 	},
+	"small_language": {
+		"en": "Small language",
+		"pt": "Idioma pequeno"
+	},
+	"small, title()": {
+		"en": "Small",
+		"pt": "Pequeno"
+	},
 	"language_with_country": {
 		"pt": "idioma com país",
 		"en": "language with country"
 	},
+	"with_country": {
+		"pt": "Com país",
+		"en": "With country"
+	},
 	"full_language": {
-		"pt": "idioma completo",
-		"en": "full language"
+		"pt": "Idioma completo",
+		"en": "Full language"
+	},
+	"full, title()": {
+		"pt": "Completo",
+		"en": "Full"
+	},
+	"full_language_translated": {
+		"pt": "Idioma completo traduzido",
+		"en": "Full language translated"
+	},
+	"full_translated": {
+		"pt": "Completo traduzido",
+		"en": "Full translated"
 	},
 	"text_language": {
 		"pt": "Idioma de texto",
@@ -42,6 +66,10 @@
 		"en": {
 			"pt": "Título em Inglês",
 			"en": "Title in English"
+		},
+		"ja": {
+			"pt": "Título em Japonês",
+			"en": "Title in Japanese"
 		}
 	},
 	"in_[language]": {
@@ -53,6 +81,14 @@
 			"pt": "em Inglês",
 			"en": "in English"
 		}
+	},
+	"language_class": {
+		"pt": "Classe \"Language\" (Idioma)",
+		"en": "\"Language\" class"
+	},
+	"user_language": {
+		"en": "User language",
+		"pt": "Idioma do usuário"
 	},
 	"original_title": {
 		"en": "Original title",
@@ -91,9 +127,21 @@
 		"pt": "Com arquivo"
 	},
 	"file_format, type: format": {
-		"en": "\"file:///{}\"",
-		"pt": "\"file:///{}\""
+		"en": "file:///{}",
+		"pt": "file:///{}"
 	},
+	"it_will_be_updated": {
+        "en": "It will be updated",
+        "pt": "Ele será atualizado"
+    },
+    "it_will_not_be_updated": {
+        "en": "It will not be updated",
+        "pt": "Ele não será atualizado"
+    },
+	"updated_files": {
+        "en": "Updated files",
+        "pt": "Arquivos atualizados"
+    },
 	"archive, title()": {
 		"en": "Archive",
 		"pt": "Arquivo"
@@ -218,6 +266,14 @@
 	"leave_empty_to_use_the_default_value": {
 		"en": "Leave empty to use the default value",
 		"pt": "Deixe vazio para usar o valor padrão"
+	},
+	"when_i_started": {
+		"pt": "Quando eu comecei a",
+		"en": "When I started"
+	},
+	"when_i_finished": {
+		"pt": "Quando eu terminei de",
+		"en": "When I finished"
 	},
 	"when_you_started": {
 		"pt": "Quando você começou a",
@@ -571,10 +627,6 @@
 		"en": "Type or paste the folder where you want to create the settings file",
 		"pt": "Digite ou cole a pasta onde você quer criar o arquivo de configurações"
 	},
-	"the_user_information": {
-		"en": "user information",
-		"pt": "informações do usuário"
-	},
 	"string_numbers, type: format": {
 		"en": "0 1",
 		"pt": "1 0"
@@ -604,8 +656,8 @@
 		"pt": "Comprimento"
 	},
 	"example, title()": {
-	"pt": "Exemplo",
-	"en": "Example"
+		"pt": "Exemplo",
+		"en": "Example"
     },
 	"{}_time": {
 		"en": "{} time",
@@ -679,9 +731,19 @@
 		"pt": "Este Ano Eu (Versão pessoal)",
 		"en": "This Year I (Personal version)"
 	},
+	"next": {
+		"en": "next",
+		"pt": {
+			"masculine": "próximo",
+			"feminine": "próxima"
+		}
+	},
 	"next, title()": {
 		"en": "Next",
-		"pt": "Próximo"
+		"pt": {
+			"masculine": "Próximo",
+			"feminine": "Próxima"
+		}
 	},
 	"welcome, title()": {
 		"en": "Welcome",
@@ -714,6 +776,54 @@
 	"number_of_the_entry": {
 		"en": "Number of the entry",
 		"pt": "Número da entrada"
+	},
+	"entry_time": {
+		"en": "Entry time",
+		"pt": "Tempo da entrada"
+	},
+	"entry_time_in_utc": {
+		"en": "Entry time in UTC",
+		"pt": "Tempo da entrada em UTC"
+	},
+	"original_entry_time": {
+		"en": "Original entry time",
+		"pt": "Tempo original da entrada"
+	},
+	"new_entry_time": {
+		"en": "New entry time",
+		"pt": "Novo tempo da entrada"
+	},
+	"the_file_text_is_different_than_the_updated_entry_text_the_file_will_be_updated": {
+        "en": "The file text is different than the updated entry text, the file will be updated",
+        "pt": "O texto do arquivo é diferente do texto da entrada atualizado, o arquivo vai ser atualizado"
+    },
+	"the_old_entry_time_was_wrong_and_will_be_updated": {
+		"en": "The old entry time was wrong and will be updated",
+        "pt": "O tempo da entrada estava errado e vai ser atualizado"
+	},
+	"the_entry_file_was_renamed": {
+		"en": "The entry file was renamed",
+        "pt": "O arquivo da entrada foi renomeado"
+	},
+    "the_entry_file_does_not_exist": {
+        "en": "The entry file does not exist",
+        "pt": "O arquivo da entrada não existe"
+    },
+	"updated_entry_text": {
+		"en": "Updated entry text",
+		"pt": "Texto da entrada atualizado"
+	},
+	"entry_file_in_the_firsts_of_the_year_folder_by_year": {
+		"en": "Entry file in the \"Firsts of the Year\" folder by year",
+		"pt": "Arquivo da entrada na pasta \"Primeiros do Ano\" por ano"
+	},
+	"number_of_the_iteration": {
+		"en": "Number of the iteration",
+		"pt": "Número da iteração"
+	},
+	"notices, title()": {
+		"pt": "Avisos",
+		"en": "Notices"
 	},
 	"title, title()": {
 		"pt": "Título",
@@ -798,10 +908,6 @@
 	"link, title()": {
 		"en": "Link",
 		"pt": "Link"
-	},
-	"time_zone": {
-		"en": "Time zone",
-		"pt": "Fuso horário"
 	},
 	"art, title()": {
 		"en": "Art",
@@ -959,6 +1065,18 @@
 		"pt": "Redes Sociais de Origem",
 		"en": "Origin Social Networks"
 	},
+	"showing_user_information": {
+		"en": "Showing user information",
+		"pt": "Mostrando informações do usuário"
+	},
+	"show_user_information_method": {
+		"pt": "método \"Mostrar_Informações_Do_Usuário\"",
+		"en": "\"Show_User_Information\" method"
+	},
+	"username, title(), type: self": {
+		"en": "Username",
+		"pt": "Nome do usuário"
+	},
 	"username, title()": {
 		"en": "Username",
 		"pt": "Nome de usuário"
@@ -966,6 +1084,26 @@
 	"usernames, title()": {
 		"en": "Usernames",
 		"pt": "Nomes de usuário"
+	},
+	"user_folder": {
+		"en": "User folder",
+		"pt": "Pasta do usuário"
+	},
+	"user_timezone": {
+		"en": "User timezone",
+		"pt": "Fuso horário do usuário"
+	},
+	"timezone_information": {
+		"en": "Timezone information",
+		"pt": "Informações do fuso horário"
+	},
+	"utc": {
+		"en": "UTC",
+		"pt": "UTC"
+	},
+	"difference_from_utc": {
+		"en": "Difference from UTC",
+		"pt": "Diferença em relação ao UTC"
 	},
 	"profile, title()": {
 		"en": "Profile",
@@ -1195,6 +1333,10 @@
 		"en": "Engines",
 		"pt": "Motores"
 	},
+	"system_information": {
+		"en": "System information",
+		"pt": "Informações do sistema"
+	},
 	"operating_system": {
 		"en": "Operating system",
 		"pt": "Sistema operacional"
@@ -1287,13 +1429,6 @@
 		"en": "musics",
 		"pt": "músicas"
 	},
-	"next": {
-		"en": "next",
-		"pt": {
-			"masculine": "próximo",
-			"feminine": "próxima"
-		}
-	},
 	"media": {
 		"en": "media",
 		"pt": "mídia"
@@ -1302,7 +1437,7 @@
 		"en": "Media",
 		"pt": "Mídia"
 	},
-	"medias, title()": {
+	"media, title(), type: plural": {
 		"en": "Media",
 		"pt": "Mídias"
 	},
@@ -1312,15 +1447,11 @@
 	},
 	"media_information": {
 		"en": "Media information",
-		"pt": "Informações de mídia"
+		"pt": "Informações de mídias"
 	},
 	"audiovisual_media": {
 		"en": "Audiovisual Media",
-		"pt": "Mídia Audiovisual"
-	},
-	"watched_things": {
-		"en": "Watched things",
-		"pt": "Coisas assistidas"
+		"pt": "Mídias Audiovisuais"
 	},
 	"media_list": {
 		"en": "Media list",
@@ -1510,10 +1641,6 @@
 		"en": "Session duration",
 		"pt": "Duração da sessão"
 	},
-	"gaming_session_duration": {
-		"en": "Gaming session duration",
-		"pt": "Duração da sessão de jogatina"
-	},
 	"category, title()": {
 		"en": "Category",
 		"pt": "Categoria"
@@ -1537,6 +1664,14 @@
 	"resolution, title()": {
 		"en": "Resolution",
 		"pt": "Resolução"
+	},
+	"width, title()": {
+		"en": "Width",
+		"pt": "Largura"
+	},
+	"height, title()": {
+		"en": "Height",
+		"pt": "Altura"
 	},
 	"wrong, title()": {
 		"en": "Wrong",
@@ -1838,14 +1973,6 @@
 		"en": "Exit",
 		"pt": "Sair"
 	},
-	"old_status": {
-		"en": "Old status",
-		"pt": "Status antigo"
-	},
-	"new_status": {
-		"en": "New status",
-		"pt": "Novo status"
-	},
 	"classes, title()": {
 		"en": "Classes",
 		"pt": "Classes"
@@ -2128,6 +2255,10 @@
 		"en": "Gaming sessions",
 		"pt": "Sessões de jogatina"
 	},
+	"gaming_session_duration": {
+		"en": "Gaming session duration",
+		"pt": "Duração da sessão de jogatina"
+	},
 	"gaming_sessions_played": {
 		"en": "Gaming sessions played",
 		"pt": "Sessões de jogatina jogadas"
@@ -2363,7 +2494,7 @@
 		"en": "in",
 		"pt": "em"
 	},
-	"genders, type: dict": {
+	"genders, type: dictionary": {
 		"en": {
 			"masculine": {
 				"the": "the",

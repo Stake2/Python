@@ -42,6 +42,8 @@ class Text():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class)
 
+		# ---------- #
+
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 

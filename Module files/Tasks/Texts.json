@@ -49,11 +49,11 @@
 	},
 	"this_task_was_registered": {
 		"en": "This task was registered",
-		"pt": "Esta tarefa foi registrada"
+		"pt": "Essa tarefa foi registrada"
 	},
 	"the_progress_of_this_task_was_registered": {
 		"en": "The progress of this task was registered",
-		"pt": "O progresso desta tarefa foi registrado"
+		"pt": "O progresso dessa tarefa foi registrado"
 	},
 	"select_a_task_type": {
 		"en": "Select a task type",

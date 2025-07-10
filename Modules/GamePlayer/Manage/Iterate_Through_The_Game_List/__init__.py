@@ -85,7 +85,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			root_game_type = self.game_types[english_game_type]
 
 			# Get the language game type
-			language_game_type = root_game_type["Type"][self.user_language]
+			language_game_type = root_game_type["Type"][self.language["Small"]]
 
 			# ----- #
 
@@ -399,7 +399,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			file = game["Files"]["Shortcut"]["File"]
 
 			# If the file does not exist
-			if self.File.Exist(file) == False:
+			if self.File.Exists(file) == False:
 				# Show the text telling the user that the file does not exist
 				# Along with the file path
 				print()
@@ -432,13 +432,13 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		# Define the new gaming time JSON file
 		gaming_time_file = game["Folders"]["Gaming time"]["Gaming time"]
 
-		if self.File.Exist(time_file) == True:
+		if self.File.Exists(time_file) == True:
 			# Move the file
 			self.File.Move(time_file, gaming_time_file)
 
 			file = gaming_time_file
 
-			if self.File.Exist(time_file) == True:
+			if self.File.Exists(time_file) == True:
 				file = time_file
 
 			self.dictionary["Game"]["Gaming time"] = self.JSON.To_Python(file)
@@ -451,7 +451,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		# Define the new language gaming time file
 		new_language_gaming_time_file = game["Folders"]["Gaming time"]["Language gaming time"]
 
-		if self.File.Exist(language_gaming_time_file) == True:
+		if self.File.Exists(language_gaming_time_file) == True:
 			# Move the file
 			self.File.Move(language_gaming_time_file, new_language_gaming_time_file)
 

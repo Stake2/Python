@@ -36,7 +36,7 @@ class Watch_List_Of_Media(Watch_History):
 			}
 		}
 
-		# Define the media list
+		# Define the list of media
 		self.Define_Media_List()
 
 		# Open the list of media to watch
@@ -48,7 +48,7 @@ class Watch_List_Of_Media(Watch_History):
 
 		# If the file exists and is not empty
 		if (
-			self.File.Exist(file) == True and
+			self.File.Exists(file) == True and
 			self.File.Contents(file)["lines"] != []
 		):
 			# Get the dictionary from the watch list
@@ -110,7 +110,7 @@ class Watch_List_Of_Media(Watch_History):
 
 				i += 1
 
-			# Define the keys of the media list as the list of lines
+			# Define the keys of the list of media as the list of lines
 			self.dictionary["Media list"]["List"] = lines
 
 			# Change the "File list" switch to True
@@ -125,21 +125,21 @@ class Watch_List_Of_Media(Watch_History):
 			self.dictionary["Option"] != self.dictionary["Texts"]["Finish selection"] and
 			self.dictionary["Media title"] != self.dictionary["Media list"]["List"][-1]
 		):
-			# If the media list came from a file
+			# If the list of media came from a file
 			# And the "media_number" variable is lesser than the number of media titles
 			if (
 				self.dictionary["Media list"]["File list"] == True and
 				media_number < len(self.dictionary["Media list"]["List"])
 			):
-				# Define the current media title as the media title inside the media list
+				# Define the current media title as the media title inside the list of media
 				self.dictionary["Media title"] = self.dictionary["Media list"]["List"][media_number]
 
 			# Define the media dictionary
 			dictionary = self.Select_The_Media(media_number)
 
-			# If the selected option is not inside the media list
+			# If the selected option is not inside the list of media
 			if self.dictionary["Option"] not in self.dictionary["Media list"]["List"]:
-				# Define the media list item number as 2
+				# Define the list of media item number as 2
 				self.dictionary["Numbers"]["Media list item"] = 2
 
 			# If the selected option is the finish selection text
@@ -148,15 +148,15 @@ class Watch_List_Of_Media(Watch_History):
 				print()
 
 			# If the local media dictionary is not None
-			# And the media list did not come from a file
+			# And the list of media did not come from a file
 			if (
 				dictionary != None and
 				self.dictionary["Media list"]["File list"] == False
 			):
-				# Show the "current media list" text
+				# Show the "current list of media" text
 				print(self.language_texts["current_media_list"] + ":")
 
-				# Show the current media list using the method
+				# Show the current list of media using the method
 				self.Show_Media_List()
 
 			# Add one to the media number
@@ -173,7 +173,7 @@ class Watch_List_Of_Media(Watch_History):
 			"Watch list of media": True
 		}
 
-		# If the media list did not come from a file
+		# If the list of media did not come from a file
 		if self.dictionary["Media list"]["File list"] == False:
 			# Ask the user to select a media type, returning its dictionary
 			media_type = self.Select_Media_Type()
@@ -185,7 +185,7 @@ class Watch_List_Of_Media(Watch_History):
 			if key not in self.dictionary["Media types"]:
 				self.dictionary["Media types"][key] = media_type
 
-		# If the media list came from a file
+		# If the list of media came from a file
 		if self.dictionary["Media list"]["File list"] == True:
 			# Iterate through the list of English plural media types
 			i = 0
@@ -206,9 +206,9 @@ class Watch_List_Of_Media(Watch_History):
 			# Get the list of media for the current media type
 			media_list = self.Get_Media_List(media_type)
 
-			# If the media list is not empty (there is media titles inside it)
+			# If the list of media is not empty (there is media titles inside it)
 			if self.dictionary["Media list"]["List"] != []:
-				# Add the finish selection text to the end of the local media list
+				# Add the finish selection text to the end of the local list of media
 				media_list.append(self.dictionary["Texts"]["Finish selection"])
 
 			# Define the local dictionary
@@ -220,19 +220,19 @@ class Watch_List_Of_Media(Watch_History):
 				}
 			})
 
-			# If the media list did not come from a file
+			# If the list of media did not come from a file
 			if self.dictionary["Media list"]["File list"] == False:
-				# Update the media list of the media type dictionary with the local one
+				# Update the list of media of the media type dictionary with the local one
 				dictionary["Media type"]["Media list"] = media_list
 
-			# If the media list came from a file
+			# If the list of media came from a file
 			if self.dictionary["Media list"]["File list"] == True:
-				# If the selected media title is inside the local media list
+				# If the selected media title is inside the local list of media
 				if self.dictionary["Media title"] in media_list:
 					# Define the media title to be selected
 					dictionary["Media"]["Title"] = self.dictionary["Media title"]
 
-				# If the selected media title is not inside the local media list
+				# If the selected media title is not inside the local list of media
 				if self.dictionary["Media title"] not in media_list:
 					# Define it as empty to ignore it
 					dictionary["Media"]["Title"] = ""
@@ -260,13 +260,13 @@ class Watch_List_Of_Media(Watch_History):
 				# If the media has an item list
 				# And the media item is not the media
 				if (
-					new_dictionary["Media"]["States"]["Media item list"] == True and
-					new_dictionary["Media"]["States"]["Media item is media"] == False
+					new_dictionary["Media"]["States"]["Has a list of media items"] == True and
+					new_dictionary["Media"]["States"]["The media item is the root media"] == False
 				):
 					# Switch the "Is media item" switch to True
 					self.dictionary["Switches"]["Has media item"] = True
 
-				# If the "Data" key is inside the media list dictionary
+				# If the "Data" key is inside the list of media dictionary
 				# And the media title key is present in the dictionary
 				if (
 					"Data" in self.dictionary["Media list"] and
@@ -303,7 +303,7 @@ class Watch_List_Of_Media(Watch_History):
 
 				# Show the singular media type in the user language
 				print()
-				print(dictionary["Media type"]["Singular"][self.user_language] + ":")
+				print(dictionary["Media type"]["Singular"][self.language["Small"]] + ":")
 
 				# Define the "Include media title" variable as the "Has media item" switch
 				include_media_title = self.dictionary["Switches"]["Has media item"]
@@ -324,26 +324,26 @@ class Watch_List_Of_Media(Watch_History):
 				# Show the title
 				print("\t" + title)
 
-				# Define the media title key and list the media list keys
+				# Define the media title key and list the list of media keys
 				key = dictionary["Media"]["Title"]
 				keys = list(self.dictionary["Media list"]["Dictionary"].keys())
 
-				# If the media title is not inside the media list
+				# If the media title is not inside the list of media
 				if dictionary["Media"]["Title"] not in self.dictionary["Media list"]["List"]:
-					# Define the media list item number as 2
+					# Define the list of media item number as 2
 					self.dictionary["Numbers"]["Media list item"] = 2
 
-				# If the media title is inside the media list
+				# If the media title is inside the list of media
 				if dictionary["Media"]["Title"] in self.dictionary["Media list"]["Dictionary"]:
-					# If the "[Media title]" + " (2x)" text is already inside the list of keys of the media list
+					# If the "[Media title]" + " (2x)" text is already inside the list of keys of the list of media
 					if dictionary["Media"]["Title"] + " (2x)" in keys:
-						# Add one to the media list item number
+						# Add one to the list of media item number
 						self.dictionary["Numbers"]["Media list item"] += 1
 
 					# Define the key as the media title plus the " ([Media item list number]x)" text
 					key = dictionary["Media"]["Title"] + " (" + str(self.dictionary["Numbers"]["Media list item"]) + "x)"
 
-				# Add the media dictionary to the root media list dictionary, with the correct key defined above
+				# Add the media dictionary to the root list of media dictionary, with the correct key defined above
 				self.dictionary["Media list"]["Dictionary"][key] = new_dictionary
 
 				# Add the title to the list of media titles
@@ -378,7 +378,7 @@ class Watch_List_Of_Media(Watch_History):
 		# List the keys
 		keys = list(self.dictionary["Media list"]["Dictionary"].keys())
 
-		# Iterate through the media titles inside the media list
+		# Iterate through the media titles inside the list of media
 		for media_title in keys:
 			# Get the media dictionary
 			media_dictionary = self.dictionary["Media list"]["Dictionary"][media_title]
@@ -401,13 +401,13 @@ class Watch_List_Of_Media(Watch_History):
 			print()
 			print(self.language_texts["list_of_media_to_watch"] + ":")
 
-			# Show the media list using the method, showing the current media title as "Watching"
+			# Show the list of media using the method, showing the current media title as "Watching"
 			self.Show_Media_List(episode_title, media_item_number)
 
 			# Define a local key
 			key = str(media_item_number)
 
-			# If the "Data" key is inside the media list dictionary
+			# If the "Data" key is inside the list of media dictionary
 			# And the media title key is present in the dictionary
 			if (
 				"Data" in self.dictionary["Media list"] and
@@ -439,14 +439,14 @@ class Watch_List_Of_Media(Watch_History):
 		print(self.separators["5"])
 		print()
 
-		# Show the text telling the user that they finished watching their media list
+		# Show the text telling the user that they finished watching their list of media
 		print(self.language_texts["you_finished_watching_your_list_of_media"] + ".")
 		print()
 
 		# Show the list of watched media
 		print(self.language_texts["list_of_watched_media"] + ":")
 
-		# Show the media list using the method
+		# Show the list of media using the method
 		self.Show_Media_List()
 
 		# Show a five dash space separator
@@ -457,7 +457,7 @@ class Watch_List_Of_Media(Watch_History):
 		# Define the local number
 		number = 1
 
-		# Iterate through the media titles inside the media list
+		# Iterate through the media titles inside the list of media
 		for title in self.dictionary["Media list"]["Titles"]:
 			# Define the text as the number as a string
 			text = str(number)
@@ -467,7 +467,7 @@ class Watch_List_Of_Media(Watch_History):
 				text += " (" + self.language_texts["watching, title()"] + ")"
 
 			# If the parameter media title is not None
-			# And the number of media in the media list is greater than the local number
+			# And the number of media in the list of media is greater than the local number
 			# And the current title is not the parameter media title
 			if (
 				media_title != None and

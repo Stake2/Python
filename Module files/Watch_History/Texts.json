@@ -7,6 +7,10 @@
 		"en": "Media titles",
 		"pt": "Títulos da mídia"
 	},
+	"number_of_the_media": {
+		"en": "Number of the media",
+		"pt": "Número da mídia"
+	},
 	"media_item_title": {
 		"en": "Media item title",
 		"pt": "Título do item de mídia"
@@ -14,6 +18,14 @@
 	"media_item_titles": {
 		"en": "Media item titles",
 		"pt": "Títulos do item de mídia"
+	},
+	"number_of_the_media_item": {
+		"en": "Number of the media item",
+		"pt": "Número do item de mídia"
+	},
+	"new_media_item_title_added": {
+		"en": "New media item title added",
+		"pt": "Novo título de item de mídia adicionado"
 	},
 	"animes, title()": {
 		"en": "Animes",
@@ -66,6 +78,10 @@
 	"media_types": {
 		"en": "Media types",
 		"pt": "Tipos de mídia"
+	},
+	"number_of_the_media_type": {
+		"en": "Number of the media type",
+		"pt": "Número do tipo de mídia"
 	},
 	"watched_media_number": {
 		"en": "Watched media number",
@@ -179,9 +195,9 @@
 		"en": "Watching session duration",
 		"pt": "Duração da sessão de visualização"
 	},
-	"watched_time_stamp": {
-		"en": "Watched time stamp",
-		"pt": "Horário do término da visualização"
+	"how_long_did_it_take_you_to_finish": {
+		"en": "How long did it take you to finish",
+		"pt": "Quanto tempo você levou para terminar"
 	},
 	"youtube_ids": {
 		"en": "YouTube IDs",
@@ -408,6 +424,10 @@
 		"pt": "{} é {} que você assistiu {}",
 		"en": "{} is {} that you watched {}"
 	},
+	"when_i_started_watching": {
+		"pt": "Quando eu comecei a assistir",
+		"en": "When I started watching"
+	},
 	"when_i_finished_watching": {
 		"pt": "Quando eu terminei de assistir",
 		"en": "When I finished watching"
@@ -424,17 +444,13 @@
 		"pt": "Próxima {} para assistir",
 		"en": "Next {} to watch"
 	},
+	"old_watching_status": {
+		"pt": "Status de assistindo antigo",
+		"en": "Old watching status"
+	},
 	"new_watching_status": {
 		"pt": "Novo status de assistindo",
 		"en": "New watching status"
-	},
-	"when_i_started_watching": {
-		"pt": "Quando eu comecei a assistir",
-		"en": "When I started watching"
-	},
-	"when_i_finished_watching": {
-		"pt": "Quando eu terminei de assistir",
-		"en": "When I finished watching"
 	},
 	"watch_dubbed": {
 		"en": "Watch dubbed",
@@ -523,5 +539,29 @@
 	"show_non_watching_media": {
 		"en": "Show \"Non-watching\" media",
 		"pt": "Mostrar mídias \"Não assistindo\""
+	},
+	"entry_file_in_the_watch_history_by_media_type_folder": {
+		"en": "Entry file in the \"Watch History (by media type)\" folder",
+		"pt": "Arquivo da entrada na pasta \"Watch History (por tipo de mídia)\""
+	},
+	"entry_file_in_the_watched_media_folder_by_year": {
+		"en": "Entry file in the \"Watched media\" folder by year",
+		"pt": "Arquivo da entrada na pasta \"Mídias assistidas\" por ano"
+	},
+	"entry_file_in_the_watched_folder_of_a_media_without_media_items": {
+		"en": "Entry file in the \"Watched\" folder of a media without media items",
+		"pt": "Arquivo da entrada na pasta \"Assistido\" de uma mídia sem itens de mídia"
+	},
+	"entry_file_in_the_watched_folder_of_a_media_item": {
+		"en": "Entry file in the \"Watched\" folder of a media item",
+		"pt": "Arquivo da entrada na pasta \"Assistido\" de um item de mídia"
+	},
+	"the_season_ordinal_number_was_added": {
+		"en": "The season ordinal number was added",
+		"pt": "O número ordinal da temporada foi adicionado"
+	},
+	"a_new_media_item_title_was_added_to_the_entry_files_and_json_files": {
+		"en": "A new media item title was added to the entry files and JSON files",
+		"pt": "Um novo título de item de mídia foi adicionado aos arquivos de entrada e aos arquivos JSON"
 	}
 }

@@ -41,7 +41,7 @@ class Post(Stories):
 			self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] == self.story["Information"]["Chapters"]["Numbers"]["Total"]
 		):
 			# Get the story title and define the select text
-			select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(self.story["Titles"][self.user_language])
+			select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(self.story["Titles"][self.language["Small"]])
 
 			# Ask the user to select another story
 			self.Select_Story(select_text_parameter = select_text)
@@ -264,7 +264,7 @@ class Post(Stories):
 		# Define the root folder
 		folder_name = self.dictionary["Chapter"]["Folders"]["Covers"]["Name"]
 
-		self.dictionary["Chapter"]["Folders"]["Covers"]["root"] = self.story["Folders"]["Covers"]["Landscape"][self.full_user_language]["root"] + folder_name + "/"
+		self.dictionary["Chapter"]["Folders"]["Covers"]["root"] = self.story["Folders"]["Covers"]["Landscape"][self.language["Full"]]["root"] + folder_name + "/"
 
 		# ---------- #
 
@@ -305,7 +305,7 @@ class Post(Stories):
 			print()
 
 			# Show the chapter title
-			chapter_title = self.dictionary["Chapter"]["Titles"][self.user_language]
+			chapter_title = self.dictionary["Chapter"]["Titles"][self.language["Small"]]
 
 			print(self.Language.language_texts["title, title()"] + ":")
 			print(chapter_title)
@@ -317,7 +317,7 @@ class Post(Stories):
 			template = self.language_texts["cover_creation"] + " " + self.Language.language_texts["in_{}_mode"]
 
 			# Define the skip text, formatting it with the cover type title
-			text = template.format("[" + cover_type["Titles"][self.user_language] + "]")
+			text = template.format("[" + cover_type["Titles"][self.language["Small"]] + "]")
 
 			# Ask if the user wants to skip the creation of the cover with the specific type
 			self.Skip(self.dictionary["Steps"]["Create the covers"], custom_text = text)
@@ -350,7 +350,7 @@ class Post(Stories):
 		for language in self.languages["small"]:
 			# Get the full and translated languages
 			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			# Define the default text key for the template
 			text_key = "opening_the_photoshop_file_of_chapter_covers, type: long"
@@ -366,9 +366,9 @@ class Post(Stories):
 
 			# Define the list of items to use in the template
 			items = [
-				cover_type["Titles"][self.user_language], # The title of the cover type in the user language
+				cover_type["Titles"][self.language["Small"]], # The title of the cover type in the user language
 				translated_language, # The translated language
-				cover_type["Titles"][self.user_language], # The title of the cover type in the user language
+				cover_type["Titles"][self.language["Small"]], # The title of the cover type in the user language
 				self.stories["Cover types"]["Extension"].upper() # The extension of the cover file
 			]
 
@@ -376,10 +376,10 @@ class Post(Stories):
 			if self.states["Run as module"] == True:
 				# Update the list of items to use in the template
 				items = [
-					cover_type["Titles"][self.user_language], # The title of the cover type in the user language
+					cover_type["Titles"][self.language["Small"]], # The title of the cover type in the user language
 					translated_language, # The translated language
 					self.story["Information"]["Chapters"]["Numbers"]["Total"], # The total number of chapters of the story
-					cover_type["Titles"][self.user_language], # The title of the cover type in the user language
+					cover_type["Titles"][self.language["Small"]], # The title of the cover type in the user language
 					self.stories["Cover types"]["Extension"].upper() # The extension of the cover file
 				]
 
@@ -455,7 +455,7 @@ class Post(Stories):
 		type_text = self.language_texts["press_enter_to_copy_the_chapter_title"]
 
 		# Show the full current language in the user language
-		print(self.languages["full_translated"][language][self.user_language] + ":")
+		print(self.languages["full_translated"][language][self.language["Small"]] + ":")
 
 		# Show the chapter title in the user language
 		print(self.dictionary["Chapter"]["Titles (with leading zeroes)"][language])
@@ -464,7 +464,7 @@ class Post(Stories):
 		self.Input.Type(type_text)
 
 		# Copy the chapter title
-		self.Text.Copy(self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.user_language], verbose = False)
+		self.Text.Copy(self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.language["Small"]], verbose = False)
 
 	def Move_Cover(self, language, full_language, cover_type):
 		# Cover type folder:
@@ -472,7 +472,7 @@ class Post(Stories):
 		# 
 		# Example:
 		# "/Landscape/"
-		folder_name = cover_type["Titles"][self.user_language] + "/"
+		folder_name = cover_type["Titles"][self.language["Small"]] + "/"
 
 		# Full language and chapter number folders:
 		# "[Full_Language]/X - XX/"
@@ -649,7 +649,7 @@ class Post(Stories):
 				self.Copy_Chapter_Text(language, full_language)
 
 				# If the language is the user language
-				if language == self.user_language:
+				if language == self.language["Small"]:
 					# Get the link of the posted chapter on the story website from the user
 					input_text = self.language_texts["paste_the_link_of_the_chapter_on"] + " " + story_website["Name"]
 
@@ -702,12 +702,12 @@ class Post(Stories):
 		print(self.separators["5"])
 
 		# Get the root post template in the user language from its file
-		file = self.stories["Folders"]["Database"]["Post templates"][self.user_language]
+		file = self.stories["Folders"]["Database"]["Post templates"][self.language["Small"]]
 
 		template = self.File.Contents(file)["string"]
 
 		# Make an underlined version of the story title
-		self.story["Titles"]["Underlined"] = self.story["Titles"][self.user_language].replace(" ", "_")
+		self.story["Titles"]["Underlined"] = self.story["Titles"][self.language["Small"]].replace(" ", "_")
 
 		# ---------- #
 
@@ -728,7 +728,7 @@ class Post(Stories):
 		# Create the second "Social Network" post card
 
 		# Get the root post template in the user language from its file
-		file = self.stories["Folders"]["Database"]["Post templates"]["Story websites"][self.user_language]
+		file = self.stories["Folders"]["Database"]["Post templates"]["Story websites"][self.language["Small"]]
 
 		template = self.File.Contents(file)["string"]
 
@@ -755,7 +755,7 @@ class Post(Stories):
 		# ---------- #
 
 		# Get the root post template in the user language from its file
-		file = self.stories["Folders"]["Database"]["Post templates"][self.user_language]
+		file = self.stories["Folders"]["Database"]["Post templates"][self.language["Small"]]
 
 		template = self.File.Contents(file)["string"]
 
@@ -949,9 +949,9 @@ class Post(Stories):
 		# Define the list of items to use in the template if it is not present
 		if "Items" not in dictionary:
 			dictionary["Items"] = [
-				self.story["Titles"][self.user_language], # The story title in the user language
-				self.dictionary["Chapter"]["Numbers"]["Names"][self.user_language], # The number name of the chapter title in the user language
-				self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.user_language], # The chapter title in the user language, with leading zeroes
+				self.story["Titles"][self.language["Small"]], # The story title in the user language
+				self.dictionary["Chapter"]["Numbers"]["Names"][self.language["Small"]], # The number name of the chapter title in the user language
+				self.dictionary["Chapter"]["Titles (with leading zeroes)"][self.language["Small"]], # The chapter title in the user language, with leading zeroes
 				self.dictionary["Chapter"]["Links"][dictionary["Link key"]], # The chapter link of the website of the story
 				self.story["Titles"]["Underlined"] # The underlined story title, for the story hashtag in the end
 			]
@@ -968,7 +968,7 @@ class Post(Stories):
 			self.dictionary["Chapter"]["Post cards"][dictionary["Key"]] = self.dictionary["Chapter"]["Post cards"][dictionary["Key"]].replace(self.language_texts["one_more_chapter"], self.language_texts["the_first_chapter"])
 
 		# Replace the "One more chapter" text with the "The last chapter" text if the chapter is the last one of the story
-		if int(self.dictionary["Chapter"]["Number"]) == len(self.dictionary["Chapters"]["Titles"][self.user_language]):
+		if int(self.dictionary["Chapter"]["Number"]) == len(self.dictionary["Chapters"]["Titles"][self.language["Small"]]):
 			self.dictionary["Chapter"]["Post cards"][dictionary["Key"]] = self.dictionary["Chapter"]["Post cards"][dictionary["Key"]].replace(self.language_texts["one_more_chapter"], self.language_texts["the_last_chapter"])
 
 	def Remove_Hashtags(self, card):

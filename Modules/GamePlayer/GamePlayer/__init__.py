@@ -18,7 +18,7 @@ class GamePlayer(object):
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import the usage classes
+		# Import some usage classes
 		self.Import_Usage_Classes()
 
 		# Folders and files method
@@ -55,7 +55,7 @@ class GamePlayer(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -66,36 +66,50 @@ class GamePlayer(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -104,21 +118,6 @@ class GamePlayer(object):
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Import_Usage_Classes(self):
 		# Define the classes to be imported
@@ -214,7 +213,7 @@ class GamePlayer(object):
 
 		# Update the game types dictionary to add some keys
 		self.game_types.update({
-			"Genders": self.Language.texts["genders, type: dict"],
+			"Genders": self.Language.texts["genders, type: dictionary"],
 			"Gender items": self.Language.texts["gender_items"],
 			"Game list": {
 				"Number": 0,
@@ -248,7 +247,7 @@ class GamePlayer(object):
 			key = game_type.lower().replace(" ", "_")
 
 			# Define the user language version of the game type
-			language_type = self.game_types["Types"][self.user_language][i]
+			language_type = self.game_types["Types"][self.language["Small"]][i]
 
 			# Create the game type dictionary
 			self.game_types[game_type] = {
@@ -402,7 +401,7 @@ class GamePlayer(object):
 			self.game_types[game_type].pop("JSON")
 
 			# Add the game list length numbers to the game types list to show on select game type
-			self.game_types[game_type]["Texts"]["Show"] = self.game_types[game_type]["Type"][self.user_language] + " (" + str(len(self.game_types[game_type]["Game list"])) + ")"
+			self.game_types[game_type]["Texts"]["Show"] = self.game_types[game_type]["Type"][self.language["Small"]] + " (" + str(len(self.game_types[game_type]["Game list"])) + ")"
 
 			# Add the game type dictionary to the "Dictionary" key
 			self.game_types["Dictionary"][game_type] = self.game_types[game_type]
@@ -472,7 +471,7 @@ class GamePlayer(object):
 
 			# If the file exists and it is not empty
 			if (
-				self.File.Exist(entries_file) == True and
+				self.File.Exists(entries_file) == True and
 				self.File.Contents(entries_file)["lines"] != []
 			):
 				# Add the number of lines of the file to the local number of entries
@@ -1301,7 +1300,7 @@ class GamePlayer(object):
 			},
 			"List": {
 				"en": self.game_types["Types"]["en"].copy(),
-				self.user_language: self.game_types["Types"][self.user_language].copy()
+				self.language["Small"]: self.game_types["Types"][self.language["Small"]].copy()
 			},
 			"Status": [
 				self.texts["plan_to_play, title()"]["en"],
@@ -1326,7 +1325,7 @@ class GamePlayer(object):
 			# If the number of games is zero, remove the game type from the lists
 			if game_type["Game number"] == 0:
 				dictionary["List"]["en"].remove(game_type["Type"]["en"])
-				dictionary["List"][self.user_language].remove(game_type["Type"][self.user_language])
+				dictionary["List"][self.language["Small"]].remove(game_type["Type"][self.language["Small"]])
 
 			i += 1
 
@@ -1345,7 +1344,7 @@ class GamePlayer(object):
 			"option" not in dictionary and
 			"number" not in dictionary
 		):
-			dictionary["option"] = self.Input.Select(dictionary["List"]["en"], dictionary["List"][self.user_language], show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
+			dictionary["option"] = self.Input.Select(dictionary["List"]["en"], dictionary["List"][self.language["Small"]], show_text = dictionary["Texts"]["Show"], select_text = dictionary["Texts"]["Select"])["option"]
 
 			dictionary["option"] = dictionary["option"].split(" (")[0]
 
@@ -1366,7 +1365,7 @@ class GamePlayer(object):
 		dictionary["Game list"] = self.Get_Game_List(dictionary)
 
 		# Add the game list length numbers to the game types list to show on select game type
-		dictionary["Texts"]["Show"] = dictionary["Type"][self.user_language] + " (" + str(len(dictionary["Game list"])) + ")"
+		dictionary["Texts"]["Show"] = dictionary["Type"][self.language["Small"]] + " (" + str(len(dictionary["Game list"])) + ")"
 
 		return dictionary
 
@@ -1395,7 +1394,7 @@ class GamePlayer(object):
 		dictionary["Texts"] = dictionary["Type"]["Texts"]
 
 		# Define the select text
-		text = dictionary["Type"]["Type"][self.user_language]
+		text = dictionary["Type"]["Type"][self.language["Small"]]
 
 		if "Select" in dictionary["Type"]:
 			text = dictionary["Type"]["Select"]
@@ -1623,7 +1622,7 @@ class GamePlayer(object):
 
 			# If the file exists and is not empty
 			if (
-				self.File.Exist(entries_file) == True and
+				self.File.Exists(entries_file) == True and
 				self.File.Contents(entries_file)["lines"] != []
 			):
 				# Read the "Entries.json" file
@@ -1664,8 +1663,8 @@ class GamePlayer(object):
 			self.JSON.Edit(folder["Gaming time"]["Gaming time"], gaming_time)
 
 			# Write the language gaming time into the language gaming time file if the text is not an empty string
-			if gaming_time["Text"][self.user_language] != "":
-				self.File.Edit(folder["Gaming time"]["Language gaming time"], gaming_time["Text"][self.user_language], "w")
+			if gaming_time["Text"][self.language["Small"]] != "":
+				self.File.Edit(folder["Gaming time"]["Language gaming time"], gaming_time["Text"][self.language["Small"]], "w")
 
 		# --------------- #
 
@@ -1687,7 +1686,7 @@ class GamePlayer(object):
 		# Define stuff that only needs to be defined for the base game, not for sub-games
 		if self.define_item == False:
 			# Define the default game language as the user language
-			game["Language"] = self.full_user_language
+			game["Language"] = self.language["Full"]
 
 			# Change user language to original game language if the key exists inside the game details
 			if self.Language.language_texts["original_language"] in game["Details"]:
@@ -1704,7 +1703,7 @@ class GamePlayer(object):
 			game["Platform"] = game["Details"][self.Language.language_texts["platform, title()"]]
 
 			i = 0
-			for platform in self.game_types["Platforms"][self.user_language]:
+			for platform in self.game_types["Platforms"][self.language["Small"]]:
 				if platform == game["Platform"]:
 					game["Platform"] = {}
 
@@ -1765,7 +1764,7 @@ class GamePlayer(object):
 			for extension in [".lnk", ".url"]:
 				file = game["Files"]["Shortcut"]["File"] + extension
 
-				if self.File.Exist(file) == True:
+				if self.File.Exists(file) == True:
 					game["Files"]["Shortcut"]["File"] += extension
 
 					found_shortcut = True
@@ -1778,13 +1777,13 @@ class GamePlayer(object):
 
 				game["Files"]["Shortcut"]["Path"] = shell.CreateShortCut(game["Files"]["Shortcut"]["File"]).Targetpath.replace("\\", "/")
 
-				if self.File.Exist(game["Files"]["Shortcut"]["Path"]) == False:
+				if self.File.Exists(game["Files"]["Shortcut"]["Path"]) == False:
 					game["Files"]["Shortcut"]["Path"] += "/"
 
 			# Define the bat File for the game if it exists
 			file = self.Folder.folders["Apps"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
 
-			if self.File.Exist(file) == True:
+			if self.File.Exists(file) == True:
 				game["Files"]["Bat"] = file
 
 			# Create the local game folder
@@ -1989,7 +1988,7 @@ class GamePlayer(object):
 
 		# Create the [Sub-game type] folder
 		game["Folders"][sub_game_type] = {
-			"root": game["Folders"]["root"] + game["Sub-games"]["Texts"]["Plural"][self.user_language] + "/"
+			"root": game["Folders"]["root"] + game["Sub-games"]["Texts"]["Plural"][self.language["Small"]] + "/"
 		}
 
 		self.Folder.Create(game["Folders"][sub_game_type]["root"])
@@ -2124,7 +2123,7 @@ class GamePlayer(object):
 			"options": game["Sub-games"]["Items"]["List"],
 			"language_options": game["Sub-games"]["Items"]["Language list"],
 
-			"show_text": game["Sub-games"]["Texts"]["Plural"][self.user_language],
+			"show_text": game["Sub-games"]["Texts"]["Plural"][self.language["Small"]],
 			"select_text": self.Language.language_texts["select_an_item_from_the_list"]
 		}
 
@@ -2344,7 +2343,7 @@ class GamePlayer(object):
 		):
 			game = game["Sub-game"]
 
-		if self.File.Exist(game["Folders"]["details"]) == True:
+		if self.File.Exists(game["Folders"]["details"]) == True:
 			game["Details"] = self.File.Dictionary(game["Folders"]["details"])
 
 			# Define titles key
@@ -2372,23 +2371,23 @@ class GamePlayer(object):
 			):
 				game["Titles"]["Language"] = game["Titles"]["Language"] + " (" + game["Titles"]["Original"].split(" (")[-1]
 
-				if self.user_language in game["Titles"]:
-					game["Titles"][self.user_language] = game["Titles"][self.user_language] + " (" + game["Titles"]["Original"].split(" (")[-1]
+				if self.language["Small"] in game["Titles"]:
+					game["Titles"][self.language["Small"]] = game["Titles"][self.language["Small"]] + " (" + game["Titles"]["Original"].split(" (")[-1]
 
 			# Define game titles by language
 			for language in self.languages["small"]:
-				key = self.Language.texts["title_in_language"][language][self.user_language]
+				key = self.Language.texts["title_in_language"][language][self.language["Small"]]
 
 				if key in game["Details"]:
 					game["Titles"][language] = game["Details"][key]
 
 			game["Titles"]["Language"] = game["Titles"]["Original"]
 
-			if self.user_language in game["Titles"]:
-				game["Titles"]["Language"] = game["Titles"][self.user_language]
+			if self.language["Small"] in game["Titles"]:
+				game["Titles"]["Language"] = game["Titles"][self.language["Small"]]
 
 			if (
-				self.user_language not in game["Titles"] and
+				self.language["Small"] not in game["Titles"] and
 				"Romanized" in game["Titles"]
 			):
 				game["Titles"]["Language"] = game["Titles"]["Romanized"]
@@ -2442,7 +2441,7 @@ class GamePlayer(object):
 
 			# If the time string is empty
 			if game["Gaming time"]["Times"][key] == "":
-				# Get it from the session duration inside the entry
+				# Get it from the gaming session duration inside the entry
 				game["Gaming time"]["Times"][key] = entry["Session duration"][sub_key]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
 
 			# If the key is "Last"
@@ -2451,7 +2450,7 @@ class GamePlayer(object):
 				key == "Last" and
 				game["Gaming time"]["Times"][key] != ""
 			):
-				# Get it from the session duration inside the entry
+				# Get it from the gaming session duration inside the entry
 				game["Gaming time"]["Times"][key] = entry["Session duration"][sub_key]["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
 
 			# Create the date dictionary of the played time
@@ -2547,8 +2546,8 @@ class GamePlayer(object):
 		self.JSON.Edit(game["Folders"]["Gaming time"]["Gaming time"], game["Gaming time"])
 
 		# Write the language gaming time into the language gaming time file if the text is not an empty string
-		if game["Gaming time"]["Text"][self.user_language] != "":
-			self.File.Edit(game["Folders"]["Gaming time"]["Language gaming time"], game["Gaming time"]["Text"][self.user_language], "w")
+		if game["Gaming time"]["Text"][self.language["Small"]] != "":
+			self.File.Edit(game["Folders"]["Gaming time"]["Language gaming time"], game["Gaming time"]["Text"][self.language["Small"]], "w")
 
 		# Return the game dictionary
 		return game
@@ -2670,7 +2669,7 @@ class GamePlayer(object):
 	def Get_Language_Status(self, status):
 		return_english = False
 
-		if status in self.texts["statuses, type: list"][self.user_language]:
+		if status in self.texts["statuses, type: list"][self.language["Small"]]:
 			return_english = True
 
 		s = 0
@@ -2680,12 +2679,12 @@ class GamePlayer(object):
 				return_english == False and
 				english_status == status
 			):
-				status_to_return = self.texts["statuses, type: list"][self.user_language][s]
+				status_to_return = self.texts["statuses, type: list"][self.language["Small"]][s]
 
 			# Return the English status
 			if (
 				return_english == True and
-				status == self.texts["statuses, type: list"][self.user_language][s]
+				status == self.texts["statuses, type: list"][self.language["Small"]][s]
 			):
 				status_to_return = english_status
 
@@ -2811,7 +2810,7 @@ class GamePlayer(object):
 		# If the language parameter is None
 		if language == None:
 			# Use the user language
-			language = self.user_language
+			language = self.language["Small"]
 
 		# Define the list of keys to search for the title
 		keys = [
@@ -2928,7 +2927,7 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Show the [Sub-game type] text and the sub-game title
+		# Show the sub-game type text and the sub-game title
 		# If the game has sub-games and the sub-game is not the game
 		if (
 			game["States"]["Has sub-games"] == True and
@@ -2937,8 +2936,8 @@ class GamePlayer(object):
 			# Define the sub-game variable for easier typing
 			sub_game = game["Sub-game"]
 
-			# Show the "Sub-game type" text
-			sub_game_type_text = game["Sub-games"]["Texts"]["Singular"][self.user_language]
+			# Show the sub-game type text
+			sub_game_type_text = game["Sub-games"]["Texts"]["Singular"][self.language["Small"]]
 
 			print()
 			print(sub_game_type_text + ":")
@@ -3047,7 +3046,7 @@ class GamePlayer(object):
 		# --------------- #
 
 		# Show the shortcut file
-		if self.File.Exist(game["Files"]["Shortcut"]["File"]) == True:
+		if self.File.Exists(game["Files"]["Shortcut"]["File"]) == True:
 			print()
 			print(self.File.language_texts["shortcut, title()"] + ":")
 			print("\t" + game["Files"]["Shortcut"]["File"])
@@ -3062,11 +3061,8 @@ class GamePlayer(object):
 
 		# Show information about the gaming session played
 		if "Entry" in dictionary:
-			# Check if the "Entry" and "Times" keys are in the dictionary
-			if (
-				"Entry" in dictionary and
-				"Times" in dictionary["Entry"]
-			):
+			# Check if the "Times" key is in the dictionary
+			if "Times" in dictionary["Entry"]:
 				# Define the playing text
 				playing_text = " " + self.language_texts["playing, infinitive action"]
 
@@ -3078,7 +3074,7 @@ class GamePlayer(object):
 					# Format the dictionary key to match the stored time entries, e.g. "Started playing"
 					time_key = time_key.capitalize() + " playing"
 
-					# Print the composed text and the corresponding formatted time
+					# Show the composed text and the corresponding formatted time
 					print()
 					print(text + ":")
 					print("\t" + dictionary["Entry"]["Times"][time_key]["Formats"]["HH:MM DD/MM/YYYY"])
@@ -3086,7 +3082,7 @@ class GamePlayer(object):
 				# Show the gaming session duration text in the user language
 				print()
 				print(self.Language.language_texts["gaming_session_duration"] + ":")
-				print("\t" + dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.user_language])
+				print("\t" + dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.language["Small"]])
 
 			# --------------- #
 
@@ -3099,19 +3095,19 @@ class GamePlayer(object):
 				print(self.Language.language_texts["states, title()"] + ":")
 
 				for key in dictionary["States"]["Texts"]:
-					print("\t" + dictionary["States"]["Texts"][key][self.user_language])
+					print("\t" + dictionary["States"]["Texts"][key][self.language["Small"]])
 
 			# If there is a session description, show it
 			if (
 				"Descriptions" in self.dictionary["Entry"]["Diary Slim"] and
-				self.user_language in self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
+				self.language["Small"] in self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
 			):
 				# Show the user language "Gaming session description" text
 				print()
 				print(self.language_texts["gaming_session_description"] + ":")
 
 				# Define the description variable for easier typing and a more beautiful code
-				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.user_language]["lines"]
+				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.language["Small"]]["lines"]
 
 				# Show the description lines
 				for line in description:

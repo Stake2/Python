@@ -81,19 +81,30 @@ class Module_Selector():
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
-		self.folders = self.Folder.folders
-
 	def Define_Basic_Variables(self):
-		# Get the "Switches" dictionary
+		# Get the "Switches" dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches
 
-		# Copy the reset switches from the "Global_Switches" module
+		# Copy the reset switches from the "Global_Switches" class
 		self.reset_switches = deepcopy(self.switches["Reset"])
 
-		# Get the languages and the user language from the "Language" class
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
-		self.user_language = self.Language.user_language
+
+		# Import the "language" dictionary
+		self.language = self.Language.language
+
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
+		self.folders = self.Folder.folders
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
@@ -101,21 +112,6 @@ class Module_Selector():
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Define_Parser(self):
 		# Import the "argparse" module
@@ -147,11 +143,9 @@ class Module_Selector():
 					"verbose",
 					"Verbose"
 				],
-				"user_information": {
+				"show_user_information": {
 					"List": [
-						"user_information",
-						"userinfo",
-						"user"
+						"show_user_information"
 					],
 					"Text key": "activates_the_displaying_of_user_information_on_the_language_class"
 				},
@@ -309,7 +303,7 @@ class Module_Selector():
 
 					# Else, define the text as the text in the user language
 					else:
-						text = text[self.user_language].lower()
+						text = text[self.language["Small"]].lower()
 
 				# If the language text is not inside the options key list
 				# And "Language text" key is not inside the options dictionary
@@ -442,7 +436,7 @@ class Module_Selector():
 					text_key = key
 
 					# Get the text for the custom argument
-					dictionary["Text"] = module["Texts"][text_key][self.user_language]
+					dictionary["Text"] = module["Texts"][text_key][self.language["Small"]]
 
 					# If there is the "{module}" format text on the argument text
 					# Replace it with the module title
@@ -485,6 +479,7 @@ class Module_Selector():
 		# Get the arguments dictionary
 		self.arguments = self.argument_parser["Parser"].parse_args()
 
+		# Define the default "has arguments" state as False
 		self.has_arguments = False
 
 		# Iterate through the arguments and states list
@@ -503,12 +498,13 @@ class Module_Selector():
 					# Then the Parser contains arguments
 					self.has_arguments = True
 
+		# Define the default "has switches" state as False
 		self.has_switches = False
 
-		# Iterate through the switches list
+		# Iterate through the list of reset switches
 		for switch in list(self.switches["Reset"].keys()):
-			# Lower the switch
-			switch = switch.lower()
+			# Lower the switch and replace spaces with an underline
+			switch = switch.lower().replace(" ", "_")
 
 			# If the arguments contain the switch and the state of the switch is True
 			if (
@@ -585,8 +581,8 @@ class Module_Selector():
 				# Define the key
 				key = switch
 
-				# Lower the switch
-				switch = switch.lower()
+				# Lower the switch and replace spaces with an underline
+				switch = switch.lower().replace(" ", "_")
 
 				# If the arguments list has the switch
 				# And the switch is True
@@ -600,15 +596,11 @@ class Module_Selector():
 			# Show the global switches
 			self.Show_Global_Switches()
 
-			# If the "User information" switch is on
-			# Execute the "Show_User_Information" method of the "Language" class
-			if self.switches["Edited"]["User information"] == True:
-				self.Language.Show_User_Information()
-
 			# Edit the "Switches.json" file with the updated switches
 			self.Global_Switches.Switch(self.switches["Edited"])
 
 	def Show_Global_Switches(self):
+		# Define the default "has true variables" state as False
 		has_true_variables = False
 
 		# Iterate through the global switches keys list
@@ -623,41 +615,49 @@ class Module_Selector():
 				has_true_variables = True
 
 		# If any switch is True (activated)
-		# Then show a first space and dash separator
 		if has_true_variables == True:
+			# Show a first ten space
 			print()
-			print("-----")
+			print(self.separators["10"])
 			print()
 
-		# Iterate through the global switches keys list
-		for switch in self.switches["Global"].keys():
-			# Define the key
-			key = switch
+			# If the "Show user information" switch is activated
+			if self.switches["Edited"]["Show user information"] == True:
+				# Execute the "Show_User_Information" method of the "Language" class
+				self.Language.Show_User_Information()
 
-			# Lower the switch
-			switch = switch.lower()
+				# If the "Testing" or "Verbose" switches are activated
+				if (
+					self.switches["Edited"]["Testing"] == True or
+					self.switches["Edited"]["Verbose"] == True
+				):
+					# Show a five dash space separator
+					print()
+					print(self.separators["5"])
+					print()
 
-			# If the switch is inside the edited switches dictionary
-			# And the switch is True
-			# And the switch is not the "User information" one
-			if (
-				key in self.switches["Edited"] and
-				self.switches["Edited"][key] == True and
-				key != "User information"
-			):
-				# Show the switch explanation text to the user
-				print(self.language_texts[switch + ", type: explanation"])
+			# Iterate through the global switches keys list
+			for switch in self.switches["Global"].keys():
+				# Define the key
+				key = switch
 
-		# If any switch is True (activated)
-		# And the "User information" is off
-		# Then show a final space and dash separator
-		# (If the "User information" switch is on, it provides its own final separator)
-		if (
-			has_true_variables == True and
-			self.switches["Edited"]["User information"] == False
-		):
+				# Lower the switch
+				switch = switch.lower()
+
+				# If the switch is inside the edited switches dictionary
+				# And the switch is True
+				# And the switch is not the "Show user information" one
+				if (
+					key in self.switches["Edited"] and
+					self.switches["Edited"][key] == True and
+					key != "Show user information"
+				):
+					# Show the switch explanation text to the user
+					print(self.language_texts[switch + ", type: explanation"])
+
+			# Show a final ten dash space separator
 			print()
-			print("-----")
+			print(self.separators["10"])
 
 	def Run_Module(self, module):
 		# If the "Title" key is inside the module dictionary

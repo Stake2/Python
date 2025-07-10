@@ -109,7 +109,7 @@ class Watch_Media(Watch_History):
 		media_watching_status = self.media["Details"][self.Language.language_texts["status, title()"]]
 
 		# If the media watching status is equal to "Completed"
-		if media_watching_status == self.Language.texts["completed, title()"][self.user_language]:
+		if media_watching_status == self.Language.texts["completed, title()"][self.language["Small"]]:
 			# Define the new status as "Re-watching"
 			self.media["Status change"] = {
 				"Old": media_watching_status,
@@ -128,7 +128,7 @@ class Watch_Media(Watch_History):
 			self.dictionary["Select episode"] == True
 		):
 			# Get the episode titles
-			titles = self.media["Item"]["Episodes"]["Titles"][self.user_language]	
+			titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]	
 
 			# Ask the user to select an episode
 			show_text = self.language_texts["episodes, title()"]
@@ -144,8 +144,8 @@ class Watch_Media(Watch_History):
 
 		# Define the status list for the "Plan to watch" related statuses
 		plan_to_watch_status_list = [
-			self.texts["plan_to_watch, title()"][self.user_language],
-			self.Language.texts["on_hold, title()"][self.user_language]
+			self.texts["plan_to_watch, title()"][self.language["Small"]],
+			self.Language.texts["on_hold, title()"][self.language["Small"]]
 		]
 
 		# If the media watching status is inside the "Plan to watch" status list
@@ -154,7 +154,7 @@ class Watch_Media(Watch_History):
 		if (
 			media_watching_status in plan_to_watch_status_list or
 			self.File.Contents(self.media["Folders"]["dates"])["lines"] == [] or
-			self.media["States"]["Media item list"] == True and
+			self.media["States"]["Has a list of media items"] == True and
 			self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == []
 		):
 			# If the media "Dates.txt" file is empty
@@ -177,7 +177,7 @@ class Watch_Media(Watch_History):
 			# And the media item "Dates.txt" file is empty
 			# And the user is not re-watching the media
 			if (
-				self.media["States"]["Media item list"] == True and
+				self.media["States"]["Has a list of media items"] == True and
 				self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == [] and
 				self.media["States"]["Re-watching"] == False
 			):
@@ -314,7 +314,7 @@ class Watch_Media(Watch_History):
 			# If the media language key does not exist inside the episode titles dictionary
 			if self.media["Language"] not in self.media["Item"]["Episodes"]["Titles"]:
 				# Change the media language to the user language
-				self.media["Language"] = self.user_language
+				self.media["Language"] = self.language["Small"]
 
 			# Define the after key used to find the "Episode" key, to define the current episode to watch (episode number and title)
 			# Be it "Episodes", "End date", or "Start date"
@@ -542,7 +542,7 @@ class Watch_Media(Watch_History):
 				# For example:
 				# https://animes.vision/animes/title-of-the-anime/
 				# The media type code is "animes"
-				self.media["Episode"]["Remote"]["Link"] += self.dictionary["Media type"]["Plural"][self.user_language].lower() + "/" + self.media["Episode"]["Remote"]["origin_location"] + "/"
+				self.media["Episode"]["Remote"]["Link"] += self.dictionary["Media type"]["Plural"][self.language["Small"]].lower() + "/" + self.media["Episode"]["Remote"]["origin_location"] + "/"
 
 				# Add the "Dubbed" text to the episode link
 				# If the "Has dubbing" and "Watch dubbed" media states are True
@@ -557,7 +557,7 @@ class Watch_Media(Watch_History):
 					# Add the "dubbed" text to the origin location 
 					# For example:
 					# title-of-the-anime-dubbed ("-dubbed" is added)
-					dubbed_origin_location = self.media["Episode"]["Remote"]["origin_location"] + "-" + self.Language.texts["dubbed, title()"][self.user_language].lower()
+					dubbed_origin_location = self.media["Episode"]["Remote"]["origin_location"] + "-" + self.Language.texts["dubbed, title()"][self.language["Small"]].lower()
 
 					# Replace the original origin location with the dubbed version of it
 					# For example:
@@ -580,7 +580,7 @@ class Watch_Media(Watch_History):
 					# For example:
 					# https://animes.vision/animes/title-of-the-anime/episodio-12/dublado
 					# "dublado" means "dubbed"
-					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["dubbed, title()"][self.user_language].lower()
+					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["dubbed, title()"][self.language["Small"]].lower()
 
 				# Add the "Subbed" text in the user language to the remote origin link
 				# If the "Has dubbing" or "Watch dubbed" media states are False
@@ -592,7 +592,7 @@ class Watch_Media(Watch_History):
 					# For example:
 					# https://animes.vision/animes/title-of-the-anime/episodio-12/legendado
 					# "legendado" means "subbed"
-					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["subbed, title()"][self.user_language].lower()
+					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["subbed, title()"][self.language["Small"]].lower()
 
 			# Define the remote origin link for the "YouTube" remote origin
 			if self.media["Episode"]["Remote"]["Title"] == "YouTube":
@@ -600,7 +600,7 @@ class Watch_Media(Watch_History):
 				link = remote_origin["Link templates"]["Video"]
 
 				# If the media has a media item list (seasons or video series)
-				if self.media["States"]["Media item list"] == True:
+				if self.media["States"]["Has a list of media items"] == True:
 					# Update the link to the "Video and playlist" link template
 					link = remote_origin["Link templates"]["Video and playlist"]
 
@@ -608,7 +608,7 @@ class Watch_Media(Watch_History):
 				link = link.replace("{Video}", self.media["Episode"]["ID"])
 
 				# If the media has a media item list (seasons or video series)
-				if self.media["States"]["Media item list"] == True:
+				if self.media["States"]["Has a list of media items"] == True:
 					# Add the playlist ID
 					link = link.replace("{Playlist}", self.media["Episode"]["Remote"]["origin_location"])
 
@@ -616,7 +616,7 @@ class Watch_Media(Watch_History):
 				# And the media is an episodic one
 				# (Video channels can be episodic if the "Episodic" key is present inside the media (item) details)
 				if (
-					self.media["States"]["Media item list"] == True and
+					self.media["States"]["Has a list of media items"] == True and
 					self.media["States"]["Episodic"] == True
 				):
 					# Add the "index" (playlist video number) parameter and the episode number plus one
@@ -707,7 +707,7 @@ class Watch_Media(Watch_History):
 
 			# Define episode with item and episode with title and item keys
 			if (
-				self.media["States"]["Media item list"] == True and
+				self.media["States"]["Has a list of media items"] == True and
 				self.media["Item"]["Title"] != self.media["Title"] and
 				self.media["States"]["Single unit"] == False
 			):
@@ -756,7 +756,7 @@ class Watch_Media(Watch_History):
 
 					self.media["Episode"]["with_title_and_item"][language] += self.media["Episode"]["Titles"][language]
 
-				self.media["Episode"]["with_title_default"] = self.media["Episode"]["with_title_and_item"][self.user_language]
+				self.media["Episode"]["with_title_default"] = self.media["Episode"]["with_title_and_item"][self.language["Small"]]
 
 			# Get the correct media title
 			media_title = self.Get_Media_Title(self.dictionary)
@@ -792,11 +792,11 @@ class Watch_Media(Watch_History):
 				self.media["Episode"]["with_title"][language] = media_title + self.media["Separators"]["Title"] + self.media["Episode"]["Titles"][language]
 
 			if (
-				self.media["States"]["Media item list"] == False or
+				self.media["States"]["Has a list of media items"] == False or
 				self.media["Item"]["Title"] == self.media["Title"] or
 				self.media["States"]["Single unit"] == True
 			):
-				self.media["Episode"]["with_title_default"] = self.media["Episode"]["with_title"][self.user_language]
+				self.media["Episode"]["with_title_default"] = self.media["Episode"]["with_title"][self.language["Small"]]
 
 		# Defining dubbed media text and add it to the media episode if the media is "Animes", has dubbing, and is set to be watched dubbed
 		if (
@@ -827,7 +827,7 @@ class Watch_Media(Watch_History):
 		]
 
 		# Get the container for the media
-		container = self.media["Texts"]["container"][self.user_language]
+		container = self.media["Texts"]["container"][self.language["Small"]]
 
 		# Transform the container into lowercase if the media is not a video channel
 		if self.media["States"]["Video"] == False:
@@ -841,15 +841,15 @@ class Watch_Media(Watch_History):
 			"Dubbing" in self.media["Episode"] and
 			"Text" in self.media["Episode"]["Dubbing"]
 		):
-			container = self.Language.texts["dubbed_{}"][self.user_language].format(container)
+			container = self.Language.texts["dubbed_{}"][self.language["Small"]].format(container)
 
 		# Define the container text dictionary with its keys
 		self.media["Texts"]["container_text"] = {
 			"container": container,
-			"this": self.media["Texts"]["genders"][self.user_language]["this"] + " " + container,
-			"the": self.media["Texts"]["genders"][self.user_language]["the"] + " " + container,
-			"the (original)": self.media["Texts"]["genders"][self.user_language]["the"] + " " + original_container,
-			"of_the": self.media["Texts"]["genders"][self.user_language]["of_the"] + " " + container
+			"this": self.media["Texts"]["genders"][self.language["Small"]]["this"] + " " + container,
+			"the": self.media["Texts"]["genders"][self.language["Small"]]["the"] + " " + container,
+			"the (original)": self.media["Texts"]["genders"][self.language["Small"]]["the"] + " " + original_container,
+			"of_the": self.media["Texts"]["genders"][self.language["Small"]]["of_the"] + " " + container
 		}
 
 		# If the user is re-watching the media
@@ -927,7 +927,7 @@ class Watch_Media(Watch_History):
 				# (Animes, series, and cartoons: "the episode"
 				# Videos: "the video"
 				# Movies: "the movie")
-				type_text += " " + self.media["Texts"]["the_unit"][self.user_language].lower()
+				type_text += " " + self.media["Texts"]["the_unit"][self.language["Small"]].lower()
 
 				# ----- #
 
@@ -1011,13 +1011,13 @@ class Watch_Media(Watch_History):
 			self.media["States"]["Dubbing"]["Has dubbing"] == True
 		):
 			# Define the local dubbed (always user language) folder
-			folder = self.media["Item"]["Folders"]["Media"]["root"] + self.full_user_language + "/"
+			folder = self.media["Item"]["Folders"]["Media"]["root"] + self.language["Full"] + "/"
 
 			# If the user wants to watch the media dubbed (user language)
 			# Or the dubbed (user language) folder exists
 			if (
 				self.media["States"]["Dubbing"]["Watch dubbed"] == True or
-				self.Folder.Exist(folder) == True
+				self.Folder.Exists(folder) == True
 			):
 				# Define the root media folder as the dubbed (user language) folder
 				self.media["Item"]["Folders"]["Media"]["root"] = folder
@@ -1046,7 +1046,7 @@ class Watch_Media(Watch_History):
 			# And the "Dubbed" text is inside the file, define the "Watch dubbed" state as True
 			if (
 				file_exists == True and
-				self.Language.texts["dubbed, title()"][self.user_language] in self.media["Episode"]["unit"]
+				self.Language.texts["dubbed, title()"][self.language["Small"]] in self.media["Episode"]["unit"]
 			):
 				self.media["States"]["Dubbing"]["Watch dubbed"] = True
 
@@ -1060,7 +1060,7 @@ class Watch_Media(Watch_History):
 
 				# Remove the user language
 				# (Since the user language episode was not found, so we have to use another language to try to find the media unit (episode file))
-				languages.remove(self.user_language)
+				languages.remove(self.language["Small"])
 
 				# Iterate through the local list of small languages
 				for language in languages:
@@ -1071,7 +1071,7 @@ class Watch_Media(Watch_History):
 					file_name = self.Sanitize_Title(self.media["Episode"]["Titles"][language])
 
 					# Define the root episode file
-					self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"].replace(self.full_user_language + "/", "")
+					self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"].replace(self.language["Full"] + "/", "")
 
 					# If the language is not equal to the media language, add the full language folder to the episode unit
 					# (Episode units of media on their native language are not placed inside a full language folder)
@@ -1091,7 +1091,7 @@ class Watch_Media(Watch_History):
 						file = self.media["Episode"]["unit"] + "." + extension
 
 						# If the file exists
-						if self.File.Exist(file) == True:
+						if self.File.Exists(file) == True:
 							# Define the media unit as the local file
 							self.media["Episode"]["unit"] = file
 
@@ -1143,7 +1143,7 @@ class Watch_Media(Watch_History):
 				new_file += "." + extension
 
 			# If the file exists
-			if self.File.Exist(new_file) == True:
+			if self.File.Exists(new_file) == True:
 				# Switch the "file exists" switch to True
 				file_exists = True
 
@@ -1169,14 +1169,14 @@ class Watch_Media(Watch_History):
 		# Define the key for the episode title
 		key = "with_title"
 
-		# If the media has a media list
+		# If the media has a list of media
 		# And the media item is not the media
 		# And the media is not a video channel
 		# And the media item is not single unit
 		# And the "Replace title" state is deactivated
 		if (
-			self.media["States"]["Media item list"] == True and
-			self.media["States"]["Media item is media"] == False and
+			self.media["States"]["Has a list of media items"] == True and
+			self.media["States"]["The media item is the root media"] == False and
 			self.media["States"]["Video"] == False and
 			self.language_texts["single_unit"] not in self.media["Item"]["Details"] and
 			self.media["States"]["Replace title"] == False
@@ -1186,7 +1186,7 @@ class Watch_Media(Watch_History):
 		# If the key is present in the "Episode" dictionary
 		if key in self.media["Episode"]:
 			# Define the title using the key
-			title = self.media["Episode"][key][self.user_language]
+			title = self.media["Episode"][key][self.language["Small"]]
 
 		# Define the title using the key
 		#title = self.media["Episode"]["with_title_default"]
@@ -1202,7 +1202,7 @@ class Watch_Media(Watch_History):
 		}
 
 		# Define the status, adding the media item status, media type, and media title + episode title
-		self.dictionary["Discord"]["Status"] = status + " " + self.dictionary["Media type"]["Singular"][self.user_language] + ": " + title
+		self.dictionary["Discord"]["Status"] = status + " " + self.dictionary["Media type"]["Singular"][self.language["Small"]] + ": " + title
 
 		# Copy the status
 		self.Text.Copy(self.dictionary["Discord"]["Status"])
@@ -1222,10 +1222,10 @@ class Watch_Media(Watch_History):
 		text = self.Language.language_texts["press_enter_when_you_start"]
 
 		# Define a local (re)watching text
-		watching_text = " " + self.media["Texts"]["Watching"][self.user_language]
+		watching_text = " " + self.media["Texts"]["Watching"][self.language["Small"]]
 
 		# Define a local "the unit" text
-		the_unit_text = " " + self.media["Texts"]["the_unit"][self.user_language]
+		the_unit_text = " " + self.media["Texts"]["the_unit"][self.language["Small"]]
 
 		# Add the " (re)watching" and "the unit" texts
 		text += watching_text
@@ -1272,10 +1272,10 @@ class Watch_Media(Watch_History):
 		text = self.Language.language_texts["press_enter_when_you_finish"]
 
 		# Define a local (re)watching text
-		watching_text = " " + self.media["Texts"]["Watching"][self.user_language]
+		watching_text = " " + self.media["Texts"]["Watching"][self.language["Small"]]
 
 		# Define a local "the unit" text
-		the_unit_text = " " + self.media["Texts"]["the_unit"][self.user_language]
+		the_unit_text = " " + self.media["Texts"]["the_unit"][self.language["Small"]]
 
 		# Add the " (re)watching" and "the unit" texts
 		text += watching_text
@@ -1339,7 +1339,7 @@ class Watch_Media(Watch_History):
 		# Show the watching session duration text in the user language
 		print()
 		print(self.language_texts["watching_session_duration"] + ":")
-		print("\t" + self.dictionary["Entry"]["Times"]["Watching session duration"]["Text"][self.user_language])
+		print("\t" + self.dictionary["Entry"]["Times"]["Watching session duration"]["Text"][self.language["Small"]])
 
 		# Use the "Register" class to register the watched media, by giving the root dictionary to it
 		self.Register(self.dictionary)
@@ -1360,7 +1360,7 @@ class Watch_Media(Watch_History):
 		# Iterate through the accepted file extensions
 		for extension in self.dictionary["File extensions"]:
 			if extension == self.dictionary["File extensions"][-1]:
-				text += self.Language.language_texts["genders, type: dict, masculine"]["or"] + " "
+				text += self.Language.language_texts["genders, type: dictionary, masculine"]["or"] + " "
 
 			text += extension.upper()
 

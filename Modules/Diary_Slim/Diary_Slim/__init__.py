@@ -68,7 +68,7 @@ class Diary_Slim():
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -79,36 +79,50 @@ class Diary_Slim():
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Get the Sanitize method of the File class
+		# ---------- #
+
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 	def Define_Texts(self):
@@ -117,21 +131,6 @@ class Diary_Slim():
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Define_Folders_And_Files(self):
 		# Define the root "Diary Slim" dictionary
@@ -299,7 +298,7 @@ class Diary_Slim():
 
 	def Define_Lists_And_Dictionaries(self):
 		# Get the "Diary Slim" header in the user language
-		file = self.diary_slim["Folders"]["Data"]["Header"][self.user_language]
+		file = self.diary_slim["Folders"]["Data"]["Header"][self.language["Small"]]
 
 		self.diary_slim["Header template"] = self.File.Contents(file)["string"]
 
@@ -311,7 +310,7 @@ class Diary_Slim():
 				"Days": self.date["Units"]["Year days"]
 			},
 			"Months": {
-				self.date["Texts"]["Month name with number"][self.user_language]: {
+				self.date["Texts"]["Month name with number"][self.language["Small"]]: {
 					"Numbers": {
 						"Year": self.date["Units"]["Year"],
 						"Month": self.date["Units"]["Month"],
@@ -320,7 +319,7 @@ class Diary_Slim():
 					},
 					"Names": self.date["Texts"]["Month name"],
 					"Formats": {
-						"Diary Slim": self.date["Texts"]["Month name with number"][self.user_language]
+						"Diary Slim": self.date["Texts"]["Month name with number"][self.language["Small"]]
 					},
 					"Diary Slims": {}
 				}
@@ -347,7 +346,7 @@ class Diary_Slim():
 				},
 				"Names": self.date["Texts"]["Month name"],
 				"Formats": {
-					"Diary Slim": self.date["Texts"]["Month name with number"][self.user_language]
+					"Diary Slim": self.date["Texts"]["Month name with number"][self.language["Small"]]
 				},
 				"Diary Slims": {}
 			},
@@ -467,7 +466,7 @@ class Diary_Slim():
 
 			# If the file is empty
 			else:
-				# Update the "Year" template
+				# Get the "Year" template
 				template = self.templates["Year"]
 
 				# Update the number of the year
@@ -575,8 +574,8 @@ class Diary_Slim():
 		# Define the year "Month" dictionary
 		self.diary_slim["Current year"]["Month"] = {
 			"Number": self.date["Units"]["Month"],
-			"Name": self.date["Texts"]["Month name with number"][self.user_language],
-			"Name text": self.date["Texts"]["Month name"][self.user_language],
+			"Name": self.date["Texts"]["Month name with number"][self.language["Small"]],
+			"Name text": self.date["Texts"]["Month name"][self.language["Small"]],
 			"Folders": {},
 			"File": "",
 			"Dictionary": {},
@@ -671,7 +670,7 @@ class Diary_Slim():
 		# And the "Months" dictionary of the current year is not empty
 		# And the number of Diary Slims on the current month are not zero
 		if (
-			self.File.Exist(dictionary["File"]) == False and
+			self.File.Exists(dictionary["File"]) == False and
 			current_diary_slim == True and
 			months != {} and
 			values[-1]["Diary Slims"] != {}
@@ -718,7 +717,7 @@ class Diary_Slim():
 		# Define the "Day" key
 		items = [
 			self.Text.Add_Leading_Zeroes(units["Day"]),
-			texts["Day name"][self.user_language],
+			texts["Day name"][self.language["Small"]],
 			formats["DD-MM-YYYY"]
 		]
 
@@ -728,7 +727,7 @@ class Diary_Slim():
 
 		# Define the "Month" dictionary with its keys
 		dictionary["Month"] = {
-			"Name": texts["Month name with number"][self.user_language]
+			"Name": texts["Month name with number"][self.language["Small"]]
 		}
 
 		# ---------- #
@@ -815,7 +814,7 @@ class Diary_Slim():
 			dictionary["Files"]["Data"] = dictionary["Folders"]["root"] + "Data.json"
 
 			# If the "Data.json" file exists
-			if self.File.Exist(dictionary["Files"]["Data"]) == True:
+			if self.File.Exists(dictionary["Files"]["Data"]) == True:
 				# Update the local dictionary with the one inside the file
 				dictionary.update(self.JSON.To_Python(dictionary["Files"]["Data"]))
 
@@ -831,7 +830,7 @@ class Diary_Slim():
 			dictionary["Files"]["States"] = dictionary["Folders"]["root"] + "States.json"
 
 			# Read the "States.json" file if it exists
-			if self.File.Exist(dictionary["Files"]["States"]) == True:
+			if self.File.Exists(dictionary["Files"]["States"]) == True:
 				dictionary["States"] = self.JSON.To_Python(dictionary["Files"]["States"])
 
 				# Get the list of state dictionaries
@@ -871,7 +870,7 @@ class Diary_Slim():
 					self.File.Create(dictionary["Files"][language])
 
 				# If the language file exists
-				if self.File.Exist(dictionary["Files"][language]) == True:
+				if self.File.Exists(dictionary["Files"][language]) == True:
 					# Read the language text file and add its contents to the "Texts" dictionary
 					dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
 
@@ -922,7 +921,7 @@ class Diary_Slim():
 			dictionary["Files"]["Statistic"] = dictionary["Folders"]["root"] + "Statistic.json"
 
 			# Read the "Statistic.json" file if it exists
-			if self.File.Exist(dictionary["Files"]["Statistic"]) == True:
+			if self.File.Exists(dictionary["Files"]["Statistic"]) == True:
 				dictionary["Statistic"] = self.JSON.To_Python(dictionary["Files"]["Statistic"])
 
 			# Else, remove the key
@@ -963,9 +962,9 @@ class Diary_Slim():
 			self.diary_slim["Texts"]["Options"]["en"].append(english_text)
 
 			# Add the user language text
-			language_text = dictionary["Texts"][self.user_language]
+			language_text = dictionary["Texts"][self.language["Small"]]
 
-			self.diary_slim["Texts"]["Options"][self.user_language].append(language_text)
+			self.diary_slim["Texts"]["Options"][self.language["Small"]].append(language_text)
 
 		# ---------- #
 

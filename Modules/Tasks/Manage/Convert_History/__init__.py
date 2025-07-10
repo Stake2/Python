@@ -73,7 +73,7 @@ class Convert_History(Tasks):
 				self.year["Folders"][task_type]["entry_list"] = self.year["Folders"][task_type]["root"] + "Entry list.txt"
 				self.File.Create(self.year["Folders"][task_type]["entry_list"])
 
-				if self.File.Exist(self.year["Folders"][task_type]["tasks"]) == True:
+				if self.File.Exists(self.year["Folders"][task_type]["tasks"]) == True:
 					self.year[task_type] = self.JSON.To_Python(self.year["Folders"][task_type]["tasks"])
 
 			print()

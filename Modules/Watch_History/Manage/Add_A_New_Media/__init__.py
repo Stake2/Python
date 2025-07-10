@@ -33,7 +33,7 @@ class Add_A_New_Media(Watch_History):
 		if self.media["States"]["Series media"] == True:
 			self.Add_Media_Items()
 
-		if self.media["States"]["Media item list"] == True:
+		if self.media["States"]["Has a list of media items"] == True:
 			# Remove "folders" key from the Media dictionary
 			if "Folders" in self.dictionary["Media"]:
 				self.dictionary["Media"].pop("Folders")
@@ -98,7 +98,7 @@ class Add_A_New_Media(Watch_History):
 			title = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 
 		if self.switches["Testing"] == True:
-			title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Media type"]["Singular"][self.user_language] + ")"
+			title = self.Language.language_texts["title, title()"] + " (" + self.dictionary["Media type"]["Singular"][self.language["Small"]] + ")"
 
 			if self.item == True:
 				title = self.dictionary["Media type"]["Subfolders"]["Singular"] + " " + str(self.media["Items"]["Number"] + 1)
@@ -109,7 +109,7 @@ class Add_A_New_Media(Watch_History):
 
 		# Ask for the media (item) titles by langauge
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			title = ""
 
@@ -296,7 +296,7 @@ class Add_A_New_Media(Watch_History):
 				select_text = self.Language.language_texts["type, title()"]
 
 				# Ask which secondary type the media item is
-				self.local_secondary_types = self.secondary_types["Singular"][self.user_language]
+				self.local_secondary_types = self.secondary_types["Singular"][self.language["Small"]]
 
 				empty_text = "[" + self.Language.language_texts["empty, title()"] + "]"
 
@@ -361,7 +361,7 @@ class Add_A_New_Media(Watch_History):
 		}
 
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
@@ -494,17 +494,17 @@ class Add_A_New_Media(Watch_History):
 
 	def Add_Media_Items(self):
 		# Ask if the media has media items
-		self.local_secondary_types = self.secondary_types["Plural"][self.user_language]
+		self.local_secondary_types = self.secondary_types["Plural"][self.language["Small"]]
 
 		text = self.language_texts["has_media_items"] + " (" + self.Language.language_texts["like"] + " " + self.Text.From_list(self.local_secondary_types, or_text = True, lower = True) + ")"
 
-		self.media["States"]["Media item list"] = self.Input.Yes_Or_No(text)
+		self.media["States"]["Has a list of media items"] = self.Input.Yes_Or_No(text)
 
 		self.first_time = True
 
 		from copy import deepcopy
 
-		if self.media["States"]["Media item list"] == True:
+		if self.media["States"]["Has a list of media items"] == True:
 			# Delete the unused folders
 			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["root"])
 			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["comments"]["root"])

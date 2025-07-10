@@ -95,8 +95,8 @@ class Play(GamePlayer):
 
 		# Define the playing status list for "Plan to play" related statuses
 		status_list = [
-			self.texts["plan_to_play, title()"][self.user_language],
-			self.Language.texts["on_hold, title()"][self.user_language]
+			self.texts["plan_to_play, title()"][self.language["Small"]],
+			self.Language.texts["on_hold, title()"][self.language["Small"]]
 		]
 
 		# If the game playing status is inside the status list
@@ -228,7 +228,7 @@ class Play(GamePlayer):
 		# Show the session duration text in the user language
 		print()
 		print(self.Language.language_texts["gaming_session_duration"] + ":")
-		print("\t" + self.dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.user_language])
+		print("\t" + self.dictionary["Entry"]["Times"]["Gaming session duration"]["Text"][self.language["Small"]])
 
 		# ---------- #
 

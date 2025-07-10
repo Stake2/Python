@@ -130,11 +130,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 		units = date["Timezone"]["DateTime"]["Units"]
 
 		# Define the "Day" text with the day and date format text
-		self.dictionary["Texts"]["Day"] = self.Date.language_texts["day, title()"].lower() + " " + date["Formats"]["[Day] [Month name] [Year]"][self.user_language]
+		self.dictionary["Texts"]["Day"] = self.Date.language_texts["day, title()"].lower() + " " + date["Formats"]["[Day] [Month name] [Year]"][self.language["Small"]]
 
 		# Define the show text that is going to be shown to the user
 		self.dictionary["Texts"]["Show"] = self.dictionary["Texts"]["Information"] + ":" + "\n" + \
-		"\t" + date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + ", " + \
+		"\t" + date["Timezone"]["DateTime"]["Texts"]["Day name"][self.language["Small"]] + ", " + \
 		self.dictionary["Texts"]["Day"] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
 
 		# Show a five dash space separator
@@ -147,11 +147,11 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 	def Check_For_File_Existence(self):
 		# If the Diary Slim file exists, change the state to True
-		if self.File.Exist(self.dictionary["File"]) == True:
+		if self.File.Exists(self.dictionary["File"]) == True:
 			self.states["Diary Slim exists"] = True
 
 		# If the Diary Slim file does not exist
-		if self.File.Exist(self.dictionary["File"]) == False:
+		if self.File.Exists(self.dictionary["File"]) == False:
 			# Create the Diary Slim file
 			self.File.Create(self.dictionary["File"])
 
@@ -209,8 +209,8 @@ class Create_New_Diary_Slim(Diary_Slim):
 					key = day_text
 
 					# Update the day text to be in the correct format
-					day_text = date["Timezone"]["DateTime"]["Texts"]["Day name"][self.user_language] + ", " + \
-					date["Formats"]["[Day] [Month name] [Year]"][self.user_language] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
+					day_text = date["Timezone"]["DateTime"]["Texts"]["Day name"][self.language["Small"]] + ", " + \
+					date["Formats"]["[Day] [Month name] [Year]"][self.language["Small"]] + " (" + date["Formats"]["DD/MM/YYYY"] + ")"
 
 					# Create the day dictionary with the day text and date
 					# And add it to the "Skipped Diary Slims" dictionary
@@ -286,7 +286,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		template = self.Language.language_texts["today_is"] + " {}."
 
 		# Define the item which is the day name and the root "Day" text
-		item = texts["Day name"][self.user_language] + ", " + self.dictionary["Texts"]["Day"]
+		item = texts["Day name"][self.language["Small"]] + ", " + self.dictionary["Texts"]["Day"]
 
 		# Format the template with the item, defining the "Today is" text
 		self.dictionary["Texts"]["Today is"] = template.format(item)

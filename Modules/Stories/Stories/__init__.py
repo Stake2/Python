@@ -17,7 +17,10 @@ class Stories(object):
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import the usage classes
+		# Import some additional variables
+		self.Import_Additional_Variables()
+
+		# Import some usage classes
 		self.Import_Usage_Classes()
 
 		# Folders, files, and dictionaries methods
@@ -68,7 +71,7 @@ class Stories(object):
 		self.Language = self.JSON.Language
 
 	def Define_Basic_Variables(self):
-		# Get the modules list
+		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
@@ -79,43 +82,58 @@ class Stories(object):
 			"JSON"
 		]
 
-		# Iterate through the Utility modules
+		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
 			if module_title not in remove_list:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
-				# Get the sub-class
+				# Get the sub-class of the module
 				sub_class = getattr(module, module_title)
 
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
-		# Get the switches dictionary from the "Global Switches" module
+		# ---------- #
+
+		# Get the switches dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Get the Languages dictionary
+		# ---------- #
+
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Import the "Links" dictionary from the "Folder" class
-		self.links = self.Folder.links
+		# ---------- #
 
-		# Get the Sanitize method of the File class
+		# Import the "Sanitize" method from the "File" class
 		self.Sanitize = self.File.Sanitize
 
-		# Get the current date from the Date module
+		# ---------- #
+
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
 		# Get the current year
 		self.current_year = str(self.date["Units"]["Year"])
+
+	def Import_Additional_Variables(self):
+		# Import the "links" dictionary from the "Folder" class
+		self.links = self.Folder.links
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
@@ -129,21 +147,6 @@ class Stories(object):
 			self.language_texts["copy_actions, type: list"][i] = "[" + self.language_texts["copy_actions, type: list"][i] + "]"
 
 			i += 1
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
 
 	def Import_Usage_Classes(self):
 		# Define the classes to be imported
@@ -652,7 +655,7 @@ class Stories(object):
 				# Iterate through the list of small languages
 				for language in self.languages["small"]:
 					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.user_language]
+					translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 					# If the method name is "Type_Story_Information"
 					if method_name == "Type_Story_Information":
@@ -848,7 +851,7 @@ class Stories(object):
 				dictionary["Texts"][tense] = text
 
 				# Add the tense in the user language to the "Language texts" dictionary
-				dictionary["Language texts"][tense] = text[self.user_language]
+				dictionary["Language texts"][tense] = text[self.language["Small"]]
 
 			# Add the local dictionary to the "Writing modes" dictionary
 			self.stories["Writing modes"]["Dictionary"][key] = dictionary
@@ -872,12 +875,12 @@ class Stories(object):
 		# Define the "Titles" dictionary and get the story titles
 		self.stories["Titles"] = {
 			"en": self.stories["List"],
-			self.user_language: [],
+			self.language["Small"]: [],
 			"Language": []
 		}
 
 		# Define the list of story titles in the user language
-		self.stories["Titles"][self.user_language] = self.File.Contents(self.stories["Folders"]["Stories list"])["lines"]
+		self.stories["Titles"][self.language["Small"]] = self.File.Contents(self.stories["Folders"]["Stories list"])["lines"]
 
 		# Define the "All" list
 		self.stories["Titles"]["All"] = []
@@ -890,7 +893,7 @@ class Stories(object):
 		# Remove stories which have no folder
 
 		# Define the language story titles list
-		language_story_titles = deepcopy(self.stories["Titles"][self.user_language])
+		language_story_titles = deepcopy(self.stories["Titles"][self.language["Small"]])
 
 		# Iterate through the list of stories
 		s = 0
@@ -902,10 +905,10 @@ class Stories(object):
 			story_folder = self.stories["Folders"]["root"] + language_story_title + "/"
 
 			# If the root folder does not exist
-			if self.Folder.Exist(story_folder) == False:
+			if self.Folder.Exists(story_folder) == False:
 				# Remove the story from the list of stories
 				self.stories["List"].remove(story_title)
-				self.stories["Titles"][self.user_language].remove(language_story_title)
+				self.stories["Titles"][self.language["Small"]].remove(language_story_title)
 
 			# Add one to the "s" number variable
 			s += 1
@@ -919,7 +922,7 @@ class Stories(object):
 		s = 0
 		for story_title in self.stories["List"]:
 			# Get the language story title
-			language_story_title = self.stories["Titles"][self.user_language][s]
+			language_story_title = self.stories["Titles"][self.language["Small"]][s]
 
 			# Define the "Story" dictionary and the keys
 			story = {
@@ -954,7 +957,7 @@ class Stories(object):
 				file = story["Folders"]["Information"][key]
 
 				# Remove the file if it does not exist
-				if self.File.Exist(file) == False:
+				if self.File.Exists(file) == False:
 					keys.remove(key)
 
 			# Get the story information from the files inside the "Information" folder
@@ -1015,7 +1018,7 @@ class Stories(object):
 			story["Titles"] = story["Information"]["Titles"]
 
 			# Add the language story title to the list of story titles in the user language
-			self.stories["Titles"]["Language"].append(story["Titles"][self.user_language])
+			self.stories["Titles"]["Language"].append(story["Titles"][self.language["Small"]])
 
 			# Add the story titles to the "All" list
 			for title in story["Titles"].values():
@@ -1822,7 +1825,7 @@ class Stories(object):
 			statistics["Dictionary"]["Numbers"][key]["New"] = statistics[key]["Dictionary"][story_titles["en"]]["Dictionary"][writing_mode["Key"]]
 
 		# Define the statistic text, formatting the template with the language story title
-		statistics["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.user_language], writing_mode["Done plural"])
+		statistics["Text"] = self.language_texts["chapters_of_my_story_{}_{}"].format(story_titles[self.language["Small"]], writing_mode["Done plural"])
 
 		# ---------- #
 
@@ -1859,7 +1862,7 @@ class Stories(object):
 			"Number": option["number"],
 			"Names": {
 				"en": option["option"],
-				self.user_language: option["language_option"]
+				self.language["Small"]: option["language_option"]
 			}
 		}
 
@@ -2058,7 +2061,7 @@ class Stories(object):
 
 			# Define the "Write on Diary Slim" dictionary
 			dictionary = {
-				"Text": task_dictionary["Task"]["Descriptions"][self.user_language],
+				"Text": task_dictionary["Task"]["Descriptions"][self.language["Small"]],
 				"Time": self.task_dictionary["Entry"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
 				"Show text": True
 			}
@@ -2128,7 +2131,7 @@ class Stories(object):
 
 		# Define the options and language options lists
 		options = stories["Titles"]["en"]
-		language_options = stories["Titles"][self.user_language]
+		language_options = stories["Titles"][self.language["Small"]]
 
 		# Ask for the user to select the story
 		option = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
@@ -2166,7 +2169,7 @@ class Stories(object):
 			classes["Descriptions"].append(description)
 
 		# Define the show text with the story title in the user language
-		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + self.story["Titles"][self.user_language] + '"?'
+		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + self.story["Titles"][self.language["Small"]] + '"?'
 
 		# Ask the user to select the sub-class
 		sub_class = self.Input.Select(classes["List"], language_options = classes["Descriptions"], show_text = show_text, select_text = self.Language.language_texts["select_one_thing_to_do"])["option"]

@@ -16,6 +16,8 @@ class Input():
 	def Import_Classes(self):
 		import importlib
 
+		# ---------- #
+
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -40,11 +42,15 @@ class Input():
 			# Add the sub-class to the current module
 			setattr(self, module_title, sub_class)
 
+		# ---------- #
+
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Get the user language
-		self.user_language = self.Language.user_language
+		# Import some variables from the "Language" class
+
+		# Import the "languages" dictionary
+		self.languages = self.Language.languages
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary

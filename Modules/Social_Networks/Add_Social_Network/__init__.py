@@ -110,7 +110,7 @@ class Add_Social_Network(Social_Networks):
 			information_item = self.information_items["Dictionary"][key]
 
 			# Get the language information item
-			language_information_item = information_item[self.user_language]
+			language_information_item = information_item[self.language["Small"]]
 
 			# Define the "Test information" dictionary inside the "Information item" dictionary
 			information_item["Test information"] = self.test_information
@@ -291,7 +291,7 @@ class Add_Social_Network(Social_Networks):
 		# Create the "Finish selection" dictionary
 		information_items["Dictionary"]["Finish selection"] = {
 			"Name": "Finish selection",
-			self.user_language: "[" + self.Language.language_texts["finish_selection"] + "]"
+			self.language["Small"]: "[" + self.Language.language_texts["finish_selection"] + "]"
 		}
 
 		# ---------- #
@@ -331,7 +331,7 @@ class Add_Social_Network(Social_Networks):
 				self.social_network["Information items"]["List"].append(information_item["Name"])
 
 				# Add the language item to the list of language items
-				language_information_items.append(information_item[self.user_language])
+				language_information_items.append(information_item[self.language["Small"]])
 
 			# ---------- #
 
@@ -447,7 +447,7 @@ class Add_Social_Network(Social_Networks):
 				item in link_types
 			):
 				# Define the "the text" for easier typing
-				the_text = self.Language.texts["genders, type: dict"][self.user_language][item_gender.lower()]["the"]
+				the_text = self.Language.texts["genders, type: dictionary"][self.language["Small"]][item_gender.lower()]["the"]
 
 				# Define the default "user link" dictionary
 				user_link = {}
@@ -759,7 +759,7 @@ class Add_Social_Network(Social_Networks):
 						file_name = file_name["Plural"]
 
 					# Define the file name language
-					language = self.user_language
+					language = self.language["Small"]
 
 					if key in ["Items", "Social Network"]:
 						language = "en"
@@ -821,7 +821,7 @@ class Add_Social_Network(Social_Networks):
 							# Get the English and language setting texts
 							english_text = texts_dictionary[setting]["en"]
 
-							language_text = texts_dictionary[setting][self.user_language]
+							language_text = texts_dictionary[setting][self.language["Small"]]
 
 							# If the language setting is inside the Settings dictionary
 							if language_text in settings:
@@ -938,7 +938,7 @@ class Add_Social_Network(Social_Networks):
 			# Iterate through the settings list
 			for setting in self.texts["settings, type: list"]:
 				# Get the language key of the setting
-				language_key = texts_dictionary[setting][self.user_language]
+				language_key = texts_dictionary[setting][self.language["Small"]]
 
 				# If the language key is inside the settings dictionary
 				if language_key in self.social_network["Settings"]:
@@ -1047,7 +1047,7 @@ class Add_Social_Network(Social_Networks):
 				information_item = self.social_network["Information items"]["Dictionary"][key]
 
 			# Define the language information item
-			language_information_item = information_item[self.user_language]
+			language_information_item = information_item[self.language["Small"]]
 
 			# Get the current information
 			current_information = information[key]
@@ -1108,7 +1108,7 @@ class Add_Social_Network(Social_Networks):
 				information_item = self.social_network["Information items"]["Dictionary"][key]
 
 			# Define the language information item
-			language_information_item = information_item[self.user_language]
+			language_information_item = information_item[self.language["Small"]]
 
 			# Get the current profile information
 			current_information = profile[key]

@@ -26,6 +26,8 @@ class Folder():
 	def Import_Classes(self):
 		import importlib
 
+		# ---------- #
+
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -53,16 +55,23 @@ class Folder():
 				# Add the sub-class to the "Utility" module
 				setattr(Utility, "Define_Folders", sub_class)
 
+		# ---------- #
+
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Import some variables from the imported modules
-		self.app_settings = self.Language.app_settings
-		self.languages = self.Language.languages
-		self.date = self.Date.date
+		# Import some variables from the "Language" class
 
-		# Import the user language from the "Language" class
-		self.user_language = self.Language.user_language
+		# Import the "languages" dictionary
+		self.languages = self.Language.languages
+
+		# Import the "settings" dictionary
+		self.settings = self.Language.settings
+
+		# ---------- #
+
+		# Get the current date from the "Date" class
+		self.date = self.Date.date
 
 	def Define_Switches(self):
 		# Get the "Switches" dictionary from the "Global_Switches" module
@@ -92,7 +101,7 @@ class Folder():
 		# Define the hard drive letter
 		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
-		# Define the "Folders" dictionary with the root folders
+		# Define the folders dictionary with the root folders
 		self.folders = {
 			"root": {
 				"root": self.hard_drive_letter,
@@ -112,69 +121,64 @@ class Folder():
 			}
 		}
 
+		# Define the folder names to be used to create the folders
 		folder_names = {
 			"Program Files": "",
 			"Program Files (x86)": "",
 			"Apps": "",
 			"Art": "",
 			"Mega": "",
-			"Media": "medias, title()",
+			"Media": "media, title(), type: plural",
 			"Games": "",
 			"XAMPP": ""
-		}
-
-		portuguese_folder_names = {
-			"Art": self.Language.language_texts["art, title()"],
-			"Media": self.Language.language_texts["medias, title()"],
-			"Games": self.Language.language_texts["games, title()"]
 		}
 
 		# Define the language texts dictionary variable for easier typing
 		language_texts = self.Language.language_texts
 
 		# Iterate through the folder names dictionary
-		for name in folder_names:
+		for name, text_key in folder_names.items():
 			# Get the key
 			key = name.lower().replace(" ", "_").replace("(", "").replace(")", "")
 
 			# Define the folder variable
 			folder = name
 
-			# Get the text key
-			text_key = name.lower().replace(" ", "_")
+			# If the text key is empty
+			if text_key == "":
+				# Define the text key
+				text_key = name.lower().replace(" ", "_")
 
-			if "_" not in text_key:
-				text_key += ", title()"
-
-			if folder_names[name] != "":
-				text_key = folder_names[name]
+				if "_" not in text_key:
+					text_key += ", title()"
 
 			# If the text key is inside the language texts dictionary
 			if text_key in language_texts:
-				# Define the folder as the language text
+				# Define the folder name as the language text
 				folder = language_texts[text_key]
 
+			# Define the folder inside the "root" key
 			self.folders["root"][key] = {
 				"root": self.folders["root"]["root"] + folder + "/"
 			}
 
-			# Define the folder dictionary inside the root "Folders" dictionary
+			# Define the folder dictionary inside the root folders dictionary
 			self.folders[key] = {
 				"root": self.folders["root"]["root"] + folder + "/"
 			}
 
-			# Define the folder dictionary inside the root "Folders" dictionary
+			# Define the folder dictionary inside the root folders dictionary
 			self.folders[name] = {
 				"root": self.folders["root"]["root"] + folder + "/"
 			}
 
-		if "Media folder" in self.app_settings:
-			self.folders["root"]["media"]["root"] = self.app_settings["Media folder"]
-			self.folders["Media"]["root"] = self.app_settings["Media folder"]
+		if "Media folder" in self.settings:
+			self.folders["root"]["media"]["root"] = self.settings["Media folder"]
+			self.folders["Media"]["root"] = self.settings["Media folder"]
 
-		if "Game folder" in self.app_settings:
-			self.folders["root"]["games"]["root"] = self.app_settings["Game folder"]
-			self.folders["Games"]["root"] = self.app_settings["Game folder"]
+		if "Game folder" in self.settings:
+			self.folders["root"]["games"]["root"] = self.settings["Game folder"]
+			self.folders["Games"]["root"] = self.settings["Game folder"]
 
 		# "Program files (x86)" folders
 		folder_names = [
@@ -236,28 +240,18 @@ class Folder():
 				"root": self.folders["Games"]["root"] + folder + "/"
 			}
 
-		# User folders
-		self.folders["user"] = {
-			"root": self.Sanitize(self.folders["root"]["users"] + pathlib.Path.home().name + "/")
-		}
-
+		# Define the user folder
 		self.folders["User"] = {
-			"root": self.Sanitize(self.folders["Root"]["Users"] + pathlib.Path.home().name + "/")
+			"root": self.folders["Root"]["Users"] + pathlib.Path.home().name + "/"
 		}
 
-		# "User" sub folders
+		# Define the "User" sub-folders
 		for folder in ["AppData", "Documents", "Downloads", "Pictures", "Videos"]:
-			key = folder.lower().replace(" ", "_")
-
-			self.folders["user"][key] = {
-				"root": self.folders["user"]["root"] + folder + "/"
-			}
-
 			self.folders["User"][folder] = {
 				"root": self.folders["User"]["root"] + folder + "/"
 			}
 
-		# "Downloads" folders
+		# Define the "Downloads" folders
 		folders = {
 			"Mega": "",
 			"Videos": self.Language.language_texts["videos, title()"]
@@ -271,50 +265,50 @@ class Folder():
 			if folder == "":
 				folder = self.Capitalize(key)
 
-			self.folders["user"]["downloads"][key] = {
-				"root": self.folders["user"]["downloads"]["root"] + folder + "/"
-			}
-
 			self.folders["User"]["Downloads"][folder_title] = {
-				"root": self.folders["user"]["downloads"]["root"] + folder + "/"
+				"root": self.folders["User"]["Downloads"]["root"] + folder + "/"
 			}
 
-		# "AppData" folders
+		# Define the "AppData" folders
 		for folder in ["Local", "Roaming"]:
 			key = folder.lower().replace(" ", "_")
 
-			self.folders["user"]["appdata"][key] = {
-				"root": self.folders["user"]["appdata"]["root"] + folder + "/"
-			}
-
 			self.folders["User"]["AppData"][folder] = {
-				"root": self.folders["user"]["appdata"]["root"] + folder + "/"
+				"root": self.folders["User"]["AppData"]["root"] + folder + "/"
 			}
 
-		self.folders["appdata"] = self.folders["user"]["appdata"]
+		# Define the "System32" sub-folders
+		self.folders["root"]["system32"]["drivers/etc"] = self.folders["root"]["system32"]["root"] + "drivers/etc/"
 
-		# System32 subfolders
-		self.folders["root"]["system32"]["drivers/etc"] = self.Sanitize(os.path.join(self.folders["root"]["system32"]["root"], "drivers/etc/"))
-
-		# "Art" subfolders
+		# Definet the "Art" sub-folders
 		folders = [
 			"Paint Tool SAI",
 			"Photoshop",
-			"Sony Vegas"
+			"Videos"
 		]
 
-		for item in folders:
-			key = item.lower().replace(" ", "_")
+		# Iterate through the folders list
+		for name in folders:
+			# Define the folder name variable
+			folder_name = name
 
-			self.folders["art"][key] = {
-				"root": self.folders["art"]["root"] + item + "/"
+			# Define the text key for the name of the folder
+			text_key = name.lower().replace(" ", "_")
+
+			if "_" not in text_key:
+				text_key += ", title()"
+
+			# If the key is present inside the language texts dictionary
+			if text_key in language_texts:
+				# Define the folder name variable as the folder name in the user language
+				folder_name = language_texts[text_key]
+
+			# Define the folder inside the dictionary
+			self.folders["Art"][name] = {
+				"root": self.folders["Art"]["root"] + folder_name + "/"
 			}
 
-			self.folders["Art"][item] = {
-				"root": self.folders["Art"]["root"] + item + "/"
-			}
-
-		# Art "Photoshop" subfolders
+		# Art "Photoshop" sub-folders
 		folders = [
 			"Ana",
 			"Media",
@@ -350,14 +344,14 @@ class Folder():
 				"root": dictionary["root"] + folder_name + "/"
 			}
 
-		# Art "Sony Vegas" subfolders
+		# Art "Videos" sub-folders
 		folders = [
 			"Render",
 			"Story covers"
 		]
 
 		# Define the dictionary variable for easier typing
-		dictionary = self.folders["Art"]["Sony Vegas"]
+		dictionary = self.folders["Art"]["Videos"]
 
 		# Iterate through the folders list
 		for name in folders:
@@ -406,7 +400,7 @@ class Folder():
 				"root": self.folders["Mega"]["root"] + folder + "/"
 			}
 
-		# Define all of the Mega sub-folders as a root key in the "Folders" dictionary
+		# Define all of the Mega sub-folders as a root key in the folders dictionary
 		for key, dictionary in self.folders["Mega"].items():
 			if key not in self.folders:
 				self.folders[key] = dictionary
@@ -636,7 +630,7 @@ class Folder():
 				# "Entry list.txt" file
 				dictionary[network["History"]][item]["Entry list"] = dictionary[network["History"]][item]["root"] + "Entry list.txt"
 
-			# Define the Network "Folders" dictionary as the local "Folders" dictionary
+			# Define the Network folders dictionary as the local folders dictionary
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
 		# Define the mega notepad "Years" folders
@@ -798,7 +792,7 @@ class Folder():
 		self.links = {}
 
 		# If the "Website.json" file exists
-		if self.File.Exist(self.folders["Mega"]["Websites"]["Website"]) == True:
+		if self.File.Exists(self.folders["Mega"]["Websites"]["Website"]) == True:
 			# Define the "Website" dictionary as it
 			self.website = self.JSON.To_Python(self.folders["Mega"]["Websites"]["Website"])
 
@@ -828,22 +822,53 @@ class Folder():
 		return text
 
 	def Sanitize(self, path, restricted_characters = False):
+		# If the "restricted characters" parameter is False
 		if restricted_characters == False:
+			# Normalize the path and replace backslashes with forward slashes
 			path = os.path.normpath(path).replace("\\", "/")
 
+			# Add a slash at the end of the path if it is not present
 			if (
 				os.path.splitext(path)[-1] == "" and
 				"/" not in path[-1]
 			):
 				path += "/"
 
+		# If the "restricted characters" parameter is True
 		if restricted_characters == True:
-			restricted_characters = [":", "?", '"', "\\", "/", "|", "*", "<", ">"]
+			# Remove the restricted characters
+			path = self.Remove_Restricted_Characters(path)
 
-			for character in restricted_characters:
-				if character in path:
-					path = path.replace(character, "")
+		# Return the path
+		return path
 
+	def Remove_Restricted_Characters(self, path):
+		# Define the list of restricted characters
+		restricted_characters = [
+			":",
+			"?",
+			'"',
+			"\\",
+			"/",
+			"|",
+			"｜",
+			"*",
+			"<",
+			">"
+		]
+
+		# Iterate through the list of characters
+		for character in restricted_characters:
+			# Remove the character if it exists
+			path = path.replace(character, "")
+
+		# Remove leading and trailing spaces
+		path = path.strip()
+
+		# Replace multiple spaces with a single space
+		path = " ".join(path.split())
+
+		# Return the path
 		return path
 
 	def Split(self, path):
@@ -872,14 +897,19 @@ class Folder():
 		# Return the folder
 		return folder
 
-	def Exist(self, path):
-		path = self.Sanitize(path)
+	def Exists(self, folder):
+		# Sanitize the folder path
+		folder = self.Sanitize(folder)
 
-		if os.path.isdir(path) == True:
-			return True
+		# Checks if the folder exists and returns True if it does or False if it does not
+		return os.path.isdir(folder)
 
-		if os.path.isdir(path) == False:
-			return False
+	def File_Exists(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
 	def Type(self, text = None):
 		if text == None:
@@ -895,12 +925,12 @@ class Folder():
 
 		folder = self.Sanitize(folder)
 
-		if self.Exist(folder) == True:
+		if self.Exists(folder) == True:
 			return False
 
 		if (
 			self.switches["Folder"]["Create"] == True and
-			self.Exist(folder) == False
+			self.Exists(folder) == False
 		):
 			os.mkdir(folder)
 
@@ -920,13 +950,13 @@ class Folder():
 		for value in folders.values():
 			if type(value) != dict:
 				if (
-					os.path.isfile(value) == False and
+					self.File_Exists(value) == False and
 					"." not in value
 				):
 					self.Create(value)
 
 				if (
-					os.path.isfile(value) == False and
+					self.File_Exists(value) == False and
 					"." in value
 				):
 					self.File.Create(value)
@@ -940,14 +970,14 @@ class Folder():
 
 		folder = self.Sanitize(folder)
 
-		if self.Exist(folder) == False:
+		if self.Exists(folder) == False:
 			self.Verbose(self.language_texts["this_folder_does_not_exists"], folder)
 
 			return False
 
 		if (
 			self.switches["Folder"]["Delete"] == True and
-			self.Exist(folder) == True
+			self.Exists(folder) == True
 		):
 			try:
 				# Folder is empty
@@ -978,14 +1008,14 @@ class Folder():
 		source_folder = self.Sanitize(source_folder)
 		destination_folder = self.Sanitize(destination_folder)
 
-		if self.Exist(source_folder) == False:
+		if self.Exists(source_folder) == False:
 			self.Verbose(self.language_texts["this_folder_does_not_exists"], source_folder)
 
 			return False
 
 		if (
 			self.switches["Folder"]["Copy"] == True and
-			self.Exist(source_folder) == True
+			self.Exists(source_folder) == True
 		):
 			from distutils.dir_util import copy_tree
 			copy_tree(source_folder, destination_folder)
@@ -1009,14 +1039,14 @@ class Folder():
 		source_folder = self.Sanitize(source_folder)
 		destination_folder = self.Sanitize(destination_folder)
 
-		if self.Exist(source_folder) == False:
+		if self.Exists(source_folder) == False:
 			self.Verbose(self.language_texts["this_folder_does_not_exists"], source_folder)
 
 			return False
 
 		if (
 			self.switches["Folder"]["Move"] == True and
-			self.Exist(source_folder) == True
+			self.Exists(source_folder) == True
 		):
 			import shutil
 
@@ -1050,7 +1080,7 @@ class Folder():
 
 			self.contents["size"] += os.stat(folder + "/" + name).st_size
 
-			if os.path.isdir(item) == True:
+			if self.Exists(item) == True:
 				if name not in self.contents["folder"]["names"]:
 					self.contents["folder"]["names"].append(name)
 
@@ -1064,7 +1094,7 @@ class Folder():
 
 				defined_contents[folder_name]["root"] = self.Sanitize(item)
 
-			if os.path.isfile(item) == True:
+			if self.File_Exists(item) == True:
 				item = self.Sanitize(folder + name, check = False)
 
 				if name not in self.contents["file"]["names"]:
@@ -1105,10 +1135,10 @@ class Folder():
 		self.contents["root_folders"] = os.listdir(folder)
 
 		for item in self.contents["root_folders"].copy():
-			if os.path.isfile(self.Sanitize(folder + item)) == True:
+			if self.File_Exists(self.Sanitize(folder + item)) == True:
 				self.contents["root_folders"].remove(item)
 
-		if self.Exist(folder) == True:
+		if self.Exists(folder) == True:
 			self.List(folder)
 
 			folders = self.contents["folders"].copy()
@@ -1138,14 +1168,14 @@ class Folder():
 							value = dictionary[key]
 
 							if type(value) == str:
-								if os.path.isdir(value) == True:
+								if self.Exists(value) == True:
 									self.contents["folders"][local_folder][key] = value
 
 							if type(value) == dict:
 								for sub_key in value:
 									sub_value = value[sub_key]
 
-									if os.path.isfile(sub_value) == True:
+									if self.File_Exists(sub_value) == True:
 										if key == local_folder:
 											self.contents["files"][local_folder][sub_folder_name] = sub_value
 
@@ -1161,7 +1191,7 @@ class Folder():
 						if local_folder in self.contents["folders"][local_folder]:
 							del self.contents["folders"][local_folder][local_folder]
 
-		if self.Exist(folder) == False:
+		if self.Exists(folder) == False:
 			self.Verbose(self.language_texts["this_folder_does_not_exists"], folder)
 
 		return self.contents
@@ -1263,7 +1293,7 @@ class Folder():
 				i += 1
 
 			# Root folder on dictionary if slash count of root folder is equal to folder plus one slash or equal to folder
-			# Add subfolders
+			# Add sub-folders
 			if (
 				folder.count("/") + 1 == root_folder.count("/") or
 				folder.count("/") == root_folder.count("/")
@@ -1312,7 +1342,7 @@ class Folder():
 					):
 						contents["dictionary"][root_folder_name][file_name] = files[i]
 
-					if os.path.isfile(files[i]) == True:
+					if self.File_Exists(files[i]) == True:
 						contents["size"] += os.stat(files[i]).st_size
 
 					i += 1
@@ -1374,7 +1404,7 @@ class Folder():
 					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][file_name] = files[i]
 
-					if os.path.isfile(files[i]) == True:
+					if self.File_Exists(files[i]) == True:
 						contents["size"] += os.stat(files[i]).st_size
 
 					i += 1
@@ -1437,7 +1467,7 @@ class Folder():
 					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][file_name] = files[i]
 
-					if os.path.isfile(files[i]) == True:
+					if self.File_Exists(files[i]) == True:
 						contents["size"] += os.stat(files[i]).st_size
 
 					i += 1
@@ -1500,7 +1530,7 @@ class Folder():
 					):
 						contents["dictionary"][root_folder_name][sub_sub_folder_name][sub_sub_sub_folder_name][sub_sub_sub_sub_folder_name][file_name] = files[i]
 
-					if os.path.isfile(files[i]) == True:
+					if self.File_Exists(files[i]) == True:
 						contents["size"] += os.stat(files[i]).st_size
 
 					i += 1

@@ -45,7 +45,7 @@ class Register(Database):
 
 	def Select_Type(self):
 		options = self.types["Plural"]["en"]
-		language_options = self.types["Plural"][self.user_language]
+		language_options = self.types["Plural"][self.language["Small"]]
 
 		show_text = self.Language.language_texts["types, title()"]
 		select_text = self.Language.language_texts["select_a_type"]
@@ -61,7 +61,7 @@ class Register(Database):
 
 	def Type_Entry_Information(self):
 		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.user_language]
+			translated_language = self.languages["full_translated"][language][self.language["Small"]]
 
 			type_text = self.language_texts["type_the_entry_title_in"] + " " + translated_language
 
@@ -179,14 +179,14 @@ class Register(Database):
 		file = self.data["Folders"]["Registered"]["files"]["root"] + self.dictionary["Entry"]["Name"]["Sanitized"] + ".txt"
 
 		self.File.Create(file)
-		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.user_language], "w")
+		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.language["Small"]], "w")
 
 	def Define_File_Text(self, language_parameter = None):
 		if language_parameter != "General":
 			language = language_parameter
 
 		if language_parameter == "General":
-			language = self.user_language
+			language = self.language["Small"]
 
 		full_language = self.languages["full"][language]
 
@@ -359,7 +359,7 @@ class Register(Database):
 			self.data["Started experiencing"] = self.Date.To_UTC(self.Date.From_String(self.data["dates"][key]))
 
 			# Define time spent experiencing using started experiencing time and finished experiencing time
-			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.user_language]
+			self.data["Time spent experiencing"] = self.Date.Difference(self.data["Started experiencing"], self.dictionary["Entry"]["Date"]["UTC"]["Object"])["Text"][self.language["Small"]]
 
 			if self.data["Time spent experiencing"][0] + self.data["Time spent experiencing"][1] == ", ":
 				self.data["Time spent experiencing"] = self.data["Time spent experiencing"][2:]
@@ -376,7 +376,7 @@ class Register(Database):
 			# Update the data dates text file
 			self.File.Edit(self.data["Folders"]["dates"], self.data["Finished experiencing text"], "w")
 
-			text = self.types["Genders"][self.user_language]["masculine"]["the"] + " " + self.language_texts["data, title()"].lower()
+			text = self.types["Genders"][self.language["Small"]]["masculine"]["the"] + " " + self.language_texts["data, title()"].lower()
 
 			# Add the time template to the Diary Slim text
 			self.data["Finished experiencing text"] = self.data["Finished experiencing text"].replace(self.language_texts["when_i_started_to_experience"], self.language_texts["when_i_started_to_experience"] + " " + text)
@@ -391,7 +391,7 @@ class Register(Database):
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			for key in self.dictionary["States"]["Texts"]:
-				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.user_language]
+				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.language["Small"]]
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"

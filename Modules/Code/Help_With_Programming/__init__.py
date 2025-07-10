@@ -68,10 +68,10 @@ class Help_With_Programming(Code):
 			if item_name in self.programming_language_settings:
 				value = self.programming_language_settings[item_name]
 
-			if self.Folder.Exist(item_folder) == True:
+			if self.Folder.Exists(item_folder) == True:
 				value = True
 
-			if self.Folder.Exist(item_folder) == False:
+			if self.Folder.Exists(item_folder) == False:
 				value = False
 
 			if value == self.Language.language_texts["yes, title()"]:
@@ -131,7 +131,7 @@ class Help_With_Programming(Code):
 
 			self.mode_settings_read = {}
 
-			if self.File.Exist(self.mode_settings_file) == True:
+			if self.File.Exists(self.mode_settings_file) == True:
 				self.mode_settings_read = self.File.Dictionary(self.mode_settings_file, true_or_false = True)
 
 			# Mode names
@@ -140,7 +140,7 @@ class Help_With_Programming(Code):
 			self.language_mode_names[mode_name] = {}
 
 			for language in self.languages["small"]:
-				language_name = self.texts["language_name"][language][self.user_language]
+				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				self.language_mode_names[language].append(self.mode["Language names"][language])
 				self.language_mode_names[mode_name][language] = self.mode["Language names"][language]
@@ -150,7 +150,7 @@ class Help_With_Programming(Code):
 
 				value = True
 
-				if self.Folder.Exist(item_folder) == False:
+				if self.Folder.Exists(item_folder) == False:
 					value = False
 
 				if item_name in self.mode_settings_read:
@@ -180,7 +180,7 @@ class Help_With_Programming(Code):
 
 		first_function_folder = self.programming_language_folder + "First Function/"
 
-		if self.Folder.Exist(first_function_folder) == True:
+		if self.Folder.Exists(first_function_folder) == True:
 			self.mode_settings["First function"] = True
 
 		self.mode_settings = self.mode_settings[self.programming_mode]
@@ -203,7 +203,7 @@ class Help_With_Programming(Code):
 
 		if self.programming_language_settings["Modes"] == True:
 			for language in self.languages["small"]:
-				language_name = self.texts["language_name"][language][self.user_language]
+				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name not in self.function_data:
 					self.function_data[language] = self.language_mode_names[self.programming_mode][language]
@@ -242,7 +242,7 @@ class Help_With_Programming(Code):
 
 		self.data = {}
 
-		if self.File.Exist(self.data_file) == True:
+		if self.File.Exists(self.data_file) == True:
 			self.data.update(self.JSON.To_Python(self.data_file))
 
 		for key in self.data:
@@ -331,7 +331,7 @@ class Help_With_Programming(Code):
 			tool_data[self.language_texts["original_name"]] = tool_name
 
 			for language in self.languages["small"]:
-				language_name = self.texts["language_name"][language][self.user_language]
+				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name in tool_info:
 					tool_data[language_name] = tool_info[language_name]
@@ -390,7 +390,7 @@ class Help_With_Programming(Code):
 			language_tool_name = tool_name
 
 			for language in self.languages["small"]:
-				language_name = self.texts["language_name"][language][self.user_language]
+				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name in tool_data:
 					language_tool_name = tool_data[language_name]
