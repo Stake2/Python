@@ -873,6 +873,14 @@
 		"pt": "País",
 		"en": "Country"
 	},
+	"country_code": {
+		"pt": "Código do país",
+		"en": "Country code"
+	},
+	"country_name": {
+		"pt": "Nome do país",
+		"en": "Country name"
+	},
 	"state": {
 		"pt": "estado",
 		"en": "state"
@@ -1721,10 +1729,6 @@
 	"titles_in_{}": {
 		"pt": "Títulos em {}",
 		"en": "Titles in {}"
-	},
-	"titles_file_in_{}": {
-		"pt": "Arquivo de títulos em {}",
-		"en": "Titles file in {}"
 	},
 	"subbed, title()": {
 		"pt": "Legendado",
@@ -2604,5 +2608,13 @@
 	"computer, title()": {
 		"en": "Computer",
 		"pt": "Computador"
+	},
+	"methods_of_the_{}_class_to_run": {
+		"en": "Methods of the \"{}\" class to run",
+		"pt": "Métodos da classe \"{}\" para executar"
+	},
+	"select_one_method_to_run": {
+		"en": "Select one method to run",
+		"pt": "Selecione um método para executar"
 	}
 }

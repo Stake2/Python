@@ -142,6 +142,9 @@ class Language():
 				# Remove it from the "small" list
 				self.languages["small"].remove(language)
 
+		# Define the countries dictionary
+		self.countries = self.languages["Countries"]
+
 	def Create_Mapping_Dictionary(self):
 		# Define the default mapping dictionary
 		self.mapping = {
@@ -302,6 +305,11 @@ class Language():
 				"Small": "",
 				"With country": "",
 				"Full": ""
+			},
+
+			# Define the user "Country" dictionary
+			"Country": {
+				
 			}
 		}
 
@@ -335,6 +343,18 @@ class Language():
 		# Define the "Small" and "With country" language keys
 		self.user["Language"]["Small"] = locale_shortcut[0].split("_")[0]
 		self.user["Language"]["With country"] = locale_shortcut[0]
+
+		# Get the country
+		country = self.user["Language"]["With country"].split("_")[1]
+
+		# Define the country code
+		self.user["Country"]["Code"] = country
+
+		# Get the country name
+		country_name = self.languages["Countries"][country]
+
+		# Define the country name
+		self.user["Country"]["Name"] = country_name
 
 		# Define a shortcut to the small language
 		small_language = self.user["Language"]["Small"]
@@ -1264,6 +1284,18 @@ class Language():
 				# Show the user language but translated to the current language
 				print("\t\t" + quotes.format(translated_user_language))
 				print()
+
+		# ---------- #
+
+		# Show the user country code
+		print(self.language_texts["country_code"] + ":")
+		print("\t" + quotes.format(self.user["Country"]["Code"]))
+		print()
+
+		# Show the user country name
+		print(self.language_texts["country_name"] + ":")
+		print("\t" + quotes.format(self.user["Country"]["Name"][self.language["Small"]]))
+		print()
 
 		# ---------- #
 

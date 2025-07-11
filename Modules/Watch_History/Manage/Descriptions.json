@@ -15,9 +15,9 @@
 		"en": "Add to comments dictionary",
 		"pt": "Adicionar ao dicionário de comentários"
 	},
-	"Fill_Media_Files": {
-		"en": "Fill media files",
-		"pt": "Preencher arquivos de mídia"
+	"Populate_Media_Episodes_Files": {
+		"en": "Populate the media episodes files",
+		"pt": "Preencher os arquivos de episódios de mídia"
 	},
 	"Convert_History": {
 		"en": "Convert history",

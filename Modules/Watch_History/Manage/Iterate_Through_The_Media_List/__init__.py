@@ -368,14 +368,23 @@ class Iterate_Through_The_Media_List(Watch_History):
 			self.File.Edit(file, text, "w")
 
 	def Check_Episodes_Titles(self):
-		# If "titles" is present in the folders dictionary and is not a single unit media item
-		# And the watching status is not "Plan to watch" or "Completed"
+		# Get the media status
+		media_status = self.dictionary["Media"]["Details"][self.Language.language_texts["status, title()"]]
+
+		# Get the list of on hold statuses
+		on_hold_statuses = [
+			"Plan to watch",
+			"Completed"
+		]
+
+		# If the "Titles" key is present in the media item "Folders" dictionary
+		# And the media watching status is not "Plan to watch" or "Completed"
 		if (
-			"titles" in self.dictionary["Media"]["Item"]["Folders"] and
-			self.dictionary["Media"]["Details"][self.Language.language_texts["status, title()"]] not in [self.language_texts["plan_to_watch, title()"], self.Language.language_texts["completed, title()"]]
+			"Titles" in self.dictionary["Media"]["Item"]["Folders"] and
+			media_status not in on_hold_statuses
 		):
 			# Define the titles file to check its contents
-			titles_file = self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.languages["full"]["en"] + ".txt"
+			titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + self.languages["full"]["en"] + ".txt"
 
 			# If the titles file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
@@ -385,7 +394,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					full_language = self.languages["full"][language]
 
 					# Define the language titles file
-					titles_file = self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + full_language + ".txt"
+					titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + full_language + ".txt"
 
 					# Open it for user to fill it with titles
 					self.System.Open(titles_file)
@@ -752,9 +761,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 		else:
 			new_information["Title"] = information["Title"]
 
-		for title in media_dictionary["titles"]:
+		for title in media_dictionary["Titles"]:
 			if key not in ["Language", "Sanitized"]:
-				new_information["Titles"][key] = media_dictionary["titles"][key]
+				new_information["Titles"][key] = media_dictionary["Titles"][key]
 
 		if "alternative_titles" in information:
 			new_information["Titles"].update(information["alternative_titles"])
@@ -829,12 +838,12 @@ class Iterate_Through_The_Media_List(Watch_History):
 			else:
 				new_information["Episodes"]["Number"] = media_dictionary["episodes"]["number"]
 
-		# Get episode titles
-		if "titles" in self.dictionary["Media"]["Item"]["Episodes"]:
+		# Get the episode titles
+		if "Titles" in self.dictionary["Media"]["Item"]["Episodes"]:
 			new_information["Episodes"]["Titles"] = self.dictionary["Media"]["Item"]["Episodes"]["Titles"]
 
-			if "files" in new_information["Episodes"]["Titles"]:
-				new_information["Episodes"]["Titles"].pop("files")
+			if "Files" in new_information["Episodes"]["Titles"]:
+				new_information["Episodes"]["Titles"].pop("Files")
 
 		if "average_episode_duration" in information:
 			new_information["Duration"] = information["average_episode_duration"]
@@ -1268,9 +1277,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 		}
 
 		# Add media titles
-		for title in media_dictionary["titles"]:
+		for title in media_dictionary["Titles"]:
 			if key not in ["Language", "Sanitized"]:
-				new_information["Titles"][key] = media_dictionary["titles"][key]
+				new_information["Titles"][key] = media_dictionary["Titles"][key]
 
 		# Remove ID if media type is not "Animes" or "Videos"
 		if self.dictionary["Media type"]["Plural"]["en"] not in [self.texts["animes, title()"]["en"], self.texts["videos, title()"]["en"]]:

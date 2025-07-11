@@ -84,9 +84,9 @@ class Comment_Writer(Watch_History):
 
 			# Define the media types where the user can post comments in the Internet
 			self.media_types["Post comment"] = [
-				self.texts["animes, title()"]["en"],
-				self.texts["cartoons, title()"]["en"],
-				self.texts["videos, title()"]["en"]
+				"Animes",
+				"Cartoons",
+				"Videos"
 			]
 
 			# Define the dictionary that says which remote origin the user can post comments
@@ -532,8 +532,11 @@ class Comment_Writer(Watch_History):
 		# If the media is a video channel
 		# (Add the YouTube video ID, comment link, and comment ID to the comment dictionary)
 		if self.media["States"]["Video"] == True:
+			# Define a shortcut to the comment dictionary
+			comment = self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]
+
 			# Update the comment dictionary to add the comment "Link" and "Video" dictionaries
-			self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name].update({
+			comment.update({
 				"Comment link": { # The comment "Link" dictionary
 					"ID": "",
 					"Link": ""
@@ -550,17 +553,22 @@ class Comment_Writer(Watch_History):
 
 			# ---------- #
 
+			# Define a shortcut to the video dictionary
+			video = comment["Video"]
+
+			# Define a shortcut to the video link
+			video_link = video["Link"]
+
 			# Get the video information from the root "Get_YouTube_Information" method that uses the "API" utility class to access the YouTube API
-			# Giving it the "video" and video link parameters
-			video_information = self.Get_YouTube_Information("video", self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Video"]["Link"])
+			# Giving it the "Video" and video link parameters
+			video_information = self.Get_YouTube_Information("Video", video_link)
 
 			# Define the video "Times" dictionary as the video published "Times" dictionary gotten from the YouTube API
-			self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Video"]["Times"] = video_information["Times"]
+			video["Times"] = video_information["Times"]
 
 			# ---------- #
 
-			# Import the needed modules
-			from urllib.parse import urlparse, parse_qs
+			# Import the validators module
 			import validators
 
 			# Define the original link variable as an empty string
@@ -578,36 +586,36 @@ class Comment_Writer(Watch_History):
 
 					# If the original link is an URL
 					if validators.url(original_link) == True:
-						# Parse the link to get the query string (parameters)
-						link = urlparse(original_link)
-						query = link.query
-						parameters = parse_qs(query)
+						# Parse the link to get the comment ID
+						comment_id = self.Parse_Link(original_link, "Comment")
 
-						# If the "lc" parameter is inside the dictionary of parameters
-						if "lc" in parameters:
+						# If the comment ID is not None
+						if comment_id != None:
 							# Switch the "found comment parameter" switch to True
 							found_comment_parameter = True
 
 				# If the "Testing" switch is True
 				if self.switches["Testing"] == True:
 					# Define the comment link
-					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc=UgxuNs35fO-gFEDY7l14AaABAg"
+					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc="
+
+					# Define the comment ID
+					comment_id = "UgxuNs35fO-gFEDY7l14AaABAg"
+
+					# Add it to the link
+					original_link += comment_id
 
 					# Show the input text and the defined comment link
+					print()
 					print(self.language_texts["paste_the_comment_link_of_youtube"] + ":")
 					print(original_link)
 
 					# Switch the "found comment parameter" switch to True
 					found_comment_parameter = True
 
-			# Parse the link to get the query string (parameters)
-			link = urlparse(original_link)
-			query = link.query
-			parameters = parse_qs(query)
-
 			# Add the comment ID and link to the "Comment link" dictionary
-			self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Comment link"] = {
-				"ID": parameters["lc"][0], # The comment ID
+			comment["Comment link"] = {
+				"ID": comment_id, # The comment ID
 				"Link": "" # The video link with the comment ID
 			}
 
@@ -615,22 +623,22 @@ class Comment_Writer(Watch_History):
 			link = self.remote_origins["YouTube"]["Link templates"]["Video and comment"]
 
 			# Add the video ID
-			link = link.replace("{Video}", self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Video"]["ID"])
+			link = link.replace("{Video}", video["ID"])
 
 			# Add the comment ID
-			link = link.replace("{Comment}", parameters["lc"][0])
+			link = link.replace("{Comment}", comment_id)
 
 			# Add the comment link to the "Link" key
-			self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Comment link"]["Link"] = link
+			comment["Comment link"]["Link"] = link
 
 			# ---------- #
 
 			# Get the comment information from the root "Get_YouTube_Information" method that uses the "API" utility class to access the YouTube API
-			# Giving it the "comment" and comment link parameters
-			comment_information = self.Get_YouTube_Information("comment", self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Comment link"]["Link"])
+			# Giving it the "Comment" and comment link parameters
+			comment_information = self.Get_YouTube_Information("Comment", comment["Comment link"]["Link"])
 
 			# Define the comment "Times" dictionary as the comment published "Times" dictionary gotten from the YouTube API
-			self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Comment times"] = comment_information["Times"]
+			comment["Comment times"] = comment_information["Times"]
 
 			# ---------- #
 

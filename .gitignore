@@ -15,10 +15,7 @@ Sync.lnk
 # Module files
 Module Files/Code/Last Setting Data
 Module Files/SproutGigs/Categories
-Module Files/Utility/API/Client secrets.json
-Module Files/Utility/API/client_secrets.json
-Module Files/Utility/API/Secrets.json
-Module Files/Utility/API/Token.json
+Module Files/Utility/API/Services.json
 
 # Template ignores
 

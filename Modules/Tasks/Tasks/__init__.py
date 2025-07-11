@@ -672,11 +672,16 @@ class Tasks(object):
 		# ---------- #
 
 		# Get the "When you completed the task" text
-		text = self.language_texts["when_you_completed_the_task"]
+		task_time_text = self.language_texts["when_you_completed_the_task"]
+
+		# If the "Register task" state is False
+		if self.states["Register task"] == False:
+			# Change the task time text to be about the task progress
+			task_time_text = self.language_texts["when_you_registered_the_task_progress"]
 
 		# Print the composed text and the corresponding formatted time
 		print()
-		print(text + ":")
+		print(task_time_text + ":")
 		print("\t" + dictionary["Entry"]["Times"]["Completed task"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# ---------- #

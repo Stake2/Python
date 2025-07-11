@@ -42,5 +42,55 @@
 		"language",
 		"Language with country",
 		"full_language"
-	]
+	],
+	"Countries": {
+		"BR": {
+			"pt": "Brasil",
+			"en": "Brazil"
+		},
+		"US": {
+			"pt": "Estados Unidos",
+			"en": "United States"
+		},
+		"NL": {
+			"pt": "Países Baixos",
+			"en": "Netherlands"
+		},
+		"CA": {
+			"pt": "Canadá",
+			"en": "Canada"
+		},
+		"SG": {
+			"pt": "Singapura",
+			"en": "Singapore"
+		},
+		"GB": {
+			"pt": "Reino Unido",
+			"en": "United Kingdom"
+		},
+		"DE": {
+			"pt": "Alemanha",
+			"en": "Germany"
+		},
+		"FR": {
+			"pt": "França",
+			"en": "France"
+		},
+		"NZ": {
+			"pt": "Nova Zelândia",
+			"en": "New Zealand"
+		},
+		"SK": {
+			"pt": "Eslováquia",
+			"en": "Slovakia"
+		},
+		"ID": {
+			"pt": "Indonésia",
+			"en": "Indonesia"
+		},
+		"MY": {
+			"pt": "Malásia",
+			"en": "Malaysia"
+		}
+	}
 }

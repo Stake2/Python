@@ -174,5 +174,9 @@
 	"when_you_completed_the_task": {
 		"pt": "Quando você completou a tarefa",
 		"en": "When you completed the task"
+	},
+	"when_you_registered_the_task_progress": {
+		"pt": "Quando você registrou o progresso da tarefa",
+		"en": "When you registered the task progress"
 	}
 }

@@ -331,7 +331,7 @@ class File():
 				contents["string"] != text
 			):
 				# Open the file handle
-				edit = open(file, "w", encoding = "UTF8")
+				edit = open(file, mode, encoding = "UTF8")
 
 				# Write the text into the file
 				edit.write(text)

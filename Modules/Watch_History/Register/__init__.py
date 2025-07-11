@@ -1289,7 +1289,7 @@ class Register(Watch_History):
 					self.of_the_text = self.of_the_text.format(text + self.language_texts["season, title()"].lower())
 
 				if self.media["States"]["Video"] == True:
-					self.of_the_text = self.of_the_text.format(self.language_texts["video_serie"])
+					self.of_the_text = self.of_the_text.format(self.language_texts["video_series, type: singular"])
 
 				# If the watched media is not a video channel
 				if self.media["States"]["Video"] == False:

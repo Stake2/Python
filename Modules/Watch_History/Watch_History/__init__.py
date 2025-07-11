@@ -3,6 +3,7 @@
 # Import the "importlib" module
 import importlib
 
+# Import the "deepcopy" module from the "copy" module
 from copy import deepcopy
 
 # Main class Watch_History that provides variables to the classes that implement it
@@ -2629,7 +2630,7 @@ class Watch_History(object):
 						'"Date":' in contents["string"]
 					):
 						# Get the channel information dictionary
-						channel = self.Get_YouTube_Information("channel", dictionary["Media"]["Details"]["ID"])
+						channel = self.Get_YouTube_Information("Channel", dictionary["Media"]["Details"]["ID"])
 
 						# Get the channel date
 						channel_date = self.Date.From_String(channel["Times"]["UTC"])
@@ -2858,7 +2859,7 @@ class Watch_History(object):
 
 				# Define show and select text for video media
 				if dictionary["Media"]["States"]["Video"] == True:
-					show_text = self.Text.Capitalize(self.language_texts["video_series"])
+					show_text = self.Text.Capitalize(self.language_texts["video_series, capitalize()"])
 					select_text = self.language_texts["select_a_youtube_video_series"]
 
 				# Iterate through media items list
@@ -2914,8 +2915,8 @@ class Watch_History(object):
 						self.language_texts["single_unit"] not in details and
 						dictionary["Media"]["States"]["Video"] == False
 					):
-						# Define titles folder
-						folders["titles"] = {
+						# Define the "Titles" folder
+						folders["Titles"] = {
 							"root": folders["root"] + self.Language.language_texts["titles, title()"] + "/"
 						}
 
@@ -3210,139 +3211,164 @@ class Watch_History(object):
 			dictionary["Media"]["States"]["Single unit"] == False
 		):
 			# Defile the titles folder for the media item
-			dictionary["Media"]["Item"]["Folders"]["titles"] = {
-				"root": dictionary["Media"]["Item"]["Folders"]["root"] + self.Language.language_texts["titles, title()"] + "/",
+			dictionary["Media"]["Item"]["Folders"]["Titles"] = {
+				"root": dictionary["Media"]["Item"]["Folders"]["root"] + self.Language.language_texts["titles, title()"] + "/"
 			}
 
 			# Create it
-			self.Folder.Create(dictionary["Media"]["Item"]["Folders"]["titles"]["root"])
+			self.Folder.Create(dictionary["Media"]["Item"]["Folders"]["Titles"]["root"])
+
+			# Define a shortcut to it
+			titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
 
 			# Iterate through the list of small languages
 			for language in self.languages["small"]:
 				# Get the full language
 				full_language = self.languages["full"][language]
 
-				# Define and create the titles file
-				dictionary["Media"]["Item"]["Folders"]["titles"][language] = dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + full_language + ".txt"
-				self.File.Create(dictionary["Media"]["Item"]["Folders"]["titles"][language])
+				# Define and create the episode titles file for the current language
+				titles_folder[language] = titles_folder["root"] + full_language + ".txt"
+				self.File.Create(titles_folder[language])
 
 			# If the media is a video channel
 			if dictionary["Media"]["States"]["Video"] == True:
-				# Define and create the "IDs" file
-				dictionary["Media"]["Item"]["Folders"]["titles"]["ids"] = dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.Language.language_texts["ids, title()"] + ".txt"
-				self.File.Create(dictionary["Media"]["Item"]["Folders"]["titles"]["ids"])
+				# Iterate through the list of video file keys
+				for file_key in ["IDs", "Dates"]:
+					# Define a text key for the file
+					text_key = file_key.lower().replace(" ", "_") + ", title()"
 
-			# Update the "Playlist.json" file for the video channels that have video series (media items)
-			if (
-				dictionary["Media"]["States"]["Video"] == True and
-				dictionary["Media"]["States"]["Has a list of media items"] == True
-			):
-				# Get the ID (origin location) of the playlist from the link
-				if (
-					self.Language.language_texts["origin_location"] in dictionary["Media"]["Item"]["Details"] and
-					dictionary["Media"]["Item"]["Details"][self.Language.language_texts["origin_location"]] in ["?", "None"]
-				):
-					# Get the playlist ID from the playlist link
-					dictionary["Media"]["Item"]["Details"][self.Language.language_texts["origin_location"]] = dictionary["Media"]["Item"]["Details"][self.Language.language_texts["link, title()"]].split("list=")[-1]
+					# Get the file name for the file
+					file_name = self.Language.language_texts[text_key]
 
-				# Define and create the "Playlist.json" file
-				dictionary["Media"]["Item"]["Folders"]["playlist"] = dictionary["Media"]["Item"]["Folders"]["root"] + "Playlist.json"
-				self.File.Create(dictionary["Media"]["Item"]["Folders"]["playlist"])
+					# Define and create the file
+					titles_folder[file_key] = titles_folder["root"] + file_name + ".txt"
+					self.File.Create(titles_folder[file_key])
 
-				# Get the contents of the file
-				contents = self.File.Contents(dictionary["Media"]["Item"]["Folders"]["playlist"])
+				# If the media has a list of media items
+				if dictionary["Media"]["States"]["Has a list of media items"] == True:
+					# Define an initial playlist ID as an empty string
+					playlist_id = ""
 
-				# Define a shortcut to the "Origin location" key
-				origin_location = dictionary["Media"]["Item"]["Details"][self.Language.language_texts["origin_location"]]
+					# If the "Origin location" key is inside the media item details dictionary
+					if self.Language.language_texts["origin_location"] in dictionary["Media"]["Item"]["Details"]:
+						# Define a shortcut to the origin location key to made the code easier to look at
+						origin_location_key = self.Language.language_texts["origin_location"]
 
-				# If the "Origin location" key is neither an question mark nor None
-				# And the file is empty
-				# Or the old "Date" key is inside the file
-				# Or the new "Playlist creation times" key is not inside the file
-				if (
-					origin_location not in ["?", "None"] and
-					(
-						contents["Lines"] == [] or
-						'"Date":' in contents["string"] or
-						"Playlist creation times" not in contents["string"]
-					)
-				):
-					# Define the playlist ID as the origin location
-					playlist_id = origin_location
+						# Define a shortcut to the origin location
+						origin_location = dictionary["Media"]["Item"]["Details"][origin_location_key]
 
-					# Get the playlist information using the "Get_YouTube_Information" method that uses the "API" utility method
-					playlist = self.Get_YouTube_Information("playlist", playlist_id)
+						# Get the playlist link
+						playlist_link = dictionary["Media"]["Item"]["Details"][self.Language.language_texts["link, title()"]]
 
-					# If the "Channel" dictionary inside the playlist dictionary is not the same as the media channel
-					if dictionary["Media"]["Channel"]["Channel"] != playlist["Channel"]:
-						# Then update the playlist "Channel" dictionary with the media "Channel" dictionary
-						playlist["Channel"] = dictionary["Media"]["Channel"]["Channel"]
+						# If it is not a question mark and is not None
+						if origin_location not in ["?", "None"]:
+							# Get the playlist ID (origin location) of the playlist based on the playlist link
+							playlist_id = playlist_link.split("list=")[-1]
 
-					# Get the playlist date
-					playlist_date = self.Date.From_String(playlist["Times"]["UTC"])
+							# Add the playlist ID to the media item details dictionary
+							dictionary["Media"]["Item"]["Details"][origin_location_key] = playlist_id
 
-					# Define the IDs file
-					ids_file = dictionary["Media"]["Item"]["Folders"]["titles"]["root"] + self.Language.language_texts["ids, title()"] + ".txt"
+					# Define and create the media item "Playlist.json" file
+					dictionary["Media"]["Item"]["Folders"]["Playlist"] = dictionary["Media"]["Item"]["Folders"]["root"] + "Playlist.json"
+					self.File.Create(dictionary["Media"]["Item"]["Folders"]["Playlist"])
 
-					# Get the list of video IDs
-					ids_list = self.File.Contents(ids_file)["lines"]
+					# Get the contents of the file
+					contents = self.File.Contents(dictionary["Media"]["Item"]["Folders"]["Playlist"])
 
-					# If the list of IDs is not empty
-					if ids_list != []:
-						# Get the first video ID
-						first_video_id = ids_list[0]
+					# If the playlist ID is not empty
+					# And (the file is empty
+					# Or the old "Date" key is inside the file
+					# Or the new "Playlist creation times" key is not inside the file)
+					if (
+						playlist_id != "" and
+						(
+							contents["Lines"] == [] or
+							'"Date":' in contents["string"] or
+							"Playlist creation times" not in contents["string"]
+						)
+					):
+						# Get the playlist information using the "Get_YouTube_Information" method that uses the "API" utility method
+						playlist = self.Get_YouTube_Information("Playlist", playlist_id)
 
-						# Get the first video date
-						first_video_date = self.Date.From_String(self.Get_YouTube_Information("video", first_video_id)["Times"]["UTC"])
+						# If the "Channel" dictionary inside the playlist dictionary is not the same as the media channel
+						if dictionary["Media"]["Channel"]["Channel"] != playlist["Channel"]:
+							# Then update the playlist "Channel" dictionary with the media "Channel" dictionary
+							playlist["Channel"] = dictionary["Media"]["Channel"]["Channel"]
 
-						# If the date of the first video is older than the creation date of the playlist 
-						# Define a local date as the date of the first video
-						if first_video_date["Object"] < playlist_date["Object"]:
-							date = first_video_date
+						# Get the playlist date
+						playlist_date = self.Date.From_String(playlist["Times"]["UTC"])
 
-						# If the  date of the first video is newer than the creation date of the playlist 
-						# Define a local date as the date of the playlist
-						if first_video_date["Object"] > playlist_date["Object"]:
-							date = playlist_date
+						# Get the "IDs.txt" file
+						ids_file = titles_folder["root"] + self.Language.language_texts["ids, title()"] + ".txt"
 
-						# Update the "Start date" key of the media item details
-						dictionary["Media"]["Item"]["Details"][self.Date.language_texts["start_date"]] = date["Formats"]["HH:MM DD/MM/YYYY"]
+						# Get the list of video IDs
+						ids_list = self.File.Contents(ids_file)["lines"]
 
-						# Get the last video ID
-						last_video_id = ids_list[-1]
+						# If the list of IDs is not empty
+						if ids_list != []:
+							# Get the first video ID
+							first_video_id = ids_list[0]
 
-						# Get the last video date
-						last_video_date = self.Date.From_String(self.Get_YouTube_Information("video", last_video_id)["Times"]["UTC"])
+							# Get the first video information using the "Get_YouTube_Information" method that uses the "API" utility method
+							first_video = self.Get_YouTube_Information("Video", first_video_id)
 
-						# Update the "End date" key of the media item details and define it as the last video date
-						# (The last video in the playlist is probably newer than the creation date of the playlist)
-						dictionary["Media"]["Item"]["Details"][self.Date.language_texts["end_date"]] = last_video_date["Formats"]["HH:MM DD/MM/YYYY"]
+							# Transform the first video date into a date dictionary
+							first_video_date = self.Date.From_String(first_video["Times"]["UTC"])
 
-						# Update the "Year" key of the media item details
-						dictionary["Media"]["Item"]["Details"][self.Date.language_texts["year, title()"]] = date["Units"]["Year"]
+							# If the date of the first video is older than the creation date of the playlist 
+							# Define a local date as the date of the first video
+							if first_video_date["Object"] < playlist_date["Object"]:
+								date = first_video_date
 
-						# Update the media item details dictionary
-						self.File.Edit(dictionary["Media"]["Item"]["Folders"]["details"], self.Text.From_Dictionary(dictionary["Media"]["Item"]["Details"]), "w")
+							# If the  date of the first video is newer than the creation date of the playlist 
+							# Define a local date as the date of the playlist
+							if first_video_date["Object"] > playlist_date["Object"]:
+								date = playlist_date
 
-					# Add the "Playlist creation times" after the "Times" key and remove the "Times" key
-					key_value = {
-						"Playlist creation times": playlist["Times"]
-					}
+							# Update the "Start date" key of the media item details dictionary
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["start_date"]] = date["Formats"]["HH:MM DD/MM/YYYY"]
 
-					playlist = self.JSON.Add_Key_After_Key(playlist, key_value, after_key = "Times", remove_after_key = True)
+							# Get the last video ID
+							last_video_id = ids_list[-1]
 
-					# Update the "Playlist.json" file with the updated playlist dictionary
-					self.JSON.Edit(dictionary["Media"]["Item"]["Folders"]["playlist"], playlist)
+							# Get the last video information using the "Get_YouTube_Information" method that uses the "API" utility method
+							last_video = self.Get_YouTube_Information("Video", last_video_id)
 
-				# If there is a correct playlist dictionary, get it from the "Playlist.json" file
-				else:
-					playlist = self.JSON.To_Python(dictionary["Media"]["Item"]["Folders"]["playlist"])
+							# Transform the first video date into a date dictionary
+							last_video_date = self.Date.From_String(last_video["Times"]["UTC"])
 
-				# Update the root "Playlist" dictionary to be the local one
-				dictionary["Media"]["Item"]["Playlist"] = playlist
+							# Update the "End date" key of the media item details and define it as the last video date
+							# (The last video in the playlist is probably newer than the creation date of the playlist)
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["end_date"]] = last_video_date["Formats"]["HH:MM DD/MM/YYYY"]
 
-				# Update the "Dictionary" information key to be the "Playlist" dictionary
-				dictionary["Media"]["Item"]["Information"]["Dictionary"] = playlist
+							# Update the "Year" key of the media item details
+							dictionary["Media"]["Item"]["Details"][self.Date.language_texts["year, title()"]] = date["Units"]["Year"]
+
+							# Transform the media item details dictionary into a text
+							media_item_details = self.Text.From_Dictionary(dictionary["Media"]["Item"]["Details"])
+
+							# Update the media item details file with the updated media item details dictionary
+							self.File.Edit(dictionary["Media"]["Item"]["Folders"]["details"], media_item_details, "w")
+
+						# Add the "Playlist creation times" key after the "Times" key and remove the "Times" key
+						key_value = {
+							"Playlist creation times": playlist["Times"]
+						}
+
+						playlist = self.JSON.Add_Key_After_Key(playlist, key_value, after_key = "Times", remove_after_key = True)
+
+						# Update the "Playlist.json" file with the updated playlist dictionary
+						self.JSON.Edit(dictionary["Media"]["Item"]["Folders"]["Playlist"], playlist)
+
+					# If there is a correct playlist dictionary, get it from the "Playlist.json" file
+					else:
+						playlist = self.JSON.To_Python(dictionary["Media"]["Item"]["Folders"]["Playlist"])
+
+					# Update the root "Playlist" dictionary to be the local one
+					dictionary["Media"]["Item"]["Playlist"] = playlist
+
+					# Update the "Dictionary" information key to be the "Playlist" dictionary
+					dictionary["Media"]["Item"]["Information"]["Dictionary"] = playlist
 
 		# ---------- #
 
@@ -3404,6 +3430,9 @@ class Watch_History(object):
 
 		# If the media is a series media (not a movie)
 		if dictionary["Media"]["States"]["Series media"] == True:
+			# Define a shortcut to the "Titles" folder dictionary
+			titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
+
 			# Define the "Episodes" dictionary with the "Number" and "Titles" keys
 			dictionary["Media"]["Item"]["Episodes"] = {
 				"Number": 0,
@@ -3432,11 +3461,16 @@ class Watch_History(object):
 				# Define the episode separator as nothing
 				dictionary["Media"]["Episode"]["Separator"] = ""
 
-				# Define the "IDs" inside the "Files" dictionary
-				dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"]["IDs"] = dictionary["Media"]["Item"]["Folders"]["titles"]["ids"]
+				# Iterate through the list of video file keys
+				for file_key in ["IDs", "Dates"]:
+					# Get the file
+					file = titles_folder[file_key]
 
-				# Get the ids from the file and add them to the "Titles" key
-				dictionary["Media"]["Item"]["Episodes"]["Titles"]["IDs"] = self.File.Contents(dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"]["IDs"])["lines"]
+					# Define it inside the "Files" dictionary
+					dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"][file_key] = file
+
+					# Get the contents from the file and add them to the file key
+					dictionary["Media"]["Item"]["Episodes"]["Titles"][file_key] = self.File.Contents(file)["Lines"]
 
 			# Iterate through the list of small languages
 			for language in self.languages["small"]:
@@ -3446,7 +3480,7 @@ class Watch_History(object):
 				# If the media item is not a single unit
 				if dictionary["Media"]["States"]["Single unit"] == False:
 					# Define the language episode titles file on the "Files" dictionary
-					dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"][language] = dictionary["Media"]["Item"]["Folders"]["titles"][language]
+					dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"][language] = dictionary["Media"]["Item"]["Folders"]["Titles"][language]
 
 					# Get the language episode titles from the file and add them to the "Titles" key
 					dictionary["Media"]["Item"]["Episodes"]["Titles"][language] = self.File.Contents(dictionary["Media"]["Item"]["Episodes"]["Titles"]["Files"][language])["lines"]
@@ -3643,13 +3677,19 @@ class Watch_History(object):
 			if dictionary["Media"]["States"]["Video"] == True:
 				for language in self.languages["small"]:
 					dictionary["Media"]["Texts"]["container"][language] = self.texts["youtube_channel"][language]
-					dictionary["Media"]["Texts"]["item"][language] = self.texts["video_serie"][language]
+					dictionary["Media"]["Texts"]["item"][language] = self.texts["video_series, type: singular"][language]
 					dictionary["Media"]["Texts"]["unit"][language] = self.texts["video"][language]
 
 			if dictionary["Media"]["Item"]["Type"] == {}:
 				dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Texts"]["item"]
 
 		dict_ = deepcopy(dictionary["Media"]["Texts"])
+
+		# Define a shortcut to the season text
+		season_text = self.texts["season, title()"][language].lower()
+
+		# Define a shortcut to the video series text
+		video_series_text = self.texts["video_series, type: singular"][language]
 
 		# Define media texts by item and gender
 		for text_type in ["the", "this", "of"]:
@@ -3659,10 +3699,10 @@ class Watch_History(object):
 						dictionary["Media"]["Texts"][text_type + "_" + key] = {}
 
 					for language in self.languages["small"]:
-						if dictionary["Media"]["Texts"][key][language] not in [self.texts["season, title()"][language].lower(), self.texts["video_serie"][language]]:
+						if dictionary["Media"]["Texts"][key][language] not in [season_text, video_series_text]:
 							item_text = dictionary["Media type"]["Genders"][language][text_type]
 
-						if dictionary["Media"]["Texts"][key][language] in [self.texts["season, title()"][language].lower(), self.texts["video_serie"][language]]:
+						if dictionary["Media"]["Texts"][key][language] in [season_text, video_series_text]:
 							for gender_key in dict_["genders"][language]:
 								gender = dict_["genders"][language][gender_key]
 
@@ -4282,47 +4322,103 @@ class Watch_History(object):
 		# Return the dictionary
 		return dictionary
 
-	def Get_YouTube_Information(self, name, link = None, remove_unused_keys = True):
-		ids = {
-			"video": "v",
-			"playlist": "list",
-			"playlistItem": "list",
-			"comment": "lc"
+	def Parse_Link(self, link, id_parameter):
+		# Define the list of item parameters to find the correct ID
+		id_parameters_map = {
+			"Playlist": "list", # For playlists
+			"Video": "v", # For videos
+			"Comment": "lc" # For comments
 		}
 
-		if type(name) == dict:
-			for key in ["id", "link"]:
-				if key in name:
-					link = name[key]
-
-			name = name["item"]
-
-		id = link
-
+		# If the "youtube" text is inside the link
 		if "youtube" in link:
+			# Import some useful functions from the "urllib.parse" module
 			from urllib.parse import urlparse, parse_qs
 
-			link = urlparse(link)
-			query = link.query
-			parameters = parse_qs(query)
-			id = parameters[ids[name]][0]
+			# Parse the link
+			parsed_link = urlparse(link)
 
-		youtube = {
-			"item": name,
-			"id": id
+			# Get the query part of the URL
+			query_string = parsed_link.query
+
+			# Parse the query string into a dictionary
+			url_parameters = parse_qs(query_string)
+
+			# Get the correct key to extract the ID based on the type
+			id_key = id_parameters_map[id_parameter]
+
+			# Get the ID value from the parsed parameters
+			id = url_parameters[id_key][0]
+
+			# Return the ID
+			return id
+
+		else:
+			# Return None
+			return None
+
+	def Get_YouTube_Information(self, item, link = None):
+		# Define a root dictionary
+		dictionary = {
+			"Item": "",
+			"Link": ""
 		}
 
-		if "s" not in youtube["item"][-1]:
-			youtube["item"] += "s"
+		# If the type of the item parameter is a dictionary
+		if type(item) == dict:
+			# Iterate through the list of keys to find the correct ID
+			for key in ["ID", "Link"]:
+				# If it is found, add it to the "Link" key
+				if key in item:
+					dictionary["Link"] = item[key]
 
-		information = self.API.Call("YouTube", youtube)["Dictionary"]
+			# Define the item as the "Item" key
+			dictionary["Item"] = item["Item"]
 
-		if youtube["id"] in information:
-			information = information[youtube["id"]]
+			# Define a shortcut to the item
+			item = dictionary["Item"]
 
-		if youtube["item"] == "playlistItems":
-			information = information["Videos"]
+		else:
+			# Define the item as the item parameter
+			dictionary["Item"] = item
 
+			# Define the link as the link parameter
+			dictionary["Link"] = link
+
+		# Define the ID parameter as the normal item
+		id_parameter = item
+
+		# If the item is "Playlist videos"
+		if item == "Playlist videos":
+			# The ID parameter is "Playlist"
+			id_parameter = "Playlist"
+
+		# Parse the link to get the ID
+		id = self.Parse_Link(dictionary["Link"], id_parameter)
+
+		# Define the request dictionary with the item and ID
+		request = {
+			"Item": item,
+			"ID": id
+		}
+
+		# If the item is "Comment"
+		if item == "Comment":
+			# Parse the link to get the video ID
+			video_id = self.Parse_Link(dictionary["Link"], "Video")
+		
+			# Add the video ID to the request dictionary
+			request["Video ID"] = video_id
+
+		# Call the "Call" method of the "API" class to get the information about the item with the ID
+		information = self.API.Call("YouTube", request)["Request"]["Dictionary"]
+
+		# If the ID is inside the information dictionary
+		if id in information:
+			# Define the information as it
+			information = information[id]
+
+		# Return the information dictionary
 		return information
 
 	def Create_Playlist(self, dictionary):
@@ -4518,8 +4614,8 @@ class Watch_History(object):
 			self.language_texts["season, title()"].lower(),
 			self.language_texts["serie, title()"],
 			self.language_texts["serie, title()"].lower(),
-			self.language_texts["video_serie"],
-			self.language_texts["video_series"]
+			self.language_texts["video_series, type: singular"],
+			self.language_texts["video_series, capitalize()"]
 		]
 
 		# If the media item type is inside that list

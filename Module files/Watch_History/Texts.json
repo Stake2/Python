@@ -231,6 +231,10 @@
 		"en": "Episode ID",
 		"pt": "ID do episódio"
 	},
+	"video_id": {
+		"en": "Video ID",
+		"pt": "ID do vídeo"
+	},
 	"episode_link": {
 		"en": "Episode link",
 		"pt": "Link do episódio"
@@ -239,18 +243,6 @@
 		"en": "the episode cover",
 		"pt": "a capa do episódio"
 	},
-	"type_the_number_of_episodes": {
-		"pt": "Digite o número de episódios",
-		"en": "Type the number of episodes"
-	},
-	"type_the_number_of_all_media_episodes": {
-		"pt": "Digite o número de todos os episódios da mídia",
-		"en": "Type the number of all media episodes"
-	},
-	"paste_the_episode_title_in_{}": {
-		"pt": "Cole o título de episódio em {}",
-		"en": "Paste the episode title in {}"
-	},
 	"episode_title": {
 		"en": "Episode title",
 		"pt": "Título do episódio"
@@ -258,6 +250,14 @@
 	"episode_titles": {
 		"en": "Episode titles",
 		"pt": "Títulos do episódio"
+	},
+	"episode_number": {
+		"en": "Episode number",
+		"pt": "Número do episódio"
+	},
+	"episode_numbers": {
+		"en": "Episode numbers",
+		"pt": "Números do episódio"
 	},
 	"episode_number_name": {
 		"en": "Episode number name",
@@ -299,6 +299,18 @@
 		"pt": "séries de vídeos",
 		"en": "video series"
 	},
+	"video_series, capitalize()": {
+		"pt": "Séries de vídeos",
+		"en": "Video series"
+	},
+	"video_series, type: singular": {
+		"pt": "série de vídeos",
+		"en": "video series"
+	},
+	"video_series, type: singular, capitalize()": {
+		"pt": "Série de vídeos",
+		"en": "Video series"
+	},
 	"the_media_file_does_not_exist": {
 		"pt": "O arquivo de mídia não existe",
 		"en": "The media file does not exist"
@@ -327,29 +339,49 @@
 		"pt": "Selecione uma série de vídeos do YouTube",
 		"en": "Select a YouTube video series"
 	},
-	"fill_titles_files": {
-		"en": "Fill titles files",
-		"pt": "Preencher arquivos de títulos"
+	"populate_the_episode_titles_files": {
+		"en": "Populate the episode titles files",
+		"pt": "Preencher os arquivos de títulos de episódios"
 	},
-	"add_to_videos_list": {
-		"en": "Add to videos list",
+	"add_to_the_list_of_videos": {
+		"en": "Add to the list of videos",
 		"pt": "Adicionar à lista de vídeos"
 	},
-	"filling_the_titles_files": {
-		"en": "Filling the titles files",
-		"pt": "Preenchendo os arquivos de títulos"
+	"populating_the_episode_titles_files": {
+		"en": "Populating the episode titles files",
+		"pt": "Preenchendo os arquivos de títulos de episódios"
 	},
-	"filling_the_files_of_titles_and_youtube_ids": {
-		"en": "Filling the files of titles and YouTube IDs",
-		"pt": "Preenchendo os arquivos de títulos e IDs do YouTube"
+	"populating_the_episode_title_and_ids_files": {
+		"en": "Populating the episode title and IDs files",
+		"pt": "Preenchendo os arquivos de títulos de episódios e de IDs"
 	},
-	"you_finished_filling_the_files_of_titles": {
-		"en": "You finished filling the files of titles",
-		"pt": "Você terminou de preencher os arquivos de títulos"
+	"episode_titles_file_in_{}": {
+		"pt": "Arquivo de títulos de episódios em {}",
+		"en": "Episode titles file in {}"
 	},
-	"you_finished_filling_the_files_of_titles_and_youtube_ids": {
-		"en": "You finished filling the files of titles and YouTube IDs",
-		"pt": "Você terminou de preencher os arquivos de títulos e IDs do YouTube"
+	"type_the_number_of_episodes": {
+		"pt": "Digite o número de episódios",
+		"en": "Type the number of episodes"
+	},
+	"type_the_number_of_all_media_episodes": {
+		"pt": "Digite o número de todos os episódios da mídia",
+		"en": "Type the number of all media episodes"
+	},
+	"paste_the_link_to_the_video": {
+		"pt": "Cole o link do vídeo",
+		"en": "Paste the to the video"
+	},
+	"paste_the_episode_title_in_{}": {
+		"pt": "Cole o título de episódio em {}",
+		"en": "Paste the episode title in {}"
+	},
+	"you_finished_populating_the_episode_titles_files": {
+		"en": "You finished populating the episode titles files",
+		"pt": "Você terminou de preencher os arquivos de títulos de episódios"
+	},
+	"you_finished_populating_the_episode_titles_and_ids_files": {
+		"en": "You finished populating the episode titles and IDs files",
+		"pt": "Você terminou de preencher os arquivos de títulos de episódios e de IDs"
 	},
 	"skipping_this_title_as_it_was_already_translated": {
 		"en": "Skipping this title as it was already translated",
@@ -506,7 +538,7 @@
 	},
 	"media_being_watched": {
 		"en": "Media being watched",
-		"pt": "Mídia sendo assistida"
+		"pt": "Mídias sendo assistidas"
 	},
 	"things_watched_since_{}_until_{}": {
 		"en": "things watched since {} (until {})",

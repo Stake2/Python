@@ -508,7 +508,7 @@ class Add_A_New_Media(Watch_History):
 			# Delete the unused folders
 			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["Watched"]["root"])
 			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["comments"]["root"])
-			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["titles"]["root"])
+			self.Folder.Delete(self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"])
 
 			# Define the media items dictionary with the folders and number keys
 			self.media["Items"] = {

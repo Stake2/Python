@@ -102,7 +102,7 @@ class JSON():
 			print("\t" + text + ":")
 			print("\t" + item)
 
-	def Exists(self, file):
+	def File_Exists(self, file):
 		# Sanitize the file path
 		file = self.Sanitize(file)
 
@@ -120,7 +120,7 @@ class JSON():
 			"length": 0,
 		}
 
-		if self.Exists(file) == True:
+		if self.File_Exists(file) == True:
 			contents["string"] = open(file, "r", encoding = "utf8").read()
 			contents["size"] += os.path.getsize(file)
 
@@ -132,7 +132,7 @@ class JSON():
 
 			contents["length"] = len(contents["lines"])
 
-		if self.Exists(file) == False:
+		if self.File_Exists(file) == False:
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
 
 		return contents
@@ -156,7 +156,7 @@ class JSON():
 		"\t" + verbose_text
 
 		# If the file exists
-		if self.Exists(file) == True:
+		if self.File_Exists(file) == True:
 			# If the file "Edit" switch is True
 			# Or the "edit" parameter is True
 			if (
@@ -208,13 +208,24 @@ class JSON():
 				return False
 
 		# If the file does not exist
-		if self.Exists(file) == False:
+		if self.File_Exists(file) == False:
 			# Show the verbose text to tell the user that the file does not exist and return False
 			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text, verbose = verbose)
 
 			return False
 
+	def Dumps(self, items):
+		# Import the json module
+		import json
+
+		# Dump the items
+		items = json.dumps(items, indent = "\t", ensure_ascii = False)
+
+		# Return the items
+		return items
+
 	def From_Python(self, items_parameter):
+		# Import some useful modules
 		import json
 		from copy import deepcopy
 		import datetime
@@ -292,7 +303,11 @@ class JSON():
 		if type(items) == str:
 			items = self.To_Python(items)
 
-		return json.dumps(items, indent = "\t", ensure_ascii = False)
+		# Dump the items
+		items = self.Dumps(items)
+
+		# Return the items
+		return items
 
 	def Date_To_String(self, date, format = ""):
 		import datetime
@@ -312,16 +327,23 @@ class JSON():
 		return date.strftime(format)
 
 	def To_Python(self, item):
+		# Import the json module
 		import json
 
-		if self.Exists(item) == True:
+		# If the item is a file
+		if self.File_Exists(item) == True:
+			# Sanitize the file path
 			item = self.Sanitize(item)
 
+			# Convert the file text into a Python dictionary
 			dictionary = json.load(open(item, encoding = "utf8"))
 
-		if self.Exists(item) == False:
+		# If the item is not a file
+		if self.File_Exists(item) == False:
+			# Convert the JSON dictionary into a Python dictionary
 			dictionary = json.loads(item)
 
+		# Return the Python dictionary
 		return dictionary
 
 	def Show(self, json, return_text = False):

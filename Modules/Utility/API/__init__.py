@@ -1,25 +1,21 @@
 # API.py
 
+# Import the "deepcopy" module from the "copy" module
+from copy import deepcopy
+
 class API():
 	def __init__(self):
 		# Import the classes
 		self.Import_Classes()
 
-		# Define the files of the module
-		files = [
-			"Secrets",
-			"Client secrets",
-			"Token"
-		]
-
 		# Define the folders of the module
-		self.Define_Folders(object = self, files = files)
+		self.folders = self.Define_Folders(object = self).folders
 
 		# Define the "Switches" dictionary
 		self.Define_Switches()
 
-		# Read the "Secrets" dictionary to get the API keys
-		self.secrets = self.JSON.To_Python(self.module["Files"]["Secrets"])
+		# Define the API dictionary
+		self.Define_API()
 
 	def Import_Classes(self):
 		import importlib
@@ -67,6 +63,9 @@ class API():
 		# Import the "user" dictionary
 		self.user = self.Language.user
 
+		# Import the "countries" dictionary
+		self.countries = self.Language.countries
+
 		# Import the "separators" dictionary
 		self.separators = self.Language.separators
 
@@ -78,242 +77,390 @@ class API():
 		self.switches.update({
 			"File": {
 				"Create": True,
-				"Move": True,
 				"Edit": True
 			}
 		})
 
-	def YouTube(self, api):
-		# Import some important modules from the Google module
+	def Define_API(self):
+		# Define and create the "Services.json" file
+		self.module["Files"]["Services"] = self.module["Folders"]["Module files"]["root"] + "Services.json"
+		self.File.Create(self.module["Files"]["Services"])
+
+		# Create a root API dictionary
+		self.api = {
+			"Services": {},
+			"Service": {}
+		}
+
+		# Add the "Services" dictionary to the API dictionary
+		self.api["Services"] = self.JSON.To_Python(self.module["Files"]["Services"])
+
+	def Call(self, service, request):
+		# Get the service dictionary
+		self.api["Service"] = self.api["Services"]["Dictionary"][service]
+
+		# Add the "Request" dictionary to the service dictionary
+		self.api["Service"]["Request"] = request
+
+		# Get the method for the service
+		method = getattr(self, service)
+
+		# Run the method of the service and get the updated service dictionary back
+		service = method(self.api["Service"])
+
+		# Return the service dictionary
+		return service
+
+	def YouTube(self, service):
+		# Import some important modules from the Google modules
 		from google.auth.transport.requests import Request
 		from google.oauth2.credentials import Credentials
 		from google.auth.exceptions import RefreshError
 		from google_auth_oauthlib.flow import InstalledAppFlow
 		from googleapiclient.discovery import build
 
-		# Get the token file
-		self.token_file = self.module["Files"]["Token"]
-
-		# Get the client secrets
-		self.client_secrets = self.JSON.To_Python(self.module["Files"]["Client secrets"])
-
-		api["scopes"] = [
-			"https://www.googleapis.com/auth/youtube",
-			"https://www.googleapis.com/auth/youtube.force-ssl",
-			"https://www.googleapis.com/auth/youtube.readonly",
-			"https://www.googleapis.com/auth/youtubepartner"
-		]
-
-		api["credentials"] = None
-
-		if self.File.Exists(self.token_file) == True:
-			api["credentials"] = Credentials.from_authorized_user_file(self.token_file, api["scopes"])
-
-		# If there are no (valid) credentials available, let the user log in
+		# If the "Credentials" key is a dictionary
+		# And is not empty
 		if (
-			not api["credentials"] or
-			not api["credentials"].valid
+			isinstance(service["Credentials"], dict) and
+			service["Credentials"] != {}
 		):
-			if (
-				api["credentials"] and
-				api["credentials"].expired and
-				api["credentials"].refresh_token
-			):
-				try:
-					api["credentials"].refresh(Request())
+			# Get the credentials from it
+			service["Credentials"] = Credentials.from_authorized_user_info(service["Credentials"], service["Scopes"])
 
+		# If the "Credentials" key is an empty dictionary
+		# Or the token is not valid
+		if (
+			service["Credentials"] == {} or
+			service["Credentials"].valid == False
+		):
+			# If the "Credentials" key is not an empty dictionary
+			# And the credentials expired
+			# And the refresh token is valid
+			if (
+				service["Credentials"] and
+				service["Credentials"].expired and
+				service["Credentials"].refresh_token
+			):
+				# Try to refresh the credentials using the refrest token
+				try:
+					service["Credentials"].refresh(Request())
+
+				# If the credentials could not be refreshed
 				except RefreshError:
+					# Show a five dash space separator
+					print()
+					print(self.separators["5"])
 					print()
 
-					api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Files"]["Client secrets"], api["scopes"])
-					api["credentials"] = api["flow"].run_local_server(port = 0)
+					# Ask for the user to authorize the app
+					service["App flow"] = InstalledAppFlow.from_client_config(service["Client secrets"], service["Scopes"])
 
+					# Run a local server to get the credentials from the app flow
+					service["Credentials"] = service["App flow"].run_local_server(port = 0)
+
+			# Otherwise, either the credentials are missing, still valid, or cannot be refreshed
 			else:
+				# Show a five dash space separator
+				print()
+				print(self.separators["5"])
 				print()
 
-				api["flow"] = InstalledAppFlow.from_client_secrets_file(self.module["Files"]["Client secrets"], api["scopes"])
-				api["credentials"] = api["flow"].run_local_server(port = 0)
+				# Ask for the user to authorize the app
+				service["App flow"] = InstalledAppFlow.from_client_config(service["Client secrets"], service["Scopes"])
 
-			# Create the token file
-			self.File.Create(self.token_file)
+				# Run a local server to get the credentials from the app flow
+				service["Credentials"] = service["App flow"].run_local_server(port = 0)
 
-			# Save the credentials for the next run by editing the "Token.json" file with the credentials
-			# Passing the "edit" parameter to write into the file even if the file "Edit" switch is False (that means the "Testing" switch is on)
-			self.JSON.Edit(self.token_file, api["credentials"].to_json(), edit = True)
+			# ---------- #
 
-		# Define API dictionary
-		api.update({
-			"version": "v3"
-		})
+			# Make a copy of the service dictionary
+			service_copy = deepcopy(service)
 
-		api["link"] = "https://www.youtube.com/"
+			# Convert the credentials to JSON
+			service_copy["Credentials"] = self.JSON.To_Python(service_copy["Credentials"].to_json())
 
-		# Build API object
-		api["object"] = build(api["name"], api["version"], developerKey = api["key"], credentials = api["credentials"])
+			# If the "App flow" key is present in the dictionary
+			if "App flow" in service_copy:
+				# Remove the "App flow" key
+				service_copy.pop("App flow")
 
-		if (
-			"submethod" not in api or
-			api["submethod"] == ""
-		):
-			api["submethod"] = "list"
+			# Remove the "Request" key
+			service_copy.pop("Request")
 
-		if "method" not in api:
-			api["method"] = api["item"]
+			# Update the service dictionary inside the services "Dictionary"
+			self.api["Services"]["Dictionary"][service["Name"]] = service_copy
 
-		if "parameters" not in api:
+			# Save the credentials for the next run by editing the "Services.json" file
+			# (Passing the "edit" parameter to write into the file even if the file "Edit" switch is False (that means the "Testing" switch is on))
+			self.JSON.Edit(self.module["Files"]["Services"], self.api["Services"], edit = True)
+
+		# Build the API object
+		service["Object"] = build(service["Name"], service["Version"], developerKey = service["API key"], credentials = service["Credentials"])
+
+		# ---------- #
+
+		# Define an items map
+		items_map = {
+			"Playlist videos": "playlistItems"
+		}
+
+		# Define a shortcut to the "Request" dictionary
+		request = service["Request"]
+
+		# Update the "Item" key to be a dictionary
+		request["Item"] = {
+			"Normal": request["Item"],
+			"Mapped": request["Item"]
+		}
+
+		# Define a shortcut to the request item
+		item = request["Item"]["Normal"]
+
+		# If the item is inside the items map dictionary
+		if item in items_map:
+			# Replace the item with the one inside the items map dictionary
+			request["Item"]["Mapped"] = items_map[item]
+
+		# If the "s" letter is not the last character of the mapped item
+		if "s" not in request["Item"]["Mapped"]:
+			# Add it
+			request["Item"]["Mapped"] += "s"
+
+		# Define a shortcut to the mapped item
+		mapped_item = request["Item"]["Mapped"]
+
+		# If the "Method" key is not present inside the request dictionary
+		if "Method" not in request:
+			# Define it as the mapped "Item" key
+			request["Method"] = request["Item"]["Mapped"]
+
+		# If the submethod is not present inside the request dictionary
+		if "Submethod" not in request:
+			# Define it as "List"
+			request["Submethod"] = "List"
+
+		# ---------- #
+
+		# If the "Parameters" dictionary is not present inside the request dictionary
+		if "Parameters" not in request:
+			# Define the key as the "id" key
 			key = "id"
 
-			if api["item"] == "playlistItems":
+			# If the request item is "Playlist videos"
+			if item == "Playlist videos":
+				# Define the key as "playlistId"
 				key = "playlistId"
 
-			if api["submethod"] != "insert":
-				api["parameters"] = {
-					key: api["id"]
+			# If the submethod is not "Insert"
+			if request["Submethod"] != "Insert":
+				# Define the "Parameters" dictionary as the "ID" key with the request "ID" value
+				request["Parameters"] = {
+					key: request["ID"]
 				}
 
+			# If the request item is "Playlist"
+			# And the submethod is "Insert"
+			# (This part creates a new playlist with its title and description)
 			if (
-				api["item"] == "playlists" and
-				api["submethod"] == "insert"
+				item == "Playlist" and
+				request["Submethod"] == "Insert"
 			):
-				api["parameters"] = {
-					"body": {
-						"snippet": {
-							"title": api["title"],
-							"description": api["description"]
+				# Define the request "Parameters" dictionary
+				request["Parameters"] = {
+					"body": { # Define the body dictionary with its keys
+						"snippet": { # Define a snippet dictionary for the playlist
+							"title": request["Title"], # Define the playlist title
+							"description": request["Description"] # Define the playlist description
 						},
 						"status": {
-							"privacyStatus": "public"
+							"privacyStatus": "public" # Set the status of the playlist to public
 						}
 					}
 				}
 
+			# If the request item is "Playlist videos"
+			# And the method is "Insert"
 			if (
-				api["item"] == "playlistItems" and
-				api["submethod"] == "insert"
+				item == "Playlist videos" and
+				request["Submethod"] == "Insert"
 			):
-				api["parameters"] = {
-					"body": {
-						"snippet": {
-							"playlistId": api["id"],
-							"resourceId": {
+				# Define the request "Parameters" dictionary
+				request["Parameters"] = {
+					"body": { # Define the body dictionary with its keys
+						"snippet": { # Define a snippet dictionary for the playlist
+							"playlistId": request["ID"], # Define the playlist ID to add a video to it
+							"resourceId": { # Define the "resourceId" dictionary with the YouTube "video" kind and the video ID
 								"kind": "youtube#video",
-								"videoId": api["videoId"]
+								"videoId": request["Video ID"]
 							}
 						}
 					}
 				}
 
-		if "part" not in api["parameters"]:
-			api["parameters"]["part"] = [
+		# ---------- #
+
+		# If the "part" key is not inside the request "Parameters" dictionary
+		if "part" not in request["Parameters"]:
+			# Define it as a list with only the "snippet" part
+			request["Parameters"]["part"] = [
 				"snippet"
 			]
 
-		if api["item"] == "channels":
-			api["parameters"]["part"] = [
+		# If the request item is "Channel"
+		if item == "Channel":
+			# Define a list of parts for channels
+			request["Parameters"]["part"] = [
 				"id",
 				"snippet",
+				"status",
 				"brandingSettings",
 				"contentDetails",
 				"contentOwnerDetails",
 				"localizations",
 				"statistics",
-				"status",
 				"topicDetails"
 			]
 
-		if api["item"] == "playlistItems":
-			api["parameters"]["part"] = [
+		# If the request item is "Playlist"
+		if item == "Playlist":
+			# If the submethod is "List"
+			if request["Submethod"] == "List":
+				# Define a list of parts to list playlists
+				request["Parameters"]["part"] = [
+					"id",
+					"snippet",
+					"status",
+					"contentDetails",
+					"localizations",
+					"player"
+				]
+
+			# If the submethod is "Insert"
+			if request["Submethod"] == "Insert":
+				# Define a list of parts to insert a video in a playlist
+				request["Parameters"]["part"] = [
+					"id",
+					"snippet",
+					"status"
+				]
+
+		# If the request item is "Playlist videos"
+		if item == "Playlist videos":
+			# Define a list of parts for playlist videos
+			request["Parameters"]["part"] = [
 				"id",
 				"snippet",
-				"contentDetails",
-				"status"
+				"status",
+				"contentDetails"
 			]
 
-		if (
-			api["item"] == "playlist" and
-			api["submethod"] == "list"
-		):
-			api["parameters"]["part"] = [
+		# If the request item is "Video"
+		if item == "Video":
+			# Define a list of parts to list videos
+			request["Parameters"]["part"] = [
 				"id",
-				"contentDetails",
+				"snippet",
+				"status",
 				"localizations",
-				"player",
-				"snippet",
-				"status"
+				"contentDetails"
 			]
 
-		if (
-			api["item"] == "playlist" and
-			api["submethod"] == "insert"
-		):
-			api["parameters"]["part"] = [
-				"snippet",
-				"status"
+		# If the request item is "Comment"
+		if item == "Comment":
+			# Define a list of parts to list comments
+			request["Parameters"]["part"] = [
+				"id",
+				"snippet"
 			]
 
-		if "maxResults" not in api["parameters"]:
-			if api["item"] not in ["comments", "playlists"]:
-				api["parameters"]["maxResults"] = 1
+		# ---------- #
 
+		# If the "maxResults" key is not inside the request "Parameters" dictionary
+		if "maxResults" not in request["Parameters"]:
+			# If the request item is neither "Comment" nor "Playlist"
+			if item not in ["Comment", "Playlist"]:
+				# Define the max results as one
+				request["Parameters"]["maxResults"] = 1
+
+		# If the submethod is "Insert"
+		# And the "maxResults" key is inside the request "Parameters" dictionary, remove the key
 		if (
-			api["submethod"] == "insert" and
-			"maxResults" in api["parameters"]
+			request["Submethod"] == "Insert" and
+			"maxResults" in request["Parameters"]
 		):
-			api["parameters"].pop("maxResults")
+			request["Parameters"].pop("maxResults")
 
-		# Get method, for example, "videos"
-		api["method_object"] = getattr(api["object"], api["method"])
+		# ---------- #
 
-		# Get submethod, for example, "list" method of "videos" method)
-		api["submethod_object"] = getattr(api["method_object"](), api["submethod"])
+		# Get the method object for the method
+		# For example: "videos", "playlists", "playlistItems", or "comments" (always in lowercase)
+		request["Method object"] = getattr(service["Object"], request["Method"].lower())
 
-		# Define empty response Dictionary
-		api["response"] = {
+		# Get the submethod object
+		# For example: the "list" submethod of the "videos", "playlists", and "channels" methods (always in lowercase)
+		request["Submethod object"] = getattr(request["Method object"](), request["Submethod"].lower())
+
+		# ---------- #
+
+		# If the "Remove private videos" key is not inside the request dictionary, add it as True
+		if "Remove private videos" not in request:
+			request["Remove private videos"] = True
+
+		# Define an empty results "Dictionary"
+		request["Dictionary"] = {
+			"Numbers": {
+				"Current": 0,
+				"Total": 0
+			}
+		}
+
+		# ---------- #
+
+		# Define an empty "Response" dictionary with the next page token and the list of items
+		request["Response"] = {
 			"nextPageToken": "",
 			"items": []
 		}
 
-		# If the "Remove private videos" key is not inside the API dictionary, add it as True
-		if "Remove private videos" not in api:
-			api["Remove private videos"] = True
+		# Define a shortcut to the "Response" dictionary
+		response = request["Response"]
 
-		# Define empty Dictionary
-		api["Dictionary"] = {
-			"Number": 0,
-			"Total number": 0
-		}
+		# While the "nextPageToken" is inside the "Response" dictionary
+		while "nextPageToken" in response:
+			# If the "nextPageToken" key is not empty, define it as the current page token
+			if response["nextPageToken"] != "":
+				request["Parameters"]["pageToken"] = response["nextPageToken"]
 
-		# Define a dictionary of link addons
-		api["Link addons"] = {
-			"Video": "watch?v=",
-			"Channel": "channel/",
-			"Playlist": "playlist?list="
-		}
+			# Define the "Request" dictionary by calling the submethod object with the keys and values of the "Parameters" dictionary
+			request["Request"] = request["Submethod object"](**request["Parameters"])
 
-		# Treat the response
-		while "nextPageToken" in api["response"]:
-			# Add the next page token
-			if api["response"]["nextPageToken"] != "":
-				api["parameters"]["pageToken"] = api["response"]["nextPageToken"]
+			# Execute the request and get the response
+			request["Response"] = request["Request"].execute()
 
-			# Define the request with the parameters dictionary
-			api["request"] = api["submethod_object"](**api["parameters"])
+			# Update the shortcut
+			response = request["Response"]
 
-			# Run the request and get the response
-			api["response"] = api["request"].execute()
+			# ---------- #
 
+			# If the "pageInfo" key is inside the response dictionary
+			# And the "totalResults" key is also inside it
 			if (
-				"pageInfo" in api["response"] and
-				"totalResults" in api["response"]["pageInfo"]
+				"pageInfo" in response and
+				"totalResults" in response["pageInfo"]
 			):
-				api["Dictionary"]["Total number"] = api["response"]["pageInfo"]["totalResults"]
+				# Define a shortcut to the "pageInfo" dictionary
+				page_info = response["pageInfo"]
 
-				# Add to the dictionary number
-				api["Dictionary"]["Number"] += 1
+				# Define the "Total" number as the "totalResults" key
+				request["Dictionary"]["Numbers"]["Total"] = page_info["totalResults"]
+
+				# Add to the "Current" number
+				request["Dictionary"]["Numbers"]["Current"] += 1
 
 			# Define shortcuts for the current and total numbers
-			current_number = api["Dictionary"]["Number"]
-			total_number = api["Dictionary"]["Total number"]
+			current_number = request["Dictionary"]["Numbers"]["Current"]
+			total_number = request["Dictionary"]["Numbers"]["Total"]
 
 			# If the "Verbose" switch is True
 			# And the current number and total number are not zero and also not one
@@ -322,128 +469,201 @@ class API():
 				(current_number, total_number) != (0, 0) and
 				(current_number, total_number) != (1, 1)
 			):
-				# If the dictionary number is one
-				if api["Dictionary"]["Number"] == 1:
+				# If the current number is one
+				if request["Dictionary"]["Numbers"]["Current"] == 1:
+					# Show a five dash space separator
 					print()
 					print(self.separators["10"])
 					print()
 
 				# Show the current number and the total number
 				print(self.Language.language_texts["number, title()"] + ":")
-				print(str(api["Dictionary"]["Number"]) + "/" + str(api["Dictionary"]["Total number"]))
+				print(str(current_number) + "/" + str(total_number))
 				print()
 
-			# Define a default id
+			# ---------- #
+
+			# Define a default ID as an empty string
 			id = ""
 
-			if "items" not in api["response"]:
-				if "id" in api["response"]:
-					id = api["response"]["id"]
+			# If the "items" key is not inside the response dictionary
+			if "items" not in response:
+				# If the "id" key is inside the response dictionary
+				if "id" in response:
+					id = response["id"]
 
-				# Get the snippet
-				snippet = api["response"]["snippet"]
+				# Get the snippet dictionary from the response dictionary
+				snippet = response["snippet"]
 
-				# Add the returned item inside to the items list
-				api["response"]["items"] = [
+				# Create a list of items with only the snippet inside it
+				response["items"] = [
 					{
 						"snippet": snippet
 					}
 				]
 
-			# Iterate through the response items list
-			for dictionary in api["response"]["items"]:
-				# Get the snippet
+			# ---------- #
+
+			# Iterate through the list of items inside the response dictionary
+			for dictionary in response["items"]:
+				# Get the snippet from the item dictionary
 				snippet = dictionary["snippet"]
 
-				# Define a default branding settings variable
+				# Define a default branding settings dictionary
 				branding_settings = {}
 
-				# If the "brandingSettings" key is in the dictionary, get the branding settings
+				# If the "brandingSettings" key is in the item dictionary
 				if "brandingSettings" in dictionary:
+					# Update the branding settings dictionary to be the correct one
 					branding_settings = dictionary["brandingSettings"]
 
-				# Get the channel or playlist dictionary
-				for name in ["channelId", "playlistId"]:
-					name_key = name.replace("Id", "").title()
+				# Get the channel or playlist dictionary if the key exists inside the snippet dictionary
+				for name in ["Channel", "Playlist"]:
+					# Define a name key for the name, converting it to lowercase and adding the "Id" text
+					name_key = name.lower() + "Id"
 
+					# If the name key is inside the snippet dictionary
+					# And the name is not inside the request "Dictionary" dictionary
 					if (
-						name in snippet and
-						name_key not in api["Dictionary"]
+						name_key in snippet and
+						name not in request["Dictionary"]
 					):
-						item = {
-							"item": name.replace("Id", "") + "s",
-							"submethod": "list",
-							"parameters": {
-								"id": snippet[name]
+						# Define a shortcut to the snippet ID
+						snippet_id = snippet[name_key]
+
+						# Define a local request dictionary
+						local_request = {
+							"Item": name, # "Channel" or "Playlist"
+							"Parameters": {
+								"id": snippet_id # Pass the channel or playlist ID
 							}
 						}
 
-						api["Dictionary"][name_key] = self.Call("YouTube", item)["Dictionary"][snippet[name]]
+						# Create a new instance of the API class
+						instance = API()
 
-				# Use the video ID as the ID
+						# Request the channel or playlist dictionary from the YouTube API and get the local response
+						# (By calling the "Call" method of the new instance of the API class, to not change the variables of the current execution)
+						local_response = instance.Call("YouTube", local_request)["Request"]
+
+						# Define the request dictionary in the name key ("Channel" or "Playlist") as the dictionary inside the snippet ID inside the local response "Dictionary"
+						request["Dictionary"][name] = local_response["Dictionary"][snippet_id]
+
+				# ---------- #
+
+				# If the request item is not "Video"
+				# And the "Video ID" key is inside the request dictionary
+				# Or the "videoId" key is inside the snippet dictionary
+				if (
+					item != "Video" and
+					(
+						"Video ID" in request or
+						"videoId" in snippet
+					)
+				):
+					# If the "Video ID" key is inside the request dictionary
+					if "Video ID" in request:
+						# Define the video ID as it
+						video_id = request["Video ID"]
+
+					else:
+						# Define the "videoId" key as the video ID
+						video_id = snippet["videoId"]
+
+					# Define a local request dictionary
+					local_request = {
+						"Item": "Video",
+						"Parameters": {
+							"id": video_id # Pass the video ID
+						}
+					}
+
+					# Create a new instance of the API class
+					instance = API()
+
+					# Request the video dictionary from the YouTube API and get the local response
+					# (By calling the "Call" method of the new instance of the API class, to not change the variables of the current execution)
+					local_response = instance.Call("YouTube", local_request)["Request"]
+
+					# Define the request dictionary in the "Video" as the dictionary inside the snippet ID inside the local response "Dictionary"
+					request["Dictionary"]["Video"] = local_response["Dictionary"][video_id]
+
+				# ---------- #
+
+				# If the "resourceId" is inside the snippet dictionary
 				if "resourceId" in snippet:
+					# Define the local ID as the video ID
 					id = snippet["resourceId"]["videoId"]
 
-				# Else, use the ID inside the first item
+				# Else, if the ID is inside the item dictionary, use it
 				elif "id" in dictionary:
+					# Get the ID from the "id" key
 					id = dictionary["id"]
 
+					# If the ID is a dictionary
+					# And the "channelId" key is found inside that dictionary
 					if (
 						type(id) == dict and
 						"channelId" in id
 					):
+						# Get the correct channel ID
 						id = id["channelId"]
 
-				# Else, use the Playlist ID as the ID
-				elif "playlistId" in api["parameters"]:
-					id = api["parameters"]["playlistId"]
+				# Else, if the playlist ID is inside the "Parameters" dictionary, use it
+				elif "playlistId" in request["Parameters"]:
+					id = request["Parameters"]["playlistId"]
 
-				# Else, get the normal ID
-				elif "id" in api["parameters"]:
-					id = api["parameters"]["id"]
+				# Else, get the normal ID from the "Parameters" dictionary
+				elif "id" in request["Parameters"]:
+					id = request["Parameters"]["id"]
 
-				# Get the root YouTube link
-				link = api["link"]
+				# Define the local items dictionary as the "Dictionary" dictionary
+				items = request["Dictionary"]
 
-				# If the method is "channels", define the link addon as the channel folder
-				if (
-					api["method"] == "channels" or
-					"Channel" in api["Dictionary"]
-				):
-					link_addon = api["Link addons"]["Channel"]
+				# Define the link as an empty string by default
+				link = ""
 
-				# If the method is "playlists", define the link addon as the PHP "playlist" file name and the "list" playlist parameter
-				if (
-					api["method"] == "playlists" or
-					"Playlist" in api["Dictionary"]
-				):
-					link_addon = api["Link addons"]["Playlist"]
+				# If the request item is "Channel"
+				if item == "Channel":
+					# Define the link template as the channel one
+					link_template = service["Link templates"]["Channel"]
 
-				# If the method is "videos" or "playlistItems", define the link addon as the PHP "watch" file name and the "v" video parameter
-				if api["method"] in ["videos", "playlistItems"]:
-					link_addon = api["Link addons"]["Video"]
+					# Replace the "{Channel}" text with the channel ID
+					link = link_template.replace("{Channel}", id)
 
-				# Add the link addon to the link
-				link += link_addon
+				# If the request item is "Playlist"
+				if item == "Playlist":
+					# Define the link template as the playlist one
+					link_template = service["Link templates"]["Playlist"]
 
-				# Define the items dictionary as the Dictionary
-				items = api["Dictionary"]
+					# Replace the "{Playlist}" text with the playlist ID
+					link = link_template.replace("{Playlist}", id)
 
-				# If the method is "playlistItems", create the videos dictionary inside the items list and make that the default list
-				if api["method"] == "playlistItems":
+				# If the request item is "Playlist videos"
+				if item == "Playlist videos":
+					# If the "Videos" dictionary is not inside the items dictionary, add it
 					if "Videos" not in items:
 						items["Videos"] = {}
 
+					# Define the local items dictionary as the "Videos" dictionary
 					items = items["Videos"]
 
-				# Get the item date
-				date = self.Get_Date(snippet["publishedAt"])
+				# If the request item is either "Video" or "Playlist videos"
+				if item in ["Video", "Playlist videos"]:
+					# Define the link template as the video one
+					link_template = service["Link templates"]["Video"]
 
-				# Add the ID (video, playlist, or comment) to the items dictionary, with the default values
+					# Replace the "{Video}" text with the video ID
+					link = link_template.replace("{Video}", id)
+
+				# ---------- #
+
+				# Create the default item dictionary with some variables
 				items[id] = {
 					"Title": "",
 					"ID": id,
-					"Link": link + id,
+					"Link": link,
+					"Description": "",
 					"Channel": {
 						"Handle": "",
 						"ID": "",
@@ -459,184 +679,268 @@ class API():
 						"Title": "",
 						"ID": "",
 						"Link": ""
-					},
-					"Language": "",
-					"Country": "",
-					"Description": "",
-					"Text": {},
-					"Times": {
-						"Timezone": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
-						"UTC": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
-					},
-					"Images": {},
-					"Channel trailer": {},
-					"Playlists": {},
-					"Numbers": {
-						"Views": "",
-						"Subscribers": "",
-						"Videos": ""
-					},
-					"Status": {
-						"Privacy": "",
-						"Is linked": "",
-						"Long uploads status": "",
-						"Made for kids": "",
-						"Self-declared made for kids": "",
-						"Is channel monetization enabled": ""
-					},
-					"Localized": {},
-					"Localizations": {}
+					}
 				}
 
-				# If title or description are inside the snippet, add them to the item dictionary
+				# ---------- #
+
+				# If there is a title or description inside the snippet dictionary, add them to the item dictionary
 				# Else, remove the key from the item dictionary
-				for name in ["title", "description"]:
-					if name in snippet:
-						items[id][name.title()] = snippet[name]
+				for name in ["Title", "Description"]:
+					# Define the name key
+					name_key = name.lower()
+
+					if name_key in snippet:
+						items[id][name] = snippet[name_key]
 
 					else:
-						items[id].pop(name.title())
+						items[id].pop(name)
 
-				# Add the Channel ID
+				# ---------- #
+
+				# If the channel ID is inside the snippet dictionary, add it to the "Channel" dictionary
 				if "channelId" in snippet:
 					items[id]["Channel"]["ID"] = snippet["channelId"]
 
-				# If the id is not an empty string
+				# Else, if the ID is not an empty string
 				elif id != "":
-					# Define the "Channel ID" key as the defined it
+					# Define the "Channel ID" key as the defined ID
 					items[id]["Channel"]["ID"] = id
 
-				# If the method is "channels"
+				# If the request item is "Channel"
+				# Or the "Channel" dictionary is inside the item dictionary
 				if (
-					api["method"] == "channels" or
-					"Channel" in api["Dictionary"]
+					item == "Channel" or
+					"Channel" in items[id]
 				):
-					# Get the root YouTube link
-					local_link = api["link"]
+					# If the request item is "Channel"
+					if item == "Channel":
+						# Define the channel link as the local link
+						items[id]["Channel"]["Link"] = link
 
-					# Define the channel link as the root link + the channel link addon + the channel ID
-					items[id]["Channel"]["Link"] = local_link + api["Link addons"]["Channel"] + items[id]["Channel"]["ID"]
+					# Else if the "channelId" key is inside the snippet dictionary
+					elif "channelId" in snippet:
+						# Get the channel ID
+						channel_id = snippet["channelId"]
 
-					# Get the channel title from the "channelTitle" key
+						# Define the link template as the channel one
+						link_template = service["Link templates"]["Channel"]
+
+						# Replace the "{Channel}" text with the channel ID
+						link = link_template.replace("{Channel}", channel_id)
+
+						# Define the channel link as the local link
+						items[id]["Channel"]["Link"] = link
+
+					# If the channel title is inside the snippet dictionary, add the channel "Title" key to the "Channel" dictionary
 					if "channelTitle" in snippet:
 						items[id]["Channel"] = {
 							"Title": snippet["channelTitle"],
 							**items[id]["Channel"]
 						}
 
+					# Else if the "Title" key is inside the item dictionary
+					# And it is not empty
+					# And the request item is "Channel"
 					elif (
 						"Title" in items[id] and
 						items[id]["Title"] != "" and
-						api["method"] == "channels"
+						item == "Channel"
 					):
-						# Define it as the "Title" key and remove the "Title" key
+						# Define the channel title as the root "Title" key
 						items[id]["Channel"] = {
 							"Title": items[id]["Title"],
 							**items[id]["Channel"]
 						}
 
+				# If the channel ID is not inside the snippet dictionary
 				if "channelId" not in snippet:
-					# If the channel ID is empty
+					# If the channel ID is empty, remove the "ID" key
 					if items[id]["Channel"]["ID"] == "":
-						# Remove it
 						items[id]["Channel"].pop("ID")
 
-					# If the channel link is empty
+					# If the channel link is empty, remove the "Link" key
 					if items[id]["Channel"]["Link"] == "":
-						# Remove it
 						items[id]["Channel"].pop("Link")
 
-				# If the method is "playlists" or "playlistItems"
-				if api["method"] in ["playlists", "playlistItems"]:
-					# Add the playlist ID
+				# If the custom URL dictionary is inside the snippet dictionary
+				if "customUrl" in snippet:
+					# Define the channel "Handle" key as the custom URL
+					items[id]["Channel"]["Handle"] = snippet["customUrl"]
+
+					# Define the custom link as the root YouTube link plus the handle
+					items[id]["Channel"]["Custom link"] = service["Link"] + items[id]["Channel"]["Handle"]
+
+				# Else, remove the "Handle" and "Custom link" keys if they are empty
+				else:
+					# If the channel handle is empty, remove the key
+					if items[id]["Channel"]["Handle"] == "":
+						items[id]["Channel"].pop("Handle")
+
+					# If the custom link is empty, remove the key
+					if items[id]["Channel"]["Custom link"] == "":
+						items[id]["Channel"].pop("Custom link")
+
+				# ---------- #
+
+				# If the request item is "Playlist" or "Playlist videos"
+				if item in ["Playlist", "Playlist videos"]:
+					# Define the playlist ID as the root ID
 					items[id]["Playlist"]["ID"] = items[id]["ID"]
 
-					# If the method is "playlistItems"
-					if api["method"] == "playlistItems":
-						# Update the playlist ID do be the "playlistId"
+					# If the request item is "Playlist videos"
+					if item == "Playlist videos":
+						# Update the playlist ID to be the playlist ID inside the snippet dictionary
 						items[id]["Playlist"]["ID"] = snippet["playlistId"]
 
-					# Define the playlist link as the root link + the playlist link addon + the playlist ID
-					items[id]["Playlist"]["Link"] = local_link + api["Link addons"]["Playlist"] + items[id]["Playlist"]["ID"]
+					# Define the playlist link as the local link
+					items[id]["Playlist"]["Link"] = link
 
-					# If the method is "playlists"
-					if api["method"] == "playlists":
-						# Add the playlist title
+					# If the request item is "Playlist"
+					if item == "Playlist":
+						# Define the playlist title as the root "Title" key
 						items[id]["Playlist"]["Title"] = items[id]["Title"]
 
-					if items[id]["Playlist"]["Title"] == "":
-						# Remove the "Title" key
-						items[id]["Playlist"].pop("Title")
-
-				# If the method is not "playlists" neither "playlistItems"
-				if api["method"] not in ["playlists", "playlistItems"]:
-					# Remove the playlist "ID" key
-					items[id]["Playlist"].pop("ID")
-
-					# Remove the playlist "Link" key
-					items[id]["Playlist"].pop("Link")
-
-					# Remove the playlist "Title" key
-					items[id]["Playlist"].pop("Title")
-
-				# If the "Playlist" dictionary is empty, remove it
-				if items[id]["Playlist"] == {}:
+				# If the request item is not "Playlist" neither "Playlist videos"
+				if item not in ["Playlist", "Playlist videos"]:
+					# Remove the "Playlist" dictionary
 					items[id].pop("Playlist")
 
-				# If the method is either "videos" or "playlistItems"
-				if api["method"] in ["videos", "playlistItems"]:
-					# Add the video ID
-					items[id]["Video"]["ID"] = items[id]["ID"]
+				# ---------- #
 
-					# Define the playlist link as the root link + the playlist link addon + the playlist ID
-					items[id]["Video"]["Link"] = local_link + api["Link addons"]["Video"] + items[id]["Video"]["ID"]
+				# If the request is either "Playlist videos", "Video", or "Comment"
+				if item in ["Playlist videos", "Video", "Comment"]:
+					# If the request item is not "Comment"
+					if item != "Comment":
+						# Define the video ID as the root ID
+						items[id]["Video"]["ID"] = items[id]["ID"]
 
-					# Add the video title
-					items[id]["Video"]["Title"] = items[id]["Title"]
+						# Define the video link as the root link
+						items[id]["Video"]["Link"] = link
 
-					# If the method is "playlistItems"
-					if api["method"] == "playlistItems":
-						# Add the video playlist position
+						# Define the video title as the root "Title" key
+						items[id]["Video"]["Title"] = items[id]["Title"]
+
+					# If the request item is "Playlist videos"
+					if item == "Playlist videos":
+						# Add the video position in the playlist
 						items[id]["Video"]["Position"] = snippet["position"]
 
-				else:
-					# Remove the video "ID" key
-					items[id]["Video"].pop("ID")
+					# If the request item is "Comment"
+					if item == "Comment":
+						# Define the video ID as the video ID in the request dictionary
+						items[id]["Video"]["ID"] = request["Video ID"]
 
-					# Remove the video "Link" key
-					items[id]["Video"].pop("Link")
+						# Define the link template as the video one
+						link_template = service["Link templates"]["Video"]
 
-					# Remove the video "Title" key
-					items[id]["Video"].pop("Title")
+						# Replace the "{Video}" text with the video ID and define a local link
+						local_link = link_template.replace("{Video}", items[id]["Video"]["ID"])
 
-				# If the "Video" dictionary is empty, remove it
-				if items[id]["Video"] == {}:
+						# Define the video link as the local link
+						items[id]["Video"]["Link"] = local_link
+
+					# If the "Video" key is inside the response dictionary
+					if "Video" in request["Dictionary"]:
+						# Define the video title as the "Title" key inside the root "Video" dictionary
+						items[id]["Video"]["Title"] = request["Dictionary"]["Video"]["Title"]
+
+				# If the request is neither "Playlist videos", "Video", nor "Comment"
+				if item not in ["Playlist videos", "Video", "Comment"]:
+					# Remove the "Video" dictionary
 					items[id].pop("Video")
 
-				# Add the custom URl (handle) if it exists
-				if "customUrl" in snippet:
-					items[id]["Channel"]["Handle"] = snippet["customUrl"]
-					items[id]["Channel"]["Custom link"] = link.replace("channel/", "") + items[id]["Channel"]["Handle"]
+				# ---------- #
 
-				else:
-					items[id]["Channel"].pop("Handle")
-					items[id]["Channel"].pop("Custom link")
+				# Transform the "publishedAt" date into a date dictionary
+				date = self.Date.From_String(snippet["publishedAt"])
 
-				# If the item is not "comments", remove the "Text" key as it is not needed
-				if api["item"] != "comments":
-					items[id].pop("Text")
+				# Add the "Times" dictionary of the [channel/playlist/video/comment]
+				items[id]["Times"] = {
+					"Timezone": date["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"],
+					"UTC": date["UTC"]["DateTime"]["Formats"]["YYYY-MM-DDTHH:MM:SSZ"]
+				}
 
-				# If the item is "comments", remove the "Link" key as it is not needed
-				if api["item"] == "comments":
-					items[id].pop("Link")
+				# ---------- #
 
-					# Add the orignal and display texts of the Comment to the item dictionary
-					items[id]["Text"].update({
+				# If the request item is "Comment"
+				if item == "Comment":
+					# Define the link template as the comment one
+					link_template = service["Link templates"]["Comment"]
+
+					# Replace the "{Video}" text with the video ID inside the request dictionary
+					link = link_template.replace("{Video}", request["Video ID"])
+
+					# Replace the "{Comment}" text with the comment ID
+					link = link.replace("{Comment}", items[id]["ID"])
+
+					# Define the root link as the local comment link
+					items[id]["Link"] = link
+
+					# Create the "Text" dictionary with the orignal and display texts of the comment inside the item dictionary
+					items[id]["Text"] = {
 						"Original": snippet["textOriginal"],
 						"Display": snippet["textDisplay"]
-					})
+					}
 
-				# If there are thumbnails, add the images to the "Images" dictionary
+				# ---------- #
+
+				# If the default audio language is inside the snippet dictionary
+				# Or the default language is inside the same dictionary
+				if (
+					"defaultAudioLanguage" in snippet or
+					"defaultLanguage" in snippet
+				):
+					# Define the default language key as "defaultAudioLanguage"
+					language_key = "defaultAudioLanguage"
+
+					# If the "defaultLanguage" key is present, define the language key as it
+					if "defaultLanguage" in snippet:
+						language_key = "defaultLanguage"
+
+					# Get the language based on the language key
+					language = snippet[language_key]
+
+					# Define the "Language" dictionary inside the item dictionary with the "Small" key
+					items[id]["Language"] = {
+						"Small": language
+					}
+
+					# Define a shortcut to the list of full languages
+					full_languages = self.languages["full"]
+
+					# If the language is not inside the list of full languages
+					if language not in full_languages:
+						# Split the language and get the last value from the split list
+						language = language.split("-")[0]
+
+					# If the language is still not inside the list of full languages
+					if language not in full_languages:
+						# Define it as the Brazilian Portuguese language
+						language = "pt"
+
+					# Get the full language for the small language
+					full_language = full_languages[language]
+
+					# Define the full language inside the "Language" dictionary
+					items[id]["Language"]["Full"] = full_language
+
+				# ---------- #
+
+				# If the country is inside the snippet dictionary
+				if "country" in snippet:
+					# Define a shortcut to the country
+					country = snippet["country"]
+
+					# Create the country dictionary
+					items[id]["Country"] = {
+						"Code": country,
+						"Name": self.countries[country]
+					}
+
+				# ---------- #
+
+				# If there are thumbnails inside the snippet dictionary
 				if "thumbnails" in snippet:
 					# Define a key map to change the keys
 					key_map = {
@@ -646,6 +950,9 @@ class API():
 						"high": "Large",
 						"maxres": "Maximum resolution"
 					}
+
+					# Create the "Images" dictionary
+					items[id]["Images"] = {}
 
 					# Iterate through the keys and thumbnails
 					for key, image in snippet["thumbnails"].items():
@@ -669,8 +976,8 @@ class API():
 						# Add the image dictionary to the "Images" dictionary with the new key
 						items[id]["Images"][key] = new_image
 
-					# If the "brandingSettings" key is in the dictionary
-					if "brandingSettings" in dictionary:
+					# If the branding settings dictionary is not an empty dictionary
+					if branding_settings != {}:
 						# If the "image" key is inside the branding settings dictionary
 						if "image" in branding_settings:
 							# Get the banner image and add it to the "Images" dictionary
@@ -680,96 +987,67 @@ class API():
 								"Link": image["bannerExternalUrl"]
 							}
 
-				# Else, remove the "Images" key
-				elif branding_settings == {}:
-					items[id].pop("Images")
-
-				# If the "defaultAudioLanguage" key is inside the snippet, add the "Language" and "Full langauge" keys
-				if "defaultAudioLanguage" in snippet:
-					items[id]["Language"] = {
-						"Small": snippet["defaultAudioLanguage"]
-					}
-
-					if snippet["defaultAudioLanguage"] not in self.languages["full"]:
-						snippet["defaultAudioLanguage"] = snippet["defaultAudioLanguage"].split("-")[0]
-
-					if snippet["defaultAudioLanguage"] not in self.languages["full"]:
-						snippet["defaultAudioLanguage"] = "pt"
-
-					items[id]["Language"]["Full"] = self.languages["full"][snippet["defaultAudioLanguage"]]
-
-				# If the "defaultLanguage" key is inside the snippet, add the "Language" and "Full langauge" keys
-				if "defaultLanguage" in snippet:
-					items[id]["Language"] = {
-						"Small": snippet["defaultLanguage"]
-					}
-
-					if snippet["defaultLanguage"] not in self.languages["full"]:
-						snippet["defaultLanguage"] = snippet["defaultLanguage"].split("-")[0]
-
-					if snippet["defaultLanguage"] not in self.languages["full"]:
-						snippet["defaultLanguage"] = "pt"
-
-					items[id]["Language"]["Full"] = self.languages["full"][snippet["defaultLanguage"]]
-
-				# Else, remove the "Language" key
-				else:
-					items[id].pop("Language")
-
-				# Add the localized dictionary
-				if "localized" in snippet:
-					for key in snippet["localized"]:
-						items[id]["Localized"][key.capitalize()] = snippet["localized"][key]
-
-				else:
-					items[id].pop("Localized")
-
-				# Add the country if it exists
-				if "country" in snippet:
-					items[id]["Country"] = snippet["country"]
-
-				else:
-					items[id].pop("Country")
-
-				# If the item is "videos", create the "Video" key for easier accessing of values
-				if api["item"] == "videos":
-					items["Video"] = items[id]
-
-				# If the item is "playlists", create the "Playlist" key for easier accessing of values
-				if api["item"] == "playlists":
-					items["Playlist"] = items[id]
-
-				# If the item is "comments", create the "Comment" key for easier accessing of values
-				if api["item"] == "comments":
-					items["Comment"] = items[id]
-
 				# ---------- #
 
-				# If the "brandingSettings" key is in the dictionary
+				# If the branding settings dictionary is not an empty dictionary
 				# And the "channel" dictionary is present
-				# And the "unsubscribedTrailer" key is in that dictionary
 				if (
-					"brandingSettings" in dictionary and
-					"channel" in branding_settings and
-					"unsubscribedTrailer" in branding_settings["channel"]
+					branding_settings != {} and
+					"channel" in branding_settings
 				):
-					# Get the channel trailer ID
-					trailer_id = branding_settings["channel"]["unsubscribedTrailer"]
+					# Define a shortcut to the channel dictionary
+					channel_dictionary = branding_settings["channel"]
 
-					# Create the channel trailer dictionary
-					items[id]["Channel trailer"] = {
-						"ID": trailer_id,
-						"Link": api["link"] + "watch?v=" + trailer_id
-					}
+					# If the "unsubscribedTrailer" key is in the "channel" dictionary
+					if "unsubscribedTrailer" in channel_dictionary:
+						# Get the channel trailer ID
+						trailer_id = branding_settings["channel"]["unsubscribedTrailer"]
 
-				else:
-					# Remove the "Channel trailer" key
-					items[id].pop("Channel trailer")
+						# Define the link template as the video one
+						link_template = service["Link templates"]["Video"]
+
+						# Replace the "{Video}" text with the trailer ID inside the branding settings dictionary
+						link = link_template.replace("{Video}", trailer_id)
+
+						# Create the "Channel trailer" dictionary
+						items[id]["Channel trailer"] = {
+							"ID": trailer_id,
+							"Link": link
+						}
+
+					# If the title is inside the channel dictionary
+					if "title" in channel_dictionary:
+						# Add the channel title to the item dictionary
+						items[id] = {
+							"Title": channel_dictionary["title"],
+							**items[id]
+						}
+
+					# If the description is inside the channel dictionary
+					if "description" in channel_dictionary:
+						# Add the channel description to the item dictionary
+						items[id] = {
+							"Title": items[id]["Title"],
+							"Description": channel_dictionary["description"],
+							**items[id]
+						}
+
+					# If the country is inside the channel dictionary
+					if "country" in channel_dictionary:
+						# Define a shortcut to the country
+						country = channel_dictionary["country"]
+
+						# Create the country dictionary
+						items[id]["Country"] = {
+							"Code": country,
+							"Name": self.countries[country]
+						}
 
 				# ---------- #
 
-				# If the "contentDetails" key is in the dictionary, get the content details
+				# If there are content details inside the item dictionary
 				if "contentDetails" in dictionary:
+					# Get the content details dictionary
 					content_details = dictionary["contentDetails"]
 
 					# If the "relatedPlaylists" key is present
@@ -780,43 +1058,71 @@ class API():
 						# Get the uploads ID
 						uploads_id = related_playlists["uploads"]
 
-						# Create the uploads playlist dictionary
-						items[id]["Playlists"]["Uploads"] = {
-							"ID": uploads_id,
-							"Link": api["link"] + "playlist?list=" + uploads_id
+						# Define the link template as the playlist one
+						link_template = service["Link templates"]["Playlist"]
+
+						# Replace the "{Playlist}" text with the uploads playlist ID
+						uploads_link = link_template.replace("{Playlist}", uploads_id)
+
+						# Create the "Playlists" dictionary with the uploads playlist
+						items[id]["Playlists"] = {
+							"Uploads": {
+								"ID": uploads_id,
+								"Link": uploads_link
+							}
 						}
 
 						# Get the likes ID
 						likes_id = related_playlists["likes"]
 
+						# Define the link template as the playlist one
+						link_template = service["Link templates"]["Playlist"]
+
+						# Replace the "{Playlist}" text with the likes playlist ID
+						likes_link = link_template.replace("{Playlist}", likes_id)
+
 						# If it is not empty
 						if likes_id != "":
-							# Create the likes playlist dictionary
+							# Create the "Likes" playlist dictionary
 							items[id]["Playlists"]["Likes"] = {
 								"ID": likes_id,
-								"Link": api["link"] + "playlist?list=" + likes_id
+								"Link": likes_link
 							}
 
-				else:
-					# Remove the "Playlists" key
-					items[id].pop("Playlists")
+					# Define a dictionary of video keys to search for
+					video_keys = {
+						"Duration": "duration",
+						"Definition": "definition",
+						"Captions": "caption",
+						"Licensed content": "licensedContent",
+						"Region restriction": "regionRestriction"
+					}
+
+					# Iterate through the dictionary of video keys
+					for new_key, video_key in video_keys.items():
+						# If the video key is present
+						if video_key in content_details:
+							# Get the value
+							value = content_details[video_key]
+
+							# If the new key is "Definition"
+							if new_key == "Definition":
+								# Convert the value to uppercase
+								value = value.upper()
+
+							# Define the key inside the "Video" dictionary
+							items[id]["Video"][new_key] = value
+
+							# If the new key is "Region restriction"
+							if new_key == "Region restriction":
+								# Transform the "allowed" and "blocked" keys into title case and remove the old key
+								for key in ["allowed", "blocked"]:
+									items[id]["Video"][new_key][key.title()] = items[id]["Video"][new_key][key]
+									items[id]["Video"][new_key].pop(key)
 
 				# ---------- #
 
-				# If the "localizations" key is in the dictionary, get the localizations dictionary
-				if "localizations" in dictionary:
-					localizations = dictionary["localizations"]
-
-					# Add it to the item dictionary
-					items[id]["Localizations"] = localizations
-
-				else:
-					# Remove the "Localizations" key
-					items[id].pop("Localizations")
-
-				# ---------- #
-
-				# If the "statistics" key is in the dictionary
+				# If the statistics dictionary is in the item dictionary
 				if "statistics" in dictionary:
 					# Get the statistics dictionary
 					statistics = dictionary["statistics"]
@@ -824,121 +1130,159 @@ class API():
 					# Get the user locale module
 					locale = self.user["Locale"]["Module"]
 
-					# Format the numbers
+					# Format the numbers of the statistics
 					for key, number in statistics.items():
 						number = locale.format_string("%d", int(number), grouping = True)
 
 						# Update it
 						statistics[key] = number
 
-					# Update the root "Numbers" dictionary to add the numbers
+					# Create the "Numbers" dictionary with the numbers
 					items[id]["Numbers"] = {
 						"Views": statistics["viewCount"],
 						"Subscribers": statistics["subscriberCount"],
 						"Videos": statistics["videoCount"]
 					}
 
-				else:
-					items[id].pop("Numbers")
+					# If the "hiddenSubscriberCount" key is inside the statistics dictionary
+					if "hiddenSubscriberCount" in statistics:
+						# Update the "Numbers" dictionary to add the key
+						items[id]["Numbers"] = {
+							"Views": items[id]["Numbers"]["Views"],
+							"Subscribers": statistics["subscriberCount"],
+							"Hidden subscribers": statistics["hiddenSubscriberCount"],
+							"Videos": statistics["videoCount"]
+						}
 
 				# ---------- #
 
-				# If the "status" key is in the dictionary, get the status dictionary
+				# If the status dictionary is in the item dictionary
 				if "status" in dictionary:
+					# Get the status dictionary
 					status = dictionary["status"]
 
-					# Create a new status dictionary to update the keys
-					new_status = {
-						"Privacy": "",
-						"Is linked": "",
-						"Long uploads status": "",
-						"Made for kids": "",
-						"Self-declared made for kids": "",
-						"Is channel monetization enabled": ""
-					}
+					# Create the "Status" dictionary inside the item dictionary
+					items[id]["Status"] = {}
 
-					# ----- #
+					# If the request item is "Channel"
+					if item == "Channel":
+						# Define a dictionary of channel status keys to search for
+						status_keys = {
+							"Privacy": "privacyStatus",
+							"Is linked": "isLinked",
+							"Long uploads status": "longUploadsStatus",
+							"Made for kids": "madeForKids",
+							"Self-declared made for kids": "selfDeclaredMadeForKids"
+						}
 
-					# If the "privacyStatus" key is present, add it to the new status dictionary
-					if "privacyStatus" in status:
-						new_status["Privacy"] = status["privacyStatus"].capitalize()
+					# If the request item is "Playlist"
+					if item == "Playlist":
+						# Define a dictionary of playlist status keys to search for
+						status_keys = {
+							"Privacy": "privacyStatus",
+							"Podcast status": "podcastStatus"
+						}
 
-					# Else, remove the key
-					else:
-						new_status.pop("Privacy")
+					# If the request item is "Playlist videos"
+					if item == "Playlist videos":
+						# Define a dictionary of playlist videos status keys to search for
+						status_keys = {
+							"Privacy": "privacyStatus"
+						}
 
-					# ----- #
+					# If the request item is "Video"
+					if item == "Video":
+						# Define a dictionary of video status keys to search for
+						status_keys = {
+							"Upload status": "uploadStatus",
+							"Upload failure reason": "failureReason",
+							"Upload rejection reason": "rejectionReason",
+							"Privacy": "privacyStatus",
+							"Publish at": "publishAt",
+							"License": "license",
+							"Embeddable": "embeddable",
+							"Public statistics visible": "publicStatsViewable",
+							"Made for kids": "madeForKids",
+							"Self-declared made for kids": "selfDeclaredMadeForKids",
+							"Contains synthetic media": "containsSyntheticMedia"
+						}
 
-					# If the "isLinked" key is present, add it to the new status dictionary
-					if "isLinked" in status:
-						new_status["Is linked"] = status["isLinked"]
+					# Iterate through the dictionary of status keys
+					for new_key, status_key in status_keys.items():
+						# If the status key is present
+						if status_key in status:
+							# Get the status value
+							status_value = status[status_key]
 
-					# Else, remove the key
-					else:
-						new_status.pop("Is linked")
+							# If the status key is "Long uploads status"
+							# And the status value is "longUploadsUnspecified"
+							if (
+								status_key == "Long uploads status" and
+								status_value == "longUploadsUnspecified"
+							):
+								# Change the status to "Long uploads unspecified"
+								status_value = "Long uploads unspecified"
 
-					# ----- #
+							# Else, if the status value is a string, capitalize it
+							elif type(status_value) == str:
+								status_value = status_value.capitalize()
 
-					# If the "longUploadsStatus" key is present, add it to the new status dictionary
-					if "longUploadsStatusstatus" in status:
-						value = status["longUploadsStatus"]
+								# If the status value is "Youtube"
+								if status_value == "Youtube":
+									# Change it to "YouTube"
+									status_value = "YouTube"
 
-						# If the key is "Longuploadsunspecified"
-						if value == "Longuploadsunspecified":
-							# Update it to separate the words
-							value = "Long uploads unspecified"
+							# Define the key inside the "Video" dictionary as the status value
+							items[id]["Status"][new_key] = status_value
 
-						# Update the root key
-						new_status["Long uploads status"] = value
+				# ---------- #
 
-					# Else, remove the key
-					else:
-						new_status.pop("Long uploads status")
+				# If the localized dictionary is inside the snippet dictionary, add it to the item dictionary
+				if "localized" in snippet:
+					# Define the "Localized" dictionary
+					items[id]["Localized"] = {}
 
-					# ----- #
+					# Define the sub-keys
+					for key in snippet["localized"]:
+						items[id]["Localized"][key.capitalize()] = snippet["localized"][key]
 
-					# If the "madeForKids" key is present, add it to the new status dictionary
-					if "madeForKids" in status:
-						new_status["Made for kids"] = status["madeForKids"]
+				# If the localizations dictionary is inside the snippet dictionary, add it to the item dictionary
+				if "localizations" in dictionary:
+					localizations = dictionary["localizations"]
 
-					# Else, remove the key
-					else:
-						new_status.pop("Made for kids")
+					# Add it to the item dictionary
+					items[id]["Localizations"] = localizations
 
-					# ----- #
+				# ---------- #
 
-					# If the "selfDeclaredMadeForKids" key is present, add it to the new status dictionary
-					if "selfDeclaredMadeForKids" in status:
-						new_status["Self-declared made for kids"] = status["selfDeclaredMadeForKids"]
+				# Iterate through the list of item types
+				for item_type in ["Channel", "Playlist", "Video", "Comment"]:
+					# If the request item is the current item type
+					# And the current item type key is not already inside the root items dictionary
+					if (
+						item == item_type and
+						item_type not in items
+					):
+						# Create the [item type] key in the root items dictionary to access the [item type] more easily
+						items[item_type] = items[id]
 
-					# Else, remove the key
-					else:
-						new_status.pop("Self-declared made for kids")
+				# Iterate through the list of item types
+				for item_type in ["Channel", "Playlist", "Video", "Comment"]:
+					# If the current item type is not "Channel"
+					# And the item is not "Channel"
+					# And the "Channel" dictionary is in the root items dictionary
+					if (
+						item_type != "Channel" and
+						item != "Channel" and
+						"Channel" in items
+					):
+						# Define the "Channel" key of the item dictionary as the root ["Channel"]["Channel"] key
+						items[id]["Channel"] = items["Channel"]["Channel"]
 
-					# ----- #
-
-					# If the "isChannelMonetizationEnabled" key is present, add it to the new status dictionary
-					if "isChannelMonetizationEnabled" in status:
-						new_status["Is channel monetization enabled"] = status["isChannelMonetizationEnabled"]
-
-					# Else, remove the key
-					else:
-						new_status.pop("Is channel monetization enabled")
-
-					# ----- #
-
-					# If the new status is not empty
-					if new_status != {}:
-						# Add it to the item dictionary
-						items[id]["Status"] = new_status
-
-					# Else, remove the "Status" key
-					else:
-						items[id].pop("Status")
-
-				# Else, remove the "Status" key
-				else:
-					items[id].pop("Status")
+						# If the item type is inside the root items dictionary
+						if item_type in items:
+							# Define the channel inside the item type dictionary as the root ["Channel"]["Channel"] key
+							items[item_type]["Channel"] = items["Channel"]["Channel"]
 
 				# ---------- #
 
@@ -948,65 +1292,58 @@ class API():
 				if (
 					"Title" in items[id] and
 					items[id]["Title"] in ["Private video", "Deleted video"] and
-					api["Remove private videos"] == True
+					request["Remove private videos"] == True
 				):
+					# Then remove the ID from the dictionary of items
 					items.pop(id)
 
 				# ---------- #
 
+				# If the item is "Search"
+				# And the next page token is inside the response dictionary
 				if (
-					api["item"] == "search" and
-					"nextPageToken" in api["response"]
+					item == "search" and
+					"nextPageToken" in response
 				):
-					api["response"].pop("nextPageToken")
+					# Remove the next page token
+					response.pop("nextPageToken")
 
-		return api
+		# Return the service dictionary
+		return service
 
-	def MyAnimeList(self, api):
+	def MyAnimeList(self, service):
+		# Import the requests and urllib modules
 		import requests
 		import urllib
 
-		api.update({
-			"url": "https://api.myanimelist.net/v2/anime/" + api["id"] + "?",
-			"parameters": {
-				"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
-			},
-			"headers": {
-				"X-MAL-CLIENT-ID": api["key"]
-			}
-		})
+		# Define a shortcut to the request dictionary
+		request = service["Request"]
 
-		api["response"] = requests.get(
-			api["url"],
-			params = api["parameters"],
-			headers = api["headers"]
-		).json()
+		# Define the request "Link" as the service link
+		request["Link"] = service["Link"]
 
-		return api
+		# Update the link to add the media type
+		request["Link"] += request["Media type"] + "/"
 
-	def Get_Date(self, string):
-		# Get Date object from date string
-		return self.Date.From_String(string)
+		# Add the media ID
+		request["Link"] += request["Media ID"]
 
-	def Call(self, service = None, dictionary = {}):
-		# Define service and dictionary
-		api = {
-			"name": "",
-			"key": "",
-			"service": ""
+		# Define a dictionary of parameters to use
+		request["Parameters"] = {
+			"fields": "id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics"
 		}
 
-		if service != None:
-			api.update({
-				"name": service.lower(),
-				"key": self.secrets[service]["key"],
-				"service": getattr(self, service)
-			})
+		# Define a dictionary of headers to use
+		request["Headers"] = {
+			"X-MAL-CLIENT-ID": service["API key"]
+		}
 
-			# Get items from provided dictionary
-			api.update(dictionary)
+		# Execute the request with "requests", get the response, and convert it to JSON
+		request["Response"] = requests.get(
+			request["Link"],
+			params = request["Parameters"],
+			headers = request["Headers"]
+		).json()
 
-			# Run service
-			api = api["service"](api)
-
-		return api
+		# Return the service dictionary
+		return service
