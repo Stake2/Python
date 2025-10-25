@@ -171,9 +171,9 @@ class Register(Tasks):
 
 	def Ask_For_Task_Information(self):
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Define the task text
 			task_text = self.dictionary["Type"]["Task texts"]
@@ -254,9 +254,9 @@ class Register(Tasks):
 				questions[key]["Response"] = {}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the translated language in the user language
-					translated_language = self.languages["full_translated"][language][self.language["Small"]]
+					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 					# Change the input text to add the current language
 					question["Text"] = self.Define_Input_Text(question)
@@ -331,7 +331,7 @@ class Register(Tasks):
 				text_key = self.Text.By_Number(number, singular, plural)
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Transform the list of typed items into a text
 					items = questions[key]["Response"][language].split(", ")
 
@@ -357,7 +357,7 @@ class Register(Tasks):
 			# If the "Format" key is inside the question dictionary
 			if "Format" in question:
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the response
 					response = questions[key]["Response"]
 
@@ -459,7 +459,7 @@ class Register(Tasks):
 		text_key = "say_what_you_did_on_the_{}_in_{}" + ", " + grammatical_number.lower()
 
 		# Define the list of languages to use
-		languages = self.languages["small"]
+		languages = self.languages["Small"]
 
 		# Iterate through the list of languages
 		for language in languages:
@@ -479,10 +479,10 @@ class Register(Tasks):
 		# Iterate through the small languages list
 		for language in languages:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Define the item of the task type
 			texts = self.dictionary["Type"]["Names"]["Singular"]
@@ -645,7 +645,7 @@ class Register(Tasks):
 		template = "{}. {} ({})"
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the language task type
 			language_task_type = self.dictionary["Type"]["Names"]["Plural"][language]
 
@@ -742,7 +742,7 @@ class Register(Tasks):
 				key = "First task type task in year"
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the state text in the current language
 					language_text = self.dictionary["States"]["Texts"][key][language]
 
@@ -847,7 +847,7 @@ class Register(Tasks):
 		}
 
 		# Fill the entry "Text" dictionary with the entry texts of each language
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Text"][language] = self.Define_File_Text(language)
 
 		# ---------- #
@@ -867,7 +867,7 @@ class Register(Tasks):
 			language = self.language["Small"]
 
 		# Define the full language based on the local language
-		full_language = self.languages["full"][language]
+		full_language = self.languages["Full"][language]
 
 		# ---------- #
 
@@ -963,7 +963,7 @@ class Register(Tasks):
 			titles = self.task["Titles"][language] + "\n"
 
 		else:
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				titles += self.task["Titles"][language] + "\n"
 
 		# Add the task titles to the list of items
@@ -1010,15 +1010,15 @@ class Register(Tasks):
 		# Or all language descriptions
 		else:
 			# Iterate through the list of small languages
-			for local_language in self.languages["small"]:
+			for local_language in self.languages["Small"]:
 				# Get the full language
-				full_language = self.languages["full"][local_language]
+				full_language = self.languages["Full"][local_language]
 
 				# Add the full language and the language description to the root descriptions text
 				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][local_language]
 
 				# If the local language is not the last language in the list
-				if local_language != self.languages["small"][-1]:
+				if local_language != self.languages["Small"][-1]:
 					descriptions += "\n\n"
 
 		# If the description of the task is not the same as the task title
@@ -1036,9 +1036,9 @@ class Register(Tasks):
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define shortcuts for the root and type folders
 			root_folder = self.Language.texts["completed_tasks"][language]

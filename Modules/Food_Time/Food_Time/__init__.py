@@ -153,7 +153,7 @@ class Food_Time():
 				text_key = time_type.lower().replace(" ", "_")
 
 				# Define the unit name text
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					self.times[time_type]["Unit"][language] = self.texts[self.times[time_type]["Unit"]["en"].lower()][language]
 
 					prefix = self.texts["this_is_the_time_that_you"][language] + " "

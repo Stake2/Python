@@ -217,7 +217,7 @@ class Convert_History(GamePlayer):
 				dictionary = year["Folders"]["Year"][folder_type]
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# If the language folder key does not exist, create it
 					if language not in dictionary:
 						dictionary[language] = {}
@@ -695,7 +695,7 @@ class Convert_History(GamePlayer):
 				}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the normal file name of the current language with the current language game type
 					file_names["Normal"][language] = template.format(root_game_type["Type"][language])
 
@@ -722,9 +722,9 @@ class Convert_History(GamePlayer):
 				}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Define the language "Gaming sessions" entry file dictionary
 					entry_files["Gaming sessions ({})".format(full_language)] = {
@@ -1176,7 +1176,7 @@ class Convert_History(GamePlayer):
 			# ---------- #
 
 			# Iterate through the list of small languages
-			for local_language in self.languages["small"]:
+			for local_language in self.languages["Small"]:
 				# If the language is in the list of game titles
 				if local_language in entry["Game titles"]:
 					# Get the language title
@@ -1296,15 +1296,15 @@ class Convert_History(GamePlayer):
 			# And the full Portuguese language (Português) with a line break is inside the text
 			if (
 				result and
-				self.languages["full"]["pt"] + ":\n" in text
+				self.languages["Full"]["pt"] + ":\n" in text
 			):
 				# Define the new value
 				new_value = self.texts["gaming_session_descriptions"][language] + ":" + "\n" + \
 				"\n" + \
-				self.languages["full"]["pt"] + ":" + "\n" + \
+				self.languages["Full"]["pt"] + ":" + "\n" + \
 				result.group(2) + "\n" + \
 				"\n" + \
-				self.languages["full"]["en"] + ":" + "\n" + \
+				self.languages["Full"]["en"] + ":" + "\n" + \
 				result.group(3)
 
 				# Re-add the line with the new value

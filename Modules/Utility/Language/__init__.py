@@ -1,7 +1,8 @@
 # Language.py
 
-# Import some useful module
+# Import some useful modules
 import os
+import pathlib
 import re
 import pytz
 from datetime import datetime
@@ -33,6 +34,9 @@ class Language():
 
 		# Get information about the system
 		self.Get_System_Information()
+
+		# Define the browsers dictionary
+		self.Define_Browsers()
 
 		# Define the texts of the module
 		self.Define_Texts()
@@ -136,11 +140,11 @@ class Language():
 		self.languages = self.To_Python(self.module["Files"]["Languages"])
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# If the language is not in the "Supported" languages list
-			if language not in self.languages["supported"]:
+			if language not in self.languages["Supported"]:
 				# Remove it from the "small" list
-				self.languages["small"].remove(language)
+				self.languages["Small"].remove(language)
 
 		# Define the countries dictionary
 		self.countries = self.languages["Countries"]
@@ -264,7 +268,6 @@ class Language():
 	def Get_System_Information(self):
 		# Import some useful modules
 		import platform
-		import pathlib
 		import ctypes
 		from tzlocal import get_localzone
 
@@ -273,8 +276,26 @@ class Language():
 		# Define the "system" dictionary
 		self.system = {
 			"Name": platform.system(), # The name of the system
-			"Resolution": {} # The resolution of the system
+			"Architecture": "",
+			"Type": "",
+			"Resolution": {},
+			"Browsers": {}
 		}
+
+		# Get the local architecture tuple
+		architecture = platform.architecture()
+
+		# Define a bitness map
+		bitness_map = {
+			"32bit": "32 bits",
+			"64bit": "64 bits"
+		}
+
+		# Define the system "Architecture"
+		self.system["Architecture"] = bitness_map[architecture[0]]
+
+		# Define the system type
+		self.system["Type"] = architecture[1]
 
 		# Get the "user32" class
 		user32 = ctypes.windll.user32
@@ -308,9 +329,7 @@ class Language():
 			},
 
 			# Define the user "Country" dictionary
-			"Country": {
-				
-			}
+			"Country": {}
 		}
 
 		# ---------- #
@@ -360,13 +379,332 @@ class Language():
 		small_language = self.user["Language"]["Small"]
 
 		# Define the full language keys
-		self.user["Language"]["Full"] = self.languages["full"][small_language]
-		self.user["Language"]["Full translated"] = self.languages["full_translated"][small_language]
+		self.user["Language"]["Full"] = self.languages["Full"][small_language]
+		self.user["Language"]["Full translated"] = self.languages["Full (translated)"][small_language]
 
 		# ---------- #
 
 		# Define a shortcut to the user "Language" dictionary
 		self.language = self.user["Language"]
+
+	def Define_Architecture_Folder(self, browser_folder, architecture = ""):
+		# If the "architecture" parameter is empty
+		if architecture == "":
+			# Define it as the system architecture
+			architecture = self.system["Architecture"]
+
+		# Get the hard drive letter
+		hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
+
+		# Define the architecture folders
+		program_files_32_bits = "Program Files (x86)/"
+		program_files_64_bits = "Program Files/"
+
+		# If the architecture is "32 bits"
+		if architecture == "32 bits":
+			# Define the root folder as the 32 bits one
+			root_folder = hard_drive_letter + program_files_32_bits
+
+		# If the architecture is "64 bits"
+		if architecture == "64 bits":
+			# Define the root folder as the 64 bits one
+			root_folder = hard_drive_letter + program_files_64_bits
+
+		# Add the browser folder to the root folder
+		root_folder += browser_folder
+
+		# Return the root folder
+		return root_folder
+
+	def Define_Browsers(self):
+		# Define a dictionary of browsers
+		self.browsers = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [
+				"Mozilla Firefox",
+				"Microsoft Edge",
+				"Google Chrome"
+			],
+			"Dictionary": {},
+			"Data": {
+				"Mozilla Firefox": {
+					"Windows": "Mozilla Firefox/",
+					"Linux": "firefox",
+					"Darwin": "Firefox.app",
+					"Darwin name": "firefox"
+				},
+				"Microsoft Edge": {
+					"Windows": "Microsoft/Edge/Application/",
+					"Linux": "microsoft-edge",
+					"Darwin": "Microsoft Edge.app", # /Contents/MacOS/Microsoft Edge
+					"Executable name": "msedge"
+				},
+				"Google Chrome": {
+					"Windows": "Google/Chrome/Application/",
+					"Linux": "google-chrome",
+					"Darwin": "Google Chrome.app" # /Contents/MacOS/Google Chrome
+				}
+			}
+		}
+
+		# Iterate through the list of browsers
+		for browser in self.browsers["List"]:
+			# Define the browser dictionary
+			browser = {
+				"Name": browser,
+				"Company": browser.split(" ")[0],
+				"Data": self.browsers["Data"][browser],
+				"Folders": {
+					"root": ""
+				},
+				"File": ""
+			}
+
+			# If the system is "Windows"
+			if self.system["Name"] == "Windows":
+				# Get the browser folder from the browser "Data" dictionary
+				browser_folder = browser["Data"]["Windows"]
+
+				# Define the root as the local root folder and the browser folder
+				browser["Folders"]["root"] = self.Define_Architecture_Folder(browser_folder)
+
+				# Define the local executable name as the sub-browser name
+				executable_name = browser["Name"].split(" ")[1].lower()
+
+				# If the "Executable name" key is inside the browser "Data" dictionary
+				if "Executable name" in browser["Data"]:
+					# Define it as the local executable name
+					executable_name = browser["Data"]["Executable name"]
+
+				# Define the browser file as the root browser folder plus the executable name and the ".exe" extension
+				browser["File"] = browser["Folders"]["root"] + executable_name + ".exe"
+
+				# If the file does not exist
+				if self.File_Exists(browser["File"]) == False:
+					# If the system architecture is "32 bits"
+					if self.system["Architecture"] == "32 bits":
+						# Define the root folder based on the "64 bits" architecture
+						browser["Folders"]["root"] = self.Define_Architecture_Folder(browser_folder, "64 bits")
+
+					# If the system architecture is "64 bits"
+					if self.system["Architecture"] == "64 bits":
+						# Define the "Program Files" folder based on the "32 bits" architecture
+						browser["Folders"]["root"] = self.Define_Architecture_Folder(browser_folder, "32 bits")
+
+					# Define the browser file as the root browser folder plus the executable name and the ".exe" extension
+					browser["File"] = browser["Folders"]["root"] + executable_name + ".exe"
+
+			# If the system is "Linux"
+			if self.system["Name"] == "Linux":
+				# Define the root folder as the default one for Linux applications plus the browser Linux folder
+				browser["Folders"]["root"] = "/usr/bin/" + browser["Data"]["Linux"]
+
+				# Define the browser file as the root browser folder (which is also the application)
+				browser["File"] = browser["Folders"]["root"]
+
+			# If the system is "Darwin" (macOS)
+			if self.system["Name"] == "Darwin":
+				# Define the root folder as the default one for macOS applications
+				browser["Folders"]["root"] = "/Applications"
+
+				# Define the Darwin name for the browser as the full browser name
+				darwin_name = browser["Name"]
+
+				# If the "Darwin name" key is inside the browser "Data" dictionary
+				if "Darwin name" in browser["Data"]:
+					# Use it as the Darwin name
+					darwin_name = browser["Data"]["Darwin name"]
+
+				# Define the browser file as the root browser folder plus the data folder for macOS plus "/Contents/MacOS/" plus the defined Darwin name
+				browser["File"] = browser["Folders"]["root"] + browser["Data"]["Darwin"] + "/Contents/MacOS/" + darwin_name
+
+			# If the browser executable file exists (if the browser is installed)
+			if self.File_Exists(browser["File"]) == True:
+				# Add it to the "Browsers" dictionary of the "system" dictionary
+				self.system["Browsers"][browser["Name"]] = browser
+
+			# Define the browser inside the browsers "Dictionary" key
+			self.browsers["Dictionary"][browser["Name"]] = browser
+
+		# Remove the "Data" key
+		self.browsers.pop("Data")
+
+		# Update the number of browsers with the length of the list of browsers
+		self.browsers["Numbers"]["Total"] = len(self.browsers["List"])
+
+	def Show_User_Information(self):
+		# Show the class and method names and the "Showing user information" text
+		print(self.language_texts["language_class"] + ", " + self.language_texts["show_user_information_method"] + ":")
+		print("\t" + self.language_texts["showing_user_information"] + "...")
+		print()
+
+		# Define a quotes template
+		quotes = '"{}"'
+
+		# ---------- #
+
+		# Show the user name
+		print(self.language_texts["username, title(), type: self"] + ":")
+		print("\t" + self.user["Name"])
+		print()
+
+		# Show the user folder
+		print(self.language_texts["user_folder"] + ":")
+		print("\t" + self.user["Folder"])
+		print()
+
+		# ---------- #
+
+		# Show the user timezone
+		print(self.language_texts["user_timezone"] + ":")
+
+		# Show the timezone string
+		print("\t" + self.language_texts["text, title()"] + ":")
+		print("\t" + quotes.format(self.user["Timezone"]["String"]))
+		print()
+
+		# Show the timezone name
+		print("\t" + self.language_texts["name, title()"] + ":")
+		print("\t" + quotes.format(self.user["Timezone"]["Name"]))
+		print()
+
+		# Show the UTC offset
+		print("\t" + self.language_texts["difference_from_utc"] + ":")
+
+		utc_offset = self.user["Timezone"]["UTC offset"]
+
+		if "-" in utc_offset:
+			utc_offset = "UTC" + utc_offset
+
+		print("\t" + utc_offset)
+		print()
+
+		# Show the timezone information
+		print("\t" + self.language_texts["timezone_information"] + ":")
+		print("\t" + str([self.user["Timezone"]["Timezone information"]]))
+		print()
+
+		# ---------- #
+
+		# Show the user language information
+		print(self.language_texts["user_language"] + ":")
+
+		# Show the small language
+		print("\t" + self.language_texts["small, title()"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["Small"]))
+		print()
+
+		# Show the language with country
+		print("\t" + self.language_texts["with_country"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["With country"]))
+		print()
+
+		# Show the full language
+		print("\t" + self.language_texts["full, title()"] + ":")
+		print("\t" + quotes.format(self.user["Language"]["Full"]))
+		print()
+
+		# Show the full language translated
+		print("\t" + self.language_texts["full_translated"] + ":")
+
+		# Iterate through the list of small languages
+		for language in self.languages["Small"]:
+			# If the language is not the user language
+			if language != self.language["Small"]:
+				# Get the translated language
+				# (First the current language then the user language)
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+
+				# Get the translated user language
+				# (First the user language then the current language)
+				translated_user_language = self.languages["Full (translated)"][self.language["Small"]][language]
+
+				# Show the current language
+				print("\t\t" + translated_language + ":")
+
+				# Show the user language but translated to the current language
+				print("\t\t" + quotes.format(translated_user_language))
+				print()
+
+		# ---------- #
+
+		# Show the user country code
+		print(self.language_texts["country_code"] + ":")
+		print("\t" + quotes.format(self.user["Country"]["Code"]))
+		print()
+
+		# Show the user country name
+		print(self.language_texts["country_name"] + ":")
+		print("\t" + quotes.format(self.user["Country"]["Name"][self.language["Small"]]))
+		print()
+
+		# ---------- #
+
+		# Show the system information
+		print(self.language_texts["system_information"] + ":")
+
+		# Show the system name
+		print("\t" + self.language_texts["name, title()"] + ":")
+		print("\t" + quotes.format(self.system["Name"]))
+		print()
+
+		# Show the system architecture
+		print("\t" + self.language_texts["architecture, title()"] + ":")
+		print("\t" + quotes.format(self.system["Architecture"]))
+		print()
+
+		# Show the system resolution
+		print("\t" + self.language_texts["resolution, title()"] + ":")
+
+		# Iterate through the list of sizes
+		for key in ["Width", "Height", "Dimensions"]:
+			# Define a text key
+			text_key = key
+
+			# If the size is "Dimensions"
+			if key == "Dimensions":
+				# Update the text key to "full"
+				text_key = "Full"
+
+			# Get the text for the size
+			text = self.language_texts[text_key.lower() + ", title()"]
+
+			# Get the size
+			size = self.system["Resolution"][key]
+
+			# If the size is not "Dimensions"
+			if key != "Dimensions":
+				# Add "px" to the size
+				size += "px"
+
+			# Show the text and the size
+			print("\t\t" + text + ":")
+			print("\t\t" + size)
+
+			# If the key is not the last one
+			if key != "Dimensions":
+				# Show a space separator
+				print()
+
+		# If the "Browsers" dictionary is not empty
+		if self.system["Browsers"] != {}:
+			# Show a space separator
+			print()
+
+			# Show the installed browsers
+			print("\t" + self.language_texts["installed_browsers"] + ":")
+
+			# Iterate through the list of available browsers
+			for browser in self.browsers["List"]:
+				# If the browser is installed
+				if browser in self.system["Browsers"]:
+					# Show the browser name
+					print("\t" + quotes.format(browser))
+
+			# Show a space separator
+			print()
 
 	def Sanitize(self, path):
 		path = os.path.normpath(path).replace("\\", "/")
@@ -836,7 +1174,7 @@ class Language():
 
 		for text in texts:
 			if type(texts[text]) not in [str, list]:
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					if language in texts[text]:
 						if type(texts[text][language]) not in [list, dict]:
 							local_texts[text + ", title()"] = {}
@@ -850,7 +1188,7 @@ class Language():
 
 		for text in texts:
 			if type(texts[text]) not in [str, list]:
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					if language in texts[text]:
 						if type(texts[text][language]) not in [list, dict]:
 							local_texts[text + ", title()"][language] = texts[text][language].title()
@@ -1031,7 +1369,7 @@ class Language():
 	def Define_Language_Texts(self):
 		self.language_texts = self.Item(self.texts)
 
-		for language_type in self.languages["types"]:
+		for language_type in self.languages["Types"]:
 			language_type = language_type.lower().replace(" ", "_")
 
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
@@ -1067,7 +1405,7 @@ class Language():
 							# Define the "Language" dictionary keys
 							self.system["Language"]["Small"] = locale_shortcut[0].split("_")[0]
 							self.system["Language"]["With country"] = locale_shortcut[0]
-							self.system["Language"]["Full"] = self.languages["full"][self.system["Language"]["Small"]]
+							self.system["Language"]["Full"] = self.languages["Full"][self.system["Language"]["Small"]]
 
 						self.settings[setting_name.replace("_", " ").capitalize()] = setting
 
@@ -1119,7 +1457,7 @@ class Language():
 
 			language_setting_name = setting_information["name"][self.app_settings["Language"]]
 
-			option = self.Select(self.languages["small"], show_text = self.language_texts["languages"].title() + ":", select_text = self.language_texts["select_one_{}_(number_or_word), masculine"].format(language_setting_name) + ": ")
+			option = self.Select(self.languages["Small"], show_text = self.language_texts["languages"].title() + ":", select_text = self.language_texts["select_one_{}_(number_or_word), masculine"].format(language_setting_name) + ": ")
 
 			self.Edit(settings_file, setting_name.title() + ": " + option, "a")
 
@@ -1128,7 +1466,7 @@ class Language():
 	def From_Python(self, item):
 		import json
 
-		return json.dumps(item, indent = 4, ensure_ascii = False)
+		return json.dumps(item, indent = "\t", ensure_ascii = False)
 
 	def To_Python(self, file):
 		import json
@@ -1162,8 +1500,8 @@ class Language():
 
 		text = template
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.app_settings["Language"]]
+		for language in self.languages["Small"]:
+			translated_language = self.languages["Full (translated)"][language][self.app_settings["Language"]]
 
 			typed = self.Type(self.language_texts["type_the_text_in_{}"].format(translated_language) + ": ", accept_enter = False, next_line = True)
 
@@ -1182,7 +1520,7 @@ class Language():
 
 			language_text = '"' + language + '": "' + typed + '"'
 
-			if language != self.languages["small"][-1]:
+			if language != self.languages["Small"][-1]:
 				language_text += "," + "\n\t\t[input]"
 
 			text = text.replace("[input]", language_text)
@@ -1190,154 +1528,6 @@ class Language():
 		self.Copy(text)
 
 		return text
-
-	def Show_User_Information(self):
-		# Show the class and method names and the "Showing user information" text
-		print(self.language_texts["language_class"] + ", " + self.language_texts["show_user_information_method"] + ":")
-		print("\t" + self.language_texts["showing_user_information"] + "...")
-		print()
-
-		# Define a quotes template
-		quotes = '"{}"'
-
-		# ---------- #
-
-		# Show the user name
-		print(self.language_texts["username, title(), type: self"] + ":")
-		print("\t" + self.user["Name"])
-		print()
-
-		# Show the user folder
-		print(self.language_texts["user_folder"] + ":")
-		print("\t" + self.user["Folder"])
-		print()
-
-		# ---------- #
-
-		# Show the user timezone
-		print(self.language_texts["user_timezone"] + ":")
-
-		# Show the timezone string
-		print("\t" + self.language_texts["text, title()"] + ":")
-		print("\t" + quotes.format(self.user["Timezone"]["String"]))
-		print()
-
-		# Show the timezone name
-		print("\t" + self.language_texts["name, title()"] + ":")
-		print("\t" + quotes.format(self.user["Timezone"]["Name"]))
-		print()
-
-		# Show the UTC offset
-		print("\t" + self.language_texts["difference_from_utc"] + ":")
-
-		utc_offset = self.user["Timezone"]["UTC offset"]
-
-		if "-" in utc_offset:
-			utc_offset = "UTC" + utc_offset
-
-		print("\t" + utc_offset)
-		print()
-
-		# Show the timezone information
-		print("\t" + self.language_texts["timezone_information"] + ":")
-		print("\t" + str([self.user["Timezone"]["Timezone information"]]))
-		print()
-
-		# ---------- #
-
-		# Show the user language information
-		print(self.language_texts["user_language"] + ":")
-
-		# Show the small language
-		print("\t" + self.language_texts["small, title()"] + ":")
-		print("\t" + quotes.format(self.user["Language"]["Small"]))
-		print()
-
-		# Show the language with country
-		print("\t" + self.language_texts["with_country"] + ":")
-		print("\t" + quotes.format(self.user["Language"]["With country"]))
-		print()
-
-		# Show the full language
-		print("\t" + self.language_texts["full, title()"] + ":")
-		print("\t" + quotes.format(self.user["Language"]["Full"]))
-		print()
-
-		# Show the full language translated
-		print("\t" + self.language_texts["full_translated"] + ":")
-
-		# Iterate through the list of small languages
-		for language in self.languages["small"]:
-			# If the language is not the user language
-			if language != self.language["Small"]:
-				# Get the translated language
-				# (First the current language then the user language)
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
-
-				# Get the translated user language
-				# (First the user language then the current language)
-				translated_user_language = self.languages["full_translated"][self.language["Small"]][language]
-
-				# Show the current language
-				print("\t\t" + translated_language + ":")
-
-				# Show the user language but translated to the current language
-				print("\t\t" + quotes.format(translated_user_language))
-				print()
-
-		# ---------- #
-
-		# Show the user country code
-		print(self.language_texts["country_code"] + ":")
-		print("\t" + quotes.format(self.user["Country"]["Code"]))
-		print()
-
-		# Show the user country name
-		print(self.language_texts["country_name"] + ":")
-		print("\t" + quotes.format(self.user["Country"]["Name"][self.language["Small"]]))
-		print()
-
-		# ---------- #
-
-		# Show the system information
-		print(self.language_texts["system_information"] + ":")
-
-		# Show the system name
-		print("\t" + self.language_texts["name, title()"] + ":")
-		print("\t" + quotes.format(self.system["Name"]))
-		print()
-
-		# Show the system resolution
-		print(self.language_texts["resolution, title()"] + ":")
-
-		# Iterate through the list of sizes
-		for key in ["Width", "Height", "Dimensions"]:
-			# Define a text key
-			text_key = key
-
-			# If the size is "Dimensions"
-			if key == "Dimensions":
-				# Update the text key to "full"
-				text_key = "Full"
-
-			# Get the text for the size
-			text = self.language_texts[text_key.lower() + ", title()"]
-
-			# Get the size
-			size = self.system["Resolution"][key]
-
-			# If the size is not "Dimensions"
-			if key != "Dimensions":
-				# Add "px" to the size
-				size += "px"
-
-			# Show the text and the size
-			print("\t" + text + ":")
-			print("\t" + size)
-
-			# If the key is not the last one
-			if key != "Dimensions":
-				print()
 
 	def Text_From_List(self, list_, next_line = True, separator = ""):
 		string = ""

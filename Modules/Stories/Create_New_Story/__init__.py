@@ -53,9 +53,9 @@ class Create_New_Story(Stories):
 		# ---------- #
 
 		# Ask for the titles of the story
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Ask for the story title
 			text = self.language_texts["story_title_in"] + " " + translated_language
@@ -174,9 +174,9 @@ class Create_New_Story(Stories):
 				information = {}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.language["Small"]]
+					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 					# Define the type text
 					type_text = self.language_texts["story_synopsis_in"] + " " + translated_language
@@ -250,18 +250,18 @@ class Create_New_Story(Stories):
 
 		# ---------- #
 
-		# Define the "Links" dictionary
+		# Define the story "Links" dictionary
 		story["Information"]["Links"] = {
 			"Website": {}
 		}
 
 		# ---------- #
 
-		# "Wattpad" and "Spirit Fanfics" dictionaries
+		# Define the "Wattpad" and "Spirit Fanfics" link dictionaries
 
 		# Iterate through the dictionary of story websites
 		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
-			# Ask if the user posted the story on the story website
+			# Ask if the user posted the story on the current story website
 			question = self.language_texts["did_you_posted_the_story_on_the_story_website"] + ' "' + key + '"'
 
 			if self.switches["Testing"] == False:
@@ -270,14 +270,14 @@ class Create_New_Story(Stories):
 			else:
 				posted_story = True
 
-			# If the user posted the story
+			# If the user posted the story on the story website
 			if posted_story == True:
-				# Define the "Story websites" dictionary for the story
+				# Define the current story website dictionary inside the story dictionary
 				self.Define_Story_Websites(story)
 
 		# ---------- #
 
-		# Define the "story" variable in the class so it is available to the "Define_Story_Dictionary" method
+		# Define the "story" variable in the root class so it is available to the "Define_Story_Dictionary" method below
 		self.story = story
 
 	def Define_Story_Dictionary(self):
@@ -342,11 +342,11 @@ class Create_New_Story(Stories):
 			# Define the website folder
 			self.story["Information"]["Website"]["Website folder"] = "/" + website_folder + "/"
 
-		# Update the website "Link" key with the website folder
-		self.story["Information"]["Website"]["Link"] = self.links["Stake2 Website"] + website_folder + "/"
+		# Define the story website link by adding the website folder to the root Stake2 website link
+		self.story["Information"]["Website"]["Link"] = self.website["URL"] + website_folder + "/"
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define the language link with the language folder
 			self.story["Information"]["Website"]["Links"][language] = self.story["Information"]["Website"]["Link"] + language + "/"
 
@@ -355,7 +355,7 @@ class Create_New_Story(Stories):
 
 		# ---------- #
 
-		# "Wattpad" and "Spirit Fanfics" dictionaries
+		# Define the "Wattpad" and "Spirit Fanfics" dictionaries
 
 		# Iterate through the dictionary of story websites
 		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
@@ -392,9 +392,9 @@ class Create_New_Story(Stories):
 		root_folder = self.story["Folders"]["Information"]["Synopsis"]["root"]
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define and create the file
 			file = root_folder + full_language + ".txt"

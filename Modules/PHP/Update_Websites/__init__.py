@@ -120,22 +120,22 @@ class Update_Websites(PHP):
 		self.dictionary["Languages"]["Full translated"]["general"] = {}
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Languages"]["Full translated"]["general"][language] = self.Language.texts["general, title()"][language]
 
 		# Add the other languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Languages"]["Small"].append(language)
 
 			# Add the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			self.dictionary["Languages"]["Full"][language] = full_language
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Add the full translated language
-			self.dictionary["Languages"]["Full translated"][language] = self.languages["full_translated"][language]
+			self.dictionary["Languages"]["Full translated"][language] = self.languages["Full (translated)"][language]
 
 	def Define_Websites(self, dictionary):
 		# Iterate through the dictionary of websites
@@ -256,7 +256,7 @@ class Update_Websites(PHP):
 		dictionary, parameters = self.Define_Custom_Options(dictionary, parameters)
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Create the empty language lists inside the "Selected" dictionary
 			dictionary["Selected"][language] = []
 
@@ -290,7 +290,7 @@ class Update_Websites(PHP):
 			# If the selected option is not in the "Remove list"
 			if dictionary["Option"] not in dictionary["Remove list"]:
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the key to be used to get the option for the current language
 					key = "option"
 
@@ -522,4 +522,4 @@ class Update_Websites(PHP):
 
 		# If the "Testing" switch is False, open the Git file
 		if self.switches["Testing"] == False:
-			self.System.Open_Link(git_file, verbose = False)
+			self.System.Open(git_file, verbose = False)

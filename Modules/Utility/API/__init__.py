@@ -223,7 +223,11 @@ class API():
 			request["Item"]["Mapped"] = items_map[item]
 
 		# If the "s" letter is not the last character of the mapped item
-		if "s" not in request["Item"]["Mapped"]:
+		# And the item is not "Search"
+		if (
+			"s" != request["Item"]["Mapped"][-1] and
+			item != "Search"
+		):
 			# Add it
 			request["Item"]["Mapped"] += "s"
 
@@ -827,7 +831,11 @@ class API():
 						items[id]["Video"]["Position"] = snippet["position"]
 
 					# If the request item is "Comment"
-					if item == "Comment":
+					# And the "Video ID" key is inside the request dictionary
+					if (
+						item == "Comment" and
+						"Video ID" in request
+					):
 						# Define the video ID as the video ID in the request dictionary
 						items[id]["Video"]["ID"] = request["Video ID"]
 
@@ -865,17 +873,19 @@ class API():
 
 				# If the request item is "Comment"
 				if item == "Comment":
-					# Define the link template as the comment one
-					link_template = service["Link templates"]["Comment"]
+					# If the "Video ID" key is inside the request dictionary
+					if "Video ID" in request:
+						# Define the link template as the comment one
+						link_template = service["Link templates"]["Comment"]
 
-					# Replace the "{Video}" text with the video ID inside the request dictionary
-					link = link_template.replace("{Video}", request["Video ID"])
+						# Replace the "{Video}" text with the video ID inside the request dictionary
+						link = link_template.replace("{Video}", request["Video ID"])
 
-					# Replace the "{Comment}" text with the comment ID
-					link = link.replace("{Comment}", items[id]["ID"])
+						# Replace the "{Comment}" text with the comment ID
+						link = link.replace("{Comment}", items[id]["ID"])
 
-					# Define the root link as the local comment link
-					items[id]["Link"] = link
+						# Define the root link as the local comment link
+						items[id]["Link"] = link
 
 					# Create the "Text" dictionary with the orignal and display texts of the comment inside the item dictionary
 					items[id]["Text"] = {
@@ -907,7 +917,7 @@ class API():
 					}
 
 					# Define a shortcut to the list of full languages
-					full_languages = self.languages["full"]
+					full_languages = self.languages["Full"]
 
 					# If the language is not inside the list of full languages
 					if language not in full_languages:
@@ -1165,7 +1175,13 @@ class API():
 					items[id]["Status"] = {}
 
 					# If the request item is "Channel"
-					if item == "Channel":
+					# Or the request item is "Search"
+					# And the "type" key inside the "Parameters" dictionary is "channel"
+					if (
+						item == "Channel" or
+						item == "Search" and
+						request["Parameters"]["type"] == "channel"
+					):
 						# Define a dictionary of channel status keys to search for
 						status_keys = {
 							"Privacy": "privacyStatus",
@@ -1214,10 +1230,10 @@ class API():
 							# Get the status value
 							status_value = status[status_key]
 
-							# If the status key is "Long uploads status"
+							# If the new status key is "Long uploads status"
 							# And the status value is "longUploadsUnspecified"
 							if (
-								status_key == "Long uploads status" and
+								new_key == "Long uploads status" and
 								status_value == "longUploadsUnspecified"
 							):
 								# Change the status to "Long uploads unspecified"
@@ -1302,7 +1318,7 @@ class API():
 				# If the item is "Search"
 				# And the next page token is inside the response dictionary
 				if (
-					item == "search" and
+					item == "Search" and
 					"nextPageToken" in response
 				):
 					# Remove the next page token

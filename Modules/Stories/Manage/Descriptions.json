@@ -10,5 +10,9 @@
 	"Update_Chapter_Covers": {
 		"en": "Update chapter covers",
 		"pt": "Atualizar capas de capítulos"
+	},
+	"Convert_Data": {
+		"en": "Convert data",
+		"pt": "Converter dados"
 	}
 }

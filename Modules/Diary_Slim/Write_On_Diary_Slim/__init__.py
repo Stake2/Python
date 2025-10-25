@@ -260,6 +260,31 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Iterate through the questions inside the dictionary, getting the key and question dictionary
 		for key, question in questions.items():
+			# If the question is related to states
+			# If the "States" key is inside the "Text" dictionary
+			if (
+				"State related" in question and
+				question["State related"] == True and
+				"States" in self.dictionary["Text"]
+			):
+				# Define a shortcut to the states (backup) dictionary
+				states = self.dictionary["Text"]["States (backup)"]
+
+				# Define a shortcut to the current state
+				current_state = states["Current state"]
+
+				# Iterate through the dictionary of states
+				for state_key, state in states["Dictionary"].items():
+					# If the current state is the same as the state in the for loop
+					if current_state == state:
+						# Define the state number as the current state key
+						state_number = state_key
+
+				# If the "Input text" is inside the question dictionary
+				if "Input text" in question:
+					# Update the "Input text" key with the input text of the current state
+					question["Input text"] = question["Input text"]["States"][state_number]
+
 			# If the question type is "Yes or No"
 			if question["Question type"] == "Yes or No":
 				# Get the input text
@@ -297,16 +322,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 					# If the "Format" key is inside the answer dictionary
 					if "Format" in answer:
-						# Define the format variable for easier typing
-						format = answer["Format"][self.language["Small"]]
+						# Get the text template for the answer
+						template = answer["Format"][self.language["Small"]]
 
 						# Define the text to write as the default one
 						text_to_write = self.dictionary["Text"]["Texts"][self.language["Small"]]
 
-						# Update the text to write
-						text_to_write = format.replace("{Text}", text_to_write)
+						# Format the template with the text to write and update the local text to write variable
+						text_to_write = template.replace("{Text}", text_to_write)
 
-						# Format the format text with the text to write
+						# Update the question "Response" key to be the text to write
 						questions[key]["Response"] = text_to_write
 
 			# If the question type is "Type"
@@ -316,6 +341,23 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# Get and verify the user input
 				questions[key]["Response"] = self.Verify_Input(question)
+
+				# If the "Format" key is inside the question dictionary
+				if "Format" in question:
+					# Get the text template for the current state
+					template = question["Format"]["States"][state_number][self.language["Small"]]
+
+					# Define a shortcut to the text of the current state
+					text_to_write = current_state[self.language["Small"]]
+
+					# Format the template with the text to write and update the local text to write variable
+					text_to_write = template.replace("{Text}", text_to_write)
+
+					# Replace the "{Response}" text template with the user response
+					text_to_write = text_to_write.replace("{Response}", questions[key]["Response"])
+
+					# Update the root text to write with the local one
+					self.dictionary["Text to write"] = text_to_write
 
 			# If the question type is "Select"
 			if question["Question type"] == "Select":
@@ -371,18 +413,49 @@ class Write_On_Diary_Slim(Diary_Slim):
 						# Iterate through the list of genders
 						for gender in ["Masculine", "Feminine"]:
 							# Get the gender dictionary
-							gender = question["Genders"][gender]
+							gender_dictionary = question["Genders"][gender]
 
 							# If the user response is inside the gender list of the current gender
-							if questions[key]["Response"] in gender["List"]:
-								# Get the gender text key from the current gender dictionary
-								text_key = gender["Format text"]
+							if questions[key]["Response"] in gender_dictionary["List"]:
+								# Define the selected gender as the current gender
+								selected_gender = gender
 
-								# Get the language text
-								text = self.Language.language_texts[text_key]
+								# Get the gender format text key from the current gender dictionary
+								text_key = gender_dictionary["Format text"]
+
+								# Get the language gender format text
+								gender_format_text = self.Language.language_texts[text_key]
 
 								# Replace the gender text template inside the text with the correct gender text
-								self.dictionary["Text"]["Texts"][self.language["Small"]] = self.dictionary["Text"]["Texts"][self.language["Small"]].replace(gender_text_key, text)
+								self.dictionary["Text"]["Texts"][self.language["Small"]] = self.dictionary["Text"]["Texts"][self.language["Small"]].replace(gender_text_key, gender_format_text)
+
+						# If the "Text decorator" key is present inside the text dictionary
+						if "Text decorator" in text_dictionary:
+							# Define a shortcut to the "Text decorator" dictionary
+							text_decorator = text_dictionary["Text decorator"]
+
+							# If the "With gender" key is present and True
+							if (
+								"With gender" in text_decorator and
+								text_decorator["With gender"] == True
+							):
+								# Get the text decorator key
+								text_key = text_decorator["Key"]
+
+								# Add the lowercase gender to the text key
+								text_key += ", " + selected_gender.lower()
+
+								# Get the language text decorator text
+								text_decorator_text = self.Language.language_texts[text_key]
+
+								# Define the decoration text for the question as the gender text decorator text
+								questions[key]["Decoration text"] = text_decorator_text
+
+								# Add the lowercase gender format text
+								questions[key]["Decoration text"] += " " + gender_format_text.lower()
+
+								# Add the user response
+								questions[key]["Decoration text"] += " " + questions[key]["Response"]
 
 					# Update the text to write
 					text_to_write = self.dictionary["Text"]["Texts"][self.language["Small"]]
@@ -1101,30 +1174,36 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# Define a shortcut for the text decorator
 			text_decorator = self.dictionary["Text"]["Statistic"]["Text decorator"]
 
-			# Get the decorator key and text
-			key = text_decorator["Key"]
-			decorator_text = self.Language.language_texts[key]
+			# If the "Decoration text" is not inside the first question dictionary:
+			if "Decoration text" not in questions["1"]:
+				# Get the decorator key and text
+				key = text_decorator["Key"]
+				decorator_text = self.Language.language_texts[key]
 
-			# Format the text
+				# Format the text
 
-			# Replace the decorator template
-			text = text_decorator["Format"].replace("{decorator}", decorator_text)
+				# Replace the decorator template
+				statistic_text = text_decorator["Format"].replace("{decorator}", decorator_text)
 
-			# If the "{response}" text template is inside the format template
-			if "{response}" in text:
-				# Replace the response template with the response to the first question
-				text = text.replace("{response}", questions["1"]["Response"])
+				# If the "{response}" text template is inside the format template
+				if "{response}" in statistic_text:
+					# Replace the response template with the response to the first question
+					statistic_text = statistic_text.replace("{response}", questions["1"]["Response"])
 
-			# If the "{text}" template is inside the format template
-			if "{text}" in text:
-				# Replace the text template
-				text = text.replace("{text}", statistic["Key"])
+				# If the "{text}" template is inside the format template
+				if "{text}" in statistic_text:
+					# Replace the text template
+					statistic_text = statistic_text.replace("{text}", statistic["Key"])
+
+			# If it is, use it as the decoration text
+			else:
+				statistic_text = questions[key]["Decoration text"]
 
 			# Update the statistic text to be the local text
-			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Text"] = text
+			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Text"] = statistic_text
 
 			# Update the month statistic text to be the local text
-			self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][statistic["Key"]]["Text"] = text
+			self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][statistic["Key"]]["Text"] = statistic_text
 
 		# ---------- #
 

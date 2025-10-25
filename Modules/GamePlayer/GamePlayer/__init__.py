@@ -147,7 +147,7 @@ class GamePlayer(object):
 			self.current_year = self.Years.years["Current year"]
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define a shortcut for the folder
 			folder = self.current_year["Folders"][language]
 
@@ -265,7 +265,7 @@ class GamePlayer(object):
 			}
 
 			# Define the game types by language
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				self.game_types[game_type]["Type"][language] = self.game_types["Types"][language][i]
 
 			# Create type folders
@@ -1333,7 +1333,7 @@ class GamePlayer(object):
 		i = 0
 		for game_type in dictionary["List"]["en"]:
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Add the number of games to the game type text
 				dictionary["List"][language][i] = dictionary["List"][language][i] + " (" + str(numbers[game_type]) + ")"
 
@@ -1692,25 +1692,76 @@ class GamePlayer(object):
 			if self.Language.language_texts["original_language"] in game["Details"]:
 				game["Language"] = game["Details"][self.Language.language_texts["original_language"]]
 
-			if game["Language"] in list(self.languages["full"].values()):
+			if game["Language"] in list(self.languages["Full"].values()):
 				# Iterate through full languages list to find small language from the full language
-				for small_language in self.languages["full"]:
-					full_language = self.languages["full"][small_language]
+				for small_language in self.languages["Full"]:
+					full_language = self.languages["Full"][small_language]
 
 					if full_language == game["Language"]:
 						game["Language"] = small_language
 
-			game["Platform"] = game["Details"][self.Language.language_texts["platform, title()"]]
+			# ---------- #
 
-			i = 0
-			for platform in self.game_types["Platforms"][self.language["Small"]]:
-				if platform == game["Platform"]:
-					game["Platform"] = {}
+			# Get the game platform from the game "Details" dictionary
+			game_platform = game["Details"][self.Language.language_texts["platform, title()"]]
 
-					for language in self.languages["small"]:
-						game["Platform"][language] = self.game_types["Platforms"][language][i]
+			# Iterate through the platforms inside the dictionary of platforms
+			for platform in self.game_types["Platforms"].values():
+				# Get the language platform
+				language_platform = platform[self.language["Small"]]
 
-				i += 1
+				# If the game platform is the same as the current language platform
+				if game_platform == language_platform:
+					# Define the game platform dictionary as the current platform
+					game["Platform"] = platform
+
+			# ---------- #
+
+			# Define the "Gaming environment" key as the language platform
+			game["Gaming environment"] = game["Platform"]
+
+			# Get the "Gaming environment" text and define it as the text key
+			text_key = self.language_texts["gaming_environment"]
+
+			# If the text key is inside the game "Details" dictionary
+			if text_key in game["Details"]:
+				# Define a local gaming environment dictionary
+				gaming_environment = {}
+
+				# Iterate through the list of small languages
+				for language in self.languages["Small"]:
+					# Define it as the gaming environment inside the game "Details" dictionary
+					gaming_environment[language] = game["Details"][text_key]
+
+				# Define it as the "Gaming environment" key
+				game["Gaming environment"] = gaming_environment
+
+			# ---------- #
+
+			# Get the "Game link" text and define it as the text key
+			text_key = self.language_texts["game_link"]
+
+			# If the text key is inside the game "Details" dictionary
+			if text_key in game["Details"]:
+				# Get the game link from the game "Details" dictionary and define it in the "Link" key
+				game["Link"] = game["Details"][text_key]
+
+			# ---------- #
+
+			# Define a dictionary of text keys to find
+			text_keys = {
+				"Game ID": self.language_texts["game_id"],
+				"Asset ID": self.language_texts["asset_id"]
+			}
+
+			# Iterate through the dictionary keys and text keys
+			for key, text_key in text_keys.items():
+				# If the text key is inside the game "Details" dictionary
+				if text_key in game["Details"]:
+					# Get the game detail from the game "Details" dictionary and define it in the correct key
+					game[key] = game["Details"][text_key]
+
+			# ---------- #
 
 			# Define the game states dictionary
 			states = {
@@ -1962,7 +2013,7 @@ class GamePlayer(object):
 		for text_type in ["Singular", "Plural"]:
 			# Iterate through the small languages list
 			# To define the sub-game type texts for all languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the text key
 				text_key = sub_game_type[:-1].lower().replace(" ", "_")
 
@@ -2279,7 +2330,7 @@ class GamePlayer(object):
 				# Define the state texts of the current state dictionary
 				states_dictionary["Texts"][key] = {}
 
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					text = ""
 
 					if key != "First gaming session by game type in the year":
@@ -2375,7 +2426,7 @@ class GamePlayer(object):
 					game["Titles"][self.language["Small"]] = game["Titles"][self.language["Small"]] + " (" + game["Titles"]["Original"].split(" (")[-1]
 
 			# Define game titles by language
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				key = self.Language.texts["title_in_language"][language][self.language["Small"]]
 
 				if key in game["Details"]:
@@ -2578,7 +2629,7 @@ class GamePlayer(object):
 
 				# Iterate through the small languages list
 				# And remove the singular and plural time unit texts
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the language key inside the "Text" dictionary
 					gaming_time["Text"][language] = ""
 
@@ -2610,7 +2661,7 @@ class GamePlayer(object):
 		i = 0
 		for key, time_unit in time_units.items():
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# If the time unit key is not the first one
 				if key != keys[0]:
 					# Define the end of text for easier typing
@@ -2921,7 +2972,7 @@ class GamePlayer(object):
 		print("\t" + game["Titles"][key])
 
 		# Show the language titles if they exist
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			if language in game["Titles"]:
 				print("\t" + game["Titles"][language])
 
@@ -2953,7 +3004,7 @@ class GamePlayer(object):
 			print("\t" + title)
 
 			# Show the language titles if they exist
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				if language in sub_game["Titles"]:
 					title = self.Sanitize_Title(sub_game["Titles"][language])
 
@@ -2978,7 +3029,7 @@ class GamePlayer(object):
 		# Show the categories
 		types = []
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			text = "\t" + dictionary["Type"]["Type"][language]
 
 			if text not in types:
@@ -2992,18 +3043,39 @@ class GamePlayer(object):
 		# Show the platforms
 		print()
 
+		# Define a local list of platforms
 		platforms = []
 
-		for language in self.languages["small"]:
+		# Iterate through the list of small languages
+		for language in self.languages["Small"]:
+			# Define the platform text in the current language
 			text = "\t" + dictionary["Game"]["Platform"][language]
 
+			# If it is not inside the local list of platforms
 			if text not in platforms:
 				platforms.append(text)
 
+		# Show the "Platform" text
 		print(self.Language.language_texts["platform, title()"] + ":")
 
+		# Show the platforms
 		for item in platforms:
 			print(item)
+
+		# --------------- #
+
+		# Show the gaming environment if it is not the same as the platform
+
+		# Define shortcuts for the game platform and gaming environment
+		platform = dictionary["Game"]["Platform"]
+		gaming_environment = dictionary["Game"]["Gaming environment"]
+
+		# If the game platform and gaming environment are not the same
+		if platform != gaming_environment:
+			# Then show the gaming environment
+			print()
+			print(self.language_texts["gaming_environment"] + ":")
+			print("\t" + gaming_environment[self.language["Small"]])
 
 		# --------------- #
 
@@ -3026,15 +3098,20 @@ class GamePlayer(object):
 
 		# Show the information and local folders
 		if game["Folders"]["Local"]["root"] != "":
+			# Show the "Folders" text
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
+
+			# Show the "Information" folder
 			print("\t" + self.Language.language_texts["informations, title()"] + ":")
-			print("\t" + folders["root"])
+			print("\t" + game["Folders"]["root"])
 			print()
+
+			# Show the "Local" folder
 			print("\t" + self.Language.language_texts["local, title()"] + ":")
 			print("\t" + game["Folders"]["Local"]["root"])
 
-		# Show the sub-game folder if the game has sub-games and the sub-game is not the game
+		# Show the sub-game folder if the game has sub-games and the sub-game is not the root game
 		if (
 			game["States"]["Has sub-games"] == True and
 			game["Sub-game"]["Title"] != game["Title"]
@@ -3048,13 +3125,13 @@ class GamePlayer(object):
 		# Show the shortcut file
 		if self.File.Exists(game["Files"]["Shortcut"]["File"]) == True:
 			print()
-			print(self.File.language_texts["shortcut, title()"] + ":")
+			print(self.Language.language_texts["shortcut, title()"] + ":")
 			print("\t" + game["Files"]["Shortcut"]["File"])
 
 		# Show the shortcut path
 		if game["Files"]["Shortcut"]["Path"] != "":
 			print()
-			print(self.Language.language_texts["path, title()"] + ":")
+			print(self.Language.language_texts["shortcut_path"] + ":")
 			print("\t" + game["Files"]["Shortcut"]["Path"])
 
 		# --------------- #

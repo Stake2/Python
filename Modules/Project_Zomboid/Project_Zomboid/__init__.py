@@ -251,7 +251,7 @@ class Project_Zomboid(object):
 			# 
 			# Format:
 			# [City] - [State] - [Country]
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				dictionary["Locality"][language] = city + " - " + self.project_zomboid["Cities"]["State"] + " - " + self.Language.texts["united_states"][language]
 
 			# Add the local "City" dictionary to the root "Cities" dictionary

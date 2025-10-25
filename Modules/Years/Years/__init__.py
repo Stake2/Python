@@ -180,7 +180,7 @@ class Years(object):
 		}
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define the link
 			link = "https://write.as/stake2/" + self.texts["summary_of_my_year_of_{current_year}, type: link"][language]
 
@@ -321,7 +321,7 @@ class Years(object):
 					dict_["Dictionary"][item_name] = {}
 
 					# Define the list of small languages
-					languages = self.languages["small"]
+					languages = self.languages["Small"]
 
 					# If the item type is "User language files"
 					if item_type == "User language files":
@@ -377,7 +377,7 @@ class Years(object):
 					dict_["Dictionary"][item_name] = {}
 
 					# Iterate through the list of small languages
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						# Replace spaces with underscores and lowercase the item name to make the text key
 						text_key = item_name.lower().replace(" ", "_")
 
@@ -420,7 +420,7 @@ class Years(object):
 							dict_["Dictionary"][item_name] = {}
 
 							# Iterate through the small languages list
-							for language in self.languages["small"]:
+							for language in self.languages["Small"]:
 								text_key = item_name.lower().replace(" ", "_")
 
 								if "_" not in text_key:
@@ -454,7 +454,7 @@ class Years(object):
 						dict_["Dictionary"][item_name] = {}
 
 						# Iterate through the small languages list
-						for language in self.languages["small"]:
+						for language in self.languages["Small"]:
 							text_key = item_name.lower().replace(" ", "_")
 
 							if "_" not in text_key:
@@ -778,14 +778,14 @@ class Years(object):
 
 		# Define the language folder keys
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			data["Dictionary"]["Files"][data["Folder type"]][language] = {}
 
 		# Create the language text folders
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define the folder
 			data["Local"][language] = {
@@ -850,7 +850,7 @@ class Years(object):
 				]
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				data["Dictionary"]["Files"][data["Folder type"]][language]
 
 				# Create the language folder text folders
@@ -956,7 +956,7 @@ class Years(object):
 
 			# Create the Christmas "Planning" files
 			# Iterate through the files dictionary
-			# keys = ["Objects", self.languages["full"].values()]
+			# keys = ["Objects", self.languages["Full"].values()]
 			for key, file in dictionary["Files"]["Dictionary"].items():
 				# Define the root folder
 				folder[key] = folder["root"]
@@ -1115,9 +1115,9 @@ class Years(object):
 				folder = data["Local"]["Christmas"]["Planning"]
 
 				# Iterate through the small languages list
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Define the file
 					folder[language] = folder["root"] + full_language + ".txt"

@@ -107,7 +107,7 @@ class Help_With_Programming(Code):
 		self.mode_names = []
 		self.language_mode_names = {}
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.language_mode_names[language] = []
 
 		self.mode_settings = {}
@@ -139,7 +139,7 @@ class Help_With_Programming(Code):
 
 			self.language_mode_names[mode_name] = {}
 
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				self.language_mode_names[language].append(self.mode["Language names"][language])
@@ -202,7 +202,7 @@ class Help_With_Programming(Code):
 		self.function_code_file = self.function_folder + "Function_Code." + self.function_data["Extension"]
 
 		if self.programming_language_settings["Modes"] == True:
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name not in self.function_data:
@@ -330,7 +330,7 @@ class Help_With_Programming(Code):
 
 			tool_data[self.language_texts["original_name"]] = tool_name
 
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name in tool_info:
@@ -389,7 +389,7 @@ class Help_With_Programming(Code):
 
 			language_tool_name = tool_name
 
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				language_name = self.texts["language_name"][language][self.language["Small"]]
 
 				if language_name in tool_data:

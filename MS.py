@@ -278,7 +278,7 @@ class Module_Selector():
 
 		# Add the arguments by language
 		# Not the English language, the other languages such as the user language (when it is not English)
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# If the language is not English
 			if language != "en":
 				# Define the text as the argument

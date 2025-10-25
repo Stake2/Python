@@ -133,9 +133,9 @@ class Register(GamePlayer):
 			}
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# If the language is not the first one
-				if language != self.languages["small"][0]:
+				if language != self.languages["Small"][0]:
 					# Enumerate the lines
 					parameters["line_options_parameter"]["enumerate"] = True
 					parameters["line_options_parameter"]["enumerate_text"] = False
@@ -147,7 +147,7 @@ class Register(GamePlayer):
 					parameters["length"] = last_description["length"]
 
 				# Get the translated language in the user language
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 				# Define the type text
 				type_text = self.Language.language_texts["description_in_{}"] + ":"
@@ -250,7 +250,7 @@ class Register(GamePlayer):
 		template = "{}. {} ({})"
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the language game type
 			language_game_type = self.dictionary["Type"]["Type"][language]
 
@@ -314,7 +314,7 @@ class Register(GamePlayer):
 				current_dict.pop(key, None) # Use None to avoid KeyError if the key does not exist
 
 			# Remove language keys that match the original or romanized titles
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				if language in current_dict:
 					if (
 						current_dict["Original"] == current_dict[language] or
@@ -337,20 +337,11 @@ class Register(GamePlayer):
 			"Game titles": game_titles, # The dictionary of the game titles
 			"Sub-game titles": sub_game_titles, # The dictionary of the sub-game titles
 			"Platform": self.game["Platform"]["en"], # The platform where the game was played
+			"Gaming environment": self.game["Gaming environment"]["en"] # The gaming environment where the game was played
 		}
 
 		# Define a shortcut for the entry dictionary
 		self.entry_dictionary = self.dictionaries["Sessions"]["Dictionary"][self.entry_name]
-
-		# Remove the game "Sub-game titles" key from the dictionary if:
-		# 1. The game does not contain sub-games
-		# 2. The game contains sub-games and the sub-game is the root game
-		if (
-			self.game["States"]["Has sub-games"] == False or
-			self.game["States"]["Has sub-games"] == True and
-			self.game["Sub-game"]["Title"] == self.game["Title"]
-		):
-			self.dictionaries["Sessions"]["Dictionary"][self.entry_name].pop("Sub-game titles")
 
 		# ---------- #
 
@@ -391,6 +382,29 @@ class Register(GamePlayer):
 			**dictionary["Difference"], # Extract the keys and values of the "Difference" dictionary
 			"Text": dictionary["Text"]
 		}
+
+		# ---------- #
+
+		# Remove the game "Sub-game titles" key from the dictionary if:
+		# 1. The game does not contain sub-games
+		# 2. The game contains sub-games and the sub-game is the root game
+		if (
+			self.game["States"]["Has sub-games"] == False or
+			self.game["States"]["Has sub-games"] == True and
+			self.game["Sub-game"]["Title"] == self.game["Title"]
+		):
+			self.dictionaries["Sessions"]["Dictionary"][self.entry_name].pop("Sub-game titles")
+
+		# ---------- #
+
+		# Define shortcuts for the game platform and gaming environment
+		platform = self.game["Platform"]
+		gaming_environment = self.game["Gaming environment"]
+
+		# If the game platform and gaming environment are the same
+		if platform == gaming_environment:
+			# Remove the "Gaming environment" key from the entry dictionary
+			self.dictionaries["Sessions"]["Dictionary"][self.entry_name].pop("Gaming environment")
 
 		# ---------- #
 
@@ -473,6 +487,11 @@ class Register(GamePlayer):
 		# Platform:
 		# [Platform]
 		# 
+		# (
+		# Gaming environment:
+		# [Gaming environment]
+		# )
+		# 
 		# When I started playing:
 		# [Started playing time in local timezone]
 		# 
@@ -509,7 +528,7 @@ class Register(GamePlayer):
 		}
 
 		# Fill the entry "Text" dictionary with the entry texts of each language
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Entry"]["Text"][language] = self.Define_File_Text(language)
 
 		# ---------- #
@@ -573,7 +592,7 @@ class Register(GamePlayer):
 			game_titles.append(titles_dictionary["Language"])
 
 			# Iterate through the small languages list
-			for local_language in self.languages["small"]:
+			for local_language in self.languages["Small"]:
 				# Check if the local language exists in the titles dictionary
 				# And if the title in that language is different from the language title
 				if (
@@ -606,7 +625,7 @@ class Register(GamePlayer):
 			language = self.language["Small"]
 
 		# Retrieve the full language name from the languages dictionary
-		full_language = self.languages["full"][language]
+		full_language = self.languages["Full"][language]
 
 		# ---------- #
 
@@ -665,6 +684,17 @@ class Register(GamePlayer):
 
 		# Add the "Platform" text and the platform where the user played the game
 		lines.append(self.Language.texts["platform, title()"][language] + ":" + "\n" + self.game["Platform"][language] + "\n")
+
+		# ---------- #
+
+		# Define shortcuts for the game platform and gaming environment
+		platform = self.game["Platform"]
+		gaming_environment = self.game["Gaming environment"]
+
+		# If the game platform and gaming environment are not the same
+		if platform != gaming_environment:
+			# Add the "Gaming environment" text and the gaming environment where the user played the game
+			lines.append(self.texts["gaming_environment"][language] + ":" + "\n" + gaming_environment[language] + "\n")
 
 		# ---------- #
 
@@ -810,15 +840,15 @@ class Register(GamePlayer):
 			# Or all language descriptions
 			else:
 				# Iterate through the list of small languages
-				for local_language in self.languages["small"]:
+				for local_language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][local_language]
+					full_language = self.languages["Full"][local_language]
 
 					# Add the full language and the language description to the root descriptions text
 					descriptions += full_language + ":" + "\n" + descriptions_dictionary[local_language]["string"]
 
 					# If the local language is not the last language in the list
-					if local_language != self.languages["small"][-1]:
+					if local_language != self.languages["Small"][-1]:
 						# Add two line breaks to the root descriptions text
 						descriptions += "\n\n"
 
@@ -832,9 +862,9 @@ class Register(GamePlayer):
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define a shortcut for the folder
 			folder = self.current_year["Folders"][language]["Gaming sessions"]

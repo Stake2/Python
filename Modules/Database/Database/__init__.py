@@ -198,7 +198,7 @@ class Database(object):
 			}
 
 			# Define the singular and plural types
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				for item in ["Singular", "Plural"]:
 					self.types[plural_type][item][language] = self.types[item][language][i]
 
@@ -325,7 +325,7 @@ class Database(object):
 			self.types[plural_type].pop("JSON")
 
 			# Define the entry item
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				self.types[plural_type]["Items"][language] = self.types["items, type: dictionary"][plural_type][language]
 
 			# Add the data list length numbers to the data types list to show on select data type
@@ -523,7 +523,7 @@ class Database(object):
 		i = 0
 		for plural_type in self.types["Plural"]["en"]:
 			if plural_type in dictionary["List"]["en"]:
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					dictionary["List"][language][i] = dictionary["List"][language][i] + " (" + str(numbers[plural_type]) + ")"
 
 				i += 1
@@ -551,7 +551,7 @@ class Database(object):
 		dictionary["Data list"] = self.Get_Data_List(dictionary, dictionary["Status"])
 
 		# Add the data list length numbers to the data types list to show on the select data
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			for text_type in ["Singular", "Plural"]:
 				dictionary[text_type]["Show"] = dictionary[text_type][self.language["Small"]] + " (" + str(len(dictionary["Data list"])) + ")"
 
@@ -697,10 +697,10 @@ class Database(object):
 		if self.Language.language_texts["original_language"] in data["Details"]:
 			data["Language"] = data["Details"][self.Language.language_texts["original_language"]]
 
-		if data["Language"] in list(self.languages["full"].values()):
+		if data["Language"] in list(self.languages["Full"].values()):
 			# Iterate through full languages list to find small language from the full language
-			for small_language in self.languages["full"]:
-				full_language = self.languages["full"][small_language]
+			for small_language in self.languages["Full"]:
+				full_language = self.languages["Full"][small_language]
 
 				if full_language == data["Language"]:
 					data["Language"] = small_language
@@ -828,7 +828,7 @@ class Database(object):
 				# Define the state texts of the current state dictionary
 				states_dictionary["Texts"][key] = {}
 
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					text = ""
 
 					if key != "First type entry in year":
@@ -907,7 +907,7 @@ class Database(object):
 					data["Titles"][self.language["Small"]] = data["Titles"][self.language["Small"]] + " (" + data["Titles"]["Original"].split(" (")[-1]
 
 			# Define the data titles by language
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				key = self.Language.texts["title_in_language"][language][self.language["Small"]]
 
 				if key in data["Details"]:
@@ -1073,9 +1073,9 @@ class Database(object):
 
 		print("\t" + self.data["Titles"][key])
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			if language in self.data["Titles"]:
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 				print("\t" + translated_language + ":")
 				print("\t" + self.data["Titles"][language])
@@ -1086,7 +1086,7 @@ class Database(object):
 
 		types = []
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			text = "\t" + dictionary["Type"]["Plural"][language]
 
 			if text not in types:

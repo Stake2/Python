@@ -130,7 +130,7 @@ class Register(Watch_History):
 		template = "{}. {} ({})"
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the language media type
 			language_media_type = self.dictionary["Media type"]["Plural"][language]
 
@@ -194,7 +194,7 @@ class Register(Watch_History):
 			current_dict.pop("Sanitized")
 
 			# Remove language keys that match the original or romanized titles
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				if language in current_dict:
 					if (
 						current_dict["Original"] == current_dict[language] or
@@ -470,7 +470,7 @@ class Register(Watch_History):
 		}
 
 		# Fill the entry "Text" dictionary with the entry texts of each language
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Entry"]["Text"][language] = self.Define_File_Text(language)
 
 		# ---------- #
@@ -519,7 +519,7 @@ class Register(Watch_History):
 			media_titles.append(titles_dictionary["Language"])
 
 			# Iterate through the small languages list
-			for local_language in self.languages["small"]:
+			for local_language in self.languages["Small"]:
 				# Check if the local language exists in the titles dictionary
 				# And if the title in that language is different from the language title
 				if (
@@ -551,7 +551,7 @@ class Register(Watch_History):
 			language = self.language["Small"]
 
 		# Retrieve the full language name from the languages dictionary
-		full_language = self.languages["full"][language]
+		full_language = self.languages["Full"][language]
 
 		# ---------- #
 
@@ -728,7 +728,7 @@ class Register(Watch_History):
 
 				# If the language parameter is "General", add titles for all languages
 				if language_parameter == "General":
-					for local_language in self.languages["small"]:
+					for local_language in self.languages["Small"]:
 						episode_title = self.media["Episode"]["Titles"][local_language]
 
 						# If the episode title is empty, set a placeholder
@@ -783,9 +783,9 @@ class Register(Watch_History):
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define a shortcut for the folder
 			folder = self.current_year["Folders"][language]["Watched media"]
@@ -829,7 +829,7 @@ class Register(Watch_History):
 
 	def Check_Media_Status(self):
 		if self.media["States"]["Series media"] == True:
-			# If the media has a media item list
+			# If the media has a list of media items
 			# And the episode title is the last one
 			if (
 				self.media["States"]["Has a list of media items"] == True and
@@ -1163,7 +1163,7 @@ class Register(Watch_History):
 				self.media["Time spent watching"] = self.media["Time spent watching"][2:]
 
 			# Define a shortcut to the "the item" text
-			the_item_text = self.media["Texts"]["container_text"]["the"]
+			the_item_text = self.media["Texts"]["Container texts"]["The"]
 
 			# Define the list of items to use to format the template
 			items = [
@@ -1218,33 +1218,49 @@ class Register(Watch_History):
 			self.dictionary["Entry"]["Diary Slim"]["Dates"] += "\n\n" + self.media["Finished watching text"]
 
 	def Define_Diary_Slim_Text(self):
+		# Define the text template as "I just finished watching {}"
 		template = self.language_texts["i_just_finished_watching_{}"]
 
-		# Replaced "watching" with "re-watching" text
+		# Replaced the "watching" text with the "re-watching [number of times]" text if the "Re-watching" state is True
+		# Example:
+		# I just finished re-watching one time
+		# I just finished re-watching two times
 		if self.media["States"]["Re-watching"] == True:
-			template = template.replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"] + " " + self.media["Episode"]["Re-watching"]["Texts"]["Times"][self.language["Small"]])
+			watching = self.language_texts["watching, infinitive"]
+			re_watching = self.language_texts["re_watching, infinitive"] + " " + self.media["Episode"]["Re-watching"]["Texts"]["Times"][self.language["Small"]]
 
+			template = template.replace(watching, re_watching)
+
+		# ---------- #
+
+		# If the media is a series media
 		if self.media["States"]["Series media"] == True:
+			# Add quotes and another format character to the text template
 			template += ' "{}"'
 
-			text = self.dictionary["Media type"]["Genders"][self.language["Small"]]["of_the"]
+			# Define the "this text" as the "this" text in the masculine gender
+			this_text = self.Language.language_texts["genders, type: dictionary, masculine"]["this"]
 
-			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["series, title()"]["en"]:
-				text = self.media_types["Genders"][self.language["Small"]]["masculine"]["of_the"]
-
-			# Define the unit text
+			# Define the unit text as the media unit text in the user language
 			unit_text = self.media["Texts"]["unit"][self.language["Small"]]
 
 			# If the media item is a single unit one
 			if self.media["States"]["Single unit"] == True:
-				# Define the unit text as the media item type text
+				# Define the unit text as the media item type text in the user language
 				unit_text = self.media["Item"]["Type"][self.language["Small"]].lower()
 
-			# Define the "this text"
-			this_text = self.Language.language_texts["genders, type: dictionary, masculine"]["this, neutral"]
+			# Define the text as the "of the" text in the default gender, in the user language
+			of_the_text = self.dictionary["Media type"]["Genders"][self.language["Small"]]["of_the"]
 
-			# Add the unit and the "of the" text
-			self.watched_item_text = this_text + " " + unit_text + " " + text
+			# If the media type is not "Series", define the text as the masculine "of the" text
+			# (The default gender for "Series" media is feminine)
+			if self.dictionary["Media type"]["Plural"]["en"] != "Series":
+				of_the_text = self.media_types["Genders"][self.language["Small"]]["masculine"]["of_the"]
+
+			# Define the watched item text as the "this text" plus the "unit text" plus the "of the" text
+			watched_item_text = this_text + " " + unit_text + " " + of_the_text
+
+			# ----- #
 
 			# If the media item is not a single unit one
 			# And the media is not a video channel
@@ -1252,81 +1268,127 @@ class Register(Watch_History):
 				self.media["States"]["Single unit"] == False and
 				self.media["States"]["Video"] == False
 			):
-				# Replace "this" with "the first" if the episode is the first one
-				if self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][0]:
-					self.watched_item_text = self.watched_item_text.replace(this_text, self.Language.language_texts["the_first, masculine"])
+				# Define a shortcut to the list of titles
+				titles = self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]
 
-				# Replace "this" with "the last" if the episode is the last one
+				# Replace the "this" text with "the first" text if the episode is the first one
+				if self.media["Episode"]["Title"] == titles[0]:
+					watched_item_text = watched_item_text.replace(this_text, self.Language.language_texts["the_first, masculine"])
+
+				# Replace the "this" text with "the last" text if the episode is the last one
+				# Or the number of titles is only one
+				# (Normally this would mean that the media item is a single unit one, I have never seen a media item (season) that has only one episode, it rarely happens)
 				if (
-					self.media["Episode"]["Title"] == self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1] or
-					len(self.media["Item"]["Episodes"]["Titles"][self.media["Language"]]) == 1
+					self.media["Episode"]["Title"] == titles[-1] or
+					len(titles) == 1
 				):
-					self.watched_item_text = self.watched_item_text.replace(this_text, self.Language.language_texts["the_last, masculine"])
+					# Replace the "this" text with "the last" text if the episode is the last one
+					watched_item_text = watched_item_text.replace(this_text, self.Language.language_texts["the_last, masculine"])
 
+			# ----- #
+
+			# If the "Movie" text is inside the media episode title in the user language
 			if "Movie" in self.media["Episode"]["Titles"][self.media["Language"]]:
-				self.watched_item_text = self.watched_item_text.replace(self.language_texts["episode"], self.language_texts["movie"])
+				# Replace the "episode" text with the "movie" text
+				watched_item_text = watched_item_text.replace(self.language_texts["episode"], self.language_texts["movie"])
+
+			# ----- #
 
 			# Define the "of the" text template
-			self.of_the_text = self.Language.language_texts["of_the_{}"]
+			of_the_text = self.Language.language_texts["of_the_{}"]
 
+			# If the media has a list of media items
+			# And the media item is not the root media
+			# And the media item is not a single unit one
 			if (
 				self.media["States"]["Has a list of media items"] == True and
 				self.media["States"]["The media item is the root media"] == False and
 				self.media["States"]["Single unit"] == False
 			):
+				# If the media is not a video channel
 				if self.media["States"]["Video"] == False:
-					text = ""
+					# Define a media item text as an empty string by default
+					media_item_text = ""
 
 					# Replace the "of the" text with "of the first" if the media item is the first one
 					if self.media["Item"]["Title"] == self.media["Items"]["List"][0]:
-						text = self.Language.language_texts["first, feminine"] + " "
+						media_item_text = self.Language.language_texts["first, feminine"] + " "
 
 					# Replace the "of the" text with "of the last" if the media item is the last one
 					if self.media["Item"]["Title"] == self.media["Items"]["List"][-1]:
-						text = self.Language.language_texts["last, feminine"] + " "
+						media_item_text = self.Language.language_texts["last, feminine"] + " "
 
-					# Add the item text ("season" or "series") to "of the" text
-					self.of_the_text = self.of_the_text.format(text + self.language_texts["season, title()"].lower())
+					# Get the lowercase season text
+					season_text = self.language_texts["season, title()"].lower()
 
-				if self.media["States"]["Video"] == True:
-					self.of_the_text = self.of_the_text.format(self.language_texts["video_series, type: singular"])
+					# Format the "of the" text to add the media item text and the "season" text
+					of_the_text = of_the_text.format(media_item_text + season_text)
 
-				# If the watched media is not a video channel
-				if self.media["States"]["Video"] == False:
-					# Add "of the" text next to unit ("episode" or "video") text
-					self.watched_item_text = self.watched_item_text.replace(self.media["Texts"]["unit"][self.language["Small"]], self.media["Texts"]["unit"][self.language["Small"]] + " {}".format(self.of_the_text))
+					# Define a shortcut to the unit text
+					unit_text = self.media["Texts"]["unit"][self.language["Small"]]
 
-					# Define the media item title variable
+					# Add the "of the" text to the right of the unit ("episode") text
+					watched_item_text = watched_item_text.replace(unit_text, unit_text + " {}".format(of_the_text))
+
+					# Define the media item title
 					media_item_title = self.Define_Title(self.media["Item"]["Titles"])
 
-					# If the season text is not inside the media item title
-					if " " + self.language_texts["season, title()"] not in media_item_title:
+					# Define a shortcut to the uppercase " Season" text
+					uppercase_season_text = " " + self.language_texts["season, title()"]
+
+					# If the uppercase " Season" text is not inside the media item title
+					if uppercase_season_text not in media_item_title:
 						# Add quotes around the media item title
 						media_item_title = '"' + media_item_title + '"'
 
-					# Add the media item title to the "of the" text
-					self.watched_item_text = self.watched_item_text.replace(self.of_the_text, self.of_the_text + " " + media_item_title)
+					# Add the media item title after the "of the" text
+					watched_item_text = watched_item_text.replace(of_the_text, of_the_text + " " + media_item_title)
 
-					# If the season text is inside the media item title
-					if " " + self.language_texts["season, title()"] in media_item_title:
-						# Remove it
-						self.watched_item_text = self.watched_item_text.replace(" " + self.language_texts["season, title()"].lower(), "")
+					# If the " Season" text is inside the media item title
+					if uppercase_season_text in media_item_title:
+						# Remove the lowercase season text
+						watched_item_text = watched_item_text.replace(" " + season_text.lower(), "")
 
-				# Replace the media title with space in the media item if it exists
+				# If the media is a video channel
+				if self.media["States"]["Video"] == True:
+					# Format the "of the" text to add the "video series" text
+					of_the_text = of_the_text.format(self.language_texts["video_series, type: singular"])
+
+				# Remove the media title with space in the media item if it exists
 				if self.media["Title"] + " " in self.media["Item"]:
-					self.watched_item_text = self.watched_item_text.replace(self.media["Title"] + " ", "")
+					watched_item_text = watched_item_text.replace(self.media["Title"] + " ", "")
 
-			# Add container (media type or "YouTube channel" text for video media type) to watched item text
-			self.watched_item_text += " " + self.media["Texts"]["container_text"]["container"]
+			# If the "Dubbing" dictionary is present inside the "Episode" dictionary
+			if "Dubbing" in self.media["Episode"]:
+				# Add the dubbing text to the text template
+				template += self.media["Episode"]["Dubbing"]["Text"]
+
+			# Define a shortcut to the "Container texts" dictionary 
+			container_texts = self.media["Texts"]["Container texts"]
+
+			# Add the container (media type or "YouTube channel" text for the "Videos" media type) to the watched item text
+			watched_item_text += " " + container_texts["Container"]
 
 			# Define the "Diary Slim" text as the template formatted with the "watched item text" and the media title by language
-			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(self.watched_item_text, self.media["Titles"]["Language"])
+			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(watched_item_text, self.media["Titles"]["Language"])
 
-		# If the media is a movie, only add the "this" text and the media type "movie" text in user language
+		# ---------- #
+
+		# If the media is a movie (not a series media)
+		# Only add the "this" text and the media type "movie" text in user language
 		if self.media["States"]["Series media"] == False:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(self.dictionary["Media type"]["Genders"][self.language["Small"]]["this"] + " " + self.dictionary["Media type"]["Singular"][self.language["Small"]].lower())
+			# Define a shortcut to the "this" text
+			this_text = self.dictionary["Media type"]["Genders"][self.language["Small"]]["this"]
 
-		# Define the local language to use to add the episode title
+			# Define a shortcut to the media type text
+			media_type_text = self.dictionary["Media type"]["Singular"][self.language["Small"]].lower()
+
+			# Add the two to define the Diary Slim text
+			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(this_text + " " + media_type_text)
+
+		# ---------- #
+
+		# Define a local language as the media language
 		language = self.media["Language"]
 
 		# If the media language is not the user language
@@ -1334,69 +1396,65 @@ class Register(Watch_History):
 			# Change the local language to the user language
 			language = self.language["Small"]
 
-		# If the media unit is not single unit, add only the language episode (or movie) title
-		if self.media["States"]["Single unit"] == False:
-			# Add a colon and a line break to the Diary Slim text
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n"
+		# ---------- #
 
-			# Get the media or user language episode title
-			title = self.media["Episode"]["Titles"][language]
+		# Get the media or user language episode title
+		episode_title = self.media["Episode"]["Titles"][language]
 
-			# If the length of the title is greater than one
-			# And the first two characters of the title are a space and a colon
-			if (
-				len(title) > 1 and
-				title[0] + title[1] == ": "
-			):
-				# Remove them
-				title = title[2:]
+		# If the length of the title is greater than one
+		# And the first two characters of the title are a space and a colon
+		if (
+			len(episode_title) > 1 and
+			episode_title[0] + episode_title[1] == ": "
+		):
+			# Remove them
+			episode_title = episode_title[2:]
 
-			# Add the episode title to the Diary Slim text
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += title
+		# Add a colon, a line break, and the episode title to the Diary Slim text
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + episode_title
 
-		# If the media unit is single unit, add the episode with media title
-		if self.media["States"]["Single unit"] == True:
-			# Define the episode title
-			episode_title = self.media["Episode"]["Titles"][language]
+		# ---------- #
 
-			# If the length of the title is greater than one
-			# And the first two characters of the title are a space and a colon
-			if (
-				len(episode_title) > 1 and
-				episode_title[0] + episode_title[1] == ": "
-			):
-				# Remove them
-				episode_title = episode_title[2:]
-
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += ":\n" + episode_title
-
-		# Add year and distributor/producer to title for movies
+		# For movies, add additional details about the movie that are present inside the parentheses of the original movie title
 		if self.media["States"]["Series media"] == False:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
-		# Add the Re-watching text if the user is re-watching the media
+		# If the "Re-watching" state is True, add the number text of re-watched times in the user language
 		if self.media["States"]["Re-watching"] == True:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["Re-watching"]["Texts"]["Number"][self.language["Small"]]
 
-		# Add the episode link if it exists
+		# If the "Remote" dictionary is inside the "Episode" dictionary
+		# And there is a link inside the "Remote" dictionary
+		# And the remote title is not "Animes Vision"
 		if (
 			"Remote" in self.media["Episode"] and
 			"Link" in self.media["Episode"]["Remote"] and
 			self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
 		):
+			# Add two line breaks and the remote link
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["Episode"]["Remote"]["Link"]
 
-		# If there are states, add the texts to the Diary Slim text
+		# If there are states, add the state texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
+			# Add two line breaks and the "States:" text, followed by another like break
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
-			for key in self.dictionary["States"]["Texts"]:
-				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.language["Small"]]
+			# Define a shortcut to the state "Texts" dictionary
+			texts =	self.dictionary["States"]["Texts"]
 
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+			# List the state keys
+			keys = list(texts.keys())
+
+			# Iterate through the state keys inside the state "Texts" dictionary
+			for key in keys:
+				# Add the state text in the user language to the Diary Slim text
+				self.dictionary["Entry"]["Diary Slim"]["Text"] += texts[key][self.language["Small"]]
+
+				# If the is not the last one, add a line break after the state text
+				if key != keys[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
 
-		# If there are dates, add them to the Diary Slim text
+		# If there are dates inside the "Diary Slim" dictionary, add them to the Diary Slim text
 		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
@@ -1616,7 +1674,7 @@ class Register(Watch_History):
 		# Define the media type dictionary
 		media_type = {
 			"Plural": self.media_type,
-			"The": self.media["Texts"]["container_text"]["the (original)"]
+			"The": self.media["Texts"]["Container texts"]["The"]
 		}
 
 		# Update the media statistics for the current year and month, passing the local media dictionary and the media type
@@ -1624,14 +1682,33 @@ class Register(Watch_History):
 		self.dictionary["Statistics text"] = Watch_History.Update_Statistics(self, self.dictionary, media, media_type)
 
 	def Show_Information(self):
-		self.dictionary["Header text"] = self.Text.Capitalize(self.media["Texts"]["container_text"]["container"]) + ":"
+		# Define the header text key as the selected container text (generally the media type)
+		# Examples:
+		# Anime:
+		# Dubbed anime:
+		# 
+		# (Selected means it maybe a normal or dubbed container text
+		# "anime" or "dubbed anime")
+		self.dictionary["Header text"] = self.Text.Capitalize(self.media["Texts"]["Selected container texts"]["Container"]) + ":"
 
+		# If the "Completed media" state is True (the media has been completed)
 		if self.media["States"]["Completed media"] == True:
-			text = self.media["Texts"]["container_text"]["this"]
+			# Define the text as the "this container" text
+			text = self.media["Texts"]["Selected container texts"]["This"]
 
+			# Update the header text to be the "You finished watching [this container]:" text
+			# Examples:
+			# You finished watching this anime:
+			# You finished watching this cartoon:
+			# You finished watching this series:
+			# You finished watching this movie:
+			# You finished watching this YouTube channel:
 			self.dictionary["Header text"] = self.language_texts["you_finished_watching"] + " " + text + ":"
 
+		# If the "Re-watching" state is True
 		if self.media["States"]["Re-watching"] == True:
+			# Replace the "watching" text with the "re-watching" text inside the header text
 			self.dictionary["Header text"] = self.dictionary["Header text"].replace(self.language_texts["watching, infinitive"], self.language_texts["re_watching, infinitive"])
 
+		# Show information about the media
 		self.Show_Media_Information(self.dictionary)

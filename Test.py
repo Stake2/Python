@@ -19,8 +19,6 @@ class Main():
 		# Define the basic variables of the class
 		self.Define_Basic_Variables()
 
-		# Class methods
-
 		# Get the methods of the class
 		self.Get_Methods()
 
@@ -55,6 +53,8 @@ class Main():
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+
+		# ---------- #
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -156,58 +156,63 @@ class Main():
 		# Run the method
 		method()
 
-	def Delete_Discord_Messages(self):
-		# Define the Discord folder
-		discord_folder = self.folders["User"]["Documents"]["root"] + "Discord/"
+	def Convert_Date(self):
+		# Define the date as an empty string
+		date = ""
 
-		# Define the day folder
-		day_folder = discord_folder + "08-10-2024/"
+		# While the date is not "f"
+		while date != "f":
+			# Show a ten dash space separator
+			print()
+			print(self.separators["10"])
 
-		# Define the messages folder
-		messages_folder = day_folder + "messages/"
+			# Ask for the date
+			date = self.Input.Type("Paste the date", accept_enter = False, next_line = True)
 
-		# Define the index file
-		index_json = messages_folder + "index.json"
+			# Convert it into a date dictionary
+			date = self.Date.From_String(date, "%H:%M %d/%m/%Y")
 
-		# Read the index file
-		index = self.JSON.To_Python(index)
+			# Define the date format
+			date_format = "YYYY-MM-DDTHH:MM:SSZ"
 
-	def Shortcut(self):
-		# Define the default shortcut dictionary
-		dictionary = {
-			#"File": "C:/Apps/Sync.lnk"
-			"Name": "Requisitos",
-			"Folder": "C:/Apps/Shortcuts/",
-			"Target": "C:/Apps/requirements.txt"
-		}
+			# Get the date in that format
+			selected_date = date["UTC"]["DateTime"]["Formats"][date_format]
 
-		# Create the shortcut
-		shortcut = self.System.Create_Shortcut(dictionary)
+			# Copy the date
+			self.Text.Copy(selected_date)
 
-		# Get the shortcut dictionary
-		#shortcut = self.System.Get_Shortcut(dictionary)
+	def Enumerate_Lines(self):
+		# Ask for the format text
+		format_text = self.Input.Type("Type the format text", next_line = True)
 
-		# Show it
-		self.JSON.Show(shortcut)
+		# Replace tabs with real tabs
+		format_text = format_text.replace("\\t", "\t")
 
-	def Write_File_Names_To_File(self):
-		folder = self.Folder.Sanitize(self.Input.Type(self.Folder.language_texts["folder, title()"]))
+		# Ask for the number of lines
+		number_of_lines = int(self.Input.Type("Type the number of lines", next_line = True))
 
-		files = self.Folder.Contents(folder)["file"]["names"]
+		# Define an empty list of lines
+		lines = []
 
-		i = 0
-		for file in files:
-			file = file.replace("_", " ")
-			file = file.replace("FênixFansub", "Fênix Fansub")
-			file = file.replace("OldAge", "Old Age")
+		# Define an "i" number
+		i = 1
 
-			files[i] = file
+		# While the "i" number is not equal to the number of lines plus one
+		while i != number_of_lines + 1:
+			# Format the format text with the "i" number
+			formatted_text = format_text.format(str(i))
 
+			# Add the formatted text to the list of lines
+			lines.append(formatted_text)
+
+			# Add one to the "i" number
 			i += 1
 
-		file = self.File.Sanitize(self.Input.Type("File to write to"))
+		# Convert the lines into a text
+		text = self.Text.From_List(lines, next_line = True)
 
-		self.File.Edit(file, self.Text.From_List(files, next_line = True))
+		# Copy the text to the clipboard
+		self.Text.Copy(text, verbose = False)
 
 	def Make_Dual_Audio_Of_Media(self):
 		import os
@@ -949,78 +954,239 @@ class Main():
 		# Copy the text
 		self.Text.Copy(names)
 
-	def Get_ID(self, key = "", link = ""):
-		if link == "":
-			while link == "":
-				link = self.Input.Type("{} link or ID".format(key.title()))
-
-		ids = {
-			"video": "v",
-			"playlist": "list",
-			"playlistItem": "list",
-			"comment": "lc"
+	def Parse_Link(self, link, id_parameter):
+		# Define the dictionary of ID parameters to find the correct ID
+		id_parameters_map = {
+			"Playlist": "list", # For playlists
+			"Video": "v", # For videos
+			"Comment": "lc" # For comments
 		}
 
-		id = link
-
+		# If the "youtube" text is inside the link
 		if "youtube" in link:
-			link = urlparse(link)
-			query = link.query
-			parameters = parse_qs(query)
-			id = parameters[ids[key]][0]
+			# Import some useful functions from the "urllib.parse" module
+			from urllib.parse import urlparse, parse_qs
 
-		return id
+			# Parse the link
+			parsed_link = urlparse(link)
+
+			# Get the query part of the URL
+			query_string = parsed_link.query
+
+			# Parse the query string into a dictionary
+			url_parameters = parse_qs(query_string)
+
+			# Get the correct key to extract the ID based on the type
+			id_key = id_parameters_map[id_parameter]
+
+			# Get the ID value from the parsed parameters
+			id = url_parameters[id_key][0]
+
+			# Return the ID and the URL parameters
+			return id, url_parameters
+
+		# Else, return None
+		else:
+			return None
+
+	def Get_ID(self, key):
+		# Import the validators module
+		import validators
+
+		# Define the dictionary of parameter lengths
+		parameter_lengths = {
+			"Playlist": 34, # For playlists
+			"Video": 11, # For videos
+			"Comment": 26 # For comments
+		}
+
+		# Get the parameter length
+		parameter_length = parameter_lengths[key]
+
+		# Define the link variable as an empty string
+		link = ""
+
+		# Define the "found comment parameter" switch as False
+		found_comment_parameter = False
+
+		# While the "found comment parameter" switch is False
+		while found_comment_parameter == False:
+			# Ask for the link
+			link = self.Input.Type("Paste the {} link or ID".format(key.lower()), accept_enter = False)
+
+			# If the link is an URL
+			if validators.url(link) == True:
+				# Parse the link to get the ID
+				id, url_parameters = self.Parse_Link(link, key)
+
+				# If the ID is not None
+				if id != None:
+					# Switch the "found comment parameter" switch to True
+					found_comment_parameter = True
+
+			# If the number of characters of the link is the same of the ID parameter length
+			if len(link) == parameter_length:
+				# Define the ID as the link
+				id = link
+
+				# Switch the "found comment parameter" switch to True
+				found_comment_parameter = True
+
+		# Define a response dictionary
+		response = {
+			"ID": id
+		}
+
+		# If the key is "Comment"
+		if key == "Comment":
+			# Also define the video ID
+			response["Video ID"] = url_parameters["v"][0]
+
+		# Return the response dictionary
+		return response
 
 	def Get_Comment_Information(self):
-		id = self.Get_ID("comment")
+		# Get the response dictionary
+		response = self.Get_ID("Comment")
 
-		youtube = {
-			"item": "comments",
-			"id": id
+		# Get the comment ID
+		id = response["ID"]
+
+		# Define the request dictionary with the comment ID
+		request = {
+			"Item": "Comment",
+			"ID": id
 		}
 
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
+		# If the "Video ID" key is inside the response dictionary
+		if "Video ID" in response:
+			# Define it inside the request dictionary
+			request["Video ID"] = response["Video ID"]
 
-		self.JSON.Show(dictionary)
+		# Call the "Call" method of the "API" class to get the information about the comment with the ID
+		information = self.API.Call("YouTube", request)["Request"]
+
+		# Show a ten dash space separator
+		print()
+		print(self.separators["10"])
+		print()
+
+		# Show the information dictionary
+		self.JSON.Show(information)
+
+		# Show a ten dash space separator
+		print()
+		print(self.separators["10"])
+		print()
+
+		# Get the "Comment" information dictionary
+		comment = information["Dictionary"]["Comment"]
+
+		# Show it
+		self.JSON.Show(comment)
+
+		# Copy it
+		self.Text.Copy(self.JSON.From_Python(comment), verbose = False)
+
+		# Return it
+		return comment
 
 	def Get_Video_Information(self):
 		# Get the video ID
-		id = self.Get_ID("video")
+		id = self.Get_ID("Video")["ID"]
 
-		# Define the API dictionary with the ID
-		youtube = {
-			"item": "videos",
-			"id": id
+		# Define the request dictionary with the video ID
+		request = {
+			"Item": "Video",
+			"ID": id
 		}
 
-		# Make the API call for YouTube
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
+		# Call the "Call" method of the "API" class to get the information about the video with the ID
+		information = self.API.Call("YouTube", request)["Request"]["Dictionary"]
 
-		# Show the response dictionary
+		# If the ID is inside the information dictionary
+		if id in information:
+			# Define the information as it
+			information = information[id]
+
+		# Show a ten dash space separator
 		print()
-		self.JSON.Show(dictionary)
+		print(self.separators["10"])
+		print()
+
+		# Show the information dictionary
+		self.JSON.Show(information)
+
+		# Show a ten dash space separator
+		print()
+		print(self.separators["10"])
+		print()
+
+		# Define the list of video keys
+		keys = [
+			"Title",
+			"ID",
+			"Times"
+		]
+
+		# Iterate through the list of video keys
+		for key in keys:
+			# Get the item using the key
+			item = information[key]
+
+			# If the key is "Times"
+			if key == "Times":
+				# Get the "Timezone" time
+				item = item["Timezone"]
+
+			# If the key is not the first one
+			if key != keys[0]:
+				# Show a five dash space separator
+				print()
+				print(self.separators["5"])
+				print()
+
+			# Define the text to show
+			text = key
+
+			# If the key is "Times"
+			if key == "Times":
+				# Define the text as "Date"
+				text = "Date"
+
+			# Show the text
+			print(text + ":")
+
+			# Copy the item
+			self.Text.Copy(item)
+
+			# If the key is not the last one
+			if key != keys[-1]:
+				# Wait for user input
+				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 	def Get_Channel_Information(self):
 		# Ask for the user name
-		username = self.Input.Type("Username")
+		username = self.Input.Type("Username", accept_enter = False)
 
-		# Define the API dictionary
-		youtube = {
-			"item": "search",
-			"parameters": {
-				"part": "id,snippet",
+		# Define the request dictionary with the username
+		request = {
+			"Item": "Search",
+			"Parameters": {
 				"type": "channel",
 				"q": username
 			}
 		}
 
-		# Get the API response
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
+		# Call the "Call" method of the "API" class to search for the channel
+		information = self.API.Call("YouTube", request)
 
-		self.JSON.Show(dictionary)
+		# Show the information dictionary
+		print()
+		self.JSON.Show(information)
 
-		# Get the channel information dictionary
-		channel = dictionary["Channel"]
+		# Get the "Channel" information dictionary
+		channel = information["Channel"]
 
 		# Add the "Channel creation times" after the "Times" key and remove the "Times" key
 		key_value = {
@@ -1029,88 +1195,52 @@ class Main():
 
 		channel = self.JSON.Add_Key_After_Key(channel, key_value, after_key = "Times", remove_after_key = True)
 
-		# Show the channel information dictionary
+		# Show the "Channel" dictionary
+		print()
 		self.JSON.Show(channel)
 
-		# Copy it as JSON dictionary
+		# Copy it
 		self.Text.Copy(self.JSON.From_Python(channel), verbose = False)
 
-		# And return it
+		# Return it
 		return channel
 
-	def Get_Video_Images(self):
-		folder = self.Folder.Sanitize(self.Input.Type("Folder"))
-
-		titles_file = folder + self.languages["full"]["pt"] + ".txt"
-		titles = self.File.Contents(titles_file)["lines"]
-
-		ids_file = folder + "IDs.txt"
-		ids = self.File.Contents(ids_file)["lines"]
-
-		youtube_link = "https://i.ytimg.com/vi/{}/{}default.jpg"
-
-		import wget
-		import requests
-
-		downloads_folder = self.folders["user"]["downloads"]["root"]
-
-		download_folder = downloads_folder + folder.split("/")[-3] + "/"
-		self.Folder.Create(download_folder)
-
-		i = 0
-		for id in ids:
-			title = titles[i]
-
-			print()
-			print(self.separators["5"])
-			print()
-			print(str(i + 1) + "/" + str(len(ids)) + ":")
-			print()
-			print(title + ":")
-			print()
-
-			found_file = False
-
-			for quality in ["maxres", "hq"]:
-				link = youtube_link.format(id, quality)
-
-				print("\t" + link)
-
-				request = requests.get(link)
-
-				if (
-					found_file == False and
-					request.status_code == 200
-				):
-					file_name = self.Sanitize(title, restricted_characters = True) + ".jpg"
-
-					print()
-					print()
-
-					file = download_folder + file_name
-
-					if self.File.Exist(file) == False:
-						wget.download(link, file)
-
-					print()
-
-					found_file = True
-
-			i += 1
-
-	def Get_Playlist_IDs_And_Titles(self):
+	def Get_Playlist_Information(self):
 		# Get the playlist ID
-		id = self.Get_ID("playlist")
+		id = self.Get_ID("Playlist")["ID"]
 
 		# Define the API dictionary
 		youtube = {
-			"item": "playlistItems",
-			"id": id,
+			"Item": "Playlist",
+			"ID": id,
+			"Remove private videos": False
+		}
+
+		# Call the "Call" method of the "API" class to search for the playlist
+		information = self.API.Call("YouTube", youtube)["Request"]["Dictionary"]
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+		print()
+
+		# Show the information dictionary
+		print()
+		self.JSON.Show(information)
+
+	def Get_Playlist_IDs_And_Titles(self):
+		# Get the playlist ID
+		id = self.Get_ID("Playlist")["ID"]
+
+		# Define the API dictionary
+		youtube = {
+			"Item": "Playlist videos",
+			"ID": id,
 			"Remove private videos": False
 		}
 
 		# Get the API response dictionary
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
+		information = self.API.Call("YouTube", youtube)["Request"]["Dictionary"]
 
 		# Define a dictionary of lists
 		lists = {
@@ -1120,12 +1250,12 @@ class Main():
 		}
 
 		# Iterate through the list of videos
-		for id in dictionary["Videos"]:
+		for id in information["Videos"]:
 			# Add the video ID to the list of IDs
 			lists["IDs"].append(id)
 
 			# Get the video dictionary
-			video = dictionary["Videos"][id]
+			video = information["Videos"][id]
 
 			# Add the video title to the list of titles
 			lists["Titles"].append(video["Title"])
@@ -1161,100 +1291,6 @@ class Main():
 
 				# Show a space
 				print()
-
-	def Get_Playlist_Dates(self):
-		# Get the IDs file
-		ids_file = self.Sanitize(self.Input.Type("IDs file"))
-
-		# Get the dates file
-		dates_file = self.Sanitize(self.Input.Type("Dates file"))
-
-		# Get the IDs from the IDs file
-		ids = self.File.Contents(ids_file)["lines"]
-
-		# Define a list of dates
-		dates = []
-
-		# Iterate through the IDs in the list
-		for id in ids:
-			# Define the API dictionary
-			youtube = {
-				"item": "videos",
-				"id": id
-			}
-
-			# Get the API response dictionary
-			dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
-
-			# Get the video dictionary
-			video = dictionary["Video"]
-
-			self.JSON.Show(dictionary)
-
-			# Get the video date and add it to the list of dates
-			date = video["Times"]["Timezone"]
-
-			dates.append(date)
-
-		# Transform the list of dates into a text string
-		dates = self.Text.From_List(dates, next_line = True)
-
-		self.Text.Copy(dates)
-
-		# Write the list of dates into the dates file
-		#self.File.Edit(dates_file, dates, "w")
-
-	def Get_Channel_ID(self):
-		username = self.Input.Type("Username")
-
-		youtube = {
-			"item": "search",
-			"parameters": {
-				"part": "id,snippet",
-				"type": "channel",
-				"q": username
-			}
-		}
-
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
-
-		self.JSON.Show(dictionary)
-
-		self.Text.Copy(dictionary["Channel"]["ID"])
-
-		return dictionary
-
-	def Get_Video(self, link):
-		id = self.Get_ID("video", link)
-
-		youtube = {
-			"item": "videos",
-			"id": id
-		}
-
-		dictionary = self.API.Call("YouTube", youtube)["Dictionary"]
-
-		self.JSON.Show(dictionary)
-
-		return dictionary
-
-	def Ask_For_Video(self):
-		link = "Link"
-
-		dictionary = {}
-
-		while link != "":
-			print()
-			print("[" + str(len(list(dictionary.keys()))) + " + 1" + "]:")
-
-			link = self.Input.Type("Video link or ID")
-
-			if link not in ["", "Link"]:
-				dictionary = self.Get_Video(link)
-
-				dictionary[id] = dictionary["Video"]
-
-		return dictionary
 
 	def Create_Playlist(self, title = None, description = None):
 		if title == None:

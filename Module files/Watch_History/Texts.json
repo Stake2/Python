@@ -203,9 +203,9 @@
 		"en": "YouTube IDs",
 		"pt": "IDs do YouTube"
 	},
-	"opening_{}_to_watch": {
-		"en": "Opening {} to watch",
-		"pt": "Abrindo {} para assistir"
+	"opening_{}_for_you_to_watch": {
+		"en": "Opening {} for you to watch",
+		"pt": "Abrindo {} para você assistir"
 	},
 	"youtube_channel": {
 		"en": "YouTube channel",

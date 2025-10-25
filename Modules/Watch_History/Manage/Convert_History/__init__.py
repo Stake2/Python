@@ -232,7 +232,7 @@ class Convert_History(Watch_History):
 				dictionary = year["Folders"]["Year"][folder_type]
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# If the language folder key does not exist, create it
 					if language not in dictionary:
 						dictionary[language] = {}
@@ -855,7 +855,7 @@ class Convert_History(Watch_History):
 					# Define the titles key as "Media item titles"
 					titles_key = "Media item titles"
 
-					# If the media has a media item list
+					# If the media has a list of media items
 					# And the "Media item titles" key is not in the entry dictionary
 					if (
 						root_media_dictionary["States"]["Has a list of media items"] == True and
@@ -1000,7 +1000,7 @@ class Convert_History(Watch_History):
 						# Define the titles key as "Media item titles"
 						titles_key = "Media item titles"
 
-						# If the media has a media item list
+						# If the media has a list of media items
 						# And the "Media item titles" key is not in the entry dictionary
 						# (That means the media item is the root media)
 						if (
@@ -1101,7 +1101,7 @@ class Convert_History(Watch_History):
 					template = str(watched_media_number) + ". {} (" + local_entry_time + ")"
 
 					# Iterate through the list of small languages
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						# Create the normal entry name by formating the template with the plural media type in the current language
 						entry_names[key]["Normal"][language] = template.format(root_media_type["Plural"][language])
 
@@ -1607,9 +1607,9 @@ class Convert_History(Watch_History):
 				}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Define a shortcut to the folder
 					folder = year["Folders"]["Year"]["Watched media"][language][plural_media_type]["root"]
@@ -2466,7 +2466,7 @@ class Convert_History(Watch_History):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for local_language in self.languages["small"]:
+		for local_language in self.languages["Small"]:
 			# If the language is in the list of media titles
 			if local_language in entry["Media titles"]:
 				# Get the language title
@@ -2579,7 +2579,7 @@ class Convert_History(Watch_History):
 					)
 
 			# Iterate through the list of small languages
-			for local_language in self.languages["small"]:
+			for local_language in self.languages["Small"]:
 				# If the language is inside the list of media item titles
 				if local_language in titles:
 					# Get the language title

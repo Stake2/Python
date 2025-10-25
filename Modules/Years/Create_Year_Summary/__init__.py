@@ -173,7 +173,7 @@ class Create_Year_Summary(Years):
 			print("--------------------")
 
 	def Define_Summary_Files(self):
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.summary["Files"][language] = self.years["Current year"]["Files"][language]["Summary"]
 
 	def Define_Year_Data(self):
@@ -353,7 +353,7 @@ class Create_Year_Summary(Years):
 					# Get the entries dictionary
 					entries = entries["Dictionary"]
 
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						# Define the empty language text key if it does not exist
 						if language not in history["Data"]["Text"]:
 							history["Data"]["Text"][language] = ""
@@ -509,7 +509,7 @@ class Create_Year_Summary(Years):
 		]
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define the language summary text
 			self.summary["Text"][language] = ""
 
@@ -710,13 +710,13 @@ class Create_Year_Summary(Years):
 		# ---------- #
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Remove the last space if it exists
 			if self.summary["Text"][language][-1] == "\n":
 				self.summary["Text"][language] = self.summary["Text"][language][:-1]
 
 	def Write_Summary_To_Files(self):
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			text = self.summary["Text"][language]
 
 			self.File.Edit(self.summary["Files"][language], text, "w")
@@ -739,7 +739,7 @@ class Create_Year_Summary(Years):
 		print()
 
 		# Show the summary text in the user language
-		print(self.Language.language_texts["summary_in"] + " " + self.languages["full"][self.language["Small"]] + ":")
+		print(self.Language.language_texts["summary_in"] + " " + self.languages["Full"][self.language["Small"]] + ":")
 		print()
 		print(self.separators["15"])
 

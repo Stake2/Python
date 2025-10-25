@@ -39,6 +39,10 @@
 		"en": "websites update",
 		"pt": "atualização de sites"
 	},
+	"story_website": {
+		"en": "Story website",
+		"pt": "Site da história"
+	},
 	"story_website_chapter_posting": {
 		"en": "story website chapter posting on the story websites",
 		"pt": "postagem do capítulo nos sites de história"
@@ -307,7 +311,7 @@
 	},
 	"i_{}_for": {
 		"en": "I {} for",
-		"pt": "Eu {} por"
+		"pt": "{} por"
 	},
 	"post": {
 		"en": "post",

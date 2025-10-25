@@ -1353,6 +1353,14 @@
 		"en": "Operating systems",
 		"pt": "Sistemas operacionais"
 	},
+	"architecture, title()": {
+		"en": "Architecture",
+		"pt": "Arquitetura"
+	},
+	"installed_browsers": {
+		"en": "Installed browsers",
+		"pt": "Navegadores instalados"
+	},
 	"director, title()": {
 		"en": "Director",
 		"pt": "Diretor"
@@ -1383,7 +1391,7 @@
 	},
 	"website, title()": {
 		"en": "Website",
-		"pt": "Website"
+		"pt": "Site"
 	},
 	"{}_website_link": {
 		"en": "{} website link",
@@ -1607,6 +1615,10 @@
 		"en": "Shortcuts",
 		"pt": "Atalhos"
 	},
+	"shortcut_path": {
+		"en": "Shortcut path",
+		"pt": "Caminho do atalho"
+	},
 	"whites, title()": {
 		"en": "White",
 		"pt": "Brancos"
@@ -1652,6 +1664,10 @@
 	"category, title()": {
 		"en": "Category",
 		"pt": "Categoria"
+	},
+	"play, title()": {
+		"en": "Play",
+		"pt": "Jogar"
 	},
 	"played, title()": {
 		"en": "Played",
@@ -1743,7 +1759,7 @@
 		"pt": "Tem dublagem"
 	},
 	"dubbed_{}": {
-		"en": "Dubbed {}",
+		"en": "dubbed {}",
 		"pt": "{} dublado"
 	},
 	"dubbing, title()": {
@@ -1991,7 +2007,7 @@
 	},
 	"authors_list": {
 		"en": "Authors list",
-		"pt": "Lista de Autores"
+		"pt": "Lista de autores"
 	},
 	"creation_date": {
 		"en": "Creation date",
@@ -2049,7 +2065,15 @@
 	},
 	"story_titles": {
 		"en": "Story titles",
-		"pt": "Títulos de história"
+		"pt": "Títulos da história"
+	},
+	"history_of_story_titles": {
+		"en": "History of story titles",
+		"pt": "Histórico de títulos da história"
+	},
+	"story_links": {
+		"en": "Story links",
+		"pt": "Links da história"
 	},
 	"story_acronym": {
 		"en": "Story acronym",
@@ -2061,15 +2085,15 @@
 	},
 	"stories_list": {
 		"en": "Stories list",
-		"pt": "Lista de Histórias"
+		"pt": "Lista de histórias"
 	},
 	"story_information": {
 		"en": "Story information",
 		"pt": "Informações da história"
 	},
 	"story_covers": {
-		"en": "Story Covers",
-		"pt": "Capas de Histórias"
+		"en": "Story covers",
+		"pt": "Capas de histórias"
 	},
 	"in_progress": {
 		"en": "in progress",
@@ -2494,6 +2518,14 @@
 		"en": "Visits of",
 		"pt": "Visitas de"
 	},
+	"visits_of, masculine": {
+		"en": "Visits of",
+		"pt": "Visitas do"
+	},
+	"visits_of, feminine": {
+		"en": "Visits of",
+		"pt": "Visitas da"
+	},
 	"in": {
 		"en": "in",
 		"pt": "em"
@@ -2504,7 +2536,6 @@
 				"the": "the",
 				"these": "these",
 				"this": "this",
-				"this, neutral": "this",
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
@@ -2518,7 +2549,6 @@
 				"the": "the",
 				"these": "these",
 				"this": "this",
-				"this, neutral": "this",
 				"a": "a",
 				"of": "of",
 				"of_the": "of the",
@@ -2533,8 +2563,7 @@
 			"masculine": {
 				"the": "o",
 				"these": "esses",
-				"this": "este",
-				"this, neutral": "esse",
+				"this": "esse",
 				"a": "um",
 				"of": "do",
 				"of_the": "do",
@@ -2547,8 +2576,7 @@
 			"feminine": {
 				"the": "a",
 				"these": "essas",
-				"this": "esta",
-				"this, neutral": "essa",
+				"this": "essa",
 				"a": "uma",
 				"of": "da",
 				"of_the": "da",

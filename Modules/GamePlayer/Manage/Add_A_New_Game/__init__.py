@@ -55,8 +55,8 @@ class Add_A_New_Game(GamePlayer):
 
 				self.game["Titles"]["Original"] = self.game["Title"]
 
-			for language in self.languages["small"]:
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			for language in self.languages["Small"]:
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 				title = ""
 
@@ -118,7 +118,7 @@ class Add_A_New_Game(GamePlayer):
 			show_text = self.Language.language_texts["languages, title()"]
 			select_text = self.Language.language_texts["language, title()"]
 
-			languages = list(self.languages["full"].values())
+			languages = list(self.languages["Full"].values())
 			languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
 			if self.switches["Testing"] == False:
@@ -181,8 +181,8 @@ class Add_A_New_Game(GamePlayer):
 				self.Language.language_texts["title, title()"]: self.game["Title"]
 			}
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+		for language in self.languages["Small"]:
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 

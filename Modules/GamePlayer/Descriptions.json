@@ -10,5 +10,8 @@
 	"Manage": {
 		"en": "Manage the [Game Information] Database and [Play History]",
 		"pt": "Gerenciar o Banco de Dados de [Informações de Jogos] e [Histórico de Jogatinas]"
-	}
+	},
+	"List of classes": [
+		"Play"
+	]
 }

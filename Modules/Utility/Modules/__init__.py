@@ -146,38 +146,37 @@ class Modules():
 		# Define the list of keys to remove
 		remove_list = [
 			"Show text",
-			"Remove list"
+			"Remove list",
+			"List of classes"
 		]
+
+		# If there is a "Remove list" inside the module "Descriptions" dictionary
+		if "Remove list" in self.module["Descriptions"]:
+			# Extend the local remove list with the one inside the "Descriptions" dictionary
+			remove_list.extend(self.module["Descriptions"]["Remove list"])
 
 		# Iterate through the descriptions dictionary
 		for key, descriptions in self.module["Descriptions"].items():
 			# If the key is not in the remove list
 			if key not in remove_list:
-				# If the "Remove list" is not present in the module descriptions dictionary
-				# Or it is and the key is not in the remove list
-				if (
-					"Remove list" not in self.module["Descriptions"] or
-					"Remove list" in self.module["Descriptions"] and
-					key not in self.module["Descriptions"]["Remove list"]
-				):
-					# Import the module
-					module = importlib.import_module("." + key, self.object.__module__)
+				# Import the module
+				module = importlib.import_module("." + key, self.object.__module__)
 
-					# If the module contains the key
-					if hasattr(module, key) == True:
-						# Get the class object
-						object = getattr(module, key)
+				# If the module contains the key
+				if hasattr(module, key) == True:
+					# Get the class object
+					object = getattr(module, key)
 
-					else:
-						# Get the "Run" class
-						object = getattr(module, "Run")
+				else:
+					# Get the "Run" class
+					object = getattr(module, "Run")
 
-					# Create the class dictionary and add it to the "Classes" dictionary, with the class descriptions
-					self.classes["Dictionary"][key] = {
-						"Descriptions": descriptions,
-						"Description": self.Language.Item(descriptions),
-						"Object": object
-					}
+				# Create the class dictionary and add it to the "Classes" dictionary, with the class descriptions
+				self.classes["Dictionary"][key] = {
+					"Descriptions": descriptions,
+					"Description": self.Language.Item(descriptions),
+					"Object": object
+				}
 
 		# Fill the list of class descriptions
 		for class_ in self.classes["Dictionary"].values():
@@ -207,8 +206,30 @@ class Modules():
 			"select_text": self.Language.language_texts["select_one_class_to_execute"]
 		}
 
-		# Ask the user to select a class
-		self.module["Selected class"] = self.Input.Select(**parameters)["option"]
+		# Define the "pre-selected class" switch as False
+		pre_selected_class = False
+
+		# If there is a "List of classes" list inside the module "Descriptions" dictionary
+		# And the number of classes is one
+		if (
+			"List of classes" in self.module["Descriptions"] and
+			len(self.module["Descriptions"]["List of classes"]) == 1
+		):
+			# Then define the "Selected class" as the first item in the list
+			self.module["Selected class"] = self.module["Descriptions"]["List of classes"][0]
+
+			# Transform the selected class into a class dictionary
+			self.module["Selected class"] = self.classes["Dictionary"][self.module["Selected class"]]
+
+			# Define the "Automatically selected class" switch inside the class object
+			setattr(self.module["Selected class"]["Object"], "automatically_selected_class", True)
+
+			# Switch the "pre-selected class" switch to True
+			pre_selected_class = True
+
+		# If the "pre-selected class" switch is False
+		if pre_selected_class == False:
+			self.module["Selected class"] = self.Input.Select(**parameters)["Option"]["Original"]
 
 		# Define the "Modules" variable inside the class object
 		setattr(self.module["Selected class"]["Object"], "Modules", Modules)

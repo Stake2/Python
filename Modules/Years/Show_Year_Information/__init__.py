@@ -36,8 +36,8 @@ class Show_Year_Information(Years):
 		for key in self.year["Files"]:
 			text = key
 
-			if key in self.languages["full"]:
-				text = self.languages["full"][key]
+			if key in self.languages["Full"]:
+				text = self.languages["Full"][key]
 
 			if (
 				type(self.year["Files"][key]) == str and
@@ -63,8 +63,8 @@ class Show_Year_Information(Years):
 
 					text = sub_key
 
-					if sub_key in self.languages["full"]:
-						text = self.languages["full"][sub_key]
+					if sub_key in self.languages["Full"]:
+						text = self.languages["Full"][sub_key]
 
 					if sub_key in self.years["Names"]["Root"]["Files"]["Dictionary"]:
 						text = self.years["Names"]["Root"]["Files"]["Dictionary"][sub_key][self.language["Small"]]
@@ -93,8 +93,8 @@ class Show_Year_Information(Years):
 
 							text = sub_sub_key
 
-							if sub_sub_key in self.languages["full"]:
-								text = self.languages["full"][sub_sub_key]
+							if sub_sub_key in self.languages["Full"]:
+								text = self.languages["Full"][sub_sub_key]
 
 							for item in ["Root", "Language", "Christmas", "New Year"]:
 								if sub_sub_key in self.years["Names"][item]["Files"]["Dictionary"]:
@@ -117,8 +117,8 @@ class Show_Year_Information(Years):
 
 									text = sub_sub_sub_key
 
-									if sub_sub_sub_key in self.languages["full"]:
-										text = self.languages["full"][sub_sub_sub_key]
+									if sub_sub_sub_key in self.languages["Full"]:
+										text = self.languages["Full"][sub_sub_sub_key]
 
 									for item in ["Root", "Language", "Christmas", "New Year"]:
 										local_dictionary = self.years["Names"][item]["Files"]["Dictionary"]

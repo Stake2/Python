@@ -28,7 +28,7 @@ class Copy_Chapter_Titles(Stories):
 		# If the user did not selected a custom language
 		if self.states["Select language"] == False:
 			# Define the 
-			languages = self.languages["small"]
+			languages = self.languages["Small"]
 
 		# If the user wants to select a language
 		if self.states["Select language"] == True:
@@ -40,21 +40,21 @@ class Copy_Chapter_Titles(Stories):
 			translated_languages = []
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the translated language in the user language
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 				# Add it to the list
 				translated_languages.append(translated_language)
 
 			# Ask the user to select the language
-			language = self.Input.Select(self.languages["small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["option"]
+			language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["option"]
 
 			# Add the language to the languages list
 			languages.append(language)
 
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Show some space separators and a five dash space separator
 			print()

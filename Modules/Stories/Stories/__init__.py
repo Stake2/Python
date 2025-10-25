@@ -17,9 +17,6 @@ class Stories(object):
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
-		# Import some additional variables
-		self.Import_Additional_Variables()
-
 		# Import some usage classes
 		self.Import_Usage_Classes()
 
@@ -131,10 +128,6 @@ class Stories(object):
 		# Get the current year
 		self.current_year = str(self.date["Units"]["Year"])
 
-	def Import_Additional_Variables(self):
-		# Import the "links" dictionary from the "Folder" class
-		self.links = self.Folder.links
-
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
@@ -165,6 +158,11 @@ class Stories(object):
 
 			# Add the sub-class to the current module
 			setattr(self, title, sub_class())
+
+		# ---------- #
+
+		# Import the "website" dictionary from the "PHP" class
+		self.website = self.PHP.website
 
 		# Import the root methods of the "PHP" class
 		for method in ["Define", "Manage"]:
@@ -283,7 +281,7 @@ class Stories(object):
 			# Define the file with the root folder and file name
 			file = self.stories["Folders"]["root"] + file_name
 
-			# If the "json" extension is not in the file name, add the "txt" extension
+			# If the "json" extension is not in the file name, then add the "txt" extension
 			if ".json" not in file_name:
 				file += ".txt"
 
@@ -324,9 +322,9 @@ class Stories(object):
 			self.Folder.Create(folder[folder_name]["root"])
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define and create the language file
 			folder[language] = folder["root"] + full_language + ".txt"
@@ -335,9 +333,9 @@ class Stories(object):
 		# Create the language files inside the sub-folders
 		for folder_name in names:
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the full language
-				full_language = self.languages["full"][language]
+				full_language = self.languages["Full"][language]
 
 				# Define and create the language file
 				folder[folder_name][language] = folder[folder_name]["root"] + full_language + ".txt"
@@ -395,7 +393,7 @@ class Stories(object):
 
 		# Define the "Writing" dictionary
 		self.stories["Writing"] = {
-			"Links": {
+			"Helpers": {
 				"Google Translate": {
 					"Name": self.Language.language_texts["google_translate"],
 					"Link": "https://translate.google.com/"
@@ -410,7 +408,7 @@ class Stories(object):
 		}
 
 		# Define the "Translator website" dictionary
-		dictionary = self.stories["Writing"]["Links"]
+		dictionary = self.stories["Writing"]["Helpers"]
 
 		self.stories["Writing"]["Translator website"] = dictionary["Google Translate"]
 
@@ -450,7 +448,10 @@ class Stories(object):
 					"Synopsis"
 				],
 				"Files": [
-					"Creation date"
+					"Creation date",
+					"Story titles",
+					"History of story titles",
+					"Story links"
 				],
 				"JSON": [
 					"Chapters",
@@ -458,7 +459,8 @@ class Stories(object):
 					"Pack",
 					"Wattpad",
 					"Website",
-					"Writing"
+					"Writing",
+					"Links"
 				]
 			},
 			"Lore": {
@@ -478,7 +480,7 @@ class Stories(object):
 		}
 
 	def Define_Information_Items(self):
-		# Define the "Information items" dictionary
+		# Define the local "Information items" dictionary
 		dictionary = {
 			"Numbers": {
 				"Total": 0
@@ -487,10 +489,10 @@ class Stories(object):
 			"Dictionary": {}
 		}
 
-		# Read the "Information items.json" file if it is not empty
+		# Read the "Information items.json" file if it is not empty to update the local dictionary
 		file = self.stories["Folders"]["Database"]["Information items"]
 
-		if self.File.Contents(file)["lines"] != []:
+		if self.File.Contents(file)["Lines"] != []:
 			dictionary = self.JSON.To_Python(file)
 
 		# Get the number of information items
@@ -502,7 +504,7 @@ class Stories(object):
 		# Iterate through the information items list
 		for key in dictionary["List"]:
 			# Create the information item dictionary
-			dict_ = {
+			information_item = {
 				"Name": key
 			}
 
@@ -512,72 +514,81 @@ class Stories(object):
 			# Define the text addon
 			addon = ""
 
+			# If the underline character is not inside the text key, add the ", title()" string to get the titlecase text
 			if "_" not in text_key:
 				addon = ", title()"
 
 			# Create the "Texts" dictionary
-			dict_["Texts"] = {}
+			information_item["Texts"] = {}
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
-				# Get the information text
+			for language in self.languages["Small"]:
+				# Get the information text for the current language using the text key and addon
 				text = self.Language.texts[text_key + addon][language]
 
-				# Define the language information item inside the local "dict_" dictionary
-				dict_["Texts"][language] = text
+				# Define the language information item inside the "Texts" dictionary
+				information_item["Texts"][language] = text
 
-			# If the key is "Author"
+			# If the information item is "Author"
 			if key == "Author":
-				# Define the "Plural" dictionary
-				dict_["Plural"] = {}
+				# Define the "Plural texts" dictionary
+				information_item["Plural texts"] = {}
 
 				# Iterate through the small languages list
-				for language in self.languages["small"]:
-					# Get the plural information text
+				for language in self.languages["Small"]:
+					# Get the plural information text for the current language using the text key and addon
 					text = self.Language.texts[text_key + "s" + addon][language]
 
-					# Define the language plural information item inside the local "dict_" dictionary
-					dict_["Plural"][language] = text
+					# Define the language plural information item inside the "Plural texts" dictionary
+					information_item["Plural texts"][language] = text
 
-			# If the key is in the "Formats" dictionary, use the format dictionary inside it
+			# If the information item is in the "Formats" dictionary, use the format dictionary inside it
 			if key in dictionary["Formats"]:
-				dict_["Format"] = dictionary["Formats"][key]
+				information_item["Format"] = dictionary["Formats"][key]
 
-			# If a root method named ["Select_" + key.capitalize()] exists
-			method_name = "Select_" + key.capitalize()
+			# Define the "Select_" + [Information item] text as the method name
+			method_name = "Select_" + key.capitalize().replace(" ", "_")
 
+			# If the method is present inside the root (self) class
 			if hasattr(self, method_name) == True:
-				# Define it as the method to be used to select the information
-				dict_["Method"] = getattr(self, method_name)
+				# Define it as the method name
+				information_item["Method"] = method_name
 
 			# Add the information item dictionary to the root "Information items" dictionary
-			dictionary["Dictionary"][key] = dict_
+			dictionary["Dictionary"][key] = information_item
 
-		# Define the "Information items" dictionary as the local "Information items" dictionary
+		# Define the "Information items" dictionary as the local dictionary
 		self.stories["Information items"] = dictionary
 
-		# Create a local "Information items" dictionary
-		local_dictionary = deepcopy(self.stories["Information items"])
+		# Update the "Information items.json" file with the updated "Information items" dictionary
+		self.JSON.Edit(self.stories["Folders"]["Database"]["Information items"], self.stories["Information items"])
 
 		# Iterate through the information items in the "Information items" dictionary
-		for key, information_item in local_dictionary["Dictionary"].items():
+		for key, information_item in self.stories["Information items"].items():
 			# If the "Method" key is inside the information item dictionary
-			if "Method" in information_item:
-				# Get the name of the method used to select the information item
-				information_item["Method"] = information_item["Method"].__name__
-
-		# Update the "Information items.json" file with the updated and local "Information items" dictionary
-		self.JSON.Edit(self.stories["Folders"]["Database"]["Information items"], local_dictionary)
+			# And the method is present inside the root (self) class
+			if (
+				"Method" in information_item and
+				hasattr(self, information_item["Method"]) == True
+			):
+				# Get the method using the method name and define it as the method to be used to select the information
+				information_item["Method"] = getattr(self, information_item["Method"])
 
 	def Define_Story_Websites_Dictionary(self):
 		# Define the "Story websites" dictionary
 		dictionary = {
+			"Numbers": {
+				"Total": 0
+			},
 			"List": [
 				"Wattpad",
 				"Spirit Fanfics"
 			],
 			"Dictionary": {}
 		}
+
+		# Update the "Total" key of the "Numbers" dictionary with the number of story websites
+		dictionary["Numbers"]["Total"] = len(dictionary["List"])
 
 		# Iterate through the story websites list
 		for key in dictionary["List"]:
@@ -653,9 +664,9 @@ class Stories(object):
 					print(key + ":")
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the translated language
-					translated_language = self.languages["full_translated"][language][self.language["Small"]]
+					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 					# If the method name is "Type_Story_Information"
 					if method_name == "Type_Story_Information":
@@ -788,7 +799,7 @@ class Stories(object):
 			}
 
 			# Fill the "Titles" dictionary with the language texts
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				dictionary["Titles"][language] = self.Language.texts[text_key][language]
 
 			# Add the cover type dictionary to the root dictionary
@@ -826,7 +837,7 @@ class Stories(object):
 			}
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the text key
 				text_key = key.lower() + ", title()"
 
@@ -860,16 +871,18 @@ class Stories(object):
 
 		# "Stories" dictionary
 
-		# Define the empty story "Numbers" dictionary
-		self.stories["Numbers"] = {}
+		# Define the story "Numbers" dictionary with the "Total" key as zero
+		self.stories["Numbers"] = {
+			"Total": 0
+		}
 
 		# Get the list of stories
 		self.stories["List"] = self.JSON.To_Python(self.stories["Folders"]["Stories"])["List"]
 
-		# Sort the list of stories
+		# Sort the list of stories while ignoring case sensitivity for the story titles
 		self.stories["List"] = sorted(self.stories["List"], key = str.lower)
 
-		# Update the "Total" key of the "Numbers" dictionary
+		# Update the "Total" key of the "Numbers" dictionary with the number of stories
 		self.stories["Numbers"]["Total"] = len(self.stories["List"])
 
 		# Define the "Titles" dictionary and get the story titles
@@ -913,7 +926,7 @@ class Stories(object):
 			# Add one to the "s" number variable
 			s += 1
 
-		# Update the "Total" key of the "Numbers" dictionary
+		# Update the "Total" key of the "Numbers" dictionary with the number of stories
 		self.stories["Numbers"]["Total"] = len(self.stories["List"])
 
 		# ---------- #
@@ -1014,26 +1027,56 @@ class Stories(object):
 
 			# ---------- #
 
+			# Define the order as the list of small languages
+			order = self.languages["Small"]
+
+			# Sort the dictionary of titles based on the order of languages
+			story["Information"]["Titles"] = self.JSON.Sort_Item_List(story["Information"]["Titles"], order)
+
 			# Define the story titles in all languages
 			story["Titles"] = story["Information"]["Titles"]
 
 			# Add the language story title to the list of story titles in the user language
 			self.stories["Titles"]["Language"].append(story["Titles"][self.language["Small"]])
 
-			# Add the story titles to the "All" list
-			for title in story["Titles"].values():
-				# If the title is not already in the list
-				if title not in self.stories["Titles"]["All"]:
-					self.stories["Titles"]["All"].append(title)
+			# List the story titles
+			story_titles = list(story["Titles"].values())
+
+			# Remove duplicate story titles
+			story_titles = self.JSON.Remove_Duplicates_From_List(story_titles)
+
+			# Define a local story titles text
+			story_titles_text = ""
+
+			# Define the title number as zero
+			title_number = 0
+
+			# Iterate through the list of story titles
+			for title in story_titles:
+				self.stories["Titles"]["All"].append(title)
+
+				# Add the story title to the local story titles text
+				story_titles_text += title
+
+				# If the title number is not the number of story titles (the last title)
+				if title_number != len(story_titles) - 1:
+					# Add a line break
+					story_titles_text += "\n"
+
+				# Add one to the title number
+				title_number += 1
+
+			# Write the story titles text into the "Story titles.txt" file
+			self.File.Edit(story["Folders"]["Information"]["Story titles"], story_titles_text, "w")
 
 			# ---------- #
 
 			# Iterate through the list of cover types
 			for cover_type in self.stories["Cover types"]["List"]:
 				# Iterate through the small languages list
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Define the full language cover folder
 					story["Folders"]["Covers"][cover_type][full_language] = {
@@ -1074,89 +1117,57 @@ class Stories(object):
 					"Total": 0,
 					"Last posted chapter": 0
 				},
-				"Titles": {},
-				"Writing dates": self.File.Contents(story["Folders"]["Chapters"]["Writing dates"])["lines"],
+				"List": [],
+				"Lists": {
+					"Titles": {}
+				},
 				"Dictionary": {}
 			}
 
 			# Add the chapter titles to the chapter "Titles" dictionary
-			for language in self.languages["small"]:
-				# Get the full language
-				full_language = self.languages["full"][language]
+			for language in self.languages["Small"]:
+				# Get the full language for the current language
+				full_language = self.languages["Full"][language]
 
-				# Read the chapter titles file
+				# Read the chapter "Titles.txt" file for the current language
 				file = story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
 
-				# Add the chapter titles to the chapter "Titles" dictionary
-				story["Information"]["Chapters"]["Titles"][language] = self.File.Contents(file)["lines"]
+				# Add the language chapter titles to the chapter "Titles" dictionary inside the "Lists" dictionary
+				story["Information"]["Chapters"]["Lists"]["Titles"][language] = self.File.Contents(file)["lines"]
 
-			# Update the number of chapters
-			story["Information"]["Chapters"]["Numbers"]["Total"] = len(story["Information"]["Chapters"]["Titles"]["en"])
-
-			# If the "Chapters.json" file is not empty
+			# Define a shortcut to the "Chapters.json" file and get its contents
 			file = story["Folders"]["Information"]["Chapters"]
-
 			contents = self.File.Contents(file)
 
-			if contents["lines"] != []:
-				# Get the JSON dictionary
-				json = self.JSON.To_Python(file)
+			# If the file is not empty
+			if contents["Lines"] != []:
+				# Get the JSON dictionary from the file
+				chapters = self.JSON.To_Python(file)
 
-				# Update the "Last posted chapter" key with the correct number
-				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = json["Numbers"]["Last posted chapter"]
+				# Update the root "Last posted chapter" key with the correct number
+				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = chapters["Numbers"]["Last posted chapter"]
 
-				# Update the chapters "Dictionary"
-				story["Information"]["Chapters"]["Dictionary"] = json["Dictionary"]
+				# Update the chapters "Dictionary" key
+				story["Information"]["Chapters"]["Dictionary"] = chapters["Dictionary"]
 
-			# Define the list of chapter keys
-			keys = list(story["Information"]["Chapters"]["Dictionary"].keys())
+			# If the chapters "List" is empty
+			if story["Information"]["Chapters"]["List"] == []:
+				# Iterate through the list of keys inside the chapters dictionary
+				for chapter in story["Information"]["Chapters"]["Dictionary"]:
+					# Add the chapter key to the chapters "List" key
+					story["Information"]["Chapters"]["List"].append(chapter)
 
-			# Iterate through the chapters inside the chapters list
-			c = 1
-			for chapter in story["Information"]["Chapters"]["Titles"]["en"]:
-				# Define the chapter dictionary with its information
-				chapter = {
-					"Number": c,
-					"Titles": {},
-					"Dates": {
-						"Written": "",
-						"Revised": "",
-						"Translated": ""
-					}
-				}
+			# Update the total number of chapters based on the number of chapters in the "List" key
+			story["Information"]["Chapters"]["Numbers"]["Total"] = len(story["Information"]["Chapters"]["List"])
 
-				# If the chapter dictionary already exists
-				if str(c) in keys:
-					chapter = story["Information"]["Chapters"]["Dictionary"][str(c)]
-
-				# Define the titles of the chapter
-				for language in self.languages["small"]:
-					chapter["Titles"][language] = story["Information"]["Chapters"]["Titles"][language][c - 1]
-
-				# Define the "writing dates" variable for easier typing
-				writing_dates = story["Information"]["Chapters"]["Writing dates"]
-
-				# If the written date for the chapter exists
-				if (
-					writing_dates != [] and
-					len(writing_dates) >= c
-				):
-					# Define the chapter written date
-					chapter["Dates"]["Written"] = writing_dates[c - 1]
-
-				# Add the chapter dictionary to the "Chapters" dictionary
-				story["Information"]["Chapters"]["Dictionary"][str(c)] = chapter
-
-				c += 1
-
-			# Write the "Chapters" dictionary into the "Chapters.json" file
+			# Write the default or updated story "Chapters" dictionary into the "Chapters.json" file
 			self.JSON.Edit(story["Folders"]["Information"]["Chapters"], story["Information"]["Chapters"])
 
 			# ---------- #
 
 			# Create the "Synopsis" language files
-			for language in self.languages["small"]:
-				full_language = self.languages["full"][language]
+			for language in self.languages["Small"]:
+				full_language = self.languages["Full"][language]
 
 				story["Folders"]["Information"]["Synopsis"][full_language] = story["Folders"]["Information"]["Synopsis"]["root"] + full_language + ".txt"
 				self.File.Create(story["Folders"]["Information"]["Synopsis"][full_language])
@@ -1165,9 +1176,9 @@ class Stories(object):
 			story["Information"]["Synopsis"] = {}
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the full language
-				full_language = self.languages["full"][language]
+				full_language = self.languages["Full"][language]
 
 				# Add the synopsis in the current language to the "Synopsis" dictionary
 				story["Information"]["Synopsis"][language] = self.File.Contents(story["Folders"]["Information"]["Synopsis"][full_language])["string"]
@@ -1199,7 +1210,7 @@ class Stories(object):
 					writing[writing_mode]["Chapter"] = 0
 
 			# Read the "Writing.json" file if it is not empty
-			if self.File.Contents(story["Folders"]["Information"]["Writing"])["lines"] != []:
+			if self.File.Contents(story["Folders"]["Information"]["Writing"])["Lines"] != []:
 				writing = self.JSON.To_Python(story["Folders"]["Information"]["Writing"])
 
 			# Create the writing mode dictionaries inside the "Writing" dictionary
@@ -1233,9 +1244,7 @@ class Stories(object):
 
 			# Define the "Links" dictionary
 			story["Information"]["Links"] = {
-				"Website": {},
-				"Wattpad": {},
-				"Spirit Fanfics": {}
+				"Website": {}
 			}
 
 			# ---------- #
@@ -1269,11 +1278,11 @@ class Stories(object):
 				# Define the website folder
 				story["Information"]["Website"]["Website folder"] = "/" + website_folder + "/"
 
-			# Update the website "Link" key with the website folder
-			story["Information"]["Website"]["Link"] = self.links["Stake2 Website"] + website_folder + "/"
+			# Define the story website link by adding the website folder to the root Stake2 website link
+			story["Information"]["Website"]["Link"] = self.website["URL"] + website_folder + "/"
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the language link with the language folder
 				story["Information"]["Website"]["Links"][language] = story["Information"]["Website"]["Link"] + language + "/"
 
@@ -1283,15 +1292,92 @@ class Stories(object):
 			# Write the default or modified "Website" dictionary inside the "Website.json" file
 			self.JSON.Edit(story["Folders"]["Information"]["Website"], story["Information"]["Website"])
 
-			# Remove the "Website" key
-			story["Information"].pop("Website")
-
 			# ---------- #
 
 			# "Wattpad" and "Spirit Fanfics" dictionaries
 
 			# Define the "Story websites" dictionary for the story
 			self.Define_Story_Websites(story)
+
+			# ---------- #
+
+			# Write the default or modified "Links" dictionary inside the "Links.json" file
+			self.JSON.Edit(story["Folders"]["Information"]["Links"], story["Information"]["Links"])
+
+			# ----- #
+
+			# Define an initial story links text with the "Story website:" text and a line break
+			story_links = self.language_texts["story_website"] + ":" + "\n"
+
+			# Replace spaces with "%20" inside the root website link, to make the link clickable
+			link = story["Information"]["Website"]["Link"].replace(" ", "%20")
+
+			# Add the root website link and a line break
+			story_links += link + "\n"
+
+			# Get the language website links
+			links = list(story["Information"]["Website"]["Links"].values())
+
+			# Iterate through the language website links
+			for link in links:
+				# Replace spaces with "%20" inside the language website link, to make the link clickable
+				replaced_link = link.replace(" ", "%20")
+
+				# Add the language website link
+				story_links += replaced_link
+
+				# If the link is not the last one
+				if link != links[-1]:
+					# Add a line break
+					story_links += "\n"
+
+			# Define an empty local story websites dictionary
+			story_websites = {}
+
+			# Iterate through the root story websites dictionary
+			for key in self.stories["Story websites"]["Dictionary"]:
+				# Get the links dictionary of the story website
+				links = story["Information"]["Links"][key]["Links"]
+
+				# If the links dictionary is not empty
+				if links != {}:
+					# List the links and add them to the local story websites dictionary
+					story_websites[key] = list(links.values())
+
+			# Get the keys of the local story websites dictionary
+			keys = list(story_websites.keys())
+
+			# Iterate through the local story websites dictionary
+			for key, links in story_websites.items():
+				# If the story website is the first one
+				if key == keys[0]:
+					# Add a line breaks to the start
+					story_links += "\n"
+
+				# Add the story website name, a colon, and a line break
+				story_links += "\n" + key + ":" + "\n"
+
+				# List the links
+
+				# Add the language links for the story on the story website
+				for link in links:
+					story_links += link
+
+					# If the link is not the last one
+					if link != links[-1]:
+						# Add a line break
+						story_links += "\n"
+
+				# If the story website is not the last one
+				if key != keys[-1]:
+					# Add a line break
+					story_links += "\n"
+
+			# Write the story links text into the "Story links.txt" file
+			self.File.Edit(story["Folders"]["Information"]["Story links"], story_links, "w")
+
+			# Remove the "Website" key as it is not needed anymore
+			story["Information"].pop("Website")
 
 			# ---------- #
 
@@ -1365,6 +1451,19 @@ class Stories(object):
 				"Title": story["Title"],
 				**story["Information"]
 			}
+
+			# Define a list of keys to remove from the "Information" dictionary
+			keys_to_remove = [
+				"Story titles",
+				"History of story titles",
+				"Story links"
+			]
+
+			# Iterate through the list of keys
+			for key in keys_to_remove:
+				# If the key is present, remove it
+				if key in story["Information"]:
+					story["Information"].pop(key)
 
 			# ---------- #
 
@@ -1458,9 +1557,9 @@ class Stories(object):
 					# If the sub-key is "Language"
 					if sub_key == "Language":
 						# Iterate through the small languages list
-						for language in self.languages["small"]:
+						for language in self.languages["Small"]:
 							# Get the full language
-							full_language = self.languages["full"][language]
+							full_language = self.languages["Full"][language]
 
 							# Define the sub-folder
 							folder_dictionary[full_language] = {
@@ -1870,7 +1969,7 @@ class Stories(object):
 		return status
 
 	def Select_Author(self):
-		# Define the authors list with the first author
+		# Define a local list of authors with the first root author
 		authors = [
 			self.stories["Authors"]["List"][0]
 		]
@@ -1878,42 +1977,48 @@ class Stories(object):
 		# Show the list of authors
 		self.Show_Authors_List(authors)
 
-		# Ask if the user wants to add more authors to the list of authors
+		# Define the question to ask the user if they want to add more authors to the list of authors
 		question = self.language_texts["do_you_want_to_add_more_authors"]
 
+		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
+			# Ask the yes or no question
 			add_more = self.Input.Yes_Or_No(question)
 
+		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
+			# Then do not add more authors
 			add_more = False
 
 		# If the user wants to add more authors
 		if add_more == True:
-			# Define the list of authors without the first one
+			# Make a copy of the root list of authors
 			options = deepcopy(self.stories["Authors"]["List"])
+
+			# Remove the first author (me) because it is always the first author of all stories
 			options.pop(0)
 
 			# Define the parameters dictionary for the "Select" method of the "Input" class
 			parameters = {
-				"options": options,
-				"language_options": deepcopy(options),
-				"show_text": self.Language.language_texts["authors, title()"],
-				"select_text": self.language_texts["select_an_additional_author"]
+				"options": options, # The local list of authors
+				"language_options": deepcopy(options), # A copy of the local list of authors
+				"show_text": self.Language.language_texts["authors, title()"], # The show text "Authors"
+				"select_text": self.language_texts["select_an_additional_author"] # The select text telling the user to select an additional author
 			}
 
-			# Add the "[Finish selection]" text to the list of options
-			parameters["options"].append("[Finish selection]")
+			# Define the "finish selection" variable for easier typing
+			finish_selection = "[Finish selection]"
 
-			# Define the language texxt
+			# Add the "[Finish selection]" text to the list of options
+			parameters["options"].append(finish_selection)
+
+			# Define the "[Finish selection]" text in the user language
 			language_text = "[" + self.Language.language_texts["finish_selection"] + "]"
 
 			# Add the "[Finish selection]" text in the user language to the list of language options
 			parameters["language_options"].append(language_text)
 
-			# Define the "finish selection" variable for easier typing
-			finish_selection = "[Finish selection]"
-
-			# Define the default empty option variable
+			# Define the default option as an empty variable
 			option = ""
 
 			# While the option is not the "[Finish selection]" text
@@ -1927,20 +2032,21 @@ class Stories(object):
 					# Show the list of authors
 					self.Show_Authors_List(authors)
 
-				# Ask the user to select the author
-				option = self.Input.Select(**parameters)["option"]
+				# Ask the user to select an author from the list
+				option = self.Input.Select(**parameters)["Option"]["Normal"]
 
 				# If the option is not the "[Finish selection]" text
 				if option != finish_selection:
-					# Remove the selected text from the parameters dictionary
+					# Remove the selected text from the lists of options
 					parameters["options"].remove(option)
 					parameters["language_options"].remove(option)
 
 					# Add the author to the list of authors
 					authors.append(option)
 
-					# If the length of the list of options is one
-					# That means the user select all of the options of the list
+					# If the number of options in the list of options is only one
+					# That means the user selected all of the options of the list
+					# (The last remaining option is "[Finish selection]")
 					# Then define the option as the "finish_selection" one, to stop the while loop
 					if len(parameters["options"]) == 1:
 						option = finish_selection
@@ -2101,7 +2207,7 @@ class Stories(object):
 			stories_list = self.stories["Titles"]["en"]
 
 		# Empty the titles lists
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			stories["Titles"][language] = []
 
 		# If the class name is "Post"
@@ -2125,7 +2231,7 @@ class Stories(object):
 			story = stories["Dictionary"][story]
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Add the story title to the list of titles in the current language
 				stories["Titles"][language].append(story["Titles"][language])
 

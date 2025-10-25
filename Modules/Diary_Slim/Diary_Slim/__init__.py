@@ -3,6 +3,10 @@
 # Import the "importlib" module
 import importlib
 
+# Import the "collections" module
+import collections
+
+# Import the "deepcopy" module
 from copy import deepcopy
 
 class Diary_Slim():
@@ -235,9 +239,9 @@ class Diary_Slim():
 		folder = self.diary_slim["Folders"]["Data"]["Header"]
 
 		# Define the "Header" files
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define the file
 			folder[language] = folder["root"] + full_language + ".txt"
@@ -844,12 +848,15 @@ class Diary_Slim():
 				self.JSON.Edit(dictionary["Files"]["States"], dictionary["States"])
 
 				# Iterate through the small languages list
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the state name
 					dictionary["Texts"][language] = dictionary["States"]["Names"][language]
 
+					# Get the current state
+					current_state = dictionary["States"]["Current state"][language]
+
 					# Add the current state
-					dictionary["Texts"][language] += " (" + dictionary["States"]["Current state"][language] + ")"
+					dictionary["Texts"][language] += " (" + current_state + ")"
 
 			# Else, remove the key
 			else:
@@ -858,9 +865,9 @@ class Diary_Slim():
 			# ----- #
 
 			# Define the language text files
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the full language
-				full_language = self.languages["full"][language]
+				full_language = self.languages["Full"][language]
 
 				# Define and create the language text file
 				dictionary["Files"][language] = dictionary["Folders"]["root"] + full_language + ".txt"
@@ -948,7 +955,7 @@ class Diary_Slim():
 		self.diary_slim["Texts"]["Options"]["Keys"] = []
 
 		# Create empty language lists inside the "Options" dictionary
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.diary_slim["Texts"]["Options"][language] = []
 
 		# Iterate through the keys inside the Diary Slim Texts dictionary
@@ -1570,8 +1577,8 @@ class Diary_Slim():
 
 		# Update the external statistics dictionaries of the years and months
 
-		# Define the "update" switch as False by default
-		update = False
+		# Define the "update root statistics" switch as False by default
+		update_root_statistics = False
 
 		# Iterate through the "External statistics" dictionary
 		for statistics in self.statistics["External statistics"]["Dictionary"].values():
@@ -1581,29 +1588,26 @@ class Diary_Slim():
 			# Get the "Years" dictionary
 			years = statistics["Years"]
 
-			# Get the list of keys
-			keys = list(years.keys())
+			# Get the list of years
+			years_list = list(years.keys())
 
-			# Iterate through the list of keys
-			for key in keys.copy():
+			# Iterate through the list of years
+			for key in years_list.copy():
 				# If the year key is not inside the dictionary of years
 				if key not in self.years["Dictionary"]:
 					# Remove the key
-					keys.pop(key)
+					years_list.pop(key)
 
-			# Iterate through the list of keys
-			for key in keys:
-				# Get the year dictionary of that key
-				year = years[key]
-
+			# Iterate through the year dictionaries
+			for year in years.values():
 				# Get the root year dictionary
 				root_year = self.years["Dictionary"][year["Key"]]
 
 				# Get the root statistics dictionary
 				root_statistics = root_year["Statistics"][statistic_key]
 
-				# If the "update" switch is True
-				if update == True:
+				# If the "update root statistics" switch is True
+				if update_root_statistics == True:
 					# Add the "Total" key and the number dictionaries inside the "Numbers" to the root year statistics dictionary
 					root_year["Statistics"][statistic_key] = {
 						"Module": root_statistics["Module"],
@@ -1624,8 +1628,8 @@ class Diary_Slim():
 						# Get the root statistics dictionary
 						root_statistics = root_year["Months"][month_key]["Statistics"][statistic_key]
 
-						# If the "update" switch is True
-						if update == True:
+						# If the "update root statistics" switch is True
+						if update_root_statistics == True:
 							# Add the "Total" key and the number dictionaries inside the "Numbers" to the root month statistics dictionary
 							root_year["Months"][month_key]["Statistics"][statistic_key] = {
 								"Module": root_statistics["Module"],
@@ -1635,13 +1639,13 @@ class Diary_Slim():
 								}
 							}
 
-				# If the "update" switch is True
-				if update == True:
+				# If the "update root statistics" switch is True
+				if update_root_statistics == True:
 					# Add the year dictionary to the local dictionary of years
-					years_dictionary[key] = root_year
+					years_dictionary[year["Key"]] = root_year
 
 		# Iterate through the dictionary of years
-		for key, year in self.years["Dictionary"].items():
+		for year_key, year in self.years["Dictionary"].items():
 			# Iterate through the local external statistics dictionary
 			for statistic in self.statistics["External statistics"]["Dictionary"].values():
 				# Get the statistic key
@@ -1649,14 +1653,25 @@ class Diary_Slim():
 
 				# If the statistic key is inside the year dictionary
 				if statistic_key in year["Statistics"]:
-					# Get the year statistics dictionary
-					statistics = year["Statistics"][statistic_key]
+					# Get the year root statistics dictionary
+					root_statistics = year["Statistics"][statistic_key]
 
-					# If the only keys inside the current statistics dictionary are "Module" and "Total"
+					# If the only keys inside the current year root statistics dictionary are "Module" and "Total"
 					# (That means there is no statistic inside the dictionary and the "Total" number is zero)
-					if list(statistics.keys()) == ["Module", "Total"]:
+					if list(root_statistics.keys()) == ["Module", "Total"]:
 						# Remove the statistic from the "Statistics" dictionary
 						year["Statistics"].pop(statistic_key)
+
+					# If the year key exists inside the "Years" dictionary of the external statistic dictionary
+					if year_key in statistic["Years"]:
+						# Get the year dictionary inside the statistics dictionary
+						year_dictionary = statistic["Years"][year_key]
+
+						# Update the "Total" key with the "Total" key of the root statistics
+						year_dictionary["Total"] = root_statistics["Total"]
+
+						# Update the "Numbers" key with the "Dictionary" key of the root statistics
+						year_dictionary["Numbers"] = root_statistics["Dictionary"]
 
 			# Iterate through the months inside the root year dictionary
 			for month_key, month in year["Months"].items():
@@ -1667,14 +1682,51 @@ class Diary_Slim():
 
 					# If the statistic key is inside the month dictionary
 					if statistic_key in month["Statistics"]:
-						# Get the month statistics dictionary
-						statistics = month["Statistics"][statistic_key]
+						# Get the month root statistics dictionary
+						root_statistics = month["Statistics"][statistic_key]
 
-						# If the only keys inside the current statistics dictionary are "Module" and "Total"
+						# If the only keys inside the current month root statistics dictionary are "Module" and "Total"
 						# (That means there is no statistic inside the dictionary and the "Total" number is zero)
-						if list(statistics.keys()) == ["Module", "Total"]:
+						if list(root_statistics.keys()) == ["Module", "Total"]:
 							# Remove the statistic from the "Statistics" dictionary
 							year["Months"][month_key]["Statistics"].pop(statistic_key)
+
+						# Split the month key to get its number
+						month_number = month_key.split(" - ")[0]
+
+						# If the year key exists inside the "Years" dictionary of the external statistic dictionary
+						if year_key in statistic["Years"]:
+							# Get the year dictionary inside the statistics dictionary
+							year_dictionary = statistic["Years"][year_key]
+
+							# Update the "Total" key with the "Total" key of the root statistics
+							year_dictionary["Total"] = root_statistics["Total"]
+
+							# Update the "Numbers" key with the "Dictionary" key of the root statistics
+							year_dictionary["Numbers"] = root_statistics["Dictionary"]
+
+						# If the month number exists inside the "Months" dictionary of the external statistic dictionary
+						if month_number in year_dictionary["Months"]:
+							# Get the month dictionary inside the year statistics dictionary
+							month_dictionary = year_dictionary["Months"][month_number]
+
+							# Update the "Total" key with the "Total" key of the root statistics
+							month_dictionary["Total"] = root_statistics["Total"]
+
+							# Update the "Numbers" key with the "Dictionary" key of the root statistics
+							month_dictionary["Numbers"] = root_statistics["Dictionary"]
+
+						# If the month number does not exist inside the "Months" dictionary of the external statistic dictionary
+						if month_number not in year_dictionary["Months"]:
+							# Then create the month dictionary with its keys and values
+							year_dictionary["Months"][month_number] = {
+								"Key": month_number,
+								"Total": root_statistics["Total"],
+								"Numbers": root_statistics["Dictionary"]
+							}
+
+							# Sort the "Months" dictionary
+							year_dictionary["Months"] = dict(collections.OrderedDict(sorted(year_dictionary["Months"].items())))
 
 					# If the statistic key is not inside the month dictionary
 					if statistic_key not in month["Statistics"]:

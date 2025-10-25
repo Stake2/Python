@@ -241,7 +241,7 @@ class Friends(object):
 				addon = ", title()"
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the information text
 				text = self.Language.texts[text_key + addon][language]
 
@@ -280,7 +280,7 @@ class Friends(object):
 				text_key = text_key_backup
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				dict_["Plural"][language] = self.Language.texts[text_key][language]
 
 			# Define the "Gender" key
@@ -396,7 +396,7 @@ class Friends(object):
 				words[item] = {}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# If the language dictionary does not exist, add it
 					if language not in words[item]:
 						words[item][language] = {}
@@ -417,7 +417,7 @@ class Friends(object):
 		local_dictionary = deepcopy(self.information_items)
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Remove the language items lists
 			local_dictionary["Lists"].pop(language)
 
@@ -467,7 +467,7 @@ class Friends(object):
 				addon = ", title()"
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the language file name text
 				dict_[language] = self.Language.texts[text_key + addon][language]
 
@@ -478,7 +478,7 @@ class Friends(object):
 			dict_["Plural"] = {}
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary

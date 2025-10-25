@@ -35,7 +35,7 @@ class Write(Stories):
 			"Session": {}
 		}
 
-		# Define the states dictionary
+		# Define the root states dictionary
 		self.states = {
 			"First time writing": False,
 			"Pause writing session": False,
@@ -213,7 +213,7 @@ class Write(Stories):
 		titles = self.dictionary["Chapters"]["Titles"]
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define the chapter title as the chapter number with leading zeroes
 			title = self.dictionary["Chapter"]["Numbers"]["Leading zeroes"]
 
@@ -252,9 +252,9 @@ class Write(Stories):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full and translated languages
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define the chapter file
 			self.dictionary["Chapter"]["Files"][language] = self.dictionary["Chapter"]["Folders"][full_language]["root"]
@@ -283,15 +283,15 @@ class Write(Stories):
 				self.dictionary["Chapter"]["Language"]["Destination"] = {
 					"Small": language,
 					"Full": full_language,
-					"Translated": self.languages["full_translated"][language]
+					"Translated": self.languages["Full (translated)"][language]
 				}
 
 		# Define the "Target language of translation" language
 		# The language which the original chapter will be translated into
 		self.dictionary["Chapter"]["Language"]["Target language of translation"] = {
 			"Small": "en",
-			"Full": self.languages["full"]["en"],
-			"Translated": self.languages["full_translated"]["en"]
+			"Full": self.languages["Full"]["en"],
+			"Translated": self.languages["Full (translated)"]["en"]
 		}
 
 		# Define the target language variable
@@ -345,9 +345,9 @@ class Write(Stories):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Get the chapter file
 			file = self.dictionary["Chapter"]["Files"][language]
@@ -369,7 +369,7 @@ class Write(Stories):
 
 	def Check_Chapter_Date_Texts(self):
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the chapter file
 			chapter_file = self.dictionary["Chapter"]["Files"][language]
 
@@ -1237,10 +1237,10 @@ class Write(Stories):
 		print(self.separators["5"])
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full and translated languages
-			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			full_language = self.languages["Full"][language]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Get the " in [language]" text of the current language
 			in_language_text = " " + self.Language.texts["in_[language]"][language][self.language["Small"]]
@@ -1446,7 +1446,7 @@ class Write(Stories):
 		# If the writing mode is "Translate"
 		if self.writing_mode == "Translate":
 			# Define the English translated language
-			translated_language = self.languages["full_translated"]["en"][language]
+			translated_language = self.languages["Full (translated)"]["en"][language]
 
 			# Add the "from [User langauge] to English" text
 			task_title += " " + self.Language.texts["from_{}_to_{}"][language].format(dictionary["Translated user language"], translated_language)
@@ -1499,10 +1499,10 @@ class Write(Stories):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full and translated user languages
-			full_language = self.languages["full"][language]
-			translated_user_language = self.languages["full_translated"][self.language["Small"]][language]
+			full_language = self.languages["Full"][language]
+			translated_user_language = self.languages["Full (translated)"][self.language["Small"]][language]
 
 			# Create the dictionary for the "Make_Task_Title" method
 			dictionary = {
@@ -1574,6 +1574,7 @@ class Write(Stories):
 			# ---------- #
 
 			# Add the "I started at, and stopped at" formatted template
+			# (Only the hours and minutes)
 			items = [
 				self.dictionary["Session"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0],
 				self.dictionary["Session"]["After"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0]
@@ -1597,7 +1598,7 @@ class Write(Stories):
 			# Example: 1 hour, 30 minutes, 10 seconds
 			description += " " + self.dictionary["Session"]["Duration"]["Text"][language]
 
-			# Define the "add_time_units_text" switch
+			# Define the local "add_time_units_text" switch
 			add_time_units_text = True
 
 			# If the "add_time_units_text" switch is True

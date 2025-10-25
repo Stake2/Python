@@ -115,6 +115,9 @@ class File():
 		# Remove leading and trailing spaces
 		path = path.strip()
 
+		# Remove double spaces
+		path = path.replace("  ", " ")
+
 		# Replace multiple spaces with a single space
 		path = " ".join(path.split())
 

@@ -43,6 +43,22 @@
 		"en": "Game categories",
 		"pt": "Categorias de jogo"
 	},
+	"gaming_environment": {
+		"en": "Gaming environment",
+		"pt": "Ambiente de jogo"
+	},
+	"game_link": {
+		"en": "Game link",
+		"pt": "Link do jogo"
+	},
+	"game_id": {
+		"en": "Game ID",
+		"pt": "ID do jogo"
+	},
+	"asset_id": {
+		"en": "Asset ID",
+		"pt": "ID do asset"
+	},
 	"statuses, type: list": {
 		"en": [
 			"Plan to play",
@@ -99,9 +115,9 @@
 		"en": "First gaming session of the \"{}\" game category in the year",
 		"pt": "Primeira sessão de jogatina da categoria de jogo \"{}\" no ano"
 	},
-	"start_counting_the_gaming_time": {
-		"en": "Start counting the gaming time",
-		"pt": "Começar a contar o tempo de jogatina"
+	"press_enter_to_start_counting_the_gaming_time": {
+		"en": "Press Enter to start counting the gaming time",
+		"pt": "Pressione Enter para começar a contar o tempo de jogatina"
 	},
 	"press_enter_when_you_finish_using_the_python_module_of_the_game": {
         "en": "Press Enter when you finish using the Python module of the game",
@@ -170,6 +186,10 @@
 	"sub_game": {
 		"en": "Selects a sub-game to be opened by the {module} module",
 		"pt": "Seleciona um sub-jogo a ser aberto pelo módulo {module}"
+	},
+	"play": {
+		"en": "Runs the \"Play\" class of the {module} module",
+		"pt": "Executa a classe \"Play\" (Jogar) do módulo {module}"
 	},
 	"the_game_cover": {
 		"en": "the game cover",

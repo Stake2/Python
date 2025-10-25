@@ -59,7 +59,7 @@ class Verify_Current_Year(Years):
 		}
 
 		# Define some language files related to the "This Year I" text
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define a shortcut for the folders dictionary
 			folders = self.years["Current year"]["Folders"][language]
 
@@ -83,7 +83,7 @@ class Verify_Current_Year(Years):
 			# Iterate through the files in the "Files" dictionary
 			for key, files in self.files.items():
 				# Define the small languages list
-				languages = self.languages["small"]
+				languages = self.languages["Small"]
 
 				if key != "This Year I (post)":
 					languages = [
@@ -258,7 +258,7 @@ class Verify_Current_Year(Years):
 			# Iterate through the files in the "Files" dictionary
 			for key, files in self.files.items():
 				# Define the list of small languages
-				languages = self.languages["small"]
+				languages = self.languages["Small"]
 
 				# If the key is not inside the defined list
 				# Or is inside the second list

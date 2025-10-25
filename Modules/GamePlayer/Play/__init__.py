@@ -34,8 +34,12 @@ class Play(GamePlayer):
 		# Show information about the game
 		self.Show_Information(self.dictionary)
 
-		# If the "Open game" state is True, open the game
-		if self.states["Open game"] == True:
+		# If the "Open game" state is True
+		# And the "Testing" switch is False
+		if (
+			self.states["Open game"] == True and
+			self.switches["Testing"] == False
+		):
 			# Open the game
 			self.Open_Game()
 
@@ -63,6 +67,25 @@ class Play(GamePlayer):
 			setattr(self, title, sub_class)
 
 	def Define_Game_Dictionary(self):
+		# If the "Automatically selected class" switch exists
+		# And the class (Play) was automatically selected
+		if (
+			hasattr(self, "automatically_selected_class") == True and
+			self.automatically_selected_class == True
+		):
+			# If the "Verbose" switch is False
+			if self.switches["Verbose"] == False:
+				# Show a ten dash space separator
+				print()
+				print(self.separators["10"])
+
+			# Define the class name
+			class_name = self.Language.language_texts["play, title()"]
+
+			# Show the module and class name
+			print()
+			print("GamePlayer." + class_name + "():")
+
 		# Select the game type and the game if the dictionary is empty
 		if self.dictionary == {}:
 			# Define the default value for the game title variable
@@ -124,18 +147,43 @@ class Play(GamePlayer):
 			}
 
 	def Open_Game(self):
-		# If the "Testing" switch is False
-		if self.switches["Testing"] == False:
-			# If the "Bat" key is inside the dictionary of files
-			if "Bat" in self.game["Files"]:
-				# Open the bat file (probably a file that runs a Python created for the game)
-				self.System.Open(self.game["Files"]["Bat"])
+		# If the "Bat" key is inside the dictionary of files
+		if "Bat" in self.game["Files"]:
+			# Open the bat file (probably a file that runs a Python created for the game)
+			self.System.Open(self.game["Files"]["Bat"])
 
-				# Ask for user input after the user finishes using the Python module of the game
-				self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
+			# Ask for user input after the user finishes using the Python module of the game
+			self.Input.Type(self.language_texts["press_enter_when_you_finish_using_the_python_module_of_the_game"])
 
+		# Define shortcuts for the game platform and gaming environment
+		platform = self.game["Platform"]
+		gaming_environment = self.game["Gaming environment"]
+
+		# If the game platform and gaming environment are the same
+		if platform == gaming_environment:
 			# Open the game file
 			self.System.Open(self.game["Files"]["Shortcut"]["File"])
+
+		# If the gaming environment is "NVIDIA GeForce Now"
+		if gaming_environment[self.language["Small"]] == "NVIDIA GeForce Now":
+			# Define the browser in which to open the game
+			browser = "Google Chrome"
+
+			# Define the link template
+			template = "https://play.geforcenow.com/games?game-id={}&lang={}&asset-id={}&utm_source=shortcut"
+
+			# Define a list of items to use to format the link template
+			items = [
+				self.game["Game ID"],
+				self.language["With country"],
+				self.game["Asset ID"]
+			]
+
+			# Format the link with the list of items to get the game link
+			game_link = template.format(*items)
+
+			# Open the link to the game
+			self.System.Open_Link(game_link, browser = browser)
 
 	def Register_The_Session(self):
 		# Show a five dash space separator
@@ -149,11 +197,11 @@ class Play(GamePlayer):
 		if self.states["Open game"] == True:
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
-				self.Input.Type(self.language_texts["start_counting_the_gaming_time"], first_space = False)
+				self.Input.Type(self.language_texts["press_enter_to_start_counting_the_gaming_time"], first_space = False)
 
 			else:
 				# Show only the text
-				print(self.language_texts["start_counting_the_gaming_time"] + ":")
+				print(self.language_texts["press_enter_to_start_counting_the_gaming_time"] + ":")
 
 		# Define the entry dictionary, the "Before" time (now)
 		self.dictionary["Entry"] = {

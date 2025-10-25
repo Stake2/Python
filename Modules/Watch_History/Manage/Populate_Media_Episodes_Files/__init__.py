@@ -141,9 +141,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 		# ---------- #
 
 		# Show the episode titles files by language
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language for the current language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Format the episode titles file text with the translated language
 			text = self.language_text["episode_titles_file_in_{}"].format(translated_language)
@@ -372,7 +372,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 					# Remove the leading zeroes from the number of episodes up to (and including) the current media item and also convert it into a text string
 					number = str(self.Text.Remove_Leading_Zeroes(media_items_episodes_number))
 
-					# Add it to the progress text with parenthesis
+					# Add it to the progress text with parentheses
 					progress_text = progress_text.replace("]", " (" + number + ")]")
 
 				# Show the progress text
@@ -381,12 +381,12 @@ class Populate_Media_Episodes_Files(Watch_History):
 				# ---------- #
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Get the translated language for the current language in the user language
-					translated_language = self.languages["full_translated"][language][self.language["Small"]]
+					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 					# If the current language list is not inside the "Titles" dictionary
 					if language not in self.episodes["Titles"]:
@@ -412,14 +412,14 @@ class Populate_Media_Episodes_Files(Watch_History):
 							# Add leading zeroes to the number of episodes up to (and including) the current media item
 							number = str(self.Text.Add_Leading_Zeroes(media_items_episodes_number))
 
-							# Add the number with parenthesis to the episode title
+							# Add the number with parentheses to the episode title
 							episode_title += "(" + number + ")"
 
 						# Define the "first space" switch as True by default
 						first_space = True
 
 						# If the current language is the first one in the list of small languages
-						if language == self.languages["small"][0]:
+						if language == self.languages["Small"][0]:
 							# Switch the "first space" switch to False
 							first_space = False
 
@@ -513,9 +513,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language for the current language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Show the translated language
 			print()
@@ -573,7 +573,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 		}
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Create the language titles list
 			videos["Lists"]["Titles"][language] = []
 
@@ -662,7 +662,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 		}
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Create the language titles list
 			video["Titles"][language] = []
 
@@ -698,9 +698,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 		# ---------- #
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language for the current language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Ask the user to translate the video title (only if the title in the current language does not exist)
 			title = self.Translate_Title(language, translated_language, video_information["Title"])
@@ -763,9 +763,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 		print()
 
 		# Show the video titles
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language for the current language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Define the translated language text
 			translated_language_text = self.Language.language_texts["title_in_{}"].format(translated_language)

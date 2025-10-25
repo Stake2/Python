@@ -131,6 +131,34 @@ class PHP(object):
 			self.separators[str(number)] = string
 
 	def Define_Dictionaries(self):
+		# Define the initial website dictionary
+		self.website = {
+			"URL format": "https://{}.{}/",
+			"Domain": "",
+			"Sub-domain": "",
+			"URL": ""
+		}
+
+		# Define a shortcut to the website file
+		website_file = self.folders["Mega"]["Websites"]["Website"]
+
+		# If the websites "Website.json" file exists
+		if self.File.Exists(website_file) == True:
+			# Read the JSON file
+			dictionary = self.JSON.To_Python(website_file)
+
+			# Import the "Domain" and "Sub-domain" keys
+			for key in ["Domain", "Sub-domain"]:
+				self.website[key] = dictionary[key]
+
+		# Define the website URL by formatting the URl format with the sub-domain and domain
+		self.website["URL"] = self.website["URL format"].format(self.website["Sub-domain"], self.website["Domain"])
+
+		# Update the "Website.json" file to add the "URL format" and "URL" keys
+		self.JSON.Edit(website_file, self.website)
+
+		# ---------- #
+
 		# Read the "Websites.json" file to get the "Websites" dictionary
 		self.websites = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Websites"])
 
@@ -156,8 +184,9 @@ class PHP(object):
 		# Get the class name
 		class_name = type(self).__name__
 
-		# Define the default separator number
+		# Define the default separator number if it is None
 		if separator_number == None:
+			# Define it as five
 			separator_number = 5
 
 			# If the class name is not "Update_Websites"
@@ -165,25 +194,25 @@ class PHP(object):
 				# Define the separator number as one
 				separator_number = 1
 
-		# Define the separator with the separator number
+		# Get the separator with the separator number
 		separator = self.separators[str(separator_number)]
 
 		# If the "open" parameter is True
 		if open == True:
-			# Define the text as "opening"
+			# Define the text as "Opening the server"
 			text = self.language_texts["opening_the_server"]
 
 		# If the "close" parameter is True
 		if close == True:
-			# Define the text as "closing"
+			# Define the text as "Closing the server"
 			text = self.language_texts["closing_the_server"]
 
-		# Add the server name to the text
+		# Add the server name to the [open/close] text
 		text += ' "' + self.server["Name"] + '"'
 
 		# If the "show text" parameter is True
 		if show_text == True:
-			# Show the text
+			# Show the separator and the text
 			print()
 			print(separator)
 			print()
@@ -194,6 +223,7 @@ class PHP(object):
 			# Open the server
 			self.System.Open(self.server["Server"], verbose = False)
 
+			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
 				# Wait for three seconds
 				self.Date.Sleep(3)

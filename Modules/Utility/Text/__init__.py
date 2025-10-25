@@ -79,21 +79,35 @@ class Text():
 		return number
 
 	def Remove_Leading_Zeroes(self, number):
-		if int(number) <= 9 and "0" in str(number):
+		# If the number is lesser than or equal to nine
+		# And the zero number is inside the number
+		if (
+			int(number) <= 9 and
+			"0" in str(number)
+		):
+			# Remove the zero number
 			number = str(number)[1:]
 
+		# Return the number
 		return number
 
 	def By_Number(self, number, singular, plural):
+		# If the type of the number is a list
 		if type(number) == list:
+			# Define it as the length of the list
 			number = len(number)
 
+		# If the number is lesser than or equal to one
 		if int(number) <= 1:
+			# Define the text as the singular one
 			text = singular
 
+		# If the number is greater than or equal to two
 		if int(number) >= 2:
+			# Define the text as the plural one
 			text = plural
 
+		# Return the defined text
 		return text
 
 	def Lower(self, text):
@@ -119,17 +133,22 @@ class Text():
 		return text
 
 	def Copy(self, text, verbose = True):
+		# If the text is a list, convert it to a text
 		if type(text) == list:
 			text = self.From_List(text, next_line = True)
 
+		# If the text is a dictionary, convert it to a text
 		if type(text) == dict:
 			text = self.From_Dictionary(text)
 
+		# Import the "pyperclip" module
 		import pyperclip
 
+		# Copy the text
 		pyperclip.copy(text)
 
-		self.Verbose(self.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
+		# Show the verbose text about the copied text
+		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
 	def From_List(self, list_, language = None, lower = False, next_line = False, and_text = True, or_text = False, quotes = False):
 		text = ""
@@ -233,10 +252,17 @@ class Text():
 		return len(item_list) != len(set(item_list))
 
 	def Get_Clipboard(self): 
+		# Import the "win32clipboard" module
 		import win32clipboard
 
+		# Open the clipboard
 		win32clipboard.OpenClipboard()
+
+		# Get the clipboard data
 		data = win32clipboard.GetClipboardData()
+
+		# Close the clipboard
 		win32clipboard.CloseClipboard()
 
+		# Return the data
 		return data

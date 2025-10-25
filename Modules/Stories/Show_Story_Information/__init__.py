@@ -37,8 +37,8 @@ class Show_Story_Information(Stories):
 			print(self.Language.language_texts["story_title"] + ":")
 
 			# Show the titles of the story in all languages
-			for language in self.languages["small"]:
-				translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			for language in self.languages["Small"]:
+				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 				print("\t" + translated_language + ":")
 				print("\t" + story["Titles"][language])
@@ -46,17 +46,17 @@ class Show_Story_Information(Stories):
 
 			# Iterate through the information items in the "Information items" dictionary
 			for key, information_item in self.stories["Information items"]["Dictionary"].items():
-				# Define the text of the information item
+				# Define the text dictionary of the information item
 				text = information_item["Texts"]
 
-				# If the key is "Author"
+				# If the information item is "Author"
 				# And the number of authors is more than one
 				if (
 					key == "Author" and
 					len(story["Information"]["Authors"]) > 1
 				):
-					# Use the "Plural" dictionary
-					text = information_item["Plural"]
+					# Use the "Plural texts" as a text dictionary
+					text = information_item["Plural texts"]
 
 				# Get the text in the user language
 				text = text[self.language["Small"]]
@@ -167,9 +167,9 @@ class Show_Story_Information(Stories):
 					print(key + ":")
 
 					# Show the story website information of the story
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						# Get the translated language
-						translated_language = self.languages["full_translated"][language][self.language["Small"]]
+						translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 						# Get the item (link)
 						item = story["Information"]["Links"][key]
@@ -190,7 +190,7 @@ class Show_Story_Information(Stories):
 						print("\t" + item)
 
 						# If the language is not the last one
-						if language != self.languages["small"][-1]:
+						if language != self.languages["Small"][-1]:
 							# Show a space separator
 							print()
 

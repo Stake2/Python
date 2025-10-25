@@ -248,7 +248,7 @@ class Date():
 
 				# Add the date or time texts
 				for key in date[date_name][date_type]["Texts"]:
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						if key == "Day name":
 							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names, type: list"][language][date[date_name][date_type]["Units"]["Week day"]]
 
@@ -290,7 +290,7 @@ class Date():
 							if format_name == "[Day name], [Day] [Month name] [Year]":
 								template = self.texts["{}, {} {} {}"]
 
-							for language in self.languages["small"]:
+							for language in self.languages["Small"]:
 								items = []
 
 								if format_name == "[Day name], [Day] [Month name] [Year]":
@@ -541,7 +541,7 @@ class Date():
 					text_list = self.texts["plural_date_attributes, type: list"]
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the unit text of the number in the current language
 					dictionary["Unit texts"][key][language] = text_list[language][i]
 
@@ -555,7 +555,7 @@ class Date():
 		dictionary["Time units text"] = self.Create_Time_Units_Text(dictionary)
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Create the language key if it does not exist
 			if language not in dictionary["Text (with time units)"]:
 				# Define the language key as the text in the current language
@@ -595,7 +595,7 @@ class Date():
 				dictionary["Difference"] = backup["Units"]
 
 		# Iterate through the list of small languages to create the language keys in the "Text" dictionary
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			dictionary["Text"][language] = ""
 
 		# Define the list of keys in the date difference
@@ -606,7 +606,7 @@ class Date():
 
 		# Make the time texts by language
 		for key in keys:
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the difference number
 				number = str(dictionary["Difference"][key])
 
@@ -747,12 +747,12 @@ class Date():
 		self.numbers["list_feminine"] = {}
 		self.numbers["string"] = {}
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.numbers["list"][language] = ["zero"]
 			self.numbers["list_feminine"][language] = []
 			self.numbers["string"][language] = "zero\n"
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			if language in self.numbers["list"] and language in self.texts["first_numbers"]:
 				numbers = self.numbers["list"][language]
 
@@ -836,7 +836,7 @@ class Date():
 
 						i += 1
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			if language in self.numbers["list_feminine"]:
 				self.numbers["list_feminine"][language].extend(self.numbers["list"][language])
 

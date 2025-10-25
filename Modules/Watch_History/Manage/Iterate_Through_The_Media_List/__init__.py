@@ -59,10 +59,10 @@ class Iterate_Through_The_Media_List(Watch_History):
 			print(language_media_type + ":")
 
 			media_types_to_remove = [
-				#self.texts["animes, title()"]["en"],
-				#self.texts["cartoons, title()"]["en"],
-				#self.texts["series, title()"]["en"],
-				#self.texts["movies, title()"]["en"],
+				self.texts["animes, title()"]["en"],
+				self.texts["cartoons, title()"]["en"],
+				self.texts["series, title()"]["en"],
+				self.texts["movies, title()"]["en"],
 				#self.texts["videos, title()"]["en"]
 			]
 
@@ -384,14 +384,14 @@ class Iterate_Through_The_Media_List(Watch_History):
 			media_status not in on_hold_statuses
 		):
 			# Define the titles file to check its contents
-			titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + self.languages["full"]["en"] + ".txt"
+			titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + self.languages["Full"]["en"] + ".txt"
 
 			# If the titles file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
 				# Iterate through the small languages list
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the full language based on the small language
-					full_language = self.languages["full"][language]
+					full_language = self.languages["Full"][language]
 
 					# Define the language titles file
 					titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + full_language + ".txt"
@@ -432,7 +432,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				# Get the year from the details
 				year = self.date_dictionary["Details"][self.Date.language_texts["year, title()"]]
 
-				# If the media has a media item list
+				# If the media has a list of media items
 				if media_dictionary["States"]["Has a list of media items"] == True:
 					# If the media title is equal to the media item title and the date is already present in the media details
 					if self.dictionary["Media"]["Title"] == self.dictionary["Media"]["Item"]["Title"] and self.Date.language_texts["start_date"] in self.dictionary["Media"]["Details"]:
@@ -586,7 +586,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					# Get information from MyAnimeList using anime ID
 					get_information_from_mal = True
 
-				# If the media has a media item list and the media item is the same as the media and the "ID" key is present inside the media details
+				# If the media has a list of media items and the media item is the same as the media and the "ID" key is present inside the media details
 				if (
 					self.dictionary["Media"]["Item"]["Title"] == self.dictionary["Media"]["Title"] and
 					"ID" in self.dictionary["Media"]["Details"]
@@ -861,7 +861,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			new_information["Duration"]["Time"] = str(new_information["Duration"]["Minutes"]) + ":" + str(new_information["Duration"]["Seconds"])
 
 			# Define duration time text
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define duration time text using "Time_Text" method of "Date" class
 				new_information["Duration"]["Text"][language] = self.Date.Time_Text("0:" + new_information["Duration"]["Time"], language)
 
@@ -879,7 +879,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 				new_information["Duration"]["Time"] = str(new_information["Duration"]["Hours"]) + ":" + str(new_information["Duration"]["Minutes"]) + ":" + str(new_information["Duration"]["Seconds"])
 
 				# Define duration time text using "Time_Text" method of "Date" class
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					new_information["Duration"]["Text"][language] = self.Date.Time_Text(new_information["Duration"]["Time"], language)
 
 				# Convert times to integer
@@ -1142,9 +1142,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 			if "Languages" in link:
 				for language in link["Languages"]:
-					if language in self.languages["full_translated"][language]:
+					if language in self.languages["Full (translated)"][language]:
 						# Get transtaled language
-						translated_full_language = self.languages["full_translated"][language][self.language["Small"]]
+						translated_full_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 					else:
 						translated_full_language = language

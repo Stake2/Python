@@ -347,13 +347,29 @@ class JSON():
 		return dictionary
 
 	def Show(self, json, return_text = False):
+		# Convert the JSON from Python to JSON text
 		json = self.From_Python(json)
 
+		# If the "return text" parameter is False, show the text
 		if return_text == False:
 			print(json)
 
+		# If it is True, return the text
 		if return_text == True:
 			return json
+
+	def Copy(self, json, verbose = True):
+		# Convert the JSON from Python to JSON text
+		text = self.From_Python(json)
+
+		# Import the "pyperclip" module
+		import pyperclip
+
+		# Copy the JSON
+		pyperclip.copy(text)
+
+		# Show the verbose text about the copied text
+		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
 
 	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False, remove_after_key = False):
 		keys = list(dictionary.keys())
@@ -422,5 +438,18 @@ class JSON():
 			# Add it to the "i" number
 			i += 1
 
-		# Return the new items
+		# Return the new items list
+		return new_items
+
+	def Remove_Duplicates_From_List(self, items):
+		# Define the new items list
+		new_items = []
+
+		# Iterate through the items inside the original list
+		for item in items:
+			# If the item is not present in the new items list
+			if item not in new_items:
+				new_items.append(item)
+
+		# Return the new items list
 		return new_items

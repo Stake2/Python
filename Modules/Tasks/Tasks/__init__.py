@@ -187,7 +187,7 @@ class Tasks(object):
 		# Iterate through the list of grammatical numbers
 		for grammatical_number in self.tasks["Types"]["Lists"]:
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Create the language key inside the grammatical number dictionary
 				self.tasks["Types"]["Lists"][grammatical_number][language] = []
 
@@ -263,7 +263,7 @@ class Tasks(object):
 				names[grammatical_number] = self.Define_Text(dictionary["Names"][grammatical_number], text_key)
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Get the name in the current grammatical number and language
 					name = names[grammatical_number][language]
 
@@ -343,7 +343,7 @@ class Tasks(object):
 				# Iterate through the list of grammatical numbers
 				for grammatical_number in self.tasks["Types"]["Lists"]:
 					# Iterate through the list of small languages
-					for language in self.languages["small"]:
+					for language in self.languages["Small"]:
 						# Get the name
 						name = dictionary["Names"][grammatical_number][language]
 
@@ -381,7 +381,7 @@ class Tasks(object):
 
 			else:
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the text in the current language as the original text, not a text dictionary
 					texts[language] = original_text
 
@@ -544,7 +544,7 @@ class Tasks(object):
 				states_dictionary["Texts"][key] = {}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# Define the default empty text
 					text = ""
 
@@ -639,9 +639,9 @@ class Tasks(object):
 		print(task_text + ":")
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the translated language in the user language
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Show the translated language and the task title in the current language
 			print("\t" + translated_language + ":")
@@ -657,7 +657,7 @@ class Tasks(object):
 		texts = []
 
 		# Iterate through the list of small languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Define the type text with a tab and the plural type in the current language
 			text = "\t" + dictionary["Type"]["Names"]["Plural"][language]
 

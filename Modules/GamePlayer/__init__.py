@@ -15,22 +15,31 @@ class Run():
 		if hasattr(self, "arguments") == True:
 			from copy import deepcopy
 
+			# Make a local copy of the arguments dictionary
+			arguments_copy = deepcopy(self.arguments)
+
+			# Define the "Active arguments" key as a dictionary
+			self.arguments["Active arguments"] = {}
+
 			# Iterate through the list of arguments
-			for argument in deepcopy(self.arguments).values():
-				# If the argument has the "Action" key
-				# And the action is "store"
-				# And the value of the argument is not "None"
+			for name, argument in arguments_copy.items():
+				# If the argument action is "store"
+				# And the argument value is not "None"
 				# (Different from the default value of the "store" action, which is "None")
-				# Or the value of the argument is "True"
+				# Or the argument action is "store_true"
+				# And the argument value is True
 				# (Different from the default value of the "store_true" action, which is "False")
 				if (
-					"Action" in argument and
 					argument["Action"] == "store" and
 					argument["Value"] != None or
+					argument["Action"] == "store_true" and
 					argument["Value"] == True
 				):
 					# Then the arguments dictionary has active arguments
 					has_active_arguments = True
+
+					# Add the argument to the "Active arguments" dictionary
+					self.arguments["Active arguments"][name] = argument
 
 					# If the "Auto-class" key is inside the argument dictionary
 					# (The auto-class is the class that will be auto-executed)
@@ -81,8 +90,13 @@ custom_arguments = {
 	},
 	"sub_game": {
 		"Action": "store"
+	},
+	"play": {
+		"Action": "store_true",
+		"Auto-class": "Play"
 	}
 }
 
+# If the __name__ is "__main__", run the local "Run" class
 if __name__ == "__main__":
 	Run()

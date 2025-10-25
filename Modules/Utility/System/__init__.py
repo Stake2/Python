@@ -2,6 +2,8 @@
 
 import os
 import win32com.client
+import subprocess
+import sys
 
 class System():
 	def __init__(self):
@@ -51,6 +53,9 @@ class System():
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
+		# Import the "system" dictionary
+		self.system = self.Language.system
+
 	def Define_Switches(self):
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
@@ -98,20 +103,45 @@ class System():
 		return path
 
 	def Open(self, item, open = False, verbose = True):
-		if (
-			"http" not in item and
-			"https" not in item
-		):
+		# Import the validators module
+		import validators
+
+		# If the item is not a link
+		if validators.url(item) == False:
+			# Sanitize the item
 			item = self.Sanitize(item)
 
+		# Show the verbose text about opening the item
 		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose)
 
+		# If the "Testing" switch is False
+		# Or the "open" parameter is True
 		if (
 			self.switches["Testing"] == False or
 			open == True
 		):
+			# Start the item
 			os.startfile(item)
 
+		# Return the verbose text
+		return verbose_text
+
+	def Open_Link(self, link, browser = "", verbose = True):
+		# If the "browser" parameter is empty
+		if browser == "":
+			# Then define it as "Mozilla Firefox"
+			browser = "Mozilla Firefox"
+
+		# Get the browser dictionary from the system "Browsers" dictionary
+		browser = self.system["Browsers"][browser]
+
+		# Show the verbose text about opening the link
+		verbose_text = self.Verbose(self.language_texts["opening, title()"], link, verbose = verbose)
+
+		# Open the link using the selected browser
+		subprocess.Popen([browser["File"], link])
+
+		# Return the verbose text
 		return verbose_text
 
 	def Close(self, program):
@@ -120,13 +150,6 @@ class System():
 		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
 			if self.switches["Testing"] == False:
 				process.kill()
-
-	def Open_Link(self, link, verbose = True):
-		import webbrowser
-
-		self.Verbose(self.language_texts["opening, title()"], link, verbose = verbose)
-
-		webbrowser.open(link)
 
 	def Define_Shortcut(self, dictionary):
 		# Initiate the shell

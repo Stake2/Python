@@ -60,8 +60,8 @@ class Register(Database):
 		}
 
 	def Type_Entry_Information(self):
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+		for language in self.languages["Small"]:
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			type_text = self.language_texts["type_the_entry_title_in"] + " " + translated_language
 
@@ -104,7 +104,7 @@ class Register(Database):
 			if key in data_titles:
 				data_titles.pop(key)
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			if language in data_titles and data_titles["Original"] == data_titles[language]:
 				data_titles.pop(language)
 
@@ -169,7 +169,7 @@ class Register(Database):
 			"General": self.Define_File_Text("General")
 		}
 
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			self.dictionary["Entry"]["Text"][language] = self.Define_File_Text(language)
 
 		# Write the entry text into the entry file
@@ -188,7 +188,7 @@ class Register(Database):
 		if language_parameter == "General":
 			language = self.language["Small"]
 
-		full_language = self.languages["full"][language]
+		full_language = self.languages["Full"][language]
 
 		# Define entry text lines
 		lines = [
@@ -269,8 +269,8 @@ class Register(Database):
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Create folders
-		for language in self.languages["small"]:
-			full_language = self.languages["full"][language]
+		for language in self.languages["Small"]:
+			full_language = self.languages["Full"][language]
 
 			# Folder names
 			root_folder = self.texts["added_entries"][language]

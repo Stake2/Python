@@ -28,9 +28,9 @@
 			"en": "Add to comments dictionary",
 			"pt": "Adicionar ao dicionário de comentários"
 		},
-		"Fill_Media_Files": {
-			"en": "Fill media files",
-			"pt": "Preencher arquivos de mídia"
+		"Populate_Media_Episodes_Files": {
+			"en": "Populate the media episodes files",
+			"pt": "Preencher os arquivos de episódios de mídia"
 		},
 		"Convert_History": {
 			"en": "Convert history",
@@ -58,13 +58,13 @@
 				"Description": "Iterar através da lista de mídia",
 				"Object": "<class 'Watch_History.Manage.Iterate_Through_The_Media_List.Iterate_Through_The_Media_List'>"
 			},
-			"Fill_Media_Files": {
+			"Populate_Media_Episodes_Files": {
 				"Descriptions": {
-					"en": "Fill media files",
-					"pt": "Preencher arquivos de mídia"
+					"en": "Populate the media episodes files",
+					"pt": "Preencher os arquivos de episódios de mídia"
 				},
-				"Description": "Preencher arquivos de mídia",
-				"Object": "<class 'Watch_History.Manage.Fill_Media_Files.Fill_Media_Files'>"
+				"Description": "Preencher os arquivos de episódios de mídia",
+				"Object": "<class 'Watch_History.Manage.Populate_Media_Episodes_Files.Populate_Media_Episodes_Files'>"
 			},
 			"Convert_History": {
 				"Descriptions": {
@@ -78,7 +78,7 @@
 		"Descriptions": [
 			"Adicionar uma nova mídia ao Banco de Dados",
 			"Iterar através da lista de mídia",
-			"Preencher arquivos de mídia",
+			"Preencher os arquivos de episódios de mídia",
 			"Converter histórico"
 		]
 	}

@@ -99,6 +99,14 @@
 		"en": "Type how many times you rode your bike",
 		"pt": "Digite quantas vezes você andou de bicicleta"
 	},
+	"type_when_your_father_went_travelling": {
+		"en": "Type when your father went travelling",
+		"pt": "Digite quando seu pai foi viajar"
+	},
+	"type_when_your_father_arrived_from_his_trip": {
+		"en": "Type when your father arrived from his trip",
+		"pt": "Digite quando seu pai chegou de viagem"
+	},
 	"register_the_task": {
 		"en": "Register the task",
 		"pt": "Registrar a tarefa"

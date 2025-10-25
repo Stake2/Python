@@ -42,8 +42,8 @@ class Add_A_New_Data(Database):
 		self.data["Title"] = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 		self.data["Titles"]["Original"] = self.data["Title"]
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+		for language in self.languages["Small"]:
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
@@ -82,7 +82,7 @@ class Add_A_New_Data(Database):
 		show_text = self.Language.language_texts["languages, title()"]
 		select_text = self.Language.language_texts["language, title()"]
 
-		languages = list(self.languages["full"].values())
+		languages = list(self.languages["Full"].values())
 		languages.append("[" + self.Language.language_texts["empty, title()"] + "]")
 
 		language = self.Input.Select(show_text = show_text, select_text = select_text, options = languages)["option"]
@@ -107,8 +107,8 @@ class Add_A_New_Data(Database):
 			self.Language.language_texts["title, title()"]: self.data["Title"]
 		}
 
-		for language in self.languages["small"]:
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+		for language in self.languages["Small"]:
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 

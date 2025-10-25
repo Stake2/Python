@@ -1,19 +1,19 @@
 {
-	"small": [
+	"Small": [
 		"pt",
 		"en",
 		"ja"
 	],
-	"supported": [
+	"Supported": [
 		"pt",
 		"en"
 	],
-	"full": {
+	"Full": {
 		"pt": "Português",
 		"en": "English",
 		"ja": "日本語"
 	},
-	"full_translated": {
+	"Full (translated)": {
 		"pt": {
 			"pt": "Português",
 			"en": "Portuguese",
@@ -38,9 +38,9 @@
 		"en": "en_US",
 		"jp": "jp_JP"
 	},
-	"types": [
+	"Types": [
 		"language",
-		"Language with country",
+		"language_with_country",
 		"full_language"
 	],
 	"Countries": {

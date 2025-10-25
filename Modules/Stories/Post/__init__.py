@@ -232,7 +232,7 @@ class Post(Stories):
 		self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Create the chapter title variable
 			# [Chapter title]
 			title = self.dictionary["Chapters"]["Titles"][language][self.dictionary["Chapter"]["Number"] - 1]
@@ -269,9 +269,9 @@ class Post(Stories):
 		# ---------- #
 
 		# Fill the chapter "Files" dictionary
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full language
-			full_language = self.languages["full"][language]
+			full_language = self.languages["Full"][language]
 
 			# Define the chapters folder in the current language
 			file = self.story["Folders"]["Chapters"][full_language]["root"]
@@ -347,10 +347,10 @@ class Post(Stories):
 			}
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the full and translated languages
-			full_language = self.languages["full"][language]
-			translated_language = self.languages["full_translated"][language][self.language["Small"]]
+			full_language = self.languages["Full"][language]
+			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
 
 			# Define the default text key for the template
 			text_key = "opening_the_photoshop_file_of_chapter_covers, type: long"
@@ -445,7 +445,7 @@ class Post(Stories):
 				c += 1
 
 			# If the language is the last one
-			if language == self.languages["small"][-1]:
+			if language == self.languages["Small"][-1]:
 				# Show a five dash space separator
 				print()
 				print(self.separators["5"])
@@ -455,7 +455,7 @@ class Post(Stories):
 		type_text = self.language_texts["press_enter_to_copy_the_chapter_title"]
 
 		# Show the full current language in the user language
-		print(self.languages["full_translated"][language][self.language["Small"]] + ":")
+		print(self.languages["Full (translated)"][language][self.language["Small"]] + ":")
 
 		# Show the chapter title in the user language
 		print(self.dictionary["Chapter"]["Titles (with leading zeroes)"][language])
@@ -590,9 +590,9 @@ class Post(Stories):
 		# Iterate through the dictionary of story websites
 		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Get the full language
-				full_language = self.languages["full"][language]
+				full_language = self.languages["Full"][language]
 
 				# Define the link of the story website
 				story_link = self.story["Information"]["Links"][key]["Edit story"]
@@ -623,7 +623,7 @@ class Post(Stories):
 				}
 
 				# If the language is not the first one
-				if language != self.languages["small"][0]:
+				if language != self.languages["Small"][0]:
 					# Define the first space of the "Open_Social_Network" class as True
 					social_networks["Spaces"]["First"] = True
 
@@ -631,7 +631,7 @@ class Post(Stories):
 				# And the language is the first one
 				if (
 					key != self.stories["Story websites"]["List"][0] and
-					language == self.languages["small"][0]
+					language == self.languages["Small"][0]
 				):
 					# Show an additional space separator
 					print()
@@ -995,7 +995,7 @@ class Post(Stories):
 		}
 
 		# Add the task titles in all languages
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Get the "I published the chapter number" text template in the current language
 			template = self.texts["i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website"][language]
 

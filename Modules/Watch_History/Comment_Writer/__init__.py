@@ -501,7 +501,7 @@ class Comment_Writer(Watch_History):
 					titles.pop(key)
 
 			# Iterate through the list of small languages
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# If the language is inside the dictionary of titles
 				if language in titles:
 					# If the "Original" key exists
@@ -582,7 +582,7 @@ class Comment_Writer(Watch_History):
 				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
 					# Ask for the link of the comment
-					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"])
+					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"], accept_enter = False)
 
 					# If the original link is an URL
 					if validators.url(original_link) == True:

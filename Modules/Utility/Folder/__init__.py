@@ -653,8 +653,8 @@ class Folder():
 
 				if key == str(self.date["Units"]["Year"]):
 					# Create the years folders by language
-					for language in self.languages["small"]:
-						full_language = self.languages["full"][language]
+					for language in self.languages["Small"]:
+						full_language = self.languages["Full"][language]
 
 						self.folders["Notepad"]["Years"][key][full_language] = {
 							"root": self.folders["Notepad"]["Years"][key]["root"] + full_language + "/"
@@ -750,7 +750,7 @@ class Folder():
 				"root": self.folders["Stories"]["root"] + folder + "/"
 			}
 
-		# Mega "Websites" folders and files
+		# Define the Mega "Websites" folders and files
 		items = {
 			"Folders": [
 				"CSS",
@@ -784,22 +784,8 @@ class Folder():
 
 			self.folders["Mega"]["Websites"][item] = file
 
-		# "Colors.css" file inside the "CSS" folder
+		# Define the "Colors.css" file inside the "CSS" folder
 		self.folders["Mega"]["Websites"]["CSS"]["Colors"] = self.folders["Mega"]["Websites"]["CSS"]["root"] + "Colors.css"
-
-		# Define the empty "Website" and "Links" dictionaries
-		self.website = {}
-		self.links = {}
-
-		# If the "Website.json" file exists
-		if self.File.Exists(self.folders["Mega"]["Websites"]["Website"]) == True:
-			# Define the "Website" dictionary as it
-			self.website = self.JSON.To_Python(self.folders["Mega"]["Websites"]["Website"])
-
-			# Create the "Links" dictionary with the "Stake2 Website" link
-			self.links = {
-				"Stake2 Website": "https://" + self.website["Sub-domain"] + "." + self.website["Netlify"] + "/"
-			}
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary

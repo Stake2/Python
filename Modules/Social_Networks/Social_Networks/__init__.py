@@ -280,7 +280,7 @@ class Social_Networks(object):
 				addon = ", title()"
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the language file name text
 				dict_[language] = self.Language.texts[text_key + addon][language]
 
@@ -291,7 +291,7 @@ class Social_Networks(object):
 			dict_["Plural"] = {}
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary
@@ -328,7 +328,7 @@ class Social_Networks(object):
 				addon = ", title()"
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the language link type text
 				dict_[language] = self.Language.texts[text_key + addon][language]
 
@@ -754,7 +754,7 @@ class Social_Networks(object):
 		local_dictionary = deepcopy(self.information_items)
 
 		# Iterate through the small languages list
-		for language in self.languages["small"]:
+		for language in self.languages["Small"]:
 			# Remove the language items lists
 			local_dictionary["Lists"].pop(language)
 
@@ -786,7 +786,7 @@ class Social_Networks(object):
 				addon += ", title()"
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the correct texts dictionary
 				texts_dictionary = self.Language.texts
 
@@ -844,7 +844,7 @@ class Social_Networks(object):
 				text_key = text_key_backup
 
 			# Iterate through the small languages list
-			for language in self.languages["small"]:
+			for language in self.languages["Small"]:
 				# Define the plural version of the information item
 				dict_["Plural"][language] = texts_dictionary[text_key][language]
 
@@ -875,7 +875,7 @@ class Social_Networks(object):
 				words[item] = {}
 
 				# Iterate through the list of small languages
-				for language in self.languages["small"]:
+				for language in self.languages["Small"]:
 					# If the language dictionary does not exist, add it
 					if language not in words[item]:
 						words[item][language] = {}
