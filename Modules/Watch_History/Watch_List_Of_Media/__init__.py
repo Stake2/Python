@@ -116,7 +116,7 @@ class Watch_List_Of_Media(Watch_History):
 			# Change the "File list" switch to True
 			self.dictionary["Media list"]["File list"] = True
 
-		# Define the media number variable
+		# Define the media number
 		media_number = 0
 
 		# While the option is not the finish selection text

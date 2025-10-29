@@ -146,18 +146,18 @@ class Register(Tasks):
 		language_options = self.tasks["Types"]["Lists"]["Plural"][self.language["Small"]]
 
 		# Define the "t" variable for task type number
-		t = 0
+		type_number = 0
 
 		# Iterate through the keys inside the task "Types" dictionary
 		for task_type in self.tasks["Types"]["Dictionary"].values():
 			# If the "Module-only" key is inside the task type dictionary
 			if "Module-only" in task_type:
 				# Remove the task type from the lists above
-				options.pop(t)
-				language_options.pop(t)
+				options.pop(type_number)
+				language_options.pop(type_number)
 
-			# Add to the "t" number variable
-			t += 1
+			# Add to the "type number" number
+			type_number += 1
 
 		# Define the show and select texts
 		show_text = self.language_texts["task_types"]

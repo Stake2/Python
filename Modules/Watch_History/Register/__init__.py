@@ -1352,6 +1352,7 @@ class Register(Watch_History):
 				# If the media is a video channel
 				if self.media["States"]["Video"] == True:
 					# Format the "of the" text to add the "video series" text
+					# (This is not used because I do not add the video series title to the Diary Slim text anymore, only the video title)
 					of_the_text = of_the_text.format(self.language_texts["video_series, type: singular"])
 
 				# Remove the media title with space in the media item if it exists
@@ -1702,7 +1703,7 @@ class Register(Watch_History):
 			# You finished watching this cartoon:
 			# You finished watching this series:
 			# You finished watching this movie:
-			# You finished watching this YouTube channel:
+			# You finished watching this YouTube channel: (although YouTube channels are never finished because they rarely stop posting videos)
 			self.dictionary["Header text"] = self.language_texts["you_finished_watching"] + " " + text + ":"
 
 		# If the "Re-watching" state is True

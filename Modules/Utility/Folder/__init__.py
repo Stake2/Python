@@ -1532,4 +1532,14 @@ class Folder():
 
 				i += 1
 
+		# Update the folder and file keys to uppercase
+		for key in ["Folder", "File"]:
+			# Create the uppercase key
+			contents[key] = {}
+
+			# Iterate through the uppercase sub-keys
+			for sub_key in ["List", "Names", "Dictionary"]:
+				# Create the uppercase sub-key
+				contents[key][sub_key] = contents[key.lower()][sub_key.lower()]
+
 		return contents

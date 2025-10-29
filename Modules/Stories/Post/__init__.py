@@ -690,8 +690,7 @@ class Post(Stories):
 				# Add it to the "To open" list
 				social_networks["To open"].append(key)
 
-		# Only get the "Social Network" dictionary of these social networks:
-		# Wattpad, Spirit Fanfics, Twitter, and Facebook
+		# Get the social network dictionary of the social networks on the "List" list
 		for key in social_networks["List"]:
 			social_networks["Dictionary"][key] = self.social_networks["Dictionary"][key]
 

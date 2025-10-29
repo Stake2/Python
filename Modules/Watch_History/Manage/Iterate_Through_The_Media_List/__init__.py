@@ -204,14 +204,14 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 		import collections
 
-		# Sort year comment number keys
+		# Sort the comment numbers by year dictionary based on its keys
 		self.comments_number["Numbers"]["Years"] = dict(collections.OrderedDict(sorted(self.comments_number["Numbers"]["Years"].items())))
 
-		# Sort media type year comment numbers keys
+		# Sort the comment numbers by media type and by year dictionary based on its keys
 		for plural_media_type in self.media_types["Plural"]["en"]:
 			self.comments_number["Numbers"]["Type"][plural_media_type]["Years"] = dict(collections.OrderedDict(sorted(self.comments_number["Numbers"]["Type"][plural_media_type]["Years"].items())))
 
-		# Only edit the root Comments file if the program iterated through all of the media types
+		# Only edit the root "Comments.json" file if the program iterated through all of the media types
 		# (If a media type was removed from the list, the comments number will be wrong)
 		#if media_types_to_remove == []:
 			# Update the root "Comments.json" file

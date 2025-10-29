@@ -86,7 +86,7 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Define the total chapter number variable for easier typing
+		# Define the total chapter number for easier typing
 		total_chapter_number = self.story["Information"]["Chapters"]["Numbers"]["Total"]
 
 		# Iterate through the list of writing modes
@@ -487,7 +487,7 @@ class Write(Stories):
 					# Insert the current chapter date text into the correct index
 					lines.insert(i, text)
 
-				# Add one to the "i" number variable
+				# Add one to the "i" number
 				i += 1
 
 			# If the insert switch is True
@@ -1573,16 +1573,17 @@ class Write(Stories):
 
 			# ---------- #
 
-			# Add the "I started at, and stopped at" formatted template
-			# (Only the hours and minutes)
+			# Define the list of items to use to format the "I started {} and stopped at {}" text template
+			# (Split the start and stop dates by a space to get only the hours and minutes)
 			items = [
 				self.dictionary["Session"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0],
 				self.dictionary["Session"]["After"]["Formats"]["HH:MM DD/MM/YYYY"].split(" ")[0]
 			]
 
+			# Format the "I started {} and stopped at {}" text template with the list of items and add it to the description
 			description += self.texts["i_started_at_{}_and_stopped_at_{}"][language].format(*items)
 
-			# Add the dot and line break
+			# Add a dot and a line break
 			description += "." + "\n"
 
 			# ---------- #
@@ -1598,7 +1599,7 @@ class Write(Stories):
 			# Example: 1 hour, 30 minutes, 10 seconds
 			description += " " + self.dictionary["Session"]["Duration"]["Text"][language]
 
-			# Define the local "add_time_units_text" switch
+			# Define the local "add_time_units_text" switch as True
 			add_time_units_text = True
 
 			# If the "add_time_units_text" switch is True

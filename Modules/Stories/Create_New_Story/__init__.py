@@ -503,10 +503,8 @@ class Create_New_Story(Stories):
 		index = self.stories["List"].index(self.story["Title"])
 		language_story_title = self.story["Titles"][self.language["Small"]]
 
-		self.stories["Titles"]["Language"].insert(index, language_story_title)
-
-		# Update the "Stories list.txt" file with the updated  list of story titles in the user language
-		text_to_write = self.Text.From_List(self.stories["Titles"]["Language"], next_line = True)
+		# Update the "Stories list.txt" file with the updated list of story titles in the user language
+		text_to_write = self.Text.From_List(self.stories["Titles"][self.language["Small"]], next_line = True)
 
 		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
 

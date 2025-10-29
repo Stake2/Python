@@ -407,6 +407,9 @@ class JSON():
 
 		return dictionary
 
+	def List_Has_Only_Numbers(self, items):
+		return all(isinstance(item, int) for item in items)
+
 	def Sort_Item_List(self, items, order):
 		# Define the new items as an empty dictionary
 		new_items = {}
@@ -416,21 +419,57 @@ class JSON():
 			# Update it to be an empty list
 			new_items = []
 
+		# If the items is a dictionary
+		if type(items) == dict:
+			# List the keys and values
+			keys = list(items.keys())
+			values = list(items.values())
+
+		# If the order is a list of only numbers
+		if self.List_Has_Only_Numbers(order) == True:
+			# Iterate through the orders
+			i = 0
+			for item in order.copy():
+				# Remove one from the order number to make it access the list correcly (starting from zero)
+				item -= 1
+
+				# Update the order in the list
+				order[i] = item
+
+				# Add one to the "i" number
+				i += 1
+
 		# Iterate through the items in the order list
 		i = 0
 		for item in order:
 			# If the items is a dictionary
 			if type(items) == dict:
-				# Get the value from the dictionary of items
-				value = items[item]
+				# If the item is a string
+				if type(item) == str:
+					# Get the value from the dictionary of items
+					value = items[item]
 
-				# Add the key and value to the new dictionary of items
-				new_items[item] = value
+					# Add the key and value to the new dictionary of items
+					new_items[item] = value
+
+				# If the item is a number
+				if type(item) == int:
+					# Get the key and value from their respective lists
+					key = keys[item]
+					value = values[item]
+
+					# Add the key and value to the new dictionary of items
+					new_items[key] = value
 
 			# If the items is a list
 			if type(items) == list:
 				# Get the value from the items list
 				value = items[i]
+
+				# If the order is a list of only numbers
+				if self.List_Has_Only_Numbers(order) == True:
+					# Get the value from the items list using the order
+					value = items[item]
 
 				# Add the key and value to the new list of items
 				new_items.append(value)

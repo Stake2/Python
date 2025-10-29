@@ -332,7 +332,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			# Add the entry name to the year dictionary
 			entries_by_year[year].append(entry_name)
 
-		# Sort the keys of the dictionary of years
+		# Sort the keys of the dictionary of year entries based on its keys
 		entries_by_year = dict(collections.OrderedDict(sorted(entries_by_year.items())))
 
 		# ----- #

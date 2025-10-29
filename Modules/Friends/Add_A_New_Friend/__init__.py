@@ -232,10 +232,10 @@ class Add_A_New_Friend(Friends):
 
 			i += 1
 
-		# Sort the Social Networks list
+		# Sort the social networks list
 		self.friend["Social Networks"]["List"] = sorted(self.friend["Social Networks"]["List"], key = str.lower)
 
-		# Sort the Social Networks dictionary
+		# Sort the social networks dictionary based on its keys
 		self.friend["Social Networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.friend["Social Networks"]["Dictionary"].items())))
 
 	def Add_Social_Network(self):
@@ -471,16 +471,16 @@ class Add_A_New_Friend(Friends):
 		# Define the "Friend" dictionary as the local "Friend" dictionary
 		self.friends["Dictionary"][self.friend["Name"]] = self.friend
 
-		# Sort the met by year numbers keys
+		# Sort the met by year numbers keys based on its keys
 		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
 
-		# Sort the met by year lists keys
+		# Sort the "Met by year" lists based on its keys
 		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
 
-		# Sort the Friends list
+		# Sort the list of friends
 		self.friends["List"] = sorted(self.friends["List"], key = str.lower)
 
-		# Sort the Friends dictionary
+		# Sort the dictionary of friends based on its keys
 		self.friends["Dictionary"] = dict(collections.OrderedDict(sorted(self.friends["Dictionary"].items())))
 
 	def Write_To_Files(self):

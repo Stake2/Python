@@ -260,8 +260,8 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# Iterate through the questions inside the dictionary, getting the key and question dictionary
 		for key, question in questions.items():
-			# If the question is related to states
-			# If the "States" key is inside the "Text" dictionary
+			# If the question is related to states (the "State related" key is present and True)
+			# And the "States" key is inside the "Text" dictionary
 			if (
 				"State related" in question and
 				question["State related"] == True and

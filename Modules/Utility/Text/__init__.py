@@ -132,6 +132,16 @@ class Text():
 
 		return text
 
+	def Lower_Case_And_Hypenate(self, text):
+		# Lowercase the text
+		text = text.lower()
+
+		# Hyphenate the text
+		text = text.replace(" ", "-")
+
+		# Return the text
+		return text
+
 	def Copy(self, text, verbose = True):
 		# If the text is a list, convert it to a text
 		if type(text) == list:

@@ -269,11 +269,12 @@ class Social_Networks(object):
 		# Iterate through the file names list
 		for file_name in dictionary["List"]:
 			# Create the file name dictionary
-			dict_ = {}
+			file_name_dictionary = {}
 
 			# Define the text key
 			text_key = file_name.lower().replace(" ", "_")
 
+			# Define the text key addon
 			addon = ""
 
 			if "_" not in text_key:
@@ -282,20 +283,20 @@ class Social_Networks(object):
 			# Iterate through the small languages list
 			for language in self.languages["Small"]:
 				# Define the language file name text
-				dict_[language] = self.Language.texts[text_key + addon][language]
+				file_name_dictionary[language] = self.Language.texts[text_key + addon][language]
 
 			if "s" not in text_key:
 				text_key += "s"
 
 			# Define the plural texts of the file name
-			dict_["Plural"] = {}
+			file_name_dictionary["Plural"] = {}
 
 			# Iterate through the small languages list
 			for language in self.languages["Small"]:
-				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
+				file_name_dictionary["Plural"][language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary
-			dictionary["Dictionary"][file_name] = dict_
+			dictionary["Dictionary"][file_name] = file_name_dictionary
 
 		# Define the "File names" key as the local "File names" dictionary
 		self.social_networks["File names"] = dictionary
@@ -317,11 +318,12 @@ class Social_Networks(object):
 		# Iterate through the link types list
 		for link_type in dictionary["List"]:
 			# Create the link type dictionary
-			dict_ = {}
+			link_type_dictionary = {}
 
 			# Define the text key
 			text_key = link_type.lower().replace(" ", "_")
 
+			# Define the text key addon
 			addon = ""
 
 			if "_" not in text_key:
@@ -330,10 +332,10 @@ class Social_Networks(object):
 			# Iterate through the small languages list
 			for language in self.languages["Small"]:
 				# Define the language link type text
-				dict_[language] = self.Language.texts[text_key + addon][language]
+				link_type_dictionary[language] = self.Language.texts[text_key + addon][language]
 
 			# Add the file name dictionary to the root "Link types" dictionary
-			dictionary["Dictionary"][link_type] = dict_
+			dictionary["Dictionary"][link_type] = link_type_dictionary
 
 		# Get the number of link types
 		dictionary["Numbers"]["Total"] = len(dictionary["List"])
@@ -631,7 +633,7 @@ class Social_Networks(object):
 
 		import collections
 
-		# Sort the met by year numbers keys
+		# Sort the "Met by year" numbers dictionary based on its keys
 		self.social_networks["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.social_networks["Numbers"]["By year"].items())))
 
 	def Define_Information_Items(self):
@@ -710,8 +712,13 @@ class Social_Networks(object):
 							# Format the format string with the item data gotten from the user profile dictionary
 							additional_item = additional_item.replace("{" + item + "}", profile[item])
 
-					# Add the additional item to the "Links" dictionary if the additional item contains the Social Network link
+					# Add the additional item to the "Links" dictionary if the additional item contains the social network link
 					if social_network["Information"]["Link"] in additional_item:
+						# If the " link" text is inside the sub-key, remove it
+						if " link" in sub_key:
+							sub_key = sub_key.replace(" link", "")
+
+						# Add the additional item to the "Links" dictionary
 						social_network["Profile"]["Links"][sub_key] = additional_item
 
 			# ---------- #
@@ -745,7 +752,7 @@ class Social_Networks(object):
 
 		import collections
 
-		# Sort the dictionary keys
+		# Sort the keys of the dictionaries based on their keys
 		self.information_items["Lists"]["Exact match"] = dict(collections.OrderedDict(sorted(self.information_items["Lists"]["Exact match"].items())))
 		self.information_items["Formats"] = dict(collections.OrderedDict(sorted(self.information_items["Formats"].items())))
 		self.information_items["Additional items"] = dict(collections.OrderedDict(sorted(self.information_items["Additional items"].items())))
@@ -763,7 +770,7 @@ class Social_Networks(object):
 
 		# ---------- #
 
-		# Sort the dictionary keys
+		# Sort the social networks dictionary based on its keys
 		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
 	def Define_Information_Item_Dictionary(self, dictionary):

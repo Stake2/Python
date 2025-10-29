@@ -528,7 +528,7 @@ class GamePlayer(object):
 			# Update the by game type "Sessions.json" file with the updated by game type "Sessions" dictionary
 			self.JSON.Edit(self.folders["Play History"]["Current year"]["By game type"][key]["Sessions"], self.dictionaries["Game type"][game_type])
 
-		# Sort the dictionary of game type numbers
+		# Sort the dictionary of game type numbers based on its keys
 		self.dictionaries["Sessions"]["Numbers"]["By game type"] = dict(collections.OrderedDict(sorted(self.dictionaries["Sessions"]["Numbers"]["By game type"].items())))
 
 		# Update the "Sessions.json" file with the updated "Sessions" dictionary
@@ -3079,39 +3079,31 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Show the folders
+		# Show the folders of the game
 
-		folders = game["Folders"]
-
-		# If the game has sub-games and the sub-game is not the game
-		if (
-			game["States"]["Has sub-games"] == True and
-			game["Sub-game"]["Title"] != game["Title"]
-		):
-			folders = sub_game["Folders"]
-
-		# Show the root folder of the game
+		# Show only the information folder of the game if there is no local game folder
+		# (The game must be web-based or played outside of the main platform (computer))
 		if game["Folders"]["Local"]["root"] == "":
 			print()
 			print(self.Folder.language_texts["folder, title()"] + ":")
 			print("\t" + game["Folders"]["root"])
 
-		# Show the information and local folders
+		# If there is a local game folder
 		if game["Folders"]["Local"]["root"] != "":
 			# Show the "Folders" text
 			print()
 			print(self.Folder.language_texts["folders, title()"] + ":")
 
-			# Show the "Information" folder
+			# Show the "Information" game folder
 			print("\t" + self.Language.language_texts["informations, title()"] + ":")
 			print("\t" + game["Folders"]["root"])
 			print()
 
-			# Show the "Local" folder
+			# Show the "Local" game folder
 			print("\t" + self.Language.language_texts["local, title()"] + ":")
 			print("\t" + game["Folders"]["Local"]["root"])
 
-		# Show the sub-game folder if the game has sub-games and the sub-game is not the root game
+		# Show the sub-game folder if the game has sub-games and the sub-game title is not the root game title
 		if (
 			game["States"]["Has sub-games"] == True and
 			game["Sub-game"]["Title"] != game["Title"]
@@ -3122,13 +3114,13 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Show the shortcut file
+		# Show the game shortcut file
 		if self.File.Exists(game["Files"]["Shortcut"]["File"]) == True:
 			print()
 			print(self.Language.language_texts["shortcut, title()"] + ":")
 			print("\t" + game["Files"]["Shortcut"]["File"])
 
-		# Show the shortcut path
+		# Show the game shortcut file path
 		if game["Files"]["Shortcut"]["Path"] != "":
 			print()
 			print(self.Language.language_texts["shortcut_path"] + ":")
@@ -3136,7 +3128,7 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Show information about the gaming session played
+		# Show information about the gaming session played if the "Entry" key is present in the local dictionary
 		if "Entry" in dictionary:
 			# Check if the "Times" key is in the dictionary
 			if "Times" in dictionary["Entry"]:

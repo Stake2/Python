@@ -53,7 +53,7 @@ class System():
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Import the "system" dictionary
+		# Import the "system" dictionary from the "Language" class
 		self.system = self.Language.system
 
 	def Define_Switches(self):

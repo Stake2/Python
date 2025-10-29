@@ -742,10 +742,10 @@ class Friends(object):
 
 			# ---------- #
 
-			# Sort the Social Networks list
+			# Sort the list of social networks
 			dictionary["Social Networks"]["List"] = sorted(dictionary["Social Networks"]["List"], key = str.lower)
 
-			# Sort the Social Networks dictionary
+			# Sort the dictionary of social networks based on its keys
 			dictionary["Social Networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Social Networks"]["Dictionary"].items())))
 
 			# Social Network folders and profile file creation
@@ -890,16 +890,16 @@ class Friends(object):
 				# Sort the list
 				self.friends["Met by year"][year] = sorted(self.friends["Met by year"][year], key = str.lower)
 
-		# Sort the met by year numbers keys
+		# Sort the "Met by year" numbers based on its keys
 		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
 
-		# Sort the met by year lists keys
+		# Sort the "Met by year" lists based on its keys
 		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
 
-		# Sort the Friends list
+		# Sort the list of friends
 		self.friends["List"] = sorted(self.friends["List"], key = str.lower)
 
-		# Sort the Friends dictionary
+		# Sort the dictionary of friends based on its keys
 		self.friends["Dictionary"] = dict(collections.OrderedDict(sorted(self.friends["Dictionary"].items())))
 
 		# ---------- #

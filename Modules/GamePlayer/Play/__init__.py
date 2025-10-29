@@ -147,9 +147,9 @@ class Play(GamePlayer):
 			}
 
 	def Open_Game(self):
-		# If the "Bat" key is inside the dictionary of files
+		# If the "Bat" key is inside the dictionary of game files
 		if "Bat" in self.game["Files"]:
-			# Open the bat file (probably a file that runs a Python created for the game)
+			# Open the bat file (probably a file that runs a Python module or code created for the game)
 			self.System.Open(self.game["Files"]["Bat"])
 
 			# Ask for user input after the user finishes using the Python module of the game
@@ -174,15 +174,15 @@ class Play(GamePlayer):
 
 			# Define a list of items to use to format the link template
 			items = [
-				self.game["Game ID"],
-				self.language["With country"],
-				self.game["Asset ID"]
+				self.game["Game ID"], # The game ID
+				self.language["With country"], # The user language with the country
+				self.game["Asset ID"] # The game asset ID to find the game
 			]
 
 			# Format the link with the list of items to get the game link
 			game_link = template.format(*items)
 
-			# Open the link to the game
+			# Open the link to the game using the selected browser
 			self.System.Open_Link(game_link, browser = browser)
 
 	def Register_The_Session(self):
@@ -193,14 +193,15 @@ class Play(GamePlayer):
 
 		# ---------- #
 
-		# Ask the user to press Enter to start counting the gaming time
+		# If the "Open game" state is True
 		if self.states["Open game"] == True:
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
+				# Ask for the user to press Enter to start counting the gaming time
 				self.Input.Type(self.language_texts["press_enter_to_start_counting_the_gaming_time"], first_space = False)
 
+			# Else, show only the text
 			else:
-				# Show only the text
 				print(self.language_texts["press_enter_to_start_counting_the_gaming_time"] + ":")
 
 		# Define the entry dictionary, the "Before" time (now)

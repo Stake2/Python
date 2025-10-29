@@ -66,6 +66,16 @@ class Copy_Story_Titles(Stories):
 		# Import the "ascii_uppercase" module
 		from string import ascii_uppercase as ascii_uppercase
 
+		# Create the list of all story titles in all languages in the "All" key
+		self.stories["Titles"]["All"] = []
+
+		# Iterate through the stories dictionary
+		for story_key, story in self.stories["Dictionary"].items():
+			# Iterate through the list of story titles
+			for story_title in story["Titles"].values():
+				# Add the story title to the "All" list
+				self.stories["Titles"]["All"].append(story_title)
+
 		# Iterate through the list of all story titles in all languages
 		for story_title in self.stories["Titles"]["All"]:
 			# Iterate through the list of copy modes in the user language

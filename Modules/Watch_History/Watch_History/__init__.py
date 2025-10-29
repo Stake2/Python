@@ -760,7 +760,7 @@ class Watch_History(object):
 		if self.current_year["Number"] not in self.dictionaries["Root comments"]["Numbers"]["Years"]:
 			self.dictionaries["Root comments"]["Numbers"]["Years"][self.current_year["Number"]] = 0
 
-		# Sort years list
+		# Sort the dictionary of year comment numbers based on its keys
 		self.dictionaries["Root comments"]["Numbers"]["Years"] = dict(collections.OrderedDict(sorted(self.dictionaries["Root comments"]["Numbers"]["Years"].items())))
 
 		# Update the current year comments number with the number from the comments dictionary
@@ -798,7 +798,7 @@ class Watch_History(object):
 			if self.current_year["Number"] not in self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"]:
 				self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"][self.date["Units"]["Year"]] = 0
 
-			# Sort the media type years list
+			# Sort the dictionary of comment numbers by media type and by year based on its keys
 			self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"] = dict(collections.OrderedDict(sorted(self.dictionaries["Root comments"]["Numbers"]["Type"][plural_media_type]["Years"].items())))
 
 			# Add the plural media type number to the root numbers by media type if it does not exist in there
@@ -3909,8 +3909,10 @@ class Watch_History(object):
 								# Remove the container text from the list of items
 								items.pop(1)
 
-								# This will create a text such as:
-								# "Completed the [anime/cartoon/series/movie/video]"
+								# This will create texts such as:
+								# "Completed the season of [anime/cartoon/series]"
+								# "Completed the video series of YouTube channel"
+								# (Movies do not apply because with them, the "Completed media item" state is never True)
 								# But only if the "Last season" state is True
 
 							# If this is not the last season of the media

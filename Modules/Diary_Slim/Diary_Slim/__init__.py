@@ -767,7 +767,7 @@ class Diary_Slim():
 		file = self.diary_slim["Folders"]["Data"]["Texts"]["Texts"]
 
 		# If the "Texts.json" file is not empty
-		if self.File.Contents(file)["lines"] != []:
+		if self.File.Contents(file)["Lines"] != []:
 			# Get the filled "Texts" dictionary from its file
 			dictionary = self.JSON.To_Python(file)
 
@@ -1725,7 +1725,7 @@ class Diary_Slim():
 								"Numbers": root_statistics["Dictionary"]
 							}
 
-							# Sort the "Months" dictionary
+							# Sort the "Months" dictionary based on its keys
 							year_dictionary["Months"] = dict(collections.OrderedDict(sorted(year_dictionary["Months"].items())))
 
 					# If the statistic key is not inside the month dictionary

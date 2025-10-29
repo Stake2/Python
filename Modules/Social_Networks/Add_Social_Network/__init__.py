@@ -345,7 +345,7 @@ class Add_Social_Network(Social_Networks):
 		# Count the number of information items
 		self.social_network["Information items"]["Numbers"]["Total"] = len(self.social_network["Information items"]["List"])
 
-		# Define the "i" number variable
+		# Define the "i" number
 		i = 0
 
 		# Define the list of link types
@@ -527,7 +527,7 @@ class Add_Social_Network(Social_Networks):
 					# Add the additional item to the social network additional items dictionary
 					self.social_network["Information items"]["Additional items"][item] = additional_item
 
-			# Add one to the "i" number variable
+			# Add one to the "i" number
 			i += 1
 
 		# ---------- #
@@ -875,13 +875,13 @@ class Add_Social_Network(Social_Networks):
 		# Add the social network dictionary to the root dictionary of the "Social Networks" dictionary
 		self.social_networks["Dictionary"][self.social_network["Name"]] = self.social_network
 
-		# Sort the "By year" numbers keys
+		# Sort the "By year" numbers dictionary based on its keys
 		self.social_networks["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.social_networks["Numbers"]["By year"].items())))
 
-		# Sort the Social Networks list
+		# Sort the list of social networks
 		self.social_networks["List"] = sorted(self.social_networks["List"], key = str.lower)
 
-		# Sort the Social Networks dictionary
+		# Sort the dictionary of social networks based on its keys
 		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
 	def Write_To_Files(self):

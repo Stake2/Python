@@ -3,6 +3,18 @@
 		"en": "Story title in",
 		"pt": "Título da história em"
 	},
+	"stories_list": {
+		"en": "Stories list",
+		"pt": "Lista de histórias"
+	},
+	"story_websites": {
+		"en": "Story websites",
+		"pt": "Sites de histórias"
+	},
+	"authors_list": {
+		"en": "Authors list",
+		"pt": "Lista de autores"
+	},
 	"chapter_title": {
 		"en": "Chapter title",
 		"pt": "Título do capítulo"
@@ -126,6 +138,10 @@
 	"story_synopsis_in": {
 		"en": "Story synopsis in",
 		"pt": "Sinopse da história em"
+	},
+	"writing, type: item": {
+		"en": "Writing",
+		"pt": "Escrita"
 	},
 	"writing_modes": {
 		"en": "Writing modes",

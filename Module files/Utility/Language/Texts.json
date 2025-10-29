@@ -3,6 +3,10 @@
 		"en": "Folders",
 		"pt": "Pastas"
 	},
+	"ignored_folders": {
+		"en": "Ignored folders",
+		"pt": "Pastas ignoradas"
+	},
 	"your_{}_is": {
 		"pt": "Seu {} é",
 		"en": "Your {} is"
@@ -1503,6 +1507,10 @@
 			"feminine": "Outras"
 		}
 	},
+	"rubbish, title()": {
+		"en": "Rubbish",
+		"pt": "Lixeira"
+	},
 	"and_also": {
 		"en": "and also",
 		"pt": "e também"
@@ -2005,10 +2013,6 @@
 		"en": "Authors",
 		"pt": "Autores"
 	},
-	"authors_list": {
-		"en": "Authors list",
-		"pt": "Lista de autores"
-	},
 	"creation_date": {
 		"en": "Creation date",
 		"pt": "Data de criação"
@@ -2083,10 +2087,6 @@
 		"en": "Story acronyms",
 		"pt": "Acrônimos de história"
 	},
-	"stories_list": {
-		"en": "Stories list",
-		"pt": "Lista de histórias"
-	},
 	"story_information": {
 		"en": "Story information",
 		"pt": "Informações da história"
@@ -2109,6 +2109,10 @@
 	},
 	"read, title()": {
 		"en": "Read",
+		"pt": "Leitura"
+	},
+	"reading, title()": {
+		"en": "Reading",
 		"pt": "Leitura"
 	},
 	"reads, title()": {
