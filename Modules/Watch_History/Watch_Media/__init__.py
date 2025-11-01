@@ -1,8 +1,11 @@
 # Watch_Media.py
 
+# Import the root class
 from Watch_History.Watch_History import Watch_History as Watch_History
 
+# Import some useful modules
 import re
+from copy import deepcopy
 
 # A class to Watch media that has the "Watching" or "Re-watching" Watching Status
 class Watch_Media(Watch_History):
@@ -256,8 +259,7 @@ class Watch_Media(Watch_History):
 				self.media["Details"][self.Language.language_texts["remote_origin"]] = remote_origin
 
 	def Define_Episode_Variables(self):
-		# Import the "deepcopy" module from the "copy" module
-		from copy import deepcopy
+		
 
 		# The original media "Episode" dictionary is this one:
 		# Defined by the root method "Select_Media"
@@ -627,7 +629,7 @@ class Watch_Media(Watch_History):
 				self.media["Episode"]["Remote"]["Link"] = link
 
 			# Define the media episode unit as the remote origin link
-			self.media["Episode"]["unit"] = self.media["Episode"]["Remote"]["Link"]
+			self.media["Episode"]["Unit"] = self.media["Episode"]["Remote"]["Link"]
 
 		# Media episode number text definition by episode title and episode separator
 		if self.media["States"]["Series media"] == True:
@@ -1090,13 +1092,13 @@ class Watch_Media(Watch_History):
 		self.Folder.Create(self.media["Item"]["Folders"]["Media"]["root"])
 
 		# Add the media episode title to the local media folder, to create the media unit
-		self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Episode"]["Sanitized"]
+		self.media["Episode"]["Unit"] = self.media["Item"]["Folders"]["Media"]["root"] + self.media["Episode"]["Sanitized"]
 
 		# Add the media unit to the list of tried files
-		tried_files.append(self.media["Episode"]["unit"])
+		tried_files.append(self.media["Episode"]["Unit"])
 
 		# Define the "file exists" check
-		file_exists = self.File_Exists(self.media["Episode"]["unit"])
+		file_exists = self.File_Exists(self.media["Episode"]["Unit"])
 
 		# If the media has dubbing
 		# And no "Watch dubbed" setting was found
@@ -1110,7 +1112,7 @@ class Watch_Media(Watch_History):
 			# And the "Dubbed" text is inside the file, define the "Watch dubbed" state as True
 			if (
 				file_exists == True and
-				self.Language.texts["dubbed, title()"][self.language["Small"]] in self.media["Episode"]["unit"]
+				self.Language.texts["dubbed, title()"][self.language["Small"]] in self.media["Episode"]["Unit"]
 			):
 				self.media["States"]["Dubbing"]["Watch dubbed"] = True
 
@@ -1121,45 +1123,52 @@ class Watch_Media(Watch_History):
 
 				# ---------- #
 
-				# Make a list of languages to iterate through
-				languages = self.languages["Small"].copy()
+				# Make a copy of the dictionary of languages
+				languages = deepcopy(self.languages["Dictionary"])
 
 				# Remove the user language
-				# (Since the user language episode was not found, so we have to use another language to try to find the media unit (episode file))
-				languages.remove(self.language["Small"])
+				# (Since the episode in the user language was not found, we have to use another language to try to find the media unit (episode file))
+				languages.pop(self.language["Small"])
 
-				# Iterate through the local list of small languages
-				for language in languages:
-					# Define the full language
-					full_language = self.languages["Full"][language]
+				# Iterate through the local language keys and dictionaries
+				for small_language, language in languages.items():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
 
 					# Sanitize the language episode title to get the file name
-					file_name = self.Sanitize_Title(self.media["Episode"]["Titles"][language])
+					file_name = self.Sanitize_Title(self.media["Episode"]["Titles"][small_language])
 
-					# Define the root episode file
-					self.media["Episode"]["unit"] = self.media["Item"]["Folders"]["Media"]["root"].replace(self.language["Full"] + "/", "")
+					# Define the root episode file as the local media item folder
+					self.media["Episode"]["Unit"] = self.media["Item"]["Folders"]["Media"]["root"]
 
-					# If the language is not equal to the media language, add the full language folder to the episode unit
-					# (Episode units of media on their native language are not placed inside a full language folder)
-					if language != self.media["Language"]:
-						self.media["Episode"]["unit"] = self.media["Episode"]["unit"] + full_language + "/"
-						self.Folder.Create(self.media["Episode"]["unit"])
+					# Remove the full user language from the episode file 
+					self.media["Episode"]["Unit"] = self.media["Episode"]["Unit"].replace(self.language["Full"] + "/", "")
+
+					# If the current language is not equal to the media language
+					if small_language != self.media["Language"]:
+						# Add the full current language folder to the episode file
+						# (Episode files in the native language of the media are not placed inside a full language folder
+						# But episode files in languages that are not the native media language are, so we add the full language folder here)
+						self.media["Episode"]["Unit"] += full_language + "/"
+
+						# Create the episode folder
+						self.Folder.Create(self.media["Episode"]["Unit"])
 
 					# Add the language episode file name to the episode unit
-					self.media["Episode"]["unit"] += file_name
+					self.media["Episode"]["Unit"] += file_name
 
 					# Add the file to the list of tried files
-					tried_files.append(self.media["Episode"]["unit"])
+					tried_files.append(self.media["Episode"]["Unit"])
 
 					# Iterate through the accepted file extensions
 					for extension in self.dictionary["File extensions"]:
 						# Define the local media file with the current extension
-						file = self.media["Episode"]["unit"] + "." + extension
+						file = self.media["Episode"]["Unit"] + "." + extension
 
 						# If the file exists
 						if self.File.Exists(file) == True:
 							# Define the media unit as the local file
-							self.media["Episode"]["unit"] = file
+							self.media["Episode"]["Unit"] = file
 
 							# Say that the file exists
 							file_exists = True
@@ -1187,7 +1196,7 @@ class Watch_Media(Watch_History):
 
 			# If the answer is "Yes", use the "Find_Media_File" method to find and move the file
 			if bring_file == True:
-				self.media["Episode"]["unit"] = self.Find_Media_File(self.media["Episode"]["Sanitized"])
+				self.media["Episode"]["Unit"] = self.Find_Media_File(self.media["Episode"]["Sanitized"])
 
 			# Else, finish the program execution
 			if bring_file == False:
@@ -1214,7 +1223,7 @@ class Watch_Media(Watch_History):
 				file_exists = True
 
 				# Update the media unit file
-				self.media["Episode"]["unit"] = new_file
+				self.media["Episode"]["Unit"] = new_file
 
 		# Return the "file exists" switch
 		return file_exists
@@ -1224,7 +1233,7 @@ class Watch_Media(Watch_History):
 
 	def Open_Media_Unit(self):
 		# Open media unit with its executor
-		self.System.Open(self.media["Episode"]["unit"])
+		self.System.Open(self.media["Episode"]["Unit"])
 	
 	def Create_Discord_Status(self):
 		# Make a custom status of the media to put on the Discord custom status, with the media and episode title

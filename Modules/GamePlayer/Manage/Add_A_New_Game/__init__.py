@@ -55,8 +55,10 @@ class Add_A_New_Game(GamePlayer):
 
 				self.game["Titles"]["Original"] = self.game["Title"]
 
-			for language in self.languages["Small"]:
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
 				title = ""
 
@@ -64,7 +66,7 @@ class Add_A_New_Game(GamePlayer):
 					title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 				if title != "":
-					self.game["Titles"][language] = title
+					self.game["Titles"][small_language] = title
 
 			title = ""
 
@@ -181,13 +183,15 @@ class Add_A_New_Game(GamePlayer):
 				self.Language.language_texts["title, title()"]: self.game["Title"]
 			}
 
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
-			if language in self.game["Titles"]:
-				self.game["Details"][key] = self.game["Titles"][language]
+			if small_language in self.game["Titles"]:
+				self.game["Details"][key] = self.game["Titles"][small_language]
 
 		if "Romanized" in self.game["Titles"]:
 			key = self.Language.language_texts["romanized_title"]

@@ -103,21 +103,30 @@ class Add_A_New_Media(Watch_History):
 			if self.item == True:
 				title = self.dictionary["Media type"]["Subfolders"]["Singular"] + " " + str(self.media["Items"]["Number"] + 1)
 
+		# Define the title keys
 		media["Title"] = title
 		media["Titles"]["Original"] = media["Title"]
 		media["Titles"]["Sanitized"] = self.Sanitize_Title(media["Title"])
 
-		# Ask for the media (item) titles by langauge
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
-			title = ""
+			# Define the media title initially as an empty string
+			media_title = ""
 
+			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
-				title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
+				# Define the type text as "Title in [translated language]"
+				type_text = self.Language.language_texts["title_in_{}"].format(translated_language)
 
-			if title != "":
-				media["Titles"][language] = title
+				# Ask for the user to type the media title in the current language
+				media_title = self.Input.Type(type_text, next_line = True)
+
+			# If the media title is not empty, define it inside the "Titles" dictionary using the current language
+			if media_title != "":
+				media["Titles"][small_language] = media_title
 
 		# If the media type is not "Videos"
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
@@ -360,13 +369,18 @@ class Add_A_New_Media(Watch_History):
 			self.Language.language_texts["original_title"]: media["Title"]
 		}
 
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
-			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
+			# If the small language is inside the "Titles" dictionary
+			if small_language in media["Titles"]:
+				# Define the key as "Title in [translated language]"
+				key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
-			if language in media["Titles"]:
-				media["Details"][key] = media["Titles"][language]
+				# Add it to the media "Details" dictionary
+				media["Details"][key] = media["Titles"][small_language]
 
 		if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"] and "Romanized" in media["Titles"]:
 			key = self.Language.language_texts["romanized_title"]

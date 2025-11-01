@@ -132,10 +132,10 @@ class Register(GamePlayer):
 				}
 			}
 
-			# Iterate through the list of small languages
-			for language in self.languages["Small"]:
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
 				# If the language is not the first one
-				if language != self.languages["Small"][0]:
+				if small_language != self.languages["Small"][0]:
 					# Enumerate the lines
 					parameters["line_options_parameter"]["enumerate"] = True
 					parameters["line_options_parameter"]["enumerate_text"] = False
@@ -146,8 +146,8 @@ class Register(GamePlayer):
 					# Define the number of needed lines as the number of lines of the previous description
 					parameters["length"] = last_description["length"]
 
-				# Get the translated language in the user language
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
 				# Define the type text
 				type_text = self.Language.language_texts["description_in_{}"] + ":"
@@ -158,12 +158,12 @@ class Register(GamePlayer):
 				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
 					# Ask the user to type a session description
-					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = self.Input.Lines(type_text, **parameters)
+					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][small_language] = self.Input.Lines(type_text, **parameters)
 
 				# Else, define a default session description
 				else:
 					# Define the description text
-					description = "[" + self.Language.texts["description, title()"][language] + "]"
+					description = "[" + self.Language.texts["description, title()"][small_language] + "]"
 
 					# Show it
 					print()
@@ -171,7 +171,7 @@ class Register(GamePlayer):
 					print(description)
 
 					# Define it inside the "Descriptions" dictionary
-					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][language] = {
+					self.dictionary["Entry"]["Diary Slim"]["Descriptions"][small_language] = {
 						"lines": [
 							description
 						],
@@ -620,12 +620,9 @@ class Register(GamePlayer):
 			# Define the local language as the language parameter
 			language = language_parameter # Use the provided language parameter
 
-		# If the language parameter is "General", use the user's preferred language
+		# If the language parameter is "General", use the user language
 		if language_parameter == "General":
 			language = self.language["Small"]
-
-		# Retrieve the full language name from the languages dictionary
-		full_language = self.languages["Full"][language]
 
 		# ---------- #
 
@@ -839,16 +836,16 @@ class Register(GamePlayer):
 
 			# Or all language descriptions
 			else:
-				# Iterate through the list of small languages
-				for local_language in self.languages["Small"]:
-					# Get the full language
-					full_language = self.languages["Full"][local_language]
+				# Iterate through the language keys and dictionaries
+				for small_language, local_language in self.languages["Dictionary"].items():
+					# Define a shortcut to the full language
+					full_language = local_language["Full"]
 
 					# Add the full language and the language description to the root descriptions text
-					descriptions += full_language + ":" + "\n" + descriptions_dictionary[local_language]["string"]
+					descriptions += full_language + ":" + "\n" + descriptions_dictionary[small_language]["string"]
 
 					# If the local language is not the last language in the list
-					if local_language != self.languages["Small"][-1]:
+					if small_language != self.languages["Small"][-1]:
 						# Add two line breaks to the root descriptions text
 						descriptions += "\n\n"
 
@@ -863,9 +860,6 @@ class Register(GamePlayer):
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
-
 			# Define a shortcut for the folder
 			folder = self.current_year["Folders"][language]["Gaming sessions"]
 
@@ -889,7 +883,7 @@ class Register(GamePlayer):
 			folder["Entry file"] = folder["root"] + entry_file_name + ".txt"
 			self.File.Create(folder["Entry file"])
 
-			# Write the entry text by language inside the year entry file
+			# Write the entry text in the current language inside the year entry file
 			self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
 
 			# ---------- #

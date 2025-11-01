@@ -52,10 +52,10 @@ class Create_New_Story(Stories):
 
 		# ---------- #
 
-		# Ask for the titles of the story
-		for language in self.languages["Small"]:
-			# Get the translated language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Ask for the story title
 			text = self.language_texts["story_title_in"] + " " + translated_language
@@ -71,10 +71,10 @@ class Create_New_Story(Stories):
 				print(title)
 
 			# Add the story title to the "Titles" dictionary
-			story["Titles"][language] = title
+			story["Titles"][small_language] = title
 
 			# If the language is "English", define it as the root story title
-			if language == "en":
+			if small_language == "en":
 				story["Title"] = title
 
 		# Add the "Titles" dictionary to the "Information" dictionary
@@ -173,10 +173,10 @@ class Create_New_Story(Stories):
 				# Define the empty "Synopsis" dictionary
 				information = {}
 
-				# Iterate through the list of small languages
-				for language in self.languages["Small"]:
-					# Get the translated language
-					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Get the current language translated to the user language
+					translated_language = language["Translated"][self.language["Small"]]
 
 					# Define the type text
 					type_text = self.language_texts["story_synopsis_in"] + " " + translated_language
@@ -193,7 +193,7 @@ class Create_New_Story(Stories):
 						print(synopsis)
 
 					# Add the synopsis to the "Synopsis" dictionary
-					information[language] = synopsis
+					information[small_language] = synopsis
 
 			# If there is no root method to select the information
 			if "Method" not in information_item:
@@ -391,17 +391,17 @@ class Create_New_Story(Stories):
 		# Define the root folder
 		root_folder = self.story["Folders"]["Information"]["Synopsis"]["root"]
 
-		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
 
 			# Define and create the file
 			file = root_folder + full_language + ".txt"
 			self.File.Create(file)
 
 			# Write to the file
-			self.File.Edit(file, self.story["Information"]["Synopsis"][language])
+			self.File.Edit(file, self.story["Information"]["Synopsis"][small_language])
 
 		# ---------- #
 		

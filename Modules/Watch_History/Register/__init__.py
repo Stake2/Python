@@ -546,12 +546,9 @@ class Register(Watch_History):
 		if language_parameter != "General":
 			language = language_parameter # Use the provided language parameter
 
-		# If the language parameter is "General", use the user's preferred language
+		# If the language parameter is "General", use the user language
 		if language_parameter == "General":
 			language = self.language["Small"]
-
-		# Retrieve the full language name from the languages dictionary
-		full_language = self.languages["Full"][language]
 
 		# ---------- #
 
@@ -783,15 +780,12 @@ class Register(Watch_History):
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
-
+		for small_language in self.languages["Small"]:
 			# Define a shortcut for the folder
-			folder = self.current_year["Folders"][language]["Watched media"]
+			folder = self.current_year["Folders"][small_language]["Watched media"]
 
 			# Define the media type folder name
-			media_type_folder = self.dictionary["Media type"]["Plural"][language]
+			media_type_folder = self.dictionary["Media type"]["Plural"][small_language]
 
 			# Define and create the media type folder
 			folder["Media type"] = {
@@ -804,28 +798,28 @@ class Register(Watch_History):
 			folder = folder["Media type"]
 
 			# Get the entry file name
-			entry_file_name = self.dictionary["Entry"]["Name"][language]["Sanitized"]
+			entry_file_name = self.dictionary["Entry"]["Name"][small_language]["Sanitized"]
 
 			# Define and create the entry file
 			folder["Entry file"] = folder["root"] + entry_file_name + ".txt"
 			self.File.Create(folder["Entry file"])
 
-			# Write the entry text by language inside the year entry file
-			self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
+			# Write the entry text in the current language inside the year entry file
+			self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][small_language], "w")
 
 			# ---------- #
 
 			# Create the "First of the Year" entry file
 			if self.media["States"]["First media type entry in year"] == True:
 				# Define the folder shortcut
-				folder = self.current_year["Folders"][language]["Firsts of the Year"]["Media"]
+				folder = self.current_year["Folders"][small_language]["Firsts of the Year"]["Media"]
 
 				# Define and create the "First of the Year" entry file
 				folder["Entry file"] = folder["root"] + entry_file_name + ".txt"
 				self.File.Create(folder["Entry file"])
 
-				# Write the entry text by language inside the "First of the Year" entry file
-				self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
+				# Write the entry text by small_language inside the "First of the Year" entry file
+				self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][small_language], "w")
 
 	def Check_Media_Status(self):
 		if self.media["States"]["Series media"] == True:

@@ -42,13 +42,15 @@ class Add_A_New_Data(Database):
 		self.data["Title"] = self.Input.Type(self.Language.language_texts["original_title"], next_line = True, accept_enter = False)
 		self.data["Titles"]["Original"] = self.data["Title"]
 
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language in the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			title = self.Input.Type(self.Language.language_texts["title_in_{}"].format(translated_language), next_line = True)
 
 			if title != "":
-				self.data["Titles"][language] = title
+				self.data["Titles"][small_language] = title
 
 		title = self.Input.Type(self.Language.language_texts["romanized_title"], next_line = True)
 
@@ -107,13 +109,15 @@ class Add_A_New_Data(Database):
 			self.Language.language_texts["title, title()"]: self.data["Title"]
 		}
 
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language in the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
 
-			if language in self.data["Titles"]:
-				self.data["Details"][key] = self.data["Titles"][language]
+			if small_language in self.data["Titles"]:
+				self.data["Details"][key] = self.data["Titles"][small_language]
 
 		if "Romanized" in self.data["Titles"]:
 			key = self.Language.language_texts["romanized_title"]

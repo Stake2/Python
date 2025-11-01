@@ -1688,16 +1688,28 @@ class GamePlayer(object):
 			# Define the default game language as the user language
 			game["Language"] = self.language["Full"]
 
-			# Change user language to original game language if the key exists inside the game details
-			if self.Language.language_texts["original_language"] in game["Details"]:
-				game["Language"] = game["Details"][self.Language.language_texts["original_language"]]
+			# Define a shortcut to the "Original language" text
+			original_language_text = self.Language.language_texts["original_language"]
 
-			if game["Language"] in list(self.languages["Full"].values()):
-				# Iterate through full languages list to find small language from the full language
-				for small_language in self.languages["Full"]:
-					full_language = self.languages["Full"][small_language]
+			# If the "Original language" key exists in the game "Details" dictionary
+			if original_language_text in game["Details"]:
+				# Define the game language as the original language
+				game["Language"] = game["Details"][original_language_text]
 
+			# Define a local list of full languages
+			full_languages = list(self.languages["Full"].values())
+
+			# If the game language is inside the local list of full languages
+			if game["Language"] in full_languages:
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
+
+					# If the full current language is the same as the media language
 					if full_language == game["Language"]:
+						# Define the game full and small language as the current language
+						game["Full language"] = full_language
 						game["Language"] = small_language
 
 			# ---------- #

@@ -1,6 +1,8 @@
 # File.py
 
+# Import some useful modules
 import os
+import shutil
 
 class File():
 	def __init__(self):
@@ -144,26 +146,38 @@ class File():
 		# Define the folder as an empty string
 		folder = ""
 
-		# Add each sub-folder with a slash to the empty string above
-		for i in split:
-			if i != split[-1]:
-				folder += i + "/"
+		# Add each sub-folder with a forward slash to the empty string above
+		for item in split:
+			# If the item is not the last item in the split list
+			if item != split[-1]:
+				# Add the item and a forward slash
+				folder += item + "/"
 
 		# Return the folder
 		return folder
 
-	def Verbose(self, text, item, verbose = False):
+	def Verbose(self, text, item, verbose = None):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
 		if (
-			self.switches["Verbose"] == True or
+			self.switches["Verbose"] == True and
+			verbose == None or
 			verbose == True
 		):
 			import inspect
 
-			method_ = inspect.stack()[1][3]
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
 
-			print("")
-			print(self.module["Name"] + "." + method_ + "():")
+			# Show the module name (JSON) and the method which ran this method (the "Verbose" one)
+			print()
+			print(self.module["Name"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
 			print("\t" + text + ":")
+
+			# Show the verbose item
 			print("\t" + item)
 
 	def Exists(self, file):
@@ -174,121 +188,228 @@ class File():
 		return os.path.isfile(file)
 
 	def Type(self, text = None):
+		# If the text parameter is None
 		if text == None:
+			# Define the text as "Type or paste the file:"
 			text = self.language_texts["type_or_paste_the_file"] + ": "
 
+		# Show a space
 		print()
 
-		return input(text)
+		# Ask for the file
+		file = input(text)
+
+		# Return it
+		return file
+
+	def File_Open(self, file, mode = "r", encoding = "UTF8"):
+		# Open the file with the mode and encoding
+		return open(file, mode, encoding = encoding)
 
 	def Create(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
+		# If the file already exists, return False
 		if self.Exists(file) == True:
 			return False
 
+		# If the file does not exist
+		# And the "Create" file switch is True
 		if (
-			self.switches["File"]["Create"] == True and
-			self.Exists(file) == False
+			self.Exists(file) == False and
+			self.switches["File"]["Create"] == True
 		):
-			create = open(file, "w", encoding = "utf8")
+			# Open the file handle in write mode to create it
+			create = self.File_Open(file, "w")
+
+			# Close the file handle
 			create.close()
 
-			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["created, masculine"], file)
+			# Show the verbose text saying that the file was created
+			self.Verbose(self.Language.language_texts["file, title()"] + " " + self.Language.language_texts["created, masculine"], file)
 
 			return True
 
+		# If the "Create" file switch is False
 		if self.switches["File"]["Create"] == False:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file)
+			# Define the verbose text to tell the user that the file was not created due to the lack of permissions
+			verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.Language.language_texts["create"]) + "." + "\n\n\t" + self.Language.language_texts["file, title()"]
+
+			# Show the verbose text
+			self.Verbose(verbose_text, file)
 
 			return False
 
 	def Delete(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
+		# If the file does not exist
 		if self.Exists(file) == False:
+			# Show the verbose text saying that the file does not exist and thus can not be deleted
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
 
 			return False
 
+		# If the file exists
+		# And the "Delete" file switch is True
 		if (
-			self.switches["File"]["Delete"] == True and
-			self.Exists(file) == True
+			self.Exists(file) == True and
+			self.switches["File"]["Delete"] == True
 		):
+			# Delete the file
 			os.remove(file)
 
-			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["deleted, masculine"], file)
+			# Show the verbose text saying that the file was deleted
+			self.Verbose(self.Language.language_texts["file, title()"] + " " + self.Language.language_texts["deleted, masculine"], file)
 
 			return True
 
+		# If the "Delete" file switch is False
 		if self.switches["File"]["Delete"] == False:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["delete"]) + "." + "\n\n\t" + self.language_texts["file, title()"], file, verbose = True)
+			# Define the verbose text to tell the user that the file was not deleted due to the lack of permissions
+			verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.Language.language_texts["delete"]) + "." + "\n\n\t" + self.Language.language_texts["file, title()"]
+
+			# Show the verbose text
+			self.Verbose(verbose_text, file, verbose = True)
 
 			return False
 
-	def Copy(self, source_file = None, destination_file = None):
+	def Define_Source_And_Destionation_Files(self, source_file = None, destination_file = None):
+		# If the source file is None, ask for the user to type or paste it
 		if source_file == None:
 			source_file = self.Type()
 
+		# If the destination file is None, ask for the user to type or paste it
 		if destination_file == None:
 			destination_file = self.Type()
 
+		# Sanitize both the source and destination files
 		source_file = self.Sanitize(source_file)
 		destination_file = self.Sanitize(destination_file)
 
+	def Copy(self, source_file = None, destination_file = None):
+		# Define the source and destination files
+		source_file, destination_file = self.Define_Source_And_Destionation_Files(source_file, destination_file)
+
+		# If the file does not exist
 		if self.Exists(source_file) == False:
+			# Show the verbose text saying that the file does not exist and thus can not be copied
 			self.Verbose(self.language_texts["this_file_does_not_exist"], source_file)
 
 			return False
 
+		# If the file exists
+		# And the "Copy" file switch is True
 		if (
-			self.switches["File"]["Copy"] == True and
-			self.Exists(source_file) == True
+			self.Exists(source_file) == True and
+			self.switches["File"]["Copy"] == True
 		):
-			import shutil
+			# Copy the file to the destination folder
 			shutil.copy(source_file, destination_file)
 
+			# Show the verbose text saying that the file was copied
 			self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
 
 			return True
 
+		# If the "Copy" file switch is False
 		if self.switches["File"]["Copy"] == False:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
+			# Define the verbose text to tell the user that the file was not copied due to the lack of permissions
+			verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.Language.language_texts["file, title()"]
+
+			# Show the verbose text
+			self.Verbose(verbose_text, destination_file, verbose = True)
 
 			return False
 
 	def Move(self, source_file = None, destination_file = None):
-		if source_file == None:
-			source_file = self.Type()
+		# Define the source and destination files
+		source_file, destination_file = self.Define_Source_And_Destionation_Files(source_file, destination_file)
 
-		if destination_file == None:
-			destination_file = self.Type()
-
-		source_file = self.Sanitize(source_file)
-		destination_file = self.Sanitize(destination_file)
-
+		# If the file exists
+		# And the source file is not the same as the destination file
 		if (
 			self.Exists(source_file) == True and
 			source_file != destination_file
 		):
-			if (
-				self.switches["File"]["Move"] == True and
-				self.Exists(source_file) == True
-			):
-				import shutil
+			# And the "Move" file switch is True
+			if self.switches["File"]["Move"] == True:
+				# Move the file to the destination folder
 				shutil.move(source_file, destination_file)
 
+				# Show the verbose text saying that the file was moved
 				self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
 
 				return True
 
+			# If the "Move" file switch is False
 			if self.switches["File"]["Move"] == False:
-				self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"], destination_file, verbose = True)
+				# Define the verbose text to tell the user that the file was not copied due to the lack of permissions
+				verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"]
+
+				# Show the verbose text
+				self.Verbose(verbose_text, destination_file, verbose = True)
 
 				return False
 
+		# If the file exists and the source file is the same as the destination file
 		else:
 			return False
+
+	def Contents(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Define the contents dictionary
+		contents = {
+			"lines": [],
+			"string": "",
+			"size": 0,
+			"length": 0
+		}
+
+		# If the file exists
+		if self.Exists(file) == True:
+			# Open the file handle in read mode (the default mode)
+			file_handle = self.File_Open(file)
+
+			# Iterate through the lines inside the file
+			for line in file_handle.readlines():
+				# Remove the line break from the line
+				line = line.replace("\n", "")
+
+				# Add the line to the list of lines
+				contents["lines"].append(line)
+
+			# Reset cursor to the beginning of the file before getting the file string
+			file_handle.seek(0)
+
+			# Read the file and get its string
+			contents["string"] = file_handle.read()
+
+			# Close the file handle
+			file_handle.close()
+
+			# Get the size of the file
+			contents["size"] += os.path.getsize(file)
+
+			# Get the length of the file
+			contents["length"] = len(contents["lines"])
+
+		# Temporary:
+		# Add the title case to the "Lines", "String", and "Length" keys
+		for key in ["Lines", "String", "Length"]:
+			contents[key] = contents[key.lower()]
+
+		# If the file does not exist
+		if self.Exists(file) == False:
+			# Show the verbose text saying that the file does not exist and thus can not be [checked]
+			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
+
+		# Return the contents dictionary
+		return contents
 
 	def Edit(self, file, text, mode = "w", next_line = True, verbose = None, full_verbose = False):
 		# Sanitize the file path
@@ -298,7 +419,7 @@ class File():
 		contents = self.Contents(file)
 
 		# Define a shortcut to the file length
-		length = contents["length"]
+		length = contents["Length"]
 
 		# Define the line break as an empty string
 		line_break = ""
@@ -334,7 +455,7 @@ class File():
 				contents["string"] != text
 			):
 				# Open the file handle
-				edit = open(file, mode, encoding = "UTF8")
+				edit = self.File_Open(file, mode)
 
 				# Write the text into the file
 				edit.write(text)
@@ -343,15 +464,15 @@ class File():
 				edit.close()
 
 				# Define the show text to tell the user that the file was edited
-				show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
+				show_text = self.Language.language_texts["file, title()"] + " " + self.Language.language_texts["edited, masculine"]
 
 			# If the file "Edit" switch is False
 			if self.switches["File"]["Edit"] == False:
-				# Define the show text to tell the user that it was not possible to edit the file due to lack of permissions
-				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
+				# Define the show text to tell the user that it was not possible to edit the file due to the lack of permissions
+				show_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.Language.language_texts["edit"])
 
 			# If the file text string is not equal to the parameter text
-			if contents["string"] != text:
+			if contents["String"] != text:
 				# Show the verbose text
 				self.Verbose(show_text, file_text, verbose = verbose)
 
@@ -363,43 +484,12 @@ class File():
 			if self.switches["File"]["Edit"] == False:
 				return False
 
+		# If the file does not exist
 		if self.Exists(file) == False:
+			# Show the verbose text saying that the file does not exist and thus can not be edited
 			self.Verbose(self.language_texts["this_file_does_not_exist"], file_text)
 
 			return False
-
-	def Contents(self, file):
-		file = self.Sanitize(file)
-
-		contents = {
-			"lines": [],
-			"lines_none": [None],
-			"string": "",
-			"size": 0,
-			"length": 0
-		}
-
-		if self.Exists(file) == True:
-			contents["string"] = open(file, "r", encoding = "utf8").read()
-			contents["size"] += os.path.getsize(file)
-
-			for line in open(file, "r", encoding = "utf8").readlines():
-				line = line.replace("\n", "")
-
-				contents["lines"].append(line)
-				contents["lines_none"].append(line)
-
-			contents["length"] = len(contents["lines"])
-
-		# Temporary:
-		# Add the title case to the "Lines", "String", and "Length" keys
-		for key in ["Lines", "String", "Length"]:
-			contents[key] = contents[key.lower()]
-
-		if self.Exists(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exist"], file)
-
-		return contents
 
 	def Split(self, lines = None, dict_ = None, text = None, separator = ": ", next_line = False, convert = None):
 		if next_line == False:

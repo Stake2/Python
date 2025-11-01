@@ -269,18 +269,20 @@ class Post(Stories):
 		# ---------- #
 
 		# Fill the chapter "Files" dictionary
-		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
+
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
 
 			# Define the chapters folder in the current language
 			file = self.story["Folders"]["Chapters"][full_language]["root"]
 
 			# Add the chapter title in the current language and the text extension
-			file += self.dictionary["Chapter"]["Titles (with leading zeroes)"][language] + ".txt"
+			file += self.dictionary["Chapter"]["Titles (with leading zeroes)"][small_language] + ".txt"
 
 			# Define the language chapter file in the "Files" dictionary
-			self.dictionary["Chapter"]["Files"][language] = file
+			self.dictionary["Chapter"]["Files"][small_language] = file
 
 		# ---------- #
 
@@ -346,11 +348,13 @@ class Post(Stories):
 				}
 			}
 
-		# Iterate through the small languages list
-		for language in self.languages["Small"]:
-			# Get the full and translated languages
-			full_language = self.languages["Full"][language]
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
+
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Define the default text key for the template
 			text_key = "opening_the_photoshop_file_of_chapter_covers, type: long"
@@ -409,7 +413,7 @@ class Post(Stories):
 					print()
 
 					# Copy the chapter title
-					self.Copy_Title(language)
+					self.Copy_Title(small_language)
 
 					# Ask the user for input when they finish rendering the cover
 					self.Input.Type(self.language_texts["press_enter_when_you_finish_rendering_the_cover"])
@@ -439,13 +443,13 @@ class Post(Stories):
 					print()
 
 				# Move the cover file to the cover folders
-				self.Move_Cover(language, full_language, cover_type)
+				self.Move_Cover(small_language, full_language, cover_type)
 
 				# Add one to the "c" number
 				c += 1
 
 			# If the language is the last one
-			if language == self.languages["Small"][-1]:
+			if small_language == self.languages["Small"][-1]:
 				# Show a five dash space separator
 				print()
 				print(self.separators["5"])
@@ -454,8 +458,11 @@ class Post(Stories):
 		# Define the type text
 		type_text = self.language_texts["press_enter_to_copy_the_chapter_title"]
 
+		# Get the local language translated to the user language
+		translated_language = language["Translated"][self.language["Small"]]
+
 		# Show the full current language in the user language
-		print(self.languages["Full (translated)"][language][self.language["Small"]] + ":")
+		print(translated_language + ":")
 
 		# Show the chapter title in the user language
 		print(self.dictionary["Chapter"]["Titles (with leading zeroes)"][language])
@@ -565,7 +572,7 @@ class Post(Stories):
 		# Update the website of the selected story
 		Update_Websites(dictionary)
 
-	def Copy_Chapter_Text(self, language, full_language):
+	def Copy_Chapter_Text(self, language):
 		# Get the language chapter file
 		chapter_file = self.dictionary["Chapter"]["Files"][language]
 
@@ -589,11 +596,8 @@ class Post(Stories):
 
 		# Iterate through the dictionary of story websites
 		for key, story_website in self.stories["Story websites"]["Dictionary"].items():
-			# Iterate through the list of small languages
-			for language in self.languages["Small"]:
-				# Get the full language
-				full_language = self.languages["Full"][language]
-
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
 				# Define the link of the story website
 				story_link = self.story["Information"]["Links"][key]["Edit story"]
 
@@ -603,7 +607,7 @@ class Post(Stories):
 					story_link = self.story["Information"]["Links"][key]["Add chapter"]
 
 				# Get the language link
-				story_link = story_link[language]
+				story_link = story_link[small_language]
 
 				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class
 				# With the list of social networks to open, and their custom links
@@ -622,16 +626,16 @@ class Post(Stories):
 					}
 				}
 
-				# If the language is not the first one
-				if language != self.languages["Small"][0]:
+				# If the small language is not the first one
+				if small_language != self.languages["Small"][0]:
 					# Define the first space of the "Open_Social_Network" class as True
 					social_networks["Spaces"]["First"] = True
 
 				# If the story website is not the first one
-				# And the language is the first one
+				# And the small language is the first one
 				if (
 					key != self.stories["Story websites"]["List"][0] and
-					language == self.languages["Small"][0]
+					small_language == self.languages["Small"][0]
 				):
 					# Show an additional space separator
 					print()
@@ -646,10 +650,10 @@ class Post(Stories):
 				self.Copy_Title(language)
 
 				# Copy the chapter text
-				self.Copy_Chapter_Text(language, full_language)
+				self.Copy_Chapter_Text(small_language)
 
-				# If the language is the user language
-				if language == self.language["Small"]:
+				# If the small language is the user language
+				if small_language == self.language["Small"]:
 					# Get the link of the posted chapter on the story website from the user
 					input_text = self.language_texts["paste_the_link_of_the_chapter_on"] + " " + story_website["Name"]
 

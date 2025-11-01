@@ -122,33 +122,25 @@
 		"pt": "Digite a pasta de imagem",
 		"en": "Type the image folder"
 	},
-	"file": {
-		"en": "file",
-		"pt": "arquivo"
-	},
-	"with_file": {
-		"en": "With file",
-		"pt": "Com arquivo"
-	},
-	"file_format, type: format": {
-		"en": "file:///{}",
-		"pt": "file:///{}"
-	},
 	"it_will_be_updated": {
-        "en": "It will be updated",
-        "pt": "Ele será atualizado"
-    },
-    "it_will_not_be_updated": {
-        "en": "It will not be updated",
-        "pt": "Ele não será atualizado"
-    },
+		"en": "It will be updated",
+		"pt": "Ele será atualizado"
+	},
+	"it_will_not_be_updated": {
+		"en": "It will not be updated",
+		"pt": "Ele não será atualizado"
+	},
 	"updated_files": {
-        "en": "Updated files",
-        "pt": "Arquivos atualizados"
-    },
+		"en": "Updated files",
+		"pt": "Arquivos atualizados"
+	},
 	"archive, title()": {
 		"en": "Archive",
 		"pt": "Arquivo"
+	},
+	"create": {
+		"en": "create",
+		"pt": "criar"
 	},
 	"created": {
 		"en": "created",
@@ -156,6 +148,10 @@
 			"masculine": "criado",
 			"feminine": "criada"
 		}
+	},
+	"edit": {
+		"en": "edit",
+		"pt": "editar"
 	},
 	"edit, title()": {
 		"en": "Edit",
@@ -166,6 +162,17 @@
 		"pt": {
 			"masculine": "editado",
 			"feminine": "editada"
+		}
+	},
+	"delete": {
+		"en": "delete",
+		"pt": "apagar"
+	},
+	"deleted": {
+		"en": "deleted",
+		 "pt": {
+			"masculine": "apagado",
+			"feminine": "apagada"
 		}
 	},
 	"settings": {
@@ -385,29 +392,25 @@
 		"pt": "Pasta",
 		"en": "Folder"
 	},
+	"file": {
+		"en": "file",
+		"pt": "arquivo"
+	},
 	"file, title()": {
 		"pt": "Arquivo",
 		"en": "File"
 	},
-	"created, title(), masculine": {
-		"pt": "criado"
+	"with_file": {
+		"en": "With file",
+		"pt": "Com arquivo"
 	},
-	"created, title(), feminine": {
-		"pt": "criada"
+	"file_format, type: format": {
+		"en": "file:///{}",
+		"pt": "file:///{}"
 	},
-	"created, title()": {
-		"pt": "criado",
-		"en": "Created"
-	},
-	"edited, title(), masculine": {
-		"pt": "editado"
-	},
-	"edited, title(), feminine": {
-		"pt": "editada"
-	},
-	"edited, title()": {
-		"pt": "editado",
-		"en": "Edited"
+	"it_was_not_possible_to_{}_the_file_permission_not_granted": {
+		"en": "It was not possible to {} the file, permission not granted",
+		"pt": "Não foi possível {} o arquivo, permissão não concedida"
 	},
 	"settings, title()": {
 		"pt": "Configurações",
@@ -483,16 +486,6 @@
 		"pt": "Seu {} É",
 		"en": "Your {} Is"
 	},
-	"custom, title(), masculine, title()": {
-		"pt": "Personalizado"
-	},
-	"custom, title(), feminine, title()": {
-		"pt": "Personalizada"
-	},
-	"custom, title()": {
-		"pt": "Personalizado",
-		"en": "Custom"
-	},
 	"language, title()": {
 		"pt": "Idioma",
 		"en": "Language"
@@ -516,26 +509,6 @@
 	"file, title()": {
 		"pt": "Arquivo",
 		"en": "File"
-	},
-	"created, title(), masculine, title()": {
-		"pt": "Criado"
-	},
-	"created, title(), feminine, title()": {
-		"pt": "Criada"
-	},
-	"created, title()": {
-		"pt": "Criado",
-		"en": "Created"
-	},
-	"edited, title(), masculine, title()": {
-		"pt": "Editado"
-	},
-	"edited, title(), feminine, title()": {
-		"pt": "Editada"
-	},
-	"edited, title()": {
-		"pt": "Editado",
-		"en": "Edited"
 	},
 	"settings, title()": {
 		"pt": "Configurações",
@@ -662,7 +635,7 @@
 	"example, title()": {
 		"pt": "Exemplo",
 		"en": "Example"
-    },
+	},
 	"{}_time": {
 		"en": "{} time",
 		"pt": "{} vez"
@@ -798,21 +771,21 @@
 		"pt": "Novo tempo da entrada"
 	},
 	"the_file_text_is_different_than_the_updated_entry_text_the_file_will_be_updated": {
-        "en": "The file text is different than the updated entry text, the file will be updated",
-        "pt": "O texto do arquivo é diferente do texto da entrada atualizado, o arquivo vai ser atualizado"
-    },
+		"en": "The file text is different than the updated entry text, the file will be updated",
+		"pt": "O texto do arquivo é diferente do texto da entrada atualizado, o arquivo vai ser atualizado"
+	},
 	"the_old_entry_time_was_wrong_and_will_be_updated": {
 		"en": "The old entry time was wrong and will be updated",
-        "pt": "O tempo da entrada estava errado e vai ser atualizado"
+		"pt": "O tempo da entrada estava errado e vai ser atualizado"
 	},
 	"the_entry_file_was_renamed": {
 		"en": "The entry file was renamed",
-        "pt": "O arquivo da entrada foi renomeado"
+		"pt": "O arquivo da entrada foi renomeado"
 	},
-    "the_entry_file_does_not_exist": {
-        "en": "The entry file does not exist",
-        "pt": "O arquivo da entrada não existe"
-    },
+	"the_entry_file_does_not_exist": {
+		"en": "The entry file does not exist",
+		"pt": "O arquivo da entrada não existe"
+	},
 	"updated_entry_text": {
 		"en": "Updated entry text",
 		"pt": "Texto da entrada atualizado"
@@ -2533,6 +2506,13 @@
 	"in": {
 		"en": "in",
 		"pt": "em"
+	},
+	"the": {
+		"en": "the",
+		"pt": {
+			"masculine": "o",
+			"feminine": "a"
+		}
 	},
 	"genders, type: dictionary": {
 		"en": {

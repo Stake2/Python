@@ -197,10 +197,11 @@ class Database(object):
 				"Data list": []
 			}
 
-			# Define the singular and plural types
-			for language in self.languages["Small"]:
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				# Define the singular and plural types
 				for item in ["Singular", "Plural"]:
-					self.types[plural_type][item][language] = self.types[item][language][i]
+					self.types[plural_type][item][small_language] = self.types[item][small_language][i]
 
 			# Create type folders
 			for root_folder in ["Information", "History"]:
@@ -324,9 +325,9 @@ class Database(object):
 			# Remove the "JSON" key
 			self.types[plural_type].pop("JSON")
 
-			# Define the entry item
-			for language in self.languages["Small"]:
-				self.types[plural_type]["Items"][language] = self.types["items, type: dictionary"][plural_type][language]
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				self.types[plural_type]["Items"][small_language] = self.types["items, type: dictionary"][plural_type][small_language]
 
 			# Add the data list length numbers to the data types list to show on select data type
 			for text_type in ["Singular", "Plural"]:
@@ -690,19 +691,31 @@ class Database(object):
 		# Edit the data details file with the details above (or the one that already existed in the dictionary)
 		self.File.Edit(data["Folders"]["details"], self.Text.From_Dictionary(data["Details"]), "w")
 
-		# Define the default data language as the user language
+		# Define the default data language as the full user language
 		data["Language"] = self.language["Full"]
 
-		# Change user language to original data language if the key exists inside the data details
-		if self.Language.language_texts["original_language"] in data["Details"]:
-			data["Language"] = data["Details"][self.Language.language_texts["original_language"]]
+		# Define a shortcut to the "Original language" text
+		original_language_text = self.Language.language_texts["original_language"]
 
-		if data["Language"] in list(self.languages["Full"].values()):
-			# Iterate through full languages list to find small language from the full language
-			for small_language in self.languages["Full"]:
-				full_language = self.languages["Full"][small_language]
+		# If the "Original language" key exists in the data "Details" dictionary
+		if original_language_text in data["Details"]:
+			# Define the data language as the original language
+			data["Language"] = data["Details"][original_language_text]
 
+		# Define a local list of full languages
+		full_languages = list(self.languages["Full"].values())
+
+		# If the data language is inside the local list of full languages
+		if data["Language"] in full_languages:
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Define a shortcut to the full language
+				full_language = language["Full"]
+
+				# If the full current language is the same as the data language
 				if full_language == data["Language"]:
+					# Define the data full and small language as the current language
+					data["Full language"] = full_language
 					data["Language"] = small_language
 
 		# Define data states dictionary
@@ -907,11 +920,11 @@ class Database(object):
 					data["Titles"][self.language["Small"]] = data["Titles"][self.language["Small"]] + " (" + data["Titles"]["Original"].split(" (")[-1]
 
 			# Define the data titles by language
-			for language in self.languages["Small"]:
-				key = self.Language.texts["title_in_language"][language][self.language["Small"]]
+			for small_language in self.languages["Small"]:
+				key = self.Language.texts["title_in_language"][small_language][self.language["Small"]]
 
 				if key in data["Details"]:
-					data["Titles"][language] = data["Details"][key]
+					data["Titles"][small_language] = data["Details"][key]
 
 			data["Titles"]["Language"] = data["Titles"]["Original"]
 
@@ -1073,12 +1086,18 @@ class Database(object):
 
 		print("\t" + self.data["Titles"][key])
 
-		for language in self.languages["Small"]:
-			if language in self.data["Titles"]:
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# If the small language is inside the data "Titles" dictionary
+			if small_language in self.data["Titles"]:
+				# Get the current language translated to the user language in the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
+				# Show the the current language translated to the user language
 				print("\t" + translated_language + ":")
-				print("\t" + self.data["Titles"][language])
+
+				# Show the data title in the current language
+				print("\t" + self.data["Titles"][small_language])
 
 		print()
 

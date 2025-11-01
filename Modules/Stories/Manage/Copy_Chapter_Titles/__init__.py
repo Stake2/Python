@@ -39,22 +39,25 @@ class Copy_Chapter_Titles(Stories):
 			# Create the list of translated languages in the user language
 			translated_languages = []
 
-			# Iterate through the list of small languages
-			for language in self.languages["Small"]:
-				# Get the translated language in the user language
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
 				# Add it to the list
 				translated_languages.append(translated_language)
 
-			# Ask the user to select the language
-			language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["option"]
+			# Ask the user to select the small language
+			small_language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["Option"]["Normal"]
 
-			# Add the language to the languages list
-			languages.append(language)
+			# Add the small language to the languages list
+			languages.append(small_language)
+
+			# Get the language dictionary
+			language = self.languages["Dictionary"][small_language]
 
 			# Get the translated language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Show some space separators and a five dash space separator
 			print()

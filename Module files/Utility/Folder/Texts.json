@@ -19,22 +19,6 @@
         "en": "file",
         "pt": "arquivo"
     },
-	"create": {
-        "en": "create",
-        "pt": "criar"
-    },
-    "created": {
-        "en": "created",
-        "pt": "criada"
-    },
-	"delete": {
-        "en": "delete",
-        "pt": "apagar"
-    },
-    "deleted": {
-        "en": "deleted",
-        "pt": "apagada"
-    },
 	"move": {
         "en": "move",
         "pt": "mover"

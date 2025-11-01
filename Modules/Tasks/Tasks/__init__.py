@@ -638,14 +638,16 @@ class Tasks(object):
 		print()
 		print(task_text + ":")
 
-		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Get the translated language in the user language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
-			# Show the translated language and the task title in the current language
+			# Show the the current language translated to the user language
 			print("\t" + translated_language + ":")
-			print("\t" + task["Titles"][language])
+
+			# Show the title of the task in the current language
+			print("\t" + task["Titles"][small_language])
 			print()
 
 		# ---------- #

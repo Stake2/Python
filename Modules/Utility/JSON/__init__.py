@@ -1,6 +1,9 @@
 # JSON.py
 
+# Import some useful modules
 import os
+import datetime
+import json
 
 class JSON():
 	def __init__(self):
@@ -13,7 +16,7 @@ class JSON():
 		# Define the "Switches" dictionary
 		self.Define_Switches()
 
-		# Define the texts of the module
+		# Define the module texts
 		self.Define_Texts()
 
 	def Import_Classes(self):
@@ -64,32 +67,34 @@ class JSON():
 				self.switches["File"][switch] = False
 
 	def Define_Texts(self):
-		# Define the "Texts" dictionary
-		self.texts = self.To_Python(self.module["Files"]["Texts"])
-
-		# Define the "Language texts" dictionary
-		self.language_texts = self.Language.Item(self.texts)
-
 		# Define the "Date" utility dictionary
 		self.folders["Apps"]["Module files"]["Utility"]["Date"] = {
 			"Texts": self.folders["Apps"]["Module files"]["Utility"]["root"] + "Date/Texts.json"
 		}
 
-		# Define the "Date texts" dictionary
+		# Define the "Date texts" text dictionary
 		self.date_texts = self.To_Python(self.folders["Apps"]["Module files"]["Utility"]["Date"]["Texts"])
 
 	def Sanitize(self, path):
+		# Replace double backwards slashes with one forward slash
 		path = os.path.normpath(path).replace("\\", "/")
 
+		# If there is no forward slash in the path
+		# And the last character returned by the "splittext" method is an empty string
 		if (
 			"/" not in path[-1] and
 			os.path.splitext(path)[-1] == ""
 		):
+			# Add a forward slash to the end of the path
 			path += "/"
 
+		# Return the path
 		return path
 
 	def Verbose(self, text, item, verbose = None):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
 		if (
 			self.switches["Verbose"] == True and
 			verbose == None or
@@ -97,44 +102,76 @@ class JSON():
 		):
 			import inspect
 
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
+
+			# Show the module name (JSON) and the method which ran this method (the "Verbose" one)
 			print()
-			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
+			print(self.module["Name"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
 			print("\t" + text + ":")
+
+			# Show the verbose item
 			print("\t" + item)
 
 	def File_Exists(self, file):
 		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		# Checks if the file exists and returns True if it does or False if it does not
+		# Checks if the file exists and returns the boolean
 		return os.path.isfile(file)
 
-	def Contents(self, file):
+	def File_Open(self, file, mode = "r", encoding = "UTF8"):
+		# Open the file with the mode and encoding
+		return open(file, mode, encoding = encoding)
+
+	def File_Contents(self, file):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
+		# Define the contents dictionary
 		contents = {
-			"lines": [],
-			"lines_none": [None],
-			"string": "",
-			"size": 0,
-			"length": 0,
+			"Lines": [],
+			"String": "",
+			"Size": 0,
+			"Length": 0
 		}
 
+		# If the file exists
 		if self.File_Exists(file) == True:
-			contents["string"] = open(file, "r", encoding = "utf8").read()
-			contents["size"] += os.path.getsize(file)
+			# Open the file handle in read mode (the default mode)
+			file_handle = self.File_Open(file)
 
-			for line in open(file, "r", encoding = "utf8").readlines():
+			# Iterate through the lines inside the file
+			for line in file_handle.readlines():
+				# Remove the line break from the line
 				line = line.replace("\n", "")
 
-				contents["lines"].append(line)
-				contents["lines_none"].append(line)
+				# Add the line to the list of lines
+				contents["Lines"].append(line)
 
-			contents["length"] = len(contents["lines"])
+			# Reset cursor to the beginning of the file before getting the file string
+			file_handle.seek(0)
 
+			# Read the file and get its string
+			contents["String"] = file_handle.read()
+
+			# Close the file handle
+			file_handle.close()
+
+			# Get the size of the file
+			contents["Size"] = os.path.getsize(file)
+
+			# Get the length of the file
+			contents["Length"] = len(contents["Lines"])
+
+		# If the file does not exist
 		if self.File_Exists(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
+			# Show the verbose text saying that the file does not exist
+			self.Verbose(self.Language.language_texts["this_file_does_not_exists"], file)
 
+		# Return the contents dictionary
 		return contents
 
 	def Edit(self, file, text, next_line = True, verbose = None, full_verbose = False, edit = False):
@@ -142,7 +179,7 @@ class JSON():
 		file = self.Sanitize(file)
 
 		# Get the contents of the file
-		contents = self.Contents(file)
+		contents = self.File_Contents(file)
 
 		# Transform the text into the JSON format
 		text = self.From_Python(text)
@@ -158,15 +195,15 @@ class JSON():
 		# If the file exists
 		if self.File_Exists(file) == True:
 			# If the file "Edit" switch is True
-			# Or the "edit" parameter is True
+			# Or the edit parameter is True
 			if (
 				self.switches["File"]["Edit"] == True or
 				edit == True
 			):
 				# If the file text string is not equal to the parameter text
-				if contents["string"] != text:
-					# Open the file handle
-					edit = open(file, "w", encoding = "UTF8")
+				if contents["String"] != text:
+					# Open the file handle in write mode
+					edit = self.File_Open(file, "w")
 
 					# Write the text into the file
 					edit.write(text)
@@ -175,7 +212,7 @@ class JSON():
 					edit.close()
 
 					# Define the show text to tell the user that the file was edited
-					show_text = self.language_texts["file, title()"] + " " + self.language_texts["edited, masculine"]
+					show_text = self.Language.language_texts["file, title()"] + " " + self.Language.language_texts["edited, masculine"]
 
 			# If the file "Edit" switch is False
 			# And the "edit" parameter is False
@@ -184,10 +221,10 @@ class JSON():
 				edit == False
 			):
 				# Define the show text to tell the user that it was not possible to edit the file due to lack of permissions
-				show_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["edit"])
+				show_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.Language.language_texts["edit"])
 
 			# If the file text string is not equal to the parameter text
-			if contents["string"] != text:
+			if contents["String"] != text:
 				# Show the verbose text
 				self.Verbose(show_text, file_text, verbose = verbose)
 
@@ -210,126 +247,159 @@ class JSON():
 		# If the file does not exist
 		if self.File_Exists(file) == False:
 			# Show the verbose text to tell the user that the file does not exist and return False
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file_text, verbose = verbose)
+			self.Verbose(self.Language.language_texts["this_file_does_not_exists"], file_text, verbose = verbose)
 
 			return False
 
 	def Dumps(self, items):
-		# Import the json module
-		import json
-
 		# Dump the items
 		items = json.dumps(items, indent = "\t", ensure_ascii = False)
 
 		# Return the items
 		return items
 
-	def From_Python(self, items_parameter):
+	def From_Python(self, items):
 		# Import some useful modules
-		import json
 		from copy import deepcopy
-		import datetime
 		import types
 
-		if type(items_parameter) == dict:
-			items_parameter = dict(items_parameter)
+		# If the items parameter is a dictionary
+		if type(items) == dict:
+			# Convert it into a dictionary using the "dict" function
+			items = dict(items)
 
-			for key, value in items_parameter.items():
+			# Iterate through the keys and values of the items dictionary
+			for key, value in items.items():
+				# If the type name of the value is either "Credentials" or "Resource"
+				# Or it is not a number, a dictionary, or a list
 				if (
 					type(value).__name__ in ["Credentials", "Resource"] or
 					type(value) not in [int, dict, list]
 				):
-					items_parameter[key] = str(value)
+					# Convert it to a string
+					items[key] = str(value)
 
-		items = deepcopy(items_parameter)
+		# Make a copy of the items parameter
+		items_copy = deepcopy(items)
 
-		if isinstance(items, datetime.datetime) == True:
-			items = [
-				self.Date_To_String(items)
+		# If the items parameter is a datetime object
+		if self.Is_Datetime(items_copy) == True:
+			# Convert it into a list with the first item being the items converted into a date string
+			items_copy = [
+				self.Date_To_String(items_copy)
 			]
 
-		if type(items) == dict:
-			for key in items:
-				value = items[key]
+		# If the items parameter is a dictionary
+		if type(items_copy) == dict:
+			# Iterate through its keys and values
+			for key, value in items_copy.items():
+				# Check the value for a datetime to convert it correctly
+				value = self.Check_Datetime(value)
 
-				if isinstance(items[key], datetime.datetime) == True:
-					items[key] = self.Date_To_String(items[key])
+				# Update the value inside the root dictionary
+				items_copy[key] = value
 
-				if type(value) not in [str, int, list, dict, bool, None]:
-					if isinstance(value, datetime.datetime) == False:
-						items[key] = str(value)
-
-					if isinstance(value, datetime.datetime) == True:
-						items[key] = self.Date_To_String(items[key])
-
+				# If the value is a dictionary
 				if type(value) == dict:
-					for sub_key in value:
-						if "_PytzShimTimezone" in str(items[key][sub_key]):
-							items[key][sub_key] = str(items[key][sub_key])
+					# Iterate through its sub-keys and sub-values
+					for sub_key, sub_value in value.items():
+						# Check the sub-value for a datetime to convert it correctly
+						sub_value = self.Check_Datetime(sub_value)
 
-						if type(items[key][sub_key]) not in [str, int, list, dict, bool, None]:
-							if isinstance(items[key][sub_key], datetime.datetime) == False:
-								items[key][sub_key] = str(items[key][sub_key])
+						# Update the sub-value inside the root dictionary
+						value[sub_key] = sub_value
 
-							if isinstance(items[key][sub_key], datetime.datetime) == True:
-								items[key][sub_key] = self.Date_To_String(items[key][sub_key])
+						# If the sub-value is a dictionary
+						if type(sub_value) == dict:
+							# Iterate through its sub-sub-keys and sub-sub-values
+							for sub_sub_key, sub_sub_value in sub_value.items():
+								# Check the sub-sub-value for a datetime to convert it correctly
+								sub_sub_value = self.Check_Datetime(sub_sub_value)
 
-						if type(items[key][sub_key]) == dict:
-							for sub_sub_key in items[key][sub_key]:
-								if "_PytzShimTimezone" in str(items[key][sub_key][sub_sub_key]):
-									items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+								# Update the sub-sub-value inside the root dictionary
+								sub_value[sub_sub_key] = sub_sub_value
 
-								if type(items[key][sub_key][sub_sub_key]) not in [str, int, list, dict, bool, None]:
-									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == False:
-										items[key][sub_key][sub_sub_key] = str(items[key][sub_key][sub_sub_key])
+						# Update the sub-value inside the root dictionary
+						value[sub_key] = sub_value
 
-									if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
-										items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
+				# Update the value inside the root dictionary
+				items_copy[key] = value
 
-								if isinstance(items[key][sub_key][sub_sub_key], datetime.datetime) == True:
-									items[key][sub_key][sub_sub_key] = self.Date_To_String(items[key][sub_key][sub_sub_key])
-
-		if type(items) == list:
+		# If the items parameter is a list
+		if type(items_copy) == list:
+			# Iterate through the items in the list
 			i = 0
-			for item in items:
-				if isinstance(items[i], datetime.datetime) == True:
-					items[i] = self.Date_To_String(items[i])
+			for item in items_copy:
+				# If the item is not a datetime object, convert it into a date string
+				if self.Is_Datetime(item) == True:
+					item = self.Date_To_String(item)
 
+				# If not, convert it into a string
 				else:
-					items[i] = str(items[i])
+					item = str(item)
 
+				# Update the item in the root list
+				items_copy[i] = item
+
+				# Add one to the "i" number
 				i += 1
 
-		if type(items) == str:
-			items = self.To_Python(items)
+		# If the items parameter is a string
+		if type(items_copy) == str:
+			# Convert it into a Python object
+			items_copy = self.To_Python(items_copy)
 
 		# Dump the items
-		items = self.Dumps(items)
+		items_copy = self.Dumps(items_copy)
 
-		# Return the items
-		return items
+		# Return the items dictionary
+		return items_copy
+
+	def Is_Datetime(self, item):
+		# Return the boolean saying if the item is a datetime object or not
+		return isinstance(item, datetime.datetime)
+
+	def Check_Datetime(self, item):
+		# If the "_PytzShimTimezone" string is present in the item, convert it into a string
+		if "_PytzShimTimezone" in str(item):
+			item = str(item)
+
+		# If the value is not a string, number, list, dictionary, boolean, or None
+		if type(item) not in [str, int, list, dict, bool, None]:
+			# If the item is not a datetime object, convert it into a string
+			if self.Is_Datetime(item) == False:
+				item = str(item)
+
+			# If it is, convert it into a date string
+			if self.Is_Datetime(item) == True:
+				item = self.Date_To_String(item)
+
+		# Return the item
+		return item
 
 	def Date_To_String(self, date, format = ""):
-		import datetime
-
-		if isinstance(date, datetime.datetime) == False:
+		# If the item is not a datetime object, get the datetime object from the "Object" key
+		if self.Is_Datetime(date) == False:
 			date = date["Object"]
 
+		# If the date format is empty
 		if format == "":
+			# Get the default date format
 			format = self.date_texts["default_format"]
 
+			# If the timezone is "UTC"
 			if date.strftime("%Z") == "UTC":
+				# Add the "Z" to the format
 				format += "Z"
 
+			# If not, add the timezone character
 			else:
 				format += "%z"
 
+		# Convert the datetime object into a string using the defined format and return it
 		return date.strftime(format)
 
 	def To_Python(self, item):
-		# Import the json module
-		import json
-
 		# If the item is a file
 		if self.File_Exists(item) == True:
 			# Sanitize the file path
@@ -358,7 +428,7 @@ class JSON():
 		if return_text == True:
 			return json
 
-	def Copy(self, json, verbose = True):
+	def Copy(self, json):
 		# Convert the JSON from Python to JSON text
 		text = self.From_Python(json)
 
@@ -369,7 +439,8 @@ class JSON():
 		pyperclip.copy(text)
 
 		# Show the verbose text about the copied text
-		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
+		# (Never show it because the JSON dictionaries are frequently extensive)
+		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = False)
 
 	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False, remove_after_key = False):
 		keys = list(dictionary.keys())

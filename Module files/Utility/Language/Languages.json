@@ -13,16 +13,14 @@
 		"en": "English",
 		"ja": "日本語"
 	},
-	"Full (translated)": {
+	"Translated": {
 		"pt": {
 			"pt": "Português",
-			"en": "Portuguese",
-			"ja": "ポルトガル語"
+			"en": "Portuguese"
 		},
 		"en": {
 			"pt": "Inglês",
-			"en": "English",
-			"ja": "英語"
+			"en": "English"
 		},
 		"ja": {
 			"pt": "Japonês",
@@ -43,6 +41,24 @@
 		"language_with_country",
 		"full_language"
 	],
+	"Dictionary": {
+		"pt": {
+			"Small": "pt",
+			"Full": "Português",
+			"Translated": {
+				"pt": "Português",
+				"en": "Portuguese"
+			}
+		},
+		"en": {
+			"Small": "en",
+			"Full": "English",
+			"Translated": {
+				"pt": "Inglês",
+				"en": "English"
+			}
+		}
+	},
 	"Countries": {
 		"BR": {
 			"pt": "Brasil",

@@ -37,39 +37,44 @@ class Create_New_Module(Python):
 		# Make a list of the translated languages in the user language
 		self.translated_languages = []
 
-		for language in self.languages["Small"]:
-			self.translated_languages.append("[" + self.languages["Full (translated)"][language][self.language["Small"]] + "]")
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
+
+			# Add the translated language in the user language to the local list of translated languages
+			self.translated_languages.append("[" + translated_language + "]")
 
 		# Define the lines text, which shows the number of languages
 		self.lines_text = self.language_texts["{}_lines_in_this_order"].format(self.Date.language_texts["number_names_feminine, type: list"][len(self.languages["Small"])])
 
 		# Define the show text for the descriptions of the module
-		self.show_text = "\n" + self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
+		show_text = "\n" + self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions"], self.lines_text) + ": "
 
 		# Show a five dash separator
 		print()
 		print(self.separators["5"])
 
 		# Ask for the user to type the module descriptions in all languages
-		prototype = self.Input.Lines(self.show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages, first_space = False)["lines"]
+		prototype = self.Input.Lines(show_text, length = 2, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True}, line_texts = self.translated_languages, first_space = False)["lines"]
 
 		# Define and fill the module descriptions dictionary
 		self.module_descriptions = {}
 
 		# Iterate through the small languages list
 		i = 0
-		for language in self.languages["Small"]:
+		for small_language in self.languages["Small"]:
 			# Get the language description
-			self.module_descriptions[language] = prototype[i]
+			self.module_descriptions[small_language] = prototype[i]
 
 			# If the local language is "en" (English)
 			# And the English module description is empty
 			if (
-				language == "en" and
+				small_language == "en" and
 				prototype[i] == ""
 			):
 				# Then define the module description in English as the module name 
-				self.module_descriptions[language] = self.Text.Title(self.module_name.replace("_", " "))
+				self.module_descriptions[small_language] = self.Text.Title(self.module_name.replace("_", " "))
 
 			i += 1
 
@@ -77,14 +82,17 @@ class Create_New_Module(Python):
 
 		# Classes
 
-		# Get the English language in the user language
-		english_language = self.languages["Full (translated)"]["en"][self.language["Small"]]
+		# Get the English language dictionary
+		english = self.languages["Dictionary"]["en"]
+
+		# Get the English language translated to the user language
+		translated_english = english["Translated"][self.language["Small"]]
 
 		# Define the show text for the classes of the module
-		self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], english_language + ", " + self.language_texts["separated_by_lines"]) + ": "
+		show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["classes"], translated_english + ", " + self.language_texts["separated_by_lines"]) + ": "
 
 		# Ask for the user to type the classes of the module
-		classes_list = self.Input.Lines(self.show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+		classes_list = self.Input.Lines(show_text, line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		# Update the classes list
 		i = 0
@@ -122,23 +130,23 @@ class Create_New_Module(Python):
 		# Define and fill the module class descriptions dictionary
 		self.class_descriptions = {}
 
-		# Iterate through the small languages list
-		for language in self.languages["Small"]:
-			# Get the translated language in the user language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Define the show text, with the description of classes, separated by lines
-			self.show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions_of_classes"], translated_language + ", " + self.language_texts["separated_by_lines"]) + ":"
+			show_text = self.language_texts["type_the_{}_of_the_python_module_in_{}"].format(self.language_texts["descriptions_of_classes"], translated_language + ", " + self.language_texts["separated_by_lines"]) + ":"
 
 			# Ask for the descriptions of the classes
-			self.class_descriptions[language] = self.Input.Lines(self.show_text, length = len(self.classes["List"]), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
+			self.class_descriptions[small_language] = self.Input.Lines(show_text, length = len(self.classes["List"]), line_options_parameter = {"enumerate": True, "enumerate_text": False, "capitalize": True})["lines"]
 
 		# Iterate through the classes list
 		i = 0
 		for class_name in self.classes["List"]:
 			# Add the class descriptions in all languages to the class descriptions dictionary
-			for language in self.languages["Small"]:
-				self.classes["Dictionary"][class_name]["Descriptions"][language] = self.class_descriptions[language][i]
+			for small_language in self.languages["Small"]:
+				self.classes["Dictionary"][class_name]["Descriptions"][small_language] = self.class_descriptions[small_language][i]
 
 			i += 1
 
@@ -369,16 +377,19 @@ class Create_New_Module(Python):
 		# Show the "Module descriptions" text and an opening bracket
 		print(self.language_texts["module_descriptions"] + " = {")
 
-		# Iterate through the small languages list
-		for language in self.languages["Small"]:
-			# Get the translated language with quotes and a colon
-			translated_language = '"' + self.languages["Full (translated)"][language][self.language["Small"]] + '": '
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
+
+			# Add quotes and a colon around the translated language
+			translated_language = '"' + translated_language + '": '
 
 			# Define the text with the translated language and the module description
-			text = "\t" + translated_language + '"' + self.module_descriptions[language] + '"'
+			text = "\t" + translated_language + '"' + self.module_descriptions[small_language] + '"'
 
 			# If the language is not the last one
-			if language != self.languages["Small"][-1]:
+			if small_language != self.languages["Small"][-1]:
 				# Add a comma to the text
 				text += ","
 
@@ -403,10 +414,13 @@ class Create_New_Module(Python):
 			# Show the name of the class and an opening bracket
 			print("\t" + class_name + " = {")
 
-			# Iterate through the small languages list
-			for language in self.languages["Small"]:
-				# Get the translated language with quotes and a colon
-				translated_language = '"' + self.languages["Full (translated)"][language][self.language["Small"]] + '": '
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
+
+				# Add quotes and a colon around the translated language
+				translated_language = '"' + translated_language + '": '
 
 				# If the class is not the first one
 				if class_name != self.classes["List"][0]:
@@ -414,10 +428,10 @@ class Create_New_Module(Python):
 					print()
 	
 				# Format the template text with the translated language and the class descriptions
-				text = "\t\t" + template.format(translated_language, class_dictionary["Descriptions"][language])
+				text = "\t\t" + template.format(translated_language, class_dictionary["Descriptions"][small_language])
 
 				# If the language is not the last one
-				if language != self.languages["Small"][-1]:
+				if small_language != self.languages["Small"][-1]:
 					# Add a comma to the text
 					text += ","
 

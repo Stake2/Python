@@ -107,8 +107,9 @@ class Help_With_Programming(Code):
 		self.mode_names = []
 		self.language_mode_names = {}
 
-		for language in self.languages["Small"]:
-			self.language_mode_names[language] = []
+		# Iterate through the list of small languages
+		for small_language in self.languages["Small"]:
+			self.language_mode_names[small_language] = []
 
 		self.mode_settings = {}
 		self.mode_settings.update(self.programming_language_settings)
@@ -139,11 +140,12 @@ class Help_With_Programming(Code):
 
 			self.language_mode_names[mode_name] = {}
 
-			for language in self.languages["Small"]:
-				language_name = self.texts["language_name"][language][self.language["Small"]]
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				language_name = self.texts["language_name"][small_language][self.language["Small"]]
 
-				self.language_mode_names[language].append(self.mode["Language names"][language])
-				self.language_mode_names[mode_name][language] = self.mode["Language names"][language]
+				self.language_mode_names[small_language].append(self.mode["Language names"][small_language])
+				self.language_mode_names[mode_name][small_language] = self.mode["Language names"][small_language]
 
 			for item_name in self.programming_mode_item_names:
 				item_folder = mode_folder + item_name + "/"
@@ -202,11 +204,12 @@ class Help_With_Programming(Code):
 		self.function_code_file = self.function_folder + "Function_Code." + self.function_data["Extension"]
 
 		if self.programming_language_settings["Modes"] == True:
-			for language in self.languages["Small"]:
-				language_name = self.texts["language_name"][language][self.language["Small"]]
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				language_name = self.texts["language_name"][small_language][self.language["Small"]]
 
 				if language_name not in self.function_data:
-					self.function_data[language] = self.language_mode_names[self.programming_mode][language]
+					self.function_data[small_language] = self.language_mode_names[self.programming_mode][small_language]
 
 		self.code_title = self.Language.Item(self.function_data)
 
@@ -289,7 +292,7 @@ class Help_With_Programming(Code):
 		self.setting_template_folder = self.item_data["Setting file"]["Folder"] + "Templates/"
 
 		i = 0
-		for setting_file_name in self.settings_files_data[self.language_texts["file_names"]]:
+		for setting_file_name in self.settings_files_data[self.File.language_texts["file_names"]]:
 			self.last_setting_data_folder = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Last setting data/"
 
 			self.last_data_file = self.last_setting_data_folder + setting_file_name
@@ -300,7 +303,7 @@ class Help_With_Programming(Code):
 			self.new_data_file = self.setting_template_folder + setting_file_name
 			self.new_data = self.File.Contents(self.new_data_file)["string"]
 
-			self.destination_data_file = self.settings_files_data[self.language_texts["file_paths"]][i]
+			self.destination_data_file = self.settings_files_data[self.File.language_texts["file_paths"]][i]
 			self.destination_data = self.File.Contents(self.destination_data_file)["string"]
 
 			if self.last_data in self.destination_data:
@@ -330,8 +333,9 @@ class Help_With_Programming(Code):
 
 			tool_data[self.language_texts["original_name"]] = tool_name
 
-			for language in self.languages["Small"]:
-				language_name = self.texts["language_name"][language][self.language["Small"]]
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				language_name = self.texts["language_name"][small_language][self.language["Small"]]
 
 				if language_name in tool_info:
 					tool_data[language_name] = tool_info[language_name]
@@ -389,8 +393,9 @@ class Help_With_Programming(Code):
 
 			language_tool_name = tool_name
 
-			for language in self.languages["Small"]:
-				language_name = self.texts["language_name"][language][self.language["Small"]]
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				language_name = self.texts["language_name"][small_language][self.language["Small"]]
 
 				if language_name in tool_data:
 					language_tool_name = tool_data[language_name]

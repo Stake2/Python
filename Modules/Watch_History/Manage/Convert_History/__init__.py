@@ -1606,37 +1606,37 @@ class Convert_History(Watch_History):
 					"File": media_type_folders["Files"]["root"] + entry_names["Updated"]["Sanitized"]["en"] + ".txt"
 				}
 
-				# Iterate through the list of small languages
-				for language in self.languages["Small"]:
-					# Get the full language
-					full_language = self.languages["Full"][language]
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
 
 					# Define a shortcut to the folder
-					folder = year["Folders"]["Year"]["Watched media"][language][plural_media_type]["root"]
+					folder = year["Folders"]["Year"]["Watched media"][small_language][plural_media_type]["root"]
 
 					# Define the language "Watched media" entry file dictionary
 					# With the updated entry name as a file name
 					entry_files["Watched media ({})".format(full_language)] = {
 						"File key text": self.language_texts["entry_file_in_the_watched_media_folder_by_year"],
-						"Text language": language,
-						"File name language": language,
+						"Text language": small_language,
+						"File name language": small_language,
 						"Folder": folder,
-						"File": folder + entry_names["Updated"]["Sanitized"][language] + ".txt"
+						"File": folder + entry_names["Updated"]["Sanitized"][small_language] + ".txt"
 					}
 
 					# If the watched media is the first one in the year
 					if watched_media_number == 1:
 						# Define a shortcut to the folder
-						folder = year["Folders"]["Year"]["Firsts of the Year"][language]["root"]
+						folder = year["Folders"]["Year"]["Firsts of the Year"][small_language]["root"]
 
 						# Define the language "Firsts of the Year" entry file dictionary
 						# With the updated entry name as a file name
 						entry_files["Firsts of the Year ({})".format(full_language)] = {
 							"File key text": self.Language.language_texts["entry_file_in_the_firsts_of_the_year_folder_by_year"],
-							"Text language": language,
+							"Text language": small_language,
 							"Folder": folder,
-							"File name language": language,
-							"File": folder + entry_names["Updated"]["Sanitized"][language] + ".txt"
+							"File name language": small_language,
+							"File": folder + entry_names["Updated"]["Sanitized"][small_language] + ".txt"
 						}
 
 				# ----- #

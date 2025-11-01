@@ -134,8 +134,19 @@ class Date():
 		# Remove the microsecond from the date object
 		date_parameter = date_parameter.replace(microsecond = 0)
 
+		# Get the user timezone using pytz and the user timezone information
+		user_timezone = pytz.timezone(str(timezone["Timezone information"]))
+
+		# Try to add the timezone to the date
+		try:
+			# Add the timezone to the date
+			date_parameter = user_timezone.localize(date_parameter)
+
+		except ValueError:
+			pass
+
 		# Define the date object in the user timezone
-		user_timezone_date = deepcopy(date_parameter).astimezone(timezone["Timezone information"])
+		user_timezone_date = deepcopy(date_parameter).astimezone(user_timezone)
 
 		# Define the date dictionary
 		date = {

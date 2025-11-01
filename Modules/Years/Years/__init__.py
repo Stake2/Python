@@ -782,18 +782,19 @@ class Years(object):
 			data["Dictionary"]["Files"][data["Folder type"]][language] = {}
 
 		# Create the language text folders
-		# Iterate through the small languages list
-		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
 
-			# Define the folder
-			data["Local"][language] = {
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
+
+			# Define the folder with the full language
+			data["Local"][small_language] = {
 				"root": data["Local"]["root"] + full_language + "/"
 			}
 
 			# Create it
-			self.Folder.Create(data["Local"][language]["root"])
+			self.Folder.Create(data["Local"][small_language]["root"])
 
 		# Create the root text folders and files
 		for item_type in ["Folders", "Files", "User language files"]:
@@ -1114,19 +1115,19 @@ class Years(object):
 				# Define the local folder dictionary to use
 				folder = data["Local"]["Christmas"]["Planning"]
 
-				# Iterate through the small languages list
-				for language in self.languages["Small"]:
-					# Get the full language
-					full_language = self.languages["Full"][language]
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
 
 					# Define the file
-					folder[language] = folder["root"] + full_language + ".txt"
+					folder[small_language] = folder["root"] + full_language + ".txt"
 
 					# Create it
-					self.File.Create(folder[language])
+					self.File.Create(folder[small_language])
 
-					# And add it to the "Files" dictionary
-					data["Dictionary"]["Files"]["Text"]["Christmas"]["Planning"][language] = folder[language]
+					# And add it to the Christmas "Planning" text files dictionary
+					data["Dictionary"]["Files"]["Text"]["Christmas"]["Planning"][small_language] = folder[small_language]
 
 			# ---------- #
 

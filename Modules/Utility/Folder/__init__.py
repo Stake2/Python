@@ -633,36 +633,7 @@ class Folder():
 			# Define the Network folders dictionary as the local folders dictionary
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
-		# Define the mega notepad "Years" folders
-
-		# Define the starting year and the current year
-		starting_year = 2018
-		current_year = self.date["Units"]["Year"]
-
-		# Define the "Create year folders" switch
-		create_year_folders = False
-
-		# If it is True, create them
-		if create_year_folders == True:
-			for item in range(starting_year, current_year + 1):
-				key = str(item).lower().replace(" ", "_")
-
-				self.folders["Notepad"]["Years"][key] = {
-					"root": self.folders["Notepad"]["Years"]["root"] + str(item) + "/"
-				}
-
-				if key == str(self.date["Units"]["Year"]):
-					# Create the years folders by language
-					for language in self.languages["Small"]:
-						full_language = self.languages["Full"][language]
-
-						self.folders["Notepad"]["Years"][key][full_language] = {
-							"root": self.folders["Notepad"]["Years"][key]["root"] + full_language + "/"
-						}
-
-					self.folders["Notepad"]["Years"]["current_year"] = self.folders["Notepad"]["Years"][key]
-
-		# Mega "Image" folders
+		# Define the Mega "Image" folders
 		folders = {
 			"Christmas": self.Language.language_texts["christmas, title()"],
 			"Diary": self.Language.language_texts["diary, title()"],
@@ -920,12 +891,12 @@ class Folder():
 		):
 			os.mkdir(folder)
 
-			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["created"], folder)
+			self.Verbose(self.language_texts["folder"].title() + " " + self.Language.language_texts["created"], folder)
 
 			return True
 
 		else:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["folder, title()"], folder)
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.Language.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["folder, title()"], folder)
 
 			return False
 
@@ -975,12 +946,12 @@ class Folder():
 				# Folder is not empty
 				shutil.rmtree(folder)
 
-			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["deleted"], folder)
+			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["deleted, feminine"], folder)
 
 			return True
 
 		else:
-			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.language_texts["delete"]), folder, verbose = True)
+			self.Verbose(self.language_texts["it_was_not_possible_to_{}_the_folder_permission_not_granted"].format(self.Language.language_texts["delete"]), folder, verbose = True)
 
 			return False
 

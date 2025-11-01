@@ -4,10 +4,12 @@
 import os
 import pathlib
 import re
+import json
 import pytz
-from datetime import datetime
+import datetime
 import locale as locale_module
 from encodings.aliases import aliases as encoding_aliases
+from copy import deepcopy
 
 class Language():
 	def __init__(self):
@@ -96,6 +98,401 @@ class Language():
 					# Define them as False
 					self.switches[item][switch] = False
 
+	def Sanitize(self, path):
+		# Replace double backwards slashes with one forward slash
+		path = os.path.normpath(path).replace("\\", "/")
+
+		# If there is no forward slash in the path
+		# And the last character returned by the "splittext" method is an empty string
+		if (
+			"/" not in path[-1] and
+			os.path.splitext(path)[-1] == ""
+		):
+			# Add a forward slash to the end of the path
+			path += "/"
+
+		# Return the path
+		return path
+
+	def Verbose(self, text, item, verbose = None):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
+		if (
+			self.switches["Verbose"] == True and
+			verbose == None or
+			verbose == True
+		):
+			import inspect
+
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
+
+			# Show the module name (Language) and the method which ran this method (the "Verbose" one)
+			print()
+			print(self.module["Name"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
+			print("\t" + text + ":")
+
+			# Show the verbose item
+			print("\t" + item)
+
+	def File_Exists(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
+
+	def Folder_Exists(self, folder):
+		# Sanitize the folder path
+		folder = self.Sanitize(folder)
+
+		# Checks if the folder exists and returns True if it does or False if it does not
+		return os.path.isdir(folder)
+
+	def File_Create(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# If the file already exists, return False
+		if self.File_Exists(file) == True:
+			return False
+
+		# If the file does not exist
+		# And the "Create" file switch is True
+		if (
+			self.File_Exists(file) == False and
+			self.switches["File"]["Create"] == True
+		):
+			# Open the file handle in write mode to create it
+			create = self.File_Open(file, "w")
+
+			# Close the file handle
+			create.close()
+
+			# Show the verbose text saying that the file was created
+			self.Verbose(self.language_texts["file, title()"] + " " + self.language_texts["created, masculine"], file)
+
+			return True
+
+		# If the "Create" file switch is False
+		if self.switches["File"]["Create"] == False:
+			# Define the verbose text to tell the user that the file was not created due to the lack of permissions
+			verbose_text = self.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["create"]) + "." + "\n\n\t" + self.language_texts["file, title()"]
+
+			# Show the verbose text
+			self.Verbose(verbose_text, file)
+
+			return False
+
+	def File_Open(self, file, mode = "r", encoding = "UTF8"):
+		# Open the file with the mode and encoding
+		return open(file, mode, encoding = encoding)
+
+	def File_Contents(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Define the contents dictionary
+		contents = {
+			"Lines": [],
+			"String": "",
+			"Size": 0,
+			"Length": 0
+		}
+
+		# If the file exists
+		if self.File_Exists(file) == True:
+			# Open the file handle in read mode (the default mode)
+			file_handle = self.File_Open(file)
+
+			# Iterate through the lines inside the file
+			for line in file_handle.readlines():
+				# Remove the line break from the line
+				line = line.replace("\n", "")
+
+				# Add the line to the list of lines
+				contents["Lines"].append(line)
+
+			# Reset cursor to the beginning of the file before getting the file string
+			file_handle.seek(0)
+
+			# Read the file and get its string
+			contents["String"] = file_handle.read()
+
+			# Close the file handle
+			file_handle.close()
+
+			# Get the size of the file
+			contents["Size"] = os.path.getsize(file)
+
+			# Get the length of the file
+			contents["Length"] = len(contents["Lines"])
+
+		# If the file does not exist
+		if self.File_Exists(file) == False:
+			# Show the verbose text saying that the file does not exist
+			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
+
+		# Return the contents dictionary
+		return contents
+
+	def File_Edit(self, file, text, mode = "w", next_line = True, verbose = None, full_verbose = False):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Get the contents of the file
+		contents = self.File_Contents(file)
+
+		# Define a shortcut to the file length
+		length = contents["Length"]
+
+		# Define the line break as an empty string
+		line_break = ""
+
+		# If the "next line" parameter is True
+		# And the file length is not zero
+		# And the mode is "a" (append)
+		if (
+			next_line == True and
+			length != 0 and
+			mode == "a"
+		):
+			# Define the line break as the new line caracter
+			line_break = "\n"
+
+		# Define the verbose text for the file as the file and the text
+		verbose_text = file + "\n" + \
+		"\n" + \
+		"\t" + text
+
+		# Add the line break to the text
+		text = line_break + text
+		
+		# If the file exists
+		if self.File_Exists(file) == True:
+			# If the file "Edit" switch is True
+			# And the file text string is not equal to the parameter text
+			if (
+				self.switches["File"]["Edit"] == True and
+				contents["string"] != text
+			):
+				# Open the file handle
+				edit = self.File_Open(file, mode)
+
+				# Write the text into the file
+				edit.write(text)
+
+				# Close the file handle
+				edit.close()
+
+				# Show the file
+				self.Verbose("File edited", verbose_text, verbose = verbose)
+
+			# If the file "Edit" switch is True, return True
+			if self.switches["File"]["Edit"] == True:
+				return True
+
+			# If the file "Edit" switch is False, return False
+			if self.switches["File"]["Edit"] == False:
+				return False
+
+		# If the file does not exist
+		if self.File_Exists(file) == False:
+			# Show the file and return False
+			self.Verbose("The file does not exist", file)
+
+			return False
+
+	def JSON_Edit(self, file, text, next_line = True, verbose = None, full_verbose = False, edit = False):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Get the contents of the file
+		contents = self.File_Contents(file)
+
+		# Transform the text into the JSON format
+		text = self.JSON_From_Python(text)
+
+		# Define the verbose text for the file as the file and the text
+		verbose_text = file + "\n" + \
+		"\n" + \
+		"Text:" + "\n" + \
+		"[" + text + "]"
+
+		# If the file exists
+		if self.File_Exists(file) == True:
+			# If the file "Edit" switch is True
+			# Or the edit parameter is True
+			if (
+				self.switches["File"]["Edit"] == True or
+				edit == True
+			):
+				# If the file text string is not equal to the parameter text
+				if contents["String"] != text:
+					# Open the file handle in write mode
+					edit = self.File_Open(file, "w")
+
+					# Write the text into the file
+					edit.write(text)
+
+					# Close the file handle
+					edit.close()
+
+					# Show the file
+					self.Verbose("File edited", verbose_text, verbose = verbose)
+
+			# If the file "Edit" switch is True
+			# And the "edit" parameter is True
+			if (
+				self.switches["File"]["Edit"] == True or
+				edit == True
+			):
+				return True
+
+			# If the file "Edit" switch is False
+			# And the "edit" parameter is False
+			if (
+				self.switches["File"]["Edit"] == False and
+				edit == False
+			):
+				return False
+
+		# If the file does not exist
+		if self.File_Exists(file) == False:
+			# Show the file return False
+			self.Verbose("The file does not exist", file, verbose = verbose)
+
+			return False
+
+	def JSON_Dumps(self, items):
+		# Dump the items
+		items = json.dumps(items, indent = "\t", ensure_ascii = False)
+
+		# Return the items
+		return items
+
+	def JSON_From_Python(self, items):
+		# Import some useful modules
+		import types
+
+		# If the items parameter is a dictionary
+		if type(items) == dict:
+			# Convert it into a dictionary using the "dict" function
+			items = dict(items)
+
+			# Iterate through the keys and values of the items dictionary
+			for key, value in items.items():
+				# If the type name of the value is either "Credentials" or "Resource"
+				# Or it is not a number, a dictionary, or a list
+				if (
+					type(value).__name__ in ["Credentials", "Resource"] or
+					type(value) not in [int, dict, list]
+				):
+					# Convert it to a string
+					items[key] = str(value)
+
+		# Make a copy of the items parameter
+		items_copy = deepcopy(items)
+
+		# If the items parameter is a dictionary
+		if type(items_copy) == dict:
+			# Iterate through its keys and values
+			for key, value in items_copy.items():
+				# If the value is not a string, number, list, dictionary, boolean, or None
+				if type(value) not in [str, int, list, dict, bool, None]:
+					# Convert it into a string
+					value = str(value)
+
+				# Update the value inside the root dictionary
+				items_copy[key] = value
+
+				# If the value is a dictionary
+				if type(value) == dict:
+					# Iterate through its sub-keys and sub-values
+					for sub_key, sub_value in value.items():
+						# If the sub-value is not a string, number, list, dictionary, boolean, or None
+						if type(sub_value) not in [str, int, list, dict, bool, None]:
+							# Convert it into a string
+							sub_value = str(sub_value)
+
+						# Update the sub-value inside the root dictionary
+						value[sub_key] = sub_value
+
+						# If the sub-value is a dictionary
+						if type(sub_value) == dict:
+							# Iterate through its sub-sub-keys and sub-sub-values
+							for sub_sub_key, sub_sub_value in sub_value.items():
+								# If the sub-sub-value is not a string, number, list, dictionary, boolean, or None
+								if type(sub_sub_value) not in [str, int, list, dict, bool, None]:
+									# Convert it into a string
+									sub_sub_value = str(sub_sub_value)
+
+								# Update the sub-sub-value inside the root dictionary
+								sub_value[sub_sub_key] = sub_sub_value
+
+						# Update the sub-value inside the root dictionary
+						value[sub_key] = sub_value
+
+				# Update the value inside the root dictionary
+				items_copy[key] = value
+
+		# If the items parameter is a list
+		if type(items_copy) == list:
+			# Iterate through the items in the list
+			i = 0
+			for item in items_copy:
+				# Convert it into a date string
+				item = str(item)
+
+				# Update the item in the root list
+				items_copy[i] = item
+
+				# Add one to the "i" number
+				i += 1
+
+		# If the items parameter is a string
+		if type(items_copy) == str:
+			# Convert it into a Python object
+			items_copy = self.JSON_To_Python(items_copy)
+
+		# Dump the items
+		items_copy = self.JSON_Dumps(items_copy)
+
+		# Return the items dictionary
+		return items_copy
+
+	def JSON_To_Python(self, item):
+		# If the item is a file
+		if self.File_Exists(item) == True:
+			# Sanitize the file path
+			item = self.Sanitize(item)
+
+			# Convert the file text into a Python dictionary
+			dictionary = json.load(open(item, encoding = "utf8"))
+
+		# If the item is not a file
+		if self.File_Exists(item) == False:
+			# Convert the JSON dictionary into a Python dictionary
+			dictionary = json.loads(item)
+
+		# Return the Python dictionary
+		return dictionary
+
+	def JSON_Show(self, json, return_text = False):
+		# Convert the JSON from Python to JSON text
+		json = self.JSON_From_Python(json)
+
+		# If the "return text" parameter is False, show the text
+		if return_text == False:
+			print(json)
+
+		# If it is True, return the text
+		if return_text == True:
+			return json
+
 	def Define_Lists_And_Dictionaries(self):
 		self.dictionary_separators = [
 			"=",
@@ -136,15 +533,55 @@ class Language():
 		}
 
 	def Define_Languages(self):
-		# Define the "Languages" dictionary
-		self.languages = self.To_Python(self.module["Files"]["Languages"])
+		# Get the root languages dictionary
+		self.languages = self.JSON_To_Python(self.module["Files"]["Languages"])
+
+		# Make a local copy of the small languages list
+		small_languages = deepcopy(self.languages["Small"])
 
 		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
+		for small_language in self.languages["Small"]:
 			# If the language is not in the "Supported" languages list
-			if language not in self.languages["Supported"]:
-				# Remove it from the "small" list
-				self.languages["Small"].remove(language)
+			if small_language not in self.languages["Supported"]:
+				# Remove it from the "Small" list
+				self.languages["Small"].remove(small_language)
+
+		# Reset the languages "Dictionary" to be empty
+		self.languages["Dictionary"] = {}
+
+		# Iterate through the list of small languages
+		for small_language in self.languages["Small"]:
+			# Get the full language
+			full_language = self.languages["Full"][small_language]
+
+			# Get the list of translated languages
+			translated_languages = self.languages["Translated"][small_language]
+
+			# Iterate through them
+			for translated_language in deepcopy(translated_languages):
+				# If the language is not in the "Supported" languages list
+				if translated_language not in self.languages["Supported"]:
+					# Remove it from the translated languages dictionary
+					translated_languages.pop(translated_language)
+
+			# Define the language dictionary
+			dictionary = {
+				"Small": small_language,
+				"Full": full_language,
+				"Translated": translated_languages
+			}
+
+			# Define the language dictionary inside the languages "Dictionary" using the small language as a key
+			self.languages["Dictionary"][small_language] = dictionary
+
+		# Make a local copy of the languages dictionary
+		languages_copy = deepcopy(self.languages)
+
+		# Define the list of small languages of the local copy as the backup list
+		languages_copy["Small"] = small_languages 
+
+		# Update the "Languages.json" file with the updated local copy of the languages dictionary
+		self.JSON_Edit(self.module["Files"]["Languages"], languages_copy, edit = True, verbose = False)
 
 		# Define the countries dictionary
 		self.countries = self.languages["Countries"]
@@ -321,12 +758,8 @@ class Language():
 			# Get the user (system) locale
 			"Locale": self.locale,
 
-			# Define the user "Language" dictionary
-			"Language": {
-				"Small": "",
-				"With country": "",
-				"Full": ""
-			},
+			# Define the empty user "Language" dictionary
+			"Language": {},
 
 			# Define the user "Country" dictionary
 			"Country": {}
@@ -338,7 +771,7 @@ class Language():
 		user_timezone = str(self.user["Timezone"])
 
 		# Define a default date
-		date = datetime.now()
+		date = datetime.datetime.now()
 
 		# Remove the microsecond from the date object
 		date = date.replace(microsecond = 0)
@@ -359,8 +792,13 @@ class Language():
 		# Define a shortcut to the user locale
 		locale_shortcut = self.user["Locale"]["Locale"]["Original"]
 
-		# Define the "Small" and "With country" language keys
-		self.user["Language"]["Small"] = locale_shortcut[0].split("_")[0]
+		# Define the small language
+		small_language = locale_shortcut[0].split("_")[0]
+
+		# Define the user "Language" dictionary with the small language as a key
+		self.user["Language"] = self.languages["Dictionary"][small_language]
+
+		# Define the language with country
 		self.user["Language"]["With country"] = locale_shortcut[0]
 
 		# Get the country
@@ -375,17 +813,13 @@ class Language():
 		# Define the country name
 		self.user["Country"]["Name"] = country_name
 
-		# Define a shortcut to the small language
-		small_language = self.user["Language"]["Small"]
-
-		# Define the full language keys
-		self.user["Language"]["Full"] = self.languages["Full"][small_language]
-		self.user["Language"]["Full translated"] = self.languages["Full (translated)"][small_language]
-
 		# ---------- #
 
-		# Define a shortcut to the user "Language" dictionary
-		self.language = self.user["Language"]
+		# Define a shortcut to a copy of the user "Language" dictionary
+		self.language = deepcopy(self.user["Language"])
+
+		# Remove the "With country" key
+		self.language.pop("With country")
 
 	def Define_Architecture_Folder(self, browser_folder, architecture = ""):
 		# If the "architecture" parameter is empty
@@ -593,7 +1027,7 @@ class Language():
 
 		# Show the small language
 		print("\t" + self.language_texts["small, title()"] + ":")
-		print("\t" + quotes.format(self.user["Language"]["Small"]))
+		print("\t" + quotes.format(self.language["Small"]))
 		print()
 
 		# Show the language with country
@@ -603,25 +1037,24 @@ class Language():
 
 		# Show the full language
 		print("\t" + self.language_texts["full, title()"] + ":")
-		print("\t" + quotes.format(self.user["Language"]["Full"]))
+		print("\t" + quotes.format(self.language["Full"]))
 		print()
 
 		# Show the full language translated
 		print("\t" + self.language_texts["full_translated"] + ":")
 
-		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# If the language is not the user language
-			if language != self.language["Small"]:
-				# Get the translated language
-				# (First the current language then the user language)
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# If the small language is not the user language
+			if small_language != self.language["Small"]:
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
-				# Get the translated user language
+				# Get the user language translated to the current language
 				# (First the user language then the current language)
-				translated_user_language = self.languages["Full (translated)"][self.language["Small"]][language]
+				translated_user_language = self.language["Translated"][small_language]
 
-				# Show the current language
+				# Show the current language translated to the user language
 				print("\t\t" + translated_language + ":")
 
 				# Show the user language but translated to the current language
@@ -642,7 +1075,7 @@ class Language():
 
 		# ---------- #
 
-		# Show the system information
+		# Show the "System information" text
 		print(self.language_texts["system_information"] + ":")
 
 		# Show the system name
@@ -706,17 +1139,6 @@ class Language():
 			# Show a space separator
 			print()
 
-	def Sanitize(self, path):
-		path = os.path.normpath(path).replace("\\", "/")
-
-		if (
-			"/" not in path[-1] and
-			os.path.splitext(path)[-1] == ""
-		):
-			path += "/"
-
-		return path
-
 	def Current_Folder(self, file = None):
 		# If the file parameter is None, define the file as "__file__"
 		if file == None:
@@ -727,186 +1149,6 @@ class Language():
 
 		# Return the folder
 		return folder
-
-	def Verbose(self, text, item):
-		if self.switches["Verbose"] == True:
-			import inspect
-
-			print()
-			print(inspect.stack()[1][3] + "():")
-			print("\t" + text + ":")
-			print("\t" + item)
-
-	def File_Exists(self, file):
-		# Sanitize the file path
-		file = self.Sanitize(file)
-
-		# Checks if the file exists and returns True if it does or False if it does not
-		return os.path.isfile(file)
-
-	def Folder_Exists(self, folder):
-		# Sanitize the folder path
-		folder = self.Sanitize(folder)
-
-		# Checks if the folder exists and returns True if it does or False if it does not
-		return os.path.isdir(folder)
-
-	def Create(self, item = None, text = None):
-		if item == None:
-			item = self.Type(text)
-
-		item = self.Sanitize(item)
-
-		if os.path.splitext(item)[-1] == "":
-			if (
-				self.switches["Folder"]["Create"] == True and
-				self.Folder_Exists(item) == False
-			):
-				os.mkdir(item)
-
-		if os.path.splitext(item)[-1] != "":
-			if (
-				self.switches["File"]["Create"] == True and
-				self.File_Exists(item) == False
-			):
-				create = open(item, "w", encoding = "utf8")
-				create.close()
-
-		return item
-
-	def Contents(self, file):
-		file = self.Sanitize(file)
-
-		contents = {
-			"lines": [],
-			"lines_none": [None],
-			"string": "",
-			"size": 0,
-			"length": 0
-		}
-
-		if self.File_Exists(file) == True:
-			contents["string"] = open(file, "r", encoding = "utf8").read()
-			contents["size"] += os.path.getsize(file)
-
-			for line in open(file, "r", encoding = "utf8").readlines():
-				line = line.replace("\n", "")
-
-				contents["lines"].append(line)
-				contents["lines_none"].append(line)
-
-			contents["length"] = len(contents["lines"])
-
-		if self.File_Exists(file) == False:
-			self.Verbose(self.language_texts["this_file_does_not_exists"], file)
-
-		return contents
-
-	def Split_Dictionary(self, lines = None, dict_ = None, text = None, separator = ": ", next_line = False, convert = None):
-		if next_line == False:
-			split = text.split(separator)
-
-			key = split[0]
-
-			if key != "":
-				if " " in key[-1]:
-					key = key[:-1]
-
-				if " " in key[0]:
-					key = key[1:]
-
-			value = split[text.count(separator)]
-
-			if convert != None:
-				value = convert(value)
-
-			if text.count(separator) == 2:
-				value = split[1] + separator + value
-
-			if text.count(separator) >= 3:
-				split.pop(0)
-				value = ""
-
-				for item in split:
-					value += item
-
-					if item != split[-1]:
-						value += separator
-
-			if separator in key:
-				key = key.replace(separator, "")
-
-		if next_line == True:
-			i = 0
-			for line in lines:
-				try:
-					if separator in line and lines[i + 1] != "":
-						key = line.replace(separator, "")
-
-						value = lines[i + 1]
-
-						if convert != None:
-							value = convert(value)
-
-						dict_[key] = value
-
-				except:
-					pass
-
-				i += 1
-
-		if next_line == False:
-			return [key, value]
-
-	def File_Dictionary(self, file, dictionary_separators = ": ", next_line = False, convert = None, true_or_false = False):
-		if type(dictionary_separators) == str:
-			dictionary_separators = [dictionary_separators]
-
-		dictionary = {}
-
-		for line in self.Contents(file)["lines"]:
-			for dictionary_separator in dictionary_separators:
-				if re.findall(r"\b" + dictionary_separator + r"\b", line, re.IGNORECASE):
-					key, value = self.Split_Dictionary(text = line, separator = dictionary_separator)
-
-					if convert != None:
-						value = convert(value)
-
-					if true_or_false == True:
-						if value == "True":
-							value = True
-
-						if value == "False":
-							value = False
-
-					dictionary[key] = value
-
-				elif dictionary_separator in line:
-					key, value = self.Split_Dictionary(text = line, separator = dictionary_separator)
-
-					if convert != None:
-						value = convert(value)
-
-					dictionary[key] = value
-
-		return dictionary
-
-	def Edit(self, file, text, mode):
-		file = self.Sanitize(file)
-
-		contents = self.Contents(file)
-		length = contents["length"]
-
-		if self.File_Exists(file) == True:
-			if (
-				self.switches["File"]["Edit"] == True and
-				contents["string"] != text
-			):
-				edit = open(file, mode, encoding = "UTF8")
-				edit.write(text)
-				edit.close()
-
-				self.Verbose(self.language_texts["file"].title() + " " + self.language_texts["edited, masculine"], file)
 
 	def Select(self, options, language_options = None, show_text = None, select_text = None, function = False, first_space = True):
 		if show_text == None:
@@ -1168,188 +1410,9 @@ class Language():
 
 			return language_texts
 
-	def Title(self, texts):
-		local_texts = {}
-		local_texts.update(texts)
-
-		for text in texts:
-			if type(texts[text]) not in [str, list]:
-				for language in self.languages["Small"]:
-					if language in texts[text]:
-						if type(texts[text][language]) not in [list, dict]:
-							local_texts[text + ", title()"] = {}
-
-						if type(texts[text][language]) == dict:
-							if "masculine" in texts[text][language]:
-								local_texts[text + ", title(), masculine"] = {}
-
-							if "feminine" in texts[text][language]:
-								local_texts[text + ", title(), feminine"] = {}
-
-		for text in texts:
-			if type(texts[text]) not in [str, list]:
-				for language in self.languages["Small"]:
-					if language in texts[text]:
-						if type(texts[text][language]) not in [list, dict]:
-							local_texts[text + ", title()"][language] = texts[text][language].title()
-
-						if type(texts[text][language]) == dict:
-							if "masculine" in texts[text][language]:
-								local_texts[text + ", title(), masculine"][language] = local_texts[text][language]["masculine"]
-
-							if "feminine" in texts[text][language]:
-								local_texts[text + ", title(), feminine"][language] = local_texts[text][language]["feminine"]
-
-							if text in local_texts and "masculine" in texts[text][language]:
-								local_texts[text][language] = local_texts[text][language]["masculine"]
-
-							elif text + ", title()" in local_texts and "masculine" in texts[text][language]:
-								local_texts[text + ", title()"][language] = local_texts[text][language]["masculine"]
-
-		return local_texts
-
-	def List(self, texts, key, names):
-		key = key + ", type: list"
-
-		texts[key] = {}
-
-		for language in self.languages:
-			texts[key][language] = []
-
-			for text in names:
-				texts[key][language].append(texts[text][language])
-
-		return texts
-
-	def Dictionary(self, texts, key, languages):
-		local_texts = {}
-		local_texts.update(texts)
-
-		new_key = key + ", type: dict, " + languages[0] + ": " + languages[1]
-
-		local_texts[new_key] = {}
-
-		i = 0
-		for text in texts[key + ", type: list"][languages[0]]:
-			local_texts[new_key][text] = local_texts[text.lower().replace(" ", "_")][languages[1]].title()
-
-			i += 1
-
-		return local_texts
-
-	def Format(self, texts, key, text = "", mixed_text = "", languages = [], separator = " - ", title = False):
-		local_texts = {}
-		local_texts.update(texts)
-
-		text_key = key
-
-		if ", type: " in key:
-			text_key = text_key.split(", ")[0]
-
-		if ", type: " not in key:
-			key += ", type: format"
-
-		if text != "":
-			local_texts[key] = {}
-
-			for language in self.languages:
-				local_texts[key][language] = text.replace("[language]", local_texts[text_key][language])
-
-				if title == True:
-					local_texts[key][language] = local_texts[key][language].title()
-
-		if languages != []:
-			key += ", " + languages[0] + separator + languages[1]
-
-			local_texts[key] = mixed_text
-
-			local_texts[key] = local_texts[key].replace("[1]", local_texts[text_key][languages[0]])
-			local_texts[key] = local_texts[key].replace("[2]", local_texts[text_key][languages[1]])
-
-			if title == True:
-				local_texts[key] = local_texts[key].title()
-				local_texts[key] = local_texts[key].title()
-
-		return local_texts
-
-	def Mix(self, texts, key, languages, separator = " - ", item = False, title = False):
-		local_texts = {}
-		local_texts.update(texts)
-
-		joined_languages = languages[0] + separator + languages[1]
-
-		key_text = key
-
-		if ", type: " in key:
-			key_text = key_text.split(", ")[0]
-
-		if title == True:
-			key_text += ", title()"
-
-		key_text += ", " + joined_languages
-
-		if item == False:
-			local_texts[key_text] = []
-
-		if type(texts[key][languages[0]]) == list:
-			i = 0
-			for text_backup in texts[key][languages[0]]:
-				text = text_backup
-
-				if text_backup != texts[key][languages[1]][i]:
-					text = text_backup + separator + texts[key][languages[1]][i]
-
-				if title == True:
-					text = text.title()
-
-				if item == False:
-					local_texts[key_text].append(text)
-
-				if item == True:
-					key_text = text_backup.lower().replace(" ", "_")
-
-					if title == True:
-						key_text += ", title()"
-
-					key_text += ", " + joined_languages
-
-					local_texts[key_text] = text
-
-				i += 1
-
-		if type(texts[key][languages[0]]) == str:
-			text = texts[key][languages[0]] + separator + texts[key][languages[1]]
-
-			if title == True:
-				text = text.title()
-
-			key_text = texts[key][languages[0]].lower().replace(" ", "_")
-
-			if title == True:
-				key_text += ", title()"
-
-			key_text += ", " + joined_languages
-
-			local_texts[key_text] = text
-
-		return local_texts
-
-	def Split(self, text, languages, separator = ", ", user_language = None):
-		if user_language == None:
-			user_language = self.language["Small"]
-
-		i = 0
-		for language in languages:
-			if language == user_language:
-				language_number = i
-
-			i += 1
-
-		return text.split(separator)[language_number]
-
 	def Define_Texts(self):
 		# Define the "Texts" dictionary
-		self.texts = self.To_Python(self.module["Files"]["Texts"])
+		self.texts = self.JSON_To_Python(self.module["Files"]["Texts"])
 
 		# Define the "separators" dictionary
 		self.separators = {}
@@ -1367,6 +1430,7 @@ class Language():
 			self.separators[str(number)] = string
 
 	def Define_Language_Texts(self):
+		# Get the language texts dictionary
 		self.language_texts = self.Item(self.texts)
 
 		for language_type in self.languages["Types"]:
@@ -1378,7 +1442,7 @@ class Language():
 
 		if self.File_Exists(self.settings_file) == False:
 			self.Create(self.settings_file)
-			self.Edit(self.settings_file, self.From_Python({}), "w")
+			self.JSON_Edit(self.settings_file, {})
 
 	def Process_Settings(self):
 		# Define the default root settings dictionary
@@ -1387,7 +1451,7 @@ class Language():
 		# If the settings file exists
 		if self.File_Exists(self.settings_file) == True:
 			# Read the "Settings.json" file to get the settings dictionary
-			settings = self.To_Python(self.settings_file)
+			settings = self.JSON_To_Python(self.settings_file)
 
 			# Iterate through the setting names inside the "setting names" list
 			for setting_name in self.setting_names:
@@ -1416,7 +1480,7 @@ class Language():
 			self.Define_Language_Texts()
 
 			# Update the "Settings.json" file with the new settings dictionary
-			self.Edit(self.settings_file, self.From_Python(self.settings), "w")
+			self.JSON_Edit(self.settings_file, self.settings)
 
 			# ----- #
 
@@ -1427,8 +1491,8 @@ class Language():
 
 			self.global_settings_file = self.folders["Apps"]["root"] + "Settings.json"
 
-			self.Create(self.global_settings_file)
-			self.Edit(self.global_settings_file, self.From_Python(settings), "w")
+			self.File_Create(self.global_settings_file)
+			self.JSON_Edit(self.global_settings_file, settings)
 
 		# If the settings file does not exist
 		if self.File_Exists(self.settings_file) == False:
@@ -1443,7 +1507,7 @@ class Language():
 				self.Create_Settings()
 
 	def Create_Settings(self):
-		# Create folder
+		# Create the folder
 		folder = self.Create(None, self.texts["type_or_paste_the_folder_where_you_want_to_create_the_settings_file"])
 
 		settings_file = folder + self.language_texts["settings"].title() + ".txt"
@@ -1459,23 +1523,9 @@ class Language():
 
 			option = self.Select(self.languages["Small"], show_text = self.language_texts["languages"].title() + ":", select_text = self.language_texts["select_one_{}_(number_or_word), masculine"].format(language_setting_name) + ": ")
 
-			self.Edit(settings_file, setting_name.title() + ": " + option, "a")
+			self.File_Edit(settings_file, setting_name.title() + ": " + option, "a")
 
 		self.Read_Settings_File()
-
-	def From_Python(self, item):
-		import json
-
-		return json.dumps(item, indent = "\t", ensure_ascii = False)
-
-	def To_Python(self, file):
-		import json
-
-		file = self.Sanitize(file)
-
-		dictionary = json.load(open(file, encoding = "utf8"))
-
-		return dictionary
 
 	def Copy(self, text):
 		import pyperclip
@@ -1500,12 +1550,14 @@ class Language():
 
 		text = template
 
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.app_settings["Language"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			typed = self.Type(self.language_texts["type_the_text_in_{}"].format(translated_language) + ": ", accept_enter = False, next_line = True)
 
-			if language == "en":
+			if small_language == "en":
 				key = typed.lower().replace(" ", "_")
 
 				for item in [":", '"', "'", "\n", "."]:
@@ -1518,9 +1570,9 @@ class Language():
 
 			typed = typed.replace('"', '\\"')
 
-			language_text = '"' + language + '": "' + typed + '"'
+			language_text = '"' + small_language + '": "' + typed + '"'
 
-			if language != self.languages["Small"][-1]:
+			if small_language != self.languages["Small"][-1]:
 				language_text += "," + "\n\t\t[input]"
 
 			text = text.replace("[input]", language_text)
@@ -1551,7 +1603,7 @@ class Language():
 	def Text_Difference(self, file_text, text_lines_to_write, filters = {}):
 		# Get the lines list if the file text is a dictionary
 		if type(file_text) == dict:
-			file_text = file_text["lines"]
+			file_text = file_text["Lines"]
 
 		# Get the lines list if the file text is a string
 		if type(text_lines_to_write) == str:
@@ -1941,8 +1993,8 @@ class Language():
 		if (
 			self.switches["Verbose"] == True and
 			make_text_difference == True and
-			len(file_text["lines"]) > maximum_lines and
-			file_text["lines"] != []
+			len(file_text["Lines"]) > maximum_lines and
+			file_text["Lines"] != []
 		):
 			# Make the text difference between the text inside the file and the text to be written
 			text_difference = self.Text_Difference(file_text, text_lines_to_write, settings)

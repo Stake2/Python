@@ -179,7 +179,8 @@
 		"Chapter": {
 			"en": "written",
 			"pt": "escrito"
-		}
+		},
+		"Chapter dictionary": "Writing"
 	},
 	"revise, type: dictionary": {
 		"Infinitive": {
@@ -209,7 +210,8 @@
 		"Chapter": {
 			"en": "revised",
 			"pt": "revisado"
-		}
+		},
+		"Chapter dictionary": "Revisions"
 	},
 	"translate, type: dictionary": {
 		"Infinitive": {
@@ -239,7 +241,16 @@
 		"Chapter": {
 			"en": "translated",
 			"pt": "traduzido"
-		}
+		},
+		"Chapter dictionary": "Translations"
+	},
+	"start_to": {
+		"en": "Start to",
+		"pt": "Começar a"
+	},
+	"continue_to": {
+		"en": "Continue to",
+		"pt": "Continuar a"
 	},
 	"opening_the_chapter_file_in": {
 		"en": "Opening the chapter file in",
@@ -336,6 +347,10 @@
 	"select_chapter": {
 		"en": "Select a chapter",
 		"pt": "Selecionar um capítulo"
+	},
+	"select_a_chapter_to_revise": {
+		"en": "Select a chapter to revise",
+		"pt": "Selecione um capítulo para revisar"
 	},
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",
@@ -478,17 +493,17 @@
 		"pt": "Datas do capítulo"
 	},
 	"chapter_dates, type: dictionary": {
-		"write": {
-			"en": "This chapter was originally written on {}, at {}",
-			"pt": "Este capítulo foi originalmente escrito em {}, às {}"
+		"Write": {
+			"en": "This chapter was originally written on {} at {}",
+			"pt": "Este capítulo foi originalmente escrito em {} às {}"
 		},
-		"revise": {
-			"en": "It was last revised on {}, at {}",
-			"pt": "Ele foi revisado pela última vez em {}, às {}"
+		"Revise": {
+			"en": "It was last revised on {} at {}",
+			"pt": "Ele foi revisado pela última vez em {} às {}"
 		},
-		"translate": {
-			"en": "And it was translated into {} on {}, at {}",
-			"pt": "E foi traduzido para o {} em {}, às {}"
+		"Translate": {
+			"en": "And it was last translated into {} on {} at {}",
+			"pt": "E foi traduzido para o {} pela última vez em {} às {}"
 		}
 	},
 	"do_you_want_to_add_more_authors": {

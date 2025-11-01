@@ -239,15 +239,17 @@ class Diary_Slim():
 		folder = self.diary_slim["Folders"]["Data"]["Header"]
 
 		# Define the "Header" files
-		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
+
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
 
 			# Define the file
-			folder[language] = folder["root"] + full_language + ".txt"
+			folder[small_language] = folder["root"] + full_language + ".txt"
 
 			# Create it
-			self.File.Create(folder[language])
+			self.File.Create(folder[small_language])
 
 		# ---------- #
 
@@ -864,22 +866,22 @@ class Diary_Slim():
 
 			# ----- #
 
-			# Define the language text files
-			for language in self.languages["Small"]:
-				# Get the full language
-				full_language = self.languages["Full"][language]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Define a shortcut to the full language
+				full_language = language["Full"]
 
 				# Define and create the language text file
-				dictionary["Files"][language] = dictionary["Folders"]["root"] + full_language + ".txt"
+				dictionary["Files"][small_language] = dictionary["Folders"]["root"] + full_language + ".txt"
 
 				# If the "States" key is not inside the "Text" dictionary, create the file
 				if "States" not in dictionary:
-					self.File.Create(dictionary["Files"][language])
+					self.File.Create(dictionary["Files"][small_language])
 
 				# If the language file exists
-				if self.File.Exists(dictionary["Files"][language]) == True:
+				if self.File.Exists(dictionary["Files"][small_language]) == True:
 					# Read the language text file and add its contents to the "Texts" dictionary
-					dictionary["Texts"][language] = self.File.Contents(dictionary["Files"][language])["string"]
+					dictionary["Texts"][small_language] = self.File.Contents(dictionary["Files"][small_language])["String"]
 
 			# ----- #
 

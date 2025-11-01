@@ -170,10 +170,10 @@ class Register(Tasks):
 		self.dictionary["Type"] = self.tasks["Types"]["Dictionary"][option]
 
 	def Ask_For_Task_Information(self):
-		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Get the translated language in the user language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Define the task text
 			task_text = self.dictionary["Type"]["Task texts"]
@@ -184,7 +184,7 @@ class Register(Tasks):
 				task_text = self.dictionary["Type"]["Task progress text"]
 
 			# Define the task title in the current language
-			self.dictionary["Task"]["Titles"][language] = task_text[language]
+			self.dictionary["Task"]["Titles"][small_language] = task_text[small_language]
 
 		# If the class is being used as a module by another Python module
 		if self.states["Used as module"] == True:
@@ -253,10 +253,10 @@ class Register(Tasks):
 				# Define the response as an empty dictionary
 				questions[key]["Response"] = {}
 
-				# Iterate through the list of small languages
-				for language in self.languages["Small"]:
-					# Get the translated language in the user language
-					translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Get the current language translated to the user language
+					translated_language = language["Translated"][self.language["Small"]]
 
 					# Change the input text to add the current language
 					question["Text"] = self.Define_Input_Text(question)
@@ -268,7 +268,7 @@ class Register(Tasks):
 					question["Text"] += translated_language
 
 					# Ask for the response in the current language
-					questions[key]["Response"][language] = self.Verify_Input(question)
+					questions[key]["Response"][small_language] = self.Verify_Input(question)
 
 			# ----- #
 
@@ -458,31 +458,34 @@ class Register(Tasks):
 		# Define the text key for the explanation text with the grammatical number
 		text_key = "say_what_you_did_on_the_{}_in_{}" + ", " + grammatical_number.lower()
 
-		# Define the list of languages to use
-		languages = self.languages["Small"]
+		# Define a list of small languages to use
+		small_languages = self.languages["Small"]
 
-		# Iterate through the list of languages
-		for language in languages:
-			# Define the task title
-			task_title = self.dictionary["Task"]["Titles"][language]
+		# Iterate through the list of small languages
+		for small_language in small_languages:
+			# Define the task title in the current language
+			task_title = self.dictionary["Task"]["Titles"][small_language]
 
 			# Define the task description as the task title in the current language
-			self.dictionary["Task"]["Descriptions"][language] = task_title
+			self.dictionary["Task"]["Descriptions"][small_language] = task_title
 
 		# If the "Register task" state is False
 		if self.states["Register task"] == False:
-			# Define the list of languages as just the user language
-			languages = [
+			# Define the list of small languages as just the user language
+			small_languages = [
 				self.language["Small"]
 			]
 
-		# Iterate through the small languages list
-		for language in languages:
-			# Get the full language
-			full_language = self.languages["Full"][language]
+		# Iterate through the local list of small languages
+		for small_language in small_languages:
+			# Get the language dictionary
+			language = self.languages["Dictionary"][small_language]
 
-			# Get the translated language in the user language
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+			# Define a shortcut to the full language
+			full_language = language["Full"]
+
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			# Define the item of the task type
 			texts = self.dictionary["Type"]["Names"]["Singular"]
@@ -530,13 +533,13 @@ class Register(Tasks):
 			print(explanation_text + ".")
 
 			# Define the task description file in the current language
-			files[language] = self.tasks["Folders"]["root"] + full_language + ".txt"
+			files[small_language] = self.tasks["Folders"]["root"] + full_language + ".txt"
 
 			# Create the file
-			self.File.Create(files[language])
+			self.File.Create(files[small_language])
 
 			# Open the file
-			self.System.Open(files[language])
+			self.System.Open(files[small_language])
 
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
@@ -550,38 +553,38 @@ class Register(Tasks):
 		# ---------- #
 
 		# Iterate through the small languages list
-		for language in languages:
+		for small_language in small_languages:
 			# Define the task title
-			task_title = self.dictionary["Task"]["Titles"][language]
+			task_title = self.dictionary["Task"]["Titles"][small_language]
 
 			# Define the task description in the current language as the task title with a period and two line breaks
-			self.dictionary["Task"]["Descriptions"][language] = task_title + "." + "\n\n"
+			self.dictionary["Task"]["Descriptions"][small_language] = task_title + "." + "\n\n"
 
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
 				# Add the contents of the description file in the current language to the task description
-				self.dictionary["Task"]["Descriptions"][language] += self.File.Contents(files[language])["string"]
+				self.dictionary["Task"]["Descriptions"][small_language] += self.File.Contents(files[small_language])["String"]
 
 			# If the "Testing" switch is True
 			else:
 				# Define the "[Description]" text in the current language
-				description_text = "[" + self.Language.texts["description, title()"][language] + "]"
+				description_text = "[" + self.Language.texts["description, title()"][small_language] + "]"
 
 				# Add the text to the task description
-				self.dictionary["Task"]["Descriptions"][language] += description_text
+				self.dictionary["Task"]["Descriptions"][small_language] += description_text
 
 			# Define the text to add to the backup file as the task description in the current language
-			text = self.dictionary["Task"]["Descriptions"][language]
+			text = self.dictionary["Task"]["Descriptions"][small_language]
 
 			# If the language is not the last one, add two line breaks to the text
-			if language != languages[-1]:
+			if small_language != small_languages[-1]:
 				text += "\n\n"
 
 			# Add the current task description to the backup file
 			self.File.Edit(files["Backup"], text, "a", next_line = False)
 
 			# Delete the description file in the current language
-			self.File.Delete(files[language])
+			self.File.Delete(files[small_language])
 
 		# Delete the task description backup file	
 		self.File.Delete(files["Backup"])
@@ -866,9 +869,6 @@ class Register(Tasks):
 		else:
 			language = self.language["Small"]
 
-		# Define the full language based on the local language
-		full_language = self.languages["Full"][language]
-
 		# ---------- #
 
 		# Define the list of lines for the task text
@@ -1009,20 +1009,24 @@ class Register(Tasks):
 
 		# Or all language descriptions
 		else:
-			# Iterate through the list of small languages
-			for local_language in self.languages["Small"]:
-				# Get the full language
-				full_language = self.languages["Full"][local_language]
+			# Iterate through the language keys and dictionaries
+			for small_language, local_language in self.languages["Dictionary"].items():
+				# Define a shortcut to the full language
+				full_language = local_language["Full"]
 
 				# Add the full language and the language description to the root descriptions text
-				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][local_language]
+				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][small_language]
 
 				# If the local language is not the last language in the list
-				if local_language != self.languages["Small"][-1]:
+				if small_language != self.languages["Small"][-1]:
 					descriptions += "\n\n"
 
-		# If the description of the task is not the same as the task title
-		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
+		# Define a shortcut to the English title and English description
+		english_title = self.dictionary["Task"]["Titles"]["en"]
+		english_description = self.dictionary["Task"]["Descriptions"]["en"]
+
+		# If the task title is not the same as the task description
+		if english_title != english_description:
 			# Add the descriptions to the list of items
 			items.append(descriptions)
 
@@ -1037,9 +1041,6 @@ class Register(Tasks):
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Get the full language
-			full_language = self.languages["Full"][language]
-
 			# Define shortcuts for the root and type folders
 			root_folder = self.Language.texts["completed_tasks"][language]
 			type_folder = self.dictionary["Type"]["Names"]["Plural"][language]

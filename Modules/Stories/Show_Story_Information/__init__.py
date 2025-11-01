@@ -36,12 +36,16 @@ class Show_Story_Information(Stories):
 			# Show the "Story title:" text
 			print(self.Language.language_texts["story_title"] + ":")
 
-			# Show the titles of the story in all languages
-			for language in self.languages["Small"]:
-				translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
+				# Show the the current language translated to the user language
 				print("\t" + translated_language + ":")
-				print("\t" + story["Titles"][language])
+
+				# Show the story title in the current language
+				print("\t" + story["Titles"][small_language])
 				print()
 
 			# Iterate through the information items in the "Information items" dictionary
@@ -166,10 +170,10 @@ class Show_Story_Information(Stories):
 					# Show the name of the story website
 					print(key + ":")
 
-					# Show the story website information of the story
-					for language in self.languages["Small"]:
-						# Get the translated language
-						translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+					# Iterate through the language keys and dictionaries
+					for small_language, language in self.languages["Dictionary"].items():
+						# Get the current language translated to the user language
+						translated_language = language["Translated"][self.language["Small"]]
 
 						# Get the item (link)
 						item = story["Information"]["Links"][key]
@@ -177,23 +181,21 @@ class Show_Story_Information(Stories):
 						# Define the sub-key
 						sub_key = "Links"
 
-						# If the story website is "Wattpad"
-						if key == "Wattpad":
-							sub_key = "Read story"
-
 						# Get the language link
-						item = item[sub_key][language]
+						item = item[sub_key][small_language]
 
-						# Show the link in the current language
-						# With the translated language
+						# Show the the current language translated to the user language
 						print("\t" + translated_language + ":")
+
+						# Show the language story link
 						print("\t" + item)
 
 						# If the language is not the last one
-						if language != self.languages["Small"][-1]:
+						if small_language != self.languages["Small"][-1]:
 							# Show a space separator
 							print()
 
+					# Show a space separator
 					print()
 
 		# Show a five dash space separator

@@ -721,23 +721,35 @@ class Convert_History(GamePlayer):
 					"File": game_type_folders["Files"]["root"] + file_names["Sanitized"]["en"] + ".txt"
 				}
 
-				# Iterate through the list of small languages
-				for language in self.languages["Small"]:
-					# Get the full language
-					full_language = self.languages["Full"][language]
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
+
+					# Define the entry key to create the dictionary
+					entry_key = "Gaming sessions ({})".format(full_language)
+
+					# Define the file
+					file = year["Folders"]["Year"]["Gaming sessions"][small_language][english_game_type]["root"] + file_names["Sanitized"][small_language] + ".txt"
 
 					# Define the language "Gaming sessions" entry file dictionary
-					entry_files["Gaming sessions ({})".format(full_language)] = {
-						"Language": language,
-						"File": year["Folders"]["Year"]["Gaming sessions"][language][english_game_type]["root"] + file_names["Sanitized"][language] + ".txt"
+					entry_files[entry_key] = {
+						"Language": small_language,
+						"File": file
 					}
 
 					# If the gaming session is the first one in the year
 					if gaming_session_number == 1:
+						# Define the entry key to create the dictionary
+						entry_key = "Firsts of the Year ({})".format(full_language)
+
+						# Define the file
+						file = year["Folders"]["Year"]["Firsts of the Year"][small_language]["root"] + file_names["Sanitized"][small_language] + ".txt"
+
 						# Define the language "Firsts of the Year" entry file dictionary
-						entry_files["Firsts of the Year ({})".format(full_language)] = {
-							"Language": language,
-							"File": year["Folders"]["Year"]["Firsts of the Year"][language]["root"] + file_names["Sanitized"][language] + ".txt"
+						entry_files[entry_key] = {
+							"Language": small_language,
+							"File": file
 						}
 
 				# ----- #

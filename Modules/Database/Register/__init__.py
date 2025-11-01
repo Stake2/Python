@@ -60,12 +60,14 @@ class Register(Database):
 		}
 
 	def Type_Entry_Information(self):
-		for language in self.languages["Small"]:
-			translated_language = self.languages["Full (translated)"][language][self.language["Small"]]
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Get the current language translated to the user language
+			translated_language = language["Translated"][self.language["Small"]]
 
 			type_text = self.language_texts["type_the_entry_title_in"] + " " + translated_language
 
-			self.data["Titles"][language] = self.Input.Type(type_text)
+			self.data["Titles"][small_language] = self.Input.Type(type_text)
 
 	def Register_In_JSON(self):
 		self.type = self.dictionary["Type"]["Plural"]["en"]
@@ -182,13 +184,13 @@ class Register(Database):
 		self.File.Edit(file, self.dictionary["Entry"]["Text"][self.language["Small"]], "w")
 
 	def Define_File_Text(self, language_parameter = None):
+		# Check if a specific language parameter is provided
 		if language_parameter != "General":
-			language = language_parameter
+			language = language_parameter # Use the provided language parameter
 
+		# If the language parameter is "General", use the user language
 		if language_parameter == "General":
 			language = self.language["Small"]
-
-		full_language = self.languages["Full"][language]
 
 		# Define entry text lines
 		lines = [
@@ -268,70 +270,68 @@ class Register(Database):
 		return file_text.format(*items)
 
 	def Add_Entry_File_To_Year_Folder(self):
-		# Create folders
-		for language in self.languages["Small"]:
-			full_language = self.languages["Full"][language]
-
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
 			# Folder names
-			root_folder = self.texts["added_entries"][language]
-			type_folder = self.dictionary["Type"]["Plural"][language]
+			root_folder = self.texts["added_entries"][small_language]
+			type_folder = self.dictionary["Type"]["Plural"][small_language]
 
 			# Entries folder
-			folder = self.current_year["Folders"][language]["root"]
+			folder = self.current_year["Folders"][small_language]["root"]
 
-			self.current_year["Folders"][language]["Added entries"] = {
+			self.current_year["Folders"][small_language]["Added entries"] = {
 				"root": folder + root_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Added entries"]["root"])
+			self.Folder.Create(self.current_year["Folders"][small_language]["Added entries"]["root"])
 
 			# Type folder
-			folder = self.current_year["Folders"][language]["Added entries"]["root"]
+			folder = self.current_year["Folders"][small_language]["Added entries"]["root"]
 
-			self.current_year["Folders"][language]["Added entries"][type_folder] = {
+			self.current_year["Folders"][small_language]["Added entries"][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Added entries"][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][small_language]["Added entries"][type_folder]["root"])
 
 			# Entry file
-			folder = self.current_year["Folders"][language]["Added entries"][type_folder]["root"]
+			folder = self.current_year["Folders"][small_language]["Added entries"][type_folder]["root"]
 			file_name = self.dictionary["Entry"]["Name"]["Sanitized"]
-			self.current_year["Folders"][language]["Added entries"][type_folder][file_name] = folder + file_name + ".txt"
+			self.current_year["Folders"][small_language]["Added entries"][type_folder][file_name] = folder + file_name + ".txt"
 
-			self.File.Create(self.current_year["Folders"][language]["Added entries"][type_folder][file_name])
+			self.File.Create(self.current_year["Folders"][small_language]["Added entries"][type_folder][file_name])
 
-			self.File.Edit(self.current_year["Folders"][language]["Added entries"][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+			self.File.Edit(self.current_year["Folders"][small_language]["Added entries"][type_folder][file_name], self.dictionary["Entry"]["Text"][small_language], "w")
 
 			# Firsts Of The Year subfolder folder
-			subfolder_name = self.Language.texts["entries, title()"][language]
+			subfolder_name = self.Language.texts["entries, title()"][small_language]
 
-			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
+			folder = self.current_year["Folders"][small_language]["Firsts of the Year"]["root"]
 
-			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name] = {
+			self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name] = {
 				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"])
+			self.Folder.Create(self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name]["root"])
 
 			# Firsts Of The Year type folder
-			folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"]
-			type_folder = self.dictionary["Type"]["Singular"][language]
+			folder = self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name]["root"]
+			type_folder = self.dictionary["Type"]["Singular"][small_language]
 
-			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder] = {
+			self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder] = {
 				"root": folder + type_folder + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder]["root"])
+			self.Folder.Create(self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder]["root"])
 
 			# First type entry in year file
 			if self.data["States"]["First type entry in year"] == True:
-				folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder]["root"]
+				folder = self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder]["root"]
 
-				self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name])
+				self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder][file_name])
 
-				self.File.Edit(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][small_language]["Firsts of the Year"][subfolder_name][type_folder][file_name], self.dictionary["Entry"]["Text"][small_language], "w")
 
 	def Check_Data_Status(self):
 		self.data["States"]["Completed data"] = self.Input.Yes_Or_No(self.language_texts["did_you_finished_the_whole_data"])

@@ -68,14 +68,6 @@
 		"pt": "Fechar ferramenta",
 		"en": "Close tool"
 	},
-	"file_names": {
-		"pt": "Nomes de arquivos",
-		"en": "File names"
-	},
-	"file_paths": {
-		"pt": "Caminhos de arquivos",
-		"en": "File paths"
-	},
 	"press_enter_when_you_finish_programming_in": {
 		"pt": "Pressione Enter quando você terminar de programar em",
 		"en": "Press Enter when you finish programming in"

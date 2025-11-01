@@ -383,18 +383,21 @@ class Iterate_Through_The_Media_List(Watch_History):
 			"Titles" in self.dictionary["Media"]["Item"]["Folders"] and
 			media_status not in on_hold_statuses
 		):
+			# Define a shortcut to the titles folder
+			titles_folder = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"]
+
 			# Define the titles file to check its contents
-			titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + self.languages["Full"]["en"] + ".txt"
+			titles_file = titles_folder + self.languages["Full"]["en"] + ".txt"
 
 			# If the titles file is empty
 			if self.File.Contents(titles_file)["lines"] == []:
-				# Iterate through the small languages list
-				for language in self.languages["Small"]:
-					# Get the full language based on the small language
-					full_language = self.languages["Full"][language]
+				# Iterate through the language dictionaries
+				for language in self.languages["Dictionary"].values():
+					# Define a shortcut to the full language
+					full_language = language["Full"]
 
 					# Define the language titles file
-					titles_file = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"] + full_language + ".txt"
+					titles_file = titles_folder + full_language + ".txt"
 
 					# Open it for user to fill it with titles
 					self.System.Open(titles_file)
@@ -1142,9 +1145,9 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 			if "Languages" in link:
 				for language in link["Languages"]:
-					if language in self.languages["Full (translated)"][language]:
-						# Get transtaled language
-						translated_full_language = self.languages["Full (translated)"][language][self.language["Small"]]
+					if language in self.languages["Translated"][language]:
+						# Get the transtaled language
+						translated_full_language = self.languages["Translated"][language][self.language["Small"]]
 
 					else:
 						translated_full_language = language

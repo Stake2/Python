@@ -111,31 +111,35 @@ class Update_Websites(PHP):
 		self.dictionary["Languages"] = {
 			"Small": [],
 			"Full": {},
-			"Full translated": {}
+			"Translated": {}
 		}
 
 		# Add the "General" language
 		self.dictionary["Languages"]["Small"].append("general")
 		self.dictionary["Languages"]["Full"]["general"] = "General"
-		self.dictionary["Languages"]["Full translated"]["general"] = {}
+		self.dictionary["Languages"]["Translated"]["general"] = {}
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			self.dictionary["Languages"]["Full translated"]["general"][language] = self.Language.texts["general, title()"][language]
+			# Define the translated version of the general language
+			self.dictionary["Languages"]["Translated"]["general"][language] = self.Language.texts["general, title()"][language]
 
-		# Add the other languages
-		for language in self.languages["Small"]:
-			self.dictionary["Languages"]["Small"].append(language)
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
+
+			# Get the current language "Translated" dictionary
+			translated_language_dictionary = language["Translated"]
+
+			# Add the current language to the list of small languages
+			self.dictionary["Languages"]["Small"].append(small_language)
 
 			# Add the full language
-			full_language = self.languages["Full"][language]
+			self.dictionary["Languages"]["Full"][small_language] = full_language
 
-			self.dictionary["Languages"]["Full"][language] = full_language
-
-		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Add the full translated language
-			self.dictionary["Languages"]["Full translated"][language] = self.languages["Full (translated)"][language]
+			# Add the current language "Translated" dictionary
+			self.dictionary["Languages"]["Translated"][small_language] = translated_language_dictionary
 
 	def Define_Websites(self, dictionary):
 		# Iterate through the dictionary of websites
@@ -179,10 +183,10 @@ class Update_Websites(PHP):
 			# Add the links of the website
 			website["Links"] = {}
 
-			# Iterate through the small languages inside the "Languages" dictionary of the root dictionary
-			for language in self.dictionary["Languages"]["Small"]:
-				# Get the full language
-				full_language = self.dictionary["Languages"]["Full"][language]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Define a shortcut to the full language
+				full_language = language["Full"]
 
 				# Define the "generate website" link template
 				template = self.url["Generate"]["Templates"]["With language"]
@@ -202,7 +206,7 @@ class Update_Websites(PHP):
 					link += "&next_year=true"
 
 				# Add the formatted link to the "Links" dictionary
-				website["Links"][language] = link
+				website["Links"][small_language] = link
 
 			# Add the website dictionary to the websites "Dictionary" key
 			self.dictionary["Websites"]["Dictionary"][website_title] = website
@@ -453,13 +457,13 @@ class Update_Websites(PHP):
 			# Show the website title in the user language
 			print("\t" + website_title)
 
-			# Iterate through the list of small languages inside the "Languages" dictionary
-			for language in self.dictionary["Languages"]["Small"]:
-				# Get the translated language in the user language
-				translated_language = self.dictionary["Languages"]["Full translated"][language][self.language["Small"]]
+			# Iterate through the language keys and dictionaries
+			for small_language, language in self.languages["Dictionary"].items():
+				# Get the current language translated to the user language
+				translated_language = language["Translated"][self.language["Small"]]
 
 				# Get the link of the website in the current language
-				link = website["Links"][language]
+				link = website["Links"][small_language]
 
 				# Open the link if the "testing" switch is False
 				if self.switches["Testing"] == False:
