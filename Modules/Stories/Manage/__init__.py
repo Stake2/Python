@@ -1,11 +1,12 @@
 # Manage.py
 
+# Import the root class
 from Stories.Stories import Stories as Stories
 
 class Manage(Stories):
 	def __init__(self):
 		# Run its root class
-		self.Modules = self.Modules(object = self, select_class = False)
+		self.Modules(object = self, select_class = False)
 
 		# If there is no selected story in the current class
 		if hasattr(self, "story") == False:

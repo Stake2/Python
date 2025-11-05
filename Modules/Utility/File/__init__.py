@@ -289,6 +289,9 @@ class File():
 		source_file = self.Sanitize(source_file)
 		destination_file = self.Sanitize(destination_file)
 
+		# Return both files
+		return source_file, destination_file
+
 	def Copy(self, source_file = None, destination_file = None):
 		# Define the source and destination files
 		source_file, destination_file = self.Define_Source_And_Destionation_Files(source_file, destination_file)

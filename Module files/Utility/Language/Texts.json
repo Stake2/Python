@@ -656,9 +656,9 @@
 		"en": "Total duration of",
 		"pt": "Duração total de"
 	},
-	"pause, type: item": {
-		"en": "Pause",
-		"pt": "Pausa"
+	"duration_of_the_pause": {
+		"en": "Duration of the pause",
+		"pt": "Duração da pausa"
 	},
 	"totaling, title()": {
 		"en": "Totaling",
@@ -2628,5 +2628,9 @@
 	"select_one_method_to_run": {
 		"en": "Select one method to run",
 		"pt": "Selecione um método para executar"
+	},
+	"testing_mode": {
+		"en": "testing mode",
+		"pt": "modo de testes"
 	}
 }

@@ -138,8 +138,10 @@ class System():
 		# Show the verbose text about opening the link
 		verbose_text = self.Verbose(self.language_texts["opening, title()"], link, verbose = verbose)
 
-		# Open the link using the selected browser
-		subprocess.Popen([browser["File"], link])
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Open the link using the selected browser
+			subprocess.Popen([browser["File"], link])
 
 		# Return the verbose text
 		return verbose_text

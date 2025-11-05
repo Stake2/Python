@@ -4,6 +4,7 @@
 import os
 import datetime
 import json
+import inspect
 
 class JSON():
 	def __init__(self):
@@ -11,7 +12,7 @@ class JSON():
 		self.Import_Classes()
 
 		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
+		self.folders = self.Define_Folders(object = self, create_texts = False).folders
 
 		# Define the "Switches" dictionary
 		self.Define_Switches()
@@ -100,8 +101,6 @@ class JSON():
 			verbose == None or
 			verbose == True
 		):
-			import inspect
-
 			# Get the name of the method which ran this method (the "Verbose" one)
 			runner_method_name = inspect.stack()[1][3]
 
@@ -258,7 +257,7 @@ class JSON():
 		# Return the items
 		return items
 
-	def From_Python(self, items):
+	def From_Python(self, items, testing = False):
 		# Import some useful modules
 		from copy import deepcopy
 		import types
@@ -278,6 +277,23 @@ class JSON():
 				):
 					# Convert it to a string
 					items[key] = str(value)
+
+				# Get the name of the method which ran this method (the "From_Python" one)
+				runner_method_name = inspect.stack()[1][3]
+
+				# If the value is a dictionary
+				# And the runner method is "Show"
+				# And the local testing switch is True
+				if (
+					type(value) == dict and
+					runner_method_name == "Show" and
+					testing == True
+				):
+					# Convert the objects of the value into strings
+					value = self.Convert_Objects(value)
+
+				# Update the value inside the root dictionary
+				items[key] = value
 
 		# Make a copy of the items parameter
 		items_copy = deepcopy(items)
@@ -315,6 +331,10 @@ class JSON():
 							for sub_sub_key, sub_sub_value in sub_value.items():
 								# Check the sub-sub-value for a datetime to convert it correctly
 								sub_sub_value = self.Check_Datetime(sub_sub_value)
+
+								if type(sub_sub_value).__name__ in ["function", "method", "module"]:
+									print(type(sub_sub_value).__name__)
+									sub_sub_value = str(sub_sub_value)
 
 								# Update the sub-sub-value inside the root dictionary
 								sub_value[sub_sub_key] = sub_sub_value
@@ -399,6 +419,67 @@ class JSON():
 		# Convert the datetime object into a string using the defined format and return it
 		return date.strftime(format)
 
+	def Convert_Objects(self, value):
+		# Iterate through its sub-keys and sub-values
+		for sub_key, sub_value in value.items():
+			# Get the type name of the sub-value
+			type_name = type(sub_value).__name__
+
+			# If the sub-value is a module, function, class, or method
+			if type_name in ["module", "function", "type", "method"]:
+				# Convert it into a string
+				sub_value = str(sub_value)
+
+			# Update the sub-value inside the root dictionary
+			value[sub_key] = sub_value
+
+			# If the sub-value is a dictionary
+			if type(sub_value) == dict:
+				# Iterate through its sub-sub-keys and sub-sub-values
+				for sub_sub_key, sub_sub_value in sub_value.items():
+					# If the sub-sub-value is a dictionary
+					if type(sub_sub_value) == dict:
+						for sub_sub_sub_key, sub_sub_sub_value in sub_sub_value.items():
+							# Make a copy of the original sub-sub-value
+							sub_sub_value = sub_sub_value.copy()
+
+							# Get the type name of the sub-sub-sub-value
+							type_name = type(sub_sub_sub_value).__name__
+
+							# If the sub-sub-sub-value is a module, function, class, or method
+							if type_name in ["module", "function", "type", "method"]:
+								# If it is a method
+								if type_name == "method":
+									# Get its class
+									method_class = sub_sub_sub_value.__self__.__class__
+
+									# Get the module of the class
+									module = method_class.__module__.split(".")[0]
+
+									# Get the name of the class
+									method_class = method_class.__name__
+
+									# Get the method name
+									method_name = sub_sub_sub_value.__name__
+
+									# Define the sub-sub-sub-value as the two variables above added together
+									sub_sub_sub_value = str(module) + "." + str(method_class) + "." + str(method_name) + "()"
+
+								# Convert it into a string
+								sub_sub_sub_value = str(sub_sub_sub_value)
+
+							# Update the sub-sub-sub-value inside the root dictionary
+							sub_sub_value[sub_sub_sub_key] = sub_sub_sub_value
+
+					# Update the sub-sub-value inside the root dictionary
+					sub_value[sub_sub_key] = sub_sub_value
+
+			# Update the sub-value inside the root dictionary
+			value[sub_key] = sub_value
+
+		# Return the value
+		return value
+
 	def To_Python(self, item):
 		# If the item is a file
 		if self.File_Exists(item) == True:
@@ -416,9 +497,9 @@ class JSON():
 		# Return the Python dictionary
 		return dictionary
 
-	def Show(self, json, return_text = False):
+	def Show(self, json, return_text = False, testing = False):
 		# Convert the JSON from Python to JSON text
-		json = self.From_Python(json)
+		json = self.From_Python(json, testing = testing)
 
 		# If the "return text" parameter is False, show the text
 		if return_text == False:

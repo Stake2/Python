@@ -229,7 +229,7 @@ class Play(GamePlayer):
 		# ---------- #
 
 		# Show the current time when the user starts playing the game
-		print(self.Date.language_texts["now, title()"] + ":")
+		print(self.Date.language_texts["now_time"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["Before"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# If the "Open game" state is True
@@ -259,7 +259,7 @@ class Play(GamePlayer):
 
 		# Show the time after the user finishes playing the game
 		print()
-		print(self.Date.language_texts["after, title()"] + ":")
+		print(self.Date.language_texts["after_time"] + ":")
 		print("\t" + self.dictionary["Entry"]["Session duration"]["After"]["Formats"]["HH:MM DD/MM/YYYY"])
 
 		# ---------- #

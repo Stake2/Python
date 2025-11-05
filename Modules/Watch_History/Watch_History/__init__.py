@@ -3937,7 +3937,7 @@ class Watch_History(object):
 								# "Completed the season of [anime/cartoon/series]"
 								# "Completed the video series of [YouTube channel]"
 								# But only if the "Last season" state is True
-								# (Movies do not apply here because with them, the "Completed media item" state is never True since moves do not contain media items)
+								# (Movies do not apply here because with them, the "Completed media item" state is never True since movies do not contain media items)
 
 							# If this is not the last season of the media
 							if dictionary["Media"]["Item"]["Last season"] == False:

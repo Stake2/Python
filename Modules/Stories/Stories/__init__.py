@@ -370,13 +370,13 @@ class Stories(object):
 
 		# Define the "Writing" dictionary
 		self.stories["Writing"] = {
-			"Helpers": {
+			"Translator websites": {
 				"Google Translate": {
 					"Name": self.Language.language_texts["google_translate"],
 					"Link": "https://translate.google.com/"
 				}
 			},
-			"Programs": {
+			"Music players": {
 				"Foobar2000": {
 					"Name": "Foobar2000",
 					"Link": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
@@ -384,13 +384,13 @@ class Stories(object):
 			}
 		}
 
-		# Define the "Translator website" dictionary
-		dictionary = self.stories["Writing"]["Helpers"]
+		# Define a "Translator website" dictionary by choosing one of the websites inside the "Translator websites" dictionary
+		dictionary = self.stories["Writing"]["Translator websites"]
 
 		self.stories["Writing"]["Translator website"] = dictionary["Google Translate"]
 
-		# Define the "Music player" dictionary
-		dictionary = self.stories["Writing"]["Programs"]
+		# Define a "Music player" dictionary by choosing one of the music players inside the "Music players" dictionary
+		dictionary = self.stories["Writing"]["Music players"]
 
 		self.stories["Writing"]["Music player"] = dictionary["Foobar2000"]
 
@@ -1307,12 +1307,13 @@ class Stories(object):
 					"Times": {
 						"Started": "",
 						"Finished": "",
-						"Finished (UTC)": "",
-						"Durations": {
-							"List": [],
-							"Dictionary": {}
-						}
+						"Finished (UTC)": ""
 					},
+					"Durations": {
+						"List": [],
+						"Dictionary": {}
+					},
+					"Total duration": {},
 					"Status": {
 						"Finished": False
 					}

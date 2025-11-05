@@ -138,19 +138,19 @@ class Language():
 			# Show the verbose item
 			print("\t" + item)
 
-	def File_Exists(self, file):
-		# Sanitize the file path
-		file = self.Sanitize(file)
-
-		# Checks if the file exists and returns True if it does or False if it does not
-		return os.path.isfile(file)
-
 	def Folder_Exists(self, folder):
 		# Sanitize the folder path
 		folder = self.Sanitize(folder)
 
 		# Checks if the folder exists and returns True if it does or False if it does not
 		return os.path.isdir(folder)
+
+	def File_Exists(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
 
 	def File_Create(self, file):
 		# Sanitize the file path

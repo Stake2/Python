@@ -4,19 +4,23 @@ import os
 import pathlib
 
 class Define_Folders():
-	def __init__(self, object = None, files = []):
+	def __init__(self, object = None, files = [], create_texts = True):
 		# Define the "Folders" dictionary
 		self.Define_Folders()
 
-		# Define the "object" and "files" parameters inside this class
+		# Define the "object" parameter inside this class
 		self.object = object
 
-		# Define the files list with the "Texts" item,
-		# And also add the values of the "files" parameter, if it is not an empty list
-		self.files = [
-			"Texts",
-			*files
-		]
+		# Define the root files list as an empty list
+		self.files = []
+
+		# If the "create texts" parameter is True
+		if create_texts == True:
+			# Add the "Texts" item to the files list
+			self.files.append("Texts")
+
+		# Extend the files list with the "files" parameter
+		self.files.extend(files)
 
 		# Define the "Module" dictionary
 		self.Define_Module()

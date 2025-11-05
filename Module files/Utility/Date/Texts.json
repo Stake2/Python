@@ -415,13 +415,25 @@
 		"en": "Before",
 		"pt": "Antes"
 	},
+	"before_time": {
+		"en": "Before time",
+		"pt": "Tempo anterior"
+	},
 	"now, title()": {
 		"en": "Now",
 		"pt": "Agora"
 	},
+	"now_time": {
+		"en": "Now time",
+		"pt": "Tempo agora"
+	},
 	"after, title()": {
 		"en": "After",
 		"pt": "Depois"
+	},
+	"after_time": {
+		"en": "After time",
+		"pt": "Tempo depois"
 	},
 	"short_time": {
 		"pt": "Tempo curto",

@@ -1895,7 +1895,7 @@ class Diary_Slim():
 			text += number
 
 			# Add the old number with the "before" text
-			text += " (" + self.Language.language_texts["before, title()"].lower() + ": " + str(old_number) + ")"
+			text += " (" + self.Date.language_texts["before, title()"].lower() + ": " + str(old_number) + ")"
 
 			# Add the text to the root statistics text
 			statistics_text += text

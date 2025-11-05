@@ -11,6 +11,10 @@
 		"en": "Story websites",
 		"pt": "Sites de histórias"
 	},
+	"writing_this_story": {
+		"en": "Writing this story",
+		"pt": "Escrevendo essa história"
+	},
 	"authors_list": {
 		"en": "Authors list",
 		"pt": "Lista de autores"
@@ -23,9 +27,9 @@
 		"en": "Chapter number",
 		"pt": "Número do capítulo"
 	},
-	"the_chapter_with_the_title": {
-		"en": "The chapter with the title",
-		"pt": "O capítulo com o título"
+	"the_chapter_with_the_titles": {
+		"en": "The chapter with the titles",
+		"pt": "O capítulo com os títulos"
 	},
 	"a_new_chapter": {
 		"en": "a new chapter",
@@ -38,6 +42,10 @@
 	"select_a_story_to": {
 		"en": "Select a story to",
 		"pt": "Selecione uma história para"
+	},
+	"opening_the_translator_website": {
+		"en": "Opening the translator website",
+		"pt": "Abrindo o site de tradução"
 	},
 	"chapter_selection": {
 		"en": "chapter selection",
@@ -244,6 +252,14 @@
 		},
 		"Chapter dictionary": "Translations"
 	},
+	"time_after_{}_for_a_while": {
+		"en": "Time after {} for a while",
+		"pt": "Tempo depois de {} por um momento"
+	},
+	"time_after_the_pause": {
+		"en": "Time after the pause",
+		"pt": "Tempo depois da pausa"
+	},
 	"start_to": {
 		"en": "Start to",
 		"pt": "Começar a"
@@ -256,21 +272,21 @@
 		"en": "Opening the chapter file in",
 		"pt": "Abrindo o arquivo do capítulo em"
 	},
-	"opening_the_story_website_in": {
-		"en": "Opening the story website in",
-		"pt": "Abrindo o site da história em"
+	"opening_the_local_story_website_in": {
+		"en": "Opening the local story website in",
+		"pt": "Abrindo o site local da história em"
 	},
 	"opening_the_{}_music_player_for_you_to_listen_to_the_soundtrack_of_the_story": {
 		"en": "Opening the \"{}\" music player for you to listen to the soundtrack of the story",
 		"pt": "Abrindo o tocador de música \"{}\" para você ouvir a trilha sonora da história"
 	},
-	"backup_of_the_time_of": {
-		"en": "Backup of the time of",
-		"pt": "Backup do tempo de"
+	"backup_of_the_duration_of": {
+		"en": "Backup of the duration of",
+		"pt": "Backup da duração de"
 	},
-	"press_enter_to_start_counting_the_time_of": {
-		"en": "Press Enter to start counting the time of",
-		"pt": "Pressione Enter para começar a contar o tempo de"
+	"press_enter_to_start_counting_the_duration_of": {
+		"en": "Press Enter to start counting the duration of",
+		"pt": "Pressione Enter para começar a contar a duração da"
 	},
 	"do_you_want_to_pause_the_{}_session": {
 		"en": "Do you want to pause the {} session",
@@ -284,13 +300,13 @@
 		"en": "Press Enter to unpause the {} session",
 		"pt": "Pressione Enter para despausar a sessão de {}"
 	},
-	"the_time_subtracted_from_the_total_{}_time": {
-		"en": "the time subtracted from the total {} time",
-		"pt": "o tempo subtraído do tempo total de {}"
+	"the_pause_duration_which_is_subtracted_from_the_total_{}_duration": {
+		"en": "the pause duration which is subtracted from the total {} duration",
+		"pt": "a duração de pausa que é subtraída da duração total de {}"
 	},
-	"with_the_pause_time_subtracted": {
-		"en": "with the paues time subtracted",
-		"pt": "com o tempo de pausa subtraído"
+	"with_the_pause_duration_subtracted": {
+		"en": "with the pause duration subtracted",
+		"pt": "com a duração de pausa subtraída"
 	},
 	"press_enter_when_you_stop": {
 		"en": "Press Enter when you stop",
@@ -308,9 +324,9 @@
 		"en": "Do you want to update the chapter titles",
 		"pt": "Você quer atualizar os títulos do capítulo"
 	},
-	"old_title": {
-		"en": "Old title",
-		"pt": "Título antigo"
+	"previous_title": {
+		"en": "Previous title",
+		"pt": "Título anterior"
 	},
 	"type_the_new_chapter_title": {
 		"en": "Type the new chapter title",
@@ -320,25 +336,25 @@
 		"en": "I started {} the chapter {} of my story \"{}\"",
 		"pt": "Eu comecei a {} o capítulo {} da minha história \"{}\""
 	},
-	"i_have_been_{}_the_chapter_{}_of_my_story_{}_until_now": {
-		"en": "I have been {} the chapter {} of my story \"{}\" until now",
-		"pt": "Eu estive {} o capítulo {} da minha história \"{}\" até agora"
-	},
-	"i_{}_the_chapter_{}_of_my_story_{}": {
-		"en": "I {} the chapter {} of my story \"{}\"",
-		"pt": "Eu {} o capítulo {} da minha história \"{}\""
+	"i_continued_{}_the_chapter_{}_of_my_story_{}_until_now": {
+		"en": "I continued {} the chapter {} of my story \"{}\" until now",
+		"pt": "Continuei {} o capítulo {} da minha história \"{}\" até agora"
 	},
 	"i_finished_{}_the_chapter_{}_of_my_story_{}": {
 		"en": "I finished {} the chapter {} of my story \"{}\"",
 		"pt": "Eu terminei de {} o capítulo {} da minha história \"{}\""
 	},
-	"i_started_at_{}_and_stopped_at_{}": {
-		"en": "I started at {}, and stopped at {}",
-		"pt": "Eu comecei às {}, e parei às {}"
+	"i_{}_the_chapter_{}_of_my_story_{}": {
+		"en": "I {} the chapter {} of my story \"{}\"",
+		"pt": "Eu {} o capítulo {} da minha história \"{}\""
 	},
-	"i_{}_for": {
-		"en": "I {} for",
-		"pt": "{} por"
+	"i_started_at_{}_and_stopped_at_{}": {
+		"en": "I started at {} and stopped at {}",
+		"pt": "Eu comecei às {} e parei às {}"
+	},
+	"i_{}_for_{}_including_pauses": {
+		"en": "I {} for {}, including pauses",
+		"pt": "{} por {}, incluindo pausas"
 	},
 	"post": {
 		"en": "post",
