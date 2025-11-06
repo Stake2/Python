@@ -423,7 +423,7 @@ class Watch_Media(Watch_History):
 						self.media["Episode"]["Separator"] != "" and
 						self.media["Episode"]["Separator"] not in episode_title or
 						self.media["States"]["Video"] == True or
-						self.media["States"]["Episodic"] == False or 
+						self.media["States"]["Episodic"] == False or
 						self.media["Episode"]["Separator"] == ""
 					):
 						# Define the language title as the root episode title
@@ -556,7 +556,7 @@ class Watch_Media(Watch_History):
 					# Define a shortcut for the origin location
 					origin_location = self.media["Episode"]["Remote"]["origin_location"]
 
-					# Add the "dubbed" text to the origin location 
+					# Add the "dubbed" text to the origin location
 					# For example:
 					# title-of-the-anime-dubbed ("-dubbed" is added)
 					dubbed_origin_location = self.media["Episode"]["Remote"]["origin_location"] + "-" + self.Language.texts["dubbed, title()"][self.language["Small"]].lower()
@@ -660,7 +660,7 @@ class Watch_Media(Watch_History):
 				number = self.media["Episode"]["Number text"] + " (" + results["two"][0] + ")"
 
 			if (
-				number == self.media["Episode"]["Number text"] or 
+				number == self.media["Episode"]["Number text"] or
 				number == "" or
 				self.media["States"]["Episodic"] == False
 			):
@@ -892,7 +892,7 @@ class Watch_Media(Watch_History):
 			# Add the text and the dubbed container to the "Dubbed" container text dictionary
 			self.media["Texts"]["Container texts"]["Dubbed"][text_key] = text + " " + dubbed_container
 
-		# Define a shortcut to the "Container texts" dictionary 
+		# Define a shortcut to the "Container texts" dictionary
 		container_texts = self.media["Texts"]["Container texts"]
 
 		# If the "Watch dubbed" media states is True
@@ -1141,7 +1141,7 @@ class Watch_Media(Watch_History):
 					# Define the root episode file as the local media item folder
 					self.media["Episode"]["Unit"] = self.media["Item"]["Folders"]["Media"]["root"]
 
-					# Remove the full user language from the episode file 
+					# Remove the full user language from the episode file
 					self.media["Episode"]["Unit"] = self.media["Episode"]["Unit"].replace(self.language["Full"] + "/", "")
 
 					# If the current language is not equal to the media language

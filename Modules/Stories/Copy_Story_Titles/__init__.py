@@ -81,8 +81,8 @@ class Copy_Story_Titles(Stories):
 			# Iterate through the list of copy modes in the user language
 			for copy_mode in self.dictionary["Copy modes"]["Language"]:
 				# If the copy mode is "With quotes"
-				# Add quotes around the story title 
 				if copy_mode == self.language_texts["with_quotes"]:
+					# Add quotes around the story title
 					story_title = '"' + story_title + '"'
 
 				# If the copy mode is "Acronym"

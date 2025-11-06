@@ -637,7 +637,7 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Define shortcuts for the total entries number and the entry times 
+		# Define shortcuts for the total entries number and the entry times
 		entries_number = self.dictionaries["Tasks"]["Numbers"]["Total"]
 		entry_time = self.dictionary["Entry"]["Times"]["Completed task"]["Formats"]["HH:MM DD/MM/YYYY"]
 

@@ -639,7 +639,7 @@ class Date():
 				# Define the time text in the current language
 				text = self.texts[text_key][language]
 
-				# If the "Unit texts" key is in the 
+				# If the "Unit texts" key is in the difference dictionary
 				if "Unit texts" in dictionary:
 					# Define the text as the unit text in the current language
 					text = dictionary["Unit texts"][key][language]
@@ -723,12 +723,11 @@ class Date():
 
 				# If the "add" switch is True
 				if add == True:
-					# If there is no colon on the end of the time format, add it
+					# If there is no colon on the end of the time units text, add it
 					if ":" not in dictionary["Time units text"][-1]:
 						dictionary["Time units text"] += ":"
 
-					# If there is not colon at the end of the 
-					# Add zero time
+					# Add the zero time units
 					dictionary["Time units text"] += "00"
 
 			# If the is inside the time difference keys
@@ -942,5 +941,5 @@ class Date():
 			TASK_CREATE_OR_UPDATE, # 6, The Task Scheduler either registers the task as a new task or as an updated version if the task already exists
 			"", # No user
 			"", # No password
-			TASK_LOGON_NONE # The logon method is not specified. Used for non-NT credentials. 
+			TASK_LOGON_NONE # The logon method is not specified. Used for non-NT credentials.
 		)

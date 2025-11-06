@@ -114,7 +114,7 @@ class Add_A_New_Data(Database):
 			# Get the current language translated to the user language in the user language
 			translated_language = language["Translated"][self.language["Small"]]
 
-			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
+			key = self.Language.language_texts["title_in_{}"].format(translated_language)
 
 			if small_language in self.data["Titles"]:
 				self.data["Details"][key] = self.data["Titles"][small_language]

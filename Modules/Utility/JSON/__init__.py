@@ -332,9 +332,25 @@ class JSON():
 								# Check the sub-sub-value for a datetime to convert it correctly
 								sub_sub_value = self.Check_Datetime(sub_sub_value)
 
-								if type(sub_sub_value).__name__ in ["function", "method", "module"]:
-									print(type(sub_sub_value).__name__)
-									sub_sub_value = str(sub_sub_value)
+								# If the sub-sub-value is a dictionary
+								if type(sub_sub_value) == dict:
+									# Iterate through its sub-sub-sub-keys and sub-sub-sub-values
+									for sub_sub_sub_key, sub_sub_sub_value in sub_sub_value.items():
+										# Check the sub-sub-sub-value for a datetime to convert it correctly
+										sub_sub_sub_value = self.Check_Datetime(sub_sub_sub_value)
+
+										# If the sub-sub-sub-value is a dictionary
+										if type(sub_sub_sub_value) == dict:
+											# Iterate through its sub-sub-sub-sub-keys and sub-sub-sub-values
+											for sub_sub_sub_sub_key, sub_sub_sub_sub_value in sub_sub_sub_value.items():
+												# Check the sub-sub-sub-sub-value for a datetime to convert it correctly
+												sub_sub_sub_sub_value = self.Check_Datetime(sub_sub_sub_sub_value)
+
+												# Update the sub-sub-sub-value inside the root dictionary
+												sub_sub_sub_value[sub_sub_sub_sub_key] = sub_sub_sub_sub_value
+
+										# Update the sub-sub-sub-value inside the root dictionary
+										sub_sub_value[sub_sub_sub_key] = sub_sub_sub_value
 
 								# Update the sub-sub-value inside the root dictionary
 								sub_value[sub_sub_key] = sub_sub_value
@@ -376,8 +392,8 @@ class JSON():
 		return items_copy
 
 	def Is_Datetime(self, item):
-		# Return the boolean saying if the item is a datetime object or not
-		return isinstance(item, datetime.datetime)
+		# Return the boolean saying if the item is a datetime or time object or not
+		return isinstance(item, (datetime.datetime, datetime.time))
 
 	def Check_Datetime(self, item):
 		# If the "_PytzShimTimezone" string is present in the item, convert it into a string

@@ -239,7 +239,7 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Define shortcuts for the total entries number and the entry times 
+		# Define shortcuts for the total entries number and the entry times
 		entries_number = self.dictionaries["Sessions"]["Numbers"]["Total"]
 		entry_time = self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"]
 
@@ -1068,7 +1068,7 @@ class Register(GamePlayer):
 		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] 
+		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
 
 		# Add the "and others" text
 		text += ", " + self.Language.language_texts["and_others, feminine"]

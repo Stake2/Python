@@ -64,7 +64,7 @@ class Watch_List_Of_Media(Watch_History):
 						self.dictionary["Media list"]["Data"] = {}
 
 					# Define the split variable
-					split = line.split(";") 
+					split = line.split(";")
 
 					# Get the data as the second item on the split
 					data = split[1]

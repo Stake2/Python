@@ -1305,7 +1305,7 @@ class Watch_History(object):
 		for i, key in enumerate(keys):
 			# If the "i" variable is the index we are looking for
 			if i == index:
-				# Replace the original key with the new key 
+				# Replace the original key with the new key
 				new_dictionary[new_key] = new_value
 
 			else:
@@ -3334,12 +3334,12 @@ class Watch_History(object):
 							# Transform the first video date into a date dictionary
 							first_video_date = self.Date.From_String(first_video["Times"]["UTC"])
 
-							# If the date of the first video is older than the creation date of the playlist 
+							# If the date of the first video is older than the creation date of the playlist
 							# Define a local date as the date of the first video
 							if first_video_date["Object"] < playlist_date["Object"]:
 								date = first_video_date
 
-							# If the  date of the first video is newer than the creation date of the playlist 
+							# If the  date of the first video is newer than the creation date of the playlist
 							# Define a local date as the date of the playlist
 							if first_video_date["Object"] > playlist_date["Object"]:
 								date = playlist_date
@@ -4328,7 +4328,7 @@ class Watch_History(object):
 			# Add the media title to the list of media titles
 			media_titles.append(dictionary["Media"]["Title"])
 
-		# Define the media information folder 
+		# Define the media information folder
 
 		# Iterate through the list of English watching statuses
 		for watching_status in self.texts["statuses, type: list"]["en"]:
@@ -4515,7 +4515,7 @@ class Watch_History(object):
 		for key in keys:
 			# If the key is inside the dictionary of titles
 			if key in titles:
-				# Define the current key as the 
+				# Define the title key as the current key
 				title_key = key
 
 		# Get the title from the dictionary of titles using the defined title key
@@ -5174,7 +5174,7 @@ class Watch_History(object):
 				print(text.format(item_type.lower()) + ":")
 
 				# Define a dictionary with the next media item titles, states, and text
-				media_dictionary = { 
+				media_dictionary = {
 					"Media": {
 						"Item": {
 							"Titles": media["Item"]["Next"]["Titles"]

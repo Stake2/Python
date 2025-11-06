@@ -578,7 +578,7 @@ class Language():
 		languages_copy = deepcopy(self.languages)
 
 		# Define the list of small languages of the local copy as the backup list
-		languages_copy["Small"] = small_languages 
+		languages_copy["Small"] = small_languages
 
 		# Update the "Languages.json" file with the updated local copy of the languages dictionary
 		self.JSON_Edit(self.module["Files"]["Languages"], languages_copy, edit = True, verbose = False)
@@ -751,7 +751,7 @@ class Language():
 		# Define the "user" dictionary
 		self.user = {
 			# Get the user name, folder, and timezone
-			"Name": str(pathlib.Path.home().name), 
+			"Name": str(pathlib.Path.home().name),
 			"Folder": self.Sanitize(str(pathlib.Path.home())),
 			"Timezone": get_localzone(),
 
@@ -1484,15 +1484,19 @@ class Language():
 
 			# ----- #
 
-			# Create 
+			# Create the settings dictionary with the "Language" key
 			settings = {
 				"Language": self.settings["Language"]
 			}
 
-			self.global_settings_file = self.folders["Apps"]["root"] + "Settings.json"
+			# Define the global settings file
+			settings_file = self.folders["Apps"]["root"] + "Settings.json"
 
-			self.File_Create(self.global_settings_file)
-			self.JSON_Edit(self.global_settings_file, settings)
+			# Create it
+			self.File_Create(settings_file)
+
+			# Add the settings dictionary to it
+			self.JSON_Edit(settings_file, settings)
 
 		# If the settings file does not exist
 		if self.File_Exists(self.settings_file) == False:

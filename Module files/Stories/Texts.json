@@ -264,10 +264,6 @@
 		"en": "Start to",
 		"pt": "Começar a"
 	},
-	"continue_to": {
-		"en": "Continue to",
-		"pt": "Continuar a"
-	},
 	"opening_the_chapter_file_in": {
 		"en": "Opening the chapter file in",
 		"pt": "Abrindo o arquivo do capítulo em"
@@ -327,6 +323,10 @@
 	"previous_title": {
 		"en": "Previous title",
 		"pt": "Título anterior"
+	},
+	"previous_chapter_titles": {
+		"en": "Previous chapter titles",
+		"pt": "Títulos anteriores do capítulo"
 	},
 	"type_the_new_chapter_title": {
 		"en": "Type the new chapter title",

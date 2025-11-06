@@ -1394,9 +1394,7 @@ class Convert_History(Watch_History):
 
 					# If the "titles are the same" switch is True
 					# And the English title is not inside the defined list
-					# And the "SIMULACRA" text is not inside the English title
-					# And the "CUBE ESCAPE" text is not inside the English title
-					# And the "Dr. Stone" text is not inside the media title
+					# And some media titles and episode titles are not inside the English title
 					if (
 						titles_are_the_same == True and
 						titles["en"] not in [
@@ -1427,7 +1425,7 @@ class Convert_History(Watch_History):
 						] and
 						"SIMULACRA" not in titles["en"] and
 						"CUBE ESCAPE" not in titles["en"] and
-						"pony.lol" not in titles["en"] and 
+						"pony.lol" not in titles["en"] and
 						"Dr. Stone" not in media_title and
 						"GameBlaster 38" not in media_title
 					):

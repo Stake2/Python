@@ -830,7 +830,7 @@ class Diary_Slim():
 
 			# ----- #
 
-			# Manage the text "States" 
+			# Manage the text "States"
 
 			# Define the text "States.json" file
 			dictionary["Files"]["States"] = dictionary["Folders"]["root"] + "States.json"
@@ -1237,7 +1237,7 @@ class Diary_Slim():
 	def Get_Methods(self, class_):
 		# Get the members
 		import inspect
- 
+
 		members = inspect.getmembers(class_, predicate = inspect.ismethod)
 
 		# Define a list of methods to remove

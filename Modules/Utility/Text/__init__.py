@@ -53,16 +53,28 @@ class Text():
 			"Verbose": True
 		}
 
-	def Verbose(self, text, item, verbose = True):
+	def Verbose(self, text, item, verbose = None):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
 		if (
-			self.switches["Verbose"] == True or
+			self.switches["Verbose"] == True and
+			verbose == None or
 			verbose == True
 		):
 			import inspect
 
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
+
+			# Show the module name (Text) and the method which ran this method (the "Verbose" one)
 			print()
-			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
+			print(self.module["Name"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
 			print("\t" + text + ":")
+
+			# Show the verbose item
 			print("\t" + item)
 
 	def Define_Texts(self):
@@ -251,7 +263,7 @@ class Text():
 	def Has_Duplicates(self, item_list):
 		return len(item_list) != len(set(item_list))
 
-	def Get_Clipboard(self): 
+	def Get_Clipboard(self):
 		# Import the "win32clipboard" module
 		import win32clipboard
 

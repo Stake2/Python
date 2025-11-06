@@ -119,7 +119,7 @@ class Register(Watch_History):
 
 		# ---------- #
 
-		# Define shortcuts for the total entries number and the entry times 
+		# Define shortcuts for the total entries number and the entry times
 		entries_number = self.dictionaries["Entries"]["Numbers"]["Total"]
 		entry_time = self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"]
 
@@ -1358,7 +1358,7 @@ class Register(Watch_History):
 				# Add the dubbing text to the text template
 				template += self.media["Episode"]["Dubbing"]["Text"]
 
-			# Define a shortcut to the "Container texts" dictionary 
+			# Define a shortcut to the "Container texts" dictionary
 			container_texts = self.media["Texts"]["Container texts"]
 
 			# Add the container (media type or "YouTube channel" text for the "Videos" media type) to the watched item text
@@ -1499,7 +1499,7 @@ class Register(Watch_History):
 		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"] 
+		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
 
 		# Add the "and others" text
 		text += ", " + self.Language.language_texts["and_others, feminine"]

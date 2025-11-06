@@ -188,7 +188,7 @@ class Add_A_New_Game(GamePlayer):
 			# Get the current language translated to the user language
 			translated_language = language["Translated"][self.language["Small"]]
 
-			key = self.Language.language_texts["title_in_{}"].format(translated_language) 
+			key = self.Language.language_texts["title_in_{}"].format(translated_language)
 
 			if small_language in self.game["Titles"]:
 				self.game["Details"][key] = self.game["Titles"][small_language]

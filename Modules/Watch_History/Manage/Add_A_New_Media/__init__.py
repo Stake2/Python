@@ -377,7 +377,7 @@ class Add_A_New_Media(Watch_History):
 			# If the small language is inside the "Titles" dictionary
 			if small_language in media["Titles"]:
 				# Define the key as "Title in [translated language]"
-				key = self.Language.language_texts["title_in_{}"].format(translated_language) 
+				key = self.Language.language_texts["title_in_{}"].format(translated_language)
 
 				# Add it to the media "Details" dictionary
 				media["Details"][key] = media["Titles"][small_language]

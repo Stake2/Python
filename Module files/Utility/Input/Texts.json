@@ -7,10 +7,6 @@
         "en": "options",
         "pt": "opções"
     },
-    "you_selected_this_option": {
-        "en": "You selected this option",
-        "pt": "Você selecionou esta opção"
-    },
     "yes": {
         "en": "yes",
         "pt": "sim"
@@ -50,10 +46,6 @@
     "options, title()": {
         "pt": "Opções",
         "en": "Options"
-    },
-    "you_selected_this_option, title()": {
-        "pt": "Você Selecionou Esta Opção",
-        "en": "You Selected This Option"
     },
     "yes, title()": {
         "pt": "Sim",

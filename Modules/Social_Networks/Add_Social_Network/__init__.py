@@ -123,7 +123,6 @@ class Add_Social_Network(Social_Networks):
 				# Define the type text as the information item in the user language
 				type_text = language_information_item
 
-			# If the information item is not 
 			# Select the information using the "Select_Information_Item" root method
 			information = self.Select_Information_Item(information_item = information_item, type_text = type_text)["Information"]
 
@@ -562,7 +561,6 @@ class Add_Social_Network(Social_Networks):
 			while name != "f":
 				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
-					# Define the 
 					# Ask the user to type the name of the custom additional item
 					name = self.Input.Type(type_text, next_line = True, accept_enter = False, tab = "\t")
 

@@ -442,10 +442,6 @@
 		"pt": "Selecione um {} (número ou palavra)",
 		"en": "Select One {} (Number Or Word)"
 	},
-	"you_selected_this_option, title()": {
-		"pt": "Você Selecionou Essa Opção",
-		"en": "You Selected This Option"
-	},
 	"press_enter_when_you_finish_reading_the_info_summary, title()": {
 		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
 		"en": "Press Enter When You Finish Reading The Info Summary"
@@ -539,10 +535,6 @@
 	"select_one_{}_(number_or_word), title()": {
 		"pt": "Selecione Um {} (Número Ou Palavra)",
 		"en": "Select One {} (Number Or Word)"
-	},
-	"you_selected_this_option, title()": {
-		"pt": "Você Selecionou Essa Opção",
-		"en": "You Selected This Option"
 	},
 	"press_enter_when_you_finish_reading_the_info_summary, title()": {
 		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
@@ -663,6 +655,10 @@
 	"totaling, title()": {
 		"en": "Totaling",
 		"pt": "Totalizando"
+	},
+	"along_with_the_previous_duration": {
+		"en": "along with the previous duration",
+		"pt": "junto com a duração anterior"
 	},
 	"{}_information": {
 		"pt": "Informações de {}",

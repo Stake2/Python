@@ -73,7 +73,7 @@ class Create_New_Module(Python):
 				small_language == "en" and
 				prototype[i] == ""
 			):
-				# Then define the module description in English as the module name 
+				# Then define the module description in English as the module name
 				self.module_descriptions[small_language] = self.Text.Title(self.module_name.replace("_", " "))
 
 			i += 1

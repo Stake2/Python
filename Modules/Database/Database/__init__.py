@@ -231,7 +231,7 @@ class Database(object):
 					self.folders[root_key]["current_year"]["by_type"][key]["entry_list"] = self.folders[root_key]["current_year"]["by_type"][key]["root"] + "Entry list.txt"
 					self.File.Create(self.folders[root_key]["current_year"]["by_type"][key]["entry_list"])
 
-					# Create "Files" folder 
+					# Create the "Files" folder
 					self.folders[root_key]["current_year"]["by_type"][key]["files"] = {
 						"root": self.folders[root_key]["current_year"]["by_type"][key]["root"] + "Files/"
 					}
@@ -762,7 +762,7 @@ class Database(object):
 
 		# Define Re-experiencing state for Re-experiencing status
 		if (
-			self.Language.language_texts["status, title()"] in data["Details"] and 
+			self.Language.language_texts["status, title()"] in data["Details"] and
 			data["Details"][self.Language.language_texts["status, title()"]] == self.language_texts["re_experiencing, title()"]
 		):
 			data["States"]["Re-experiencing"] = True

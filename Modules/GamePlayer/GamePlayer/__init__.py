@@ -295,7 +295,7 @@ class GamePlayer(object):
 					self.folders[root_folder]["Current year"]["By game type"][key]["Entry list"] = self.folders[root_folder]["Current year"]["By game type"][key]["root"] + "Entry list.txt"
 					self.File.Create(self.folders[root_folder]["Current year"]["By game type"][key]["Entry list"])
 
-					# Create the "Files" folder 
+					# Create the "Files" folder
 					self.folders[root_folder]["Current year"]["By game type"][key]["Files"] = {
 						"root": self.folders[root_folder]["Current year"]["By game type"][key]["root"] + "Files/"
 					}
@@ -778,7 +778,7 @@ class GamePlayer(object):
 		for i, key in enumerate(keys):
 			# If the "i" variable is the index we are looking for
 			if i == index:
-				# Replace the original key with the new key 
+				# Replace the original key with the new key
 				new_dictionary[new_key] = new_value
 
 			else:
@@ -1407,7 +1407,7 @@ class GamePlayer(object):
 			# Define the list of options as the game list
 			language_options = dictionary["Type"]["Game list"]
 
-			# If a custom game list is present inside the game type dictionary, use it 
+			# If a custom game list is present inside the game type dictionary, use it
 			if "Game list (option)" in dictionary["Type"]:
 				language_options = dictionary["Type"]["Game list (option)"]
 
@@ -2292,7 +2292,7 @@ class GamePlayer(object):
 
 			# If the game is not "None"
 			# The selected game must have come from the command line argument "- game"
-			if game_title != None: 
+			if game_title != None:
 				# Iterate through the game types
 				for game_type in self.game_types["Types"]["en"]:
 					# Get the game type dictionary
@@ -2715,7 +2715,7 @@ class GamePlayer(object):
 				# Add the time unit to the full gaming time text
 				gaming_time["Text"][language] += str(time_unit)
 
-				# Define the default time unit text list as the singular one 
+				# Define the default time unit text list as the singular one
 				list_ = singular[language]
 
 				# If the time unit is more than one, define the time unit text list as the plural one
@@ -2890,7 +2890,7 @@ class GamePlayer(object):
 		for key in keys:
 			# If the key is inside the dictionary of titles
 			if key in titles:
-				# Define the current key as the 
+				# Define the current key as the
 				title_key = key
 
 		# Get the title from the dictionary of titles using the defined title key
@@ -3023,7 +3023,7 @@ class GamePlayer(object):
 					print("\t" + title)
 
 			# Show the "With the game title" text
-			text = sub_game_type_text + " " + self.language_texts["with_the_game_title"] 
+			text = sub_game_type_text + " " + self.language_texts["with_the_game_title"]
 
 			# Get the sub-game "With game title"
 			title = game["Sub-game"]["With game title"]["Language"]
@@ -3150,7 +3150,7 @@ class GamePlayer(object):
 				# Iterate over the time types "started" and "finished"
 				for time_key in ["started", "finished"]:
 					# Construct the display text dynamically, e.g. "when_you_started" or "when_you_finished"
-					text = self.Language.language_texts["when_you_" + time_key] + playing_text 
+					text = self.Language.language_texts["when_you_" + time_key] + playing_text
 
 					# Format the dictionary key to match the stored time entries, e.g. "Started playing"
 					time_key = time_key.capitalize() + " playing"

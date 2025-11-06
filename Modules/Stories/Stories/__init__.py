@@ -340,7 +340,7 @@ class Stories(object):
 			self.File.Create(folders[file_name])
 
 	def Define_Dictionaries(self):
-		# Define the "Story pack" dictionary
+		# Define the default "Story pack" dictionary
 		self.stories["Story pack"] = {
 			"Theme": {
 				"Colors": {
@@ -368,6 +368,32 @@ class Stories(object):
 			}
 		}
 
+		# ---------- #
+
+		# Define the default "Chapter" dictionary
+		self.stories["Chapter"] = {
+			"Number": 0,
+			"Titles": {},
+			"Writing": {
+				"Titles": {},
+				"Writing language": {},
+				"Times": {}
+			},
+			"Revisions": {
+				"List": [],
+				"Dictionary": {}
+			},
+			"Translations": {
+				"List": [],
+				"Dictionary": {}
+			},
+			"Posting": {
+				"Times": {}
+			}
+		}
+
+		# ---------- #
+
 		# Define the "Writing" dictionary
 		self.stories["Writing"] = {
 			"Translator websites": {
@@ -393,6 +419,8 @@ class Stories(object):
 		dictionary = self.stories["Writing"]["Music players"]
 
 		self.stories["Writing"]["Music player"] = dictionary["Foobar2000"]
+
+		# ---------- #
 
 		# Define the "Directories" dictionary
 		self.stories["Directories"] = {
@@ -1590,6 +1618,7 @@ class Stories(object):
 		keys = [
 			"Folders",
 			"Story pack",
+			"Chapter",
 			"Writing",
 			"Directories",
 			"Information items",
@@ -2268,13 +2297,18 @@ class Stories(object):
 			# Show a space separator
 			print()
 
-			# Import the "Write_On_Diary_Slim_Module" sub-class
+			# Import the "Write_On_Diary_Slim_Module" sub-module from the "Diary_Slim" module
 			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 			# Define the "Write on Diary Slim" dictionary
 			dictionary = {
+				# The text to be written (the task description text in the user language)
 				"Text": task_dictionary["Task"]["Descriptions"][self.language["Small"]],
-				"Time": self.task_dictionary["Entry"]["Date"]["Formats"]["HH:MM DD/MM/YYYY"],
+
+				# The time to use to write the text
+				"Time": self.task_dictionary["Entry"]["Times"]["Completed task"]["Formats"]["HH:MM DD/MM/YYYY"],
+
+				# Show the "This text was written to the current Diary Slim" text
 				"Show text": True
 			}
 

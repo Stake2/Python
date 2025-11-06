@@ -254,7 +254,7 @@ class Input():
 
 		if found_option == True:
 			print()
-			print(self.language_texts["you_selected_this_option"] + ":")
+			print(self.Language.language_texts["you_selected_this_option"] + ":")
 
 			if (
 				language_options != None and

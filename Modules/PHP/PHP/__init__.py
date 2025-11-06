@@ -181,16 +181,16 @@ class PHP(object):
 		}
 
 	def Manage_Server(self, open = False, close = False, show_text = True, separator_number = None):
-		# Get the class name
-		class_name = type(self).__name__
+		# Get the method name which ran this method
+		method_name = type(self).__name__
 
 		# Define the default separator number if it is None
 		if separator_number == None:
 			# Define it as five
 			separator_number = 5
 
-			# If the class name is not "Update_Websites"
-			if class_name != "Update_Websites":
+			# If the method name is not "Update_Websites"
+			if method_name != "Update_Websites":
 				# Define the separator number as one
 				separator_number = 1
 
@@ -199,13 +199,16 @@ class PHP(object):
 
 		# If the "open" parameter is True
 		if open == True:
-			# Define the text as "Opening the server"
-			text = self.language_texts["opening_the_server"]
+			# Define the text key as "opening"
+			text_key = "opening"
 
 		# If the "close" parameter is True
 		if close == True:
-			# Define the text as "Closing the server"
-			text = self.language_texts["closing_the_server"]
+			# Define the text key as "closing"
+			text_key = "closing"
+
+		# Define the correct text based on the "open" and "close" parameters
+		text = self.language_texts[text_key + "_the_server"]
 
 		# Add the server name to the [open/close] text
 		text += ' "' + self.server["Name"] + '"'

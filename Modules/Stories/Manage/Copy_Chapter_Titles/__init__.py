@@ -22,12 +22,12 @@ class Copy_Chapter_Titles(Stories):
 		# Define the translated language for the chapter titles
 		translated_language = ""
 
-		# Define the list of languages
+		# Define a local list of languages
 		languages = []
 
 		# If the user did not selected a custom language
 		if self.states["Select language"] == False:
-			# Define the 
+			# Define the local list of languages as the root list of small languages
 			languages = self.languages["Small"]
 
 		# If the user wants to select a language
