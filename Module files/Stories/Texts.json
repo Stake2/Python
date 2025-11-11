@@ -356,13 +356,13 @@
 		"en": "I {} for {}, including pauses",
 		"pt": "{} por {}, incluindo pausas"
 	},
-	"post": {
-		"en": "post",
-		"pt": "postar"
-	},
 	"select_chapter": {
 		"en": "Select a chapter",
 		"pt": "Selecionar um capítulo"
+	},
+	"select_a_chapter": {
+		"en": "Select a chapter",
+		"pt": "Selecione um capítulo"
 	},
 	"select_a_chapter_to_revise": {
 		"en": "Select a chapter to revise",
@@ -450,9 +450,13 @@
 		"en": "Select one story class to execute",
 		"pt": "Selecione uma classe de história para executar"
 	},
-	"the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one": {
-		"en": "The selected story ({}) has all of its chapters posted, please select another one",
-		"pt": "A história selecionada ({}) tem todos os seus capítulos postados, por favor selecione outra"
+	"all_chapters_of_the_story_{}_have_been_posted_please_select_another_story": {
+		"en": "All chapters of the story \"{}\" have been posted, please select another story",
+		"pt": "Todos os capítulos da história \"{}\" foram postados, por favor selecione outra história"
+	},
+	"no_story_has_chapters_to_be_posted": {
+		"en": "No story has chapters to be posted",
+		"pt": "Nenhuma história tem capítulos para serem postados"
 	},
 	"updating_the_chapter_covers_of_this_story": {
 		"en": "Updating the chapter covers of this story",

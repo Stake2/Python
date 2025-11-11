@@ -61,7 +61,7 @@ class Create_New_Module(Python):
 		# Define and fill the module descriptions dictionary
 		self.module_descriptions = {}
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		i = 0
 		for small_language in self.languages["Small"]:
 			# Get the language description

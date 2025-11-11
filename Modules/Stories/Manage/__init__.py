@@ -14,10 +14,10 @@ class Manage(Stories):
 			self.story = self.Select_Story()
 
 		# Ask the user to select a class
-		class_ = self.Modules.Select_Class(return_class = True)
+		selected_class = self.Modules.Select_Class(return_class = True)
 
-		# Add the story variable to the class
-		setattr(class_["Object"], "story", self.story)
+		# Add the story dictionary to the class
+		setattr(selected_class["Object"], "story", self.story)
 
 		# Run the object of the class
-		class_["Object"]()
+		selected_class["Object"]()

@@ -280,7 +280,7 @@ class Social_Networks(object):
 			if "_" not in text_key:
 				addon = ", title()"
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# Define the language file name text
 				file_name_dictionary[language] = self.Language.texts[text_key + addon][language]
@@ -291,7 +291,7 @@ class Social_Networks(object):
 			# Define the plural texts of the file name
 			file_name_dictionary["Plural"] = {}
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				file_name_dictionary["Plural"][language] = self.Language.texts[text_key + addon][language]
 
@@ -329,7 +329,7 @@ class Social_Networks(object):
 			if "_" not in text_key:
 				addon = ", title()"
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# Define the language link type text
 				link_type_dictionary[language] = self.Language.texts[text_key + addon][language]
@@ -760,7 +760,7 @@ class Social_Networks(object):
 		# Create a local Information items dictionary
 		local_dictionary = deepcopy(self.information_items)
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for language in self.languages["Small"]:
 			# Remove the language items lists
 			local_dictionary["Lists"].pop(language)
@@ -792,7 +792,7 @@ class Social_Networks(object):
 			if "_" not in text_key:
 				addon += ", title()"
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# Define the correct texts dictionary
 				texts_dictionary = self.Language.texts
@@ -850,7 +850,7 @@ class Social_Networks(object):
 				# Define the text key as the backup
 				text_key = text_key_backup
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# Define the plural version of the information item
 				dict_["Plural"][language] = texts_dictionary[text_key][language]

@@ -141,7 +141,7 @@ class Show_Story_Information(Stories):
 				print("\t" + self.Language.language_texts["titles, title()"] + ":")
 
 				t = 1
-				for title in story["Information"]["Chapters"]["Titles"][self.language["Small"]]:
+				for title in story["Information"]["Chapters"]["Lists"]["Titles"][self.language["Small"]]:
 					print("\t\t" + str(t) + " - " + title)
 
 					t += 1

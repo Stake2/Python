@@ -1,50 +1,44 @@
 # Post.py
 
+# Import the root class
 from Stories.Stories import Stories as Stories
 
+# Import some useful modules
 from copy import deepcopy
 
 class Post(Stories):
-	def __init__(self, run_as_module = False):
+	def __init__(self, posting = {}):
 		super().__init__()
 
-		# Define the root dictionary
-		self.dictionary = {
-			"Chapters": {
-				"Numbers": {
-					"Last posted chapter": 1
-				},
-				"Titles": {}
+		# Define the root "posting" dictionary
+		self.posting = {
+			"Steps": {
+				"List": [],
+				"Dictionary": {}
 			},
 			"Chapter": {}
 		}
 
-		# Define the states dictionary
+		# Define the root states dictionary
 		self.states = {
-			"Run as module": run_as_module,
-			"Select chapter": False,
-			"Ask for skipping": True
+			"Has chapters to post": False,
+			"Select a chapter": False,
+			"Ask to skip": True,
+			"Run as a module": False
 		}
 
-		# If the "Run as module" state is True
-		if self.states["Run as module"] == True:
-			# Define the "Ask for skipping" state as False
-			self.states["Ask for skipping"] = False
+		# ---------- #
 
-		# Import sub-classes method
+		# Import some sub-classes
 		self.Import_Sub_Classes()
 
-		# If the "Run as module" state is False
-		# And the last posted chapter of the story is the last one
-		if (
-			self.states["Run as module"] == False and
-			self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] == self.story["Information"]["Chapters"]["Numbers"]["Total"]
-		):
-			# Get the story title and define the select text
-			select_text = self.language_texts["the_selected_story_{}_has_all_of_its_chapters_posted_please_select_another_one"].format(self.story["Titles"][self.language["Small"]])
+		# Check if the story has chapters to be posted
+		self.Check_Story_Chapters()
 
-			# Ask the user to select another story
-			self.Select_Story(select_text_parameter = select_text)
+		# If the story still has no chapters to post after running the previous method
+		if self.states["Has chapters to post"] == False:
+			# Check if the story has chapters to be posted
+			self.Check_For_Chapters_To_Be_Posted()
 
 		# Define the steps of chapter posting
 		self.Define_Steps()
@@ -65,9 +59,131 @@ class Post(Stories):
 			self.Register_Task()
 
 	def Import_Sub_Classes(self):
-		from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
+		# Define the classes to be imported
+		classes = [
+			"Social_Networks.Open_Social_Network"
+		]
 
-		self.Open_Social_Network = Open_Social_Network
+		# Import them
+		for class_title in classes:
+			# Define the module title as the class title
+			module_title = class_title
+
+			# If there is a dot in the module title
+			if "." in module_title:
+				# Split the module title to get the actual module title
+				module_title = module_title.split(".")[0]
+
+				# Get the class title
+				class_title = class_title.split(".")[1]
+
+			# Import the module
+			module = importlib.import_module("." + class_title, module_title)
+
+			# Get the sub-class
+			sub_class = getattr(module, class_title)
+
+			# Add the sub-class to the current module
+			setattr(self, class_title, sub_class)
+
+	def Check_Story_Chapters(self):
+		# Define a shortcut to the story "Chapters" dictionary
+		chapters = self.story["Chapters"]
+
+		# Define a shortcut to the last chapter written
+		last_chapter = chapters["Numbers"]["Total"]
+
+		# Define a shortcut to the story "Writing" dictionary
+		writing = self.story["Writing"]
+
+		# Define shortcuts for the "Write", "Revise", and "Translate" writing dictionaries
+		write = writing["Write"]
+		revise = writing["Revise"]
+		translate = writing["Translate"]
+
+		# Define a list of the finished status from both revise and translate
+		finished_status = [
+			revise["Status"]["Finished"],
+			translate["Status"]["Finished"]
+		]
+
+		# Define a "ready to post" dictionary
+		ready_to_post = {
+			# If the last written chapter has been finished and has not been posted yet
+			"Written chapter": (
+				write["Status"]["Finished"] and
+				not write["Status"]["Posted"]
+			),
+
+			# If the current chapters to revise and translate are the same
+			# Both are finished, and the revised chapter has not been posted yet
+			"Revised chapter": (
+				revise["Current chapter"] == translate["Current chapter"] and
+				all(finished_status) and
+				not revise["Status"]["Posted"]
+			)
+		}
+
+		# If any of the conditions are True
+		if any(ready_to_post.values()):
+			# Then change the "Has chapters to post" state to True
+			self.states["Has chapters to post"] = True
+
+	def Check_For_Chapters_To_Be_Posted(self):
+		# Define the text template to say that all chapters of that story have been posted
+		text_template = self.language_texts["all_chapters_of_the_story_{}_have_been_posted_please_select_another_story"]
+
+		# Make a local copy of the "Stories" dictionary
+		stories = deepcopy(self.stories)
+
+		# Define a local list of stories as the story titles in English
+		stories_list = stories["Titles"]["en"]
+
+		# While the "Has chapters to post" is False
+		# And the list of stories is not empty
+		while (
+			self.states["Has chapters to post"] == False and
+			stories_list != []
+		):
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+			print()
+
+			# Define the list of items to use to format the text template
+			items = [
+				self.story["Titles"][self.language["Small"]] # The story title in the user language
+			]
+
+			# Format the text template with the list of items
+			text = text_template.format(*items)
+
+			# Show the text
+			print(text)
+
+			# Remove the previously selected story from the local list of stories
+			stories_list.remove(self.story["Title"])
+
+			# Ask the user to select another story to post its chapters
+			self.Select_Story(stories_list = self.stories_list)
+
+			# Check if the selected story has chapters to post
+			self.Check_Story_Chapters()
+
+		# If all stories have been selected and none of them have chapters to be posted
+		if stories_list == []:
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+			print()
+
+			# Tell the user that no story has chapters to be posted
+			text = self.language_texts["no_story_has_chapters_to_be_posted"]
+
+			print(text + ".")
+
+			# End the program execution
+			quit()
 
 	def Define_Steps(self):
 		# Define the default steps dictionary
@@ -231,7 +347,7 @@ class Post(Stories):
 		# Define the chapter number with leading zeroes
 		self.dictionary["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.dictionary["Chapter"]["Number"]))
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for language in self.languages["Small"]:
 			# Create the chapter title variable
 			# [Chapter title]

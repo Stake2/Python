@@ -4042,7 +4042,7 @@ class Watch_History(object):
 				# Get the media type dictionary
 				media_type = dictionary["Media types"][plural_media_type]
 
-				# Iterate through the small languages list
+				# Iterate through list of small languages
 				for language in self.languages["Small"]:
 					# Create the empty language list if it does not exist
 					if language not in dictionary["List"]:

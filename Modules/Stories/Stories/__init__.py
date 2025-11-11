@@ -146,15 +146,15 @@ class Stories(object):
 		]
 
 		# Import them
-		for title in classes:
+		for class_title in classes:
 			# Import the module
-			module = importlib.import_module("." + title, title)
+			module = importlib.import_module("." + class_title, class_title)
 
 			# Get the sub-class
-			sub_class = getattr(module, title)
+			sub_class = getattr(module, class_title)
 
 			# Add the sub-class to the current module
-			setattr(self, title, sub_class())
+			setattr(self, class_title, sub_class())
 
 		# ---------- #
 
@@ -388,7 +388,13 @@ class Stories(object):
 				"Dictionary": {}
 			},
 			"Posting": {
-				"Times": {}
+				"Writing": {
+					"Times": {}
+				},
+				"Revisions": {
+					"List": [],
+					"Dictionary": {}
+				}
 			}
 		}
 
@@ -526,7 +532,7 @@ class Stories(object):
 			# Create the "Texts" dictionary
 			information_item["Texts"] = {}
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# Get the information text for the current language using the text key and addon
 				text = self.Language.texts[text_key + addon][language]
@@ -539,7 +545,7 @@ class Stories(object):
 				# Define the "Plural texts" dictionary
 				information_item["Plural texts"] = {}
 
-				# Iterate through the small languages list
+				# Iterate through list of small languages
 				for language in self.languages["Small"]:
 					# Get the plural information text for the current language using the text key and addon
 					text = self.Language.texts[text_key + "s" + addon][language]
@@ -1261,14 +1267,16 @@ class Stories(object):
 				# Add the language chapter titles to the chapter "Titles" dictionary inside the "Lists" dictionary
 				story["Information"]["Chapters"]["Lists"]["Titles"][small_language] = self.File.Contents(file)["Lines"]
 
-			# Define a shortcut to the "Chapters.json" file and get its contents
-			file = story["Folders"]["Information"]["Chapters"]
-			contents = self.File.Contents(file)
+			# Define a shortcut to the "Chapters.json" file
+			chapters_file = story["Folders"]["Information"]["Chapters"]
+
+			# Get its contents
+			contents = self.File.Contents(chapters_file)
 
 			# If the file is not empty
 			if contents["Lines"] != []:
 				# Get the JSON dictionary from the file
-				chapters = self.JSON.To_Python(file)
+				chapters = self.JSON.To_Python(chapters_file)
 
 				# Update the root "Last posted chapter" key with the correct number
 				story["Information"]["Chapters"]["Numbers"]["Last posted chapter"] = chapters["Numbers"]["Last posted chapter"]
@@ -1287,7 +1295,7 @@ class Stories(object):
 			story["Information"]["Chapters"]["Numbers"]["Total"] = len(story["Information"]["Chapters"]["List"])
 
 			# Write the default or updated story "Chapters" dictionary into the "Chapters.json" file
-			self.JSON.Edit(story["Folders"]["Information"]["Chapters"], story["Information"]["Chapters"])
+			self.JSON.Edit(chapters_file, story["Information"]["Chapters"])
 
 			# ---------- #
 
@@ -1299,14 +1307,14 @@ class Stories(object):
 				full_language = language["Full"]
 
 				# Define the file as the "Synopsis" folder
-				file = story["Folders"]["Information"]["Synopsis"]["root"]
+				synopsis_file = story["Folders"]["Information"]["Synopsis"]["root"]
 
 				# Add the full language and the text extension
 				file += full_language + ".txt"
 
 				# Define and create the file
-				story["Folders"]["Information"]["Synopsis"][full_language] = file
-				self.File.Create(file)
+				story["Folders"]["Information"]["Synopsis"][full_language] = synopsis_file
+				self.File.Create(synopsis_file)
 
 			# Define the empty "Synopsis" dictionary
 			story["Information"]["Synopsis"] = {}
@@ -1329,8 +1337,8 @@ class Stories(object):
 
 			# Create the writing mode dictionaries inside the "Writing" dictionary
 			for writing_mode in self.stories["Writing modes"]["List"]:
-				# Define the writing mode dictionary
-				writing[writing_mode] = {
+				# Define the local writing mode dictionary
+				writing_mode_dictionary = {
 					"Current chapter": 1,
 					"Times": {
 						"Started": "",
@@ -1347,15 +1355,26 @@ class Stories(object):
 					}
 				}
 
+				# If the writing mode is either "Write" or "Revise"
+				if writing_mode in ["Write", "Revise"]:
+					# Define the "Posted" key inside the "Status" dictionary as False
+					writing_mode_dictionary["Status"]["Posted"] = False
+
+				# Add the local writing mode dictionary to the default "Writing" dictionary
+				writing[writing_mode] = writing_mode_dictionary
+
+			# Define a shortcut to the "Writing.json" file
+			writing_file = story["Folders"]["Information"]["Writing"]
+
 			# Read the "Writing.json" file if it is not empty
-			if self.File.Contents(story["Folders"]["Information"]["Writing"])["Lines"] != []:
-				writing = self.JSON.To_Python(story["Folders"]["Information"]["Writing"])
+			if self.File.Contents(writing_file)["Lines"] != []:
+				writing = self.JSON.To_Python(writing_file)
 
 			# Define the root "Writing" dictionary as the local dictionary
 			story["Information"]["Writing"] = writing
 
 			# Write the default or modified "Writing" dictionary inside the "Writing.json" file
-			self.JSON.Edit(story["Folders"]["Information"]["Writing"], story["Information"]["Writing"])
+			self.JSON.Edit(writing_file, story["Information"]["Writing"])
 
 			# ---------- #
 
@@ -2315,88 +2334,83 @@ class Stories(object):
 			# Write the task text on Diary Slim
 			Write_On_Diary_Slim_Module(dictionary)
 
-	def Select_Story(self, stories_list = [], select_text_parameter = None, select_class = False):
-		# Define the show text
-		show_text = self.Language.language_texts["stories, title()"]
-
-		# Define the select text
-		select_text = select_text_parameter
-
-		if select_text_parameter == None:
-			select_text = self.language_texts["select_a_story"]
-
-		# Get the class name
+	def Select_Story(self, stories_list = [], select_text = None, select_class = False):
+		# Get the class name which ran this method
 		class_name = type(self).__name__
 
-		# If the select text parameter is None
+		# Define the text key for the class name
+		class_text_key = class_name.lower() + ", title()"
+
+		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
+		parameters = {
+			"options": [],
+			"language_options": [],
+			"show_text": self.Language.language_texts["stories, title()"], # The "Stories" text in the user language
+			"select_text": self.language_texts["select_a_story"] # The "Select a story" text in the user language
+		}
+
+		# If the "select text" parameter is None
 		# And the current class is a sub-class of the "Stories" class
-		# And the class name is inside the language texts dictionary
+		# And the class name text key is inside the "Language" language texts dictionary
 		if (
-			select_text_parameter == None and
+			select_text == None and
 			issubclass(type(self), Stories) == True and
-			class_name in self.language_texts
+			class_text_key in self.Language.language_texts
 		):
+			# Get the class text using the class text key
+			class_text = self.Language.language_texts[class_text_key]
+
 			# Change the select text to add the text of the current class, based on its name
-			select_text = self.language_texts["select_a_story_to"] + " " + self.language_texts[class_name.lower()]
+			parameters["select_text"] = self.language_texts["select_a_story_to"] + " " + class_text
 
 		# Make a local copy of the "Stories" dictionary
 		stories = deepcopy(self.stories)
 
-		# Define the list of stories if it the parameter is an empty list
+		# If the stories list parameter is an empty list
 		if stories_list == []:
-			stories_list = self.stories["Titles"]["en"]
+			# Define the local list of stories as the list of story titles in English
+			stories_list = stories["Titles"]["en"]
 
-		# Empty the titles lists
+		# Empty the story "Titles" lists in all languages
 		for language in self.languages["Small"]:
 			stories["Titles"][language] = []
 
-		# If the class name is "Post"
-		if class_name == "Post":
-			# Iterate through the English story titles list
-			for story in stories_list.copy():
-				# Get the "Story" dictionary
-				story = stories["Dictionary"][story]
-			
-				# Get the last posted chapter number
-				last_posted_chapter = story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
-
-				# If the last posted chapter is the same as the last chapter
-				if last_posted_chapter == story["Information"]["Chapters"]["Numbers"]["Total"]:
-					# Remove the story from the list of stories
-					stories_list.remove(story["Title"])
-
-		# Iterate through the English story titles list
+		# Iterate through the list of English story titles
 		for story in stories_list.copy():
-			# Get the "Story" dictionary
+			# Get the dictionary of the story
 			story = stories["Dictionary"][story]
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
-				# Add the story title to the list of titles in the current language
+				# Add the language story title to the list of story titles in the current language
 				stories["Titles"][language].append(story["Titles"][language])
 
-		# Define the options and language options lists
-		options = stories["Titles"]["en"]
-		language_options = stories["Titles"][self.language["Small"]]
+		# Define the "options" and "language options" lists
+		parameters["options"] = stories["Titles"]["en"]
+		parameters["language_options"] = stories["Titles"][self.language["Small"]]
 
-		# Ask for the user to select the story
-		option = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
+		# Ask for the user to select a story
+		story = self.Input.Select(**parameters)["Option"]["Normal"]
 
-		# Get the "Story" dictionary
-		self.story = self.stories["Dictionary"][option]
+		# Get the story dictionary of the selected story and defined it inside the "Stories" class
+		self.story = self.stories["Dictionary"][story]
 
-		# Set the "Story" attribute inside the "Stories" class as the "Story" dictionary above
+		# Define a shortcut to the story "Chapters" and "Writing" dictionaries
+		for key in ["Chapters", "Writing"]:
+			self.story[key] = self.story["Information"][key]
+
+		# Add the story dictionary to the "Stories" class
 		setattr(Stories, "story", self.story)
 
 		# If the "select_class" parameter is True, then ask the user to select a class
 		if select_class == True:
 			self.Select_Class()
 
-		# Return the "Story" dictionary
+		# Return the story dictionary
 		return self.story
 
 	def Select_Class(self):
-		# Define the "Classes" dictionary
+		# Define the "Classes" dictionary with the list of classes
 		classes = {
 			"List": [
 				"Write",
@@ -2414,20 +2428,132 @@ class Stories(object):
 			# Add the class description to the "Descriptions" list
 			classes["Descriptions"].append(description)
 
+		# Get the story title in the user language
+		language_story_title = self.story["Titles"][self.language["Small"]]
+
 		# Define the show text with the story title in the user language
-		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + self.story["Titles"][self.language["Small"]] + '"?'
+		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + language_story_title + '"?'
 
-		# Ask the user to select the sub-class
-		sub_class = self.Input.Select(classes["List"], language_options = classes["Descriptions"], show_text = show_text, select_text = self.Language.language_texts["select_one_thing_to_do"])["option"]
+		# Ask the user to select the sub-class to run
+		sub_class = self.Input.Select(classes["List"], language_options = classes["Descriptions"], show_text = show_text, select_text = self.Language.language_texts["select_one_thing_to_do"])["Option"]["Normal"]
 
-		# Get the module of the sub-class
+		# Import the module of the sub-class
 		module = importlib.import_module("." + sub_class, "Stories")
 
 		# Get the sub-class
 		sub_class = getattr(module, sub_class)
 
-		# Add the "Story" variable to the sub-class
+		# Add the story dictionary to the sub-class
 		setattr(sub_class, "story", self.story)
 
 		# Execute the sub-class
 		sub_class()
+
+	def Select_Chapter(self, custom_parameters = {}, chapter_number = None):
+		# If the chapter number parameter is None
+		if chapter_number == None:
+			# Define a shortcut to the list of chapter titles in the user language
+			chapter_titles = self.story["Chapters"]["Lists"]["Titles"][self.language["Small"]]
+
+			# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
+			parameters = {
+				"options": chapter_titles, # The list of chapter titles in the user language
+				"language_options": None,
+				"show_text": self.Language.language_texts["chapters, title()"], # The "Chapters" text in the user language
+				"select_text": self.language_texts["select_a_chapter"] # The "Select a chapter" text in the user language
+			}
+
+			# Iterate through the keys inside the local parameters dictionary
+			for key in parameters:
+				# If the key is inside the custom parameters dictionary
+				if key in custom_parameters:
+					# Then update the key in the local parameters dictionary
+					parameters[key] = custom_parameters[key]
+
+			# Ask the user to select a chapter from the list
+			chapter_number = self.Input.Select(**parameters)["Option"]["Number"]
+
+			# Add one to the chapter number
+			chapter_number += 1
+
+		# ---------- #
+
+		# Define the chapter dictionary
+		chapter = {
+			"Number": chapter_number,
+			"Numbers": {
+				"Leading zeroes": "0",
+				"Names": {}
+			},
+			"Titles": {
+				"Normal": {},
+				"With number": {},
+				"Sanitized": {}
+			},
+			"Previous titles": {
+				"Normal": {},
+				"With number": {}
+			},
+			"Files": {}
+		}
+
+		# Define the chapter number with leading zeroes
+		chapter["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(chapter["Number"]))
+
+		# Define a shortcut to the chapter titles dictionary for easier typing
+		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
+
+		# Iterate through the language keys and dictionaries
+		for small_language, language in self.languages["Dictionary"].items():
+			# Define a shortcut to the full language
+			full_language = language["Full"]
+
+			# Define the default chapter title as the chapter number with leading zeroes
+			chapter_title = chapter["Numbers"]["Leading zeroes"]
+
+			# If the number of chapter titles is the same as the chapter number
+			if len(chapter_titles[small_language]) == chapter["Number"]:
+				# Get the actual chapter title
+				# (The chapter number less one because Python list indexes start at zero)
+				chapter_title = chapter_titles[small_language][chapter["Number"] - 1]
+
+			# Define the chapter title with the number
+			# Examples:
+			# 01 (for the "Write" writing mode)
+			# [Chapter Title] (for the "Revise" or "Translate" writing modes)
+			chapter_title_with_number = chapter_title
+
+			# If the number of chapter titles is the same as the chapter number
+			if len(chapter_titles[small_language]) == chapter["Number"]:
+				# Define the chapter title with the number
+				# Example: 01 - [Chapter Title]
+				chapter_title_with_number = chapter["Numbers"]["Leading zeroes"] + " - " + chapter_title
+
+			# Add the chapter title to the titles "Normal" language dictionary
+			chapter["Titles"]["Normal"][small_language] = chapter_title
+
+			# Add the chapter title with the number to the titles "With number" language dictionary
+			chapter["Titles"]["With number"][small_language] = chapter_title_with_number
+
+			# Get the number name of the chapter number
+			number_name = self.Date.texts["number_names, type: list"][small_language][chapter["Number"]]
+
+			# Add it to the number "Names" dictionary
+			chapter["Numbers"]["Names"][small_language] = number_name
+
+			# ----- #
+
+			# Define the chapter file in the current language as the "Chapters" folder of the selected story
+			chapter["Files"][small_language] = self.story["Folders"]["Chapters"][full_language]["root"]
+
+			# Sanitize the chapter title with number
+			sanitized_chapter_title = self.Sanitize(chapter_title_with_number, restricted_characters = True)
+
+			# Add it to the "Sanitized" key
+			chapter["Titles"]["Sanitized"] = sanitized_chapter_title
+
+			# Add the sanitized chapter title with number
+			chapter["Files"][small_language] += chapter["Titles"]["Sanitized"] + ".txt"
+
+		# Return the chapter dictionary
+		return chapter

@@ -83,7 +83,7 @@ class Copy_Chapter_Titles(Stories):
 			print("[" + str(i) + "/" + str(len(chapter_titles["en"])) + "]")
 			print()
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in languages:
 				# Get the chapter title in the current language
 				title = chapter_titles[language][i - 1]

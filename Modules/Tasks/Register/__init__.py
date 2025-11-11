@@ -552,7 +552,7 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for small_language in small_languages:
 			# Define the task title
 			task_title = self.dictionary["Task"]["Titles"][small_language]

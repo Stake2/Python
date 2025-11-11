@@ -419,7 +419,7 @@ class Years(object):
 							# Define the empty dictionary
 							dict_["Dictionary"][item_name] = {}
 
-							# Iterate through the small languages list
+							# Iterate through list of small languages
 							for language in self.languages["Small"]:
 								text_key = item_name.lower().replace(" ", "_")
 
@@ -453,7 +453,7 @@ class Years(object):
 						# Define the empty dictionary
 						dict_["Dictionary"][item_name] = {}
 
-						# Iterate through the small languages list
+						# Iterate through list of small languages
 						for language in self.languages["Small"]:
 							text_key = item_name.lower().replace(" ", "_")
 
@@ -777,7 +777,7 @@ class Years(object):
 			data["Dictionary"]["Files"][data["Folder type"]][item] = {}
 
 		# Define the language folder keys
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for language in self.languages["Small"]:
 			data["Dictionary"]["Files"][data["Folder type"]][language] = {}
 
@@ -850,7 +850,7 @@ class Years(object):
 					"This Year I (post)"
 				]
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				data["Dictionary"]["Files"][data["Folder type"]][language]
 

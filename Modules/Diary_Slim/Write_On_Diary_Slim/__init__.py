@@ -1290,6 +1290,23 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Statistics" in self.dictionary["Text"] and
 			self.dictionary["Text"]["Statistics"]["Changed statistic"] == True
 		):
+			# If the "Is task" key is inside the text dictionary
+			# And the task was not registered (only its progress)
+			if (
+				"Is task" in self.dictionary["Text"] and
+				self.task_dictionary["Register task"] == False
+			):
+				# Show a five dash space separator
+				print()
+				print(self.separators["5"])
+
+				# Show the "Class being executed" and the name of the module and class
+				# So the user is sure that this is the Diary Slim module, not another one
+				# "Diary Slim" (in the user language)
+				print()
+				print(self.Language.language_texts["class_being_executed"] + ":")
+				print("\t" + self.language_texts["Diary_Slim.Write"])
+
 			# Iterate through the list of date types
 			for date_type in ["Year", "Month"]:
 				# Define the local statistics dictionary

@@ -508,7 +508,7 @@ class Create_Year_Summary(Years):
 			"GamePlayer"
 		]
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for language in self.languages["Small"]:
 			# Define the language summary text
 			self.summary["Text"][language] = ""
@@ -709,7 +709,7 @@ class Create_Year_Summary(Years):
 
 		# ---------- #
 
-		# Iterate through the small languages list
+		# Iterate through list of small languages
 		for language in self.languages["Small"]:
 			# Remove the last space if it exists
 			if self.summary["Text"][language][-1] == "\n":

@@ -26,10 +26,6 @@ class Write(Stories):
 			"Session": {}
 		}
 
-		# Define a shortcut to the story "Chapters" and "Writing" dictionaries
-		for key in ["Chapters", "Writing"]:
-			self.story[key] = self.story["Information"][key]
-
 		# Define the root states dictionary
 		self.states = {
 			"Select a chapter to revise": False,
@@ -323,31 +319,14 @@ class Write(Stories):
 		# Reset the "Total duration" dictionary
 		writing_dictionary["Total duration"] = {}
 
-		# If the "Finished" status key is True, change it to False
-		if status["Finished"] == True:
-			status["Finished"] = False
+		# Iterate through the keys inside the "Status" dictionary
+		for key in status:
+			# If the status is True, change it to False
+			if status[key] == True:
+				status[key] = False
 
 		# Return the chapter, writing dictionary, and status
 		return chapter, writing_dictionary, status
-
-	def Select_Chapter(self):
-		# Define a shortcut to the list of chapter titles in the user language
-		chapter_titles = self.story["Chapters"]["Lists"]["Titles"][self.language["Small"]]
-
-		# Define the show text as "Chapters"
-		show_text = self.Language.language_texts["chapters, title()"]
-
-		# Define the select text as "Select a chapter to revise"
-		select_text = self.language_texts["select_a_chapter_to_revise"]
-
-		# Ask the user to select a chapter from the list
-		chapter_number = self.Input.Select(chapter_titles, show_text = show_text, select_text = select_text)["Option"]["Number"]
-
-		# Add one to the chapter number
-		chapter_number += 1
-
-		# Return the chapter number
-		return chapter_number
 
 	def Define_Chapter(self):
 		# Define the chapter number as the current chapter in the writing dictionary
@@ -355,43 +334,25 @@ class Write(Stories):
 
 		# If the "Select a chapter to revise" state is True
 		if self.states["Select a chapter to revise"] == True:
-			# Ask the user to select a chapter to [write/revise/translate]
-			self.writing["Chapter"]["Number"] = self.Select_Chapter()
+			# Define a local custom parameters dictionary
+			custom_parameters = {
+				# Update the select text to be the "Select a chapter to revise" text in the user language
+				"select_text": self.language_texts["select_a_chapter_to_revise"]
+			}
+
+			# Ask the user to select a chapter to revise, passing the custom parameters dictionary to the root "Select_Chapter" method
+			self.writing["Chapter"]["Number"] = self.Select_Chapter(custom_parameters)
 
 		# Update the chapter number inside the "Writing" dictionary
 		self.writing["Writing"]["Current chapter"] = self.writing["Chapter"]["Number"]
 
 		# ---------- #
 
-		# Define the "Chapter" dictionary
-		self.writing["Chapter"] = {
-			"Number": self.writing["Chapter"]["Number"],
-			"Numbers": {
-				"Leading zeroes": "0",
-				"Names": {}
-			},
-			"Titles": {
-				"Normal": {},
-				"With number": {},
-				"Sanitized": {}
-			},
-			"Previous titles": {
-				"Normal": {},
-				"With number": {}
-			},
-			"Files": {}
-		}
-
-		# Define the chapter number with leading zeroes
-		self.writing["Chapter"]["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(self.writing["Chapter"]["Number"]))
-
-		# ---------- #
+		# Define the "Chapter" dictionary using the root "Select_Chapter" method, passing the chapter number to it
+		self.writing["Chapter"] = self.Select_Chapter(chapter_number = self.writing["Chapter"]["Number"])
 
 		# Define a shortcut to the chapter dictionary
 		self.chapter = self.writing["Chapter"]
-
-		# Define a shortcut to the chapter number
-		chapter_number = self.chapter["Number"]
 
 		# Define a shortcut to the chapter titles dictionary for easier typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
@@ -408,7 +369,7 @@ class Write(Stories):
 			if self.writing_mode in ["Revise", "Translate"]:
 				# Get the actual chapter title
 				# (The chapter number less one because Python list indexes start at zero)
-				chapter_title = chapter_titles[small_language][chapter_number - 1]
+				chapter_title = chapter_titles[small_language][self.chapter["Number"] - 1]
 
 			# Define the chapter title with the number
 			# Examples:
@@ -429,7 +390,7 @@ class Write(Stories):
 			self.chapter["Titles"]["With number"][small_language] = chapter_title_with_number
 
 			# Get the number name of the chapter number
-			number_name = self.Date.texts["number_names, type: list"][small_language][chapter_number]
+			number_name = self.Date.texts["number_names, type: list"][small_language][self.chapter["Number"]]
 
 			# Add it to the number "Names" dictionary
 			self.chapter["Numbers"]["Names"][small_language] = number_name
@@ -791,7 +752,7 @@ class Write(Stories):
 
 		# Define the list of items to use to format the URL template
 		items = [
-			# The title of the story and website in English
+			# The story title and website title in English
 			self.story["Title"],
 
 			# The writing language (the language in which the chapter will be written)

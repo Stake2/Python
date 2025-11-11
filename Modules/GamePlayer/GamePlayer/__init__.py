@@ -2023,7 +2023,7 @@ class GamePlayer(object):
 
 		# Iterate through the text types list
 		for text_type in ["Singular", "Plural"]:
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			# To define the sub-game type texts for all languages
 			for language in self.languages["Small"]:
 				# Define the text key
@@ -2639,7 +2639,7 @@ class GamePlayer(object):
 				# Remove the time from the units dictionary
 				time_units.pop(key)
 
-				# Iterate through the small languages list
+				# Iterate through list of small languages
 				# And remove the singular and plural time unit texts
 				for language in self.languages["Small"]:
 					# Define the language key inside the "Text" dictionary
@@ -2672,7 +2672,7 @@ class GamePlayer(object):
 
 		i = 0
 		for key, time_unit in time_units.items():
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for language in self.languages["Small"]:
 				# If the time unit key is not the first one
 				if key != keys[0]:

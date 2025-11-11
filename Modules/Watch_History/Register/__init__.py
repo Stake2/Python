@@ -518,7 +518,7 @@ class Register(Watch_History):
 			# Add the language title to the list of titles
 			media_titles.append(titles_dictionary["Language"])
 
-			# Iterate through the small languages list
+			# Iterate through list of small languages
 			for local_language in self.languages["Small"]:
 				# Check if the local language exists in the titles dictionary
 				# And if the title in that language is different from the language title
