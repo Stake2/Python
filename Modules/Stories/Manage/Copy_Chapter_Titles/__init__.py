@@ -48,7 +48,7 @@ class Copy_Chapter_Titles(Stories):
 				translated_languages.append(translated_language)
 
 			# Ask the user to select the small language
-			small_language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["Option"]["Normal"]
+			small_language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["Option"]["Original"]
 
 			# Add the small language to the languages list
 			languages.append(small_language)

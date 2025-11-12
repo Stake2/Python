@@ -32,7 +32,7 @@
 		"en": "Select a Year to create its summary"
 	},
 	"you_already_created_the_summary_for_this_year": {
-		"pt": "Você já criou o resumo para este Ano",
+		"pt": "Você já criou o resumo para esse Ano",
 		"en": "You already created the summary for this Year"
 	},
 	"executing_the_year_summary_creator": {
@@ -60,7 +60,7 @@
 		"pt": "Mostrar resumo do ano"
 	},
 	"today_is_not_an_allowed_day_to_create, type: explanation": {
-		"pt": "Hoje não é um dia permitido para criar o resumo de ano, execute este programa novamente quando for",
+		"pt": "Hoje não é um dia permitido para criar o resumo de ano, execute esse programa novamente quando for",
 		"en": "Today is not an allowed day to create the year summary, run this program again when it is"
 	},
 	"allowed_days": {
@@ -92,7 +92,7 @@
 		"en": "Its Year folder was created"
 	},
 	"this_is_its_year_folder": {
-		"pt": "Esta é sua pasta de Ano",
+		"pt": "Essa é sua pasta de Ano",
 		"en": "This is its Year folder"
 	},
 	"{}_texts": {

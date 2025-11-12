@@ -403,7 +403,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				# Show the text telling the user that the file does not exist
 				# Along with the file path
 				print()
-				print(self.File.language_texts["this_file_does_not_exists"] + ":")
+				print(self.Language.language_texts["this_file_does_not_exists"] + ":")
 				print("\t" + file)
 
 				# Copy the game title for the user to rename the game shortcut

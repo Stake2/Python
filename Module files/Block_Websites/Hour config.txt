@@ -1,3 +1,0 @@
-Start blocking: 0
-Stop blocking: 19
-Update time: 30

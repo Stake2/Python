@@ -20,11 +20,11 @@
 		"en": "Select a website to add it to the list"
 	},
 	"updating_this_website": {
-		"pt": "Atualizando este site",
+		"pt": "Atualizando esse site",
 		"en": "Updating this website"
 	},
 	"updating_these_websites": {
-		"pt": "Atualizando estes sites",
+		"pt": "Atualizando esses sites",
 		"en": "Updating these websites"
 	},
 	"press_enter_when_the_pages_finish_loading": {
@@ -48,11 +48,11 @@
 		"en": "Update all {} websites"
 	},
 	"you_finished_updating_this_website": {
-		"pt": "Você terminou de atualizar este site",
+		"pt": "Você terminou de atualizar esse site",
 		"en": "You finished updating this website"
 	},
 	"you_finished_updating_these_websites": {
-		"pt": "Você terminou de atualizar estes sites",
+		"pt": "Você terminou de atualizar esses sites",
 		"en": "You finished updating these websites"
 	},
 	"opening_the_server": {

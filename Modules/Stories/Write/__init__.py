@@ -88,7 +88,7 @@ class Write(Stories):
 	def Select_Writing_Mode(self):
 		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
 		parameters = {
-			"options": self.stories["Writing modes"]["List"], #  The list of writing modes
+			"options": self.stories["Writing modes"]["List"], # The list of writing modes
 			"language_options": [], # The empty list of language writing modes
 			"show_text": self.language_texts["writing_modes"], # The "Writing modes" text in the user language
 			"select_text": self.language_texts["select_a_writing_mode"] # The "Select a writing mode" text in the user language
@@ -101,6 +101,9 @@ class Write(Stories):
 
 		# Make a backup of the "Writing" dictionary
 		self.story["Writing (backup)"] = deepcopy(self.story["Writing"])
+
+		# Define a shortcut to the "language texts" dictionary of the "Language" class
+		language_texts = self.Language.language_texts
 
 		# Iterate through the writing modes and writing mode dictionaries
 		for writing_mode, writing_mode_dictionary in self.stories["Writing modes"]["Dictionary"].items():
@@ -118,7 +121,7 @@ class Write(Stories):
 			# Define the writing mode text initially as an empty string
 			writing_mode_text = ""
 
-			# Get the current chapter of the writing mode
+			# Get the current chapter of the current writing mode
 			current_chapter = writing_dictionary["Current chapter"]
 
 			# Make a copy of the current chapter
@@ -187,9 +190,6 @@ class Write(Stories):
 
 				# ----- #
 
-				# Define a shortcut to the "language texts" dictionary of the "Language" class
-				language_texts = self.Language.language_texts
-
 				# Define the "the chapter" text initially as the "the" masculine text
 				the_chapter_text = language_texts["the, masculine"]
 
@@ -204,14 +204,12 @@ class Write(Stories):
 				# Add the " the chapter" text to the writing mode text
 				writing_mode_text += " " + the_chapter_text
 
-			# Add the writing mode text to the list of language options
-			parameters["language_options"].append(writing_mode_text)
-
-			# ----- #
+			# Define the "Text addon" as an empty dictionary
+			writing_mode_dictionary["Text addon"] = {}
 
 			# If the writing mode is "Write"
 			if writing_mode == "Write":
-				# Define the text addon as "a new chapter"
+				# Define the "Text addon" dictionary as the "a new chapter" text dictionary
 				writing_mode_dictionary["Text addon"] = self.texts["a_new_chapter"]
 
 			# If the writing mode is either "Revise" or "Translate"
@@ -220,8 +218,16 @@ class Write(Stories):
 				writing_mode in ["Revise", "Translate"] and
 				ongoing_writing_session == True
 			):
-				# Define the text addon as "in progress"
+				# Define the "Text addon" dictionary as the "in progress" text dictionary
 				writing_mode_dictionary["Text addon"] = self.Language.texts["in_progress"]
+
+			# If the "Text addon" dictionary is not empty
+			if writing_mode_dictionary["Text addon"] != {}:
+				# Add its user language version to to the writing mode text
+				writing_mode_text += " (" + writing_mode_dictionary["Text addon"][self.language["Small"]] + ")"
+
+			# Add the writing mode text to the list of language options
+			parameters["language_options"].append(writing_mode_text)
 
 			# ----- #
 
@@ -272,28 +278,19 @@ class Write(Stories):
 		# Ask the user to select a writing mode
 		writing_mode = self.Input.Select(**parameters)["Option"]["Original"]
 
-		# Define the "writing mode" root variable as the writing mode name for faster typing
-		self.writing_mode = writing_mode
-
 		# Get the writing mode dictionary for the selected writing mode
-		self.writing["Writing mode"] = self.writing["Writing modes"]["Dictionary"][self.writing_mode]
+		self.writing["Writing mode"] = self.writing["Writing modes"]["Dictionary"][writing_mode]
 
 		# Define a shortcut to the "Writing" dictionary of the writing mode
-		self.writing["Writing"] = self.story["Writing"][self.writing_mode]
+		self.writing["Writing"] = self.story["Writing"][writing_mode]
 
 		# If the writing mode is "Write"
-		if self.writing_mode == "Write":
+		if writing_mode == "Write":
 			# Change the "A new chapter" state to True
 			self.states["A new chapter"] = True
 
-		# Reset the "Ongoing writing session" state to be False
-		self.states["Ongoing writing session"] = False
-
-		# Check if the writing "Started" time is not empty
-		# (This means the user has already started writing the chapter and is resuming it)
-		if self.writing["Writing"]["Times"]["Started"] != "":
-			# Change the "Ongoing writing session" state to True
-			self.states["Ongoing writing session"] = True
+		# Define the "writing mode" root variable as the writing mode name for faster typing
+		self.writing_mode = writing_mode
 
 	def Next_Chapter(self, chapter, writing_dictionary, status):
 		# Add one to the local chapter number
@@ -354,6 +351,15 @@ class Write(Stories):
 		# Define a shortcut to the chapter dictionary
 		self.chapter = self.writing["Chapter"]
 
+		# Reset the "Ongoing writing session" state to be False
+		self.states["Ongoing writing session"] = False
+
+		# Check if the writing "Started" time is not empty
+		# (This means the user has already started writing the chapter and is resuming it)
+		if self.writing["Writing"]["Times"]["Started"] != "":
+			# Change the "Ongoing writing session" state to True
+			self.states["Ongoing writing session"] = True
+
 		# Define a shortcut to the chapter titles dictionary for easier typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
 
@@ -408,6 +414,26 @@ class Write(Stories):
 
 			# Add the sanitized chapter title with number
 			self.chapter["Files"][small_language] += self.chapter["Titles"]["Sanitized"] + ".txt"
+
+			# ----- #
+
+			# If the chapter number is inside the story "Chapters" dictionary
+			if str(self.chapter["Number"]) in self.story["Chapters"]["Dictionary"]:
+				# Get the chapter dictionary
+				self.chapter["Dictionary"] = self.story["Chapters"]["Dictionary"][str(self.chapter["Number"])]
+
+			# If it is not
+			else:
+				# Copy the root default "Chapter" dictionary
+				self.chapter["Dictionary"] = deepcopy(self.stories["Chapter"])
+
+				# Update the chapter "Number" key
+				self.chapter["Dictionary"]["Number"] = int(self.chapter["Number"])
+
+				# Update the chapter "Titles" key
+				self.chapter["Dictionary"]["Titles"] = self.chapter["Titles"]["Normal"]
+
+			# ----- #
 
 			# If the writing mode is "Write"
 			# And the current language is the user language
@@ -479,8 +505,8 @@ class Write(Stories):
 
 		# Show the chapter titles
 		for small_language, chapter_title in self.chapter["Titles"]["With number"].items():
-			# If there is a text addon, add it
-			if "Text addon" in self.writing["Writing mode"]:
+			# If the "Text addon" dictionary is not empty, add the text addon in the current language
+			if self.writing["Writing mode"]["Text addon"] != {}:
 				chapter_title += " (" + self.writing["Writing mode"]["Text addon"][small_language] + ")"
 
 			# Show the chapter title in the current language
@@ -780,8 +806,12 @@ class Write(Stories):
 		# Add the query string to the URL
 		url += "&" + query_string
 
-		# Define the chapter link inside the "Chapter" dictionary
-		self.chapter["Link"] = url
+		# Define the language chapter link inside the chapter "Links" dictionary
+		self.chapter["Links"] = {
+			"Local website": {
+				self.language["Small"]: url
+			}
+		}
 
 		# ----- #
 
@@ -796,7 +826,7 @@ class Write(Stories):
 		print(text + "...")
 
 		# Open the story website link in the current chapter in the default browser
-		self.System.Open_Link(self.chapter["Link"], verbose = False)
+		self.System.Open_Link(self.chapter["Links"]["Local website"][self.language["Small"]], verbose = False)
 
 		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
@@ -1790,7 +1820,7 @@ class Write(Stories):
 		chapter["Titles"] = self.chapter["Titles"]["Normal"]
 
 		# Get the root chapter dictionary
-		root_chapter = self.story["Chapters"]["Dictionary"][str(chapter["Number"])]
+		root_chapter = self.chapter["Dictionary"]
 
 		# If the "Posting" dictionary of the root chapter dictionary is not the same as the local one
 		if chapter["Posting"] != root_chapter["Posting"]:
@@ -1924,6 +1954,9 @@ class Write(Stories):
 
 		# Update the root chapter dictionary inside the root "Chapters" dictionary
 		self.story["Chapters"]["Dictionary"][str(chapter["Number"])] = chapter
+
+		# Update the "Dictionary" inside the root chapter dictionary
+		self.chapter["Dictionary"] = chapter
 
 		# ---------- #
 

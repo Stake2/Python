@@ -45,14 +45,15 @@ class Update_Chapter_Covers(Stories):
 		print(self.language_texts["updating_the_chapter_covers_of_this_story"] + ":")
 		print("\t" + self.story["Titles"][self.language["Small"]])
 
-		# Define the local "posting" dictionary to use on the "Post" class, to only run the "Create chapter covers" posting step
+		# Define the local "posting" dictionary to use on the "Post" class
+		# To change the "Update all chapter covers" state to True
 		posting = {
-			"Steps": [
-				"Create chapter covers"
-			]
+			"States": {
+				"Update all chapter covers": True
+			}
 		}
 
-		# Run the "Post" class and give the local "posting" dictionary to it as a parameter
+		# Run the "Post" class and give it the local "posting" dictionary as a parameter
 		self.Post(posting)
 
 		# Show a five dash space separator

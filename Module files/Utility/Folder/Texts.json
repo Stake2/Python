@@ -45,11 +45,11 @@
     },
     "this_folder_already_exists": {
         "en": "This folder already exists",
-        "pt": "Esta pasta já existe"
+        "pt": "Essa pasta já existe"
     },
     "this_folder_does_not_exists": {
         "en": "This folder does not exists",
-        "pt": "Esta pasta não existe"
+        "pt": "Essa pasta não existe"
     },
     "type_or_paste_the_folder": {
         "en": "Type or paste the folder",

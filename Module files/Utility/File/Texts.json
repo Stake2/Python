@@ -62,13 +62,9 @@
 		"en": "Type or paste the file",
 		"pt": "Digite ou cole o arquivo"
 	},
-	"this_file_already_exists": {
-		"en": "This file already exists",
-		"pt": "Este arquivo já existe"
-	},
 	"this_file_does_not_exist": {
 		"en": "This file does not exist",
-		"pt": "Este arquivo não existe"
+		"pt": "Esse arquivo não existe"
 	},
 	"the_file_path_is_incorrect_(it_is_a_folder)": {
 		"en": "The file path is incorrect (it is a folder)",

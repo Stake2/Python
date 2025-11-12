@@ -1310,7 +1310,7 @@ class Stories(object):
 				synopsis_file = story["Folders"]["Information"]["Synopsis"]["root"]
 
 				# Add the full language and the text extension
-				file += full_language + ".txt"
+				synopsis_file += full_language + ".txt"
 
 				# Define and create the file
 				story["Folders"]["Information"]["Synopsis"][full_language] = synopsis_file
@@ -2187,7 +2187,7 @@ class Stories(object):
 					self.Show_Authors_List(authors)
 
 				# Ask the user to select an author from the list
-				option = self.Input.Select(**parameters)["Option"]["Normal"]
+				option = self.Input.Select(**parameters)["Option"]["Original"]
 
 				# If the option is not the "[Finish selection]" text
 				if option != finish_selection:
@@ -2390,7 +2390,7 @@ class Stories(object):
 		parameters["language_options"] = stories["Titles"][self.language["Small"]]
 
 		# Ask for the user to select a story
-		story = self.Input.Select(**parameters)["Option"]["Normal"]
+		story = self.Input.Select(**parameters)["Option"]["Original"]
 
 		# Get the story dictionary of the selected story and defined it inside the "Stories" class
 		self.story = self.stories["Dictionary"][story]
@@ -2417,37 +2417,75 @@ class Stories(object):
 				"Post",
 				"Manage"
 			],
-			"Descriptions": []
+			"Dictionary": {},
+			"Text keys": {
+				"Write": "write_the_chapters_of_the_story",
+				"Post": "post_the_chapters_of_the_story",
+				"Manage": "manage_the_story"
+			}
 		}
 
-		# Iterate through the classes in the list
-		for class_name in classes["List"]:
-			# Get the class description
-			description = self.Language.language_texts[class_name.lower() + ", title()"]
+		# Define a local class descriptions list
+		class_descriptions = []
 
-			# Add the class description to the "Descriptions" list
-			classes["Descriptions"].append(description)
+		# Iterate through the list of classes
+		for class_name in classes["List"]:
+			# Define the local class dictionary
+			dictionary = {
+				"Name": class_name,
+				"Description": "",
+				"Module": "",
+				"Object": ""
+			}
+
+			# Get the class text key
+			text_key = classes["Text keys"][class_name]
+
+			# Get the class description and add it to the class dictionary
+			dictionary["Description"] = self.language_texts[text_key]
+
+			# Add the description to the local class descriptions list
+			class_descriptions.append(dictionary["Description"])
+
+			# Get the class module
+			dictionary["Module"] = importlib.import_module("." + class_name, "Stories")
+
+			# Get the class object
+			dictionary["Object"] = getattr(dictionary["Module"], class_name)
+
+			# Add the dictionary to the root "Dictionary"
+			classes["Dictionary"][class_name] = dictionary
+
+		# ----- #
 
 		# Get the story title in the user language
 		language_story_title = self.story["Titles"][self.language["Small"]]
 
-		# Define the show text with the story title in the user language
+		# Define the show text as the "What to do with the story" plus the story title in the user language
 		show_text = self.language_texts["what_to_do_with_the_story"] + " " + '"' + language_story_title + '"?'
 
+		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
+		parameters = {
+			"options": classes["List"], # The list of classes
+			"language_options": class_descriptions, # The list of class descriptions
+			"show_text": show_text,
+			"select_text": self.Language.language_texts["select_one_thing_to_do"] # The "Select one thing to do" text in the user language
+		}
+
 		# Ask the user to select the sub-class to run
-		sub_class = self.Input.Select(classes["List"], language_options = classes["Descriptions"], show_text = show_text, select_text = self.Language.language_texts["select_one_thing_to_do"])["Option"]["Normal"]
+		class_name = self.Input.Select(**parameters)["Option"]["Original"]
 
-		# Import the module of the sub-class
-		module = importlib.import_module("." + sub_class, "Stories")
+		# Get the class dictionary
+		selected_class = classes["Dictionary"][class_name]
 
-		# Get the sub-class
-		sub_class = getattr(module, sub_class)
+		# Get the class object
+		class_object = selected_class["Object"]
 
-		# Add the story dictionary to the sub-class
-		setattr(sub_class, "story", self.story)
+		# Add the story dictionary to the class object
+		setattr(class_object, "story", self.story)
 
-		# Execute the sub-class
-		sub_class()
+		# Execute the class object
+		class_object()
 
 	def Select_Chapter(self, custom_parameters = {}, chapter_number = None):
 		# If the chapter number parameter is None
@@ -2494,7 +2532,10 @@ class Stories(object):
 				"Normal": {},
 				"With number": {}
 			},
-			"Files": {}
+			"Folders": {},
+			"Files": {},
+			"Links": {},
+			"Dictionary": {}
 		}
 
 		# Define the chapter number with leading zeroes
@@ -2554,6 +2595,13 @@ class Stories(object):
 
 			# Add the sanitized chapter title with number
 			chapter["Files"][small_language] += chapter["Titles"]["Sanitized"] + ".txt"
+
+			# ----- #
+
+			# If the chapter number is inside the story "Chapters" dictionary
+			if str(chapter["Number"]) in self.story["Chapters"]["Dictionary"]:
+				# Get the chapter dictionary
+				chapter["Dictionary"] = self.story["Chapters"]["Dictionary"][str(chapter["Number"])]
 
 		# Return the chapter dictionary
 		return chapter

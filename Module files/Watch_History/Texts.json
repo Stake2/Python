@@ -385,7 +385,7 @@
 	},
 	"skipping_this_title_as_it_was_already_translated": {
 		"en": "Skipping this title as it was already translated",
-		"pt": "Pulando este título porque já foi traduzido"
+		"pt": "Pulando esse título porque já foi traduzido"
 	},
 	"starting_to_watch_the_list_of_media": {
 		"en": "Starting to watch the list of media",
@@ -393,7 +393,7 @@
 	},
 	"please_translate_this_title_to_{}": {
 		"en": "Please, translate this title to {}",
-		"pt": "Por favor, traduza este título para {}"
+		"pt": "Por favor, traduza esse título para {}"
 	},
 	"current_media_list": {
 		"en": "Current media list",

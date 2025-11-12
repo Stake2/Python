@@ -453,6 +453,34 @@ class JSON():
 			if type(sub_value) == dict:
 				# Iterate through its sub-sub-keys and sub-sub-values
 				for sub_sub_key, sub_sub_value in sub_value.items():
+					# Get the type name of the sub-sub-value
+					type_name = type(sub_sub_value).__name__
+
+					# If it is a module
+					if type_name == "module":
+						# Get the root module
+						root_module = sub_sub_value.__name__.split(".")[0]
+
+						# Get the module
+						module = sub_sub_value.__name__.split(".")[1]
+
+						# Define the sub-sub-value as the root module plus the module
+						sub_sub_value = str(root_module) + "." + str(module)
+
+					# If it is a type (class)
+					if type_name == "type":
+						# Get the module of the class
+						module = str(sub_sub_value.__module__).split(".")[0]
+
+						# Get the name of the class
+						class_name = str(sub_sub_value.__module__).split(".")[-1]
+
+						# Define the sub-module as the class name
+						sub_module = class_name
+
+						# Define the sub-sub-value as the three variables above added together
+						sub_sub_value = str(module) + "." + str(sub_module) + "." + str(class_name) + "()"
+
 					# If the sub-sub-value is a dictionary
 					if type(sub_sub_value) == dict:
 						for sub_sub_sub_key, sub_sub_sub_value in sub_sub_value.items():

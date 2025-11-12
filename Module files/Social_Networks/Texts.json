@@ -36,11 +36,11 @@
 		"pt": "Selecione um tipo de link para abrir"
 	},
 	"opening_the_social_network_{}_on_its_{}_page_with_this_link": {
-		"pt": "Abrindo a Rede Social \"{}\" em sua página de {}, com este link",
+		"pt": "Abrindo a Rede Social \"{}\" em sua página de {}, com esse link",
 		"en": "Opening the Social Network \"{}\" on its {} page, with this link"
 	},
 	"opening_the_social_network_{}_with_this_link": {
-		"pt": "Abrindo a Rede Social \"{}\" com este link",
+		"pt": "Abrindo a Rede Social \"{}\" com esse link",
 		"en": "Opening the Social Network \"{}\" with this link"
 	},
 	"please_type_the_social_network_profile_information": {
@@ -59,7 +59,7 @@
 		"en": "Please type the information of your profile in this social network"
 	},
 	"you_added_this_social_network_to_the_social_networks_database": {
-		"pt": "Você adicionou esta rede social ao banco de dados de Redes Sociais",
+		"pt": "Você adicionou essa rede social ao banco de dados de Redes Sociais",
 		"en": "You added this social network to the Social Networks database"
 	},
 	"do_the_social_network_profiles_need_image_folders": {

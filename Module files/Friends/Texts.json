@@ -54,11 +54,11 @@
 		"en": "Please type the information of the friend"
 	},
 	"you_added_this_friend_to_the_friends_database": {
-		"pt": "Você adicionou este amigo ao banco de dados de Amigos",
+		"pt": "Você adicionou esse amigo ao banco de dados de Amigos",
 		"en": "You added this friend to the Friends database"
 	},
 	"this_friend_already_existed_on_the_friends_database": {
-		"pt": "Este amigo já existia no banco de dados de Amigos",
+		"pt": "Esse amigo já existia no banco de dados de Amigos",
 		"en": "This friend already existed on the Friends database"
 	},
 	"found_{}": {
@@ -86,7 +86,7 @@
 		"en": "Select a friend from the list of found friends"
 	},
 	"opening_this_{}_friend_file": {
-		"pt": "Abrindo este arquivo de {} de amigo",
+		"pt": "Abrindo esse arquivo de {} de amigo",
 		"en": "Opening this {} friend file"
 	},
 	"of_the_social_network": {

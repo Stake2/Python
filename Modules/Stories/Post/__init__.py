@@ -16,6 +16,11 @@ class Post(Stories):
 				"List": [],
 				"Dictionary": {}
 			},
+			"Posting modes": {
+				"List": [],
+				"Dictionary": {}
+			},
+			"Posting mode": {},
 			"Chapter": {}
 		}
 
@@ -23,9 +28,21 @@ class Post(Stories):
 		self.states = {
 			"Has chapters to post": False,
 			"Select a chapter": False,
-			"Ask to skip": True,
-			"Run as a module": False
+			"Update all chapter covers": False
 		}
+
+		# If the posting parameter dictionary is not empty
+		# And the "States" dictionary is inside the posting parameter dictionary
+		if (
+			posting != {} and
+			"States" in posting
+		):
+			# Iterate through the "States" dictionary
+			for key, state in posting["States"]:
+				# If the state key is present inside the root states dictionary
+				if key in self.states:
+					# Replace the root state with the local parameter state
+					self.states[key] = state
 
 		# ---------- #
 
@@ -40,25 +57,18 @@ class Post(Stories):
 			# Check if the story has chapters to be posted
 			self.Check_For_Chapters_To_Be_Posted()
 
-		# Define the steps of chapter posting
-		self.Define_Steps()
+		# If the story has chapters to post
+		if self.states["Has chapters to post"] == True:
+			# Define and run the chapter posting steps
+			self.Define_And_Run_Steps()
 
-		# Ask if the user wants to select a chapter
-		self.Select_Chapter()
-
-		# If the user did not select a chapter
-		if self.states["Select chapter"] == False:
-			# Define the chapter to be posted
-			self.Define_Chapter()
-
-		# Run the chapter posting steps
-		self.Run_Steps()
-
-		# Register the chapter task if the "Run as module" state is False
-		if self.states["Run as module"] == False:
-			self.Register_Task()
+		# Run the root class to update the files and dictionaries of the selected story
+		super().__init__()
 
 	def Import_Sub_Classes(self):
+		# Import the "importlib" module
+		import importlib
+
 		# Define the classes to be imported
 		classes = [
 			"Social_Networks.Open_Social_Network"
@@ -185,127 +195,195 @@ class Post(Stories):
 			# End the program execution
 			quit()
 
-	def Define_Steps(self):
-		# Define the default steps dictionary
-		self.dictionary["Steps"] = {
-			"Create the covers": {
-				"Text key": "cover_creation"
-			},
-			"Update websites": {
-				"Text key": "websites_update"
-			},
-			"Post on story websites": {
-				"Text key": "story_website_chapter_posting"
-			},
-			"Post on Social Networks": {
-				"Text key": "social_network_posting"
-			}
-		}
+	def Define_And_Run_Steps(self):
+		# Define the list of chapter posting steps
+		self.posting["Steps"]["List"] = [
+			"Select posting mode",
+			"Define chapter",
+			"Create chapter covers",
+			"Update story website",
+			"Post chapter on story websites",
+			"Post on the social networks",
+			"Register task"
+		]
 
-		# Iterate through the chapter posting steps
-		for key, step in self.dictionary["Steps"].items():
-			# Update the step dictionary with new keys
-			self.dictionary["Steps"][key] = {
+		# Iterate through the list of chapter posting steps
+		for key in self.posting["Steps"]["List"]:
+			# Define the method name for the step by converting the key into title case and replacing spaces with underlines
+			method_name = key.title().replace(" ", "_")
+
+			# Define the posting step dictionary with the key, method name, and method
+			self.posting["Steps"]["Dictionary"][key] = {
 				"Key": key,
-				"Text key": step["Text key"],
-				"Text": self.language_texts[step["Text key"]],
-				"Skip": False,
-				"Can skip": True,
-				"Method": getattr(self, key.title().replace(" ", "_"))
+				"Method name": method_name,
+				"Method": getattr(self, method_name)
 			}
 
-			# If the "Can skip" key is present inside the root step dictionary
-			if "Can skip" in step:
-				# Update the key inside the local step dictionary
-				self.dictionary["Steps"][key]["Can skip"] = step["Can skip"]
+		# Iterate through the posting step dictionaries inside the "Steps" dictionary
+		for step in self.posting["Steps"]["Dictionary"].values():
+			# If the "Testing" switch is True
+			# And the "Method" is a string
+			if (
+				self.switches["Testing"] == True and
+				type(step["Method"]) == str
+			):
+				# Show the method name
+				print()
+				print(step["Method name"] + ":")
 
-	def Run_Steps(self):
-		# Iterate through the step key and dictionaries inside the "Steps" dictionary
-		for key, step in self.dictionary["Steps"].items():
-			# If the "Can skip" switch is True
-			if step["Can skip"] == True:
-				# Ask if the user wants to skip the posting step
-				self.Skip(step)
+			# Run the method of the posting step
+			step["Method"]()
 
-			# If the "Skip" state is False
-			if self.dictionary["Steps"][key]["Skip"] == False:
-				# Define the "run" variable as True
-				run = True
+	def Select_Posting_Mode(self):
+		# Copy the "Writing modes" dictionary and call it "Posting modes"
+		self.posting["Posting modes"] = deepcopy(self.stories["Writing modes"])
 
-				# If the "Run as module" state is True
-				# And the key is not "Create the covers"
-				if (
-					self.states["Run as module"] == True and
-					key != "Create the covers"
-				):
-					# Define the "run" variable as False
-					# To only update the chapter covers ("Create the covers" method)
-					# And not run the other chapter posting steps
-					run = False
+		# Remove the "Translate" posting mode from the "Posting modes" list and dictionary
+		# Because translated chapters are never posted, only written and revised chapters
+		self.posting["Posting modes"]["List"].remove("Translate")
+		self.posting["Posting modes"]["Dictionary"].pop("Translate")
 
-				# If the "run" variable is True, run the method
-				if run == True:
-					step["Method"]()
-
-	def Skip(self, step, custom_text = None):
-		# If the custom text parameter is not None
-		if custom_text != None:
-			# Define the chapter posting step text as the custom text
-			step["Text"] = custom_text
-
-		# If the "Ask for skipping" state is True
-		# And the "Skip" state of the chapter posting step is False
-		if (
-			self.states["Ask for skipping"] == True and
-			step["Skip"] == False
-		):
-			# Define the input text with the step text
-			input_text = self.Language.language_texts["skip_the, feminine"] + " " + step["Text"]
-
-			# Ask if the user wants to skip this chapter posting step
-			step["Skip"] = self.Input.Yes_Or_No(input_text)
-
-		# If the "Skip" state is True
-		if step["Skip"] == True:
-			# Show the "You skipped the [step text]" text
-			print()
-			print(self.Language.language_texts["you_skipped_the, feminine"] + " " + step["Text"] + ".")
-
-			# Show a five dash space separator text
-			print()
-			print(self.separators["5"])
-
-		# Update the root step dictionary with the local one
-		self.dictionary["Steps"][step["Key"]] = step
-
-		# Return the step dictionary
-		return step
-
-	def Select_Chapter(self):
-		# Ask if the user wants to select a chapter
-		self.states["Select chapter"] = self.Input.Yes_Or_No(self.language_texts["select_chapter"])
-
-		# If the user wants to select a chapter
-		if self.states["Select chapter"] == True:
-			# Ask the user to select a chapter from the list
-			chapter_number = self.Input.Select(self.dictionary["Chapters"]["Titles"])["Option"]["Number"]
-
-			# Define the Chapter dictionary
-			self.Define_Chapter(chapter_number)
-
-	def Define_Chapter(self, chapter_number = None):
-		# Define the chapter "Titles" key
-		self.dictionary["Chapters"]["Titles"] = deepcopy(self.story["Information"]["Chapters"]["Titles"])
-
-		# Update the last posted chapter number with the number inside the story "Information" dictionary
-		self.dictionary["Chapters"]["Numbers"]["Last posted chapter"] = self.story["Information"]["Chapters"]["Numbers"]["Last posted chapter"]
+		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
+		parameters = {
+			"options": self.posting["Posting modes"]["List"], # The list of posting modes
+			"language_options": [], # The empty list of language posting modes
+			"show_text": self.language_texts["posting_modes"], # The "Posting modes" text in the user language
+			"select_text": self.language_texts["select_a_posting_mode"] # The "Select a posting mode" text in the user language
+		}
 
 		# ---------- #
 
-		# Define the defined chapter if there is not one in the root dictionary
-		if "Defined chapter" not in self.dictionary:
-			self.dictionary["Defined chapter"] = 1
+		# Define a shortcut to the total number of chapters for easier typing
+		total_chapters = self.story["Chapters"]["Numbers"]["Total"]
 
+		# Define a shortcut to the "language texts" dictionary of the "Language" class
+		language_texts = self.Language.language_texts
+
+		# Iterate through the posting modes and posting mode dictionaries
+		for posting_mode, posting_mode_dictionary in deepcopy(self.posting["Posting modes"]["Dictionary"]).items():
+			# Define a shortcut to the current posting mode dictionary
+			writing_dictionary = self.story["Writing"][posting_mode]
+
+			# Define a shortcut to the "Status" dictionary
+			status = writing_dictionary["Status"]
+
+			# Get the current chapter of the current posting mode
+			current_chapter = writing_dictionary["Current chapter"]
+
+			# ----- #
+
+			# If the chapter was finished and was not posted yet
+			if (
+				status["Finished"] == True and
+				status["Posted"] == False
+			):
+				# Define the posting mode template text initially as "Post the chapter {} that was {}"
+				text_template = self.language_texts["post_the_chapter_{}_that_was_{}"]
+
+				# Define the verb tense to use as the "Chapter" one
+				# [written/revised]
+				verb_tense = posting_mode_dictionary["Language texts"]["Chapter"]
+
+				# Define the list of items to use to format the text template
+				items = [
+					str(current_chapter), # The chapter number
+					verb_tense # The "Chapter" verb tense ([written/revised])
+				]
+
+				# Format the text template with the list of items to create the posting mode text
+				posting_mode_text = text_template.format(*items)
+
+				# Add the posting mode text to the list of language options
+				parameters["language_options"].append(posting_mode_text)
+
+				# Add the posting mode text to the posting mode dictionary
+				posting_mode_dictionary["Posting mode text"] = posting_mode_text
+
+				# ----- #
+
+				# Define the posting mode template text initially as "post_the_{}_chapter"
+				text_template = self.language_texts["post_the_{}_chapter"]
+
+				# Define the list of items to use to format the text template
+				items = [
+					verb_tense # The "Chapter" verb tense ([written/revised])
+				]
+
+				# Format the text template with the list of items to create the chapter text
+				posting_mode_text = text_template.format(*items)
+
+				# Add the chapter text to the posting mode dictionary
+				posting_mode_dictionary["Chapter text"] = posting_mode_text
+
+			# Define the old key as the posting mode
+			# [write/revise]
+			old_key = posting_mode
+
+			# Define the new key as the "Chapter" verb tense
+			# [Written/Revised]
+			new_key = posting_mode_dictionary["Texts"]["Chapter"]["en"].capitalize()
+
+			# Update the name to be the new key
+			posting_mode_dictionary["Name"] = new_key
+
+			# Update the names to be the "Chapter" verb tense dictionary
+			posting_mode_dictionary["Names"] = posting_mode_dictionary["Texts"]["Chapter"]
+
+			# Capitalize the names
+			for key, name in deepcopy(posting_mode_dictionary["Names"]).items():
+				posting_mode_dictionary["Names"][key] = name.capitalize()
+
+			# Remove the old key
+			self.posting["Posting modes"]["List"].remove(old_key)
+			self.posting["Posting modes"]["Dictionary"].pop(old_key)
+
+			# Add the new key
+			self.posting["Posting modes"]["List"].append(new_key)
+			self.posting["Posting modes"]["Dictionary"][new_key] = posting_mode_dictionary
+
+			# If the chapter was finished and is already posted
+			if (
+				status["Finished"] == True and
+				status["Posted"] == True
+			):
+				# Then remove the posting mode from the list
+				self.posting["Posting modes"]["List"].remove(new_key)
+
+		# ----- #
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
+		# Define a local "automatically selected" state
+		automatically_selected = False
+
+		# If there is more than one posting mode
+		if len(self.posting["Posting modes"]["List"]) > 1:
+			# Ask the user to select a posting mode
+			posting_mode = self.Input.Select(**parameters)["Option"]["Original"]
+
+		else:
+			# Define the posting mode as the only one
+			posting_mode = self.posting["Posting modes"]["List"][0]
+
+			# Change the "automatically selected" state to True
+			automatically_selected = True
+
+		# Get the posting mode dictionary for the selected posting mode
+		self.posting["Posting mode"] = self.posting["Posting modes"]["Dictionary"][posting_mode]
+
+		# If the posting mode was automatically selected
+		if automatically_selected == True:
+			# Show the "This posting mode was automatically selected because it was the only one" in the user language
+			print()
+			print(self.language_texts["this_posting_mode_was_automatically_selected_because_it_was_the_only_one"] + ":")
+			print("[" + self.posting["Posting mode"]["Chapter text"] + "]")
+
+		# Define the "posting mode" root variable as the posting mode name for faster typing
+		self.posting_mode = posting_mode
+
+	def Define_Chapter(self):
 		# Define the "Chapter" dictionary, with the defined chapter
 		self.dictionary["Chapter"] = {
 			"Number": self.dictionary["Defined chapter"],
@@ -428,7 +506,7 @@ class Post(Stories):
 			print(self.Language.language_texts["title, title()"] + ":")
 			print(chapter_title)
 
-	def Create_The_Covers(self):
+	def Create_Chapter_Covers(self):
 		# Iterate through the "Cover types" dictionary
 		for cover_type in self.stories["Cover types"]["Dictionary"].values():
 			# Define the skip text template
@@ -675,7 +753,7 @@ class Post(Stories):
 		# Delete the render file (the original source file)
 		self.File.Delete(source_file)
 
-	def Update_Websites(self):
+	def Update_Story_Website(self):
 		# Import the "Update websites" sub-class of the "PHP" module
 		from PHP.Update_Websites import Update_Websites as Update_Websites
 
@@ -704,7 +782,7 @@ class Post(Stories):
 		# Copy the chapter text
 		self.Text.Copy(chapter_text, verbose = False)
 
-	def Post_On_Story_Websites(self):
+	def Post_Chapter_On_Story_Websites(self):
 		# Show a five dash separator
 		print()
 		print(self.separators["5"])
@@ -779,7 +857,7 @@ class Post(Stories):
 				print()
 				print(self.separators["5"])
 
-	def Post_On_Social_Networks(self):
+	def Post_On_The_Social_Networks(self):
 		# Define the website chapter link
 		# With the "chapter" parameter to automatically open the chapter when the website loads
 		self.dictionary["Chapter"]["Links"]["Website"] = self.story["Information"]["Links"]["Website"]["Link"].replace(" ", "%20") + "?chapter={}#".format(str(self.dictionary["Chapter"]["Number"]))

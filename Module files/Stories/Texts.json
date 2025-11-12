@@ -47,29 +47,9 @@
 		"en": "Opening the translator website",
 		"pt": "Abrindo o site de tradução"
 	},
-	"chapter_selection": {
-		"en": "chapter selection",
-		"pt": "seleção de capítulo"
-	},
-	"cover_creation": {
-		"en": "cover creation",
-		"pt": "criação de capa"
-	},
-	"websites_update": {
-		"en": "websites update",
-		"pt": "atualização de sites"
-	},
 	"story_website": {
 		"en": "Story website",
 		"pt": "Site da história"
-	},
-	"story_website_chapter_posting": {
-		"en": "story website chapter posting on the story websites",
-		"pt": "postagem do capítulo nos sites de história"
-	},
-	"social_network_posting": {
-		"en": "Social Network posting",
-		"pt": "postagem nas Redes Sociais"
 	},
 	"opening_the_photoshop_file_of_chapter_covers, type: long": {
 		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
@@ -146,6 +126,18 @@
 	"story_synopsis_in": {
 		"en": "Story synopsis in",
 		"pt": "Sinopse da história em"
+	},
+	"write_the_chapters_of_the_story": {
+		"en": "Write the chapters of the story",
+		"pt": "Escrever os capítulos da história"
+	},
+	"post_the_chapters_of_the_story": {
+		"en": "Post the chapters of the story",
+		"pt": "Postar os capítulos da história"
+	},
+	"manage_the_story": {
+		"en": "Manage the story",
+		"pt": "Gerenciar a história"
 	},
 	"writing, type: item": {
 		"en": "Writing",
@@ -314,7 +306,7 @@
 	},
 	"this_chapter": {
 		"en": "this chapter",
-		"pt": "este capítulo"
+		"pt": "esse capítulo"
 	},
 	"do_you_want_to_update_the_chapter_titles": {
 		"en": "Do you want to update the chapter titles",
@@ -371,6 +363,26 @@
 	"select_{}_to_{}": {
 		"en": "Select {} to {}",
 		"pt": "Selecione {} para {}"
+	},
+	"posting_modes": {
+		"en": "Posting modes",
+		"pt": "Modos de postagem"
+	},
+	"select_a_posting_mode": {
+		"en": "Select a posting mode",
+		"pt": "Selecione um modo de postagem"
+	},
+	"post_the_chapter_{}_that_was_{}": {
+		"en": "Post the chapter {} that was {}",
+		"pt": "Postar o capítulo {} que foi {}"
+	},
+	"post_the_{}_chapter": {
+		"en": "Post the {} chapter",
+		"pt": "Postar o capítulo {}"
+	},
+	"this_posting_mode_was_automatically_selected_because_it_was_the_only_one": {
+		"en": "This posting mode was automatically selected because it was the only one",
+		"pt": "Esse modo de postagem foi selecionado automaticamente por ser o único disponível"
 	},
 	"select_one_{}_to_copy": {
 		"en": "Select one {} to copy",
@@ -437,10 +449,6 @@
 	"you_finished_copying_the_{}": {
 		"en": "You finished copying the {}",
 		"pt": "Você terminou de copiar os {}"
-	},
-	"manage_the_story": {
-		"en": "Manage the story",
-		"pt": "Gerenciar a história"
 	},
 	"what_to_do_with_the_story": {
 		"en": "What to do with the story",
@@ -515,7 +523,7 @@
 	"chapter_dates, type: dictionary": {
 		"Write": {
 			"en": "This chapter was originally written on {} at {}",
-			"pt": "Este capítulo foi originalmente escrito em {} às {}"
+			"pt": "Esse capítulo foi originalmente escrito em {} às {}"
 		},
 		"Revise": {
 			"en": "It was last revised on {} at {}",

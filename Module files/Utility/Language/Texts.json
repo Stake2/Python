@@ -340,19 +340,15 @@
 	},
 	"this_folder_already_exists": {
 		"en": "This folder already exists",
-		"pt": "Esta pasta já existe"
+		"pt": "Essa pasta já existe"
 	},
 	"this_folder_does_not_exists": {
 		"en": "This folder does not exists",
-		"pt": "Esta pasta não existe"
-	},
-	"this_file_already_exists": {
-		"en": "This file already exists",
-		"pt": "Este arquivo já existe"
+		"pt": "Essa pasta não existe"
 	},
 	"this_file_does_not_exists": {
 		"en": "This file does not exists",
-		"pt": "Este arquivo não existe"
+		"pt": "Esse arquivo não existe"
 	},
 	"select_{}_or_{}_(number_or_word)": {
 		"en": "Select Yes or No (number or word)",
@@ -379,10 +375,6 @@
 	"languages, title()": {
 		"pt": "Idiomas",
 		"en": "Languages"
-	},
-	"full_language, title()": {
-		"pt": "Idioma Completo",
-		"en": "Full Language"
 	},
 	"class, title()": {
 		"pt": "Classe",
@@ -458,26 +450,6 @@
 		"pt": "Idioma Personalizado",
 		"en": "Custom Language"
 	},
-	"this_folder_already_exists, title()": {
-		"pt": "Esta Pasta Já Existe",
-		"en": "This Folder Already Exists"
-	},
-	"this_folder_does_not_exists, title()": {
-		"pt": "Esta Pasta Não Existe",
-		"en": "This Folder Does Not Exists"
-	},
-	"this_file_already_exists, title()": {
-		"pt": "Este Arquivo Já Existe",
-		"en": "This File Already Exists"
-	},
-	"this_file_does_not_exists, title()": {
-		"pt": "Este Arquivo Não Existe",
-		"en": "This File Does Not Exists"
-	},
-	"select_{}_or_{}_(number_or_word), title()": {
-		"pt": "Selecione Sim Ou Não (Número Ou Palavra)",
-		"en": "Select Yes Or No (Number Or Word)"
-	},
 	"your_{}_is, title()": {
 		"pt": "Seu {} É",
 		"en": "Your {} Is"
@@ -489,10 +461,6 @@
 	"languages, title()": {
 		"pt": "Idiomas",
 		"en": "Languages"
-	},
-	"full_language, title()": {
-		"pt": "Idioma Completo",
-		"en": "Full Language"
 	},
 	"class, title()": {
 		"pt": "Classe",
@@ -551,22 +519,6 @@
 	"custom_language, title()": {
 		"pt": "Idioma Personalizado",
 		"en": "Custom Language"
-	},
-	"this_folder_already_exists, title()": {
-		"pt": "Esta Pasta Já Existe",
-		"en": "This Folder Already Exists"
-	},
-	"this_folder_does_not_exists, title()": {
-		"pt": "Esta Pasta Não Existe",
-		"en": "This Folder Does Not Exists"
-	},
-	"this_file_already_exists, title()": {
-		"pt": "Este Arquivo Já Existe",
-		"en": "This File Already Exists"
-	},
-	"this_file_does_not_exists, title()": {
-		"pt": "Este Arquivo Não Existe",
-		"en": "This File Does Not Exists"
 	},
 	"select_{}_or_{}_(number_or_word), title()": {
 		"pt": "Selecione Sim Ou Não (Número Ou Palavra)",
@@ -693,15 +645,15 @@
 		"en": "Firsts of the Year"
 	},
 	"this_year_i": {
-		"pt": "Este Ano Eu",
+		"pt": "Esse Ano Eu",
 		"en": "This Year I"
 	},
 	"this_year_i_post": {
-		"pt": "Este Ano Eu (post)",
+		"pt": "Esse Ano Eu (post)",
 		"en": "This Year I (post)"
 	},
 	"this_year_i_personal_version": {
-		"pt": "Este Ano Eu (Versão pessoal)",
+		"pt": "Esse Ano Eu (Versão pessoal)",
 		"en": "This Year I (Personal version)"
 	},
 	"next": {
@@ -1296,7 +1248,7 @@
 	},
 	"opening_this_file": {
 		"en": "Opening this file",
-		"pt": "Abrindo este arquivo"
+		"pt": "Abrindo esse arquivo"
 	},
 	"opening_link": {
 		"en": "Opening link",
@@ -1936,7 +1888,7 @@
 	},
 	"wrong_format_utilize_this_one": {
 		"en": "Wrong format, utilize this one",
-		"pt": "Formato incorreto, utilize este"
+		"pt": "Formato incorreto, utilize esse"
 	},
 	"text_difference": {
 		"en": "Text difference",
@@ -2144,13 +2096,13 @@
 		"en": "Quit",
 		"pt": "Sair"
 	},
-	"write, title()": {
-		"en": "Write",
-		"pt": "Escrever"
-	},
 	"writing, title()": {
 		"en": "Writing",
 		"pt": "Escrevendo"
+	},
+	"write, title()": {
+		"en": "Write",
+		"pt": "Escrever"
 	},
 	"revise, title()": {
 		"en": "Revise",
@@ -2163,14 +2115,6 @@
 	"google_translate": {
 		"en": "Google Translate",
 		"pt": "Google Tradutor"
-	},
-	"post, title()": {
-		"en": "Post",
-		"pt": "Postar"
-	},
-	"manage, title()": {
-		"en": "Manage",
-		"pt": "Gerenciar"
 	},
 	"space, title()": {
 		"en": "Space",
