@@ -7,6 +7,14 @@
 		"en": "Stories list",
 		"pt": "Lista de histórias"
 	},
+	"story_website": {
+		"en": "Story website",
+		"pt": "Site de história"
+	},
+	"story_website, type: own": {
+		"en": "Story website",
+		"pt": "Site da história"
+	},
 	"story_websites": {
 		"en": "Story websites",
 		"pt": "Sites de histórias"
@@ -22,6 +30,10 @@
 	"chapter_title": {
 		"en": "Chapter title",
 		"pt": "Título do capítulo"
+	},
+	"chapter_title_in": {
+		"en": "Chapter title in",
+		"pt": "Título do capítulo em"
 	},
 	"chapter_number": {
 		"en": "Chapter number",
@@ -47,77 +59,41 @@
 		"en": "Opening the translator website",
 		"pt": "Abrindo o site de tradução"
 	},
-	"story_website": {
-		"en": "Story website",
-		"pt": "Site da história"
-	},
 	"opening_the_photoshop_file_of_chapter_covers, type: long": {
-		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender the cover in [{}] mode with the chapter title and with the [{}] extension.",
-		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}], em [{}].\nRenderize a capa em modo [{}] com o título do capítulo e com a extensão [{}]."
+		"en": "Opening the Photoshop file of chapter covers in the [{}] mode in [{}].\nRender the cover in [{}] mode with the chapter title and the [{}] extension.",
+		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}] em [{}].\nRenderize a capa em modo [{}] com o título do capítulo e a extensão [{}]."
 	},
 	"opening_the_photoshop_file_of_chapter_covers, type: long, plural": {
-		"en": "Opening the Photoshop file of chapter covers in [{}] mode, in [{}].\nRender all of the [{}] covers in [{}] mode with the chapter titles and with the [{}] extension.",
-		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}], em [{}].\nRenderize todas as [{}] capas em modo [{}] com os títulos dos capítulos e com a extensão [{}]."
+		"en": "Opening the Photoshop file of chapter covers in the [{}] mode in [{}].\nRender all of the [{}] covers in [{}] mode with the chapter titles and the [{}] extension.",
+		"pt": "Abrindo o arquivo do Photoshop de capas de capítulos em modo [{}] em [{}].\nRenderize todas as [{}] capas em modo [{}] com os títulos dos capítulos e a extensão [{}]."
 	},
 	"press_enter_to_copy_the_chapter_title": {
 		"en": "Press Enter to copy the chapter title",
 		"pt": "Pressione Enter para copiar o título do capítulo"
 	},
+	"press_enter_when_you_finish_rendering_the_chapter_cover": {
+		"en": "Press Enter when you finish rendering the chapter cover",
+		"pt": "Pressione Enter quando você terminar de renderizar a capa do capítulo"
+	},
 	"press_enter_to_copy_the_chapter_text": {
 		"en": "Press Enter to copy the chapter text",
 		"pt": "Pressione Enter para copiar o texto do capítulo"
-	},
-	"press_enter_when_you_finish_posting_the_card_on": {
-		"en": "Press Enter when you finish posting the card on",
-		"pt": "Pressione Enter quando você terminar de postar o card no"
-	},
-	"press_enter_when_you_finish_posting_the_social_network_card_of": {
-		"en": "Press Enter when you finish posting the social network card of",
-		"pt": "Pressione Enter quando você terminar de postar o card de rede social do"
-	},
-	"posting_the_general_card_on": {
-		"en": "Posting the general card on",
-		"pt": "Postar o card geral no"
-	},
-	"posting_the_social_network_card_of": {
-		"en": "Posting the social network card of",
-		"pt": "Postar o card de rede social do"
-	},
-	"copying_the_cover_to_the_{}_folder": {
-		"en": "Copying the cover to the [{}] folder",
-		"pt": "Copiando a capa para a pasta de [{}]"
-	},
-	"press_enter_when_you_finish_rendering_the_cover": {
-		"en": "Press Enter when you finish rendering the cover",
-		"pt": "Pressione Enter quando você terminar de renderizar a capa"
-	},
-	"press_enter_when_you_finish_rendering_the_covers": {
-		"en": "Press Enter when you finish rendering the covers",
-		"pt": "Pressione Enter quando você terminar de renderizar as capas"
-	},
-	"mega_stories": {
-		"en": "Mega Stories",
-		"pt": "Histórias do Mega"
-	},
-	"website_story_covers": {
-		"en": "website story covers",
-		"pt": "capas de histórias do site"
 	},
 	"paste_the_link_of_the_chapter_on": {
 		"en": "Paste the link of the chapter on",
 		"pt": "Cole o link do capítulo no"
 	},
-	"one_more_chapter": {
-		"en": "one more chapter",
-		"pt": "mais um capítulo"
+	"copying_the_cover_to_the_{}_folder": {
+		"en": "Copying the cover to the {} folder",
+		"pt": "Copiando a capa para a pasta de {}"
 	},
-	"the_first_chapter": {
-		"en": "the first chapter",
-		"pt": "o primeiro capítulo"
+	"mega_stories": {
+		"en": "Mega stories",
+		"pt": "histórias do Mega"
 	},
-	"the_last_chapter": {
-		"en": "the last chapter",
-		"pt": "o último capítulo"
+	"website_story_covers": {
+		"en": "story website chapter covers",
+		"pt": "capas de capítulo do site da história"
 	},
 	"type_the_information_of_the_story": {
 		"en": "Type the information of the story",
@@ -384,6 +360,86 @@
 		"en": "This posting mode was automatically selected because it was the only one",
 		"pt": "Esse modo de postagem foi selecionado automaticamente por ser o único disponível"
 	},
+	"this_chapter_was_selected_to_be_posted": {
+		"en": "This chapter was selected to be posted",
+		"pt": "Esse capítulo foi selecionado para ser postado"
+	},
+	"it_was_{}_on_{}_at_{}": {
+		"en": "It was {} on {} at {}",
+		"pt": "Ele foi {} em {} às {}"
+	},
+	"i_{}_for_{}": {
+		"en": "I {} it for {}",
+		"pt": "{} ele por {}"
+	},
+	"read_it_here": {
+		"en": "Read it here",
+		"pt": "Leia ele aqui"
+	},
+	"press_enter_when_you_finish_posting_the_chapter_post_text_on": {
+		"en": "Press Enter when you finish posting the chapter post text on",
+		"pt": "Pressione Enter quando você terminar de postar o texto de postagem de capítulo no"
+	},
+	"press_enter_when_you_finish_posting_the_chapter_post_text_from_{}_on": {
+		"en": "Press Enter when you finish posting the chapter post text from {} on",
+		"pt": "Pressione Enter quando você terminar de postar o texto de postagem de capítulo do {} no"
+	},
+	"all_chapters_of_the_story_{}_have_been_posted_please_select_another_story": {
+		"en": "All chapters of the story \"{}\" have been posted, please select another story",
+		"pt": "Todos os capítulos da história \"{}\" foram postados, por favor selecione outra história"
+	},
+	"no_story_has_chapters_to_be_posted": {
+		"en": "No story has chapters to be posted",
+		"pt": "Nenhuma história tem capítulos para serem postados"
+	},
+	"you_finished_updating_the_chapter_covers_of_this_story": {
+		"en": "You finished updating the chapter covers of this story",
+		"pt": "Você terminou de atualizar as capas de capítulo desta história"
+	},
+	"i_posted_the_chapter_{}_recently_{}_of_my_story_{}_on_the_storys_website": {
+		"en": "I posted the chapter {} recently {} of my story \"{}\" on the story's website",
+		"pt": "Eu postei o capítulo {} recentemente {} da minha história \"{}\" no site da história"
+	},
+	"and_on_the_{}_story_websites": {
+		"en": "and on the {} story websites",
+		"pt": "e nos sites de histórias {}"
+	},
+	"i_started_{}_it_on_{}_at_{}_and_finished_on_{}_at_{}": {
+		"en": "I started {} it on {} at {} and finished on {} at {}",
+		"pt": "Eu comecei a {} ele em {} às {} e terminei em {} às {}"
+	},
+	"i_{}_for_{}_in_total": {
+		"en": "I {} for {} in total",
+		"pt": "Eu {} por {} no total"
+	},
+	"i_updated_the_website_of_my_story, type: long": {
+		"en": "I updated the website of my story \"{}\" in {} to {} its chapter {}, which was recently {}.\nI also posted the chapter in both languages on the story's page on {}, which are {} websites where you can post stories.\n\nThere are {} types of links to the chapter:\nOf the chapter on the story's website\n{}\n\nI posted the chapter links, along with its cover, on the following social networks:\n{}\n\nIn addition, I posted it on the status of these social networks:\n{}",
+		"pt": "Atualizei o site da minha história \"{}\" em {} para {} seu capítulo {}, que foi {} recentemente.\nTambém postei o capítulo em ambas as línguas na página da história no {}, que são {} sites onde você pode postar histórias.\n\nExistem {} tipos de links para o capítulo:\nDo capítulo no site da história\n{}\n\nPostei os links do capítulo, junto com a sua capa, nas seguintes redes sociais:\n{}\n\nAlém disso, postei nos status dessas redes sociais:\n{}"
+	},
+	"of_the_chapter_on": {
+		"en": "Of the chapter on",
+		"pt": "Do capítulo no"
+	},
+	"and_the_chapter_on": {
+		"en": "And the chapter on",
+		"pt": "E do capítulo no"
+	},
+	"and_on_my_server_on_{}": {
+		"en": "And on my server on {}",
+		"pt": "E no meu servidor do {}"
+	},
+	"chapter_cover": {
+		"en": "Chapter cover",
+		"pt": "Capa de capítulo"
+	},
+	"you_finished_posting_this_chapter": {
+		"en": "You finished posting this chapter",
+		"pt": "Você terminou de postar esse capítulo"
+	},
+	"updating_the_chapter_covers_of_this_story": {
+		"en": "Updating the chapter covers of this story",
+		"pt": "Atualizando as capas de capítulo desta história"
+	},
 	"select_one_{}_to_copy": {
 		"en": "Select one {} to copy",
 		"pt": "Selecione um {} para copiar"
@@ -457,26 +513,6 @@
 	"select_one_story_class_to_execute": {
 		"en": "Select one story class to execute",
 		"pt": "Selecione uma classe de história para executar"
-	},
-	"all_chapters_of_the_story_{}_have_been_posted_please_select_another_story": {
-		"en": "All chapters of the story \"{}\" have been posted, please select another story",
-		"pt": "Todos os capítulos da história \"{}\" foram postados, por favor selecione outra história"
-	},
-	"no_story_has_chapters_to_be_posted": {
-		"en": "No story has chapters to be posted",
-		"pt": "Nenhuma história tem capítulos para serem postados"
-	},
-	"updating_the_chapter_covers_of_this_story": {
-		"en": "Updating the chapter covers of this story",
-		"pt": "Atualizando as capas de capítulo desta história"
-	},
-	"you_finished_updating_the_chapter_covers_of_this_story": {
-		"en": "You finished updating the chapter covers of this story",
-		"pt": "Você terminou de atualizar as capas de capítulo desta história"
-	},
-	"i_published_the_chapter_number_{}_of_my_story_{}_on_the_story_website": {
-		"en": "I published the chapter number {} ({}) of my story \"{}\" on the story website",
-		"pt": "Eu publiquei o capítulo número {} ({}) da minha história \"{}\" no site da história"
 	},
 	"you_finished_copying_the_chapter_titles_of_this_story": {
 		"en": "You finished copying the chapter titles of this story",

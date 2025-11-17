@@ -32,12 +32,12 @@
 		"en": "Verbose"
 	},
 	"testing, type: explanation": {
-		"en": "Testing: Yes",
-		"pt": "Testando: Sim"
+		"en": "Testing mode: On",
+		"pt": "Modo de testes: Ativado"
 	},
 	"verbose, type: explanation": {
-		"en": "Verbose mode on.",
-		"pt": "Modo prolixo ativado."
+		"en": "Verbose mode: On",
+		"pt": "Modo prolixo: Ativado"
 	},
 	"user_information, type: explanation": {
 		"en": "User information:\nShown",

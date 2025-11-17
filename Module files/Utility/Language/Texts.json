@@ -164,6 +164,14 @@
 			"feminine": "editada"
 		}
 	},
+	"add": {
+		"en": "add",
+		"pt": "adicionar"
+	},
+	"update": {
+		"en": "update",
+		"pt": "adicionar"
+	},
 	"delete": {
 		"en": "delete",
 		"pt": "apagar"
@@ -1254,6 +1262,10 @@
 		"en": "Opening link",
 		"pt": "Link de abertura"
 	},
+	"link_format": {
+		"en": "Link format",
+		"pt": "Formato de link"
+	},
 	"defining, title()": {
 		"en": "Defining",
 		"pt": "Definindo"
@@ -2322,6 +2334,10 @@
 	"posted": {
 		"en": "posted",
 		"pt": "postado"
+	},
+	"post": {
+		"en": "post",
+		"pt": "postagem"
 	},
 	"copying_the_discord_status": {
 		"en": "Copying the Discord status",

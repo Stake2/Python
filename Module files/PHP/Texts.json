@@ -31,6 +31,10 @@
 		"pt": "Pressione Enter quando as páginas terminarem de carregar",
 		"en": "Press Enter when the pages finish loading"
 	},
+	"press_enter_when_you_finish_pushing_the_changes_to_the_github_repository": {
+		"pt": "Pressione enter quando você terminar de enviar as alterações para o repositório do GitHub",
+		"en": "Press Enter when you finish pushing the changes to the GitHub repository"
+	},
 	"update_more_websites": {
 		"pt": "Atualizar mais sites",
 		"en": "Update more websites"

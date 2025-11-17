@@ -23,7 +23,8 @@ class Update_Websites(PHP):
 			"First time updating": True,
 			"Create list of websites": False,
 			"Update more websites": False,
-			"One website": True
+			"One website": True,
+			"Run as a module": False
 		}
 
 		# Create the list of keys to use to update the root dictionary
@@ -38,6 +39,11 @@ class Update_Websites(PHP):
 			if key in dictionary:
 				# Update the key in the root dictionary
 				self.dictionary[key] = dictionary[key]
+
+		# If the parameter dictionary is not empty
+		if dictionary != {}:
+			# Change the "Run as a module" state as True
+			self.states["Run as a module"] = True
 
 		# Define the languages for the websites
 		self.Define_Languages()
@@ -55,8 +61,12 @@ class Update_Websites(PHP):
 		# Update the websites on the list of websites
 		self.Update_Websites()
 
-		# If the "Create list of websites" state is False
-		if self.states["Create list of websites"] == False:
+		# If the "Run as a module" is False and
+		# And the "Create list of websites" state is also False
+		if (
+			self.states["Run as a module"] == False and
+			self.states["Create list of websites"] == False
+		):
 			# Define the "Update more websites" state as True
 			self.states["Update more websites"] = True
 
@@ -77,7 +87,7 @@ class Update_Websites(PHP):
 					self.Update_Websites()
 
 		# Close the server as all selected or defined websites were updated
-		self.Manage_Server(close = True)
+		self.Manage_Server(close = True, separator_number = 0)
 
 		# Open Git to commit the changes to the repository of the websites
 		self.Open_Git()
@@ -151,11 +161,6 @@ class Update_Websites(PHP):
 					# Remove the website title from the list in the current language
 					self.websites["List"][language].remove(title)
 
-		# If the "Select website" state is True
-		if self.states["Select website"] == True:
-			# Use the "Select_Website" method to select the website
-			self.Select_Website()
-
 		# If the "Website" key is inside the parameter dictionary
 		if "Website" in dictionary:
 			# Create the "Websites" list using the website title as its first item
@@ -170,10 +175,15 @@ class Update_Websites(PHP):
 				# If the current website title is inside the list of English website titles
 				if website_title in self.websites["List"]["en"]:
 					# Add it to the "To update" list
-					self.dictionary["To update"].append(website_title)
+					self.dictionary["Websites"]["To update"].append(website_title)
 
-			# Update the "Select website" state to False
+			# Change the "Select website" state to False
 			self.states["Select website"] = False
+
+		# If the "Select website" state is True
+		if self.states["Select website"] == True:
+			# Use the "Select_Website" method to select the website
+			self.Select_Website()
 
 		# Iterate through the website titles inside the "To update" list
 		for website_title in self.dictionary["Websites"]["To update"]:
@@ -527,3 +537,10 @@ class Update_Websites(PHP):
 		# If the "Testing" switch is False, open the Git file
 		if self.switches["Testing"] == False:
 			self.System.Open(git_file, verbose = False)
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
+		# Ask for user input when the the user finish pushing the changes to Github
+		self.Input.Type(self.language_texts["press_enter_when_you_finish_pushing_the_changes_to_the_github_repository"])

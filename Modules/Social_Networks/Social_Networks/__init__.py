@@ -248,7 +248,7 @@ class Social_Networks(object):
 		# Read the "Social Networks.json" file if it is not empty
 		file = self.folders["Social Networks"]["Text"]["Social Networks"]
 
-		if self.File.Contents(file)["lines"] != []:
+		if self.File.Contents(file)["Lines"] != []:
 			self.social_networks = self.JSON.To_Python(file)
 
 		# ---------- #
@@ -347,6 +347,9 @@ class Social_Networks(object):
 
 		# Get the list of social networks
 		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social Networks"]["Text"]["Social Networks"])["List"]
+
+		# Sort the list of social networks
+		self.social_networks["List"] = sorted(self.social_networks["List"], key = str.lower)
 
 		# Write the Social Networks list to the "Social Networks list.txt" file
 		text_to_write = self.Text.From_List(self.social_networks["List"], next_line = True)

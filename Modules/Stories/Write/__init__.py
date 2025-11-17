@@ -410,10 +410,10 @@ class Write(Stories):
 			sanitized_chapter_title = self.Sanitize(chapter_title_with_number, restricted_characters = True)
 
 			# Add it to the "Sanitized" key
-			self.chapter["Titles"]["Sanitized"] = sanitized_chapter_title
+			self.chapter["Titles"]["Sanitized"][small_language] = sanitized_chapter_title
 
 			# Add the sanitized chapter title with number
-			self.chapter["Files"][small_language] += self.chapter["Titles"]["Sanitized"] + ".txt"
+			self.chapter["Files"][small_language] += self.chapter["Titles"]["Sanitized"][small_language] + ".txt"
 
 			# ----- #
 
@@ -700,7 +700,7 @@ class Write(Stories):
 
 					# If the key is not "Write"
 					if key != "Write":
-						# List the writings
+						# Get the list of writings
 						writings = list(writing_dictionary["Dictionary"].values())
 
 						# Get the last writing
@@ -903,9 +903,14 @@ class Write(Stories):
 
 		# Define the list of items
 		items = [
-			self.writing["Writing mode"]["Language texts"]["Action"].title(), # The action of the writing mode
-			self.writing["Chapter"]["Numbers"]["Names"][self.language["Small"]], # The number name of the chapter in the user language
-			'"' + self.story["Titles"][self.language["Small"]] + '"' # The story title in the user language, with quotes around it
+			# The action text of the writing mode in title case
+			self.writing["Writing mode"]["Language texts"]["Action"].title(),
+
+			# The number name of the chapter in the user language
+			self.writing["Chapter"]["Numbers"]["Names"][self.language["Small"]],
+
+			# The story title in the user language, with quotes around it
+			'"' + self.story["Titles"][self.language["Small"]] + '"'
 		]
 
 		# Format the template with the items, making the Discord status
@@ -1069,9 +1074,12 @@ class Write(Stories):
 		# Define the "postpone writing session" text template
 		template = self.language_texts["do_you_want_to_postpone_the_{}_session_to_continue_{}_later"]
 
-		# Define the list of items to format the text template
+		# Define the list of items to use to format the text template
 		items = [
+			# The item text of the writing mode
 			self.writing["Writing mode"]["Language texts"]["Item"],
+
+			# The action text of the writing mode
 			self.writing["Writing mode"]["Language texts"]["Action"]
 		]
 
@@ -1902,9 +1910,9 @@ class Write(Stories):
 
 				# If the local writings dictionary is not empty (this is not the first [revision/translation] of this chapter)
 				if writings_dictionary["List"] != []:
-					# Define the last titles and last languages as empty dictionaries
-					last_titles = {}
-					last_language = {}
+					# Define the last titles and last languages as the ones inside the root "Writing" dictionary
+					last_titles = chapter["Writing"]["Titles"]
+					last_language = chapter["Writing"]["Writing language"]
 
 					# Iterate through the writing dictionaries inside the writings dictionary
 					for writing in writings_dictionary["Dictionary"].values():
@@ -1922,6 +1930,9 @@ class Write(Stories):
 					if chapter["Titles"] != last_titles:
 						# Add the "Titles" dictionary to the local writing (singular) dictionary
 						writing_dictionary["Titles"] = chapter["Titles"]
+
+						# Add the "Previous titles" (last titles) dictionary to the local writing (singular) dictionary
+						writing_dictionary["Previous titles"] = last_titles
 
 					# If the root chapter "Writing language" dictionary is not the same as the last language dictionary found
 					if self.chapter["Writing language"] != last_language:
@@ -2156,22 +2167,6 @@ class Write(Stories):
 
 		# If the "purge" parameter is True
 		if purge == True:
-			# Reset the keys of the "Times" dictionary
-			self.writing["Writing"]["Times"] = {
-				"Started": "",
-				"Finished": "",
-				"Finished (UTC)": ""
-			}
-
-			# Reset the keys of the "Durations" dictionary
-			self.writing["Writing"]["Durations"] = {
-				"List": [],
-				"Dictionary": {}
-			}
-
-			# Reset the "Total duration" dictionary
-			self.writing["Writing"]["Total duration"] = {}
-
 			# Define a shortcut to the "Status" dictionary
 			status = self.writing["Writing"]["Status"]
 
@@ -2249,10 +2244,10 @@ class Write(Stories):
 			# Define the index of the writing mode text
 			"",
 
-			# The chapter number name, examples: [one/two/three/thirty three]
+			# The chapter number name in the local language, examples: [one/two/three/thirty three]
 			self.chapter["Numbers"]["Names"][small_language],
 
-			# The story title, example: Story title
+			# The story title in the local language, example: Story title
 			self.story["Titles"][small_language]
 		]
 
@@ -2375,10 +2370,10 @@ class Write(Stories):
 			# ---------- #
 
 			# Create the task description, initially as the task title in the current language with a dot
-			description = self.task_dictionary["Task"]["Titles"][small_language] + "."
+			task_description = self.task_dictionary["Task"]["Titles"][small_language] + "."
 
-			# Add two line breaks
-			description += "\n\n"
+			# Add two line breaks to the task description
+			task_description += "\n\n"
 
 			# ---------- #
 
@@ -2413,43 +2408,43 @@ class Write(Stories):
 				self.writing_mode in ["Write", "Revise"] or
 				self.writing_mode == "Translate"
 			):
-				# Add the "The chapter with the titles" text
-				description += self.texts["the_chapter_with_the_titles"][small_language] + ":" + "\n"
+				# Add the "The chapter with the titles" text to the task description
+				task_description += self.texts["the_chapter_with_the_titles"][small_language] + ":" + "\n"
 
 				# List the chapter titles
 				chapter_titles = list(self.chapter["Titles"]["Normal"].values())
 
 				# Iterate through the list of chapter titles
 				for chapter_title in chapter_titles:
-					# Add the chapter title to the description text
-					description += chapter_title
+					# Add the chapter title to the task description text
+					task_description += chapter_title
 
 					# If the chapter title is not the last one, add a line break
 					if chapter_title != chapter_titles[-1]:
-						description += "\n"
+						task_description += "\n"
 
-				# Add two line breaks
-				description += "\n\n"
+				# Add two line breaks to the task description
+				task_description += "\n\n"
 
 				# If the "Update chapter titles" state is True
 				if self.states["Update chapter titles"] == True:
-					# Add the "Previous chapter titles" text
-					description += self.texts["previous_chapter_titles"][small_language] + ":" + "\n"
+					# Add the "Previous chapter titles" text to the task description
+					task_description += self.texts["previous_chapter_titles"][small_language] + ":" + "\n"
 
 					# List the previous chapter titles
 					previous_chapter_titles = list(self.chapter["Previous titles"]["Normal"].values())
 
 					# Iterate through the list of previous chapter titles
 					for previous_chapter_title in previous_chapter_titles:
-						# Add the previous chapter title to the description text
-						description += previous_chapter_title
+						# Add the previous chapter title to the task description text
+						task_description += previous_chapter_title
 
 						# If the previous chapter title is not the last one, add a line break
 						if previous_chapter_title != previous_chapter_titles[-1]:
-							description += "\n"
+							task_description += "\n"
 
-					# Add two line breaks
-					description += "\n\n"
+					# Add two line breaks to the task description
+					task_description += "\n\n"
 
 			# ---------- #
 
@@ -2482,11 +2477,11 @@ class Write(Stories):
 			# Example: "I started at 20:00 and stopped at 23:00"
 			text = template.format(*items)
 
-			# Add the formatted template to the description text
-			description += text
+			# Add the formatted template to the task description text
+			task_description += text
 
-			# Add a dot and a line break
-			description += "." + "\n"
+			# Add a dot and a line break to the task description
+			task_description += "." + "\n"
 
 			# ----- #
 
@@ -2526,21 +2521,21 @@ class Write(Stories):
 			# Example: "I [wrote/revised/translated] for [writing time], including pauses"
 			text = template.format(*items)
 
-			# Add the formatted template to the description text
-			description += template.format(*items)
+			# Add the formatted template to the task description text
+			task_description += template.format(*items)
 
-			# Add the end period
-			description += "."
+			# Add the end period to the task description
+			task_description += "."
 
 			# ---------- #
 
 			# If the "Ongoing writing session" state is True (the user resumed writing the chapter)
 			if self.states["Ongoing writing session"] == True:
-				# Add a line break
-				description += "\n"
+				# Add a line break to the task description
+				task_description += "\n"
 
-				# Add the "Totalling " text in the current language
-				description += self.Language.texts["totaling, title()"][small_language] + " "
+				# Add the "Totalling " text in the current language to the task description
+				task_description += self.Language.texts["totaling, title()"][small_language] + " "
 
 				# Define a shortcut to the total writing duration dictionary
 				total_duration = self.writing["Writing"]["Total duration"]
@@ -2549,8 +2544,8 @@ class Write(Stories):
 				# Example: "2 hours, 32 minutes, 33 seconds (02:32:33)"
 				total_duration_text = total_duration["Text (with time units)"][small_language]
 
-				# Add the total duration text to the description text
-				description += total_duration_text
+				# Add the total duration text to the task description text
+				task_description += total_duration_text
 
 				# Get the list of durations
 				durations = list(self.writing["Writing"]["Durations"]["Dictionary"].values())
@@ -2560,19 +2555,19 @@ class Write(Stories):
 
 				# If the list has at least two durations
 				if len(durations) >= 2:
-					# Add the "along with the previous duration" text in the current language
-					description += " " + self.Language.texts["along_with_the_previous_duration"][small_language] + " "
+					# Add the "along with the previous duration" text in the current language to the task description
+					task_description += " " + self.Language.texts["along_with_the_previous_duration"][small_language] + " "
 
-					# Add its text to the description text
-					description += "(" + penultimate_duration["Text"][small_language] + ")"
+					# Add its text to the task description text
+					task_description += "(" + penultimate_duration["Text"][small_language] + ")"
 
-				# Add the end period
-				description += "."
+				# Add the end period to the task description
+				task_description += "."
 
 			# ---------- #
 
 			# Add the task description to the "Task" dictionary
-			self.task_dictionary["Task"]["Descriptions"][small_language] = description
+			self.task_dictionary["Task"]["Descriptions"][small_language] = task_description
 
-		# Register the task with the root method
+		# Register the task with the root "Register_Task" method
 		Stories.Register_Task(self, self.task_dictionary, register_task = register_task)

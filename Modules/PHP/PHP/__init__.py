@@ -194,8 +194,10 @@ class PHP(object):
 				# Define the separator number as one
 				separator_number = 1
 
-		# Get the separator with the separator number
-		separator = self.separators[str(separator_number)]
+		# If the separator number is not zero and not None
+		if separator_number not in [0, None]:
+			# Get the separator with the separator number
+			separator = self.separators[str(separator_number)]
 
 		# If the "open" parameter is True
 		if open == True:
@@ -215,9 +217,13 @@ class PHP(object):
 
 		# If the "show text" parameter is True
 		if show_text == True:
-			# Show the separator and the text
-			print()
-			print(separator)
+			# If the separator number is not zero
+			if separator_number != 0:
+				# Show the separator
+				print()
+				print(separator)
+
+			# Show the text
 			print()
 			print(text + "...")
 

@@ -129,7 +129,16 @@ class Open_Social_Network(Social_Networks):
 			self.Show_Information()
 
 			# Open the Social Network link
-			self.Open_Social_Network()
+			self.System.Open(self.social_network["Link to open"], verbose = False)
+
+			# If is are more than one social network to open
+			# And the current social network is not the last one
+			if (
+				self.dictionary["Social Networks"]["Numbers"]["Total"] > 1 and
+				self.social_network["Name"] != self.dictionary["Social Networks"]["List"][-1]
+			):
+				# Ask for the user input before opening the next social network
+				self.Input.Type(self.language_texts["press_enter_to_open_the_next_social_network"])
 
 			# Add to the "Iteration" number
 			self.dictionary["Social Networks"]["Numbers"]["Iteration"] += 1
@@ -138,12 +147,12 @@ class Open_Social_Network(Social_Networks):
 		if self.dictionary["Spaces"]["First"] == True:
 			print()
 
-		# If there is only one Social Network to open
-		# Or there are more than one Social Network to open
-		# And the current Social Network is the first one
+		# If there is only one social network to open
+		# Or there is more than one social network to open
+		# And the current social network is the first one
 		if (
 			self.dictionary["Social Networks"]["Numbers"]["Total"] == 1 or
-			self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2 and
+			self.dictionary["Social Networks"]["Numbers"]["Total"] > 2 and
 			self.social_network["Name"] == self.dictionary["Social Networks"]["List"][0]
 		):
 			# If the "First separator" state is True
@@ -152,8 +161,8 @@ class Open_Social_Network(Social_Networks):
 				print(self.separators["5"])
 				print()
 
-		# If there are more than one Social Network to open
-		if self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2:
+		# If there is more than one social network to open
+		if self.dictionary["Social Networks"]["Numbers"]["Total"] > 1:
 			# Get the current and total numbers
 			# And store them in short variables for easier typing
 			current_number = self.dictionary["Social Networks"]["Numbers"]["Iteration"]
@@ -193,6 +202,7 @@ class Open_Social_Network(Social_Networks):
 		# Format the text template with the items
 		text = template.format(*items)
 
+		# Show the text and the link to open
 		print(text + ":")
 		print("\t" + self.social_network["Link to open"])
 
@@ -201,16 +211,12 @@ class Open_Social_Network(Social_Networks):
 			# To-Do: Show information about the link, splitting the template link
 			variable = True
 
-		# If there are more than one Social Network to open
+		# If there is more than one Social Network to open
 		# And the current Social Network is the last one
 		if (
-			self.dictionary["Social Networks"]["Numbers"]["Total"] >= 2 and
+			self.dictionary["Social Networks"]["Numbers"]["Total"] > 1 and
 			self.social_network["Name"] == self.dictionary["Social Networks"]["List"][-1]
 		):
 			# Show a separator
 			print()
 			print(self.separators["5"])
-
-	def Open_Social_Network(self):
-		# Open the Social Network link
-		self.System.Open(self.social_network["Link to open"], verbose = False)

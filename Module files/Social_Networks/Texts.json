@@ -129,5 +129,9 @@
 	"conversations_link, type: plural": {
 		"pt": "Links de conversas",
 		"en": "Conversations links"
+	},
+	"press_enter_to_open_the_next_social_network": {
+		"pt": "Pressione Enter para abrir a próxima rede social",
+		"en": "Press Enter to open the next social network"
 	}
 }

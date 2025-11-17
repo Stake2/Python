@@ -641,6 +641,7 @@ class Stories(object):
 			keys_to_remove = [
 				"Root",
 				"Story",
+				"Chapter",
 				"Posts"
 			]
 
@@ -1205,21 +1206,21 @@ class Stories(object):
 
 			# Iterate through the list of cover types
 			for cover_type in self.stories["Cover types"]["List"]:
-				# Iterate through the language dictionaries
-				for language in self.languages["Dictionary"].values():
+				# Iterate through the language keys and dictionaries
+				for small_language, language in self.languages["Dictionary"].items():
 					# Define a shortcut to the full language
 					full_language = language["Full"]
 
 					# Define the full language cover folder
-					story["Folders"]["Covers"][cover_type][full_language] = {
+					story["Folders"]["Covers"][cover_type][small_language] = {
 						"root": story["Folders"]["Covers"][cover_type]["root"] + full_language + "/"
 					}
 
 					# Create the folder
-					self.Folder.Create(story["Folders"]["Covers"][cover_type][full_language]["root"])
+					self.Folder.Create(story["Folders"]["Covers"][cover_type][small_language]["root"])
 
 					# Define the Photoshop cover file
-					story["Folders"]["Covers"][cover_type][full_language]["Photoshop"] = story["Folders"]["Covers"][cover_type][full_language]["root"] + "PSD.psd"
+					story["Folders"]["Covers"][cover_type][small_language]["Photoshop"] = story["Folders"]["Covers"][cover_type][small_language]["root"] + "PSD.psd"
 
 			# ---------- #
 
@@ -1313,7 +1314,7 @@ class Stories(object):
 				synopsis_file += full_language + ".txt"
 
 				# Define and create the file
-				story["Folders"]["Information"]["Synopsis"][full_language] = synopsis_file
+				story["Folders"]["Information"]["Synopsis"][small_language] = synopsis_file
 				self.File.Create(synopsis_file)
 
 			# Define the empty "Synopsis" dictionary
@@ -1325,7 +1326,7 @@ class Stories(object):
 				full_language = language["Full"]
 
 				# Define a shortcut to the synopsis file in the current language
-				file = story["Folders"]["Information"]["Synopsis"][full_language]
+				file = story["Folders"]["Information"]["Synopsis"][small_language]
 
 				# Add the synopsis in the current language to the "Synopsis" dictionary
 				story["Information"]["Synopsis"][small_language] = self.File.Contents(file)["String"]
@@ -1453,7 +1454,7 @@ class Stories(object):
 			# ----- #
 
 			# Define an initial story links text with the "Story website:" text and a line break
-			story_links = self.language_texts["story_website"] + ":" + "\n"
+			story_links = self.language_texts["story_website, type: own"] + ":" + "\n"
 
 			# Replace spaces with "%20" inside the root website link, to make the link clickable
 			link = story["Information"]["Website"]["Link"].replace(" ", "%20")
@@ -2250,8 +2251,8 @@ class Stories(object):
 				if name not in self.folder_names:
 					self.folder_names.append(name)
 
-			# "11 - 20" file range and so on
-			# (The number followed by a one, a dash with spaces around it, and the number followed by a zero
+			# "11 - 20", "21 - 30" file range and so on
+			# (The number followed by a one, a dash with spaces around it, and the number followed by a zero)
 			name = number + "1" + " - " + str(int(number) + 1) + "0"
 
 			# If the folder name is not inside the list, add it
@@ -2532,9 +2533,10 @@ class Stories(object):
 				"Normal": {},
 				"With number": {}
 			},
-			"Folders": {},
 			"Files": {},
-			"Links": {},
+			"Links": {
+				"Website": {}
+			},
 			"Dictionary": {}
 		}
 
@@ -2591,10 +2593,63 @@ class Stories(object):
 			sanitized_chapter_title = self.Sanitize(chapter_title_with_number, restricted_characters = True)
 
 			# Add it to the "Sanitized" key
-			chapter["Titles"]["Sanitized"] = sanitized_chapter_title
+			chapter["Titles"]["Sanitized"][small_language] = sanitized_chapter_title
 
 			# Add the sanitized chapter title with number
-			chapter["Files"][small_language] += chapter["Titles"]["Sanitized"] + ".txt"
+			chapter["Files"][small_language] += chapter["Titles"]["Sanitized"][small_language] + ".txt"
+
+			# ----- #
+
+			# Create a local chapter website link as the language story website link
+			website_link = self.story["Information"]["Links"]["Website"]["Links"][small_language]
+
+			# Add the chapter URL parameter with the chapter number
+			website_link += "?chapter=" + str(chapter["Number"])
+
+			# Add the link to the chapter website "Links" dictionary
+			chapter["Links"]["Website"][small_language] = website_link
+
+			# ----- #
+
+			# Iterate through the dictionary of story websites
+			for story_website_name, story_website in self.stories["Story websites"]["Dictionary"].items():
+				# Define a shortcut to the story website dictionary inside the story "Information" dictionary
+				story_website_dictionary = self.story["Information"]["Links"][story_website_name]
+
+				# If the "IDs" dictionary is not an empty dictionary
+				if story_website_dictionary["IDs"] != {}:
+					# If the story website dictionary is not present inside the chapter dictionary, add it
+					if story_website_name not in chapter["Links"]:
+						chapter["Links"][story_website_name] = {}
+
+					# Define a shortcut to the link of the story on the story website in the current language
+					story_website_link = story_website_dictionary["Links"][small_language]
+
+					# If the "Chapter" link is inside the story website "Links" dictionary
+					if "Chapter" in story_website["Links"]:
+						# Define the story website link as it
+						story_website_link = story_website["Links"]["Chapter"]
+
+						# Define a dictionary of format strings to search for and their values
+						format_strings = {
+							# Get the story title in the current language, make it lowercase, and replace spaces with hyphens
+							"Story title": self.story["Titles"][small_language].lower().replace(" ", "-"),
+
+							# The story ID in the story website
+							"Story ID": story_website_dictionary["IDs"][small_language]
+						}
+
+						# Iterate through them
+						for format_string, value in format_strings.items():
+							# Add curly brackets around the format string
+							format_string = "{" + format_string + "}"
+
+							# If it is found, replace with the actual value
+							if format_string in story_website_link:
+								story_website_link = story_website_link.replace(format_string, value)
+
+					# Add it to the story website dictionary inside the chapter dictionary
+					chapter["Links"][story_website_name][small_language] = story_website_link
 
 			# ----- #
 
