@@ -568,39 +568,75 @@ class JSON():
 		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = False)
 
 	def Add_Key_After_Key(self, dictionary, key_value, after_key = None, number_to_add = 1, add_to_end = False, remove_after_key = False):
+		# List the keys and values of the parameter dictionary
 		keys = list(dictionary.keys())
 		values = list(dictionary.values())
 
+		# If the key-value is a string
+		if type(key_value) == str:
+			# Define the key as the key-value and the value as the dictionary value in the "after key" key
+			key_value = {
+				"key": key_value,
+				"value": dictionary[after_key]
+			}
+
+		# If the "key" key is not inside the key-value dictionary
 		if "key" not in key_value:
+			# Define the key as the first key in the key-value dictionary
 			key_value["key"] = list(key_value.keys())[0]
+
+			# Define the value as the first value in the key-value dictionary
 			key_value["value"] = list(key_value.values())[0]
 
-		i = 0
+		# Define a local key number
+		key_number = 0
+
+		# Iterate through the list of keys
 		for key in keys.copy():
+			# If the key-value key is not inside the list of keys
+			# And the current key is the after key
+			# Or the "add to end" parameter is True
 			if (
 				key_value["key"] not in keys and
 				key == after_key or
 				add_to_end == True
 			):
+				# If the "add to end" parameter is True
 				if add_to_end == True:
+					# Define the local number as the number of keys
 					number = len(keys)
 
+				# Else, define it as the key number plus the number to add
 				else:
-					number = i + number_to_add
+					number = key_number + number_to_add
 
+				# Add the key-value key to the list of keys in the number index
 				keys.insert(number, key_value["key"])
+
+				# Add the key-value value to the list of values in the number index
 				values.insert(number, key_value["value"])
 
-			if key_value["key"] in keys and key == key_value["key"]:
-				values[i] = key_value["value"]
+			# If the key-value key is inside the list of keys
+			# And the current key is the key-value key
+			if (
+				key_value["key"] in keys and
+				key == key_value["key"]
+			):
+				# Add the key-value value to the list of values in the key number index
+				values[key_number] = key_value["value"]
 
-			i += 1
+			# Add one to the key number
+			key_number += 1
 
+		# Re-create the local dictionary with the lists of keys and values
 		dictionary = dict(zip(keys, values))
 
+		# If the "remove after key" parameter is True
 		if remove_after_key == True:
+			# Remove the after key
 			dictionary.pop(after_key)
 
+		# Return the dictionary with the keys and values changed
 		return dictionary
 
 	def List_Has_Only_Numbers(self, items):

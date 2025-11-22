@@ -4,7 +4,13 @@ from Stories.Stories import Stories as Stories
 
 class Update_Chapter_Covers(Stories):
 	def __init__(self):
+		# Run the root class to import its methods and variables		
 		super().__init__()
+
+		# If there is no selected story in the current class
+		if hasattr(self, "story") == False:
+			# Select the story
+			self.story = self.Select_Story()
 
 		# Import some sub-classes
 		self.Import_Sub_Classes()

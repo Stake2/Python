@@ -144,6 +144,75 @@ class Text():
 
 		return text
 
+	def Remove_Accents(self, text):
+		# Define a dictionary of letters and their accented counterparts
+		accents = {
+			"a": {
+				"Lower": ["á", "à", "â", "ä", "ã", "å"],
+				"Upper": ["Á", "À", "Â", "Ä", "Ã", "Å"]
+			},
+			"e": {
+				"Lower": ["é", "è", "ê", "ë"],
+				"Upper": ["É", "È", "Ê", "Ë"]
+			},
+			"i": {
+				"Lower": ["í", "ì", "î", "ï"],
+				"Upper": ["Í", "Ì", "Î", "Ï"]
+			},
+			"o": {
+				"Lower": ["ó", "ò", "ô", "ö", "õ", "ø"],
+				"Upper": ["Ó", "Ò", "Ô", "Ö", "Õ", "Ø"]
+			},
+			"u": {
+				"Lower": ["ú", "ù", "û", "ü"],
+				"Upper": ["Ú", "Ù", "Û", "Ü"]
+			}
+		}
+
+		# List the letters in the text
+		letters = list(text)
+
+		# Iterate through the list of letters
+		for letter_number, letter in enumerate(letters):
+			# Iterate through the normal letters and lists inside the accents dictionary
+			for normal_letter, lists in accents.items():
+				# If the letter in the text is inside the list of lowercase accented letters
+				if letter in lists["Lower"]:
+					# Change the letter to its non-accented lowercase version
+					letters[letter_number] = normal_letter
+
+					# Exit the loop after finding a match
+					break
+
+				# If the letter in the text is inside the list of uppercase accented letters
+				if letter in lists["Upper"]:
+					# Change the letter to its non-accented uppercase version
+					letters[letter_number] = normal_letter.upper()
+
+					# Exit the loop after finding a match
+					break
+
+		# Define the text as the list of letters
+		text = "".join(letters)
+
+		# Return the version of the text without accents
+		return text
+
+	def Remove_Special_Characters(self, text):
+		# Define a list of special characters
+		special_characters = [
+			" ", ".", ",", ";", ":", "!", "?", "'", '"', "“", "”", 
+			"(", ")", "[", "]", "{", "}", "/", "&", "$", "`", 
+			"´", "~", "#"
+		]
+
+		 # Remove each special character from the text
+		for character in special_characters:
+			text = text.replace(character, "")
+
+		# Return the text without special characters
+		return text
+
 	def Copy(self, text, verbose = True):
 		# If the text is a list, convert it to a text
 		if type(text) == list:

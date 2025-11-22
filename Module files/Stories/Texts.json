@@ -597,5 +597,9 @@
 	"chapters_of_my_story_{}_{}": {
 		"en": "Chapters of my story \"{}\" {}",
 		"pt": "Capítulos da minha história \"{}\" {}"
+	},
+	"story_number": {
+		"en": "Story number",
+		"pt": "Número da história"
 	}
 }

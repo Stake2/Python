@@ -1757,7 +1757,7 @@ class Post(Stories):
 
 		# Example:
 		# Values with [] are replaced using the values inside the list of items
-		"""I have updated the website for my story "[Story Title]" in [Portuguese and English] to [add/update] its chapter [one], which was recently [written/revised and translated].
+		"""I updated the website of my story "[Story Title]" in [Portuguese and English] to [add/update] its chapter [one], which was recently [written/revised and translated].
 		I also posted the chapter in both languages on the story's page on [Wattpad and Spirit Fanfics], which are [two] websites where you can post stories.
 
 		There are [three] types of links to the chapter:

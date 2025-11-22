@@ -113,9 +113,9 @@ class Write_On_Diary_Slim_Module(Diary_Slim):
 
 			self.dictionary["Texts"]["To show"] = self.dictionary["Texts"]["To show"].replace(replace, with_)
 
-			# Add the information about the "testing" switch being True
+			# Add the information about the "Testing" switch being True
 			replace = ":"
-			with_ = " (" + self.language_texts["testing_is_true"] + "):"
+			with_ = " (" + self.language_texts["the_testing_mode_is_on"] + "):"
 
 			self.dictionary["Texts"]["To show"] = self.dictionary["Texts"]["To show"].replace(replace, with_)
 

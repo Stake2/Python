@@ -159,6 +159,10 @@
 		"en": "watching",
 		"pt": "assistir"
 	},
+	"watch_it_here": {
+		"en": "Watch it here",
+		"pt": "Assista ele aqui"
+	},
 	"re_watching, infinitive": {
 		"en": "re-watching",
 		"pt": "re-assistir"

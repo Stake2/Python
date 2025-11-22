@@ -4,14 +4,34 @@ from Stories.Stories import Stories as Stories
 
 class Copy_Chapter_Titles(Stories):
 	def __init__(self):
+		# Run the root class to import its methods and variables
 		super().__init__()
+
+		# If there is no selected story in the current class
+		if hasattr(self, "story") == False:
+			# Select the story
+			self.story = self.Select_Story()
+
+		# Define the root "copy" dictionary
+		self.copy = {
+			"Languages": [],
+			"Chapter titles": self.story["Chapters"]["Lists"]["Titles"]
+		}
 
 		# Define the states dictionary
 		self.states = {
 			"Select language": False
 		}
 
+		# Select a language
+		self.Select_Language()
+
+		# Copy the chapter titles
+		self.Copy_Titles()
+
+	def Select_Language(self):
 		# Show a five dash space separator
+		print()
 		print(self.separators["5"])
 
 		# Ask the user if it wants to select a language
@@ -22,13 +42,10 @@ class Copy_Chapter_Titles(Stories):
 		# Define the translated language for the chapter titles
 		translated_language = ""
 
-		# Define a local list of languages
-		languages = []
-
 		# If the user did not selected a custom language
 		if self.states["Select language"] == False:
-			# Define the local list of languages as the root list of small languages
-			languages = self.languages["Small"]
+			# Define the list of languages as the root list of small languages
+			self.copy["Languages"] = self.languages["Small"]
 
 		# If the user wants to select a language
 		if self.states["Select language"] == True:
@@ -51,7 +68,7 @@ class Copy_Chapter_Titles(Stories):
 			small_language = self.Input.Select(self.languages["Small"], language_options = translated_languages, show_text = show_text, select_text = select_text)["Option"]["Original"]
 
 			# Add the small language to the languages list
-			languages.append(small_language)
+			self.copy["Languages"].append(small_language)
 
 			# Get the language dictionary
 			language = self.languages["Dictionary"][small_language]
@@ -68,45 +85,45 @@ class Copy_Chapter_Titles(Stories):
 			print(translated_language + ":")
 			print()
 
-		# Get the chapter "Titles" dictionary
-		chapter_titles = self.story["Information"]["Chapters"]["Titles"]
+	def Copy_Titles(self):
+		# Define a shortcut to the total chapters number
+		total_chapters_number = self.story["Chapters"]["Numbers"]["Total"]
 
 		# Iterate through the English chapter titles list
-		i = 1
-		for title in chapter_titles["en"]:
+		for chapter_number, english_chapter_title in enumerate(self.copy["Chapter titles"]["en"], start = 1):
 			# Show a three dash space separator
 			print(self.separators["3"])
 			print()
 
 			# Show the current and total chapter numbers
 			print(self.language_texts["chapter_number"] + ":")
-			print("[" + str(i) + "/" + str(len(chapter_titles["en"])) + "]")
+			print("[" + str(chapter_number) + "/" + str(total_chapters_number) + "]")
 			print()
 
-			# Iterate through list of small languages
-			for language in languages:
+			# Iterate through the local list of small languages
+			for language in self.copy["Languages"]:
 				# Get the chapter title in the current language
-				title = chapter_titles[language][i - 1]
+				language_chapter_title = self.copy["Chapter titles"][language][chapter_number - 1]
 
-				# Add the chapter number and separator to the chapter title
-				edited_title = str(i) + " - " + title
+				# Create the chapter title with number
+				chapter_title_with_number = str(chapter_number) + " - " + language_chapter_title
 
 				# Show the chapter title in the current language
 				print(self.Language.texts["title_in_language"][language][self.language["Small"]] + ":")
-				print("[" + edited_title + "]")
+				print("[" + chapter_title_with_number + "]")
 
-				# Copy the chapter title with the chapter number
-				self.Text.Copy(edited_title, verbose = False)
+				# Copy the chapter title with the number
+				self.Text.Copy(chapter_title_with_number, verbose = False)
 
 				# Ask for user input on chapter titles that are not the last one
-				if title != chapter_titles["en"][-1]:
-					input()
+				if english_chapter_title != self.copy["Chapter titles"]["en"][-1]:
+					self.Input.Type(self.Language.language_texts["continue, title()"])
 
-				# Show a space separator if the chapter title is the last one
-				if title == chapter_titles["en"][-1]:
 					print()
 
-			i += 1
+				# Show a space separator if the chapter title is the last one
+				if english_chapter_title == self.copy["Chapter titles"]["en"][-1]:
+					print()
 
 		# Show a five dash space separator and a space separator
 		print(self.separators["5"])

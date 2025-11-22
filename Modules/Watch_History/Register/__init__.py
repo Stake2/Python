@@ -305,10 +305,10 @@ class Register(Watch_History):
 
 		# If the "ID" key exists in the "Episode" dictionary
 		if "ID" in self.media["Episode"]:
-			# Create the episode "Link" dictionary
+			# Create the "Episode link" dictionary
 			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Episode link"] = {
 				"ID": self.media["Episode"]["ID"], # The ID of the episode
-				"Link": self.media["Episode"]["Remote"]["Link"] # The link of the episode
+				"Link": self.media["Episode"]["Remote"]["Link"] # The remote link of the episode
 			}
 
 		# ---------- #
@@ -1211,6 +1211,38 @@ class Register(Watch_History):
 			# Add two line breaks and the "Finished watching text" to the Diary Slim "Dates" key
 			self.dictionary["Entry"]["Diary Slim"]["Dates"] += "\n\n" + self.media["Finished watching text"]
 
+	def Create_Memory_Date_Text(self):
+		# Define the memory date text template
+		text_template = "[{}/{}/{}/{}.png]"
+
+		# Define a shortcut to the "Finished watching" times dictionary
+		times = self.dictionary["Entry"]["Times"]["Finished watching"]
+
+		# Define the list of items to use to format the text template
+		items = [
+			# Get the year
+			# Example: 2025
+			times["Units"]["Year"],
+
+			# Get the month name with the month number in the user language
+			# Example: 01 - January
+			times["Texts"]["Month name with number"][self.language["Small"]],
+
+			# Get the day name with the day number in the user language
+			# Example: 01 - Monday
+			times["Texts"]["Day name with number"][self.language["Small"]],
+
+			# Get the hours and minutes and replace the colon with the semicolon
+			# Example: 12;00
+			times["Formats"]["HH:MM"].replace(":", ";")
+		]
+
+		# Format the text template with the list of items to create the memory date text
+		memory_date_text = text_template.format(*items)
+
+		# Return it
+		return memory_date_text
+
 	def Define_Diary_Slim_Text(self):
 		# Define the text template as "I just finished watching {}"
 		template = self.language_texts["i_just_finished_watching_{}"]
@@ -1343,12 +1375,6 @@ class Register(Watch_History):
 						# Remove the lowercase season text
 						watched_item_text = watched_item_text.replace(" " + season_text.lower(), "")
 
-				# If the media is a video channel
-				if self.media["States"]["Video"] == True:
-					# Format the "of the" text to add the "video series" text
-					# (This is not used because I do not add the video series title to the Diary Slim text anymore, only the video title)
-					of_the_text = of_the_text.format(self.language_texts["video_series, type: singular"])
-
 				# Remove the media title with space in the media item if it exists
 				if self.media["Title"] + " " in self.media["Item"]:
 					watched_item_text = watched_item_text.replace(self.media["Title"] + " ", "")
@@ -1414,20 +1440,83 @@ class Register(Watch_History):
 		if self.media["States"]["Series media"] == False:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
+		# ---------- #
+
 		# If the "Re-watching" state is True, add the number text of re-watched times in the user language
 		if self.media["States"]["Re-watching"] == True:
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.media["Episode"]["Re-watching"]["Texts"]["Number"][self.language["Small"]]
 
+		# ---------- #
+
 		# If the "Remote" dictionary is inside the "Episode" dictionary
 		# And there is a link inside the "Remote" dictionary
-		# And the remote title is not "Animes Vision"
+		# And the remote origin is not "Animes Vision"
 		if (
 			"Remote" in self.media["Episode"] and
 			"Link" in self.media["Episode"]["Remote"] and
 			self.media["Episode"]["Remote"]["Title"] != "Animes Vision"
 		):
-			# Add two line breaks and the remote link
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.media["Episode"]["Remote"]["Link"]
+			# Define the link text as "Watch it here:" and a line break
+			link_text = self.language_texts["watch_it_here"] + ":" + "\n"
+
+			# Add the link
+			link_text += self.media["Episode"]["Remote"]["Link"]
+
+			# Add the episode remote link to the Diary Slim text with two line breaks at the beginning
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + link_text
+
+		# ---------- #
+
+		# Define hashtags to add to the Diary Slim text
+		hashtags = "#Stake2 #Brasil #Watch_History"
+
+		# If the remote origin is "YouTube"
+		if self.media["Episode"]["Remote"]["Title"] == "YouTube":
+			# Add the YouTube hashtag
+			hashtags += " #YouTube"
+
+		# Define a shortcut to the plural media type in the user language
+		plural_media_type = self.dictionary["Media type"]["Plural"][self.language["Small"]]
+
+		# Remove accents from the plural media type using the "Remove_Accents" method of the "Text" utility class
+		plural_media_type = self.Text.Remove_Accents(plural_media_type)
+
+		# Add the media type as a hashtag
+		hashtags += " #" + plural_media_type
+
+		# Get the media title
+		media_title = self.Get_Media_Title(self.dictionary)
+
+		# Remove accents
+		media_title = self.Text.Remove_Accents(media_title)
+
+		# Remove spaces
+		media_title = media_title.replace(" ", "")
+
+		# Remove special characters
+		media_title = self.Text.Remove_Special_Characters(media_title)
+
+		# Add the media title as a hashtag
+		hashtags += " #" + media_title
+
+		# Add the hashtags to the Diary Slim text with two line breaks at the beginning
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + hashtags
+
+		# ---------- #
+
+		# If there are dates inside the "Diary Slim" dictionary, add them to the Diary Slim text
+		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
+
+		# ---------- #
+
+		# Create the memory date text with two line breaks at the beginning
+		self.dictionary["Entry"]["Diary Slim"]["Memory date text"] = "\n\n" + self.Create_Memory_Date_Text()
+
+		# Add the memory date text to the Diary Slim text
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+
+		# ---------- #
 
 		# If there are states, add the state texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
@@ -1448,10 +1537,6 @@ class Register(Watch_History):
 				# If the is not the last one, add a line break after the state text
 				if key != keys[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
-
-		# If there are dates inside the "Diary Slim" dictionary, add them to the Diary Slim text
-		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
 		# Define the "Social Networks" dictionary
@@ -1496,7 +1581,7 @@ class Register(Watch_History):
 		]
 
 		# Format the template with the list of items
-		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
+		self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
 		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
@@ -1553,16 +1638,36 @@ class Register(Watch_History):
 		print()
 
 	def Write_On_Diary_Slim(self):
-		# Add "Posted on Social Networks" text if the user wanted to post the entry text on the Social Networks
+		# If the user wanted to post the entry text on the social networks
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"]
+			# Define a shortcut to the Diary Slim text
+			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
+			# Remove the memory date text
+			diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
+
+			# Add the "Posted on the social networks" text
+			diary_slim_text += "\n\n" + \
+			self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"]
+
+			# Add the memory date text again
+			diary_slim_text += self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+
+			# Update the root text to be the local one
+			self.dictionary["Entry"]["Diary Slim"]["Text"] = diary_slim_text
+
+		# Import the "Write_On_Diary_Slim_Module" sub-module from the "Diary_Slim" module
 		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 		# Define the "Write on Diary Slim" dictionary
 		dictionary = {
+			# The text to be written in the user language
 			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+
+			# The time to use to write the text
 			"Time": self.dictionary["Entry"]["Times"]["Finished watching"]["Formats"]["HH:MM DD/MM/YYYY"],
+
+			# Do not add the end dot
 			"Add": {
 				"Dot": False
 			}

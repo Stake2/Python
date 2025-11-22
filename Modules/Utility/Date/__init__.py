@@ -184,6 +184,7 @@ class Date():
 					},
 					"Texts": {
 						"Day name": {},
+						"Day name with number": {},
 						"Day gender": {},
 						"Day": {},
 						"Month name": {},
@@ -261,7 +262,28 @@ class Date():
 				for key in date[date_name][date_type]["Texts"]:
 					for language in self.languages["Small"]:
 						if key == "Day name":
-							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names, type: list"][language][date[date_name][date_type]["Units"]["Week day"]]
+							# Get the week day number
+							week_day_number = date[date_name][date_type]["Units"]["Week day"]
+
+							# Get the day name and define it in the dictionary
+							date[date_name][date_type]["Texts"][key][language] = self.texts["day_names, type: list"][language][week_day_number]
+
+						# If the key is "Day name with number"
+						elif key == "Day name with number":
+							# Get the day number
+							day_number = date[date_name][date_type]["Units"]["Day"]
+
+							# Add leading zeroes to the day number
+							day_number = str(self.Text.Add_Leading_Zeroes(day_number))
+
+							# Get the week day number
+							week_day_number = date[date_name][date_type]["Units"]["Week day"]
+
+							# Get the day name
+							day_name = self.texts["day_names, type: list"][language][week_day_number]
+
+							# Add the day number and day name to the dictionary
+							date[date_name][date_type]["Texts"][key][language] = day_number + " - " + day_name
 
 						elif key == "Day":
 							date[date_name][date_type]["Texts"][key][language] = self.Text.By_Number(date[date_name][date_type]["Units"][key], self.texts[key.lower()][language], self.texts[key.lower() + "s"][language])

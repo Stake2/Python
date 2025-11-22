@@ -6,6 +6,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 	def __init__(self):
 		super().__init__()
 
+		# Iterate through the list of medias
 		self.Iterate()
 
 	def Iterate(self):

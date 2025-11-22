@@ -1,0 +1,65 @@
+{
+	"Module": "Stories",
+	"Sub-module": "Manage",
+	"Folders": {
+		"root": "C:/Apps/Modules/Stories/",
+		"Texts": {
+			"root": "C:/Apps/Module files/Stories/"
+		},
+		"Manage": {
+			"root": "C:/Apps/Modules/Stories/Manage/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Apps/Modules/Stories/Manage/Descriptions.json",
+		"Module": "C:/Apps/Modules/Stories/Manage/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Gerenciar história",
+		"Copy_Chapter_Titles": {
+			"en": "Copy chapter titles",
+			"pt": "Copiar títulos de capítulos"
+		},
+		"Update_Chapter_Covers": {
+			"en": "Update chapter covers",
+			"pt": "Atualizar capas de capítulos"
+		},
+		"Convert_Data": {
+			"en": "Convert data",
+			"pt": "Converter dados"
+		}
+	},
+	"Classes": {
+		"Dictionary": {
+			"Copy_Chapter_Titles": {
+				"Descriptions": {
+					"en": "Copy chapter titles",
+					"pt": "Copiar títulos de capítulos"
+				},
+				"Description": "Copiar títulos de capítulos",
+				"Object": "<class 'Stories.Manage.Copy_Chapter_Titles.Copy_Chapter_Titles'>"
+			},
+			"Update_Chapter_Covers": {
+				"Descriptions": {
+					"en": "Update chapter covers",
+					"pt": "Atualizar capas de capítulos"
+				},
+				"Description": "Atualizar capas de capítulos",
+				"Object": "<class 'Stories.Manage.Update_Chapter_Covers.Update_Chapter_Covers'>"
+			},
+			"Convert_Data": {
+				"Descriptions": {
+					"en": "Convert data",
+					"pt": "Converter dados"
+				},
+				"Description": "Converter dados",
+				"Object": "<class 'Stories.Manage.Convert_Data.Convert_Data'>"
+			}
+		},
+		"Descriptions": [
+			"Copiar títulos de capítulos",
+			"Atualizar capas de capítulos",
+			"Converter dados"
+		]
+	}
+}

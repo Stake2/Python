@@ -23,9 +23,9 @@
 		"en": "This text was written to the current Diary Slim",
 		"pt": "Esse texto foi escrito no Diário Slim atual"
 	},
-	"testing_is_true": {
-		"en": "\"testing\" is \"True\"",
-		"pt": "\"testando\" é \"Verdadeiro\""
+	"the_testing_mode_is_on": {
+		"en": "the testing mode is on",
+		"pt": "o modo de testes está ativado"
 	},
 	"select_the_sibling": {
 		"en": "Select the sibling",

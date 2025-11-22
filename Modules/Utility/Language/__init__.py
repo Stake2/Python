@@ -494,13 +494,6 @@ class Language():
 			return json
 
 	def Define_Lists_And_Dictionaries(self):
-		self.dictionary_separators = [
-			"=",
-			" = ",
-			":",
-			": "
-		]
-
 		self.setting_names = {
 			"language": {
 				"key": "language",

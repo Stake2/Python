@@ -8,6 +8,7 @@ from copy import deepcopy
 
 class Write(Stories):
 	def __init__(self):
+		# Run the root class to import its methods and variables
 		super().__init__()
 
 		# Define the root "writing" dictionary
@@ -709,8 +710,8 @@ class Write(Stories):
 						# Get the last "Finished" writing date
 						writing_date = last_writing["Times"]["Finished"]
 
-					# Define the date dictionary using the defined writing date
-					date = self.Date.From_String(writing_date, "%H:%M %d/%m/%Y")
+					# Define the date dictionary using the defined writing date and the timezone format
+					date = self.Date.From_String(writing_date, format = "%H:%M %d/%m/%Y")
 
 					# Define the correct date format text based on the current language
 					date_format_text = self.Date.texts["date_format, type: format"][small_language]
@@ -1999,8 +2000,8 @@ class Write(Stories):
 			if key == "Finished":
 				# If the time is a string
 				if isinstance(time, str) == True:
-					# Convert it into a date dictionary
-					date = self.Date.From_String(time, "%H:%M %d/%m/%Y")
+					# Convert it into a date dictionary with the timezone format
+					date = self.Date.From_String(time, format = "%H:%M %d/%m/%Y")
 
 				# Get the UTC formats
 				utc_formats = date["UTC"]["DateTime"]["Formats"]
@@ -2092,8 +2093,8 @@ class Write(Stories):
 
 			# If the "Started" writing time is a string
 			if type(started_writing_time) == str:
-				# Convert it into a date dictionary
-				started_writing_time = self.Date.From_String(started_writing_time, "%H:%M %d/%m/%Y")
+				# Convert it into a date dictionary with the timezone format
+				started_writing_time = self.Date.From_String(started_writing_time, format = "%H:%M %d/%m/%Y")
 
 			# Define the added time variable as an empty dictionary
 			added_time = {}
@@ -2232,7 +2233,7 @@ class Write(Stories):
 			# Copy it
 			self.JSON.Copy(writing_copy)
 
-		# Update the "Writing.json" file
+		# Update the "Writing.json" file with the local updated "Writing" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Writing"], writing_copy)
 
 	def Create_Task_Title(self, dictionary):
