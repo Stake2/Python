@@ -1,9 +1,12 @@
 # Write_On_Diary_Slim.py
 
+# Import the root class
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
+# Import the "Write_On_Diary_Slim_Module"
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
+# Import some useful modules
 from copy import deepcopy
 
 class Write_On_Diary_Slim(Diary_Slim):
@@ -45,12 +48,12 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.Manage_Statistic()
 
 		# If the "Is task" key is inside the text dictionary
-		# And the task was not registered
+		# And the "Register task" state is False (the task was not registered inside the "Task_History")
 		# Or the "States" key is inside the "Text" dictionary
 		# And the current state in the backup is not the first one
 		if (
 			"Is task" in self.dictionary["Text"] and
-			self.task_dictionary["Register task"] == False or
+			self.task_dictionary["States"]["Register task"] == False or
 			"States" in self.dictionary["Text"] and
 			self.dictionary["Text"]["States (backup)"]["Current state"] != self.dictionary["Text"]["States"]["Dictionary"]["1"]
 		):
@@ -61,8 +64,6 @@ class Write_On_Diary_Slim(Diary_Slim):
 		self.Write()
 
 	def Select_The_Text(self):
-		from copy import deepcopy
-
 		global parameters
 
 		# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
@@ -629,7 +630,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Entry": {
 				"Times": {}
 			},
-			"Register task": True
+			"States": {
+				"Register task": True
+			}
 		}
 
 		# ---------- #
@@ -667,13 +670,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			# If the answer is "Register task progress"
 			if response == "Register task progress":
 				# Change the "Register task" state to False
-				self.task_dictionary["Register task"] = False
+				self.task_dictionary["States"]["Register task"] = False
 
-		# Import the "Register" class of the "Tasks" module
-		from Tasks.Register import Register as Register
-
-		# Run the "Register" class with the local Task dictionary
-		Register(self.task_dictionary)
+		# Register the task using the "Register" sub-class of the "Tasks" class
+		self.Tasks.Register(self.task_dictionary)
 
 	def Manage_Statistic(self):
 		# Define the key
@@ -689,11 +689,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 		questions = statistic
 
 		# If the "Is task" key is not inside the text dictionary
-		# Or it is, and the task was registered
+		# Or it is, and the "Register task" state is True (the task was registered inside the "Task_History")
 		if (
 			"Is task" not in self.dictionary["Text"] or
 			"Is task" in self.dictionary["Text"] and
-			self.task_dictionary["Register task"] == True
+			self.task_dictionary["States"]["Register task"] == True
 		):
 			# Iterate through the list of question keys inside the list above
 			for question_key in self.dictionary["Question keys"]:
@@ -1266,10 +1266,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 			Write_On_Diary_Slim_Module(dictionary)
 
 		# If the "Is task" key is inside the text dictionary
-		# And the task was registered
+		# And the "Register task" state is True (the task was registered inside the "Task_History")
 		if (
 			"Is task" in self.dictionary["Text"] and
-			self.task_dictionary["Register task"] == True
+			self.task_dictionary["States"]["Register task"] == True
 		):
 			# Show a five dash space separator
 			print()
@@ -1291,10 +1291,11 @@ class Write_On_Diary_Slim(Diary_Slim):
 			self.dictionary["Text"]["Statistics"]["Changed statistic"] == True
 		):
 			# If the "Is task" key is inside the text dictionary
-			# And the task was not registered (only its progress)
+			# And the "Register task" state is False
+			# (The task was not registered inside the "Task_History", only its progress was registered on the current Diary Slim)
 			if (
 				"Is task" in self.dictionary["Text"] and
-				self.task_dictionary["Register task"] == False
+				self.task_dictionary["States"]["Register task"] == False
 			):
 				# Show a five dash space separator
 				print()

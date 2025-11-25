@@ -45,7 +45,7 @@ class Modules():
 			# Get the sub-class
 			sub_class = getattr(module, module_title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class())
 
 		# Import the "folders" dictionary from the "Folder" class
@@ -70,7 +70,7 @@ class Modules():
 			# Get the sub-class
 			sub_class = getattr(module, module_title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class())
 
 		# ---------- #

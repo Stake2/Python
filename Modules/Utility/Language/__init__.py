@@ -71,7 +71,7 @@ class Language():
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 	def Define_Switches(self):

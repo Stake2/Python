@@ -1,7 +1,9 @@
 # Register.py
 
+# Import the root class
 from Watch_History.Watch_History import Watch_History as Watch_History
 
+# Import some useful modules
 from copy import deepcopy
 
 class Register(Watch_History):
@@ -1211,38 +1213,6 @@ class Register(Watch_History):
 			# Add two line breaks and the "Finished watching text" to the Diary Slim "Dates" key
 			self.dictionary["Entry"]["Diary Slim"]["Dates"] += "\n\n" + self.media["Finished watching text"]
 
-	def Create_Memory_Date_Text(self):
-		# Define the memory date text template
-		text_template = "[{}/{}/{}/{}.png]"
-
-		# Define a shortcut to the "Finished watching" times dictionary
-		times = self.dictionary["Entry"]["Times"]["Finished watching"]
-
-		# Define the list of items to use to format the text template
-		items = [
-			# Get the year
-			# Example: 2025
-			times["Units"]["Year"],
-
-			# Get the month name with the month number in the user language
-			# Example: 01 - January
-			times["Texts"]["Month name with number"][self.language["Small"]],
-
-			# Get the day name with the day number in the user language
-			# Example: 01 - Monday
-			times["Texts"]["Day name with number"][self.language["Small"]],
-
-			# Get the hours and minutes and replace the colon with the semicolon
-			# Example: 12;00
-			times["Formats"]["HH:MM"].replace(":", ";")
-		]
-
-		# Format the text template with the list of items to create the memory date text
-		memory_date_text = text_template.format(*items)
-
-		# Return it
-		return memory_date_text
-
 	def Define_Diary_Slim_Text(self):
 		# Define the text template as "I just finished watching {}"
 		template = self.language_texts["i_just_finished_watching_{}"]
@@ -1510,11 +1480,18 @@ class Register(Watch_History):
 
 		# ---------- #
 
-		# Create the memory date text with two line breaks at the beginning
-		self.dictionary["Entry"]["Diary Slim"]["Memory date text"] = "\n\n" + self.Create_Memory_Date_Text()
+		# Run the root "Diary_Slim" class to define its variables
+		self.Diary_Slim = self.Diary_Slim()
 
-		# Add the memory date text to the Diary Slim text
-		self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+		# Define a shortcut to the finished watching date dictionary
+		finished_watching_date = self.dictionary["Entry"]["Times"]["Finished watching"]
+
+		# Create the memory date text using the "Create_Memory_Date_Text" method of the "Diary_Slim" class
+		# In the format: [2025/01 - January/01 - Monday/12;00.png]
+		self.dictionary["Entry"]["Diary Slim"]["Memory date text"] = self.Diary_Slim.Create_Memory_Date_Text(finished_watching_date)
+
+		# Add the memory date text to the Diary Slim text with two line breaks in the beginning
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
 
 		# ---------- #
 
@@ -1644,20 +1621,18 @@ class Register(Watch_History):
 			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
 			# Remove the memory date text
-			diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
+			diary_slim_text = diary_slim_text.replace("\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
 
 			# Add the "Posted on the social networks" text
 			diary_slim_text += "\n\n" + \
 			self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"]
 
-			# Add the memory date text again
-			diary_slim_text += self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+			# Add the memory date text again with two line breaks in the beginning
+			diary_slim_text += "\n\n" + \
+			self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
 
 			# Update the root text to be the local one
 			self.dictionary["Entry"]["Diary Slim"]["Text"] = diary_slim_text
-
-		# Import the "Write_On_Diary_Slim_Module" sub-module from the "Diary_Slim" module
-		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 		# Define the "Write on Diary Slim" dictionary
 		dictionary = {
@@ -1673,8 +1648,8 @@ class Register(Watch_History):
 			}
 		}
 
-		# Write the entry text on Diary Slim
-		Write_On_Diary_Slim_Module(dictionary)
+		# Write the task text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
+		self.Diary_Slim.Write_On_Diary_Slim(dictionary)
 
 	def Get_The_Media_Title(self, is_media_item = False, media_item = None, language = False, no_media_title = False):
 		# Define the key to get the media title

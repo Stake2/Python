@@ -29,7 +29,7 @@ class Global_Switches():
 			# Get the sub-class
 			sub_class = getattr(module, module_title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 	def Define_Switches(self):

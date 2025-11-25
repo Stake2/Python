@@ -88,6 +88,7 @@ class Register(GamePlayer):
 			# Ask the user to select a game type and game
 			self.dictionary = self.Select_Game_Type_And_Game()
 
+		# Define a shortcut to the "Game" dictionary
 		self.game = self.dictionary["Game"]
 
 		# Import the "Play" class and set it as an attribute of this class
@@ -1009,10 +1010,58 @@ class Register(GamePlayer):
 		# Format the template with the items
 		self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(*items)
 
+		# ---------- #
+
 		# If the user wants to write a description
 		if self.dictionary["Entry"]["Diary Slim"]["Write description"] == True:
 			# Add the session description to the "Diary Slim" text
 			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.language["Small"]]["string"]
+
+		# ---------- #
+
+		# Define hashtags to add to the Diary Slim text
+		hashtags = "#Stake2 #Brasil #Play_History #Games"
+
+		# Get the game title
+		game_title = self.Get_Game_Title(self.dictionary)
+
+		# Remove accents
+		game_title = self.Text.Remove_Accents(game_title)
+
+		# Remove spaces
+		game_title = game_title.replace(" ", "")
+
+		# Remove special characters
+		game_title = self.Text.Remove_Special_Characters(game_title)
+
+		# Add the game title as a hashtag
+		hashtags += " #" + game_title
+
+		# Add the hashtags to the Diary Slim text with two line breaks at the beginning
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + hashtags
+
+		# ---------- #
+
+		# If there are dates, add them to the Diary Slim text
+		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
+
+		# ---------- #
+
+		# Run the root "Diary_Slim" class to define its variables
+		self.Diary_Slim = self.Diary_Slim()
+
+		# Define a shortcut to the finished playing date dictionary
+		finished_playing_date = self.dictionary["Entry"]["Times"]["Finished playing"]
+
+		# Create the memory date text using the "Create_Memory_Date_Text" method of the "Diary_Slim" class
+		# In the format: [2025/01 - January/01 - Monday/12;00.png]
+		self.dictionary["Entry"]["Diary Slim"]["Memory date text"] = self.Diary_Slim.Create_Memory_Date_Text(finished_playing_date)
+
+		# Add the memory date text to the Diary Slim text with two line breaks in the beginning
+		self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+
+		# ---------- #
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
@@ -1023,10 +1072,6 @@ class Register(GamePlayer):
 
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
-
-		# If there are dates, add them to the Diary Slim text
-		if "Dates" in self.dictionary["Entry"]["Diary Slim"]:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["Entry"]["Diary Slim"]["Dates"]
 
 	def Post_On_Social_Networks(self):
 		# Define the "Social Networks" dictionary
@@ -1065,7 +1110,7 @@ class Register(GamePlayer):
 		]
 
 		# Format the template with the list of items
-		self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
+		self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
 		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
@@ -1124,21 +1169,39 @@ class Register(GamePlayer):
 	def Write_On_Diary_Slim(self):
 		# Add "Posted on Social Networks" text if the user wanted to post the entry text on the Social Networks
 		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.dictionary["Entry"]["Diary Slim"]["Posted on the Social Networks text"]
+			# Define a shortcut to the Diary Slim text
+			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
-		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
+			# Remove the memory date text
+			diary_slim_text = diary_slim_text.replace("\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
+
+			# Add the "Posted on the social networks" text
+			diary_slim_text += "\n\n" + \
+			self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"]
+
+			# Add the memory date text again with two line breaks in the beginning
+			diary_slim_text += "\n\n" + \
+			self.dictionary["Entry"]["Diary Slim"]["Memory date text"]
+
+			# Update the root text to be the local one
+			self.dictionary["Entry"]["Diary Slim"]["Text"] = diary_slim_text
 
 		# Define the "Write on Diary Slim" dictionary
 		dictionary = {
+			# The text to be written in the user language
 			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+
+			# The time to use to write the text
 			"Time": self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"],
+
+			# Do not add the end dot
 			"Add": {
 				"Dot": False
 			}
 		}
 
-		# Write the entry text on Diary Slim
-		Write_On_Diary_Slim_Module(dictionary)
+		# Write the task text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
+		self.Diary_Slim.Write_On_Diary_Slim(dictionary)
 
 	def Get_Game_Title(self, is_sub_game = False, sub_game = None, language = False, no_game_title = False):
 		# Define the key to get the game title

@@ -48,7 +48,7 @@ class GamePlayer(object):
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
@@ -120,24 +120,109 @@ class GamePlayer(object):
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Import_Usage_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Years",
-			"Christmas"
-		]
+		# Define a local dictionary of classes
+		classes = {
+			"List": [
+				"Years",
+				"Christmas",
+				"Diary_Slim"
+			],
+			"Dictionary": {
+				"Diary_Slim": {
+					"Sub-classes to import": {
+						"List": [
+							"Write_On_Diary_Slim_Module"
+						],
+						"Titles": [
+							"Write_On_Diary_Slim"
+						]
+					}
+				}
+			},
+			"Do not run": [
+				"Diary_Slim"
+			]
+		}
 
-		# Import them
-		for title in classes:
+		# Iterate through the list of classes
+		for class_title in classes["List"]:
+			# Define the class dictionary
+			class_dictionary = {
+				"Title": class_title,
+				"Module": "",
+				"Object": ""
+			}
+
+			# If the class title is inside the dictionary of classes
+			if class_title in classes["Dictionary"]:
+				# Get the "Sub-classes to import" dictionary from it
+				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
+
 			# Import the module
-			module = importlib.import_module("." + title, title)
+			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
 
-			# Get the sub-class
-			sub_class = getattr(module, title)
+			# Get the class object
+			class_dictionary["Object"] = getattr(class_dictionary["Module"], class_title)
 
-			# Add the sub-class to the current module
-			setattr(self, title, sub_class())
+			# If the class title is not inside the list of classes to not run
+			if class_title not in classes["Do not run"]:
+				# Run the class to define its variables
+				class_dictionary["Object"] = class_dictionary["Object"]()
 
-		# Get the "Today_Is_Christmas" True or False variable
+			# If the "Sub-classes to import" key is present
+			if "Sub-classes to import" in class_dictionary:
+				# Create the "Sub-classes" dictionary
+				class_dictionary["Sub-classes"] = {}
+
+				# Define a shortcut to the sub-classes dictionary
+				sub_classes = class_dictionary["Sub-classes to import"]
+
+				# Define a sub-class number
+				sub_class_number = 0
+
+				# Iterate through the list of sub-classes
+				for sub_class_title in sub_classes["List"]:
+					# Create the sub-class dictionary
+					sub_class_dictionary = {
+						"Title": sub_class_title,
+						"Module": "",
+						"Object": ""
+					}
+
+					# Import the sub-module
+					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
+
+					# Get the sub-class
+					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
+
+					# If the "Titles" list is present
+					if "Titles" in sub_classes:
+						# Change the sub-class title to the one in the list of sub-class titles
+						sub_class_title = sub_classes["Titles"][sub_class_number]
+
+					# Add the sub-class dictionary to the root sub-classes dictionary
+					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
+
+					# Add the sub-class to the root class
+					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
+
+					# Add one to the sub-class number
+					sub_class_number += 1
+
+				# Remove the "Sub-classes to import" dictionary
+				class_dictionary.pop("Sub-classes to import")
+
+			# Add the class dictionary to the root classes dictionary
+			classes["Dictionary"][class_title] = class_dictionary
+
+			# Add the class to the current class
+			setattr(self, class_title, class_dictionary["Object"])
+
+		# Sort the dictionary of classes with the order of the list of classes
+		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
+
+		# ---------- #
+
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
 
 	def Define_Folders_And_Files(self):
@@ -789,12 +874,6 @@ class GamePlayer(object):
 		return new_dictionary
 
 	def Update_Statistics(self, game, game_type):
-		# Import the "Diary_Slim" module
-		from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
-
-		# Define the "Diary_Slim" class inside this class
-		self.Diary_Slim = Diary_Slim()
-
 		# Get the "diary_slim" dictionary from the class above
 		self.diary_slim = self.Diary_Slim.diary_slim
 

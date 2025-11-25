@@ -368,6 +368,10 @@
 		"en": "It was {} on {} at {}",
 		"pt": "Ele foi {} em {} às {}"
 	},
+	"and_it_was_{}_on_{}_at_{}": {
+		"en": "And it was {} on {} at {}",
+		"pt": "E ele foi {} em {} às {}"
+	},
 	"i_{}_for_{}": {
 		"en": "I {} it for {}",
 		"pt": "{} ele por {}"
@@ -379,6 +383,10 @@
 	"press_enter_when_you_finish_posting_the_chapter_post_text_on": {
 		"en": "Press Enter when you finish posting the chapter post text on",
 		"pt": "Pressione Enter quando você terminar de postar o texto de postagem de capítulo no"
+	},
+	"press_enter_when_you_finish_posting_the_chapter_link_on": {
+		"en": "Press Enter when you finish posting the chapter link on",
+		"pt": "Pressione Enter quando você terminar de postar o link do capítulo no"
 	},
 	"press_enter_when_you_finish_posting_the_chapter_post_text_from_{}_on": {
 		"en": "Press Enter when you finish posting the chapter post text from {} on",

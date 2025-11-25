@@ -170,7 +170,7 @@
 	},
 	"update": {
 		"en": "update",
-		"pt": "adicionar"
+		"pt": "atualizar"
 	},
 	"delete": {
 		"en": "delete",
@@ -1133,6 +1133,10 @@
 	"social_networks": {
 		"en": "Social Networks",
 		"pt": "Redes Sociais"
+	},
+	"social_network_number": {
+		"en": "Social network number",
+		"pt": "Número da rede social"
 	},
 	"social_network_information": {
 		"en": "Social Network information",

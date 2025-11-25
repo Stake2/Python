@@ -35,7 +35,7 @@ class Update_Chapter_Covers(Stories):
 			# Get the sub-class
 			sub_class = getattr(module, title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, title, sub_class)
 
 		# Add the story dictionary to the "Post" class

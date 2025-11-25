@@ -70,15 +70,15 @@ class Post(Stories):
 		# Import the "importlib" module
 		import importlib
 
-		# Define the classes to be imported
-		classes = [
+		# Define the sub-classes to be imported
+		sub_classes = [
 			"Social_Networks.Open_Social_Network",
 			"PHP.Update_Websites"
 		]
 
-		# Import them
-		for class_title in classes:
-			# Define the module title as the class title
+		# Iterate through the list of sub-classes
+		for class_title in sub_classes:
+			# Define the module title as the sub-class title
 			module_title = class_title
 
 			# If there is a dot in the module title
@@ -86,7 +86,7 @@ class Post(Stories):
 				# Split the module title to get the actual module title
 				module_title = module_title.split(".")[0]
 
-				# Get the class title
+				# Split the sub-class title to get the actual sub-class title
 				class_title = class_title.split(".")[1]
 
 			# Import the module
@@ -95,7 +95,7 @@ class Post(Stories):
 			# Get the sub-class
 			sub_class = getattr(module, class_title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, class_title, sub_class)
 
 	def Check_Story_Chapters(self):
@@ -243,15 +243,8 @@ class Post(Stories):
 				print()
 				print(step["Method name"] + ":")
 
-			# If the step is not "Register task"
-			# Or it is and the posting mode is not "Revised"
-			if (
-				step["Key"] != "Register task" or
-				step["Key"] == "Register task" and
-				self.posting_mode != "Revised"
-			):
-				# Run the method of the posting step
-				step["Method"]()
+			# Run the method of the posting step
+			step["Method"]()
 
 	def Select_Posting_Mode(self):
 		# Copy the "Writing modes" dictionary and call it "Posting modes"
@@ -575,6 +568,16 @@ class Post(Stories):
 			self.chapter["Covers"][cover_type] = cover_type_dictionary
 
 		# ---------- #
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Show the "Chapter" text
+			print()
+			print("Chapter:")
+			print()
+
+			# Show the "Chapter" dictionary with the JSON format
+			self.JSON.Show(self.chapter)
 
 		# Show information about the chapter
 		self.Show_Information(mode = "Start")
@@ -970,7 +973,7 @@ class Post(Stories):
 
 	def Post_On_The_Social_Networks(self):
 		# Create the social network post texts
-		self.Create_Social_Netowrk_Post_Texts()
+		self.Create_Social_Network_Post_Texts()
 
 		# ---------- #
 
@@ -1010,8 +1013,13 @@ class Post(Stories):
 			print()
 
 			# Show the current and total social networks numbers
-			print(self.Language.language_texts["social_network"] + ":")
+			print(self.Language.language_texts["social_network_number"] + ":")
 			print("[" + str(social_network_number) + "/" + str(total_social_networks_number) + "]")
+			print()
+
+			# Show the social network name
+			print(self.Language.language_texts["social_network"] + ":")
+			print("[" + social_network + "]")
 
 			# Define the social networks dictionary to use in the "Open_Social_Network" sub-class imported from the "Social_Networks" module
 			dictionary = {
@@ -1058,8 +1066,24 @@ class Post(Stories):
 
 			# If the social network is "Discord"
 			if social_network == "Discord":
+				# Remove the hashtags of the card
+				post_text = self.Remove_Hashtags(post_text)
+
 				# Add the "@Updates" role to the post text
 				post_text += "\n\n" + "<@&1172626527175848086>"
+
+				# Remove the "Read it here" text
+				post_text = post_text.replace(self.chapter["Posting"]["Read it here"] + "\n\n", "")
+
+				# Run the root "Diary_Slim" class to define its variables
+				self.Diary_Slim = self.Diary_Slim()
+
+				# Create the memory date text using the "Create_Memory_Date_Text" method of the "Diary_Slim" class
+				# In the format: [2025/01 - January/01 - Monday/12;00.png]
+				memory_date_text = self.Diary_Slim.Create_Memory_Date_Text(self.posting["Date"])
+
+				# Add the memory date text to the post text with two line breaks in the beginning
+				post_text += "\n\n" + memory_date_text
 
 			# If the social network is "Facebook"
 			if social_network == "Facebook":
@@ -1093,6 +1117,21 @@ class Post(Stories):
 			# Ask for the user input after they finish posting the chapter post text on the social network
 			self.Input.Type(input_text + " " + "[" + social_network + "]")
 
+			# If the social network is "Discord"
+			if social_network == "Discord":
+				# Add a hypen separator to the "Read it here" text
+				self.chapter["Posting"]["Read it here"]	= "-" + "\n\n" + \
+				self.chapter["Posting"]["Read it here"]
+
+				# Copy the "Read it here" text
+				self.Text.Copy(self.chapter["Posting"]["Read it here"])
+
+				# Define the input text as "Press Enter when you finish posting the chapter link on"
+				input_text = self.language_texts["press_enter_when_you_finish_posting_the_chapter_link_on"]
+
+				# Ask for the user input after they finish posting the chapter post text on the social network
+				self.Input.Type(input_text + " " + "[" + social_network + "]")
+
 			# ----- #
 
 			# If the social network is not "Facebook"
@@ -1102,10 +1141,16 @@ class Post(Stories):
 					# Get the post text of the additional story website
 					additional_post_text = self.chapter["Posting"]["Texts"][story_website]
 
-					# Remove the hashtags from the post text
+					# Remove the hashtags from the additional post text
 					additional_post_text = self.Remove_Hashtags(additional_post_text)
 
-					# Copy the post text for the current story website
+					# If the social network is "Discord"
+					if social_network == "Discord":
+						# Add a hypen separator to the additional post text
+						additional_post_text = "-" + "\n\n" + \
+						additional_post_text
+
+					# Copy the additional post text for the current story website
 					self.Text.Copy(additional_post_text)
 
 					# Define the text template as "Press Enter when you finish posting the chapter post text from {} on"
@@ -1179,7 +1224,16 @@ class Post(Stories):
 			# Add one to the "story website number"
 			story_website_number += 1
 
-	def Create_Social_Netowrk_Post_Texts(self):
+	def Create_Social_Network_Post_Texts(self):
+		# Define the main hashtags inside the new "Posting" dictionary
+		self.chapter["Posting"] = {
+			"Texts": {},
+			"Read it here": "",
+			"Hashtags": "#Stake2 #Brasil #Historias #"
+		}
+
+		# ----- #
+
 		# Get the timezone formats
 		timezone_formats = self.posting["Date"]["Timezone"]["DateTime"]["Formats"]
 
@@ -1210,11 +1264,15 @@ class Post(Stories):
 		# Add a colon and a line break
 		post_text += ":" + "\n"
 
+		# ----- #
+
 		# Add the chapter title in the user language without the number
 		post_text += self.chapter["Titles"]["Normal"][self.language["Small"]]
 
 		# Add two line breaks
 		post_text += "\n\n"
+
+		# ----- #
 
 		# Define the text template as "I {} for {}"
 		text_template = self.language_texts["i_{}_for_{}"]
@@ -1237,8 +1295,10 @@ class Post(Stories):
 		# Add two line breaks
 		post_text += "\n\n"
 
-		# Add the "Read it here:" text with a line break
-		post_text += self.language_texts["read_it_here"] + ":" + "\n"
+		# ----- #
+
+		# Define the "Read it here" text with the text and a line break
+		self.chapter["Posting"]["Read it here"] = self.language_texts["read_it_here"] + ":" + "\n"
 
 		# Define a shortcut to the chapter link in the story website
 		chapter_link = self.chapter["Links"]["Website"][self.language["Small"]]
@@ -1246,17 +1306,13 @@ class Post(Stories):
 		# Replace spaces with "%20" in the chapter link
 		chapter_link = chapter_link.replace(" ", "%20")
 
-		# Add the chapter link in the root story website to the post text
-		post_text += chapter_link
+		# Add the chapter link in the root story website to the "Read it here" text
+		self.chapter["Posting"]["Read it here"] += chapter_link
 
-		# Add two line breaks
-		post_text += "\n\n"
+		# Add the "Read it here" text to the post text with two line breaks at the end
+		post_text += self.chapter["Posting"]["Read it here"] + "\n\n"
 
-		# Define the main hashtags inside the new "Posting" dictionary
-		self.chapter["Posting"] = {
-			"Hashtags": "#Stake2 #Brasil #Historias #",
-			"Texts": {}
-		}
+		# ----- #
 
 		# Add the story title in the user language without spaces as a hashtag
 		self.chapter["Posting"]["Hashtags"] += self.story["Titles"][self.language["Small"]].replace(" ", "")
@@ -1318,6 +1374,23 @@ class Post(Stories):
 		# Define a shortcut to the UTC time format
 		utc_time = utc_formats["YYYY-MM-DDTHH:MM:SSZ"]
 
+		# ----- #
+
+		# Define the correct date format text based on the user language
+		date_format_text = self.Date.texts["date_format, type: format"][self.language["Small"]]
+
+		# Replace the date strings in the date format text with the units and texts inside the date dictionary
+		date_text = self.Date.Replace_Strings_In_Text(date_format_text, self.posting["Date"], self.language["Small"])
+
+		# Get the writing time (hours and minutes) of the date
+		posting_time = self.posting["Date"]["Timezone"]["DateTime"]["Formats"]["HH:MM"]
+
+		# Define the posting "Date" and "Time" keys inside the "Posting" dictionary with the date and time
+		self.chapter["Posting"]["Date"] = date_text
+		self.chapter["Posting"]["Time"] = posting_time
+
+		# ----- #
+
 		# If the "Writing" dictionary is not present in the "Posting" dictionary, add it
 		if "Writing" not in self.chapter["Dictionary"]["Posting"]:
 			self.chapter["Dictionary"]["Posting"]["Writing"] = {
@@ -1331,18 +1404,18 @@ class Post(Stories):
 				"Dictionary": {}
 			}
 
+		# If the "Times" dictionary is inside the "Posting" dictionary and it is not empty
+		if "Times" in self.chapter["Dictionary"]["Posting"]:
+			# Add the "Times" dictionary to the "Writing" dictionary
+			self.chapter["Dictionary"]["Posting"]["Writing"]["Times"] = self.chapter["Dictionary"]["Posting"]["Times"]
+
+			# Remove the "Times" key from the "Posting" dictionary
+			self.chapter["Dictionary"]["Posting"].pop("Times")
+
 		# If the posting mode is "Written"
 		if self.posting_mode == "Written":
 			# Define the "Last posted chapter" as the current chapter
 			self.story["Chapters"]["Numbers"]["Last posted chapter"] = self.chapter["Number"]
-
-			# If the "Times" dictionary is inside the "Posting" dictionary and it is not empty
-			if "Times" in self.chapter["Dictionary"]["Posting"]:
-				# Add the "Times" dictionary to the "Writing" dictionary
-				self.chapter["Dictionary"]["Posting"]["Writing"]["Times"] = self.chapter["Dictionary"]["Posting"]["Times"]
-
-				# Remove the "Times" key from the "Posting" dictionary
-				self.chapter["Dictionary"]["Posting"].pop("Times")
 
 			# Define a shortcut to the "Times" dictionary
 			times = self.chapter["Dictionary"]["Posting"]["Writing"]["Times"]
@@ -1363,9 +1436,19 @@ class Post(Stories):
 			}
 
 			# Add it to the new revision dictionary
-			self.chapter["Dictionary"]["Posting"]["Revisions"][timezone_time] = {
+			self.chapter["Dictionary"]["Posting"]["Revisions"]["Dictionary"][timezone_time] = {
 				"Times": times
 			}
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Show the "Chapters" text
+			print()
+			print("Chapter dictionary:")
+			print()
+
+			# Show the chapter dictionary
+			self.JSON.Show(self.chapter["Dictionary"])
 
 		# Update the "Chapters.json" file with the updated "Chapters" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Chapters"], self.story["Chapters"])
@@ -1374,11 +1457,33 @@ class Post(Stories):
 		# Create the task dictionary to use in the "Tasks" class
 		self.task_dictionary = {
 			"Task": {
+				# Define the task titles and descriptions dictionaries
 				"Titles": {},
 				"Descriptions": {},
+
+				# Define the custom task item as "posted"
 				"Custom task item": self.Language.language_texts["posted"]
+			},
+			"Entry": {
+				"Times": {}
+			},
+			"States": {
+				# Add the memory date text to the Diary Slim text
+				# In the format: [2025/01 - January/01 - Monday/12;00.png]
+				"Add memory date text": True
 			}
 		}
+
+		# ----- #
+
+		# Define the completed task time in the "Times" dictionary
+		time_key = "Completed task"
+		self.task_dictionary["Entry"]["Times"][time_key] = self.posting["Date"]
+
+		# Define the completed task time in the UTC time zone
+		self.task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = self.posting["Date"]
+
+		# ----- #
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
@@ -1575,11 +1680,21 @@ class Post(Stories):
 			# Add the text to the task description with a period
 			task_description += text + "."
 
+			# ----- #
+
 			# Add the task description to the "Task" dictionary
 			self.task_dictionary["Task"]["Descriptions"][small_language] = task_description
 
+		# Define the local "register task" switch as True by default
+		register_task = True
+
+		# If the posting mode is "Revised"
+		if self.posting_mode == "Revised":
+			# Change the local "register task" switch to False, to register the posting task only on Diary Slim
+			register_task = False
+
 		# Register the task with the root "Register_Task" method
-		Stories.Register_Task(self, self.task_dictionary)
+		Stories.Register_Task(self, self.task_dictionary, register_task = register_task)
 
 	def Write_On_Diary_Slim(self):
 		# Define the text template as the "I updated the story website of my story" text in the user language
@@ -1622,7 +1737,7 @@ class Post(Stories):
 		# If the posting mode is "Revised"
 		if self.posting_mode == "Revised":
 			# Add the "and" text and a space
-			posting_mode_text += self.Language.language_texts["and"] + " "
+			posting_mode_text += " " + self.Language.language_texts["and"] + " "
 
 			# Define a shortcut to the "Translate" writing mode dictionary
 			translate = self.stories["Writing modes"]["Dictionary"]["Translate"]
@@ -1777,9 +1892,6 @@ class Post(Stories):
 		[Instagram]
 		[And on Facebook]"""
 
-		# Import the "Write_On_Diary_Slim_Module" sub-module from the "Diary_Slim" module
-		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
-
 		# Define the "Diary Slim" dictionary
 		self.posting["Diary Slim"] = {
 			# The text to be written in the user language
@@ -1802,8 +1914,8 @@ class Post(Stories):
 		print(self.separators["5"])
 		print()
 
-		# Write the task text on Diary Slim
-		Write_On_Diary_Slim_Module(self.posting["Diary Slim"])
+		# Write the posting text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
+		self.Diary_Slim.Write_On_Diary_Slim(self.posting["Diary Slim"])
 
 		# ---------- #
 
@@ -1827,6 +1939,8 @@ class Post(Stories):
 				# Show the story title with a tab
 				print("\t" + story_title)
 
+		# ----- #
+
 		# If the "Update all chapter covers" state is False
 		if self.states["Update all chapter covers"] == False:
 			# Define the default text as "This chapter was selected to be posted"
@@ -1842,6 +1956,8 @@ class Post(Stories):
 			print(self.language_texts[text] + ":")
 			print("\t" + self.chapter["Titles"]["With number"][self.language["Small"]])
 			print()
+
+			# ----- #
 
 			# Define the text template to be formatted
 			text_template = self.language_texts["it_was_{}_on_{}_at_{}"]
@@ -1863,3 +1979,28 @@ class Post(Stories):
 
 			# Show the text with a period
 			print(text + ".")
+
+			# ----- #
+
+			# If the mode parameter is "Finish"
+			if mode == "Finish":
+				# Define the text template to be formatted
+				text_template = self.language_texts["and_it_was_{}_on_{}_at_{}"]
+
+				# Define the list of items to use to format the text template
+				items = [
+					# The "posted" text in the user language
+					self.Language.language_texts["posted"],
+
+					# The chapter posting date in the user date format
+					self.chapter["Posting"]["Date"],
+
+					# The chapter posting time
+					self.chapter["Posting"]["Time"]
+				]
+
+				# Format the text template with the list of items
+				text = text_template.format(*items)
+
+				# Show the text with a period
+				print(text + ".")

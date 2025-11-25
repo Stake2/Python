@@ -44,7 +44,7 @@ class Christmas():
 
 			# If the module title is not "Define_Folders"
 			if module_title != "Define_Folders":
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
 			# If the module title is "Define_Folders"
@@ -165,7 +165,7 @@ class Christmas():
 			if title not in do_not_run:
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, title, sub_class)
 
 	def Define_Folders(self):

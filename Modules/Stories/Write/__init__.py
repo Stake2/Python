@@ -2062,11 +2062,11 @@ class Write(Stories):
 		if self.switches["Testing"] == True:
 			# Show the "Chapters" text
 			print()
-			print("Chapters:")
+			print("Chapter dictionary:")
 			print()
 
-			# Show the local "Chapters" dictionary
-			self.JSON.Show(chapters_copy)
+			# Show the local chapter dictionary
+			self.JSON.Show(chapter_copy)
 
 		# Update the "Chapters.json" file with the updated "Chapters" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Chapters"], chapters_copy)

@@ -1,18 +1,14 @@
 # Diary_Slim.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
-# Import the "collections" module
 import collections
-
-# Import the "deepcopy" module
 from copy import deepcopy
 
 class Diary_Slim():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
@@ -21,11 +17,12 @@ class Diary_Slim():
 		self.Define_Basic_Variables()
 		self.Define_Texts()
 
+		# Import some usage classes
+		self.Import_Usage_Classes()
+
 		# Folders, files, lists, and dictionaries methods
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
-
-		# Class methods
 
 		# Define the template dictionaries
 		self.Define_Templates()
@@ -45,7 +42,7 @@ class Diary_Slim():
 		# Define the statistics for the Diary Slim
 		self.Define_Statistics()
 
-	def Import_Classes(self):
+	def Import_Utility_Classes(self):
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -65,7 +62,7 @@ class Diary_Slim():
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
@@ -135,6 +132,103 @@ class Diary_Slim():
 
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
+
+	def Import_Usage_Classes(self):
+		# Define a local dictionary of classes
+		classes = {
+			"List": [
+				"Tasks"
+			],
+			"Dictionary": {
+				"Tasks": {
+					"Sub-classes to import": {
+						"List": [
+							"Register"
+						]
+					}
+				}
+			},
+			"Do not run": [
+				"Tasks"
+			]
+		}
+
+		# Iterate through the list of classes
+		for class_title in classes["List"]:
+			# Define the class dictionary
+			class_dictionary = {
+				"Title": class_title,
+				"Module": "",
+				"Object": ""
+			}
+
+			# If the class title is inside the dictionary of classes
+			if class_title in classes["Dictionary"]:
+				# Get the "Sub-classes to import" dictionary from it
+				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
+
+			# Import the module
+			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
+
+			# Get the class object
+			class_dictionary["Object"] = getattr(class_dictionary["Module"], class_title)
+
+			# If the class title is not inside the list of classes to not run
+			if class_title not in classes["Do not run"]:
+				# Run the class to define its variables
+				class_dictionary["Object"] = class_dictionary["Object"]()
+
+			# If the "Sub-classes to import" key is present
+			if "Sub-classes to import" in class_dictionary:
+				# Create the "Sub-classes" dictionary
+				class_dictionary["Sub-classes"] = {}
+
+				# Define a shortcut to the sub-classes dictionary
+				sub_classes = class_dictionary["Sub-classes to import"]
+
+				# Define a sub-class number
+				sub_class_number = 0
+
+				# Iterate through the list of sub-classes
+				for sub_class_title in sub_classes["List"]:
+					# Create the sub-class dictionary
+					sub_class_dictionary = {
+						"Title": sub_class_title,
+						"Module": "",
+						"Object": ""
+					}
+
+					# Import the sub-module
+					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
+
+					# Get the sub-class
+					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
+
+					# If the "Titles" list is present
+					if "Titles" in sub_classes:
+						# Change the sub-class title to the one in the list of sub-class titles
+						sub_class_title = sub_classes["Titles"][sub_class_number]
+
+					# Add the sub-class dictionary to the root sub-classes dictionary
+					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
+
+					# Add the sub-class to the root class
+					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
+
+					# Add one to the sub-class number
+					sub_class_number += 1
+
+				# Remove the "Sub-classes to import" dictionary
+				class_dictionary.pop("Sub-classes to import")
+
+			# Add the class dictionary to the root classes dictionary
+			classes["Dictionary"][class_title] = class_dictionary
+
+			# Add the class to the current class
+			setattr(self, class_title, class_dictionary["Object"])
+
+		# Sort the dictionary of classes with the order of the list of classes
+		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 	def Define_Folders_And_Files(self):
 		# Define the root "Diary Slim" dictionary
@@ -1909,7 +2003,7 @@ class Diary_Slim():
 		return statistics_text
 
 	def Next_State(self, dictionary):
-		# Define the states variable for easier typing
+		# Define a shortcut to the "States" dictionary
 		states = dictionary["States"]
 
 		# Get the list of state dictionaries
@@ -1922,8 +2016,37 @@ class Diary_Slim():
 		if index == len(states_list):
 			index = 0
 
-		# Define the next state
+		# Define the current state as the [next/first] state, depending on the index
 		states["Current state"] = states_list[index]
 
-		# Update the "States.json" file
+		# Update the "States.json" file with the new states dictionary
 		self.JSON.Edit(dictionary["Files"]["States"], states)
+
+	def Create_Memory_Date_Text(self, date):
+		# Define the memory date text template
+		text_template = "[{}/{}/{}/{}.png]"
+
+		# Define the list of items to use to format the text template
+		items = [
+			# Get the year
+			# Example: 2025
+			date["Units"]["Year"],
+
+			# Get the month name with the month number in the user language
+			# Example: 01 - January
+			date["Texts"]["Month name with number"][self.language["Small"]],
+
+			# Get the day name with the day number in the user language
+			# Example: 01 - Monday
+			date["Texts"]["Day name with number"][self.language["Small"]],
+
+			# Get the hours and minutes and replace the colon with the semicolon
+			# Example: 12;00
+			date["Formats"]["HH:MM"].replace(":", ";")
+		]
+
+		# Format the text template with the list of items to create the memory date text
+		memory_date_text = text_template.format(*items)
+
+		# Return it
+		return memory_date_text

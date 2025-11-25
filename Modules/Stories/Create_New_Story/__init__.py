@@ -525,7 +525,7 @@ class Create_New_Story(Stories):
 			# Get the sub-class
 			sub_class = getattr(module, title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(Stories, title, sub_class)
 
 	def Show_Story_Information(self):

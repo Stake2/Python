@@ -49,5 +49,5 @@ class Add_To_Comments_Dictionary(Watch_History):
 			# Get the sub-class
 			sub_class = getattr(module, title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, title, sub_class)

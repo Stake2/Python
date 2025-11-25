@@ -6,8 +6,8 @@ from copy import deepcopy
 
 class Stories(object):
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
@@ -37,7 +37,7 @@ class Stories(object):
 		# Define the "Stories" dictionary
 		self.Define_Stories_Dictionary()
 
-	def Import_Classes(self):
+	def Import_Utility_Classes(self):
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -57,7 +57,7 @@ class Stories(object):
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
@@ -139,22 +139,115 @@ class Stories(object):
 			i += 1
 
 	def Import_Usage_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"PHP",
-			"Social_Networks"
-		]
+		# Define a local dictionary of classes
+		classes = {
+			"List": [
+				"PHP",
+				"Social_Networks",
+				"Tasks",
+				"Diary_Slim"
+			],
+			"Dictionary": {
+				"Tasks": {
+					"Sub-classes to import": {
+						"List": [
+							"Register"
+						]
+					}
+				},
+				"Diary_Slim": {
+					"Sub-classes to import": {
+						"List": [
+							"Write_On_Diary_Slim_Module"
+						],
+						"Titles": [
+							"Write_On_Diary_Slim"
+						]
+					}
+				}
+			},
+			"Do not run": [
+				"Diary_Slim",
+				"Tasks"
+			]
+		}
 
-		# Import them
-		for class_title in classes:
+		# Iterate through the list of classes
+		for class_title in classes["List"]:
+			# Define the class dictionary
+			class_dictionary = {
+				"Title": class_title,
+				"Module": "",
+				"Object": ""
+			}
+
+			# If the class title is inside the dictionary of classes
+			if class_title in classes["Dictionary"]:
+				# Get the "Sub-classes to import" dictionary from it
+				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
+
 			# Import the module
-			module = importlib.import_module("." + class_title, class_title)
+			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
 
-			# Get the sub-class
-			sub_class = getattr(module, class_title)
+			# Get the class object
+			class_dictionary["Object"] = getattr(class_dictionary["Module"], class_title)
 
-			# Add the sub-class to the current module
-			setattr(self, class_title, sub_class())
+			# If the class title is not inside the list of classes to not run
+			if class_title not in classes["Do not run"]:
+				# Run the class to define its variables
+				class_dictionary["Object"] = class_dictionary["Object"]()
+
+			# If the "Sub-classes to import" key is present
+			if "Sub-classes to import" in class_dictionary:
+				# Create the "Sub-classes" dictionary
+				class_dictionary["Sub-classes"] = {}
+
+				# Define a shortcut to the sub-classes dictionary
+				sub_classes = class_dictionary["Sub-classes to import"]
+
+				# Define a sub-class number
+				sub_class_number = 0
+
+				# Iterate through the list of sub-classes
+				for sub_class_title in sub_classes["List"]:
+					# Create the sub-class dictionary
+					sub_class_dictionary = {
+						"Title": sub_class_title,
+						"Module": "",
+						"Object": ""
+					}
+
+					# Import the sub-module
+					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
+
+					# Get the sub-class
+					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
+
+					# If the "Titles" list is present
+					if "Titles" in sub_classes:
+						# Change the sub-class title to the one in the list of sub-class titles
+						sub_class_title = sub_classes["Titles"][sub_class_number]
+
+					# Add the sub-class dictionary to the root sub-classes dictionary
+					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
+
+					# Add the sub-class to the root class
+					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
+
+					# Add one to the sub-class number
+					sub_class_number += 1
+
+				# Remove the "Sub-classes to import" dictionary
+				class_dictionary.pop("Sub-classes to import")
+
+			# Add the class dictionary to the root classes dictionary
+			classes["Dictionary"][class_title] = class_dictionary
+
+			# Add the class to the current class
+			setattr(self, class_title, class_dictionary["Object"])
+
+		# Sort the dictionary of classes with the order of the list of classes
+		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 		# ---------- #
 
@@ -1980,12 +2073,6 @@ class Stories(object):
 		return self.stories["Statistics"]
 
 	def Update_Statistics(self, story_titles, writing_mode):
-		# Import the "Diary_Slim" module
-		from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
-
-		# Define the "Diary_Slim" class inside this class
-		self.Diary_Slim = Diary_Slim()
-
 		# Get the "diary_slim" dictionary from the class above
 		self.diary_slim = self.Diary_Slim.diary_slim
 
@@ -2286,29 +2373,26 @@ class Stories(object):
 
 		# ---------- #
 
-		# If the "Entry" key is not inside the task dictionary
+		# If the "Entry" dictionary is not inside the task dictionary
 		if "Entry" not in task_dictionary:
 			# Create it
 			task_dictionary["Entry"] = {
 				"Times": {}
 			}
 
-			# Register the completed task time in the "Times" dictionary
+			# Define the completed task time in the "Times" dictionary
 			time_key = "Completed task"
 			task_dictionary["Entry"]["Times"][time_key] = self.Date.Now()
 
-			# Register the completed task time in the UTC time
+			# Define the completed task time in the UTC time zone
 			task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = task_dictionary["Entry"]["Times"][time_key]
 
 		# ---------- #
 
 		# Register the task with the "Register" class of the "Tasks" module
 		if register_task == True:
-			# Import the "Register" class of the "Tasks" module
-			from Tasks.Register import Register as Register
-
-			# Register the task
-			Register(task_dictionary)
+			# Register the task using the "Register" sub-class of the "Tasks" class
+			self.Tasks.Register(task_dictionary)
 
 		# ---------- #
 
@@ -2316,9 +2400,6 @@ class Stories(object):
 		if register_task == False:
 			# Show a space separator
 			print()
-
-			# Import the "Write_On_Diary_Slim_Module" sub-module from the "Diary_Slim" module
-			from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
 
 			# Define the "Write on Diary Slim" dictionary
 			dictionary = {
@@ -2332,8 +2413,8 @@ class Stories(object):
 				"Show text": True
 			}
 
-			# Write the task text on Diary Slim
-			Write_On_Diary_Slim_Module(dictionary)
+			# Write the task text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
+			self.Diary_Slim.Write_On_Diary_Slim(dictionary)
 
 	def Select_Story(self, stories_list = [], select_text = None, select_class = False):
 		# Get the class name which ran this method
@@ -2554,8 +2635,8 @@ class Stories(object):
 			# Define the default chapter title as the chapter number with leading zeroes
 			chapter_title = chapter["Numbers"]["Leading zeroes"]
 
-			# If the number of chapter titles is the same as the chapter number
-			if len(chapter_titles[small_language]) == chapter["Number"]:
+			# Check if the chapter number is less or equal to the number of chapter titles
+			if chapter["Number"] <= len(chapter_titles[small_language]):
 				# Get the actual chapter title
 				# (The chapter number less one because Python list indexes start at zero)
 				chapter_title = chapter_titles[small_language][chapter["Number"] - 1]
@@ -2566,8 +2647,8 @@ class Stories(object):
 			# [Chapter Title] (for the "Revise" or "Translate" writing modes)
 			chapter_title_with_number = chapter_title
 
-			# If the number of chapter titles is the same as the chapter number
-			if len(chapter_titles[small_language]) == chapter["Number"]:
+			# Check if the chapter number is less or equal to the number of chapter titles
+			if chapter["Number"] <= len(chapter_titles[small_language]):
 				# Define the chapter title with the number
 				# Example: 01 - [Chapter Title]
 				chapter_title_with_number = chapter["Numbers"]["Leading zeroes"] + " - " + chapter_title

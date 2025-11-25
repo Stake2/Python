@@ -47,7 +47,7 @@ class Folder():
 
 			# If the module title is not "Define_Folders"
 			if module_title != "Define_Folders":
-				# Add the sub-class to the current module
+				# Add the sub-class to the current class
 				setattr(self, module_title, sub_class())
 
 			# If the module title is "Define_Folders"

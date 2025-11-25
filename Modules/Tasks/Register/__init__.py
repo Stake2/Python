@@ -42,17 +42,21 @@ class Register(Tasks):
 
 		# Define the states dictionary
 		self.states = {
+			# Indicates if the class is being used as a dependency in another class
 			"Used as module": False,
-			# Indicates if the module is being used as a dependency in another place
 
-			"Five dash space": True,
 			# Indicates if the module should show a five dash space after showing the information about the registered task
+			"Five dash space": True,
 
+			# Ask for user input after showing the information about the registered task
 			"Ask for input": True,
-			# Ask for input after showing the information about the registered task
 
-			"Register task": True
-			# A state defining if the task is going to be registered
+			# A state to define if the task is going to be registered or not
+			# (If the task is not registered, it is only registered in the current Diary Slim)
+			"Register task": True,
+
+			# If the memory date should be added to the Diary Slim text or not
+			"Add memory date text": False
 		}
 
 		# If the parameter dictionary is not empty
@@ -60,15 +64,19 @@ class Register(Tasks):
 			# Define the "Used as module" state as True
 			self.states["Used as module"] = True
 
-		# If the "Register task" key is inside the parameter dictionary
-		if "Register task" in dictionary_parameter:
-			# Update the state inside the root states dictionary
-			self.states["Register task"] = dictionary_parameter["Register task"]
+			# If the "States" key is present inside the parameter dictionary
+			if "States" in dictionary_parameter:
+				# Iterate through the keys and states dictionary
+				for key, state in dictionary_parameter["States"].items():
+					# Update the state inside the root states dictionary
+					self.states[key] = state
 
-		# ---------- #
-
-		# Update the root dictionary with the parameter dictionary
-		self.dictionary.update(dictionary_parameter)
+			# Iterate through the defined list of keys
+			for key in ["Type", "Task", "Entry"]:
+				# If the key exists inside the parameter dictionary
+				if key in dictionary_parameter:
+					# Update the root key with the value inside the parameter dictionary
+					self.dictionary[key] = dictionary_parameter[key]
 
 		# ---------- #
 
@@ -1127,20 +1135,38 @@ class Register(Tasks):
 				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
 
-		# Import the "Write_On_Diary_Slim_Module" module from the "Diary_Slim" module
-		from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
+		# If the "Add memory date text" state is True
+		if self.states["Add memory date text"] == True:
+			# Define a shortcut to the completed task date dictionary
+			completed_task_date = self.dictionary["Entry"]["Times"]["Completed task"]
+
+			# Run the root "Diary_Slim" class to define its variables
+			self.Diary_Slim = self.Diary_Slim()
+
+			# Create the memory date text using the "Create_Memory_Date_Text" method of the "Diary_Slim" class
+			# In the format: [2025/01 - January/01 - Monday/12;00.png]
+			memory_date_text = self.Diary_Slim.Create_Memory_Date_Text(completed_task_date)
+
+			# Add the memory date text to the Diary Slim text with two line breaks in the beginning
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + memory_date_text
 
 		# Define the "Write on Diary Slim" dictionary
-		# With the Diary Slim text, time, not adding a dot, and not showing the text
 		dictionary = {
+			# The text to be written in the user language
 			"Text": self.dictionary["Entry"]["Diary Slim"]["Text"],
+
+			# The time to use to write the text
 			"Time": self.dictionary["Entry"]["Times"]["Completed task"]["Formats"]["HH:MM DD/MM/YYYY"],
+
+			# Do not add the end dot
 			"Add": {
 				"Dot": False
 			},
+
+			# Do not show the "This text was written to the current Diary Slim" text
 			"Show text": False
 		}
 
-		# Write the entry text on the current Diary Slim
+		# Write the task text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
 		# Getting back the current Diary Slim dictionary
-		self.dictionary["Diary Slim"] = Write_On_Diary_Slim_Module.Return(dictionary)
+		self.dictionary["Diary Slim"] = self.Diary_Slim.Write_On_Diary_Slim.Return(dictionary)

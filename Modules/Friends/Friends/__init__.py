@@ -51,7 +51,7 @@ class Friends(object):
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 		# Define the "Language" class as the same class inside the "JSON" class
@@ -136,7 +136,7 @@ class Friends(object):
 			# Get the sub-class
 			sub_class = getattr(module, title)
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, title, sub_class())
 
 		# Define the "Social Networks" dictionary of this module as the "Social Networks" dictionary of the "Social_Networks" module

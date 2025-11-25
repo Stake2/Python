@@ -45,7 +45,7 @@ class JSON():
 				# Run the sub-class to define its variable
 				sub_class = sub_class()
 
-			# Add the sub-class to the current module
+			# Add the sub-class to the current class
 			setattr(self, module_title, sub_class)
 
 	def Define_Switches(self):
@@ -492,6 +492,17 @@ class JSON():
 
 							# If the sub-sub-sub-value is a module, function, class, or method
 							if type_name in ["module", "function", "type", "method"]:
+								# If it is a module
+								if type_name == "module":
+									# Get the root module
+									root_module = sub_sub_sub_value.__name__.split(".")[0]
+
+									# Get the module
+									module = sub_sub_sub_value.__name__.split(".")[1]
+
+									# Define the sub-sub-value as the root module plus the module
+									sub_sub_sub_value = str(root_module) + "." + str(module)
+
 								# If it is a method
 								if type_name == "method":
 									# Get its class
