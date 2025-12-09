@@ -17,7 +17,7 @@ class Update_Websites(PHP):
 			"Verbose": False
 		}
 
-		# Define the states dictionary
+		# Define the root states dictionary
 		self.states = {
 			"Select website": True,
 			"First time updating": True,
@@ -117,39 +117,29 @@ class Update_Websites(PHP):
 			print("\t" + website_title)
 
 	def Define_Languages(self):
-		# Define the "Languages" dictionary
-		self.dictionary["Languages"] = {
-			"Small": [],
-			"Full": {},
+		# Add the "General" language dictionary
+		self.languages["Dictionary"]["General"] = {
+			"Small": "general",
+			"Full": "General",
 			"Translated": {}
 		}
 
-		# Add the "General" language
-		self.dictionary["Languages"]["Small"].append("general")
-		self.dictionary["Languages"]["Full"]["general"] = "General"
-		self.dictionary["Languages"]["Translated"]["general"] = {}
-
 		# Iterate through the list of small languages
-		for language in self.languages["Small"]:
-			# Define the translated version of the general language
-			self.dictionary["Languages"]["Translated"]["general"][language] = self.Language.texts["general, title()"][language]
+		for small_language in self.languages["Small"]:
+			# Define the version of the "General" language translated to the current language
+			self.languages["Dictionary"]["General"]["Translated"][small_language] = self.Language.texts["general, title()"][small_language]
 
-		# Iterate through the language keys and dictionaries
-		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
-			full_language = language["Full"]
+		# Define the order to use to sort the languages "Dictionary"
+		order = [
+			"General"
+		]
 
-			# Get the current language "Translated" dictionary
-			translated_language_dictionary = language["Translated"]
+		# Add the rest of the small languages
+		order.extend(self.languages["Small"])
 
-			# Add the current language to the list of small languages
-			self.dictionary["Languages"]["Small"].append(small_language)
-
-			# Add the full language
-			self.dictionary["Languages"]["Full"][small_language] = full_language
-
-			# Add the current language "Translated" dictionary
-			self.dictionary["Languages"]["Translated"][small_language] = translated_language_dictionary
+		# Sort the keys of the language "Dictionary" using the defined order
+		# This is to make the "General" language the first one
+		self.languages["Dictionary"] = self.JSON.Sort_Item_List(self.languages["Dictionary"], order = order)
 
 	def Define_Websites(self, dictionary):
 		# Iterate through the dictionary of websites
@@ -195,7 +185,7 @@ class Update_Websites(PHP):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Define the "generate website" link template
@@ -479,21 +469,13 @@ class Update_Websites(PHP):
 				if self.switches["Testing"] == False:
 					self.System.Open(link, verbose = False)
 
-				# If the "verbose" switch is True
-				# Or the "Verbose" key of the root dictionary is True
-				if (
-					self.switches["Verbose"] == True or
-					self.dictionary["Verbose"] == True
-				):
-					# Create the link text with the current language translated into the user language
-					texts = self.Language.language_texts
+				# Create the link text with the current language translated into the user language
+				text = self.Language.language_texts["link, title()"] + " " + texts["in"] + " " + translated_language
 
-					text = texts["link, title()"] + " " + texts["in"] + " " + translated_language
-
-					# Show the link of the website
-					print()
-					print(text + ":")
-					print("\t" + link)
+				# Show the link of the website
+				print()
+				print(text + ":")
+				print("\t" + link)
 
 				# Open the link if the "testing" switch is False
 				if self.switches["Testing"] == False:

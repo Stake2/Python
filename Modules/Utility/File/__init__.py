@@ -421,7 +421,7 @@ class File():
 		# Get the contents of the file
 		contents = self.Contents(file)
 
-		# Define a shortcut to the file length
+		# Create a shortcut to the file length
 		length = contents["Length"]
 
 		# Define the line break as an empty string

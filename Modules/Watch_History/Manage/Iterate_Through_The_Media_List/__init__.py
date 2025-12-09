@@ -10,34 +10,6 @@ class Iterate_Through_The_Media_List(Watch_History):
 		self.Iterate()
 
 	def Iterate(self):
-		# Define default comments number dictionary
-		self.comments_number = {
-			"Numbers": {
-				"Total": 0,
-				"No time": 0,
-				"Years": {},
-				"Type": {}
-			}
-		}
-
-		# Add missing year numbers
-		for year in range(2018, self.date["Units"]["Year"] + 1):
-			if str(year) not in self.comments_number["Numbers"]["Years"]:
-				# If the year of the entry is not inside the comment numbers by year, add it
-				self.comments_number["Numbers"]["Years"][str(year)] = 0
-
-				for plural_media_type in self.media_types["Plural"]["en"]:
-					if plural_media_type not in self.comments_number["Numbers"]["Type"]:
-						self.comments_number["Numbers"]["Type"][plural_media_type] = {
-							"Total": 0,
-							"No time": 0,
-							"Years": {}
-						}
-
-					# If the year of the entry is not inside the comment numbers by type and by year, add it
-					if str(year) not in self.comments_number["Numbers"]["Type"][plural_media_type]["Years"]:
-						self.comments_number["Numbers"]["Type"][plural_media_type]["Years"][str(year)] = 0
-
 		# Iterate through English plural media types list
 		i = 0
 		for plural_media_type in self.media_types["Plural"]["en"]:
@@ -126,7 +98,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Define the media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
-						# Define a shortcut for the "Media" dictionary for easier typing
+						# Create a shortcut for the "Media" dictionary for easier typing
 						self.media = self.dictionary["Media"]
 
 						# Show the media item title
@@ -138,20 +110,11 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Update the watched files of the media
 						#self.Update_Watched_Files()
 
-						# Update the "Comments" JSON dictionary
-						#self.Update_Comments_JSON()
-
-						# Update the text of the comment files
-						#self.Update_Comment_Files()
-
 						# Verify if there are empty episode titles files
 						#self.Check_Episodes_Titles()
 
 						# Add exact media or media item creation or release to media or media item details
 						#self.Add_Date()
-
-						# Re-count comments numbers
-						#self.Count_Comments_Number()
 
 						# Add anime information to anime details
 						#if self.dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:
@@ -202,21 +165,6 @@ class Iterate_Through_The_Media_List(Watch_History):
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
 			i += 1
-
-		import collections
-
-		# Sort the comment numbers by year dictionary based on its keys
-		self.comments_number["Numbers"]["Years"] = dict(collections.OrderedDict(sorted(self.comments_number["Numbers"]["Years"].items())))
-
-		# Sort the comment numbers by media type and by year dictionary based on its keys
-		for plural_media_type in self.media_types["Plural"]["en"]:
-			self.comments_number["Numbers"]["Type"][plural_media_type]["Years"] = dict(collections.OrderedDict(sorted(self.comments_number["Numbers"]["Type"][plural_media_type]["Years"].items())))
-
-		# Only edit the root "Comments.json" file if the program iterated through all of the media types
-		# (If a media type was removed from the list, the comments number will be wrong)
-		#if media_types_to_remove == []:
-			# Update the root "Comments.json" file
-			#self.JSON.Edit(self.folders["Comments"]["Comments"], self.comments_number)
 
 	def Update_Watched_Files(self):
 		# Get the watched dictionary from the watched "Entries.json" file
@@ -339,7 +287,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						(self.dictionary["Media type"]["Plural"]["en"] == "Videos" and
 						not self.media["States"]["Episodic"])
 					):
-						# Define a shortcut for the singular media type
+						# Create a shortcut for the singular media type
 						singular_media_type = self.dictionary["Media type"]["Singular"][self.language["Small"]]
 
 						# Determine the case of the singular media type based on the position of the "{}" characters
@@ -384,7 +332,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			"Titles" in self.dictionary["Media"]["Item"]["Folders"] and
 			media_status not in on_hold_statuses
 		):
-			# Define a shortcut to the titles folder
+			# Create a shortcut to the titles folder
 			titles_folder = self.dictionary["Media"]["Item"]["Folders"]["Titles"]["root"]
 
 			# Define the titles file to check its contents
@@ -394,7 +342,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 			if self.File.Contents(titles_file)["lines"] == []:
 				# Iterate through the language dictionaries
 				for language in self.languages["Dictionary"].values():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# Define the language titles file
@@ -491,50 +439,6 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 				# And end the program execution
 				quit()
-
-	def Count_Comments_Number(self):
-		# Get comments dictionary from file
-		comments = self.JSON.To_Python(self.dictionary["Media"]["Item"]["Folders"]["comments"]["comments"])
-
-		# If the entries list is not empty
-		if comments["Entries"] != []:
-			# Iterate through the entries list
-			for entry_name in comments["Entries"]:
-				# Get the entry from the entries dictionary
-				entry = comments["Dictionary"][entry_name]
-
-				# If the "Date" key is inside the entry dictionary
-				if "Date" in entry:
-					# If the date is not empty
-					if entry["Date"] != "":
-						# If the date has more than the year
-						if len(entry["Date"]) != 4:
-							# Get the year from the date by converting the date into a date dictionary
-							year = self.Date.From_String(entry["Date"])["Units"]["Year"]
-
-						# If the date contains only the year
-						if len(entry["Date"]) == 4:
-							year = entry["Date"]
-
-						# Add one to the comments number by year
-						self.comments_number["Numbers"]["Years"][str(year)] += 1
-
-						# Add one to the comments number by type and by year
-						self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Years"][str(year)] += 1
-
-					# If the date is empty or the date contains only the year
-					if entry["Date"] == "" or len(entry["Date"]) == 4:
-						# Add one to the comments without date
-						self.comments_number["Numbers"]["No time"] += 1
-
-						# Add one to the comments without time by type
-						self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["No time"] += 1
-
-					# Add one to the total comments number by type
-					self.comments_number["Numbers"]["Total"] += 1
-
-					# Add one to the total comments number by type
-					self.comments_number["Numbers"]["Type"][self.dictionary["Media type"]["Plural"]["en"]]["Total"] += 1
 
 	def Add_Anime_Information(self):
 		item_types = ["Media"]
@@ -694,10 +598,20 @@ class Iterate_Through_The_Media_List(Watch_History):
 
 				media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.language_texts["episodes, title()"])
 
+				# Define the singular or plural "Studios" text based on the number of studios
+				number = media_dictionary["Information"]["Dictionary"]["Studios"]
+				singular_text = self.Language.language_texts["studio, title()"]
+				plural_text = self.Language.language_texts["studios, title()"]
+
+				studios_text = self.Text.By_Number(number, singular_text, plural_text)
+
+				# Convert the list of studios into a text string
+				studios_list = self.Text.From_List(media_dictionary["Information"]["Dictionary"]["Studios"])
+
 				# Add "Studio(s)" key to media (item) details after the "Episodes duration" key
 				key_value = {
-					"key": self.Text.By_Number(media_dictionary["Information"]["Dictionary"]["Studios"], self.Language.language_texts["studio, title()"], self.Language.language_texts["studios, title()"]),
-					"value": self.Text.From_List(media_dictionary["Information"]["Dictionary"]["Studios"])
+					"key": studios_text,
+					"value": studios_list
 				}
 
 				media_dictionary["Details"] = self.JSON.Add_Key_After_Key(media_dictionary["Details"], key_value, after_key = self.language_texts["episodes_duration"])

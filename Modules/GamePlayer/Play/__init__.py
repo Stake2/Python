@@ -113,7 +113,7 @@ class Play(GamePlayer):
 			# Ask the user to select a game type and game
 			self.dictionary = self.Select_Game_Type_And_Game(game_title = game_title, sub_game_title = sub_game_title, play = True)
 
-		# Define a shortcut for the "Game" dictionary
+		# Create a shortcut for the "Game" dictionary
 		self.game = self.dictionary["Game"]
 
 		# Define the playing status list for "Plan to play" related statuses

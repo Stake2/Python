@@ -292,7 +292,7 @@ class Comment_Writer(Watch_History):
 				(self.dictionary["Media type"]["Plural"]["en"] == "Videos" and
 				not self.media["States"]["Episodic"])
 			):
-				# Define a shortcut for the singular media type
+				# Create a shortcut for the singular media type
 				singular_media_type = self.dictionary["Media type"]["Singular"][self.language["Small"]]
 
 				# Determine the case of the singular media type based on the position of the "{}" characters
@@ -492,7 +492,7 @@ class Comment_Writer(Watch_History):
 
 		# If the media is not a series media (it is a movie)
 		if self.media["States"]["Series media"] == False:
-			# Define a shortcut (by reference) for the titles dictionary
+			# Create a shortcut (by reference) for the titles dictionary
 			titles = self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]["Titles"]
 
 			# Remove the "ja" and "Sanitized" keys of the local titles dictionary if they exist
@@ -532,7 +532,7 @@ class Comment_Writer(Watch_History):
 		# If the media is a video channel
 		# (Add the YouTube video ID, comment link, and comment ID to the comment dictionary)
 		if self.media["States"]["Video"] == True:
-			# Define a shortcut to the comment dictionary
+			# Create a shortcut to the comment dictionary
 			comment = self.dictionary["Comment Writer"]["Comments"]["Media"]["Dictionary"][self.comment_file_name]
 
 			# Update the comment dictionary to add the comment "Link" and "Video" dictionaries
@@ -553,10 +553,10 @@ class Comment_Writer(Watch_History):
 
 			# ---------- #
 
-			# Define a shortcut to the video dictionary
+			# Create a shortcut to the video dictionary
 			video = comment["Video"]
 
-			# Define a shortcut to the video link
+			# Create a shortcut to the video link
 			video_link = video["Link"]
 
 			# Get the video information from the root "Get_YouTube_Information" method that uses the "API" utility class to access the YouTube API
@@ -654,7 +654,7 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["Text"]["String"][5] = comment_information["Times"]["Timezone"]
 
 			# Convert the list of lines of the comment text to a string
-			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"], next_line = True)
+			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
 
 		# If the "Add comment" state is True
 		if self.dictionary["Comment Writer"]["States"]["Add"] == True:

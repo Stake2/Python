@@ -134,9 +134,13 @@ class Database(object):
 			# Add the sub-class to the current class
 			setattr(self, title, sub_class())
 
+		# ---------- #
+
+		# Get the "Today_Is_Christmas" True or False variable
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
 
 	def Define_Folders_And_Files(self):
+		# Get the "Current year" dictionary from the "Years" class
 		self.current_year = self.Years.years["Current year"]
 
 		# Folders dictionary
@@ -694,7 +698,7 @@ class Database(object):
 		# Define the default data language as the full user language
 		data["Language"] = self.language["Full"]
 
-		# Define a shortcut to the "Original language" text
+		# Create a shortcut to the "Original language" text
 		original_language_text = self.Language.language_texts["original_language"]
 
 		# If the "Original language" key exists in the data "Details" dictionary
@@ -709,7 +713,7 @@ class Database(object):
 		if data["Language"] in full_languages:
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# If the full current language is the same as the data language

@@ -13,21 +13,25 @@ class Diary_Slim():
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
 
-		# Module related methods
+		# Define basic variables for the class
 		self.Define_Basic_Variables()
+
+		# Define the text dictionaries of the class
 		self.Define_Texts()
 
 		# Import some usage classes
 		self.Import_Usage_Classes()
 
-		# Folders, files, lists, and dictionaries methods
+		# Define the folders and files of the class
 		self.Define_Folders_And_Files()
+
+		# Define the lists and dictionaries of the class
 		self.Define_Lists_And_Dictionaries()
 
 		# Define the template dictionaries
 		self.Define_Templates()
 
-		# Define the History of Diary Slim
+		# Define the "history" dictionary of Diary Slim
 		self.Define_History()
 
 		# Define the story information and dictionary
@@ -183,7 +187,7 @@ class Diary_Slim():
 				# Create the "Sub-classes" dictionary
 				class_dictionary["Sub-classes"] = {}
 
-				# Define a shortcut to the sub-classes dictionary
+				# Create a shortcut to the sub-classes dictionary
 				sub_classes = class_dictionary["Sub-classes to import"]
 
 				# Define a sub-class number
@@ -336,7 +340,7 @@ class Diary_Slim():
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Define the file
@@ -962,7 +966,7 @@ class Diary_Slim():
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Define and create the language text file
@@ -1104,7 +1108,7 @@ class Diary_Slim():
 
 		# Iterate through the keys and dictionaries inside the dictionary of text dictionaries that have a statistic
 		for key, dictionary in dictionaries.items():
-			# Define a shortcut for the statistic dictionary
+			# Create a shortcut for the statistic dictionary
 			statistic = dictionary["Statistic"]
 
 			# ----- #
@@ -1178,7 +1182,7 @@ class Diary_Slim():
 
 			# If the "Question" key is inside the statistic dictionary
 			if "Question" in statistic:
-				# Define a shortcut for the question
+				# Create a shortcut for the question
 				question = statistic["Question"]
 
 				# If the question has a key
@@ -1396,7 +1400,7 @@ class Diary_Slim():
 			"Dictionary": {}
 		}
 
-		# Define a shortcut for the file
+		# Create a shortcut for the file
 		file = self.diary_slim["Folders"]["Data"]["External statistics"]["Statistics"]
 
 		# If the external statistics file is not empty
@@ -2003,7 +2007,7 @@ class Diary_Slim():
 		return statistics_text
 
 	def Next_State(self, dictionary):
-		# Define a shortcut to the "States" dictionary
+		# Create a shortcut to the "States" dictionary
 		states = dictionary["States"]
 
 		# Get the list of state dictionaries

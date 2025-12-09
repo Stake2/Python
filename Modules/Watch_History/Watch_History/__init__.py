@@ -1,12 +1,9 @@
 # Watch History.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
-# Import the "deepcopy" module from the "copy" module
 from copy import deepcopy
 
-# Main class Watch_History that provides variables to the classes that implement it
 class Watch_History(object):
 	def __init__(self):
 		# Import some utility classes
@@ -15,8 +12,10 @@ class Watch_History(object):
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
 
-		# Module related methods
+		# Define basic variables for the class
 		self.Define_Basic_Variables()
+
+		# Define the text dictionaries of the class
 		self.Define_Texts()
 
 		# Import some usage classes
@@ -26,6 +25,9 @@ class Watch_History(object):
 		self.Define_Folders_And_Files()
 		self.Define_Lists_And_Dictionaries()
 
+		# Define the "history" dictionary of the "Watch History" database
+		self.Define_History()
+
 		# Define the media types dictionary
 		self.Define_Media_Types()
 
@@ -33,27 +35,35 @@ class Watch_History(object):
 		self.Define_Registry_Format()
 
 	def Import_Utility_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
+		# Define the classes to be imported
+		classes = [
 			"Define_Folders",
 			"JSON"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes
+		for class_title in classes:
+			# If the class is not already inside this class (Christmas)
+			# Or the class is "Define_Folders"
+			if (
+				hasattr(self, class_title) == False or
+				class_title == "Define_Folders"
+			):
+				# Import the module
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the sub-class
+				sub_class = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+				# If the module title is not "Define_Folders"
+				if class_title != "Define_Folders":
+					# Run the sub-class to define its variable
+					sub_class = sub_class()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+				# Add the sub-class to the current class
+				setattr(self, class_title, sub_class)
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
@@ -63,7 +73,7 @@ class Watch_History(object):
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
-		remove_list = [
+		self.modules["Remove list"] = [
 			"Define_Folders",
 			"Modules",
 			"Language",
@@ -73,7 +83,7 @@ class Watch_History(object):
 		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
-			if module_title not in remove_list:
+			if module_title not in self.modules["Remove list"]:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
@@ -124,119 +134,72 @@ class Watch_History(object):
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Import_Usage_Classes(self):
-		# Define a local dictionary of classes
-		classes = {
-			"List": [
-				"Years",
-				"Christmas",
-				"Diary_Slim"
-			],
-			"Dictionary": {
-				"Diary_Slim": {
-					"Sub-classes to import": {
-						"List": [
-							"Write_On_Diary_Slim_Module"
-						],
-						"Titles": [
-							"Write_On_Diary_Slim"
-						]
-					}
-				}
-			},
-			"Do not run": [
-				"Diary_Slim"
-			]
-		}
+		# Define the list of classes to be imported
+		self.classes = [
+			"Years",
+			"Christmas"
+		]
 
 		# Iterate through the list of classes
-		for class_title in classes["List"]:
-			# Define the class dictionary
-			class_dictionary = {
-				"Title": class_title,
-				"Module": "",
-				"Object": ""
-			}
-
-			# If the class title is inside the dictionary of classes
-			if class_title in classes["Dictionary"]:
-				# Get the "Sub-classes to import" dictionary from it
-				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
-
+		for class_title in self.classes:
 			# Import the module
-			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
+			module = importlib.import_module("." + class_title, class_title)
 
-			# Get the class object
-			class_dictionary["Object"] = getattr(class_dictionary["Module"], class_title)
+			# Get the sub-class
+			sub_class = getattr(module, class_title)
 
-			# If the class title is not inside the list of classes to not run
-			if class_title not in classes["Do not run"]:
-				# Run the class to define its variables
-				class_dictionary["Object"] = class_dictionary["Object"]()
+			# Run the class to define its variables
+			sub_class = sub_class()
 
-			# If the "Sub-classes to import" key is present
-			if "Sub-classes to import" in class_dictionary:
-				# Create the "Sub-classes" dictionary
-				class_dictionary["Sub-classes"] = {}
+			# Iterate through the list of utility modules
+			for module_title in self.modules["Utility"]["List"]:
+				# If the module title is not inside the defined list
+				if module_title not in ["Language", "Modules"]:
+					# Get the sub-class of the module
+					local_sub_class = getattr(self, module_title)
 
-				# Define a shortcut to the sub-classes dictionary
-				sub_classes = class_dictionary["Sub-classes to import"]
+					# Add the sub-class to the current class
+					setattr(sub_class, module_title, local_sub_class)
 
-				# Define a sub-class number
-				sub_class_number = 0
+			# If the sub-class has a list of classes
+			if hasattr(sub_class, "classes") == True:
+				# Get the list of classes of the current class
+				current_class_classes = getattr(sub_class, "classes")
 
-				# Iterate through the list of sub-classes
-				for sub_class_title in sub_classes["List"]:
-					# Create the sub-class dictionary
-					sub_class_dictionary = {
-						"Title": sub_class_title,
-						"Module": "",
-						"Object": ""
-					}
+				# Define a copy of the list of classes
+				classes_copy = self.classes.copy()
 
-					# Import the sub-module
-					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
+				# Remove the current class
+				classes_copy.remove(class_title)
 
-					# Get the sub-class
-					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
+				# Iterate through the local list of classes
+				for local_class_title in classes_copy:
+					# If the local class title is inside the list of classes of the current class
+					# And it also is inside this class (Watch_History)
+					if (
+						local_class_title in current_class_classes and
+						hasattr(self, local_class_title) != None
+					):
+						# Give the local class to the current class
+						setattr(sub_class, local_class_title, getattr(self, local_class_title))
 
-					# If the "Titles" list is present
-					if "Titles" in sub_classes:
-						# Change the sub-class title to the one in the list of sub-class titles
-						sub_class_title = sub_classes["Titles"][sub_class_number]
-
-					# Add the sub-class dictionary to the root sub-classes dictionary
-					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
-
-					# Add the sub-class to the root class
-					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
-
-					# Add one to the sub-class number
-					sub_class_number += 1
-
-				# Remove the "Sub-classes to import" dictionary
-				class_dictionary.pop("Sub-classes to import")
-
-			# Add the class dictionary to the root classes dictionary
-			classes["Dictionary"][class_title] = class_dictionary
-
-			# Add the class to the current class
-			setattr(self, class_title, class_dictionary["Object"])
-
-		# Sort the dictionary of classes with the order of the list of classes
-		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
+			# Add the sub-class to the current class
+			setattr(self, class_title, sub_class)
 
 		# ---------- #
 
+		# Get the "Today_Is_Christmas" True or False variable
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
 
 	def Define_Folders_And_Files(self):
-		# If there is no current year variable inside the self object, get the current year variable from the "Years" module
+		# If there is no current year variable inside the self object
 		if hasattr(self, "current_year") == False:
+			# Get the "Current year" dictionary from the "Years" class
 			self.current_year = self.Years.years["Current year"]
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Define a shortcut for the folder
+			# Create a shortcut for the folder
 			folder = self.current_year["Folders"][language]
 
 			# Get the "Watched media" text in the current language to be the folder name
@@ -274,13 +237,16 @@ class Watch_History(object):
 		# Define the current year folder for easier typing
 		self.folders["Watch History"]["Current year"] = self.folders["Watch History"][self.current_year["Number"]]
 
+	def Define_History(self):
 		# Define the "History" dictionary
 		self.history = {
+			"Class title": self.language_texts["Watch_History"],
 			"Key": "Entries",
 			"Numbers": {
 				"Watched things": "",
 				"Media comments": "Comments"
 			},
+			"Number key": "Watched media number",
 			"By type": True,
 			"Folder": self.Folder.folders["Notepad"]["Data Networks"]["Audiovisual Media"]["Watch History"]["root"]
 		}
@@ -321,7 +287,7 @@ class Watch_History(object):
 					"special",
 					"movie",
 					"short",
-					"music",
+					"song",
 					"OVA",
 					"ONA"
 				]
@@ -334,37 +300,70 @@ class Watch_History(object):
 					"specials",
 					"movies",
 					"shorts",
-					"musics",
+					"songs",
 					"OVAs",
 					"ONAs"
 				]
-			}
+			},
+			"Genders": [
+				"feminine",
+				"feminine",
+				"masculine",
+				"masculine",
+				"masculine",
+				"masculine",
+				"feminine",
+				"feminine",
+				"feminine"
+			],
+			"Plural secondary types": [
+				"special",
+				"short",
+				"song",
+				"OVA",
+				"ONA"
+			]
 		}
 
 		# Define the secondary type texts by language
 		for item_type in ["Singular", "Plural"]:
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
+				# If the language list is not inside the item type dictionary, create it
 				if language not in self.secondary_types[item_type]:
 					self.secondary_types[item_type][language] = []
 
+				# Iterate through the list of text keys of the item type
 				for text_key in self.secondary_types[item_type]["Keys"]:
-					# If the text key is inside the "texts" dictionary of the Language class, use it as the list
+					# If the text key is inside the "texts" dictionary of the "Language" utility class, use it as the list of texts
 					if text_key in self.Language.texts:
 						texts_list = self.Language.texts
 
-					# If the text key is inside the "texts" dictionary of "Watch_History"
+					# If the text key is inside the "texts" dictionary of the "Watch_History" class, use it as the list of texts
 					if text_key in self.texts:
 						texts_list = self.texts
 
+					# Else, if the text key plus ", title()" is inside the "texts" dictionary of the "Watch_History" class
 					elif text_key + ", title()" in self.texts:
+						# Use it as the list of texts
 						texts_list = self.texts
+
+						# Change the text key
 						text_key = text_key + ", title()"
 
+					# If the text key is inside the defined list of texts
+					# Example: Not "OVA" or "ONA"
 					if text_key in texts_list:
-						self.secondary_types[item_type][language].append(texts_list[text_key][language].title())
+						# Define the text as its capitalized version in the current language
+						text = texts_list[text_key][language].capitalize()
 
+					# Else, define the text as only the text key
+					# Examples: "OVA" or "ONA"
 					else:
-						self.secondary_types[item_type][language].append(text_key)
+						text = text_key
+
+					# Add the defined text to the language list of the item type
+					self.secondary_types[item_type][language].append(text)
 
 		# Define the default media states dictionary
 		self.media_states = {
@@ -399,9 +398,12 @@ class Watch_History(object):
 		# Add or update the "Genders" key to the media types dictionary
 		self.media_types["Genders"] = self.Language.texts["genders, type: dictionary"]
 
+		# Define the "Entry type texts" dictionary
+		self.media_types["Entry type texts"] = {}
+
 		# ---------- #
 
-		# Define a shortcut to the root "Information.json" file
+		# Create a shortcut to the root "Information.json" file
 		root_information_file = self.folders["Media information"]["Information"]
 
 		# Read the file contents
@@ -583,7 +585,7 @@ class Watch_History(object):
 
 			# ----- #
 
-			# Define a shortcut to the "Information.json" file
+			# Create a shortcut to the "Information.json" file
 			media_type_information_file = media_type["Folders"]["Media information"]["Information"]
 
 			# Get the contents of the file
@@ -684,6 +686,81 @@ class Watch_History(object):
 
 			# ----- #
 
+			# Define the entry type text dictionary as the "{} episode" one
+			entry_type_texts = {
+				"Key": "{}_episode"
+			}
+
+			# If the plural media type is "Movies"
+			if plural_media_type == "Movies":
+				# Define the entry type text dictionary as the "movies" one
+				entry_type_texts = {
+					"Key": "movie"
+				}
+
+			# If the plural media type is "Videos"
+			if plural_media_type == "Videos":
+				# Define the entry type text dictionary as the "videos" one
+				entry_type_texts = {
+					"Key": "video"
+				}
+
+			# Iterate through thetext keys inside the entry type text dictionary
+			for text_key in entry_type_texts.copy().values():
+				# Iterate through the list of item types
+				for item_type in ["Singular", "Plural"]:
+					# Create the "Singular" and "Plural" dictionaries
+					entry_type_texts[item_type] = {}
+
+					# Create a copy of the text key
+					text_key_copy = text_key
+
+					# If the item type is "Plural"
+					if item_type == "Plural":
+						# Add "s" to create the plural text key
+						text_key_copy += "s"
+
+					# If the underline is not inside the text key
+					if "_" not in text_key_copy:
+						# Add the ", title()" text
+						text_key_copy += ", title()"
+
+					# Iterate through the list of small languages
+					for language in self.languages["Small"]:
+						# Get the text
+						text = self.texts[text_key_copy][language]
+
+						# Transform it into lowercase
+						text = text.lower()
+
+						# If the "{}" format string is inside the text
+						if "{}" in text:
+							# Define the media type text as the singular one
+							media_type_text = media_type["Singular"][language]
+
+							# If the item type is "Plural"
+							# And the plural media type is not "Animes"
+							if (
+								item_type == "Plural" and
+								plural_media_type != "Animes"
+							):
+								# Then use the plural media type text
+								media_type_text = media_type["Plural"][language]
+
+							# Format the format string with the [item type] media type in the user language
+							text = text.format(media_type_text.lower())
+
+						# Add the entry type text to the entry type language key
+						entry_type_texts[item_type][language] = text
+
+			# Add the entry type text dictionary to the media type dictionary
+			media_type["Entry type texts"] = entry_type_texts
+
+			# Add the entry type text dictionary to the root "Entry type texts" dictionary
+			self.media_types["Entry type texts"][plural_media_type] = entry_type_texts
+
+			# ----- #
+
 			# Add the local media type dictionary to the root media types dictionary
 			self.media_types[plural_media_type] = media_type
 
@@ -700,14 +777,17 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# These keys of the history dictionary are to be used on Python modules that collect history information of database-registering modules
-		# Such as the "Years" module and its "Create_Year_Summary" sub-class
+		# These keys of the "history" dictionary are to be used on Python modules that collect history information of database-registering modules such as "Watch_History" (this one), "GamePlayer", and "Tasks"
+		# Python modules that collect such information are, for example, the "Years" module and its "Create_Year_Summary" sub-class
 
-		# Add the media types dictionary to the history dictionary
+		# Add the media types dictionary to the "history" dictionary inside the "Types" key
 		self.history["Types"] = self.media_types
 
-		# Define the types folder
+		# Define the history "Types folder" key as the "By media type" one
 		self.history["Types folder"] = "By media type"
+
+		# Define the history "Entry type texts" dictionary as the media types "Entry type texts" dictionary
+		self.history["Entry type texts"] = self.media_types["Entry type texts"]
 
 	def Sort_Statuses(self, statuses):
 		# Define the list of statuses to use to sort the statuses
@@ -1341,7 +1421,7 @@ class Watch_History(object):
 		if media_title not in media_type_dictionary["Dictionary"]:
 			media_type_dictionary["Dictionary"][media_title] = 0
 
-		# Define a shortcut for the media variable
+		# Create a shortcut for the media variable
 		media = media_type_dictionary["Dictionary"][media_title]
 
 		# If the media variable is an integer
@@ -1430,7 +1510,7 @@ class Watch_History(object):
 			}
 		}
 
-		# Define a shortcut for the statistic key
+		# Create a shortcut for the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #
@@ -1441,7 +1521,7 @@ class Watch_History(object):
 		if "Romanized" in media["Titles"]:
 			title_key = "Romanized"
 
-		# Define a shortcut for the media title
+		# Create a shortcut for the media title
 		media_title = media["Titles"][title_key]
 
 		# ---------- #
@@ -1990,7 +2070,7 @@ class Watch_History(object):
 			# Get the gender of the media item
 			gender = self.Define_Media_Item_Text(root_dictionary)[2]
 
-			# Define a shortcut for the item type
+			# Create a shortcut for the item type
 			item_type = media["Item"]["Type"][self.language["Small"]].lower()
 
 			# Get the item title in the user language
@@ -2307,7 +2387,7 @@ class Watch_History(object):
 		# Add the selected option to the "To remove" list
 		dictionary["To remove"].append(status_type["Original"])
 
-		# Define a shortcut to the media type dictionary
+		# Create a shortcut to the media type dictionary
 		media_type = dictionary["Media type"]
 
 		# Update the statuses list inside the "Media type" dictionary
@@ -2611,7 +2691,7 @@ class Watch_History(object):
 				if dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 					media["Language"] = self.language["Full"]
 
-				# Define a shortcut to the "Original language" text
+				# Create a shortcut to the "Original language" text
 				original_language_text = self.Language.language_texts["original_language"]
 
 				# If the "Original language" key exists in the media "Details" dictionary
@@ -2626,7 +2706,7 @@ class Watch_History(object):
 				if media["Language"] in full_languages:
 					# Iterate through the language keys and dictionaries
 					for small_language, language in self.languages["Dictionary"].items():
-						# Define a shortcut to the full language
+						# Create a shortcut to the full language
 						full_language = language["Full"]
 
 						# If the full current language is the same as the media language
@@ -2662,7 +2742,7 @@ class Watch_History(object):
 					"Remote"
 				]
 
-				# Define a shortcut for the "Origin type" key
+				# Create a shortcut for the "Origin type" key
 				origin_type_key = self.Language.language_texts["origin_type"]
 
 				# Define the "has origin type key" switch as False
@@ -2802,9 +2882,9 @@ class Watch_History(object):
 		return dictionary
 
 	def Define_Media_Item(self, dictionary, watch = False, media_item = None, select_media_item = False):
-		# Get the class that called the function
 		import inspect
 
+		# Get the class that called this method (Define_Media_Item)
 		self.caller = inspect.stack()[3][1].split("\\")[-2]
 
 		# If the media is a series media (not a movie)
@@ -2974,19 +3054,24 @@ class Watch_History(object):
 								if language not in dictionary["Media"]["Items"]["Secondary types"][item_type]:
 									dictionary["Media"]["Items"]["Secondary types"][item_type][language] = []
 
-						# Iterate through the secondary type keys list
+						# Iterate through the list of singular secondary types
 						i = 0
 						for secondary_type in self.secondary_types["Singular"][self.language["Small"]]:
 							# If the type inside the media item details is equal to the singular type
 							if details[self.Language.language_texts["type, title()"]] == secondary_type:
+								# Iterate through the list of item types
 								for item_type in ["Singular", "Plural"]:
+									# Iterate through the list of small languages
 									for language in self.languages["Small"]:
+										# Get the secondary type in the current item type and language
 										secondary_type = self.secondary_types[item_type][language][i]
 
+										# If the secondary type is not inside the list of secondary types in the current item type and language
 										if secondary_type not in dictionary["Media"]["Items"]["Secondary types"][item_type][language]:
-											# Add the item type to the secondary types list
+											# Add it
 											dictionary["Media"]["Items"]["Secondary types"][item_type][language].append(secondary_type)
 
+							# Add one to the "i" number
 							i += 1
 
 					# If the "Status" key is present inside the details dictionary and the status is "Completed", remove the media item from the media items list
@@ -3010,7 +3095,7 @@ class Watch_History(object):
 
 						# Iterate through the language keys and dictionaries
 						for small_language, language in self.languages["Dictionary"].items():
-							# Define a shortcut to the full language
+							# Create a shortcut to the full language
 							full_language = language["Full"]
 
 							# Define the titles file
@@ -3116,7 +3201,7 @@ class Watch_History(object):
 
 						secondary_types.append(plural_type)
 
-					key += self.Text.From_List(secondary_types)
+					key += self.Text.From_List(secondary_types, next_line = False)
 
 				# Add the media subfolders plural text before the "Episodes" key or update it
 				key_value = {
@@ -3309,12 +3394,12 @@ class Watch_History(object):
 			# Create it
 			self.Folder.Create(dictionary["Media"]["Item"]["Folders"]["Titles"]["root"])
 
-			# Define a shortcut to it
+			# Create a shortcut to it
 			titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Define and create the episode titles file for the current language
@@ -3342,10 +3427,10 @@ class Watch_History(object):
 
 					# If the "Origin location" key is inside the media item details dictionary
 					if self.Language.language_texts["origin_location"] in dictionary["Media"]["Item"]["Details"]:
-						# Define a shortcut to the origin location key to made the code easier to look at
+						# Create a shortcut to the origin location key to made the code easier to look at
 						origin_location_key = self.Language.language_texts["origin_location"]
 
-						# Define a shortcut to the origin location
+						# Create a shortcut to the origin location
 						origin_location = dictionary["Media"]["Item"]["Details"][origin_location_key]
 
 						# Get the playlist link
@@ -3463,7 +3548,7 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# Define a shortcut to the comments folder
+		# Create a shortcut to the comments folder
 		folder = dictionary["Media"]["Item"]["Folders"]["comments"]
 
 		# Define the local comments dictionary as the root "Comments" dictionary template
@@ -3521,7 +3606,7 @@ class Watch_History(object):
 
 		# If the media is a series media (not a movie)
 		if dictionary["Media"]["States"]["Series media"] == True:
-			# Define a shortcut to the "Titles" folder dictionary
+			# Create a shortcut to the "Titles" folder dictionary
 			titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
 
 			# Define the "Episodes" dictionary with the "Number" and "Titles" keys
@@ -3565,7 +3650,7 @@ class Watch_History(object):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# If the media item is not a single unit
@@ -3686,33 +3771,36 @@ class Watch_History(object):
 		if self.dictionaries["Media type"][dictionary["Media type"]["Plural"]["en"]]["Numbers"]["Total"] == 0:
 			dictionary["Media"]["States"]["First media type entry in year"] = True
 
-		# Define media texts to be used in the "Show_Media_Information" root method
+		# Define the media "Texts" dictionary
 		dictionary["Media"]["Texts"] = {
-			"genders": dictionary["Media type"]["Genders"]
+			# Define the "Genders" key as the "Genders" dictionary of the selected media type
+			"Genders": dictionary["Media type"]["Genders"]
 		}
 
-		# Define the container, item, and unit texts as the media type (for movies)
+		# Define the container, item, and unit texts as the singular media type (for movies)
 		for item_type in ["container", "item", "unit"]:
 			dictionary["Media"]["Texts"][item_type] = dictionary["Media type"]["Singular"].copy()
 
+		# Define the empty item "Type" dictionary
 		dictionary["Media"]["Item"]["Type"] = {}
 
-		# Define the item type
+		# If the "Type" key is inside the media item "Details" dictionary
 		if self.Language.language_texts["type, title()"] in dictionary["Media"]["Item"]["Details"]:
+			# Define it as the media item type
 			dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Item"]["Details"][self.Language.language_texts["type, title()"]]
 
 		# If the media is not a series media (a movie)
-		# And the "Type" dictionary of the "Item" dictionary is empty
+		# And the media item "Type" dictionary is empty
 		if (
 			dictionary["Media"]["States"]["Series media"] == False and
 			dictionary["Media"]["Item"]["Type"] == {}
 		):
-			# Define it as the "Item" text dictionary defined above
+			# Define it as the media text "Item" dictionary defined above (for movies)
 			dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Texts"]["item"]
 
 		# If the media is a series media (not a movie)
 		if dictionary["Media"]["States"]["Series media"] == True:
-			# Define the unit text as the "episode" text by language
+			# Define the media unit text as the "episode" text for all supported languages
 			dictionary["Media"]["Texts"]["unit"] = {}
 
 			for language in self.languages["Small"]:
@@ -3722,22 +3810,22 @@ class Watch_History(object):
 			# And the current media item is not the root media
 			if (
 				dictionary["Media"]["States"]["Has a list of media items"] == True and
-				dictionary["Media"]["Item"]["Title"] != dictionary["Media"]["Title"]
+				dictionary["Media"]["States"]["The media item is the root media"] == False
 			):
-				# Add the "Item" dictionary to the dictionary of texts
+				# Reset the media text "Item" dictionary to be empty
 				dictionary["Media"]["Texts"]["item"] = {}
 
-			# If the "Type" dictionary of the "Item" dictionary is empty
+			# If the media item "Type" dictionary is still empty
 			if dictionary["Media"]["Item"]["Type"] == {}:
-				# Define it as the "Item" text dictionary defined above
+				# Define it as the media text "Item" dictionary
 				dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Texts"]["item"]
 
-			# If the "Type" dictionary is not empty
+			# If the media item "Type" dictionary is not empty
 			if dictionary["Media"]["Item"]["Type"] != {}:
-				# Define a local empty dictionary
-				dict_ = {}
+				# Define a local type dictionary
+				type_dictionary = {}
 
-				# Iterate through the list of singular secondary type in the user language
+				# Iterate through the list of singular secondary types in the user language
 				i = 0
 				for singular_type in self.secondary_types["Singular"][self.language["Small"]]:
 					# If the media item type is the same as the current singular secondary type
@@ -3747,98 +3835,239 @@ class Watch_History(object):
 							# Get the singular secondary type in the current language
 							singular_type = self.secondary_types["Singular"][language][i]
 
-							# Define it inside the "Item" dictionary
+							# Define it inside the media text "Item" dictionary
 							dictionary["Media"]["Texts"]["item"][language] = singular_type
 
 							# Add the singular secondary type to the local dictionary in the language key
-							dict_[language] = singular_type
+							type_dictionary[language] = singular_type
+
+							# Get the plural secondary type in the current language
+							plural_type = self.secondary_types["Plural"][language][i]
+
+							# Define the plural item dictionary inside the media "Texts" dictionary if it is not present
+							if "Item (plural)" not in dictionary["Media"]["Texts"]:
+								dictionary["Media"]["Texts"]["Item (plural)"] = {}
+
+							# Add the plural type in the current language to the media texts "Item (plural)" dictionary in the language key
+							dictionary["Media"]["Texts"]["Item (plural)"][language] = plural_type
 
 					# Add one to the "i" number
 					i += 1
 
-				# Define the media item "Type" dictionary as the local dictionary created above
-				dictionary["Media"]["Item"]["Type"] = dict_
+				# Define the media item "Type" dictionary as the local type dictionary created above
+				dictionary["Media"]["Item"]["Type"] = type_dictionary
 
-			# Define the item text as the "season" text for media that have a media item list
+			# If the media has a list of media items
+			# And the current media item is not the root media
+			# And the media texts "Item" dictionary is empty
 			if (
 				dictionary["Media"]["States"]["Has a list of media items"] == True and
-				dictionary["Media"]["Item"]["Title"] != dictionary["Media"]["Title"] and
+				dictionary["Media"]["States"]["The media item is the root media"] == False and
 				dictionary["Media"]["Texts"]["item"] == {}
 			):
+				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
+					# Define the language item text as the "season" text
 					dictionary["Media"]["Texts"]["item"][language] = self.texts["season, title()"][language].lower()
 
 					# If the media item is a single unit one
 					if dictionary["Media"]["States"]["Single unit"] == True:
+						# Define the language item text as the "episode" text
 						dictionary["Media"]["Texts"]["item"][language] = self.texts["episode"][language]
 
 			# Define the container, item, and unit texts for video series media
 			if dictionary["Media"]["States"]["Video"] == True:
+				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
+					# Define the media "container" text in the current language as the "YouTube channel" one
 					dictionary["Media"]["Texts"]["container"][language] = self.texts["youtube_channel"][language]
+
+					# Define the media "item" text in the current language as the "video series" (singular) one
 					dictionary["Media"]["Texts"]["item"][language] = self.texts["video_series, type: singular"][language]
+
+					# Define the media "unit" text in the current language as the "video" one
 					dictionary["Media"]["Texts"]["unit"][language] = self.texts["video"][language]
 
+			# If the media item "Type" dictionary is empty
 			if dictionary["Media"]["Item"]["Type"] == {}:
+				# Define it as the media text "Item" dictionary
 				dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Texts"]["item"]
 
-		dict_ = deepcopy(dictionary["Media"]["Texts"])
+		# Define a local texts dictionary as the copy of the media "Texts" dictionary
+		texts_dictionary = deepcopy(dictionary["Media"]["Texts"])
 
-		# Define a shortcut to the season text
-		season_text = self.texts["season, title()"][language].lower()
+		# List the text keys of the texts dictionary
+		text_keys = list(texts_dictionary.keys())
 
-		# Define a shortcut to the video series text
-		video_series_text = self.texts["video_series, type: singular"][language]
+		# Remove the "Genders" key
+		text_keys.remove("Genders")
 
-		# Define media texts by item and gender
+		# Create a shortcut to the "season" texts dictionary
+		season_texts = list(self.texts["season, title()"].values())
+
+		# Create a shortcut to the "video series" (singular) texts dictionary
+		video_series_texts = list(self.texts["video_series, type: singular"].values())
+
+		# Iterate through the defined list of text types
 		for text_type in ["the", "this", "of"]:
-			for key in dict_:
-				if key != "genders":
-					if text_type + "_" + key not in dictionary["Media"]["Texts"]:
-						dictionary["Media"]["Texts"][text_type + "_" + key] = {}
+			# Iterate through the keys of the media texts dictionary
+			for text_key in text_keys:
+				# Add the text key to the text type, creating the text type key
+				# 
+				# Examples:
+				# the_container
+				# the_item
+				# the_unit
+				text_type_key = text_type + "_" + text_key
 
+				# If the "text type key" dictionary is not inside the media "Texts" dictionary, add it
+				if text_type_key not in dictionary["Media"]["Texts"]:
+					dictionary["Media"]["Texts"][text_type_key] = {}
+
+				# Iterate through the list of small languages
+				for language in self.languages["Small"]:
+					# Get the media text for the current text key and language
+					media_text = dictionary["Media"]["Texts"][text_key][language]
+
+					# If the media text is neither "season" nor "video series" (singular)
+					if media_text not in (season_texts + video_series_texts):
+						# Define the item text as the text type text in the gender of the selected media type and in the current language
+						# For the words (text types) "the", "this", and "of", the item text will consider gender in languages other than English
+						# In English, these words do not have gender variations, but in Brazilian Portuguese, they do
+						# 
+						# Examples in Brazilian Portuguese, depending on the media type:
+						# "the anime" becomes "o anime" (masculine "the" becomes "o")
+						# "the cartoon" becomes "o desenho" (masculine "the" becomes "o")
+						# "the series" becomes "a serie" (feminine "the" becomes "a")
+						# "the movie" becomes "o filme" (masculine "the" becomes "o")
+						# "the video" becomes "o video" (masculine "the" becomes "o")
+						item_text = dictionary["Media type"]["Genders"][language][text_type]
+
+					# If the media text is "season" or "video series" (singular)
+					# Or it is "episode"
+					if (
+						media_text in (season_texts + video_series_texts) or
+						media_text == self.texts["episode"][language]
+					):
+						# Iterate through the gender keys and gender inside the list of genders of the current language
+						for gender_key in texts_dictionary["Genders"][language]:
+							# If the text type is equal to the gender key
+							if text_type == gender_key:
+								# If the media text is "season" or "video series" (singular)
+								if media_text in (season_texts + video_series_texts):
+									# Define the gender as "feminine"
+									# This is because both "season" and "video series" are feminine terms in Brazilian Portuguese, and possibly in other languages
+									# 
+									# Examples:
+									# "the season" becomes "a temporada" (feminine "the" becomes "a")
+									# "the video series" becomes "a série de vídeos" (feminine "the" becomes "a")
+									gender = "feminine"
+
+								# If the media text is "episode"
+								if media_text == self.texts["episode"][language]:
+									# Define the gender as "masculine"
+									# This is because "episode" is a masculine word in Brazilian Portuguese
+									# 
+									# Example:
+									# "the episode" becomes "o episódio" (masculine "the" becomes "o")
+									gender = "masculine"
+
+								# Define the item text as the text type text in the defined gender
+								item_text = self.media_types["Genders"][language][gender][gender_key]
+
+					# Transform the media text into lowercase
+					media_text = media_text.lower()
+
+					# If the "youtube" is inside the media text, change it to "YouTube"
+					if "youtube" in media_text:
+						media_text = media_text.replace("youtube", "YouTube")
+
+					# Define the text type text in the current language as the the item text plus the media text
+					dictionary["Media"]["Texts"][text_type_key][language] = item_text + " " + media_text
+
+		# If the media is a series media (not a movie)
+		# And the media item is not a single unit one
+		if (
+			dictionary["Media"]["States"]["Series media"] == True and
+			dictionary["Media"]["States"]["Single unit"] == False
+		):
+			# Iterate through the list of singular secondary types in the user language
+			i = 0
+			for singular_type in self.secondary_types["Singular"][self.language["Small"]]:
+				# If the media item type in the user language is the same as the current singular secondary type
+				if dictionary["Media"]["Item"]["Type"][self.language["Small"]] == singular_type:
+					# Get the gender of the secondary type
+					gender = self.secondary_types["Genders"][i]
+
+					# Iterate through the list of small languages
 					for language in self.languages["Small"]:
-						if dictionary["Media"]["Texts"][key][language] not in [season_text, video_series_text]:
-							item_text = dictionary["Media type"]["Genders"][language][text_type]
+						# Iterate through the defined list of text types
+						for text_type in ["the", "these"]:
+							# Define the text type key as the text type
+							text_type_key = text_type
 
-						if dictionary["Media"]["Texts"][key][language] in [season_text, video_series_text]:
-							for gender_key in dict_["genders"][language]:
-								gender = dict_["genders"][language][gender_key]
+							# If the text type is "the", define the text type key as "the, plural"
+							if text_type == "the":
+								text_type_key = "the, plural"
 
-								if text_type == gender_key:
-									item_text = self.media_types["Genders"][language]["feminine"][gender_key]
+							# Define the item text as the text type key in the gender of the secondary type and in the current language
+							item_text = self.media_types["Genders"][language][gender][text_type_key]
 
-						if dictionary["Media"]["Texts"][key][language] == self.texts["episode"][language]:
-							for gender_key in dict_["genders"][language]:
-								gender = dict_["genders"][language][gender_key]
+							# Define the media text as the plural "Item" media text in the current language in lowercase
+							media_text = dictionary["Media"]["Texts"]["Item (plural)"][language].lower()
 
-								if text_type == gender_key:
-									item_text = self.media_types["Genders"][language]["masculine"][gender_key]
+							# Define the item text as the the item text plus the media text
+							item_text = item_text + " " + media_text
 
-						text = dictionary["Media"]["Texts"][key][language].lower()
+							# Capitalize the text type to use it as a key
+							text_type = text_type.capitalize()
 
-						if "youtube" in text:
-							text = text.replace("youtube", "YouTube")
+							# If the text type dictionary does not exist, create it
+							if text_type not in dictionary["Media"]["Texts"]["Item (plural)"]:
+								dictionary["Media"]["Texts"]["Item (plural)"][text_type] = {}
 
-						dictionary["Media"]["Texts"][text_type + "_" + key][language] = item_text + " " + text
+							# Add the item text to the respective text type key in the "Item (plural)" dictionary
+							dictionary["Media"]["Texts"]["Item (plural)"][text_type][language] = item_text
 
-		# Add the "Christmas special" text to the unit text
+				# Add one to the "i" number
+				i += 1
+
+		# If the media is not a video channel
+		# And today is Christmas
 		if (
 			dictionary["Media"]["States"]["Video"] == False and
 			self.Today_Is_Christmas == True
 		):
-			dict_ = {}
+			# Define a local texts dictionary
+			texts = {}
 
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
-				dict_[language] = self.texts["christmas_special_{}"][language].format(dictionary["Media"]["Texts"]["unit"][language])
+				# Define the text template as "Christmas special {}" in the current language
+				template = self.texts["christmas_special_{}"][language]
 
-			dictionary["Media"]["Texts"]["unit"] = dict_
+				# Format it with the media unit text in the current language
+				text = template.format(dictionary["Media"]["Texts"]["unit"][language])
 
+				# Add it to the local texts dictionary
+				# 
+				# Examples:
+				# Christmas special episode
+				# Christmas special movie
+				texts[language] = text
+
+			# Update the media texts "Unit" dictionary with the local one (with the Christmas version of the unit)
+			dictionary["Media"]["Texts"]["unit"] = texts
+
+		# Define the "Replace media title" state as False by default
 		dictionary["Media"]["States"]["Replace title"] = False
 
+		# If the "Replace title" key is inside the media item "Details" dictionary
 		if self.language_texts["replace_title"] in dictionary["Media"]["Item"]["Details"]:
+			# Change the "Replace media title" state to True
 			dictionary["Media"]["States"]["Replace title"] = True
 
+		# Return the updated dictionary containing the data of the media item (or movie) and other keys that were added
 		return dictionary
 
 	def Select_Media_Type_And_Media(self, options = None, watch = False, select_media_item = False):
@@ -3970,7 +4199,7 @@ class Watch_History(object):
 						# If the current state is "Completed media" (the media was completed)
 						if key == "Completed media":
 							# Define the "the text" as the media "the" text and the media container
-							the_text = dictionary["Media"]["Texts"]["genders"][language]["the"] + " " + dictionary["Media"]["Texts"]["container"][language].lower()
+							the_text = dictionary["Media"]["Texts"]["Genders"][language]["the"] + " " + dictionary["Media"]["Texts"]["container"][language].lower()
 
 						# If the current state is "Completed media item" (the media item was completed)
 						if key == "Completed media item":
@@ -3985,7 +4214,7 @@ class Watch_History(object):
 							]
 
 							# Define the default template as the feminine "the {} of {}" text
-							template = self.media_types["Genders"][language]["feminine"]["the"] + " {} " + dictionary["Media"]["Texts"]["genders"][language]["of"] + " {}"
+							template = self.media_types["Genders"][language]["feminine"]["the"] + " {} " + dictionary["Media"]["Texts"]["Genders"][language]["of"] + " {}"
 
 							# If the media has a list of media items and the media item is the root media
 							# And the root media is not completed (it has more media items to be watched)
@@ -4253,7 +4482,7 @@ class Watch_History(object):
 		return title
 
 	def Show_Media_Title(self, root_dictionary, is_media_item = False, include_media_title = False):
-		# Define a shortcut for the media dictionary
+		# Create a shortcut for the media dictionary
 		media = root_dictionary["Media"]
 
 		# If the "Is media item" parameter is True
@@ -4499,7 +4728,7 @@ class Watch_History(object):
 			# Define the item as the "Item" key
 			dictionary["Item"] = item["Item"]
 
-			# Define a shortcut to the item
+			# Create a shortcut to the item
 			item = dictionary["Item"]
 
 		else:
@@ -4651,11 +4880,6 @@ class Watch_History(object):
 					# Define the episode separator as an empty string
 					episode_separator = ""
 
-				# If the text is not found in the media item title (an empty result)
-				if result == []:
-					# Define the media item separator as a dash and space
-					media_item_separator = "- "
-
 				# Define a switch to tell if the media item title will be added or not (default as True)
 				add_media_item_title = True
 
@@ -4788,7 +5012,7 @@ class Watch_History(object):
 			# "of the anime"
 			of_the_text = self.media_types["Genders"][self.language["Small"]]["masculine"]["of_the"] + " "
 
-			# Define a shortcut to the item type
+			# Create a shortcut to the item type
 			item_type = media["Item"]["Type"][self.language["Small"]].lower()
 
 			# If the item type is inside the list of singular media types of the user language
@@ -4822,6 +5046,36 @@ class Watch_History(object):
 			media_episode_text,
 			gender
 		]
+
+	def Replace_Pronouns(self, text, source_pronoun = "me", destiny_pronoun = "you"):
+		# Define a local dictionary of pronouns
+		pronouns = {
+			"me": [
+				"when_i_started",
+				"when_i_finished",
+				"take_me"
+			],
+			"you": [
+				"when_you_started",
+				"when_you_finished",
+				"take_you"
+			]
+		}
+
+		# Replace the source pronoun with the destiny pronouns to personalize the message for the user
+		for i, source_text_key in enumerate(pronouns[source_pronoun]):
+			# Get the text key of the destiny pronoun
+			destiny_text_key = pronouns[destiny_pronoun][i]
+
+			# Get the text of the source and destiny pronouns
+			source_text = self.Language.language_texts[source_text_key]
+			destiny_text = self.Language.language_texts[destiny_text_key]
+
+			# Replace the source pronoun with the destiny pronoun
+			text = text.replace(source_text, destiny_text)
+
+		# Return the text with the pronouns replaced
+		return text
 
 	def Show_Media_Information(self, dictionary):
 		# Define a local version of the media dictionary for easier typing
@@ -4883,11 +5137,11 @@ class Watch_History(object):
 			# Show the new watching status in the user language
 			print("\t" + media["Status change"]["New"])
 
-		# If the user is not re-watching the media
-		# And the user completed the media
+		# If the user completed the media
+		# And it is not re-watching the media
 		if (
-			media["States"]["Re-watching"] == False and
-			media["States"]["Completed media"] == True
+			media["States"]["Completed media"] == True and
+			media["States"]["Re-watching"] == False
 		):
 			# If the "Finished watching text" key is inside the media dictionary
 			# And the text is not empty
@@ -4901,10 +5155,8 @@ class Watch_History(object):
 				# Replace the ":\n" texts to add tabs
 				text = text.replace(":\n", ":\n\t")
 
-				# Replace the personal pronoun "I" for the personal pronoun "you" to personalize the message for the user
-				# Both for "started" and "finished"
-				text = text.replace(self.Language.language_texts["when_i_started"], self.Language.language_texts["when_you_started"])
-				text = text.replace(self.Language.language_texts["when_i_finished"], self.Language.language_texts["when_you_finished"])
+				# Replace the "me" pronouns in the text with the "you" pronouns
+				text = self.Replace_Pronouns(text, "me", "you")
 
 				# Show the finished watching text
 				print()
@@ -4917,12 +5169,24 @@ class Watch_History(object):
 				# Define the "of the" text as the "of the" text in the feminine gender
 				dictionary["Media type"]["Genders"][self.language["Small"]]["of_the"] = self.media_types["Genders"][self.language["Small"]]["feminine"]["of_the"]
 
+				# Show a three dash space separator
+				print()
+				print(self.separators["3"])
+
 				# Show the "season"/"series" text
+				# 
+				# Examples:
+				# Season
+				# Special
 				print()
 				print(self.Text.Capitalize(media["Texts"]["item"][self.language["Small"]]) + ":")
 
-				# Show the title of the media
+				# Show the title of the media item
 				self.Show_Media_Title(dictionary, is_media_item = True)
+
+				# Show a three dash space separator
+				print()
+				print(self.separators["3"])
 
 			# Define the unit text variable for easier typing
 			unit_text = self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]])
@@ -4969,6 +5233,11 @@ class Watch_History(object):
 				title = title[2:]
 
 			# Show the media episode text and the epsiode title
+			# 
+			# Examples:
+			# Episode of the anime:
+			# Episode of the season:
+			# Episode of the special:
 			print()
 			print(media_episode_text + ":")
 			print("\t" + title)
@@ -4986,28 +5255,32 @@ class Watch_History(object):
 
 			# If the media item is not a single unit one
 			if media["States"]["Single unit"] == False:
-				# Add the unit text in the user language
+				# Define the text to show as the unit text in the user language
 				# 
-				# Example:
+				# Examples:
 				# Episode
-				text_to_show += self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]])
+				# Movie
+				# Video
+				text_to_show = self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]])
 
 			# If the media item is a single unit one
 			else:
-				# Add the item type of the media item in the user language
+				# Define the text to show as the item type of the media item in the user language
 				# 
 				# Example:
 				# Special
-				text_to_show += media["Item"]["Type"][self.language["Small"]].lower()
+				text_to_show = media["Item"]["Type"][self.language["Small"]].lower()
 
-			# Format the text template with the "the" container text of the media and add the text to show
+			# Format the text template with the "the" container text of the media and add the text to show at the beginning
 			# 
 			# Examples:
-			# Episode of the anime
-			# Episode of the dubbed anime
-			# 
-			# (Selected means it maybe a normal or dubbed "the container" text
-			# "the anime" or "the dubbed anime")
+			# Episode with the anime title:
+			# Episode with the dubbed anime title:
+			#
+			# "text to show" can be "Episode", "Special", or the single unit type
+			# "template" can be "with {} title" or "with {}"
+			# "Selected" means it maybe a normal or dubbed "the [container]" text
+			# Examples: "the anime" or "the dubbed anime"
 			text_to_show = self.Text.Capitalize(text_to_show) + " " + template.format(media["Texts"]["Selected container texts"]["The"])
 
 			# If the media has a list of media items
@@ -5019,24 +5292,25 @@ class Watch_History(object):
 				media["States"]["Has a list of media items"] == True and
 				media["States"]["The media item is the root media"] == False and
 				media["States"]["Video"] == False and
-				self.language_texts["single_unit"] not in media["Item"]["Details"] and
+				media["States"]["Single unit"] == False and
 				media["States"]["Replace title"] == False
 			):
-				# Define a shortcut for the media item type text
-				item_type_text = media["Texts"]["item"][self.language["Small"]]
+				# Create a shortcut for the media item type text
+				media_item_type_text = media["Texts"]["item"][self.language["Small"]]
 
 				# If the media item type text is not inside the defined list
-				if item_type_text not in ["OVA", "ONA"]:
+				if media_item_type_text not in ["OVA", "ONA"]:
 					# Make it lowercase
-					item_type_text = item_type_text.lower()
+					media_item_type_text = media_item_type_text.lower()
 
 				# Define the media episode text as the media unit text with the "with_{}" formatted with the media item text
-				media_episode_text = self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]]) + " " + self.Language.language_texts["with_{}"].format(item_type_text)
+				media_episode_text = self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]]) + " " + self.Language.language_texts["with_{}"].format(media_item_type_text)
 
 				# Show the media episode text with the media item text (item type)
 				# 
-				# Example:
-				# "Episode with season:"
+				# Examples:
+				# Episode with season:
+				# Episode with special:
 				print()
 				print(media_episode_text + ":")
 
@@ -5060,11 +5334,11 @@ class Watch_History(object):
 				# Show media episode title with the media item text in the user language
 				print("\t" + title)
 
-				# Add the " and [media item text]" to the text to show
+				# Add the " and [media item type text]" to the text to show
 				# 
 				# Example:
-				# "Episode with of the anime and season:"
-				text_to_show += " " + self.Language.language_texts["and"] + " " + item_type_text
+				# Episode with anime and season:
+				text_to_show += " " + self.Language.language_texts["and"] + " " + media_item_type_text
 
 				# Define the key as "with_title_and_item" to show the media title, media item title, and the episode title
 				key = "with_title_and_item"
@@ -5078,10 +5352,10 @@ class Watch_History(object):
 				media["States"]["Has a list of media items"] == False or
 				media["States"]["The media item is the root media"] == True or
 				media["States"]["Video"] == True or
-				self.language_texts["single_unit"] in media["Item"]["Details"] or
+				media["States"]["Single unit"] == True or
 				media["States"]["Replace title"] == True
 			):
-				# Define the key as "with_title" to show only the media title and episode title
+				# Define the key as "with_title" to show only the media and episode titles
 				key = "with_title"
 
 			# Define the media episode title as the episode title with the correct key, in the user language
@@ -5106,8 +5380,9 @@ class Watch_History(object):
 				# Show the text to show and the defined title
 				# 
 				# Examples:
-				# "Episode of the anime:"
-				# "Episode of the anime and season:"
+				# Episode with anime title:
+				# Episode with anime title and season:
+				# Episode with anime title and special:
 				print()
 				print(text_to_show + ":")
 				print("\t" + title)
@@ -5143,45 +5418,78 @@ class Watch_History(object):
 
 		# If the "Unit" key is inside the "Epsiode" dictionary
 		if "Unit" in media["Episode"]:
-			# Show the media unit text and the episode unit
+			# Define the local media unit text
+			media_unit_text = self.language_texts["media_unit"]
+
+			# Add the media unit name
+			# 
+			# Examples:
+			# Episode
+			# Movie
+			# Video
+			media_unit_text += " (" + media["Texts"]["unit"][self.language["Small"]] + ")"
+
+			# Show the media unit text and the media unit
 			print()
-			print(self.language_texts["media_unit"] + ":")
+			print(media_unit_text + ":")
 			print("\t" + media["Episode"]["Unit"])
 
-		# If the user is not re-watching the media
-		# And the user completed teh media item
+		# If the user completed the media item
+		# And it is not re-watching the media
 		if (
-			media["States"]["Re-watching"] == False and
-			media["States"]["Completed media item"] == True
+			media["States"]["Completed media item"] == True and
+			media["States"]["Re-watching"] == False
 		):
-			# Show a separator
+			# Show a three dash space separator
 			print()
-			print("-")
-			print()
+			print(self.separators["3"])
 
 			# Show the "Congratulations! :3" text
-			print(self.Language.language_texts["congratulations"] + "! :3")
 			print()
+			print(self.Language.language_texts["congratulations"] + "! :3")
 
-			# Define the text to show as:
-			# You finished watching [this item] [of the container text] "[media title in the user language]"
+			# Define the "this item" text as the media "this item" text
 			# 
-			# Example:
-			# You finished watching this season of the anime "Sword Art Online"
-			# 
-			# (Selected means it maybe a normal or dubbed "of the container" text
-			# "of the anime" or "of the dubbed anime")
+			# Examples:
+			# This season
+			# This special
+			# This short
+			# This song
+			# This OVA
+			# This ONA
+			# This video series
 			this_item_text = media["Texts"]["this_item"][self.language["Small"]]
+
+			# Define the "of the container" text as the media "of the container" text
+			# 
+			# Examples:
+			# of the anime
+			# of the cartoon
+			# of the series
+			# of the YouTube channel
+			# 
+			# ("Selected" means it maybe a normal or dubbed "of the container" text
+			# "of the anime" or "of the dubbed anime")
 			of_the_container_text = media["Texts"]["Selected container texts"]["Of the"]
+
+			# Create a shortcut to the media title in the user language
 			media_title = media["Titles"]["Language"]
 
+			# Define the text to show as:
+			# You finished watching [this item] [of the container] [media title]
+			# 
+			# Examples:
+			# You finished watching this season of the anime "Sword Art Online"
+			# You finished watching this video series of the YouTube channel "alanzoka"
 			text_to_show = self.language_texts["you_finished_watching"] + " " + this_item_text + " " + of_the_container_text + ' "' + media_title + '"'
 
 			# If the media has a list of media items
 			# And the media item is the media (same title as the root media)
+			# And the media item "Last season" state is True
 			if (
 				media["States"]["Has a list of media items"] == True and
-				media["States"]["The media item is the root media"] == True
+				media["States"]["The media item is the root media"] == True and
+				media["Item"]["Last season"] == True
 			):
 				# Define the text to show as:
 				# "You finished watching [this container]"
@@ -5191,6 +5499,7 @@ class Watch_History(object):
 				text_to_show = self.language_texts["you_finished_watching"] + " " + media["Texts"]["this_container"][self.language["Small"]]
 
 			# Show the text to show with a comma
+			print()
 			print(text_to_show + ":")
 
 			# Show the media item title
@@ -5210,12 +5519,10 @@ class Watch_History(object):
 				# Replace the ":\n" texts to add tabs
 				text = text.replace(":\n", ":\n\t")
 
-				# Replace the personal pronoun "I" for the personal pronoun "you" to personalize the message for the user
-				# Both for "started" and "finished"
-				text = text.replace(self.Language.language_texts["when_i_started"], self.Language.language_texts["when_you_started"])
-				text = text.replace(self.Language.language_texts["when_i_finished"], self.Language.language_texts["when_you_finished"])
+				# Replace the "me" pronouns in the text with the "you" pronouns
+				text = self.Replace_Pronouns(text, "me", "you")
 
-				# Show the finished watching text
+				# Show the finished watching text with the "you" pronouns
 				print()
 				print(text)
 
@@ -5257,6 +5564,10 @@ class Watch_History(object):
 				# Show the next media item title
 				self.Show_Media_Title(media_dictionary, is_media_item = True)
 
+			# Show a three dash space separator
+			print()
+			print(self.separators["3"])
+
 		# If the "ID" key is inside the "Episode" dictionary
 		if "ID" in media["Episode"]:
 			# Show the "Remote origin" text and the remote origin
@@ -5264,13 +5575,13 @@ class Watch_History(object):
 			print(self.Language.language_texts["remote_origin"] + ":")
 			print("\t" + media["Episode"]["Remote"]["Title"])
 
-			# Define a shortcut for the "Episode ID" and "Episode link" texts
+			# Create a shortcut for the "Episode ID" and "Episode link" texts
 			episode_id_text = self.language_texts["episode_id"]
 			episode_link_text = self.language_texts["episode_link"]
 
 			# If the media is a video channel
 			if media["States"]["Video"] == True:
-				# Define a shortcut for the "Episode" text by language (uppercase for English, lowercase for other languages)
+				# Create a shortcut for the "Episode" text by language (uppercase for English, lowercase for other languages)
 				episode_text = self.Language.language_texts["episode, by language"]
 
 				# Replace the "Episode" text with the "Video" text by language (uppercase for English, lowercase for other languages)
@@ -5371,7 +5682,7 @@ class Watch_History(object):
 					if media["States"]["Video"] == False:
 						container = container.lower()
 
-					# Define a shortcut for the words dictionary
+					# Create a shortcut for the words dictionary
 					words = dictionary["Media type"]["Genders"][self.language["Small"]]
 
 					# Define the list of items to use to format the text
@@ -5419,5 +5730,9 @@ class Watch_History(object):
 
 		# If the "Statistics text" key is present
 		if "Statistics text" in self.dictionary:
+			# Show a three dash space separator
+			print()
+			print(self.separators["3"])
+
 			# Show the statistics text
 			print(self.dictionary["Statistics text"])

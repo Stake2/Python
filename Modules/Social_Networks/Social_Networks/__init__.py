@@ -1,31 +1,30 @@
 # Social_Networks.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
 from copy import deepcopy
 
 class Social_Networks(object):
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
 
-		# Module related methods
+		# Define basic variables for the class
 		self.Define_Basic_Variables()
+
+		# Define the text dictionaries of the class
 		self.Define_Texts()
 
-		# Folders, files, lists, and dictionaries methods
+		# Define the folders and files of the class
 		self.Define_Folders_And_Files()
-
-		# Class methods
 
 		# Define the "Information items" dictionary
 		self.Define_Information_Items_Dictionary()
 
-		# Define the "Social Networks" dictionary
+		# Define the "Social networks" dictionary
 		self.Define_Social_Networks_Dictionary()
 
 		# Define the information items
@@ -34,28 +33,41 @@ class Social_Networks(object):
 		# Update the social networks file
 		self.Update_Social_Networks_File()
 
-	def Import_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
+		# If the "Discord" social network is inside the list of social networks
+		if "Discord" in self.social_networks["List"]:
+			# Try to find the Discord executable
+			self.Find_Discord()
+
+	def Import_Utility_Classes(self):
+		# Define the classes to be imported
+		classes = [
 			"Define_Folders",
 			"JSON"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes
+		for class_title in classes:
+			# If the class is not already inside this class (Christmas)
+			# Or the class is "Define_Folders"
+			if (
+				hasattr(self, class_title) == False or
+				class_title == "Define_Folders"
+			):
+				# Import the module
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the sub-class
+				sub_class = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+				# If the module title is not "Define_Folders"
+				if class_title != "Define_Folders":
+					# Run the sub-class to define its variable
+					sub_class = sub_class()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+				# Add the sub-class to the current class
+				setattr(self, class_title, sub_class)
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
@@ -126,43 +138,43 @@ class Social_Networks(object):
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Define_Folders_And_Files(self):
-		# Define the "Social Networks" folder dictionary
-		self.folders["Social Networks"] = {
+		# Define the "Social networks" folder dictionary
+		self.folders["Social networks"] = {
 			"Text": {
-				"root": self.folders["Notepad"]["Social Networks"]["root"]
+				"root": self.folders["Notepad"]["Social networks"]["root"]
 			},
 			"Image": {
-				"root": self.folders["Image"]["Social Networks"]["root"]
+				"root": self.folders["Image"]["Social networks"]["root"]
 			}
 		}
 
 		# ---------- #
 
-		# Social Networks text "Database" folder
-		self.folders["Social Networks"]["Text"]["Database"] = {
-			"root": self.folders["Social Networks"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
+		# Define the social networks text "Database" folder
+		self.folders["Social networks"]["Text"]["Database"] = {
+			"root": self.folders["Social networks"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
 		}
 
-		# Database "Information items.json" file
-		self.folders["Social Networks"]["Text"]["Database"]["Information items"] = self.folders["Social Networks"]["Text"]["Database"]["root"] + "Information items.json"
-		self.File.Create(self.folders["Social Networks"]["Text"]["Database"]["Information items"])
+		# Define and create the database "Information items.json" file
+		self.folders["Social networks"]["Text"]["Database"]["Information items"] = self.folders["Social networks"]["Text"]["Database"]["root"] + "Information items.json"
+		self.File.Create(self.folders["Social networks"]["Text"]["Database"]["Information items"])
 
-		# "Social Networks.json" file
-		self.folders["Social Networks"]["Text"]["Social Networks"] = self.folders["Social Networks"]["Text"]["root"] + "Social Networks.json"
-		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks"])
+		# Define and create the "Social networks.json" file
+		self.folders["Social networks"]["Text"]["Social networks"] = self.folders["Social networks"]["Text"]["root"] + "Social networks.json"
+		self.File.Create(self.folders["Social networks"]["Text"]["Social networks"])
 
-		# "Social Networks list.txt" file
-		self.folders["Social Networks"]["Text"]["Social Networks list"] = self.folders["Social Networks"]["Text"]["root"] + self.language_texts["social_networks_list"] + ".txt"
-		self.File.Create(self.folders["Social Networks"]["Text"]["Social Networks list"])
+		# Define and create the "Social networks list.txt" file
+		self.folders["Social networks"]["Text"]["Social networks list"] = self.folders["Social networks"]["Text"]["root"] + self.language_texts["social_networks_list"] + ".txt"
+		self.File.Create(self.folders["Social networks"]["Text"]["Social networks list"])
 
 		# ---------- #
 
-		# Social Networks image "Digital Identities" folder
-		self.folders["Social Networks"]["Image"]["Digital Identities"] = {
-			"root": self.folders["Social Networks"]["Image"]["root"] + self.Language.language_texts["digital_identities"] + "/"
+		# Define and create the social networks image "Digital Identities" folder
+		self.folders["Social networks"]["Image"]["Digital Identities"] = {
+			"root": self.folders["Social networks"]["Image"]["root"] + self.Language.language_texts["digital_identities"] + "/"
 		}
 
-		self.Folder.Create(self.folders["Social Networks"]["Image"]["Digital Identities"]["root"])
+		self.Folder.Create(self.folders["Social networks"]["Image"]["Digital Identities"]["root"])
 
 	def Define_Information_Items_Dictionary(self):
 		# Create the root "Default dictionaries" dictionary
@@ -181,7 +193,7 @@ class Social_Networks(object):
 				"Remove from search": [],
 				"Do not ask for item": [],
 				"Select": [],
-				"Social Network information": [
+				"Social network information": [
 					"Name",
 					"Creators",
 					"Company",
@@ -216,7 +228,7 @@ class Social_Networks(object):
 		# Remove the non-used keys
 		to_remove = [
 			"Select",
-			"Social Network information"
+			"Social network information"
 		]
 
 		for key in to_remove:
@@ -225,7 +237,7 @@ class Social_Networks(object):
 		# ---------- #
 
 		# Read the "Information items.json" file if it is not empty
-		file = self.folders["Social Networks"]["Text"]["Database"]["Information items"]
+		file = self.folders["Social networks"]["Text"]["Database"]["Information items"]
 
 		if self.File.Contents(file)["lines"] != []:
 			# Get the file dictionary
@@ -235,7 +247,7 @@ class Social_Networks(object):
 			self.information_items.update(information_items)
 
 	def Define_Social_Networks_Dictionary(self):
-		# Define the default "Social Networks" dictionary
+		# Define the default "Social networks" dictionary
 		self.social_networks = {
 			"Numbers": {
 				"Total": 0,
@@ -245,8 +257,8 @@ class Social_Networks(object):
 			"Dictionary": {}
 		}
 
-		# Read the "Social Networks.json" file if it is not empty
-		file = self.folders["Social Networks"]["Text"]["Social Networks"]
+		# Read the "Social networks.json" file if it is not empty
+		file = self.folders["Social networks"]["Text"]["Social networks"]
 
 		if self.File.Contents(file)["Lines"] != []:
 			self.social_networks = self.JSON.To_Python(file)
@@ -261,7 +273,7 @@ class Social_Networks(object):
 				"Profile",
 				"Settings",
 				"Image folders",
-				"Social Network"
+				"Social network"
 			],
 			"Dictionary": {}
 		}
@@ -346,15 +358,15 @@ class Social_Networks(object):
 		# ---------- #
 
 		# Get the list of social networks
-		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social Networks"]["Text"]["Social Networks"])["List"]
+		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social networks"]["Text"]["Social networks"])["List"]
 
 		# Sort the list of social networks
 		self.social_networks["List"] = sorted(self.social_networks["List"], key = str.lower)
 
-		# Write the Social Networks list to the "Social Networks list.txt" file
-		text_to_write = self.Text.From_List(self.social_networks["List"], next_line = True)
+		# Write the social networks list to the "Social networks list.txt" file
+		text_to_write = self.Text.From_List(self.social_networks["List"])
 
-		self.File.Edit(self.folders["Social Networks"]["Text"]["Social Networks list"], text_to_write, "w")
+		self.File.Edit(self.folders["Social networks"]["Text"]["Social networks list"], text_to_write, "w")
 
 		# Get the number of social networks
 		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
@@ -365,14 +377,14 @@ class Social_Networks(object):
 
 		# ---------- #
 
-		# Reset the Social Networks dictionary
+		# Reset the social networks "Dictionary"
 		self.social_networks["Dictionary"] = {}
 
-		# Iterate through the social networks list
-		for social_network in self.social_networks["List"]:
-			# Create the local "Social Network" dictionary
-			dictionary = {
-				"Name": social_network,
+		# Iterate through the list of social networks
+		for social_network_name in self.social_networks["List"]:
+			# Create the local social network dictionary
+			social_network = {
+				"Name": social_network_name,
 				"Folders": {},
 				"Files": {},
 				"Information": {},
@@ -385,10 +397,10 @@ class Social_Networks(object):
 			# Define and create the social network folders and files
 			for item in ["Text", "Image"]:
 				# Define the item key inside the "Files" dictionary
-				dictionary["Files"][item] = {}
+				social_network["Files"][item] = {}
 
 				# Define the root folder
-				folder = self.folders["Social Networks"][item]["root"] + social_network + "/"
+				folder = self.folders["Social networks"][item]["root"] + social_network_name + "/"
 
 				# Create the folders dictionary
 				dict_ = {
@@ -408,7 +420,7 @@ class Social_Networks(object):
 					# Define the file name language
 					language = self.language["Small"]
 
-					if key in ["Items", "Social Network"]:
+					if key in ["Items", "Social network"]:
 						language = "en"
 
 					file_name = file_name[language]
@@ -416,7 +428,7 @@ class Social_Networks(object):
 					# Define the extension
 					extension = "txt"
 
-					if key in ["Items", "Social Network"]:
+					if key in ["Items", "Social network"]:
 						extension = "json"
 
 					# Define the file
@@ -428,22 +440,22 @@ class Social_Networks(object):
 					if (
 						key not in ["Settings", "Image folders"] or
 						key == "Image folders" and
-						dictionary["Settings"]["Create image folders"] == True
+						social_network["Settings"]["Create image folders"] == True
 					):
 						# If the item is "Text"
-						# Or the key is "Social Network"
+						# Or the key is "Social network"
 						if (
 							item == "Text" or
-							key == "Social Network"
+							key == "Social network"
 						):
 							# Create the file
 							self.File.Create(dict_[key])
 
 							# Add the file to the "Files" dictionary
-							dictionary["Files"][key] = dict_[key]
+							social_network["Files"][key] = dict_[key]
 
 						# Add the file to the "Files" dictionary
-						dictionary["Files"][item][key] = dict_[key]
+						social_network["Files"][item][key] = dict_[key]
 
 					# If the file is the settings file
 					# And the settings file exists
@@ -452,10 +464,10 @@ class Social_Networks(object):
 						self.File.Exists(dict_[key]) == True
 					):
 						# Add the file to the "Files" dictionary
-						dictionary["Files"][item][key] = dict_[key]
-					
+						social_network["Files"][item][key] = dict_[key]
+
 						# Read the settings file
-						settings = self.File.Dictionary(dictionary["Files"]["Text"][key], next_line = True)
+						settings = self.File.Dictionary(social_network["Files"]["Text"][key], next_line = True)
 
 						# Define a local empty dictionary
 						new_settings = {}
@@ -476,67 +488,67 @@ class Social_Networks(object):
 								new_settings[english_text] = settings[language_text]
 
 						# Update the root settings dictionary
-						dictionary["Settings"] = new_settings
+						social_network["Settings"] = new_settings
 
 				# Define the folders dictionary as the local folders dictionary
-				dictionary["Folders"][item] = dict_
+				social_network["Folders"][item] = dict_
 
 			# Add the keys of the "Text" folders dictionary to the root folders dictionary
-			dictionary["Folders"].update(dictionary["Folders"]["Text"])
+			social_network["Folders"].update(social_network["Folders"]["Text"])
 
-			# Update the Social Network "Information" only with the data on the files inside the Text folder
+			# Update the social network "Information" only with the data on the files inside the Text folder
 			# To get the most up-to-date information
 
 			# Get the information dictionary (translating the keys to English)
-			dictionary["Information"] = self.Information(file = dictionary["Files"]["Information"])
+			social_network["Information"] = self.Information(file = social_network["Files"]["Information"])
 
 			# ---------- #
 
 			# Get the social network information items
-			items = self.JSON.To_Python(dictionary["Files"]["Items"])
+			items = self.JSON.To_Python(social_network["Files"]["Items"])
 
 			# Update the number of information items
 			items["Numbers"]["Total"] = len(items["List"])
 
-			# Update the items list of the root information items with the local items list of the Social Network
+			# Update the items list of the root information items with the local items list of the social network
 			for item in items["List"]:
 				if item not in self.information_items["List"]:
 					self.information_items["List"].append(item)
 
-			# Update the "Exact match" list of the root information items with the "Exact match" list of the Social Network
+			# Update the "Exact match" list of the root information items with the "Exact match" list of the social network
 			list_ = []
 
 			for item in items["Lists"]["Exact match"]:
 				if item not in self.information_items["Lists"]["Exact match"]:
 					list_.append(item)
 
-			self.information_items["Lists"]["Exact match"][social_network] = list_
+			self.information_items["Lists"]["Exact match"][social_network_name] = list_
 
-			# Update the gender lists of the root information items with the gender lists of the Social Network
+			# Update the gender lists of the root information items with the gender lists of the social network
 			for gender in ["Masculine", "Feminine"]:
 				for item in items["Gender"][gender]:
 					if item not in self.information_items["Gender"][gender]:
 						self.information_items["Gender"][gender].append(item)
 
-			# Update the "Formats" dictionary of the root information items with the "Formats" dictionary of the Social Network
-			self.information_items["Formats"][social_network] = items["Formats"]
+			# Update the "Formats" dictionary of the root information items with the "Formats" dictionary of the social network
+			self.information_items["Formats"][social_network_name] = items["Formats"]
 
 			if "Additional items" in items:
 				additional_items = {}
-				
+
 				# Iterate through the "Additional items" dictionary
 				for key, additional_item in items["Additional items"].items():
-					if "{Social Network link}" in additional_item:
-						additional_item = additional_item.replace("{Social Network link}", dictionary["Information"]["Link"][:-1])
+					if "{Social network link}" in additional_item:
+						additional_item = additional_item.replace("{Social network link}", social_network["Information"]["Link"][:-1])
 
 					additional_items[key] = additional_item
 
-				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the Social Network
-				self.information_items["Additional items"][social_network] = additional_items
+				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the social network
+				self.information_items["Additional items"][social_network_name] = additional_items
 
 			# If the "Do not ask for item" list exists
 			if "Do not ask for item" in items["Lists"]:
-				# Update the "Do not ask for item" list of the root information items with the "Do not ask for item" list of the Social Network
+				# Update the "Do not ask for item" list of the root information items with the "Do not ask for item" list of the social network
 				for item in items["Lists"]["Do not ask for item"]:
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
 						self.information_items["Lists"]["Do not ask for item"].append(item)
@@ -548,38 +560,38 @@ class Social_Networks(object):
 				# And the "link" text is inside the item
 				if (
 					item in ["Profile link", "Message link"] or
-					item in self.information_items["Additional items"][social_network] and
+					item in self.information_items["Additional items"][social_network_name] and
 					"link" in item
 				):
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
 						self.information_items["Lists"]["Do not ask for item"].append(item)
 
-			# Update the "Items.json" file of the Social Network
-			self.JSON.Edit(dictionary["Files"]["Items"], items)
+			# Update the "Items.json" file of the social network
+			self.JSON.Edit(social_network["Files"]["Items"], items)
 
-			# Define the "Information items" dictionary of the Social Network as the local "Information items" dictionary
-			dictionary["Information items"] = items
+			# Define the "Information items" dictionary of the social network as the local "Information items" dictionary
+			social_network["Information items"] = items
 
 			# ---------- #
 
 			# Get the user profile
-			dictionary["Profile"] = self.Information(file = dictionary["Files"]["Profile"])
+			social_network["Profile"] = self.Information(file = social_network["Files"]["Profile"])
 
 			# Create the "Links" dictionary
-			dictionary["Profile"]["Links"] = {}
+			social_network["Profile"]["Links"] = {}
 
 			# Add links to the dictionary above
 			for link_type in ["Profile", "Message"]:
 				key = link_type + " link"
 
-				if key in dictionary["Profile"]:
-					link = dictionary["Profile"][key]
+				if key in social_network["Profile"]:
+					link = social_network["Profile"][key]
 
-					dictionary["Profile"]["Links"][link_type] = link
+					social_network["Profile"]["Links"][link_type] = link
 
 			# Get the image folders list from its file if it exists
-			if "Image folders" in dictionary["Files"]:
-				dictionary["Image folders"] = self.File.Contents(dictionary["Files"]["Image folders"])["lines"]
+			if "Image folders" in social_network["Files"]:
+				social_network["Image folders"] = self.File.Contents(social_network["Files"]["Image folders"])["lines"]
 
 			# ---------- #
 
@@ -587,7 +599,7 @@ class Social_Networks(object):
 			file_names = [
 				"Information",
 				"Profile",
-				"Social Network"
+				"Social network"
 			]
 
 			# Update the social network files of the image folder if the file inside the text folder is different
@@ -598,7 +610,7 @@ class Social_Networks(object):
 				# Iterate through the folder type list
 				for item in ["Text", "Image"]:
 					# Get the file of the folder type with the file name
-					file = dictionary["Files"][item][file_name]
+					file = social_network["Files"][item][file_name]
 
 					# Define the file dictionary with the file and file size
 					files[item] = {
@@ -611,21 +623,21 @@ class Social_Networks(object):
 					# Replace the file on the image folder with the one on the text folder, updating the file
 					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
 
-			# Define the "Social Network" dictionary as the local "Social Network" dictionary
-			self.social_networks["Dictionary"][social_network] = dictionary
+			# Define the "Social network" dictionary as the local "Social network" dictionary
+			self.social_networks["Dictionary"][social_network_name] = social_network
 
-		# Iterate through the social networks list
-		for social_network in self.social_networks["List"]:
-			# Get the Social Network dictionary
-			social_network = self.social_networks["Dictionary"][social_network]
+		# Iterate through the list of social networks
+		for social_network_name in self.social_networks["List"]:
+			# Get the social network dictionary
+			social_network = self.social_networks["Dictionary"][social_network_name]
 
-			# Get the Social Network Information dictionary
+			# Get the "Information" dictionary of the social network dictionary
 			information = self.Information(social_network["Information"])
 
 			# Get the release year
 			release_year = information["Release date"].split("/")[-1]
 
-			# If the release year is not in the Social Networks "Numbers" dictionary
+			# If the release year is not in the social networks "Numbers" dictionary
 			if release_year not in self.social_networks["Numbers"]["By year"]:
 				# Add it
 				self.social_networks["Numbers"]["By year"][release_year] = 1
@@ -652,15 +664,15 @@ class Social_Networks(object):
 		# Define the dictionaries of the information items
 		dictionary = self.Define_Information_Item_Dictionary(dictionary)
 
-		# Iterate through the social networks list
+		# Iterate through the list of social networks
 		for key, social_network in self.social_networks["Dictionary"].items():
-			# Create the Local "Information items" dictionary using the Social Network "Information items" dictionary as a base
+			# Create the Local "Information items" dictionary using the social network "Information items" dictionary as a base
 			information_items = deepcopy(social_network["Information items"])
 
 			# Create the "Dictionary" key
 			information_items["Dictionary"] = {}
 
-			# Iterate through the Social Network information items list
+			# Iterate through the list of information items of the social network
 			for item in social_network["Information items"]["List"]:
 				# If the item is inside the root "Information items" dictionary
 				if item in self.information_items["Dictionary"]:
@@ -668,10 +680,10 @@ class Social_Networks(object):
 					information_items["Dictionary"][item] = self.information_items["Dictionary"][item]
 
 				if key in self.information_items["Additional items"]:
-					# Create the "Templates" key inside the "Information items" dictionary of the Social Network
+					# Create the "Templates" key inside the "Information items" dictionary of the social network
 					information_items["Templates"] = self.information_items["Additional items"][key]
 
-			# Define the Social Network "Information items" dictionary as the Local "Information items" dictionary
+			# Define the "Information items" dictionary of the social network as the Local "Information items" dictionary
 			social_network["Information items"] = information_items
 
 			# Translate the keys of the "Information.txt" file to English
@@ -726,7 +738,7 @@ class Social_Networks(object):
 
 			# ---------- #
 
-			# Make a local copy of the "Social Network" dictionary
+			# Make a local copy of the "Social network" dictionary
 			local_dictionary = deepcopy(social_network)
 
 			# Define the root keys to remove
@@ -740,15 +752,15 @@ class Social_Networks(object):
 			for sub_key in to_remove:
 				local_dictionary.pop(sub_key)
 
-			# Update the "Social Network.json" file with the updated and local "Social Network" dictionary
-			self.JSON.Edit(social_network["Folders"]["Social Network"], local_dictionary)
+			# Update the "Social network.json" file with the updated and local "Social network" dictionary
+			self.JSON.Edit(social_network["Folders"]["Social network"], local_dictionary)
 
-			# Update the image "Social Network.json" file with the updated and local "Social Network" dictionary
-			self.JSON.Edit(social_network["Folders"]["Image"]["Social Network"], local_dictionary)
+			# Update the image "Social network.json" file with the updated and local "Social network" dictionary
+			self.JSON.Edit(social_network["Folders"]["Image"]["Social network"], local_dictionary)
 
 			# ---------- #
 
-			# Update the root "Social Network" dictionary
+			# Update the root "Social network" dictionary
 			self.social_networks["Dictionary"][key] = social_network
 
 		# ---------- #
@@ -769,7 +781,7 @@ class Social_Networks(object):
 			local_dictionary["Lists"].pop(language)
 
 		# Update the "Information items.json" file with the updated and local "Information items" dictionary
-		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Database"]["Information items"], local_dictionary)
+		self.JSON.Edit(self.folders["Social networks"]["Text"]["Database"]["Information items"], local_dictionary)
 
 		# ---------- #
 
@@ -929,10 +941,10 @@ class Social_Networks(object):
 			]
 
 			# If the information item is in the needed list
-			# Or is not in the "Social Network information" list
+			# Or is not in the "Social network information" list
 			if (
 				dict_["Name"] in needed_information or
-				dict_["Name"] not in self.information_items["Lists"]["Social Network information"]
+				dict_["Name"] not in self.information_items["Lists"]["Social network information"]
 			):
 				# Define the "Accept enter" state as False
 				dict_["States"]["Accept enter"] = False
@@ -961,7 +973,7 @@ class Social_Networks(object):
 		return dictionary
 
 	def Update_Social_Networks_File(self):
-		# Create a local "Social Networks" dictionary
+		# Create a local "Social networks" dictionary
 		local_dictionary = deepcopy(self.social_networks)
 
 		# Define the root keys to remove
@@ -981,13 +993,13 @@ class Social_Networks(object):
 			"Settings"
 		]
 
-		# Iterate through the social networks list
+		# Iterate through the list of social networks
 		for social_network in self.social_networks["List"]:
 			# Remove the unused social network keys
 			for key in keys_to_remove:
 				local_dictionary["Dictionary"][social_network].pop(key)
 
-			# Remove the unused keys of the Social Network "Information items" dictionary
+			# Remove the unused keys of the social network "Information items" dictionary
 			to_remove = [
 				"Lists",
 				"Accept enter",
@@ -1001,8 +1013,8 @@ class Social_Networks(object):
 				if key in local_dictionary["Dictionary"][social_network]["Information items"]:
 					local_dictionary["Dictionary"][social_network]["Information items"].pop(key)
 
-		# Update the "Social Networks.json" file with the updated and local "Social Networks" dictionary
-		self.JSON.Edit(self.folders["Social Networks"]["Text"]["Social Networks"], local_dictionary)
+		# Update the "Social networks.json" file with the updated and local "Social networks" dictionary
+		self.JSON.Edit(self.folders["Social networks"]["Text"]["Social networks"], local_dictionary)
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
 		# If the file parameter is not None
@@ -1050,18 +1062,18 @@ class Social_Networks(object):
 	def Select_Social_Network(self, social_network = None, social_networks = None, select_social_network = True, show_text = None, select_text = None):
 		# If the "social networks" parameter is None
 		if social_networks == None:
-			# Define the local Social Networks dictionary as the root one
+			# Define the local dictionary of social networks as the root one
 			social_networks = self.social_networks
 
-		# If the "show text" parameter is None, define it as "Social Networks"
+		# If the "show text" parameter is None, define it as "Social networks"
 		if show_text == None:
-			show_text = self.language_texts["social_networks"]
+			show_text = self.Language.language_texts["social_networks"]
 
-		# If the "select text" parameter is None, define it as "Select one Social Network to use"
+		# If the "select text" parameter is None, define it as "Select one social network to use"
 		if select_text == None:
 			select_text = self.language_texts["select_one_social_network_to_use"]
 
-		# If the "select Social Network" parameter is True
+		# If the "select social network" parameter is True
 		if select_social_network == True:
 			# If the "social network" parameter is None, ask the user to select a social network
 			if social_network == None:
@@ -1164,7 +1176,7 @@ class Social_Networks(object):
 
 		# If the "type_information" is True
 		if type_information == True:
-			# Type the selected Friend or Social Network information
+			# Type the information about the selected social network
 
 			# If the information item is not inside the "Select" list
 			if information_item["Name"] not in information_items["Lists"]["Select"]:
@@ -1208,9 +1220,13 @@ class Social_Networks(object):
 					):
 						information = information_item["Test information"][information_item["Name"]]
 
-					# Define the information as "[Empty]" if it is empty
+					# If the information is empty
 					if information == "":
-						information = "[{}]".format(self.Language.language_texts["empty, title()"])
+						# Define the information as the empty text
+						information = empty_text
+
+						# Show the information
+						print("\t" + information)
 
 			# Else, ask user to select an item from the list of information
 			else:
@@ -1290,10 +1306,13 @@ class Social_Networks(object):
 		}
 
 		# Reset the test information dictionary to test the manual typing of information
-		#test_information = {}
+		test_information = {}
 
 		# Define the default information value
 		information = ""
+
+		# Create a shortcut to the empty text and add brackets around it
+		empty_text = "[{}]".format(self.Language.language_texts["empty, title()"])
 
 		# Iterate through the Information items dictionary
 		for key, information_item in social_network["Information items"]["Dictionary"].items():
@@ -1341,9 +1360,16 @@ class Social_Networks(object):
 						# Use the test information
 						information = test_information[social_network["Name"]][key]
 
-					# Define the information as the "[Empty]" text if it is empty
+					# If the information is empty
 					if information == "":
-						information = "[{}]".format(self.Language.language_texts["empty, title()"])
+						# Create a shortcut to the empty text and add brackets around it
+						empty_text = "[{}]".format(self.Language.language_texts["empty, title()"])
+
+						# Define the information as the empty text
+						information = empty_text
+
+						# Show the information
+						print("\t" + information)
 
 				# If the information item is inside the "Additional items" dictionary
 				if key in self.information_items["Additional items"][social_network["Name"]]:
@@ -1356,8 +1382,34 @@ class Social_Networks(object):
 					# Remove the format item from the additional item template
 					additional_item = additional_item.replace(format_item, "")
 
-					# Define the information with the formatted additional item template
-					information = additional_item.format(social_network["Profile"][format_item])
+					# Get the additional item value from the social network "Profile" dictionary
+					additional_item_value = social_network["Profile"][format_item]
+
+					# If it is not the empty text
+					# Or the key is "Profile link"
+					# And the "Handle" information item is present
+					# And the handle is empty
+					if (
+						additional_item_value != empty_text or
+						key == "Profile link" and
+						"Handle" in social_network["Information items"]["List"] and
+						social_network["Profile"]["Handle"] == empty_text
+					):
+						# Define the information as the additional item template formatted with its value
+						information = additional_item.format(additional_item_value)
+
+					# If the social network is "Facebook"
+					# And the key is "Profile link"
+					# And the "Handle" information item is present
+					# And the handle is not empty
+					if (
+						social_network["Name"] == "Facebook" and
+						key == "Profile link" and
+						"Handle" in social_network["Information items"]["List"] and
+						social_network["Profile"]["Handle"] != empty_text
+					):
+						# Define the information as the social network link plus the handle
+						information = social_network["Information"]["Link"] + social_network["Profile"]["Handle"]
 
 				# If the "Testing" switch is True
 				# And the "test information" dictionary is not empty
@@ -1379,5 +1431,43 @@ class Social_Networks(object):
 		print()
 		print(self.separators["5"])
 
-		# Return the Social Network dictionary
+		# Return the social network dictionary
 		return social_network
+
+	def Find_Discord(self):
+		# Import some useful modules
+		import os
+		import re
+
+		# Define a list of paths where the Discord executable may be in
+		possible_paths = [
+			self.folders["User"]["AppData"]["Local"]["root"],
+			self.folders["User"]["AppData"]["Roaming"]["root"],
+			self.folders["Program Files"]["root"]
+		]
+
+		# Iterate through the list of possible folders
+		for folder in possible_paths:
+			# Add the "Discord" folder to the folder
+			folder += "Discord/"
+
+			# Regex pattern to find the "app-" folder
+			pattern = re.compile(r"app-\d+\.\d+\.\d+")
+
+			# If the folder exists
+			if self.Folder.Exists(folder) == True:
+				# Get the sub-folders
+				sub_folders = os.listdir(folder)
+
+				# Iterate through the sub-folders
+				for sub_folder in sub_folders:
+					# If the sub-folder contains the "app-" string
+					if "app-" in sub_folder:
+						# Define the executable as the root folder plus the sub-folder and the executable
+						executable = folder + sub_folder + "/Discord.exe"
+
+						# Add the Discord executable to the dictionary of the "Discord" social network
+						self.social_networks["Dictionary"]["Discord"]["Executable"] = executable
+
+						# Break the for loop
+						break

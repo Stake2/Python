@@ -410,7 +410,7 @@ class Folder():
 			"Diary",
 			"Diary Slim",
 			"Friends",
-			"Social Networks",
+			"Social networks",
 			"Data Networks",
 			"Years"
 		]
@@ -638,7 +638,7 @@ class Folder():
 			"Christmas": self.Language.language_texts["christmas, title()"],
 			"Diary": self.Language.language_texts["diary, title()"],
 			"Friends": self.Language.language_texts["friends, title()"],
-			"Social Networks": self.Language.language_texts["social_networks"],
+			"Social networks": self.Language.language_texts["social_networks"],
 			"Years": self.Date.language_texts["years, title()"]
 		}
 
@@ -647,15 +647,70 @@ class Folder():
 				"root": self.folders["Image"]["root"] + folder + "/"
 			}
 
-		# Mega Image Christmas folders
-		folders = {
-			"Theme": self.Language.language_texts["theme, title()"]
-		}
+		# ----- #
 
-		for key, folder in folders.items():
-			self.folders["Image"]["Christmas"][key] = {
-				"root": self.folders["Image"]["Christmas"]["root"] + folder + "/"
+		# Define the Mega image "Christmas" sub-folders
+		folders = [
+			"Images",
+			"Theme"
+		]
+
+		# Define the root folder as the Christmas folder
+		root_folder = self.folders["Image"]["Christmas"]
+
+		# Iterate through the list of folder keys
+		for key in folders:
+			# Define the text key for the key
+			text_key = key.lower() + ", title()"
+
+			# Define the user language folder name using the text key
+			folder_name = self.Language.language_texts[text_key]
+
+			# Define the folder (the root folder plus the folder name)
+			folder = root_folder["root"] + folder_name + "/"
+
+			# Add the folder to the root folder dictionary with the key
+			root_folder[key] = {
+				"root": folder
 			}
+
+		# --- #
+
+		# Define the Mega image Christmas "Theme" files
+		files = [
+			"Christmas"
+		]
+
+		# Define the list of file extensions to use
+		file_extensions = [
+			"theme",
+			"lnk",
+			"bat"
+		]
+
+		# Define the root folder as the Christmas "Theme" folder
+		root_folder = self.folders["Image"]["Christmas"]["Theme"]
+
+		# Iterate through the list of file keys
+		for key in files:
+			# Define the text key for the key
+			text_key = key.lower() + ", title()"
+
+			# Define the user language file name using the text key
+			file_name = self.Language.language_texts[text_key]
+
+			# Iterate through the file extensions
+			for file_extension in file_extensions:
+				# Define the file (the root folder plus the file name and the file extension)
+				file = root_folder["root"] + file_name + "." + file_extension
+
+				# Define the new key as the original key plus the file extension
+				new_key = key + "." + file_extension
+
+				# Add the file to the root folder dictionary with the new key
+				root_folder[new_key] = file
+
+		# ----- #
 
 		# Mega Image "Years" folders
 		folders = {

@@ -126,7 +126,7 @@ class Convert_History(GamePlayer):
 			# Define the "Play History" root folder
 			year["Folders"]["Play History"]["root"] = self.folders["Play History"]["root"] + str(year_number) + "/"
 
-			# Define a shortcut to the play history folder
+			# Create a shortcut to the play history folder
 			play_history = year["Folders"]["Play History"]
 
 			# ----- #
@@ -155,7 +155,7 @@ class Convert_History(GamePlayer):
 			# Define the "By game type" root folder
 			year["Folders"]["Play History (by game type)"]["root"] = play_history["root"] + "By game type/"
 
-			# Define a shortcut to the by game type folder
+			# Create a shortcut to the by game type folder
 			by_game_type = year["Folders"]["Play History (by game type)"]
 
 			# ---------- #
@@ -175,7 +175,7 @@ class Convert_History(GamePlayer):
 					}
 				}
 
-				# Define a shortcut to the game type folders
+				# Create a shortcut to the game type folders
 				game_type_folders = game_type["Folders"]
 
 				# ----- #
@@ -225,7 +225,7 @@ class Convert_History(GamePlayer):
 					# Get the root year folders dictionary from the "Years" module
 					year_folders = self.Years.years["Dictionary"][year_number]["Folders"]
 
-					# Define a shortcut for the [folder type] folder
+					# Create a shortcut for the [folder type] folder
 					folder = year_folders[language][folder_type]
 
 					# If the folder type is "Gaming sessions"
@@ -362,7 +362,7 @@ class Convert_History(GamePlayer):
 				# Get the "Entries" dictionary of the current game type
 				game_type_entries = year["Entries"]["Play History (by game type)"][english_game_type]
 
-				# Define a shortcut to the list of entries of the current game type
+				# Create a shortcut to the list of entries of the current game type
 				entry_list = game_type_entries["Entries"]
 
 				# Get the game type entries dictionary
@@ -434,7 +434,7 @@ class Convert_History(GamePlayer):
 					print(self.language_texts["the_entry_is_not_inside_the_list_of_game_type_entries"] + ".")
 					input()
 
-				# Define a shortcut to the game type folders
+				# Create a shortcut to the game type folders
 				game_type_folders = year["Folders"]["Play History (by game type)"][english_game_type]["Folders"]
 
 				# Get the game type "Game information" folder
@@ -442,7 +442,7 @@ class Convert_History(GamePlayer):
 
 				# ----- #
 
-				# Define a shortcut to the game titles dictionary
+				# Create a shortcut to the game titles dictionary
 				game_titles = entry["Game titles"]
 
 				# Get the original game title
@@ -507,7 +507,7 @@ class Convert_History(GamePlayer):
 
 					# ----- #
 
-					# Define a shortcut to the game "Played" folder
+					# Create a shortcut to the game "Played" folder
 					played_folder = game["Root dictionary"]["Game"]["Folders"]["Played"]
 
 					# Import the "Played" folders and files
@@ -578,7 +578,7 @@ class Convert_History(GamePlayer):
 
 				# ----- #
 
-				# Define a shortcut to the entries dictionary
+				# Create a shortcut to the entries dictionary
 				entries = game["Entries"]["Played"]
 
 				# If the entry is not in the "Entries" list
@@ -596,7 +596,7 @@ class Convert_History(GamePlayer):
 
 				# ----- #
 
-				# Define a shortcut to the game entry list
+				# Create a shortcut to the game entry list
 				entry_list = game["Entry list"]["Played"]
 
 				# If the entry is not in the "Entry list" list
@@ -619,7 +619,7 @@ class Convert_History(GamePlayer):
 
 						# ----- #
 
-						# Define a shortcut to the sub-game "Played" folder
+						# Create a shortcut to the sub-game "Played" folder
 						played_folder = game["Root dictionary"]["Game"]["Sub-game"]["Folders"]["Played"]
 
 						# Define the sub-game folders dictionary by copying the keys from the original dictionary and converting them to title case
@@ -648,7 +648,7 @@ class Convert_History(GamePlayer):
 
 					# ----- #
 
-					# Define a shortcut to the sub-game entries dictionary
+					# Create a shortcut to the sub-game entries dictionary
 					sub_game_entries = game["Entries"]["Played (sub-games)"][sub_game_title]
 
 					# If the entry is not in the "Entries" list
@@ -664,7 +664,7 @@ class Convert_History(GamePlayer):
 
 					# ----- #
 
-					# Define a shortcut to the sub-game entry list
+					# Create a shortcut to the sub-game entry list
 					sub_game_entry_list = game["Entry list"]["Played (sub-games)"][sub_game_title]
 
 					# If the entry is not in the "Entry list" list
@@ -723,7 +723,7 @@ class Convert_History(GamePlayer):
 
 				# Iterate through the language keys and dictionaries
 				for small_language, language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# Define the entry key to create the dictionary
@@ -754,7 +754,7 @@ class Convert_History(GamePlayer):
 
 				# ----- #
 
-				# Define a shortcut to the played "Files" folder
+				# Create a shortcut to the played "Files" folder
 				folder = game["Folders"]["Played"]["Files"]["root"]
 
 				# Define the old file
@@ -782,7 +782,7 @@ class Convert_History(GamePlayer):
 					"Sub-game titles" in entry or
 					game["Root dictionary"]["Game"]["States"]["Has sub-games"] == True
 				):
-					# Define a shortcut to the folder
+					# Create a shortcut to the folder
 					folder = game["Folders"]["Played (sub-games)"][sub_game_title]["Files"]["root"]
 
 					# Define the old file
@@ -925,14 +925,14 @@ class Convert_History(GamePlayer):
 
 			# ----- #
 
-			# Define a shortcut to the root game dictionary
+			# Create a shortcut to the root game dictionary
 			root_game_dictionary = game["Root dictionary"]["Game"]
 
 			if "Titles" not in root_game_dictionary:
 				self.JSON.Show(game)
 				input()
 
-			# Define a shortcut to the game titles dictionary
+			# Create a shortcut to the game titles dictionary
 			game_titles = root_game_dictionary["Titles"]
 
 			# Get the original game title
@@ -948,10 +948,10 @@ class Convert_History(GamePlayer):
 
 			# ----- #
 
-			# Define a shortcut to the game played "Entries.json" file
+			# Create a shortcut to the game played "Entries.json" file
 			game_entries_file = game["Folders"]["Played"]["Entries"]
 
-			# Define a shortcut to the game played "Entries" dictionary
+			# Create a shortcut to the game played "Entries" dictionary
 			game_entries = game["Entries"]["Played"]
 
 			if game_title == "Don't Starve":
@@ -963,14 +963,14 @@ class Convert_History(GamePlayer):
 
 			# ----- #
 
-			# Define a shortcut to the game played "Entry list.txt" file
+			# Create a shortcut to the game played "Entry list.txt" file
 			game_entry_list_file = game["Folders"]["Played"]["Entry list"]
 
-			# Define a shortcut to the game played "Entry list" list
+			# Create a shortcut to the game played "Entry list" list
 			game_entry_list = game["Entry list"]["Played"]
 
 			# Convert it to a string
-			game_entry_list = self.Text.From_List(game_entry_list, next_line = True)
+			game_entry_list = self.Text.From_List(game_entry_list)
 
 			# Update the game played "Entry list.txt" file with the updated "Entry list" list
 			# (Game played "Entry list.txt" file)
@@ -998,15 +998,15 @@ class Convert_History(GamePlayer):
 					# Define the sub-game dictionary
 					game["Root dictionary"] = self.Define_Sub_Games(game["Root dictionary"], sub_game_title = sub_game_title)
 
-					# Define a shortcut to the root game dictionary
+					# Create a shortcut to the root game dictionary
 					root_game_dictionary = game["Root dictionary"]["Game"]
 
-					# Define a shortcut to the sub-game dictionary
+					# Create a shortcut to the sub-game dictionary
 					sub_game = root_game_dictionary["Sub-game"]
 
 					# ----- #
 
-					# Define a shortcut to the sub-game titles dictionary
+					# Create a shortcut to the sub-game titles dictionary
 					sub_game_titles = sub_game["Titles"]
 
 					# Get the original sub-game title
@@ -1022,7 +1022,7 @@ class Convert_History(GamePlayer):
 
 					# ----- #
 
-					# Define a shortcut to the sub-game played "Entries.json" file
+					# Create a shortcut to the sub-game played "Entries.json" file
 					sub_game_entries_file = game["Folders"]["Played (sub-games)"][sub_game_title]["Entries"]
 
 					if game_title == "Don't Starve":
@@ -1034,14 +1034,14 @@ class Convert_History(GamePlayer):
 
 					# ----- #
 
-					# Define a shortcut to the sub-game played "Entry list.txt" file
+					# Create a shortcut to the sub-game played "Entry list.txt" file
 					sub_game_entry_list_file = game["Folders"]["Played (sub-games)"][sub_game_title]["Entry list"]
 
-					# Define a shortcut to the sub-game played "Entry list" list
+					# Create a shortcut to the sub-game played "Entry list" list
 					sub_game_entry_list = game["Entry list"]["Played (sub-games)"][sub_game_title]
 
 					# Convert it to a string
-					sub_game_entry_list = self.Text.From_List(sub_game_entry_list, next_line = True)
+					sub_game_entry_list = self.Text.From_List(sub_game_entry_list)
 
 					# Update the sub-game played "Entry list.txt" file with the updated "Entry list" list
 					# (Sub-game played "Entry list.txt" file)
@@ -1393,7 +1393,7 @@ class Convert_History(GamePlayer):
 				lines_to_keep.append(line)
 
 		# Transform the list of lines into a text string
-		text = self.Text.From_List(lines_to_keep, next_line = True)
+		text = self.Text.From_List(lines_to_keep)
 
 		# ---------- #
 

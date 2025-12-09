@@ -99,13 +99,13 @@ class Post(Stories):
 			setattr(self, class_title, sub_class)
 
 	def Check_Story_Chapters(self):
-		# Define a shortcut to the story "Chapters" dictionary
+		# Create a shortcut to the story "Chapters" dictionary
 		chapters = self.story["Chapters"]
 
-		# Define a shortcut to the last chapter written
+		# Create a shortcut to the last chapter written
 		last_chapter = chapters["Numbers"]["Total"]
 
-		# Define a shortcut to the story "Writing" dictionary
+		# Create a shortcut to the story "Writing" dictionary
 		writing = self.story["Writing"]
 
 		# Define shortcuts for the "Write", "Revise", and "Translate" writing dictionaries
@@ -265,15 +265,15 @@ class Post(Stories):
 
 		# ---------- #
 
-		# Define a shortcut to the "language texts" dictionary of the "Language" class
+		# Create a shortcut to the "language texts" dictionary of the "Language" class
 		language_texts = self.Language.language_texts
 
 		# Iterate through the posting modes and posting mode dictionaries
 		for posting_mode, posting_mode_dictionary in deepcopy(self.posting["Posting modes"]["Dictionary"]).items():
-			# Define a shortcut to the current posting mode dictionary
+			# Create a shortcut to the current posting mode dictionary
 			writing_dictionary = self.story["Writing"][posting_mode]
 
-			# Define a shortcut to the "Status" dictionary
+			# Create a shortcut to the "Status" dictionary
 			status = writing_dictionary["Status"]
 
 			# Get the current chapter of the current posting mode
@@ -407,7 +407,7 @@ class Post(Stories):
 		# Define the "Chapter" dictionary using the root "Select_Chapter" method, passing the chapter number to it
 		self.posting["Chapter"] = self.Select_Chapter(chapter_number = chapter_number)
 
-		# Define a shortcut to the chapter dictionary
+		# Create a shortcut to the chapter dictionary
 		self.chapter = self.posting["Chapter"]
 
 		# Get the chapter dictionary key of the posting mode
@@ -496,10 +496,10 @@ class Post(Stories):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
-				# Define a shortcut to the root cover folder
+				# Create a shortcut to the root cover folder
 				root_folder = self.story["Folders"]["Covers"][cover_type][small_language]["root"]
 
 				# Define the local cover folder as the folders dictionary
@@ -546,7 +546,7 @@ class Post(Stories):
 						"root": self.story["Folders"]["Covers"]["Websites"]["Chapters"]["root"] + self.chapter["Numbers"]["Leading zeroes"] + "/"
 					}
 
-					# Define a shortcut to the cover folder
+					# Create a shortcut to the cover folder
 					cover_folder = cover_type_dictionary["Folders"]["Website"]
 
 					# Create the folder
@@ -608,7 +608,7 @@ class Post(Stories):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Get the current language translated to the user language
@@ -745,7 +745,7 @@ class Post(Stories):
 		# Show the text
 		print(text + ":")
 
-		# Define a shortcut to the chapter title with number in the current language
+		# Create a shortcut to the chapter title with number in the current language
 		chapter_title = self.chapter["Titles"]["With number"][language["Small"]]
 
 		# Show the chapter title
@@ -861,7 +861,7 @@ class Post(Stories):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the "Links" dictionary of the story website for the selected story
+				# Create a shortcut to the "Links" dictionary of the story website for the selected story
 				story_links = self.story["Information"]["Links"][key]
 
 				# Define the default link key as the "Edit story" one
@@ -875,7 +875,7 @@ class Post(Stories):
 				# Define the story link to be the one with the link key and the current language
 				story_link = story_links[link_key][small_language]
 
-				# Define the "Social Networks" dictionary to use in the "Open_Social_Network" sub-class imported from the "Social_Networks" module
+				# Define the "Social networks" dictionary to use in the "Open_Social_Network" sub-class imported from the "Social_Networks" module
 				# With the list of social networks to open and their custom links
 				social_networks = {
 					"List": [
@@ -915,7 +915,7 @@ class Post(Stories):
 					# Define the chapter link variable as an empty string
 					chapter_link = ""
 
-					# Define a shortcut to the story website chapter "Links" dictionary
+					# Create a shortcut to the story website chapter "Links" dictionary
 					chapter_links = self.chapter["Links"][key]
 
 					# Define a chapter link format with the "{Chapter ID}" format string removed
@@ -940,7 +940,7 @@ class Post(Stories):
 						# Split it again to get only the chapter ID
 						chapter_id = chapter_id.split("-")[0]
 
-					# Define a shortcut to the root chapter link
+					# Create a shortcut to the root chapter link
 					chapter_link = chapter_links[small_language]
 
 					# Replace the "{Chapter ID}" format string with the actual chapter ID in the local chapter link
@@ -979,7 +979,7 @@ class Post(Stories):
 
 		# Post the chapter on the social networks
 
-		# Define the "Social Networks" dictionary with the list of social networks to open
+		# Define the "Social networks" dictionary with the list of social networks to open
 		social_networks = {
 			"List": [
 				"Discord",
@@ -1012,12 +1012,12 @@ class Post(Stories):
 			print(self.separators["5"])
 			print()
 
-			# Show the current and total social networks numbers
+			# Show the "Social network number" text and the "[Current number]/[Total number]" numbers
 			print(self.Language.language_texts["social_network_number"] + ":")
 			print("[" + str(social_network_number) + "/" + str(total_social_networks_number) + "]")
 			print()
 
-			# Show the social network name
+			# Show the "Social network" text and the social network name
 			print(self.Language.language_texts["social_network"] + ":")
 			print("[" + social_network + "]")
 
@@ -1056,7 +1056,7 @@ class Post(Stories):
 
 			# ----- #
 
-			# Define a shortcut to the root post text
+			# Create a shortcut to the root post text
 			post_text = self.chapter["Posting"]["Texts"]["Website"]
 
 			# If the social network is inside the list of social networks without hashtags
@@ -1300,7 +1300,7 @@ class Post(Stories):
 		# Define the "Read it here" text with the text and a line break
 		self.chapter["Posting"]["Read it here"] = self.language_texts["read_it_here"] + ":" + "\n"
 
-		# Define a shortcut to the chapter link in the story website
+		# Create a shortcut to the chapter link in the story website
 		chapter_link = self.chapter["Links"]["Website"][self.language["Small"]]
 
 		# Replace spaces with "%20" in the chapter link
@@ -1356,7 +1356,7 @@ class Post(Stories):
 		post_text.pop(-1)
 
 		# Transform the list into a text with line breaks
-		post_text = self.Text.From_List(post_text, next_line = True)
+		post_text = self.Text.From_List(post_text)
 
 		# Return the post text
 		return post_text
@@ -1371,7 +1371,7 @@ class Post(Stories):
 		# Get the UTC formats
 		utc_formats = self.posting["Date"]["UTC"]["DateTime"]["Formats"]
 
-		# Define a shortcut to the UTC time format
+		# Create a shortcut to the UTC time format
 		utc_time = utc_formats["YYYY-MM-DDTHH:MM:SSZ"]
 
 		# ----- #
@@ -1417,7 +1417,7 @@ class Post(Stories):
 			# Define the "Last posted chapter" as the current chapter
 			self.story["Chapters"]["Numbers"]["Last posted chapter"] = self.chapter["Number"]
 
-			# Define a shortcut to the "Times" dictionary
+			# Create a shortcut to the "Times" dictionary
 			times = self.chapter["Dictionary"]["Posting"]["Writing"]["Times"]
 
 			# Update the "Finished" and "Finished (UTC)" posting times
@@ -1514,11 +1514,11 @@ class Post(Stories):
 			# Define the text template as the "and on the {} story websites" text in the current language
 			text_template = self.texts["and_on_the_{}_story_websites"][small_language]
 
-			# Define a shortcut to the list of story websites
+			# Create a shortcut to the list of story websites
 			story_websites = self.stories["Story websites"]["List"]
 
 			# Define the story websites text as the list of story websites converted into a text
-			story_websites_text = self.Text.From_List(story_websites, language = small_language)
+			story_websites_text = self.Text.From_List(story_websites, next_line = False, language = small_language)
 
 			# Format the text template with the story websites string
 			text = text_template.format(story_websites_text)
@@ -1714,7 +1714,7 @@ class Post(Stories):
 			languages.append(translated_language)
 
 		# Convert it into a text
-		languages = self.Text.From_List(languages)
+		languages = self.Text.From_List(languages, next_line = False)
 
 		# ----- #
 
@@ -1739,7 +1739,7 @@ class Post(Stories):
 			# Add the "and" text and a space
 			posting_mode_text += " " + self.Language.language_texts["and"] + " "
 
-			# Define a shortcut to the "Translate" writing mode dictionary
+			# Create a shortcut to the "Translate" writing mode dictionary
 			translate = self.stories["Writing modes"]["Dictionary"]["Translate"]
 
 			# Add the translated "Chapter" writing mode text to the posting mode text
@@ -1747,11 +1747,11 @@ class Post(Stories):
 
 		# ----- #
 
-		# Define a shortcut to the list of story websites
+		# Create a shortcut to the list of story websites
 		story_websites = self.stories["Story websites"]["List"]
 
 		# Define the story websites text as the list of story websites converted into a text
-		story_websites_text = self.Text.From_List(story_websites)
+		story_websites_text = self.Text.From_List(story_websites, next_line = False)
 
 		# Get the number name for the number of story websites
 		story_websites_number_name = self.Date.language_texts["number_names, type: list"][len(story_websites)]
@@ -1795,7 +1795,7 @@ class Post(Stories):
 		]
 
 		# Convert it into a text
-		social_networks_text = self.Text.From_List(social_networks, next_line = True)
+		social_networks_text = self.Text.From_List(social_networks)
 
 		# ----- #
 
@@ -1807,7 +1807,7 @@ class Post(Stories):
 		]
 
 		# Convert it into a text
-		status_social_networks_text = self.Text.From_List(status_social_networks, next_line = True)
+		status_social_networks_text = self.Text.From_List(status_social_networks)
 
 		# ----- #
 

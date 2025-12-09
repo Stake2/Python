@@ -1,5 +1,7 @@
 # Text.py
 
+# Import some useful modules
+import importlib
 import os
 
 class Text():
@@ -8,7 +10,7 @@ class Text():
 		self.Import_Classes()
 
 		# Define the folders of the module
-		self.Define_Folders(object = self,)
+		self.Define_Folders(object = self)
 
 		# Define the "Switches" dictionary
 		self.Define_Switches()
@@ -17,8 +19,6 @@ class Text():
 		self.Define_Texts()
 
 	def Import_Classes(self):
-		import importlib
-
 		# Define the list of modules to be imported
 		modules = [
 			"Define_Folders",
@@ -53,7 +53,7 @@ class Text():
 			"Verbose": True
 		}
 
-	def Verbose(self, text, item, verbose = None):
+	def Verbose(self, text, item, verbose = None, first_space = True):
 		# If the "Verbose" switch is True
 		# And the verbose parameter is None
 		# Or the verbose parameter is True
@@ -67,8 +67,12 @@ class Text():
 			# Get the name of the method which ran this method (the "Verbose" one)
 			runner_method_name = inspect.stack()[1][3]
 
+			# If the "first space" parameter is True
+			if first_space == True:
+				# Show the first space separator
+				print()
+
 			# Show the module name (Text) and the method which ran this method (the "Verbose" one)
-			print()
 			print(self.module["Name"] + "." + runner_method_name + "():")
 
 			# Show the verbose text
@@ -213,10 +217,10 @@ class Text():
 		# Return the text without special characters
 		return text
 
-	def Copy(self, text, verbose = True):
+	def Copy(self, text, verbose = True, first_space = True):
 		# If the text is a list, convert it to a text
 		if type(text) == list:
-			text = self.From_List(text, next_line = True)
+			text = self.From_List(text)
 
 		# If the text is a dictionary, convert it to a text
 		if type(text) == dict:
@@ -229,74 +233,106 @@ class Text():
 		pyperclip.copy(text)
 
 		# Show the verbose text about the copied text
-		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose)
+		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose, first_space = first_space)
 
-	def From_List(self, list_, language = None, lower = False, next_line = False, and_text = True, or_text = False, quotes = False):
+	def From_List(self, items, language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False):
+		# Define the text initially as an empty string
 		text = ""
 
-		text_list = self.Language.language_texts
+		# Define the texts dictionary as the "language texts" dictionary of the "Language" utility class
+		texts = self.Language.language_texts
 
+		# If the "language" parameter is not None
 		if language != None:
-			text_list = self.Language.texts
+			# Define the texts dictionary as the "texts" dictionary of the "Language" utility class
+			texts = self.Language.texts
 
-		for item in list_:
+		# Iterate through the indexes and items inside the list of items
+		for index, item in enumerate(items):
+			# Create a backup of the item
 			item_backup = item
 
+			# If the item backup is the last one inside the list
+			# And the "next line" parameter is False
 			if (
-				item_backup == list_[-1] and
+				item_backup == items[-1] and
 				next_line == False
 			):
+				# If the list of items is two or greater than two
 				if (
-					len(list_) > 2 or
-					len(list_) == 2
+					len(items) == 2 or
+					len(items) > 2
 				):
+					# Define the separator text as an empty string
 					separator_text = ""
 
+					# If the "and text" parameter is True, define the separator text as "and"
 					if and_text == True:
-						separator_text = text_list["and"]
+						separator_text = texts["and"]
 
+					# If the "or text" parameter is True, define the separator text as "or"
 					if or_text == True:
-						separator_text = text_list["or"]
+						separator_text = texts["or"]
 
+					# If the "language" parameter is not None
+					# And the separator text is not empty
 					if (
 						language != None and
 						separator_text != ""
 					):
+						# Get the separator text in the correct language
 						separator_text = separator_text[language]
 
+					# If the separator is not empty, add the separator to the text first
 					if separator_text != "":
 						text += separator_text + " "
 
+			# If the "lower" parameter is True, then convert the item into lowercase
 			if lower == True:
 				item = item.lower()
 
+			# If the "quotes" parameter is True, add quotes around the item
 			if quotes == True:
 				item = '"' + item + '"'
 
+			# If the item index is not the last one inside the list
+			# And the "next line" parameter is False
 			if (
-				item_backup != list_[-1] and
+				index != len(items) - 1 and
 				next_line == False
 			):
-				if len(list_) == 2:
+				# If the number of items is two
+				if len(items) == 2:
+					# Add a space to the end of the item
 					item += " "
 
-				if len(list_) > 2:
+				# If the number of items is greater than two
+				if len(items) > 2:
+					# Add a comma and a space to the end of the item
 					item += ", "
 
+			# If the item index is not the last one inside the list
+			# And the "next line" parameter is True
 			if (
-				item_backup != list_[-1] and
+				index < len(items) - 1 and
 				next_line == True
 			):
+				# Add a line break to the item
 				item += "\n"
 
+			# If the item backup is an empty string
+			# And the "next line" parameter is True
 			if (
 				item_backup == "" and
 				next_line == True
 			):
+				# Define the item as the line break
 				item = "\n"
 
+			# Add the item to the text
 			text += item
 
+		# Return the full text
 		return text
 
 	def From_Dictionary(self, dictionary, break_line = True, next_line = False):

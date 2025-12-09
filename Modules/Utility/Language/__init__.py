@@ -246,7 +246,7 @@ class Language():
 		# Get the contents of the file
 		contents = self.File_Contents(file)
 
-		# Define a shortcut to the file length
+		# Create a shortcut to the file length
 		length = contents["Length"]
 
 		# Define the line break as an empty string
@@ -760,7 +760,7 @@ class Language():
 
 		# ---------- #
 
-		# Define a shortcut to the user timezone
+		# Create a shortcut to the user timezone
 		user_timezone = str(self.user["Timezone"])
 
 		# Define a default date
@@ -782,7 +782,7 @@ class Language():
 
 		# ---------- #
 
-		# Define a shortcut to the user locale
+		# Create a shortcut to the user locale
 		locale_shortcut = self.user["Locale"]["Locale"]["Original"]
 
 		# Define the small language
@@ -808,7 +808,7 @@ class Language():
 
 		# ---------- #
 
-		# Define a shortcut to a copy of the user "Language" dictionary
+		# Create a shortcut to a copy of the user "Language" dictionary
 		self.language = deepcopy(self.user["Language"])
 
 		# Remove the "With country" key
@@ -1419,7 +1419,7 @@ class Language():
 			while len(string) != number:
 				string += "-"
 
-			# Add the string to the Separators dictionary
+			# Add the string to the separators dictionary
 			self.separators[str(number)] = string
 
 	def Define_Language_Texts(self):

@@ -26,7 +26,7 @@ class Register(GamePlayer):
 				"Write description": False
 			},
 			"States": {
-				"Post on the Social Networks": False
+				"Post on the social networks": True
 			}
 		})
 
@@ -88,7 +88,7 @@ class Register(GamePlayer):
 			# Ask the user to select a game type and game
 			self.dictionary = self.Select_Game_Type_And_Game()
 
-		# Define a shortcut to the "Game" dictionary
+		# Create a shortcut to the "Game" dictionary
 		self.game = self.dictionary["Game"]
 
 		# Import the "Play" class and set it as an attribute of this class
@@ -181,7 +181,7 @@ class Register(GamePlayer):
 					}
 
 	def Register_In_JSON(self):
-		# Define a shortcut for the plural form of the game type in English and make a sanitized version
+		# Create a shortcut for the plural form of the game type in English and make a sanitized version
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
 		self.sanitized_game_type = self.game_type.lower().replace(" ", "_")
 
@@ -341,7 +341,7 @@ class Register(GamePlayer):
 			"Gaming environment": self.game["Gaming environment"]["en"] # The gaming environment where the game was played
 		}
 
-		# Define a shortcut for the entry dictionary
+		# Create a shortcut for the entry dictionary
 		self.entry_dictionary = self.dictionaries["Sessions"]["Dictionary"][self.entry_name]
 
 		# ---------- #
@@ -375,7 +375,7 @@ class Register(GamePlayer):
 			# Update the entry dictionary with the obtained time
 			self.entry_dictionary["Times"][time_key] = time
 
-		# Define a shortcut to the "Gaming session duration" dictionary
+		# Create a shortcut to the "Gaming session duration" dictionary
 		dictionary = self.entry_dictionary["Times"]["Gaming session duration"]
 
 		# Update the dictionary
@@ -754,7 +754,7 @@ class Register(GamePlayer):
 		# ---------- #
 
 		# Define the language entry text by converting the list of lines to a single text block
-		file_text = self.Text.From_List(lines, next_line = True)
+		file_text = self.Text.From_List(lines)
 
 		# ---------- #
 
@@ -827,7 +827,7 @@ class Register(GamePlayer):
 			# Define an empty string to add the descriptions to
 			descriptions = ""
 
-			# Define a shortcut for the descriptions dictionary
+			# Create a shortcut for the descriptions dictionary
 			descriptions_dictionary = self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
 
 			# Define the description to be added based on the language
@@ -839,7 +839,7 @@ class Register(GamePlayer):
 			else:
 				# Iterate through the language keys and dictionaries
 				for small_language, local_language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = local_language["Full"]
 
 					# Add the full language and the language description to the root descriptions text
@@ -861,7 +861,7 @@ class Register(GamePlayer):
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Define a shortcut for the folder
+			# Create a shortcut for the folder
 			folder = self.current_year["Folders"][language]["Gaming sessions"]
 
 			# Define the game type folder name
@@ -961,7 +961,7 @@ class Register(GamePlayer):
 			key = self.language_texts["when_i_started_playing"]
 
 			# Get the started playing time
-			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["Dates"][key]))
+			self.game["Started playing"] = self.Date.To_UTC(self.Date.From_String(self.game["Dates"][key], format = "%H:%M %d/%m/%Y"))
 
 			# Define time spent playing using started playing time and finished playing time
 			self.game["Time spent playing"] = self.Date.Difference(self.game["Started playing"], self.dictionary["Entry"]["Times"]["Finished playing (UTC)"])["Text"][self.language["Small"]]
@@ -1051,7 +1051,7 @@ class Register(GamePlayer):
 		# Run the root "Diary_Slim" class to define its variables
 		self.Diary_Slim = self.Diary_Slim()
 
-		# Define a shortcut to the finished playing date dictionary
+		# Create a shortcut to the finished playing date dictionary
 		finished_playing_date = self.dictionary["Entry"]["Times"]["Finished playing"]
 
 		# Create the memory date text using the "Create_Memory_Date_Text" method of the "Diary_Slim" class
@@ -1074,7 +1074,7 @@ class Register(GamePlayer):
 					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
 
 	def Post_On_Social_Networks(self):
-		# Define the "Social Networks" dictionary
+		# Define the "Social networks" dictionary
 		self.social_networks = {
 			"List": [
 				"Discord",
@@ -1085,15 +1085,14 @@ class Register(GamePlayer):
 			"List text": ""
 		}
 
-		# Define the list text, with all the Social Networks separated by commas
-		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], and_text = False)
+		# Define the list text, with all the social networks separated by commas
+		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], next_line = False, and_text = False)
 
 		# Remove the "Discord" social networks
 		self.social_networks["List"].remove("Discord")
 
-		# Define the list text, with all the Social Networks separated by commas
-		# But without Discord
-		self.social_networks["List text (without Discord)"] = self.Text.From_List(self.social_networks["List"])
+		# Define the list text, with all the social networks separated by commas, but without Discord
+		self.social_networks["List text (without Discord)"] = self.Text.From_List(self.social_networks["List"], next_line = False)
 
 		# Define the item text to be used
 		self.social_networks["Item text"] = self.language_texts["the_game_cover"]
@@ -1113,7 +1112,7 @@ class Register(GamePlayer):
 		self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
 
 		# Define the text to show while asking the user if they want to post on the social networks
-		text = self.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
+		text = self.Language.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
 
 		# Add the "and others" text
 		text += ", " + self.Language.language_texts["and_others, feminine"]
@@ -1121,45 +1120,24 @@ class Register(GamePlayer):
 		# Add the closing parenthesis
 		text += ")"
 
-		# Define the "ask for input" switch as False
-		ask_for_input = False
-
-		# Define the "Post on the social networks" state as True
-		self.dictionary["Entry"]["States"]["Post on the Social Networks"] = True
-
-		# If the "Testing" switch is False
-		# If the "ask for input" switch is True
-		if (
-			self.switches["Testing"] == False and
-			ask_for_input == True
-		):
-			# Show a separator
-			print()
-			print(self.separators["5"])
-
-			# Ask if the user wants to post the played session status on the social networks
-			self.dictionary["Entry"]["States"]["Post on the Social Networks"] = self.Input.Yes_Or_No(text)
-
-		# If the user answer is yes
-		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
-			# Import the "Open_Social_Network" sub-class of the "Social_Networks" module
-			from Social_Networks.Open_Social_Network import Open_Social_Network as Open_Social_Network
-
-			# Define the "Social Networks" dictionary
-			social_networks = {
-				"List": [
-					"WhatsApp",
-					"Facebook",
-					"Discord"
-				],
-				"Custom links": {
-					"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762" # "#play-history" channel on my Discord server
-				}
+		# Define the "Social networks" dictionary
+		social_networks = {
+			"List": [
+				"WhatsApp",
+				"Facebook",
+				"Discord"
+			],
+			"Custom links": {
+				# Define the custom link for Discord as the "#play-history" channel on my Discord server
+				"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762"
 			}
+		}
 
-			# Open the social networks, one by one
-			# (Commented out because this class is not working properly)
-			#Open_Social_Network(social_networks)
+		# Define the input text to be about when the user finishes posting about the gaming session on the current social network
+		social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_posting_about_the_gaming_session_on_{}"]
+
+		# Open the links of the social networks one by one for the user to post about the gaming session on the social networks
+		#self.Social_Networks.Open_Social_Network(social_networks)
 
 		# Show a separator
 		print()
@@ -1167,9 +1145,9 @@ class Register(GamePlayer):
 		print()
 
 	def Write_On_Diary_Slim(self):
-		# Add "Posted on Social Networks" text if the user wanted to post the entry text on the Social Networks
-		if self.dictionary["Entry"]["States"]["Post on the Social Networks"] == True:
-			# Define a shortcut to the Diary Slim text
+		# If the user posted about the gaming session on the social networks
+		if self.dictionary["Entry"]["States"]["Post on the social networks"] == True:
+			# Create a shortcut to the Diary Slim text
 			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Text"]
 
 			# Remove the memory date text

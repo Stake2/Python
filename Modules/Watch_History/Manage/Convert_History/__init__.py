@@ -115,7 +115,7 @@ class Convert_History(Watch_History):
 			# Define the "Watch History" root folder
 			year["Folders"]["Watch History"]["root"] = self.folders["Watch History"]["root"] + str(year_number) + "/"
 
-			# Define a shortcut to the Watch History folder
+			# Create a shortcut to the Watch History folder
 			watch_history_folders = year["Folders"]["Watch History"]
 
 			# ----- #
@@ -148,7 +148,7 @@ class Convert_History(Watch_History):
 			# Define the "By media type" root folder
 			year["Folders"]["Watch History (by media type)"]["root"] = watch_history_folders["root"] + "By media type/"
 
-			# Define a shortcut to the by media type folder
+			# Create a shortcut to the by media type folder
 			by_media_type = year["Folders"]["Watch History (by media type)"]
 
 			# ---------- #
@@ -168,7 +168,7 @@ class Convert_History(Watch_History):
 					}
 				}
 
-				# Define a shortcut to the media type folders
+				# Create a shortcut to the media type folders
 				media_type_folders = media_type["Folders"]
 
 				# Define the media type dictionary inside the "Watch History (by media type)" key
@@ -240,7 +240,7 @@ class Convert_History(Watch_History):
 					# Get the root year folders dictionary from the "Years" module
 					year_folders = self.Years.years["Dictionary"][year_number]["Folders"]
 
-					# Define a shortcut for the [folder type] folder
+					# Create a shortcut for the [folder type] folder
 					folder = year_folders[language][folder_type]
 
 					# If the folder type is "Watched media"
@@ -530,29 +530,29 @@ class Convert_History(Watch_History):
 
 			# ---------- #
 
-			# Define a shortcut to the Watch History folders dictinary
+			# Create a shortcut to the Watch History folders dictinary
 			watch_history_folders = year["Folders"]["Watch History"]
 
 			# ----- #
 
-			# Define a shortcut to the root "Entries.json" file of the current year
+			# Create a shortcut to the root "Entries.json" file of the current year
 			entries_file = watch_history_folders["Entries"]
 
-			# Define a shortcut the root original "Entries" dictionary of the current year
+			# Create a shortcut the root original "Entries" dictionary of the current year
 			entries = year["Watch History"]["Entries"]["Original"]
 
-			# Define a shortcut the root updated "Entries" dictionary of the current year
+			# Create a shortcut the root updated "Entries" dictionary of the current year
 			updated_entries = year["Watch History"]["Entries"]["Updated"]
 
 			# ----- #
 
-			# Define a shortcut to the root "Entry list.txt" file of the current year
+			# Create a shortcut to the root "Entry list.txt" file of the current year
 			entry_list_file = watch_history_folders["Entry list"]
 
-			# Define a shortcut the root original "Entry list" list of the current year
+			# Create a shortcut the root original "Entry list" list of the current year
 			entry_list = year["Watch History"]["Entry list"]["Original"]
 
-			# Define a shortcut the root updated "Entry list" list of the current year
+			# Create a shortcut the root updated "Entry list" list of the current year
 			updated_entry_list = year["Watch History"]["Entry list"]["Updated"]
 
 			# ----- #
@@ -641,15 +641,15 @@ class Convert_History(Watch_History):
 				# Get the "Watch History (by media type)" dictionary of the current media type
 				media_type_dictionary = year["Watch History (by media type)"][plural_media_type]
 
-				# Define a shortcut the media type "Entries" dictionary of the current year
+				# Create a shortcut the media type "Entries" dictionary of the current year
 				media_type_entries = media_type_dictionary["Entries"]
 
-				# Define a shortcut the media type "Entry list" dictionary of the current year
+				# Create a shortcut the media type "Entry list" dictionary of the current year
 				media_type_entry_list = media_type_dictionary["Entry list"]
 
 				# ----- #
 
-				# Define a shortcut to the media type folders
+				# Create a shortcut to the media type folders
 				media_type_folders = year["Folders"]["Watch History (by media type)"][plural_media_type]["Folders"]
 
 				# Get the media type "Media information" folder
@@ -657,7 +657,7 @@ class Convert_History(Watch_History):
 
 				# ----- #
 
-				# Define a shortcut to the media titles dictionary
+				# Create a shortcut to the media titles dictionary
 				media_titles = entry["Media titles"]
 
 				# Get the original media title
@@ -741,7 +741,7 @@ class Convert_History(Watch_History):
 					# Select the media and define its variables, returning the media dictionary (without asking the user to select the media)
 					media["Root dictionary"] = self.Select_Media(media["Root dictionary"])
 
-					# Define a shortcut to the media dictionary
+					# Create a shortcut to the media dictionary
 					root_media_dictionary = media["Root dictionary"]["Media"]
 
 					# ----- #
@@ -753,7 +753,7 @@ class Convert_History(Watch_History):
 
 					# If the media does not have a media item list
 					if root_media_dictionary["States"]["Has a list of media items"] == False:
-						# Define a shortcut to the root media "Watched" folder
+						# Create a shortcut to the root media "Watched" folder
 						watched_folder = root_media_dictionary["Folders"]["Watched"]
 
 						# Import the "Watched" folders and files
@@ -802,12 +802,12 @@ class Convert_History(Watch_History):
 					# Get the media dictionary
 					media = self.medias["Dictionary"][media_title]
 
-					# Define a shortcut to the media dictionary
+					# Create a shortcut to the media dictionary
 					root_media_dictionary = media["Root dictionary"]["Media"]
 
 				# If the media does not have a media item list
 				if root_media_dictionary["States"]["Has a list of media items"] == False:
-					# Define a shortcut to the titles
+					# Create a shortcut to the titles
 					titles = root_media_dictionary["Titles"]
 
 					# Get the list of title keys for the media
@@ -886,15 +886,15 @@ class Convert_History(Watch_History):
 
 						# ----- #
 
-						# Define a shortcut to the root media dictionary
+						# Create a shortcut to the root media dictionary
 						root_media_dictionary = media["Root dictionary"]["Media"]
 
-						# Define a shortcut to the media item dictionary
+						# Create a shortcut to the media item dictionary
 						media_item = root_media_dictionary["Item"]
 
 						# ----- #
 
-						# Define a shortcut to the media item "Watched" folder
+						# Create a shortcut to the media item "Watched" folder
 						watched_folder = media_item["Folders"]["Watched"]
 
 						# Define the media item folders dictionary by copying the keys from the original dictionary and converting them to title case
@@ -927,7 +927,7 @@ class Convert_History(Watch_History):
 						# Add the text lines to the "Original" key of the watched "Entry list" dictionary
 						media["Watched (media items)"][media_item_title]["Entry list"]["Original"] = lines
 
-						# Define a shortcut to the titles
+						# Create a shortcut to the titles
 						titles = media_item["Titles"]
 
 						# Get the list of title keys for the media item
@@ -973,13 +973,13 @@ class Convert_History(Watch_History):
 						# Get the root dictionary
 						root_dictionary = media["Watched (media items)"][media_item_title]["Root dictionary"]
 
-						# Define a shortcut to the media dictionary
+						# Create a shortcut to the media dictionary
 						root_media_dictionary = root_dictionary["Media"]
 
-						# Define a shortcut to the media item dictionary
+						# Create a shortcut to the media item dictionary
 						media_item = root_media_dictionary["Item"]
 
-						# Define a shortcut to the titles
+						# Create a shortcut to the titles
 						titles = media_item["Titles"]
 
 						# Get the list of title keys for the media item
@@ -1118,7 +1118,7 @@ class Convert_History(Watch_History):
 
 				# ----- #
 
-				# Define a shortcut to the updated entry name
+				# Create a shortcut to the updated entry name
 				updated_entry_name = entry_names["Updated"]["Normal"]
 
 				# Define an "updated entry time" switch as False by default
@@ -1295,7 +1295,7 @@ class Convert_History(Watch_History):
 					# Define the media type "Watched" entry dictionary as an empty dictionary
 					media_type_entry_dictionary = {}
 
-					# Define a shortcut to the original dictionary
+					# Create a shortcut to the original dictionary
 					original_dictionary = media_type_entries["Original"]["Dictionary"]
 
 					# If the entry name key is inside the original "Entries" dictionary
@@ -1326,7 +1326,7 @@ class Convert_History(Watch_History):
 						# Define the media item "Watched" entry dictionary as an empty dictionary
 						watched_entry_dictionary = {}
 
-						# Define a shortcut to the original dictionary
+						# Create a shortcut to the original dictionary
 						original_dictionary = media["Watched"]["Entries"]["Original"]["Dictionary"]
 
 						# If the entry name key is inside the original "Entries" dictionary
@@ -1366,7 +1366,7 @@ class Convert_History(Watch_History):
 						# Define the media item "Watched" entry dictionary as an empty dictionary
 						watched_entry_dictionary = {}
 
-						# Define a shortcut to the original dictionary
+						# Create a shortcut to the original dictionary
 						original_dictionary = media["Watched (media items)"][media_item_title]["Entries"]["Original"]["Dictionary"]
 
 						# If the entry name key is inside the original "Entries" dictionary
@@ -1606,10 +1606,10 @@ class Convert_History(Watch_History):
 
 				# Iterate through the language keys and dictionaries
 				for small_language, language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
-					# Define a shortcut to the folder
+					# Create a shortcut to the folder
 					folder = year["Folders"]["Year"]["Watched media"][small_language][plural_media_type]["root"]
 
 					# Define the language "Watched media" entry file dictionary
@@ -1624,7 +1624,7 @@ class Convert_History(Watch_History):
 
 					# If the watched media is the first one in the year
 					if watched_media_number == 1:
-						# Define a shortcut to the folder
+						# Create a shortcut to the folder
 						folder = year["Folders"]["Year"]["Firsts of the Year"][small_language]["root"]
 
 						# Define the language "Firsts of the Year" entry file dictionary
@@ -1641,7 +1641,7 @@ class Convert_History(Watch_History):
 
 				# If the media does not have a media item list
 				if root_media_dictionary["States"]["Has a list of media items"] == False:
-					# Define a shortcut to the watched "Files" folder
+					# Create a shortcut to the watched "Files" folder
 					folder = media["Folders"]["Watched"]["Files"]["root"]
 
 					# Define the media "Watched" entry file
@@ -1666,7 +1666,7 @@ class Convert_History(Watch_History):
 						root_media_dictionary["States"]["The media item is the root media"] == True
 					)
 				):
-					# Define a shortcut to the folder
+					# Create a shortcut to the folder
 					folder = media["Folders"]["Watched (media items)"][media_item_title]["Files"]["root"]
 
 					# Define the media item "Watched" entry file
@@ -1709,7 +1709,7 @@ class Convert_History(Watch_History):
 						# Get the file
 						entry_file = dictionary["File"]
 
-						# Define a shortcut to the folder
+						# Create a shortcut to the folder
 						folder = dictionary["Folder"]
 
 						# Get the file name language
@@ -1956,7 +1956,7 @@ class Convert_History(Watch_History):
 			self.JSON.Edit(entries_file, updated_entries, full_verbose = self.states["Verbose"]["Full verbose"])
 
 			# Convert the entry list into a text
-			updated_entry_list = self.Text.From_List(updated_entry_list, next_line = True)
+			updated_entry_list = self.Text.From_List(updated_entry_list)
 
 			# Update the root "Entry list.txt" file with the updated root "Entry list" list
 			self.File.Edit(entry_list_file, updated_entry_list, "w", full_verbose = self.states["Verbose"]["Full verbose"])
@@ -2014,13 +2014,13 @@ class Convert_History(Watch_History):
 
 				# ----- #
 
-				# Define a shortcut to the media type "Entries.json" file of the current year
+				# Create a shortcut to the media type "Entries.json" file of the current year
 				media_type_entries_file = media_type_folders["Entries"]
 
-				# Define a shortcut the media type "Entries" dictionary of the current year
+				# Create a shortcut the media type "Entries" dictionary of the current year
 				media_type_entries = media_type_dictionary["Entries"]
 
-				# Define a shortcut to the updated media type "Entries" dictionary
+				# Create a shortcut to the updated media type "Entries" dictionary
 				updated_media_type_entries = media_type_entries["Updated"]
 
 				# Update the "Total" number of entries
@@ -2031,17 +2031,17 @@ class Convert_History(Watch_History):
 
 				# ----- #
 
-				# Define a shortcut to the media type "Entry list.txt" file of the current year
+				# Create a shortcut to the media type "Entry list.txt" file of the current year
 				media_type_entry_list_file = media_type_folders["Entry list"]
 
-				# Define a shortcut the media type "Entry list" dictionary of the current year
+				# Create a shortcut the media type "Entry list" dictionary of the current year
 				media_type_entry_list = media_type_dictionary["Entry list"]
 
-				# Define a shortcut to the updated media type "Entry list" dictionary
+				# Create a shortcut to the updated media type "Entry list" dictionary
 				updated_media_type_entry_list = media_type_entry_list["Updated"]
 
 				# Convert the entry list into a text
-				updated_media_type_entry_list = self.Text.From_List(updated_media_type_entry_list, next_line = True)
+				updated_media_type_entry_list = self.Text.From_List(updated_media_type_entry_list)
 
 				# Update the media type "Entry list.txt" file with the updated media type "Entry list" list
 				self.File.Edit(media_type_entry_list_file, updated_media_type_entry_list, "w", full_verbose = self.states["Verbose"]["Full verbose"])
@@ -2100,14 +2100,14 @@ class Convert_History(Watch_History):
 
 			# ----- #
 
-			# Define a shortcut to the root media dictionary
+			# Create a shortcut to the root media dictionary
 			root_media_dictionary = media["Root dictionary"]["Media"]
 
 			if "Titles" not in root_media_dictionary:
 				self.JSON.Show(media)
 				input()
 
-			# Define a shortcut to the media titles dictionary
+			# Create a shortcut to the media titles dictionary
 			media_titles = root_media_dictionary["Titles"]
 
 			# Get the original media title
@@ -2140,10 +2140,10 @@ class Convert_History(Watch_History):
 
 			# If the media does not have a media item list
 			if root_media_dictionary["States"]["Has a list of media items"] == False:
-				# Define a shortcut to the media watched "Entries.json" file
+				# Create a shortcut to the media watched "Entries.json" file
 				media_entries_file = media["Folders"]["Watched"]["Entries"]
 
-				# Define a shortcut to the updated media watched "Entries" dictionary
+				# Create a shortcut to the updated media watched "Entries" dictionary
 				media_entries = media["Watched"]["Entries"]["Updated"]
 
 				# Update the "Total" number of entries
@@ -2154,14 +2154,14 @@ class Convert_History(Watch_History):
 
 				# --- #
 
-				# Define a shortcut to the media watched "Entry list.txt" file
+				# Create a shortcut to the media watched "Entry list.txt" file
 				media_entry_list_file = media["Folders"]["Watched"]["Entry list"]
 
-				# Define a shortcut to the updated media watched "Entry list" dictionary
+				# Create a shortcut to the updated media watched "Entry list" dictionary
 				media_entry_list = media["Watched"]["Entry list"]["Updated"]
 
 				# Convert the entry list into a text
-				media_entry_list = self.Text.From_List(media_entry_list, next_line = True)
+				media_entry_list = self.Text.From_List(media_entry_list)
 
 				# Update the media watched "Entry list.txt" file with the updated media watched "Entry list" list
 				self.File.Edit(media_entry_list_file, media_entry_list, "w")
@@ -2205,15 +2205,15 @@ class Convert_History(Watch_History):
 					# Define the media item dictionary
 					media["Root dictionary"] = self.Define_Media_Item(media["Root dictionary"], media_item = media_item_title)
 
-					# Define a shortcut to the root media dictionary
+					# Create a shortcut to the root media dictionary
 					root_media_dictionary = media["Root dictionary"]["Media"]
 
-					# Define a shortcut to the media item dictionary
+					# Create a shortcut to the media item dictionary
 					media_item = root_media_dictionary["Item"]
 
 					# ----- #
 
-					# Define a shortcut to the media item titles dictionary
+					# Create a shortcut to the media item titles dictionary
 					media_item_titles = media_item["Titles"]
 
 					# Get the original media item title
@@ -2246,18 +2246,18 @@ class Convert_History(Watch_History):
 					# - Media item "Entry list.txt" file (to update the entry name)
 					# (For all media items of the root media)
 
-					# Define a shortcut to the media item "Watched" folders
+					# Create a shortcut to the media item "Watched" folders
 					media_item_watched_folders = media["Folders"]["Watched (media items)"][media_item_title]
 
-					# Define a shortcut to the media item "Watched" dictionary
+					# Create a shortcut to the media item "Watched" dictionary
 					media_item_watched = media["Watched (media items)"][media_item_title]
 
 					# --- #
 
-					# Define a shortcut to the media item watched "Entries.json" file
+					# Create a shortcut to the media item watched "Entries.json" file
 					media_item_entries_file = media_item_watched_folders["Entries"]
 
-					# Define a shortcut to the updated "Entries" dictionary of the media item
+					# Create a shortcut to the updated "Entries" dictionary of the media item
 					media_item_entries = media_item_watched["Entries"]["Updated"]
 
 					# Update the "Total" number of entries
@@ -2268,14 +2268,14 @@ class Convert_History(Watch_History):
 
 					# --- #
 
-					# Define a shortcut to the media item watched "Entry list.txt" file
+					# Create a shortcut to the media item watched "Entry list.txt" file
 					media_item_entry_list_file = media_item_watched_folders["Entry list"]
 
-					# Define a shortcut to the updated media item watched "Entry list" dictionary
+					# Create a shortcut to the updated media item watched "Entry list" dictionary
 					media_item_entry_list = media_item_watched["Entry list"]["Updated"]
 
 					# Convert the entry list into a text
-					media_item_entry_list = self.Text.From_List(media_item_entry_list, next_line = True)
+					media_item_entry_list = self.Text.From_List(media_item_entry_list)
 
 					# Update the media item watched "Entry list.txt" file with the updated media item watched "Entry list" list
 					self.File.Edit(media_item_entry_list_file, media_item_entry_list, "w")
@@ -2339,7 +2339,7 @@ class Convert_History(Watch_History):
 
 			# Re-add the line after the after line
 			if search_result:
-				# Define a shortcut to the media type text
+				# Create a shortcut to the media type text
 				media_type = "\n" + (search_result.group(0))[:-1]
 
 				entry_text = re.sub(
@@ -2364,7 +2364,7 @@ class Convert_History(Watch_History):
 
 			# Re-add the line after the after line
 			if search_result:
-				# Define a shortcut to the media type text
+				# Create a shortcut to the media type text
 				media_type = "\n" + (search_result.group(0)) + "\n"
 
 				entry_text = re.sub(
@@ -2654,7 +2654,7 @@ class Convert_History(Watch_History):
 				lines_to_keep.append(line)
 
 		# Transform the list of lines to keep into a text string
-		entry_text = self.Text.From_List(lines_to_keep, next_line = True)
+		entry_text = self.Text.From_List(lines_to_keep)
 
 		# ---------- #
 

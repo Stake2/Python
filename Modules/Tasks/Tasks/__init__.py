@@ -22,8 +22,13 @@ class Tasks(object):
 		# Folders and files method
 		self.Define_Folders_And_Files()
 
-		# Class methods
+		# Define the "history" dictionary of the "Task History" database
+		self.Define_History()
+
+		# Define the "Task types" dictionary
 		self.Define_Task_Types()
+
+		# Define the registry format
 		self.Define_Registry_Format()
 
 	def Import_Classes(self):
@@ -171,7 +176,7 @@ class Tasks(object):
 				# Create the "Sub-classes" dictionary
 				class_dictionary["Sub-classes"] = {}
 
-				# Define a shortcut to the sub-classes dictionary
+				# Create a shortcut to the sub-classes dictionary
 				sub_classes = class_dictionary["Sub-classes to import"]
 
 				# Define a sub-class number
@@ -219,7 +224,7 @@ class Tasks(object):
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 	def Define_Folders_And_Files(self):
-		# Define the current year variable
+		# Get the "Current year" dictionary from the "Years" class
 		self.current_year = self.Years.years["Current year"]
 
 		# Define the root "Tasks" dictionary, with the "Folders" dictionary
@@ -228,17 +233,8 @@ class Tasks(object):
 			"Folders": self.folders["Notepad"]["Data Networks"]["Productivity"]
 		}
 
-		# Define a shortcut for the current year folder
+		# Create a shortcut for the current year folder
 		self.tasks["Folders"]["Task History"]["Current year"] = self.tasks["Folders"]["Task History"][self.current_year["Number"]]
-
-		# Define the "History" dictionary
-		self.history = {
-			"Key": "",
-			"Numbers": {
-				"Productive things": ""
-			},
-			"Folder": self.tasks["Folders"]["Task History"]["root"]
-		}
 
 		# Define and create the "Task types" folder
 		self.tasks["Folders"]["Task types"] = {
@@ -251,6 +247,18 @@ class Tasks(object):
 		self.tasks["Folders"]["Task types"]["Task types"] = self.tasks["Folders"]["Task types"]["root"] + self.texts["task_types"]["en"] + ".json"
 
 		self.File.Create(self.tasks["Folders"]["Task types"]["Task types"])
+
+	def Define_History(self):
+		# Define the "History" dictionary
+		self.history = {
+			"Class title": self.language_texts["Tasks"],
+			"Key": "",
+			"Numbers": {
+				"Productive things": ""
+			},
+			"Number key": "Number",
+			"Folder": self.tasks["Folders"]["Task History"]["root"]
+		}
 
 	def Define_Task_Types(self):
 		# Define the default task types dictionary
@@ -372,7 +380,7 @@ class Tasks(object):
 
 			# ----- #
 
-			# Define a shortcut for the by task type folder, to not be ugly and big
+			# Create a shortcut for the by task type folder, to not be ugly and big
 			by_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["By task type"]
 
 			# Create the "By task type" task type folder for the current year
@@ -496,7 +504,7 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Define a shortcut for the "History.json" file
+		# Create a shortcut for the "History.json" file
 		history_file = self.tasks["Folders"]["Task History"]["History"]
 
 		# If the history file is not empty and the list of years is not empty
@@ -553,7 +561,7 @@ class Tasks(object):
 		# Create the "By task type" key inside the "Numbers" dictionary of the "Tasks" dictionary
 		self.dictionaries["Tasks"]["Numbers"]["By task type"] = {}
 
-		# Define a shortcut for the "Tasks.json" file
+		# Create a shortcut for the "Tasks.json" file
 		tasks_file = self.tasks["Folders"]["Task History"]["Current year"]["Tasks"]
 
 		# If the "Tasks.json" file is not empty and the list of years is not an empty list
@@ -571,7 +579,7 @@ class Tasks(object):
 			# Define the default task type dictionary as the template one
 			self.dictionaries["Task type"][key] = deepcopy(self.template)
 
-			# Define a shortcut for the file for the "if" not to be ugly and big
+			# Create a shortcut for the file for the "if" not to be ugly and big
 			file = task_type["Folders"]["By task type"]["Tasks"]
 
 			# If the task type "Tasks.json" file is not empty and the list of years is not an empty list
@@ -676,16 +684,38 @@ class Tasks(object):
 		return states_dictionary
 
 	def Define_Year_Summary_Data(self, entry, language):
-		# Get the entry title
-		item = entry["Task titles"][language]
+		# Define the key initially as "Task titles"
+		key = "Task titles"
 
-		# Add the entry date
-		date = self.Date.From_String(entry["Times"]["Finished watching (UTC)"])["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
+		# If the key is not inside the entry dictionary
+		if key not in entry:
+			# Then define the key as only "Titles"
+			key = "Titles"
 
-		item += " (" + date + ")"
+		# Define the task text as the task title
+		task_text = entry[key][language]
 
-		# Return it
-		return item
+		# If the "Times" key is inside the entry dictionary
+		if "Times" in entry:
+			# Get the "Completed task" time from the "Times" dictionary
+			time = entry["Times"]["Completed task"]
+
+		# If the "Date" key is inside the entry dictionary
+		if "Date" in entry:
+			# Get the date string
+			date = entry["Date"]
+
+			# Convert it into a date dictionary
+			date = self.Date.From_String(date)
+
+			# Get the correct format
+			time = date["Formats"]["HH:MM DD/MM/YYYY"]
+
+		# Add the completed task time to the task text
+		task_text += " (" + time + ")"
+
+		# Return the task text
+		return task_text
 
 	def Show_Information(self, dictionary, states):
 		# Make a shortcut for the "Task" dictionary

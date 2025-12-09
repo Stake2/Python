@@ -1,31 +1,15 @@
 {
-	"social_network": {
-		"en": "Social Network",
-		"pt": "Rede Social"
-	},
-	"social_networks": {
-		"en": "Social Networks",
-		"pt": "Redes Sociais"
-	},
 	"social_networks_list": {
-		"en": "Social Networks list",
-		"pt": "Lista de Redes Sociais"
-	},
-	"image_folder": {
-		"en": "Image folder",
-		"pt": "Pasta de imagem"
-	},
-	"image_folders": {
-		"en": "Image folders",
-		"pt": "Pastas de imagem"
+		"en": "Social networks list",
+		"pt": "Lista de redes sociais"
 	},
 	"select_one_social_network_to_use": {
-		"en": "Select one Social Network to use",
-		"pt": "Selecione uma Rede Social para usar"
+		"en": "Select one social network to use",
+		"pt": "Selecione uma rede social para usar"
 	},
 	"select_one_social_network_to_open": {
-		"en": "Select one Social Network to open",
-		"pt": "Selecione uma Rede Social para abrir"
+		"en": "Select one social network to open",
+		"pt": "Selecione uma rede social para abrir"
 	},
 	"link_types": {
 		"en": "Link types",
@@ -36,16 +20,20 @@
 		"pt": "Selecione um tipo de link para abrir"
 	},
 	"opening_the_social_network_{}_on_its_{}_page_with_this_link": {
-		"pt": "Abrindo a Rede Social \"{}\" em sua página de {}, com esse link",
-		"en": "Opening the Social Network \"{}\" on its {} page, with this link"
+		"pt": "Abrindo a rede social \"{}\" em sua página de {}, com esse link",
+		"en": "Opening the social network \"{}\" on its {} page, with this link"
 	},
 	"opening_the_social_network_{}_with_this_link": {
-		"pt": "Abrindo a Rede Social \"{}\" com esse link",
-		"en": "Opening the Social Network \"{}\" with this link"
+		"pt": "Abrindo a rede social \"{}\" com esse link",
+		"en": "Opening the social network \"{}\" with this link"
+	},
+	"opening_the_executable_of_the_social_network_{}": {
+		"pt": "Abrindo o executável da rede social \"{}\"",
+		"en": "Opening the executable of the social network \"{}\""
 	},
 	"please_type_the_social_network_profile_information": {
-		"pt": "Por favor digite as informações do perfil da Rede Social",
-		"en": "Please type the Social Network profile information"
+		"pt": "Por favor digite as informações do perfil da rede social",
+		"en": "Please type the social network profile information"
 	},
 	"settings, type: list": [
 		"create_image_folders"
@@ -59,8 +47,8 @@
 		"en": "Please type the information of your profile in this social network"
 	},
 	"you_added_this_social_network_to_the_social_networks_database": {
-		"pt": "Você adicionou essa rede social ao banco de dados de Redes Sociais",
-		"en": "You added this social network to the Social Networks database"
+		"pt": "Você adicionou essa rede social ao banco de dados de redes sociais",
+		"en": "You added this social network to the social networks database"
 	},
 	"do_the_social_network_profiles_need_image_folders": {
 		"pt": "Os perfis da rede social precisam de pastas de imagens",

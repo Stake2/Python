@@ -1,4 +1,8 @@
 {
+	"Watch_History": {
+		"pt": "Watch_History (Histórico_De_Mídias_Assistidas)",
+		"en": "Watch_History"
+	},
 	"media_title": {
 		"en": "Media title",
 		"pt": "Título da mídia"
@@ -35,6 +39,10 @@
 		"en": "Cartoons",
 		"pt": "Desenhos"
 	},
+	"movie, title()": {
+		"en": "Movie",
+		"pt": "Filme"
+	},
 	"movies, title()": {
 		"en": "Movies",
 		"pt": "Filmes"
@@ -46,6 +54,10 @@
 	"series, title()": {
 		"en": "Series",
 		"pt": "Séries"
+	},
+	"video, title()": {
+		"en": "Video",
+		"pt": "Vídeo"
 	},
 	"videos, title()": {
 		"en": "Videos",
@@ -199,9 +211,9 @@
 		"en": "Watching session duration",
 		"pt": "Duração da sessão de visualização"
 	},
-	"how_long_did_it_take_you_to_finish": {
-		"en": "How long did it take you to finish",
-		"pt": "Quanto tempo você levou para terminar"
+	"how_long_did_it_take_me_to_finish": {
+		"en": "How long did it take me to finish",
+		"pt": "Quanto tempo eu levei para terminar"
 	},
 	"youtube_ids": {
 		"en": "YouTube IDs",
@@ -270,6 +282,14 @@
 	"episodes_duration": {
 		"en": "Episodes duration",
 		"pt": "Duração dos episódios"
+	},
+	"{}_episode": {
+		"pt": "episódio de {}",
+		"en": "{} episode"
+	},
+	"{}_episodes": {
+		"pt": "episódios de {}",
+		"en": "{} episodes"
 	},
 	"{}_title": {
 		"en": "{} title",
@@ -451,10 +471,6 @@
 	"press_enter_to_copy_the_watched_text": {
 		"pt": "Pressione Enter para copiar o texto de assistido",
 		"en": "Press Enter to copy the watched text"
-	},
-	"post_on_the_social_networks": {
-		"pt": "Postar nas Redes Sociais",
-		"en": "Post on the Social Networks"
 	},
 	"{}_is_{}_that_you_watched_{}": {
 		"pt": "{} é {} que você assistiu {}",

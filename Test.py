@@ -156,6 +156,34 @@ class Main():
 		# Run the method
 		method()
 
+	def Create_Text(self):
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
+		# Define the user input as an empty string
+		user_input = ""
+
+		# Define a local number
+		number = 1
+
+		# Define a text template
+		text_template = "# {}."
+
+		# While the user input is empty
+		while user_input == "":
+			# Format the text template with the number to create the text
+			text = text_template.format(number)
+
+			# Copy the text
+			self.Text.Copy(text)
+
+			# Add one to the local number
+			number += 1
+
+			# Wait for user input before continuing
+			user_input = self.Input.Type(self.Language.language_texts["continue, title()"])
+
 	def Convert_Date(self):
 		# Define the date as an empty string
 		date = ""
@@ -1179,7 +1207,7 @@ class Main():
 		}
 
 		# Call the "Call" method of the "API" class to search for the channel
-		information = self.API.Call("YouTube", request)
+		information = self.API.Call("YouTube", request)["Request"]["Dictionary"]
 
 		# Show the information dictionary
 		print()

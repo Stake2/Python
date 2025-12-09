@@ -205,7 +205,7 @@ class API():
 			"Playlist videos": "playlistItems"
 		}
 
-		# Define a shortcut to the "Request" dictionary
+		# Create a shortcut to the "Request" dictionary
 		request = service["Request"]
 
 		# Update the "Item" key to be a dictionary
@@ -214,7 +214,7 @@ class API():
 			"Mapped": request["Item"]
 		}
 
-		# Define a shortcut to the request item
+		# Create a shortcut to the request item
 		item = request["Item"]["Normal"]
 
 		# If the item is inside the items map dictionary
@@ -231,7 +231,7 @@ class API():
 			# Add it
 			request["Item"]["Mapped"] += "s"
 
-		# Define a shortcut to the mapped item
+		# Create a shortcut to the mapped item
 		mapped_item = request["Item"]["Mapped"]
 
 		# If the "Method" key is not present inside the request dictionary
@@ -427,7 +427,7 @@ class API():
 			"items": []
 		}
 
-		# Define a shortcut to the "Response" dictionary
+		# Create a shortcut to the "Response" dictionary
 		response = request["Response"]
 
 		# While the "nextPageToken" is inside the "Response" dictionary
@@ -453,7 +453,7 @@ class API():
 				"pageInfo" in response and
 				"totalResults" in response["pageInfo"]
 			):
-				# Define a shortcut to the "pageInfo" dictionary
+				# Create a shortcut to the "pageInfo" dictionary
 				page_info = response["pageInfo"]
 
 				# Define the "Total" number as the "totalResults" key
@@ -532,7 +532,7 @@ class API():
 						name_key in snippet and
 						name not in request["Dictionary"]
 					):
-						# Define a shortcut to the snippet ID
+						# Create a shortcut to the snippet ID
 						snippet_id = snippet[name_key]
 
 						# Define a local request dictionary
@@ -916,7 +916,7 @@ class API():
 						"Small": language
 					}
 
-					# Define a shortcut to the list of full languages
+					# Create a shortcut to the list of full languages
 					full_languages = self.languages["Full"]
 
 					# If the language is not inside the list of full languages
@@ -939,7 +939,7 @@ class API():
 
 				# If the country is inside the snippet dictionary
 				if "country" in snippet:
-					# Define a shortcut to the country
+					# Create a shortcut to the country
 					country = snippet["country"]
 
 					# Create the country dictionary
@@ -1005,7 +1005,7 @@ class API():
 					branding_settings != {} and
 					"channel" in branding_settings
 				):
-					# Define a shortcut to the channel dictionary
+					# Create a shortcut to the channel dictionary
 					channel_dictionary = branding_settings["channel"]
 
 					# If the "unsubscribedTrailer" key is in the "channel" dictionary
@@ -1044,7 +1044,7 @@ class API():
 
 					# If the country is inside the channel dictionary
 					if "country" in channel_dictionary:
-						# Define a shortcut to the country
+						# Create a shortcut to the country
 						country = channel_dictionary["country"]
 
 						# Create the country dictionary
@@ -1332,7 +1332,7 @@ class API():
 		import requests
 		import urllib
 
-		# Define a shortcut to the request dictionary
+		# Create a shortcut to the request dictionary
 		request = service["Request"]
 
 		# Define the request "Link" as the service link

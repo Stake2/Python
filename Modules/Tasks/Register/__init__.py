@@ -61,6 +61,13 @@ class Register(Tasks):
 
 		# If the parameter dictionary is not empty
 		if dictionary_parameter != {}:
+			# Iterate through the defined list of keys
+			for key in ["Type", "Task", "Entry"]:
+				# If the key exists inside the parameter dictionary
+				if key in dictionary_parameter:
+					# Update the root key with the value inside the parameter dictionary
+					self.dictionary[key] = dictionary_parameter[key]
+
 			# Define the "Used as module" state as True
 			self.states["Used as module"] = True
 
@@ -70,13 +77,6 @@ class Register(Tasks):
 				for key, state in dictionary_parameter["States"].items():
 					# Update the state inside the root states dictionary
 					self.states[key] = state
-
-			# Iterate through the defined list of keys
-			for key in ["Type", "Task", "Entry"]:
-				# If the key exists inside the parameter dictionary
-				if key in dictionary_parameter:
-					# Update the root key with the value inside the parameter dictionary
-					self.dictionary[key] = dictionary_parameter[key]
 
 		# ---------- #
 
@@ -107,7 +107,7 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Define a shortcut for the task dictionary
+		# Create a shortcut for the task dictionary
 		self.task = self.dictionary["Task"]
 
 		# If the "Descriptions" key is not inside the task dictionary
@@ -320,7 +320,7 @@ class Register(Tasks):
 				items = question["Response"]["en"].split(", ")
 
 				# Make a text from a list
-				text = self.Text.From_List(items)
+				text = self.Text.From_List(items, next_line = False)
 
 				# Get the number
 				number = len(items)
@@ -343,7 +343,7 @@ class Register(Tasks):
 					# Transform the list of typed items into a text
 					items = questions[key]["Response"][language].split(", ")
 
-					typed_items = self.Text.From_List(items, language = language)
+					typed_items = self.Text.From_List(items, next_line = False, language = language)
 
 					# Get the language text
 					text = self.texts[text_key][language]
@@ -489,7 +489,7 @@ class Register(Tasks):
 			# Get the language dictionary
 			language = self.languages["Dictionary"][small_language]
 
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Get the current language translated to the user language
@@ -598,7 +598,7 @@ class Register(Tasks):
 		self.File.Delete(files["Backup"])
 
 	def Register_In_JSON(self):
-		# Define a shortcut for the task type dictionary
+		# Create a shortcut for the task type dictionary
 		self.task_type = self.dictionary["Type"]["Names"]["Plural"]["en"]
 
 		# ---------- #
@@ -700,7 +700,7 @@ class Register(Tasks):
 			"Lines": len(self.task["Descriptions"]["en"].splitlines())
 		}
 
-		# Define a shortcut for the entry dictionary
+		# Create a shortcut for the entry dictionary
 		self.entry_dictionary = self.dictionaries["Tasks"]["Dictionary"][self.entry_name]
 
 		# ---------- #
@@ -1019,7 +1019,7 @@ class Register(Tasks):
 		else:
 			# Iterate through the language keys and dictionaries
 			for small_language, local_language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = local_language["Full"]
 
 				# Add the full language and the language description to the root descriptions text
@@ -1029,7 +1029,7 @@ class Register(Tasks):
 				if small_language != self.languages["Small"][-1]:
 					descriptions += "\n\n"
 
-		# Define a shortcut to the English title and English description
+		# Create a shortcut to the English title and English description
 		english_title = self.dictionary["Task"]["Titles"]["en"]
 		english_description = self.dictionary["Task"]["Descriptions"]["en"]
 
@@ -1041,7 +1041,7 @@ class Register(Tasks):
 		# ---------- #
 
 		# Transform the list of lines into a text with the next line
-		file_text = self.Text.From_List(lines, next_line = True)
+		file_text = self.Text.From_List(lines)
 
 		# Return the file text template formatted with the list of items
 		return file_text.format(*items)
@@ -1137,7 +1137,7 @@ class Register(Tasks):
 
 		# If the "Add memory date text" state is True
 		if self.states["Add memory date text"] == True:
-			# Define a shortcut to the completed task date dictionary
+			# Create a shortcut to the completed task date dictionary
 			completed_task_date = self.dictionary["Entry"]["Times"]["Completed task"]
 
 			# Run the root "Diary_Slim" class to define its variables

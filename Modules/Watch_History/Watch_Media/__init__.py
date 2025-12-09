@@ -102,13 +102,13 @@ class Watch_Media(Watch_History):
 			# Ask the user to select the media to be watched
 			self.Select_The_Media()
 
-		# Define a shortcut for the media dictionary
+		# Create a shortcut for the media dictionary
 		self.media = self.dictionary["Media"]
 
 		# Define the open media variable inside the states dictionary of the media
 		self.media["States"]["Open media"] = self.open_media
 
-		# Define a shortcut for the media status
+		# Create a shortcut for the media status
 		media_watching_status = self.media["Details"][self.Language.language_texts["status, title()"]]
 
 		# If the media watching status is equal to "Completed"
@@ -553,7 +553,7 @@ class Watch_Media(Watch_History):
 					self.media["States"]["Dubbing"]["Has dubbing"] == True and
 					self.media["States"]["Dubbing"]["Watch dubbed"] == True
 				):
-					# Define a shortcut for the origin location
+					# Create a shortcut for the origin location
 					origin_location = self.media["Episode"]["Remote"]["origin_location"]
 
 					# Add the "dubbed" text to the origin location
@@ -811,7 +811,7 @@ class Watch_Media(Watch_History):
 			# Define the "Dubbed to the media title" state as False by default
 			self.media["States"]["Dubbing"]["Dubbed to the media title"] = False
 
-			# Define a shortcut to the "Dubbed to the media title" text
+			# Create a shortcut to the "Dubbed to the media title" text
 			dubbed_to_the_media_title = self.language_texts["dubbed_to_the_media_title"]
 
 			# If the "Dubbed to the media title" key is inside the media details dictionary
@@ -829,7 +829,7 @@ class Watch_Media(Watch_History):
 
 			# If the "Dubbed to the media title" state is True
 			if self.media["States"]["Dubbing"]["Dubbed to the media title"] == True:
-				# Define a shortcut to the "Dubbing" text
+				# Create a shortcut to the "Dubbing" text
 				dubbing_text = self.Language.language_texts["dubbed, title()"]
 
 				# Create the episode "Dubbing" dictionary with its "Text" key as " Dubbed"
@@ -864,8 +864,8 @@ class Watch_Media(Watch_History):
 			# Update the dubbed container variable to be the dubbed container
 			dubbed_container = self.Language.texts["dubbed_{}"][self.language["Small"]].format(container)
 
-		# Define a shortcut to the media gendered texts
-		texts = self.media["Texts"]["genders"][self.language["Small"]]
+		# Create a shortcut to the media gendered texts
+		texts = self.media["Texts"]["Genders"][self.language["Small"]]
 
 		# Define the container text dictionary with its keys
 		self.media["Texts"]["Container texts"] = {
@@ -892,7 +892,7 @@ class Watch_Media(Watch_History):
 			# Add the text and the dubbed container to the "Dubbed" container text dictionary
 			self.media["Texts"]["Container texts"]["Dubbed"][text_key] = text + " " + dubbed_container
 
-		# Define a shortcut to the "Container texts" dictionary
+		# Create a shortcut to the "Container texts" dictionary
 		container_texts = self.media["Texts"]["Container texts"]
 
 		# If the "Watch dubbed" media states is True
@@ -1132,7 +1132,7 @@ class Watch_Media(Watch_History):
 
 				# Iterate through the local language keys and dictionaries
 				for small_language, language in languages.items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# Sanitize the language episode title to get the file name
@@ -1278,6 +1278,10 @@ class Watch_Media(Watch_History):
 
 		# Define the status, adding the media item status, media type, and media title + episode title
 		self.dictionary["Discord"]["Status"] = status + " " + self.dictionary["Media type"]["Singular"][self.language["Small"]] + ": " + title
+
+		# Show a three dash space separator
+		print()
+		print(self.separators["3"])
 
 		# Copy the status
 		self.Text.Copy(self.dictionary["Discord"]["Status"])

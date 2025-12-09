@@ -1,12 +1,4 @@
 {
-	"folders, title()": {
-		"en": "Folders",
-		"pt": "Pastas"
-	},
-	"ignored_folders": {
-		"en": "Ignored folders",
-		"pt": "Pastas ignoradas"
-	},
 	"your_{}_is": {
 		"pt": "Seu {} é",
 		"en": "Your {} is"
@@ -113,6 +105,26 @@
 	"folder": {
 		"en": "folder",
 		"pt": "pasta"
+	},
+	"folder, title()": {
+		"pt": "Pasta",
+		"en": "Folder"
+	},
+	"folders, title()": {
+		"en": "Folders",
+		"pt": "Pastas"
+	},
+	"primary_folder": {
+		"en": "primary folder",
+		"pt": "pasta primária"
+	},
+	"secondary_folder": {
+		"en": "secondary folder",
+		"pt": "pasta secundária"
+	},
+	"ignored_folders": {
+		"en": "Ignored folders",
+		"pt": "Pastas ignoradas"
 	},
 	"image_folder": {
 		"pt": "Pasta de imagem",
@@ -302,6 +314,14 @@
 		"pt": "Quando você terminou de",
 		"en": "When you finished"
 	},
+	"take_me": {
+		"en": "take me",
+		"pt": "eu levei"
+	},
+	"take_you": {
+		"en": "take you",
+		"pt": "você levou"
+	},
 	"press_enter_when_you_start": {
 		"en": "Press Enter when you start",
 		"pt": "Pressione Enter quando você começar a"
@@ -388,10 +408,6 @@
 		"pt": "Classe",
 		"en": "Class"
 	},
-	"folder, title()": {
-		"pt": "Pasta",
-		"en": "Folder"
-	},
 	"file": {
 		"en": "file",
 		"pt": "arquivo"
@@ -473,14 +489,6 @@
 	"class, title()": {
 		"pt": "Classe",
 		"en": "Class"
-	},
-	"folder, title()": {
-		"pt": "Pasta",
-		"en": "Folder"
-	},
-	"file, title()": {
-		"pt": "Arquivo",
-		"en": "File"
 	},
 	"settings, title()": {
 		"pt": "Configurações",
@@ -661,8 +669,8 @@
 		"en": "This Year I (post)"
 	},
 	"this_year_i_personal_version": {
-		"pt": "Esse Ano Eu (Versão pessoal)",
-		"en": "This Year I (Personal version)"
+		"pt": "Esse Ano Eu (versão pessoal)",
+		"en": "This Year I (personal version)"
 	},
 	"next": {
 		"en": "next",
@@ -998,14 +1006,6 @@
 		"pt": "Cidades natais",
 		"en": "Hometowns"
 	},
-	"origin_social_network": {
-		"pt": "Rede Social de Origem",
-		"en": "Origin Social Network"
-	},
-	"origin_social_networks": {
-		"pt": "Redes Sociais de Origem",
-		"en": "Origin Social Networks"
-	},
 	"showing_user_information": {
 		"en": "Showing user information",
 		"pt": "Mostrando informações do usuário"
@@ -1127,32 +1127,48 @@
 		"pt": "Arrobas"
 	},
 	"social_network": {
-		"en": "Social Network",
-		"pt": "Rede Social"
+		"en": "Social network",
+		"pt": "Rede social"
 	},
 	"social_networks": {
-		"en": "Social Networks",
-		"pt": "Redes Sociais"
+		"en": "Social networks",
+		"pt": "Redes sociais"
 	},
 	"social_network_number": {
 		"en": "Social network number",
 		"pt": "Número da rede social"
 	},
 	"social_network_information": {
-		"en": "Social Network information",
-		"pt": "Informações da Rede Social"
+		"en": "Social network information",
+		"pt": "Informações da rede social"
 	},
 	"social_networks_information": {
-		"en": "Social Networks information",
-		"pt": "Informações das Redes Sociais"
+		"en": "Social networks information",
+		"pt": "Informações das redes sociais"
 	},
 	"added_social_network_information": {
-		"en": "Added Social Network information",
-		"pt": "Informações da Rede Social adicionada"
+		"en": "Added social network information",
+		"pt": "Informações da rede social adicionada"
 	},
 	"added_social_networks_information": {
-		"en": "Added Social Networks information",
-		"pt": "Informações das Redes Sociais adicionadas"
+		"en": "Added social networks information",
+		"pt": "Informações das redes sociais adicionadas"
+	},
+	"origin_social_network": {
+		"pt": "Rede social de origem",
+		"en": "Origin social network"
+	},
+	"origin_social_networks": {
+		"pt": "Redes sociais de origem",
+		"en": "Origin social networks"
+	},
+	"post_on_the_social_networks": {
+		"pt": "Postar nas redes sociais",
+		"en": "Post on the social networks"
+	},
+	"use_executable": {
+		"pt": "Usar executável",
+		"en": "Use executable"
 	},
 	"digital_identities": {
 		"en": "Digital Identities",
@@ -1378,12 +1394,12 @@
 		"en": "pilot",
 		"pt": "piloto"
 	},
-	"music": {
-		"en": "music",
+	"song": {
+		"en": "song",
 		"pt": "música"
 	},
-	"musics": {
-		"en": "musics",
+	"songs": {
+		"en": "songs",
 		"pt": "músicas"
 	},
 	"media": {
@@ -1401,6 +1417,10 @@
 	"watched_media": {
 		"en": "Watched media",
 		"pt": "Mídias assistidas"
+	},
+	"watched_things": {
+		"en": "Watched things",
+		"pt": "Coisas assistidas"
 	},
 	"media_information": {
 		"en": "Media information",
@@ -1499,10 +1519,6 @@
 	"summary, title()": {
 		"pt": "Resumo",
 		"en": "Summary"
-	},
-	"summary_in": {
-		"pt": "Resumo em",
-		"en": "Summary in"
 	},
 	"objects, title()": {
 		"pt": "Objetos",
@@ -1730,6 +1746,10 @@
 	"episode, title()": {
 		"pt": "Episódio",
 		"en": "Episode"
+	},
+	"episodes, title()": {
+		"pt": "episódios",
+		"en": "episodes"
 	},
 	"episode, by language": {
 		"pt": "episódio",
@@ -2192,9 +2212,9 @@
 		"en": "Eat",
 		"pt": "Comer"
 	},
-	"things_done_in": {
-		"pt": "Coisas feitas em",
-		"en": "Things done in"
+	"things_done_in_the_year_of_{}": {
+		"pt": "Coisas feitas no ano de {}",
+		"en": "Things done in the year of {}"
 	},
 	"completed_tasks": {
 		"en": "Completed tasks",
@@ -2478,6 +2498,7 @@
 		"en": {
 			"masculine": {
 				"the": "the",
+				"the, plural": "the",
 				"these": "these",
 				"this": "this",
 				"a": "a",
@@ -2491,6 +2512,7 @@
 			},
 			"feminine": {
 				"the": "the",
+				"the, plural": "the",
 				"these": "these",
 				"this": "this",
 				"a": "a",
@@ -2506,6 +2528,7 @@
 		"pt": {
 			"masculine": {
 				"the": "o",
+				"the, plural": "os",
 				"these": "esses",
 				"this": "esse",
 				"a": "um",
@@ -2519,6 +2542,7 @@
 			},
 			"feminine": {
 				"the": "a",
+				"the, plural": "as",
 				"these": "essas",
 				"this": "essa",
 				"a": "uma",
@@ -2534,6 +2558,7 @@
 	},
 	"gender_items": [
 		"the",
+		"the, plural",
 		"these",
 		"this",
 		"a",

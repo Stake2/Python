@@ -1,12 +1,11 @@
 # NeverEnding_Legacy.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
 from copy import deepcopy
 
 class NeverEnding_Legacy(object):
-	def __init__(self, select_year = False, create_current_year = True):
+	def __init__(self, select_year = False):
 		# Import the classes
 		self.Import_Classes()
 
@@ -114,10 +113,18 @@ class NeverEnding_Legacy(object):
 		self.date = self.Date.date
 
 	def Define_Texts(self):
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
+
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
+
+		# ---------- #
+
 		# Define the "separators" dictionary
 		self.separators = {}
 
-		# Create separators from one to ten characters
+		# Create separators from one to twenty characters
 		for number in range(1, 21):
 			# Define the empty string
 			string = ""
@@ -126,14 +133,8 @@ class NeverEnding_Legacy(object):
 			while len(string) != number:
 				string += "-"
 
-			# Add the string to the Separators dictionary
+			# Add the string to the separators dictionary
 			self.separators[str(number)] = string
-
-		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
-
-		# Define the "Language texts" dictionary
-		self.language_texts = self.Language.Item(self.texts)
 
 	def Define_Folders_And_Files(self):
 		# Define the root folder as the games folder
@@ -507,7 +508,7 @@ class NeverEnding_Legacy(object):
 
 				# ----- #
 
-				# Define a shortcut for the key
+				# Create a shortcut for the key
 				key = "Replaces data.js"
 
 				# If the key is inside the dictionary
@@ -576,10 +577,10 @@ class NeverEnding_Legacy(object):
 		return dictionary
 
 	def Update_Files(self):
-		# Define a shortcut for the root "Authors" dictionary
+		# Create a shortcut for the root "Authors" dictionary
 		authors = self.neverending_legacy["Authors"]
 
-		# Define a shortcut for the root "Mods" dictionary
+		# Create a shortcut for the root "Mods" dictionary
 		mods = self.neverending_legacy["Mods"]
 
 		# ---------- #
@@ -698,7 +699,7 @@ class NeverEnding_Legacy(object):
 		text += language_text + " ({}):".format(str(authors["Numbers"]["Total"])) + "\n"
 
 		# Add the list of authors
-		text += self.Text.From_List(authors["List"], next_line = True)
+		text += self.Text.From_List(authors["List"])
 
 		# Add some line breaks and a separator
 		text += "\n\n" + self.separators["3"] + "\n\n"
@@ -749,7 +750,7 @@ class NeverEnding_Legacy(object):
 				m += 1
 
 			# Add the mods to the text
-			#text += self.Text.From_List(author_mods["List"], next_line = True)
+			#text += self.Text.From_List(author_mods["List"])
 
 			# If the author is not the last one
 			if name != list(authors["Dictionary"].keys())[-1]:

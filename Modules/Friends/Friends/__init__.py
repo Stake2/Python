@@ -1,14 +1,13 @@
 # Friends.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
 from copy import deepcopy
 
 class Friends(object):
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
@@ -23,7 +22,8 @@ class Friends(object):
 		# Folders and files method
 		self.Define_Folders_And_Files()
 
-		# Class methods
+		# Define the "history" dictionary of the friends database
+		self.Define_History()
 
 		# Define the "Information items" dictionary
 		self.Define_Information_Items()
@@ -31,28 +31,36 @@ class Friends(object):
 		# Define the "Friends" dictionary
 		self.Define_Friends_Dictionary()
 
-	def Import_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
+	def Import_Utility_Classes(self):
+		# Define the classes to be imported
+		classes = [
 			"Define_Folders",
 			"JSON"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes
+		for class_title in classes:
+			# If the class is not already inside this class (Christmas)
+			# Or the class is "Define_Folders"
+			if (
+				hasattr(self, class_title) == False or
+				class_title == "Define_Folders"
+			):
+				# Import the module
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the sub-class
+				sub_class = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+				# If the module title is not "Define_Folders"
+				if class_title != "Define_Folders":
+					# Run the sub-class to define its variable
+					sub_class = sub_class()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+				# Add the sub-class to the current class
+				setattr(self, class_title, sub_class)
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
@@ -62,7 +70,7 @@ class Friends(object):
 		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
-		remove_list = [
+		self.modules["Remove list"] = [
 			"Define_Folders",
 			"Modules",
 			"Language",
@@ -72,7 +80,7 @@ class Friends(object):
 		# Iterate through the list of utility modules
 		for module_title in self.modules["Utility"]["List"]:
 			# If the module title is not inside the remove list
-			if module_title not in remove_list:
+			if module_title not in self.modules["Remove list"]:
 				# Import the module
 				module = importlib.import_module("." + module_title, "Utility")
 
@@ -123,27 +131,72 @@ class Friends(object):
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Import_Usage_Classes(self):
-		# Define the classes to be imported
-		classes = [
+		# Define the list of classes to be imported
+		self.classes = [
 			"Social_Networks"
 		]
 
-		# Import them
-		for title in classes:
+		# Iterate through the list of classes
+		for class_title in self.classes:
 			# Import the module
-			module = importlib.import_module("." + title, title)
+			module = importlib.import_module("." + class_title, class_title)
 
 			# Get the sub-class
-			sub_class = getattr(module, title)
+			sub_class = getattr(module, class_title)
+
+			# Run the class to define its variables
+			sub_class = sub_class()
+
+			# Iterate through the list of utility modules
+			for module_title in self.modules["Utility"]["List"]:
+				# If the module title is not inside the defined list
+				if module_title not in ["Language", "Modules"]:
+					# Get the sub-class of the module
+					local_sub_class = getattr(self, module_title)
+
+					# Add the sub-class to the current class
+					setattr(sub_class, module_title, local_sub_class)
+
+			# If the sub-class has a list of classes
+			if hasattr(sub_class, "classes") == True:
+				# Get the list of classes of the current class
+				current_class_classes = getattr(sub_class, "classes")
+
+				# Define a copy of the list of classes
+				classes_copy = self.classes.copy()
+
+				# Remove the current class
+				classes_copy.remove(class_title)
+
+				# Iterate through the local list of classes
+				for local_class_title in classes_copy:
+					# If the local class title is inside the list of classes of the current class
+					# And it also is inside this class (Watch_History)
+					if (
+						local_class_title in current_class_classes and
+						hasattr(self, local_class_title) != None
+					):
+						# Give the local class to the current class
+						setattr(sub_class, local_class_title, getattr(self, local_class_title))
 
 			# Add the sub-class to the current class
-			setattr(self, title, sub_class())
+			setattr(self, class_title, sub_class)
 
-		# Define the "Social Networks" dictionary of this module as the "Social Networks" dictionary of the "Social_Networks" module
-		self.social_networks = self.Social_Networks.social_networks
+		# ---------- #
 
-		# Get the "Select_Social_Network" method of the "Social_Networks" module
-		self.Select_Social_Network = self.Social_Networks.Select_Social_Network
+		# Define the list of variables to import
+		to_import = [
+			"social_networks",
+			"Select_Social_Network"
+		]
+
+		# Iterate through them
+		for variable_title in to_import:
+			# Get the variable from the "Social_Networks" class
+			variable = getattr(self.Social_Networks, variable_title)
+
+			# Add it to this class (Friends)
+			setattr(self, variable_title, variable)
 
 	def Define_Folders_And_Files(self):
 		# Define the "Friends" folder dictionary
@@ -158,29 +211,35 @@ class Friends(object):
 
 		# ---------- #
 
-		# Friends text "Database" folder
+		# Define and create the friends text "Database" folder
 		self.folders["Friends"]["Text"]["Database"] = {
 			"root": self.folders["Friends"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
 		}
 
 		self.Folder.Create(self.folders["Friends"]["Text"]["Database"]["root"])
 
-		# Database "Information items.json" file
-		self.folders["Friends"]["Text"]["Database"]["Information items"] = self.folders["Friends"]["Text"]["Database"]["root"] + "Information items.json"
-		self.File.Create(self.folders["Friends"]["Text"]["Database"]["Information items"])
+		# Define and create the "Information items.json" file
+		file = self.folders["Friends"]["Text"]["Database"]["root"] + "Information items.json"
+		self.File.Create(file)
 
-		# "Friends.json" file
-		self.folders["Friends"]["Text"]["Friends"] = self.folders["Friends"]["Text"]["root"] + "Friends.json"
-		self.File.Create(self.folders["Friends"]["Text"]["Friends"])
+		self.folders["Friends"]["Text"]["Database"]["Information items"] = file
 
-		# "Friends list.txt" file
-		self.folders["Friends"]["Text"]["Friends list"] = self.folders["Friends"]["Text"]["root"] + self.language_texts["friends_list"] + ".txt"
-		self.File.Create(self.folders["Friends"]["Text"]["Friends list"])
+		# Define and create the "Friends.json" file
+		file = self.folders["Friends"]["Text"]["root"] + "Friends.json"
+		self.File.Create(file)
 
-		# ---------- #
+		self.folders["Friends"]["Text"]["Friends"] = file
 
+		# Define and create the "Friends list.txt" file
+		file = self.folders["Friends"]["Text"]["root"] + self.language_texts["friends_list"] + ".txt"
+		self.File.Create(file)
+
+		self.folders["Friends"]["Text"]["Friends list"] = file
+
+	def Define_History(self):
 		# Define the "History" dictionary
 		self.history = {
+			"Class title": self.language_texts["Friends"],
 			"Key": "",
 			"Numbers": {
 				"Known people": "By year"
@@ -334,13 +393,10 @@ class Friends(object):
 					}
 				}
 
-				# If the information item key is not "Origin Social Network"
-				if key != "Origin Social Network":
+				# If the information item key is not "Origin social network"
+				if key != "Origin social network":
 					# Define the text key for the options list
 					text_key = dict_["Plural"]["en"].lower().replace(" ", "_") + ", type: list"
-
-					# Define the object from where the "texts" dictionary will be gotten
-					object = self.Language
 
 					# Define the lists of options
 					for item in dict_["Select"]["List"]:
@@ -351,13 +407,13 @@ class Friends(object):
 							language = self.language["Small"]
 
 						# Define the lists of options inside the "List" key
-						dict_["Select"]["List"][item] = object.texts[text_key][language]
+						dict_["Select"]["List"][item] = self.Language.texts[text_key][language]
 
-				# If the information item key is "Origin Social Network"
-				if key == "Origin Social Network":
+				# If the information item key is "Origin social network"
+				if key == "Origin social network":
 					# Iterate through the keys of the "List" dictionary
 					for item in dict_["Select"]["List"]:
-						# Define the local list of Social Networks
+						# Define the local list of social networks
 						social_networks = deepcopy(self.social_networks)
 
 						language = "en"
@@ -365,7 +421,7 @@ class Friends(object):
 						if item == "Language":
 							language = self.language["Small"]
 
-						# Add the "Custom Social Network" item to the list above
+						# Add the "Custom social network" item to the list above
 						social_networks["List"].append(self.texts["custom_social_network"][language])
 
 						# Define the lists of options inside the "List" key
@@ -448,7 +504,7 @@ class Friends(object):
 		dictionary = {
 			"Names": [
 				"Information",
-				"Social Network"
+				"Social network"
 			],
 			"Dictionary": {}
 		}
@@ -513,7 +569,7 @@ class Friends(object):
 		# ---------- #
 
 		# Write the friends list to the "Friends list.txt" file
-		text_to_write = self.Text.From_List(self.friends["List"], next_line = True)
+		text_to_write = self.Text.From_List(self.friends["List"])
 
 		self.File.Edit(self.folders["Friends"]["Text"]["Friends list"], text_to_write, "w")
 
@@ -543,7 +599,7 @@ class Friends(object):
 				"Folders": {},
 				"Files": {},
 				"Information": {},
-				"Social Networks": {},
+				"Social networks": {},
 				"Gender": {
 					"Text": "",
 					"Words": {}
@@ -565,12 +621,12 @@ class Friends(object):
 
 				self.Folder.Create(dict_["root"])
 
-				# Create the "Social Networks" folder
-				dict_["Social Networks"] = {
+				# Create the "Social networks" folder
+				dict_["Social networks"] = {
 					"root": dict_["root"] + self.Language.language_texts["social_networks"] + "/"
 				}
 
-				self.Folder.Create(dict_["Social Networks"]["root"])
+				self.Folder.Create(dict_["Social networks"]["root"])
 
 				# Iterate through the friend file names
 				for key, file_name_dictionary in self.friends["File names"]["Dictionary"].items():
@@ -579,9 +635,9 @@ class Friends(object):
 
 					folder_dictionary = dict_
 
-					# Define the folder for the "Social Networks.txt" file
-					if key == "Social Network":
-						folder_dictionary = dict_["Social Networks"]
+					# Define the folder for the "Social networks.txt" file
+					if key == "Social network":
+						folder_dictionary = dict_["Social networks"]
 
 						key = file_name_dictionary["Plural"]["en"]
 
@@ -599,11 +655,12 @@ class Friends(object):
 							dictionary["Files"][key] = folder_dictionary[key]
 
 						# Add the file to the "Files" dictionary
-						if key == "Social Networks":
+						if key == "Social networks":
 							dictionary["Files"][key] = {
 								"List": folder_dictionary[key]
 							}
 
+				# If the item is "Image"
 				if item == "Image":
 					# Create the image "Media" folder
 					dict_["Media"] = {
@@ -618,13 +675,15 @@ class Friends(object):
 			# Add the keys of the "Text" folders dictionary to the root folders dictionary
 			dictionary["Folders"].update(dictionary["Folders"]["Text"])
 
-			# Update the Friend "Information" only with the data on the files inside the Text folder
+			# ----- #
+
+			# Update the friend "Information" only with the data on the files inside the text folder
 			# To get the most up-to-date information
 
 			# Get the information dictionary
 			information = self.Information(file = dictionary["Files"]["Information"])
 
-			# Add the information to the "Information" dictionary
+			# Add the information keys and values to the "Information" dictionary
 			for information_key, value in information.items():
 				dictionary["Information"][information_key] = value
 
@@ -634,32 +693,39 @@ class Friends(object):
 				"Residence": {}
 			}
 
+			# Define the local list of items to use as keys
 			items = [
 				"City",
 				"State",
 				"Country"
 			]
 
-			# Itearate through the places
+			# Itearate through the list of place keys
 			for place in places.copy():
+				# Define the key as the place
 				key = place
 
+				# If the key is "Residence", add " place" to change the key to "Residence place"
 				if key == "Residence":
 					key += " place"
 
+				# Get the place information from the friend "Information" dictionary and split it by the " - " string
 				split = dictionary["Information"][key].split(" - ")
 
-				# Itearate through the place items
+				# Itearate through the place items inside the split list
 				i = 0
 				for item in split:
+					# Get the key to define the place from the list of items
 					key = items[i]
 
+					# Define the place key inside the local place dictionary using the split index as a value
 					places[place][key] = split[i]
 
+					# Add one to the "i" number
 					i += 1
 
 			# Add the "Places" dictionary to the friend "Information" dictionary
-			# After the "Residence place" key
+			# Add it after the "Residence place" key
 			key_value = {
 				"Places": places
 			}
@@ -689,21 +755,21 @@ class Friends(object):
 
 			# ---------- #
 
-			# List the Social Networks
-			social_networks_list = self.Folder.Contents(dictionary["Folders"]["Social Networks"]["root"])["folder"]["names"]
+			# List the social networks of the friend
+			social_networks_list = self.Folder.Contents(dictionary["Folders"]["Social networks"]["root"])["folder"]["names"]
 
-			# Remove the Social Networks that are not inside the Social Networks database
+			# Remove the social networks that are not inside the social networks database
 			for item in social_networks_list.copy():
 				if item not in self.social_networks["List"]:
 					social_networks_list.remove(item)
 
-			# Update the "Social Networks.txt" file with the list above
-			text_to_write = self.Text.From_List(social_networks_list, next_line = True)
+			# Update the friend "Social networks.txt" file with the list above
+			text_to_write = self.Text.From_List(social_networks_list)
 
-			self.File.Edit(dictionary["Files"]["Social Networks"]["List"], text_to_write, "w")
+			self.File.Edit(dictionary["Files"]["Social networks"]["List"], text_to_write, "w")
 
-			# Create a "Social Networks" information dictionary
-			dictionary["Social Networks"] = {
+			# Create a "Social networks" dictionary for the friend
+			dictionary["Social networks"] = {
 				"Numbers": {
 					"Total": 0
 				},
@@ -716,7 +782,7 @@ class Friends(object):
 			# Define the list of file names
 			file_names = [
 				"Information",
-				"Social Networks"
+				"Social networks"
 			]
 
 			# Update the friend files of the image folder if the file inside the text folder is different
@@ -743,14 +809,14 @@ class Friends(object):
 			# ---------- #
 
 			# Sort the list of social networks
-			dictionary["Social Networks"]["List"] = sorted(dictionary["Social Networks"]["List"], key = str.lower)
+			dictionary["Social networks"]["List"] = sorted(dictionary["Social networks"]["List"], key = str.lower)
 
 			# Sort the dictionary of social networks based on its keys
-			dictionary["Social Networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Social Networks"]["Dictionary"].items())))
+			dictionary["Social networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Social networks"]["Dictionary"].items())))
 
-			# Social Network folders and profile file creation
-			for social_network in dictionary["Social Networks"]["List"]:
-				# Update the "self.social_network" variable
+			# Social network folders and profile file creation
+			for social_network in dictionary["Social networks"]["List"]:
+				# Update the root "social_network" variable with the dictionary of the current social network
 				self.social_network = self.Select_Social_Network(social_network)
 
 				# Create the empty "dict_" dictionary for the social network folders
@@ -759,11 +825,11 @@ class Friends(object):
 				# Create the empty "Files" dictionary
 				files = {}
 
-				# Create the Social Network folders
+				# Create the social network folders
 				for item in ["Text", "Image"]:
 					# Create the item folders dictionary
 					dict_ = {
-						"root": dictionary["Folders"][item]["Social Networks"]["root"] + social_network + "/"
+						"root": dictionary["Folders"][item]["Social networks"]["root"] + social_network + "/"
 					}
 
 					self.Folder.Create(dict_["root"])
@@ -774,7 +840,7 @@ class Friends(object):
 					self.File.Create(dict_["Profile"])
 
 					# Add the profile file to the "Files" dictionary
-					dictionary["Files"]["Social Networks"][social_network] = {
+					dictionary["Files"]["Social networks"][social_network] = {
 						"Profile": dict_["Profile"]
 					}
 
@@ -787,30 +853,30 @@ class Friends(object):
 						"Size": self.File.Contents(file)["size"]
 					}
 
-					dictionary["Folders"][item]["Social Networks"][social_network] = dict_
+					dictionary["Folders"][item]["Social networks"][social_network] = dict_
 
-				# Update the "Profile" social network file of the Friend image folder if the file inside the text folder is different
+				# Update the social network "Profile.txt" file of the friend image folder if the file inside the text folder is different
 				if files["Text"]["Size"] != files["Image"]["Size"]:
 					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
 
-				# Get the data of the Social Network
-				file = dictionary["Files"]["Social Networks"][social_network]["Profile"]
+				# Get the data of the social network
+				file = dictionary["Files"]["Social networks"][social_network]["Profile"]
 
-				dictionary["Social Networks"]["Dictionary"][social_network] = self.Information(file = file, information_items = self.social_network["Information items"])
+				dictionary["Social networks"]["Dictionary"][social_network] = self.Social_Networks.Information(file = file, information_items = self.social_network["Information items"])
 
-				# Create the Social Network image sub-folders
+				# Create the social network image sub-folders
 				if "Image folders" in self.social_network:
 					# Define the root image folder
-					image_folder = dictionary["Folders"]["Image"]["Social Networks"][social_network]["root"]
+					image_folder = dictionary["Folders"]["Image"]["Social networks"][social_network]["root"]
 
 					# Create the image sub-folders
 					for folder in self.social_network["Image folders"]:
 						folder = image_folder + folder + "/"
-	
+
 						self.Folder.Create(folder)
 
-			# Update the number of Social Networks
-			dictionary["Social Networks"]["Numbers"]["Total"] = len(dictionary["Social Networks"]["List"])
+			# Update the number of social networks
+			dictionary["Social networks"]["Numbers"]["Total"] = len(dictionary["Social networks"]["List"])
 
 			# Define the "Friend" dictionary as the local "Friend" dictionary
 			self.friends["Dictionary"][friend] = dictionary
@@ -819,16 +885,16 @@ class Friends(object):
 
 		# Iterate through the friends list
 		for friend in self.friends["List"]:
-			# Get the Friend dictionary
+			# Get the friend dictionary
 			friend = self.friends["Dictionary"][friend]
 
-			# Get the Friend Information dictionary
+			# Get the friend Information dictionary
 			information = self.Information(friend["Information"])
 
-			# Get the met year
+			# Get the "Date I met" year
 			met_year = information["Date I met"].split("/")[-1]
 
-			# If the met year is not in the Friends "Numbers" dictionary
+			# If the met year is not in the friends numbers "By year" dictionary
 			if met_year not in self.friends["Numbers"]["By year"]:
 				# Add it
 				self.friends["Numbers"]["By year"][met_year] = 1
@@ -844,7 +910,7 @@ class Friends(object):
 					friend["Name"]
 				]
 
-			# Else, add the friend to the existing met by year list
+			# Else, add the friend to the existing "Met by year" list
 			else:
 				if friend["Name"] not in self.friends["Met by year"][met_year]:
 					self.friends["Met by year"][met_year].append(friend["Name"])
@@ -870,24 +936,27 @@ class Friends(object):
 				# Remove its key
 				self.friends["Numbers"]["By year"].pop(year)
 
+		# Make a copy of the "Met by year" dictionary
+		met_by_year = deepcopy(self.friends["Met by year"])
+
 		# Iterate through the year lists inside the "Met by year" dictionary
-		for year, list_ in self.friends["Met by year"].copy().items():
+		for year, year_list in met_by_year.items():
 			# Iterate through the friends inside the year list
-			for friend in list_:
-				# If the Friend is not inside the year list
+			for friend in year_list:
+				# If the friend is not inside the year list
 				if friend not in self.friends["List"]:
 					# Remove the Friend
 					self.friends["Met by year"][year].remove(friend)
 
 		# Iterate through the year lists inside the "Met by year" dictionary
-		for year, list_ in self.friends["Met by year"].copy().items():
+		for year, year_list in met_by_year.items():
 			# If the year list is empty
-			if list_ == []:
+			if year_list == []:
 				# Remove it
 				self.friends["Met by year"].pop(year)
 
+			# Else, sort the list
 			else:
-				# Sort the list
 				self.friends["Met by year"][year] = sorted(self.friends["Met by year"][year], key = str.lower)
 
 		# Sort the "Met by year" numbers based on its keys
@@ -950,16 +1019,15 @@ class Friends(object):
 		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
-		# If the file parameter is not None
+		# If the file parameter is not None, get the information dictionary from it
 		if file != None:
-			# Get the information from it
 			information = self.File.Dictionary(file, next_line = True)
 
 		# If the information items parameter is None, define it as the default root information items dictionary
 		if information_items == None:
 			information_items = self.information_items
 
-		# Define the empty dictionary
+		# Define the local empty dictionary
 		dictionary = {}
 
 		# Iterate through the language keys and values of the information dictionary
@@ -1069,7 +1137,7 @@ class Friends(object):
 
 		# If the "type_information" is True
 		if type_information == True:
-			# Type the selected Friend or Social Network information
+			# Type the selected friend or social network information
 
 			# If the information item is not inside the "Select" list
 			if information_item["Name"] not in information_items["Lists"]["Select"]:
@@ -1120,10 +1188,15 @@ class Friends(object):
 					):
 						information = information_item["Test information"][information_item["Name"]]
 
-					# Define the information as "[Empty]" if it is empty
+					# If the information is empty
 					if information == "":
-						information = "[{}]".format(self.Language.language_texts["empty, title()"])
+						# Create a shortcut to the empty text and add brackets around it
+						empty_text = "[{}]".format(self.Language.language_texts["empty, title()"])
 
+						# Define the information as the empty text
+						information = empty_text
+
+						# Show the information
 						print("\t" + information)
 
 			# Else, ask user to select an item from the list of information
@@ -1133,8 +1206,8 @@ class Friends(object):
 
 				select_text = select["Texts"]["Singular"]
 
-				# If the information item is "Origin Social Network"
-				if information_item["Name"] == "Origin Social Network":
+				# If the information item is "Origin social network"
+				if information_item["Name"] == "Origin social network":
 					# Define the genders list for easier typing
 					genders = self.Language.texts["genders, type: list"]
 
@@ -1174,48 +1247,48 @@ class Friends(object):
 						"language_option": information_item["Test information"][information_item["Name"]]
 					}
 
-				# If the selected option is "Custom Social Network"
-				if information["option"] == "Custom Social Network":
+				# If the selected option is "Custom social network"
+				if information["option"] == "Custom social network":
 					# Define the type text for the information item
 					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.language["Small"]] + " " + self.language_texts["custom_origin_social_network"])
 
 					# If the "Testing" switch is False
-					# Or it is True and the "Custom Social Network" key is not inside the "Test information" dictionary
+					# Or it is True and the "Custom social network" key is not inside the "Test information" dictionary
 					if (
 						self.switches["Testing"] == False or
 						self.switches["Testing"] == True and
-						"Custom Social Network" not in information_item["Test information"]
+						"Custom social network" not in information_item["Test information"]
 					):
 						# Ask the user to type the information
 						information = self.Input.Type(type_text, accept_enter = False, next_line = True, tab = "\t")
 
 					# If the "Testing" switch is True
-					# And the "Custom Social Network" key is inside "Test information" dictionary
+					# And the "Custom social network" key is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and
-						"Custom Social Network" in information_item["Test information"]
+						"Custom social network" in information_item["Test information"]
 					):
-						information = information_item["Test information"]["Custom Social Network"]
+						information = information_item["Test information"]["Custom social network"]
 
 				# Else, get the "language option" from the option dictionary
 				else:
 					information = information["language_option"]
 
-				# If the information item is "Origin Social Network"
-				if information_item["Name"] == "Origin Social Network":
+				# If the information item is "Origin social network"
+				if information_item["Name"] == "Origin social network":
 					# Define the question text
 					question = self.language_texts["add_additional_information_about_the_origin_social_network"]
 
-					# Ask if the user wants to add additional information to the origin Social Network
+					# Ask if the user wants to add additional information to the origin social network
 					add_additional_information = True
 
 					if self.switches["Testing"] == False:
-						# Ask if the user wants to add additional information about the Origin Social Network
+						# Ask if the user wants to add additional information about the Origin social network
 						add_additional_information = self.Input.Yes_Or_No(question = question)
 
 					# If the user wants to add additional information
 					if add_additional_information == True:
-						information_key = "Additional information of Origin Social Network"
+						information_key = "Additional information of origin social network"
 
 						# Define the type text
 						type_text = self.language_texts["type_the_additional_information"]

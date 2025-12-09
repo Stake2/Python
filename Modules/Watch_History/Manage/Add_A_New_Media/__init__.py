@@ -510,7 +510,10 @@ class Add_A_New_Media(Watch_History):
 		# Ask if the media has media items
 		self.local_secondary_types = self.secondary_types["Plural"][self.language["Small"]]
 
-		text = self.language_texts["has_media_items"] + " (" + self.Language.language_texts["like"] + " " + self.Text.From_list(self.local_secondary_types, or_text = True, lower = True) + ")"
+		# Convert the list of secondary types into a text string
+		secondary_types = self.Text.From_list(self.local_secondary_types, next_line = False, or_text = True, lower = True)
+
+		text = self.language_texts["has_media_items"] + " (" + self.Language.language_texts["like"] + " " + secondary_types + ")"
 
 		self.media["States"]["Has a list of media items"] = self.Input.Yes_Or_No(text)
 
@@ -581,15 +584,22 @@ class Add_A_New_Media(Watch_History):
 
 				self.media["States"]["Add more"] = self.Input.Yes_Or_No(self.Language.language_texts["add_more"])
 
+			# Convert the list of items into a text string
+			items = self.Text.From_List(self.media["Items"]["List"])
+
 			# Update the media items list file
-			self.File.Edit(self.media["Items"]["Folders"]["list"], self.Text.From_List(self.media["Items"]["List"], next_line = True), "w")
+			self.File.Edit(self.media["Items"]["Folders"]["list"], items, "w")
 
 			# Define the current media item as the first one
 			self.media["Items"]["Current"] = [
 				self.media["Items"]["List"][0]
 			]
 
-			# Update the current media item file
-			self.File.Edit(self.media["Items"]["Folders"]["current"], self.Text.From_List(self.media["Items"]["Current"], next_line = True), "w")
+			# Convert the list of current items into a text string
+			current_items = self.Text.From_List(self.media["Items"]["Current"])
 
+			# Update the current media item file
+			self.File.Edit(self.media["Items"]["Folders"]["current"], current_items, "w")
+
+			# Remove the "Folders" key from the "Media" dictionary
 			self.dictionary["Media"].pop("Folders")

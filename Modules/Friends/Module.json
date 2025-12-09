@@ -11,10 +11,10 @@
 		"Module": "C:/Apps/Modules/Friends/Module.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar Amigos",
+		"Show text": "Gerenciar amigos",
 		"Open_Friend_File": {
-			"en": "Open Friend file",
-			"pt": "Abrir arquivo de Amigo"
+			"en": "Open friend file",
+			"pt": "Abrir arquivo de amigo"
 		},
 		"Add_A_New_Friend": {
 			"en": "Add a new friend",
@@ -29,10 +29,10 @@
 		"Dictionary": {
 			"Open_Friend_File": {
 				"Descriptions": {
-					"en": "Open Friend file",
-					"pt": "Abrir arquivo de Amigo"
+					"en": "Open friend file",
+					"pt": "Abrir arquivo de amigo"
 				},
-				"Description": "Abrir arquivo de Amigo",
+				"Description": "Abrir arquivo de amigo",
 				"Object": "<class 'Friends.Open_Friend_File.Open_Friend_File'>"
 			},
 			"Add_A_New_Friend": {
@@ -53,7 +53,7 @@
 			}
 		},
 		"Descriptions": [
-			"Abrir arquivo de Amigo",
+			"Abrir arquivo de amigo",
 			"Adicionar um novo amigo",
 			"Mostrar informações de todos os Amigos"
 		]

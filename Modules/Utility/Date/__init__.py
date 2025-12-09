@@ -1,5 +1,6 @@
 # Date.py
 
+# Import some useful modules
 from datetime import date, time, datetime, timedelta, timezone
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
@@ -120,7 +121,7 @@ class Date():
 		if date_parameter == None:
 			date_parameter = self.Datetime.now()
 
-		# Define a shortcut to the user timezone
+		# Create a shortcut to the user timezone
 		user_timezone = self.user["Timezone"]
 
 		# Define the user timezone variable
@@ -168,9 +169,9 @@ class Date():
 			}
 		}
 
-		# Iterate through the date names list
+		# Iterate through the list of date names
 		for date_name in ["UTC", "Timezone"]:
-			# Iterate through the date types list
+			# Iterate through the list of date types
 			for date_type in ["Date", "Time"]:
 				date[date_name][date_type] = {
 					"Object": date[date_name]["Object"],
@@ -194,17 +195,13 @@ class Date():
 						"YYYY-MM-DD": "",
 						"DD/MM/YYYY": "",
 						"DD-MM-YYYY": "",
-						"[Day] [Month name] [Year]": "",
-						"[Day name], [Day] [Month name] [Year]": ""
 					}
 				}
 
 				formats = [
 					"%Y-%m-%d",
 					"%d/%m/%Y",
-					"%d-%m-%Y",
-					"",
-					""
+					"%d-%m-%Y"
 				]
 
 				# If the date type is "Time", define its unique object and its own unit, text, and format keys
@@ -300,51 +297,21 @@ class Date():
 						else:
 							date[date_name][date_type]["Texts"][key][language] = self.Text.By_Number(date[date_name][date_type]["Units"][key], self.texts[key.lower()][language], self.texts[key.lower() + "s"][language])
 
-				# Add the date or time formats
-				i = 0
-				for format in formats:
-					format_key = list(date[date_name][date_type]["Formats"].keys())[i]
+				# List the format keys
+				format_keys = list(date[date_name][date_type]["Formats"].keys())
 
+				# Iterate through the defined list of formats
+				for format_number, format in enumerate(formats):
+					# Get the format key
+					format_key = format_keys[format_number]
+
+					# Define the format key and value inside the 
 					date[date_name][date_type]["Formats"][format_key] = date[date_name]["Object"].strftime(format)
 
-					format_list = [
-						"[Day] [Month name] [Year]",
-						"[Day name], [Day] [Month name] [Year]"
-					]
-
-					for format_name in format_list:
-						if format_key == format_name:
-							date[date_name][date_type]["Formats"][format_key] = {}
-
-							template = self.texts["{} {} {}"]
-
-							date_shortcut = date[date_name][date_type]
-
-							if format_name == "[Day name], [Day] [Month name] [Year]":
-								template = self.texts["{}, {} {} {}"]
-
-							for language in self.languages["Small"]:
-								items = []
-
-								if format_name == "[Day name], [Day] [Month name] [Year]":
-									items.append(date_shortcut["Texts"]["Day name"][language])
-
-								items.extend([
-									date[date_name][date_type]["Units"]["Day"],
-									date[date_name][date_type]["Texts"]["Month name"][language],
-									date[date_name][date_type]["Units"]["Year"]
-								])
-
-								date[date_name][date_type]["Formats"][format_key][language] = template[language].format(*items)
-
-					i += 1
-
-				#date[date_name][date_type]["Formats"]["Unix"] = self.Datetime(1970, 1, 1).replace(microsecond = 0).astimezone(pytz.UTC)
-				#date[date_name][date_type]["Formats"]["Unix"] = self.Datetime(1970, 1, 1).astimezone(pytz.UTC)
-				#date[date_name][date_type]["Formats"]["Unix"] = date["UTC"]["Object"] - date[date_name][date_type]["Formats"]["Unix"]
-				#date[date_name][date_type]["Formats"]["Unix"] = date[date_name][date_type]["Formats"]["Unix"].total_seconds()
-
-				date[date_name][date_type]["Formats"]["Unix"] = int(date[date_name]["Object"].timestamp())
+				# If the date type is "Time"
+				if date_type == "Time":
+					# Add the unix timestamp format
+					date[date_name][date_type]["Formats"]["Unix"] = int(date[date_name]["Object"].timestamp())
 
 			# Create the "DateTime" key
 			if "DateTime" not in date[date_name]:
@@ -386,25 +353,52 @@ class Date():
 
 				date[date_name]["DateTime"]["Formats"][format_key] = object.strftime(format)
 
-				if (
-					object.strftime("%Z") not in ["UTC", ""] and
-					format_key == "YYYY-MM-DDTHH:MM:SSZ"
-				):
-					#list_ = list(date[date_name]["DateTime"]["Formats"][format_key])
-					#list_.insert(20, ":")
-
-					#date[date_name]["DateTime"]["Formats"][format_key] = self.Text.From_List(list_)
-					true = True
-
 				i += 1
 
-			# Import all of the variables from inside the "Timezone" dictionary since the modules usually use the timezone dates and times
+		# Define a list of formats
+		formats = [
+			"[Day] [Month name] [Year]",
+			"[Day name], [Day] [Month name] [Year]",
+			"[Day] [Month name] [Year], [Day name]",
+		]
+
+		# Iterate through the list of date names
+		for date_name in ["UTC", "Timezone"]:
+			# Iterate through the list of formats
+			for format in formats:
+				# Define the format dictionary inside the date "Formats" dictionary
+				date[date_name]["Date"]["Formats"][format] = {}
+
+				# Define the format dictionary inside the datetime "Formats" dictionary
+				date[date_name]["DateTime"]["Formats"][format] = {}
+
+				# Define the text key to get the date format
+				text_key = format.lower()
+
+				# Get the date format using the text key
+				date_format = self.texts[text_key]
+
+				# Iterate through the list of small languages
+				for language in self.languages["Small"]:
+					# Replace the date strings in the date format text with the units and texts inside the date dictionary
+					date_text = self.Replace_Strings_In_Text(date_format[language], date, language)
+
+					# Add the date text to the format key and language
+					date[date_name]["Date"]["Formats"][format][language] = date_text
+
+					# Also add it to the "DateTime" dictionary
+					date[date_name]["DateTime"]["Formats"][format][language] = date_text
+
+			# If the date name is "Timezone"
 			if date_name == "Timezone":
+				# Define the root "Object" as the "Timezone" object
 				date["Object"] = date[date_name]["Object"]
 
+				# Import the keys from the "DateTime" dictionary to the root dictionary
 				for key in date[date_name]["DateTime"]:
 					date[key] = date[date_name]["DateTime"][key]
 
+		# Return the date dictionary
 		return date
 
 	def Daylight_Saving_Time(self, date):
@@ -582,7 +576,7 @@ class Date():
 			i += 1
 
 		# Create the time text of the date difference
-		dictionary["Text"] = self.Make_Time_Text(dictionary)
+		dictionary["Text"] = self.Create_Time_Text(dictionary)
 
 		# Create the time units text
 		dictionary["Time units text"] = self.Create_Time_Units_Text(dictionary)
@@ -600,7 +594,7 @@ class Date():
 		# Return the dictionary
 		return dictionary
 
-	def Make_Time_Text(self, dictionary):
+	def Create_Time_Text(self, dictionary):
 		# Import the "deepcopy" module
 		from copy import deepcopy
 

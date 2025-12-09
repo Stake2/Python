@@ -219,7 +219,7 @@ class Create_New_Story(Stories):
 					# If the length of the list of authors is more than one
 					if len(information) > 1:
 						# Transform the root into a text string with all the authors
-						story["Information"][key] = self.Text.From_List(information)
+						story["Information"][key] = self.Text.From_List(information, next_line = False)
 
 		# ---------- #
 
@@ -393,7 +393,7 @@ class Create_New_Story(Stories):
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Define and create the file
@@ -406,7 +406,7 @@ class Create_New_Story(Stories):
 		# ---------- #
 		
 		# Update the "Authors.txt" file with the list of authors
-		text_to_write = self.Text.From_List(self.story["Information"]["Authors"], next_line = True)
+		text_to_write = self.Text.From_List(self.story["Information"]["Authors"])
 
 		self.File.Edit(self.story["Folders"]["Authors"], text_to_write, "w")
 
@@ -448,7 +448,7 @@ class Create_New_Story(Stories):
 			# If the file name is "Readers"
 			if file_name == "Readers":
 				# Transform the list of readers into a text string
-				text = self.Text.From_List(text["List"], next_line = True)
+				text = self.Text.From_List(text["List"])
 
 			# Write to the file
 			Class.Edit(file, text)
@@ -504,7 +504,7 @@ class Create_New_Story(Stories):
 		language_story_title = self.story["Titles"][self.language["Small"]]
 
 		# Update the "Stories list.txt" file with the updated list of story titles in the user language
-		text_to_write = self.Text.From_List(self.stories["Titles"][self.language["Small"]], next_line = True)
+		text_to_write = self.Text.From_List(self.stories["Titles"][self.language["Small"]])
 
 		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
 

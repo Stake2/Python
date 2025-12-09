@@ -499,14 +499,6 @@
 		"en": "%H:%M %m/%d/%Y",
 		"pt": "%H:%M %d/%m/%Y"
 	},
-	"{} {} {}": {
-		"pt": "{} de {} de {}",
-		"en": "{} {}, {}"
-	},
-	"{}, {} {} {}": {
-		"pt": "{}, {} de {} de {}",
-		"en": "{}, {} {}, {}"
-	},
 	"today_is_day_{} {} {}, {}": {
 		"pt": "Hoje é dia {} de {} de {}, {}",
 		"en": "Today is day {} {} {}, {}"
@@ -514,6 +506,22 @@
 	"date_format, type: format": {
 		"pt": "[day] de [month name] de [year]",
 		"en": "[month name] [day], [year]"
+	},
+	"[day] [month name] [year]": {
+		"pt": "[day] de [month name] de [year]",
+		"en": "[day] [month name] [year]"
+	},
+	"[day name], [day] [month name] [year]": {
+		"pt": "[day name], [day] de [month name] de [year]",
+		"en": "[day name], [day] [month name] [year]"
+	},
+	"[day] [month name] [year], [day name]": {
+		"pt": "[day] de [month name] de [year], [day name]",
+		"en": "[day] [month name] [year], [day name]"
+	},
+	"[month name] [day], [year], [day name]": {
+		"pt": "[day] de [month name] de [year], [day name]",
+		"en": "[month name] [day], [year], [day name]"
 	},
 	"date_and_time_texts, type: dict": {
 		"short_time": "t",

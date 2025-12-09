@@ -268,10 +268,10 @@ class Write_On_Diary_Slim(Diary_Slim):
 				question["State related"] == True and
 				"States" in self.dictionary["Text"]
 			):
-				# Define a shortcut to the states (backup) dictionary
+				# Create a shortcut to the states (backup) dictionary
 				states = self.dictionary["Text"]["States (backup)"]
 
-				# Define a shortcut to the current state
+				# Create a shortcut to the current state
 				current_state = states["Current state"]
 
 				# Iterate through the dictionary of states
@@ -348,7 +348,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 					# Get the text template for the current state
 					template = question["Format"]["States"][state_number][self.language["Small"]]
 
-					# Define a shortcut to the text of the current state
+					# Create a shortcut to the text of the current state
 					text_to_write = current_state[self.language["Small"]]
 
 					# Format the template with the text to write and update the local text to write variable
@@ -432,7 +432,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 						# If the "Text decorator" key is present inside the text dictionary
 						if "Text decorator" in text_dictionary:
-							# Define a shortcut to the "Text decorator" dictionary
+							# Create a shortcut to the "Text decorator" dictionary
 							text_decorator = text_dictionary["Text decorator"]
 
 							# If the "With gender" key is present and True
@@ -1171,33 +1171,35 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# If the "Text decorator" is inside the statistic dictionary
 		if "Text decorator" in self.dictionary["Text"]["Statistic"]:
-			# Define a shortcut for the text decorator
+			# Create a shortcut for the text decorator
 			text_decorator = self.dictionary["Text"]["Statistic"]["Text decorator"]
 
-			# If the "Decoration text" is not inside the first question dictionary:
-			if "Decoration text" not in questions["1"]:
-				# Get the decorator key and text
-				key = text_decorator["Key"]
-				decorator_text = self.Language.language_texts[key]
+			# Get the decorator text key and text
+			text_key = text_decorator["Key"]
+			decorator_text = self.Language.language_texts[text_key]
 
-				# Format the text
+			# Replace the "{decorator}" text template
+			statistic_text = text_decorator["Format"].replace("{decorator}", decorator_text)
 
-				# Replace the decorator template
-				statistic_text = text_decorator["Format"].replace("{decorator}", decorator_text)
-
-				# If the "{response}" text template is inside the format template
-				if "{response}" in statistic_text:
+			# If the "Has questions" state is True
+			if statistic["Has questions"] == True:
+				# If the "Decoration text" key is not inside the first question dictionary
+				# And the "{response}" text template is inside the format template
+				if (
+					"Decoration text" not in questions["1"] and
+					"{response}" in statistic_text
+				):
 					# Replace the response template with the response to the first question
 					statistic_text = statistic_text.replace("{response}", questions["1"]["Response"])
 
-				# If the "{text}" template is inside the format template
-				if "{text}" in statistic_text:
-					# Replace the text template
-					statistic_text = statistic_text.replace("{text}", statistic["Key"])
+				# If it is, use it as the decoration text
+				else:
+					statistic_text = questions[key]["Decoration text"]
 
-			# If it is, use it as the decoration text
-			else:
-				statistic_text = questions[key]["Decoration text"]
+			# If the "{text}" template is inside the format template
+			if "{text}" in statistic_text:
+				# Replace the text template
+				statistic_text = statistic_text.replace("{text}", statistic["Key"])
 
 			# Update the statistic text to be the local text
 			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Text"] = statistic_text

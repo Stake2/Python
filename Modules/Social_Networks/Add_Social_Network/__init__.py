@@ -15,7 +15,7 @@ class Add_Social_Network(Social_Networks):
 
 		# Define the root dictionary
 		self.dictionary = {
-			"Social Network": {},
+			"Social network": {},
 			"Information items": {
 				"Addition mode": ""
 			}
@@ -31,34 +31,34 @@ class Add_Social_Network(Social_Networks):
 			}
 		}
 
-		# Ask the user to type the information of the new Social Network to be added
+		# Ask the user to type the information of the new social network to be added
 		self.Type_Information()
 
-		# Define the information items of the Social Network
+		# Define the information items of the social network
 		self.Define_The_Information_Items()
 
-		# Ask for the profile of the user for the newly created Social Network
+		# Ask for the profile of the user for the newly created social network
 		self.Add_Social_Network_Profile()
 
-		# Define the folders and files of the Social Network
+		# Define the folders and files of the social network
 		self.Define_Social_Network_Folders_And_Files()
 
 		# Write to them
 		self.Write_To_Files()
 
-		# Show the information about the newly added Social Network
+		# Show the information about the newly added social network
 		self.Show_Information()
 
-		# Run the root class to update the folders and files of all Social Networks
-		# And also the "Social Networks.json" file
+		# Run the root class to update the folders and files of all social networks
+		# And also the "Social networks.json" file
 		super().__init__()
 
 	def Type_Information(self):
-		# Show the "Please type the information of the Social Network" text
+		# Show the "Please type the information of the social network" text
 		print()
 		print(self.language_texts["please_type_the_information_of_the_social_network"] + ":")
 
-		# Define the default and empty Social Network dictionary
+		# Define the default and empty social network dictionary
 		self.social_network = {
 			"Name": "",
 			"Folders": {},
@@ -73,7 +73,7 @@ class Add_Social_Network(Social_Networks):
 		}
 
 		# Add the dictionary to the root dictionary
-		self.dictionary["Social Network"] = self.social_network
+		self.dictionary["Social network"] = self.social_network
 
 		# Define the test information dictionary for testing
 		self.test_information = {
@@ -105,7 +105,7 @@ class Add_Social_Network(Social_Networks):
 		#self.test_information = {}
 
 		# Iterate through the social network information items list
-		for key in self.information_items["Lists"]["Social Network information"]:
+		for key in self.information_items["Lists"]["Social network information"]:
 			# Get the information item dictionary
 			information_item = self.information_items["Dictionary"][key]
 
@@ -128,12 +128,12 @@ class Add_Social_Network(Social_Networks):
 
 			# If the information is not equal to an empty string
 			if information != "":
-				# Add the information to the Social Network "Information" dictionary, with the information item key
+				# Add the information to the social network "Information" dictionary, with the information item key
 				self.social_network["Information"][key] = information
 
 			# If the information item is "Name"
 			if key == "Name":
-				# Update the "Name" key of the Social Network dictionary
+				# Update the "Name" key of the social network dictionary
 				self.social_network["Name"] = information
 
 		# ---------- #
@@ -142,7 +142,7 @@ class Add_Social_Network(Social_Networks):
 		empty = "[{}]".format(self.Language.language_texts["empty, title()"])
 
 		# Iterate through the social network information items list
-		for key in self.information_items["Lists"]["Social Network information"]:
+		for key in self.information_items["Lists"]["Social network information"]:
 			# Get the information
 			information = self.social_network["Information"][key]
 
@@ -273,7 +273,7 @@ class Add_Social_Network(Social_Networks):
 		# ---------- #
 
 		# Define the "To remove" list
-		to_remove = information_items["Lists"]["Social Network information"]
+		to_remove = information_items["Lists"]["Social network information"]
 
 		# Remove some keys that should not be removed
 		to_remove.remove("Name")
@@ -511,7 +511,7 @@ class Add_Social_Network(Social_Networks):
 
 					# Define the additional item as the social network link format string
 					# Add the format item and the "Handle" format string
-					additional_item = "{Social Network link}" + format_item + "/{Handle}"
+					additional_item = "{Social network link}" + format_item + "/{Handle}"
 
 					# Show the additional item
 					print()
@@ -591,7 +591,7 @@ class Add_Social_Network(Social_Networks):
 					# If the "Testing" switch is True
 					if self.switches["Testing"] == True:
 						# Define the default link
-						link = "{Social Network link}/user/{Handle}"
+						link = "{Social network link}/user/{Handle}"
 
 						# If the "Profile link" is in the "Additional items" dictionary, use it
 						if "Profile link" in self.social_network["Information items"]["Additional items"]:
@@ -655,11 +655,11 @@ class Add_Social_Network(Social_Networks):
 			c += 1
 
 		# Transform the list into a text string
-		items = self.Text.From_List(items, next_line = True)
+		items = self.Text.From_List(items)
 
 		# Format the type text
 		information_text = information_text.format(*[
-			'"' + "{Social Network link}" + '"',
+			'"' + "{Social network link}" + '"',
 			'"' + "{[Item]}" + '"'
 		])
 
@@ -672,15 +672,15 @@ class Add_Social_Network(Social_Networks):
 	def Add_Social_Network_Profile(self):
 		# Iterate through the "Additional items" dictionary
 		for key, additional_item in self.information_items["Additional items"][self.social_network["Name"]].items():
-			if "{Social Network link}" in additional_item:
-				additional_item = additional_item.replace("{Social Network link}", self.social_network["Information"]["Link"][:-1])
+			if "{Social network link}" in additional_item:
+				additional_item = additional_item.replace("{Social network link}", self.social_network["Information"]["Link"][:-1])
 
 			# Update the additional item in the root dictionary
 			self.information_items["Additional items"][self.social_network["Name"]][key] = additional_item
 
 		# ---------- #
 
-		# Asks for the user to type information about the Social Network profile
+		# Asks for the user to type information about the social network profile
 		self.social_network = self.Type_Social_Network_Information(social_network = self.social_network)
 
 		# ---------- #
@@ -714,7 +714,7 @@ class Add_Social_Network(Social_Networks):
 				self.social_network["Profile"]["Links"][link_type] = link
 
 	def Define_Social_Network_Folders_And_Files(self):
-		# Add the Social Network to the social networks list
+		# Add the social network to the list of social networks
 		if self.social_network["Name"] not in self.social_networks["List"]:
 			self.social_networks["List"].append(self.social_network["Name"])
 
@@ -724,7 +724,7 @@ class Add_Social_Network(Social_Networks):
 			self.social_network["Files"][item] = {}
 
 			# Define the root folder
-			folder = self.folders["Social Networks"][item]["root"] + self.social_network["Name"] + "/"
+			folder = self.folders["Social networks"][item]["root"] + self.social_network["Name"] + "/"
 
 			# Create the folders dictionary
 			dict_ = {
@@ -739,7 +739,7 @@ class Add_Social_Network(Social_Networks):
 				self.social_network["Files"][item] = {}
 
 				# Define the root folder
-				folder = self.folders["Social Networks"][item]["root"] + self.social_network["Name"] + "/"
+				folder = self.folders["Social networks"][item]["root"] + self.social_network["Name"] + "/"
 
 				# Create the folders dictionary
 				dict_ = {
@@ -759,7 +759,7 @@ class Add_Social_Network(Social_Networks):
 					# Define the file name language
 					language = self.language["Small"]
 
-					if key in ["Items", "Social Network"]:
+					if key in ["Items", "Social network"]:
 						language = "en"
 
 					file_name = file_name[language]
@@ -767,7 +767,7 @@ class Add_Social_Network(Social_Networks):
 					# Define the extension
 					extension = "txt"
 
-					if key in ["Items", "Social Network"]:
+					if key in ["Items", "Social network"]:
 						extension = "json"
 
 					# Define the file
@@ -782,10 +782,10 @@ class Add_Social_Network(Social_Networks):
 						self.social_network["Settings"]["Create image folders"] == True
 					):
 						# If the item is "Text"
-						# Or the key is "Social Network"
+						# Or the key is "Social network"
 						if (
 							item == "Text" or
-							key == "Social Network"
+							key == "Social network"
 						):
 							# Create the file
 							self.File.Create(dict_[key])
@@ -841,7 +841,7 @@ class Add_Social_Network(Social_Networks):
 		file_names = [
 			"Information",
 			"Profile",
-			"Social Network"
+			"Social network"
 		]
 
 		# Update the social network files of the image folder if the file inside the text folder is different
@@ -867,10 +867,10 @@ class Add_Social_Network(Social_Networks):
 
 		# ---------- #
 
-		# Update the number of Social Networks
+		# Update the number of social networks
 		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
 
-		# Add the social network dictionary to the root dictionary of the "Social Networks" dictionary
+		# Add the social network dictionary to the root dictionary of the "Social networks" dictionary
 		self.social_networks["Dictionary"][self.social_network["Name"]] = self.social_network
 
 		# Sort the "By year" numbers dictionary based on its keys
@@ -883,7 +883,7 @@ class Add_Social_Network(Social_Networks):
 		self.social_networks["Dictionary"] = dict(collections.OrderedDict(sorted(self.social_networks["Dictionary"].items())))
 
 	def Write_To_Files(self):
-		# Make a local copy of the Social Network "Information" dictionary
+		# Make a local copy of the social network "Information" dictionary
 		information = deepcopy(self.social_network["Information"])
 
 		# Translate the keys to the user language
@@ -892,7 +892,7 @@ class Add_Social_Network(Social_Networks):
 
 		# ---------- #
 
-		# Make a local copy of the Social Network "Profile" dictionary
+		# Make a local copy of the social network "Profile" dictionary
 		profile = deepcopy(self.social_network["Profile"])
 
 		# Remove the "Links" key
@@ -954,14 +954,14 @@ class Add_Social_Network(Social_Networks):
 		# If the "Create image folders" settings is True
 		if self.social_network["Settings"]["Create image folders"] == True:
 			# Transform the list of image folders into a text string with lines
-			text_to_write = self.Text.From_List(self.social_network["Image folders"], next_line = True)
+			text_to_write = self.Text.From_List(self.social_network["Image folders"])
 
 			# Write to the "Image folders.txt" file
 			self.File.Edit(self.social_network["Files"]["Text"]["Image folders"], text_to_write, "w")
 
 		# ---------- #
 
-		# Make a local copy of the "Social Network" dictionary
+		# Make a local copy of the "Social network" dictionary
 		local_dictionary = deepcopy(self.social_network)
 
 		# Define the root keys to remove
@@ -974,7 +974,7 @@ class Add_Social_Network(Social_Networks):
 		for sub_key in to_remove:
 			local_dictionary.pop(sub_key)
 
-		# Remove the unused keys of the Social Network "Information items" dictionary
+		# Remove the unused keys of the social network "Information items" dictionary
 		to_remove = [
 			"Lists",
 			"Accept enter",
@@ -987,15 +987,15 @@ class Add_Social_Network(Social_Networks):
 		for key in to_remove:
 			local_dictionary["Information items"].pop(key)
 
-		# Update the "Social Network.json" file with the updated and local "Social Network" dictionary
-		self.JSON.Edit(self.social_network["Folders"]["Text"]["Social Network"], local_dictionary)
+		# Update the "Social network.json" file with the updated and local "Social network" dictionary
+		self.JSON.Edit(self.social_network["Folders"]["Text"]["Social network"], local_dictionary)
 
-		# Update the image "Social Network.json" file with the updated and local "Social Network" dictionary
-		self.JSON.Edit(self.social_network["Folders"]["Image"]["Social Network"], local_dictionary)
+		# Update the image "Social network.json" file with the updated and local "Social network" dictionary
+		self.JSON.Edit(self.social_network["Folders"]["Image"]["Social network"], local_dictionary)
 
 		# ---------- #
 
-		# Update the "Social Networks.json" file with the updated and local "Social Networks" dictionary
+		# Update the "Social networks.json" file with the updated and local "Social networks" dictionary
 		self.Update_Social_Networks_File()
 
 	def Show_Information(self):
@@ -1025,7 +1025,7 @@ class Add_Social_Network(Social_Networks):
 		information = self.social_network["Information"]
 
 		# List the keys of the "Information items" dictionary
-		keys = self.information_items["Lists"]["Social Network information"]
+		keys = self.information_items["Lists"]["Social network information"]
 
 		# Iterate through the list of keys
 		for key in keys:
@@ -1033,7 +1033,7 @@ class Add_Social_Network(Social_Networks):
 			if key not in information:
 				keys.remove(key)
 
-		# Iterate through the "Social Network information" items list
+		# Iterate through the "Social network information" items list
 		for key in keys:
 			# If the information item is in the root dictionary
 			if key in self.information_items["Dictionary"]:
@@ -1086,15 +1086,15 @@ class Add_Social_Network(Social_Networks):
 
 		# Iterate through the list of keys
 		for key in keys:
-			# If the key is in the "Social Network information" list
+			# If the key is in the "Social network information" list
 			# Or it is not in the "Profile" dictionary, remove it
 			if (
-				key in self.information_items["Lists"]["Social Network information"] or
+				key in self.information_items["Lists"]["Social network information"] or
 				key not in profile
 			):
 				keys.remove(key)
 
-		# Iterate through the "Social Network profile" items list
+		# Iterate through the "social network profile" items list
 		for key in keys:
 			# If the information item is in the root dictionary
 			if key in self.information_items["Dictionary"]:

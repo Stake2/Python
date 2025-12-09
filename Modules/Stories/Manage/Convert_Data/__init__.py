@@ -40,7 +40,7 @@ class Convert_Data(Stories):
 			# Get the dictionary of the story
 			story = self.stories["Dictionary"][story_title]
 
-			# Define a shortcut to the story "Chapters" and "Writing" dictionaries
+			# Create a shortcut to the story "Chapters" and "Writing" dictionaries
 			for key in ["Chapters", "Writing"]:
 				story[key] = story["Information"][key]
 
@@ -75,7 +75,7 @@ class Convert_Data(Stories):
 	def Update_Writing_Dictionary(self, story):
 		# Iterate through the writing modes and writing mode dictionaries
 		for writing_mode, writing_mode_dictionary in self.stories["Writing modes"]["Dictionary"].items():
-			# Define a shortcut to the current writing mode dictionary
+			# Create a shortcut to the current writing mode dictionary
 			writing_dictionary = story["Writing"][writing_mode]
 
 			# If the "Chapter" key is inside the current writing dictionary
@@ -150,7 +150,7 @@ class Convert_Data(Stories):
 		self.JSON.Edit(story["Folders"]["Information"]["Writing"], story["Writing"])
 
 	def Update_Chapters_Dictionary(self, story, story_information):
-		# Define a shortcut to the total chapters number
+		# Create a shortcut to the total chapters number
 		total_chapters_number = story["Chapters"]["Numbers"]["Total"]
 
 		# Replace the ten dash space separator from the story information with a five dash space separator
@@ -219,7 +219,7 @@ class Convert_Data(Stories):
 
 			# If the "Finished" key is present inside the writing "Times" dictionary
 			if "Finished" in chapter["Writing"]["Times"]:
-				# Define a shortcut to the "Finished" time of the "Writing" dictionary
+				# Create a shortcut to the "Finished" time of the "Writing" dictionary
 				finished_writing_timezone = chapter["Writing"]["Times"]["Finished"]
 
 				# Transform it into a date dictionary using the timezone format
@@ -235,12 +235,12 @@ class Convert_Data(Stories):
 				# Get the writing mode dictionary
 				writing_mode_dictionary = chapter[writing_mode]
 
-				# Define a shortcut to the writings dictionary
+				# Create a shortcut to the writings dictionary
 				writings = writing_mode_dictionary["Dictionary"]
 
 				# Iterate through the list of writing keys and dictionaries
 				for key, writing in writings.items():
-					# Define a shortcut to the "Finished" time of the writing dictionary
+					# Create a shortcut to the "Finished" time of the writing dictionary
 					finished_writing_timezone = writing["Times"]["Finished"]
 
 					# Transform it into a date dictionary using the timezone format

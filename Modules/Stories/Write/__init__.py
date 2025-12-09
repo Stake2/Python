@@ -97,24 +97,24 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Define a shortcut to the total number of chapters for easier typing
+		# Create a shortcut to the total number of chapters for easier typing
 		total_chapters = self.story["Chapters"]["Numbers"]["Total"]
 
 		# Make a backup of the "Writing" dictionary
 		self.story["Writing (backup)"] = deepcopy(self.story["Writing"])
 
-		# Define a shortcut to the "language texts" dictionary of the "Language" class
+		# Create a shortcut to the "language texts" dictionary of the "Language" class
 		language_texts = self.Language.language_texts
 
 		# Iterate through the writing modes and writing mode dictionaries
 		for writing_mode, writing_mode_dictionary in self.stories["Writing modes"]["Dictionary"].items():
-			# Define a shortcut to the current writing mode dictionary
+			# Create a shortcut to the current writing mode dictionary
 			writing_dictionary = self.story["Writing"][writing_mode]
 
 			# Make a copy of the current writing mode dictionary
 			writing_mode_dictionary = deepcopy(writing_mode_dictionary)
 
-			# Define a shortcut to the "Status" dictionary
+			# Create a shortcut to the "Status" dictionary
 			status = writing_dictionary["Status"]
 
 			# ----- #
@@ -241,16 +241,16 @@ class Write(Stories):
 		# Define the local writing mode as "Translate"
 		writing_mode = "Translate"
 
-		# Define a shortcut to the "Translate" writing mode dictionary
+		# Create a shortcut to the "Translate" writing mode dictionary
 		writing_dictionary = self.story["Writing"][writing_mode]
 
 		# Get the current chapter of the "Translate" writing mode
 		current_chapter = writing_dictionary["Current chapter"]
 
-		# Define a shortcut to the "Status" dictionary
+		# Create a shortcut to the "Status" dictionary
 		status = writing_dictionary["Status"]
 
-		# Define a shortcut to the "Revise" writing mode dictionary
+		# Create a shortcut to the "Revise" writing mode dictionary
 		revise = self.story["Writing"]["Revise"]
 
 		# If the current chapter is the last chapter
@@ -282,7 +282,7 @@ class Write(Stories):
 		# Get the writing mode dictionary for the selected writing mode
 		self.writing["Writing mode"] = self.writing["Writing modes"]["Dictionary"][writing_mode]
 
-		# Define a shortcut to the "Writing" dictionary of the writing mode
+		# Create a shortcut to the "Writing" dictionary of the writing mode
 		self.writing["Writing"] = self.story["Writing"][writing_mode]
 
 		# If the writing mode is "Write"
@@ -349,7 +349,7 @@ class Write(Stories):
 		# Define the "Chapter" dictionary using the root "Select_Chapter" method, passing the chapter number to it
 		self.writing["Chapter"] = self.Select_Chapter(chapter_number = self.writing["Chapter"]["Number"])
 
-		# Define a shortcut to the chapter dictionary
+		# Create a shortcut to the chapter dictionary
 		self.chapter = self.writing["Chapter"]
 
 		# Reset the "Ongoing writing session" state to be False
@@ -361,12 +361,12 @@ class Write(Stories):
 			# Change the "Ongoing writing session" state to True
 			self.states["Ongoing writing session"] = True
 
-		# Define a shortcut to the chapter titles dictionary for easier typing
+		# Create a shortcut to the chapter titles dictionary for easier typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Define the default chapter title as the chapter number with leading zeroes
@@ -572,7 +572,7 @@ class Write(Stories):
 				small_language == self.chapter["Destiny language"] and
 				self.states["Ongoing writing session"] == False
 			):
-				# Define a shortcut to the origin language
+				# Create a shortcut to the origin language
 				origin_language = self.chapter["Origin language"]
 
 				# Get the chapter file in the origin language (the user language)
@@ -612,7 +612,7 @@ class Write(Stories):
 
 			# ---------- #
 
-			# Define a shortcut to the "chapter dates" text dictionary
+			# Create a shortcut to the "chapter dates" text dictionary
 			chapter_date_texts = self.texts["chapter_dates, type: dictionary"]
 
 			# Iterate through the list of chapter date texts
@@ -644,7 +644,7 @@ class Write(Stories):
 				# using the list of items and append a period at the end
 				chapter_date_text = text_template[small_language].format(*items) + "."
 
-				# Define a shortcut to the chapter number
+				# Create a shortcut to the chapter number
 				chapter_number = str(self.chapter["Number"])
 
 				# If the chapter is not present inside the dictionary of chapters
@@ -658,10 +658,10 @@ class Write(Stories):
 					# Add the local chapter dictionary to the root dictionary of chapters
 					self.story["Chapters"]["Dictionary"][chapter_number] = chapter
 
-				# Define a shortcut to the chapter dictionary
+				# Create a shortcut to the chapter dictionary
 				chapter = self.story["Chapters"]["Dictionary"][chapter_number]
 
-				# Define a shortcut to the writing mode dictionary of the current chapter date text
+				# Create a shortcut to the writing mode dictionary of the current chapter date text
 				writing_mode = self.stories["Writing modes"]["Dictionary"][key]
 
 				# Get the "chapter dictionary" key for the current writing mode
@@ -755,7 +755,7 @@ class Write(Stories):
 				lines.insert(i, "")
 
 			# Transform the list of chapter text lines into a text string
-			chapter_text = self.Text.From_List(lines, next_line = True)
+			chapter_text = self.Text.From_List(lines)
 
 			# Update the chapter file in the current language with the new text
 			self.File.Edit(chapter_file, chapter_text, "w")
@@ -881,11 +881,11 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Define a shortcut to the text about opening the music player for the user to listen to the soundtrack of the story
-		text = self.language_texts["opening_the_{}_music_player_for_you_to_listen_to_the_soundtrack_of_the_story"]
+		# Create a shortcut to the text template about opening the music player for the user to listen to the soundtrack of the story
+		text_template = self.language_texts["opening_the_{}_music_player_for_you_to_listen_to_the_soundtrack_of_the_story"]
 
-		# Format the text with the name of the music player
-		text = text.format(self.stories["Writing"]["Music player"]["Name"])
+		# Format the text template with the name of the music player
+		text = text_template.format(self.stories["Writing"]["Music player"]["Name"])
 
 		# Show the text
 		print(text + "...")
@@ -1012,7 +1012,7 @@ class Write(Stories):
 
 		# If the "Ongoing writing session" state is True (the user resumed writing the chapter)
 		if self.states["Ongoing writing session"] == True:
-			# Define a shortcut to the total writing duration dictionary
+			# Create a shortcut to the total writing duration dictionary
 			total_duration = self.writing["Writing"]["Total duration"]
 
 			# Show the total writing duration text in the user language
@@ -1147,7 +1147,7 @@ class Write(Stories):
 			# Define a local subtract dictionary
 			subtract = {}
 
-			# Define a shortcut to the "Pause" dictionary
+			# Create a shortcut to the "Pause" dictionary
 			pause = self.writing["Session"]["Pause"]
 
 			# Add the time units inside the pause "Subtract" dictionary to the local subtract dictionary
@@ -1176,7 +1176,7 @@ class Write(Stories):
 		# Calculate and define the writing duration using the "Calculate_Duration" method and passing the add and after time variables to it
 		self.writing["Session"]["Duration"] = self.Calculate_Duration(self.writing["Session"], add = add, after_time = after_time)
 
-		# Define a shortcut to the after writing date dictionary
+		# Create a shortcut to the after writing date dictionary
 		after = self.writing["Session"]["After"]
 
 		# Show the after writing time (after writing the chapter)
@@ -1201,7 +1201,7 @@ class Write(Stories):
 			print()
 			print(text + ":")
 
-			# Define a shortcut to the pause duration dictionary
+			# Create a shortcut to the pause duration dictionary
 			pause_duration = self.writing["Session"]["Pause"]["Duration"]
 
 			# Show the writing duration text in the user language (with the pause duration subtracted)
@@ -1223,7 +1223,7 @@ class Write(Stories):
 		print()
 		print(text)
 
-		# Define a shortcut to the writing duration dictionary
+		# Create a shortcut to the writing duration dictionary
 		writing_duration = self.writing["Session"]["Duration"]
 
 		# Show the writing duration text in the user language (with the pause duration subtracted)
@@ -1236,16 +1236,16 @@ class Write(Stories):
 			# Define the "Started" (writing) time as the "Before" time
 			self.writing["Writing"]["Times"]["Started"] = self.writing["Session"]["Before"]
 
-		# Define a shortcut to the after writing time in the user timezone
+		# Create a shortcut to the after writing time in the user timezone
 		after_writing_time = self.writing["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["HH:MM DD/MM/YYYY"]
 
 		# Add the "After" (writing) time string to the "Durations" list
 		self.writing["Writing"]["Durations"]["List"].append(after_writing_time)
 
-		# Define a shortcut to the "Duration" dictionary
+		# Create a shortcut to the "Duration" dictionary
 		duration = self.writing["Session"]["Duration"]
 
-		# Define a shortcut to the time units dictionary
+		# Create a shortcut to the time units dictionary
 		time_units = duration["Difference"]
 
 		# Define a local duration dictionary
@@ -1269,7 +1269,7 @@ class Write(Stories):
 
 		# If the "Ongoing writing session" state is True (the user resumed writing the chapter)
 		if self.states["Ongoing writing session"] == True:
-			# Define a shortcut to the total writing duration dictionary
+			# Create a shortcut to the total writing duration dictionary
 			total_duration = self.writing["Writing"]["Total duration"]
 
 			# Show the total writing time text in the user language
@@ -1330,7 +1330,7 @@ class Write(Stories):
 		self.Make_Backup_Of_Duration("Delete")
 
 	def Pause_Writing(self):
-		# Define a shortcut to the text to ask if the user wants to pause the writing session
+		# Create a shortcut to the text to ask if the user wants to pause the writing session
 		input_text = self.language_texts["do_you_want_to_pause_the_{}_session"]
 
 		# Format the text with the item of the writing mode
@@ -1347,7 +1347,7 @@ class Write(Stories):
 
 			# ----- #
 
-			# Define a shortcut to the before writing date dictionary
+			# Create a shortcut to the before writing date dictionary
 			before = self.writing["Session"]["Before"]
 
 			# Show the before writing time (when the user started writing the chapter)
@@ -1366,7 +1366,7 @@ class Write(Stories):
 			# Format the text with the infinitive action of the writing mode
 			after_time_text = after_time_text.format(self.writing["Writing mode"]["Language texts"]["Infinitive action"])
 
-			# Define a shortcut to the after writing date dictionary
+			# Create a shortcut to the after writing date dictionary
 			after = self.writing["Session"]["After"]
 
 			# If the "Testing" switch is True
@@ -1403,7 +1403,7 @@ class Write(Stories):
 
 			# ---------- #
 
-			# Define a shortcut to the text to ask the user to press Enter to unpause the writing session
+			# Create a shortcut to the text to ask the user to press Enter to unpause the writing session
 			input_text = self.language_texts["press_enter_to_unpause_the_{}_session"]
 
 			# Format the text with the item of the writing mode
@@ -1426,7 +1426,7 @@ class Write(Stories):
 			# Define the after pausing time text
 			after_time_text = self.language_texts["time_after_the_pause"]
 
-			# Define a shortcut to the after pausing date dictionary
+			# Create a shortcut to the after pausing date dictionary
 			after = self.writing["Session"]["Pause"]["After"]
 
 			# Show the after pausing time (after pausing and waiting for a while)
@@ -1544,7 +1544,7 @@ class Write(Stories):
 			print()
 			print(text + ":")
 
-			# Define a shortcut to the pause duration dictionary
+			# Create a shortcut to the pause duration dictionary
 			pause_duration = self.writing["Session"]["Pause"]["Duration"]
 
 			# Show the writing duration text in the user language (with the pause duration subtracted)
@@ -1644,7 +1644,7 @@ class Write(Stories):
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Get the current language translated to the user language
@@ -1707,7 +1707,7 @@ class Write(Stories):
 				# Add or update the chapter title inside the chapter titles "With number" dictionary in the current language
 				self.chapter["Titles"]["With number"][small_language] = self.chapter["Numbers"]["Leading zeroes"] + " - " + chapter_title
 
-				# Define a shortcut to the titles file for easier typing
+				# Create a shortcut to the titles file for easier typing
 				titles_file = self.story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
 
 				# Define the default write mode as "append"
@@ -1730,7 +1730,7 @@ class Write(Stories):
 					# Get the list of chapter titles
 					chapter_titles = self.File.Contents(titles_file)["Lines"]
 
-					# Define a shortcut to the chapter number less one
+					# Create a shortcut to the chapter number less one
 					chapter_number = self.chapter["Number"] - 1
 
 					# Update the line of the current chapter
@@ -1740,7 +1740,7 @@ class Write(Stories):
 					self.story["Chapters"]["Lists"]["Titles"][small_language] = chapter_titles
 
 					# Define the text to be written
-					text_to_write = self.Text.From_List(chapter_titles, next_line = True)
+					text_to_write = self.Text.From_List(chapter_titles)
 
 					# Change the write mode to "write"
 					write_mode = "w"
@@ -1803,20 +1803,20 @@ class Write(Stories):
 		if self.writing_mode == "Write":
 			# Add the finished writing time to the "Writing dates.txt" file
 
-			# Define a shortcut to the "Writing dates.txt" file
+			# Create a shortcut to the "Writing dates.txt" file
 			writing_dates_file = self.story["Folders"]["Chapters"]["Writing dates"]
 
-			# Define a shortcut to the finished writing time
+			# Create a shortcut to the finished writing time
 			finished_writing_time = self.writing["Writing"]["Times"]["Finished"]
 
 			# Edit the "Writing dates.txt" to add the finished writing time
 			self.File.Edit(writing_dates_file, finished_writing_time, "a")
 
 	def Update_Chapter_Dictionary(self):
-		# Define a shortcut to the started writing time
+		# Create a shortcut to the started writing time
 		started_writing_time = self.writing["Writing"]["Times"]["Started"]
 
-		# Define a shortcut to the finished writing time
+		# Create a shortcut to the finished writing time
 		finished_writing_time = self.writing["Writing"]["Times"]["Finished"]
 
 		# Copy the root default "Chapter" dictionary
@@ -1842,7 +1842,7 @@ class Write(Stories):
 		# [Revisions/Translations]
 		chapter_dictionary_key = self.writing["Writing mode"]["Texts"]["Chapter dictionary"]
 
-		# Define a shortcut to the total writing duration dictionary
+		# Create a shortcut to the total writing duration dictionary
 		total_duration = self.writing["Writing"]["Total duration"]
 
 		# ---------- #
@@ -2088,7 +2088,7 @@ class Write(Stories):
 	def Update_Writing_Duration(self, purge = False):
 		# If the "purge" parameter is False
 		if purge == False:
-			# Define a shortcut to the started writing time
+			# Create a shortcut to the started writing time
 			started_writing_time = self.writing["Writing"]["Times"]["Started"]
 
 			# If the "Started" writing time is a string
@@ -2103,7 +2103,7 @@ class Write(Stories):
 
 			# If the "Total duration" dictionary is not empty
 			if self.writing["Writing"]["Total duration"] != {}:
-				# Define a shortcut to the total writing duration dictionary
+				# Create a shortcut to the total writing duration dictionary
 				total_duration = self.writing["Writing"]["Total duration"]
 
 				# Define the local add dictionary
@@ -2154,7 +2154,7 @@ class Write(Stories):
 			# Get the difference between the started writing time and the added time
 			difference = self.Date.Difference(started_writing_time, added_time)
 
-			# Define a shortcut to the time units dictionary
+			# Create a shortcut to the time units dictionary
 			time_units = difference["Difference"]
 
 			# Define the "Total duration" dictionary with the time unit and duration text
@@ -2168,7 +2168,7 @@ class Write(Stories):
 
 		# If the "purge" parameter is True
 		if purge == True:
-			# Define a shortcut to the "Status" dictionary
+			# Create a shortcut to the "Status" dictionary
 			status = self.writing["Writing"]["Status"]
 
 			# If the "Finished" status key is False, change it to True
@@ -2180,7 +2180,7 @@ class Write(Stories):
 		# Make a copy of the "Writing" dictionary
 		writing_copy = deepcopy(self.story["Information"]["Writing"])
 
-		# Define a shortcut to the started writing time
+		# Create a shortcut to the started writing time
 		started_writing_time = writing_copy[self.writing_mode]["Times"]["Started"]
 
 		# If the "Timezone" key is inside the started writing time variable
@@ -2494,7 +2494,7 @@ class Write(Stories):
 			# Define the template as the "I [wrote] for [writing time], including pauses" text in the current language
 			template = self.texts["i_{}_for_{}_including_pauses"][small_language]
 
-			# Define a shortcut to the "Done" writing mode text
+			# Create a shortcut to the "Done" writing mode text
 			# Examples: I [wrote/revised/translated]
 			done_text = self.writing["Writing mode"]["Texts"]["Done"][small_language]
 
@@ -2508,7 +2508,7 @@ class Write(Stories):
 
 			# ----- #
 
-			# Define a shortcut to the session duration dictionary
+			# Create a shortcut to the session duration dictionary
 			duration = self.writing["Session"]["Duration"]
 
 			# Define the duration text in the current language as the writing duration text with time units
@@ -2538,7 +2538,7 @@ class Write(Stories):
 				# Add the "Totalling " text in the current language to the task description
 				task_description += self.Language.texts["totaling, title()"][small_language] + " "
 
-				# Define a shortcut to the total writing duration dictionary
+				# Create a shortcut to the total writing duration dictionary
 				total_duration = self.writing["Writing"]["Total duration"]
 
 				# Define the total duration text in the current language as the total writing duration text with time units

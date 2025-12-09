@@ -86,7 +86,7 @@ class Copy_Chapter_Titles(Stories):
 			print()
 
 	def Copy_Titles(self):
-		# Define a shortcut to the total chapters number
+		# Create a shortcut to the total chapters number
 		total_chapters_number = self.story["Chapters"]["Numbers"]["Total"]
 
 		# Iterate through the English chapter titles list

@@ -11,38 +11,38 @@
 		"Module": "C:/Apps/Modules/Social_Networks/Module.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar Redes Sociais",
+		"Show text": "Gerenciar as redes sociais",
 		"Open_Social_Network": {
-			"en": "Open Social Network",
-			"pt": "Abrir Rede Social"
+			"en": "Open a social network",
+			"pt": "Abrir uma rede social"
 		},
 		"Add_Social_Network": {
-			"en": "Add Social Network",
-			"pt": "Adicionar Rede Social"
+			"en": "Add a social network",
+			"pt": "Adicionar uma rede social"
 		}
 	},
 	"Classes": {
 		"Dictionary": {
 			"Open_Social_Network": {
 				"Descriptions": {
-					"en": "Open Social Network",
-					"pt": "Abrir Rede Social"
+					"en": "Open a social network",
+					"pt": "Abrir uma rede social"
 				},
-				"Description": "Abrir Rede Social",
+				"Description": "Abrir uma rede social",
 				"Object": "<class 'Social_Networks.Open_Social_Network.Open_Social_Network'>"
 			},
 			"Add_Social_Network": {
 				"Descriptions": {
-					"en": "Add Social Network",
-					"pt": "Adicionar Rede Social"
+					"en": "Add a social network",
+					"pt": "Adicionar uma rede social"
 				},
-				"Description": "Adicionar Rede Social",
+				"Description": "Adicionar uma rede social",
 				"Object": "<class 'Social_Networks.Add_Social_Network.Add_Social_Network'>"
 			}
 		},
 		"Descriptions": [
-			"Abrir Rede Social",
-			"Adicionar Rede Social"
+			"Abrir uma rede social",
+			"Adicionar uma rede social"
 		]
 	}
 }

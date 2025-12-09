@@ -1,15 +1,14 @@
 # GamePlayer.py
 
-# Import the "importlib" module
+# Import some useful modules
 import importlib
-
 from copy import deepcopy
 import collections
 
 class GamePlayer(object):
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
@@ -24,32 +23,43 @@ class GamePlayer(object):
 		# Folders and files method
 		self.Define_Folders_And_Files()
 
+		# Define the "history" dictionary of the "Play History" database
+		self.Define_History()
+
 		# Class methods
 		self.Define_Types()
 		self.Define_Registry_Format()
 
-	def Import_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
+	def Import_Utility_Classes(self):
+		# Define the classes to be imported
+		classes = [
 			"Define_Folders",
 			"JSON"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes
+		for class_title in classes:
+			# If the class is not already inside this class (Christmas)
+			# Or the class is "Define_Folders"
+			if (
+				hasattr(self, class_title) == False or
+				class_title == "Define_Folders"
+			):
+				# Import the module
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the sub-class
+				sub_class = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+				# If the module title is not "Define_Folders"
+				if class_title != "Define_Folders":
+					# Run the sub-class to define its variable
+					sub_class = sub_class()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+				# Add the sub-class to the current class
+				setattr(self, class_title, sub_class)
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
@@ -125,7 +135,8 @@ class GamePlayer(object):
 			"List": [
 				"Years",
 				"Christmas",
-				"Diary_Slim"
+				"Diary_Slim",
+				"Social_Networks"
 			],
 			"Dictionary": {
 				"Diary_Slim": {
@@ -137,10 +148,18 @@ class GamePlayer(object):
 							"Write_On_Diary_Slim"
 						]
 					}
+				},
+				"Social_Networks": {
+					"Sub-classes to import": {
+						"List": [
+							"Open_Social_Network"
+						]
+					}
 				}
 			},
 			"Do not run": [
-				"Diary_Slim"
+				"Diary_Slim",
+				"Social_Networks"
 			]
 		}
 
@@ -174,7 +193,7 @@ class GamePlayer(object):
 				# Create the "Sub-classes" dictionary
 				class_dictionary["Sub-classes"] = {}
 
-				# Define a shortcut to the sub-classes dictionary
+				# Create a shortcut to the sub-classes dictionary
 				sub_classes = class_dictionary["Sub-classes to import"]
 
 				# Define a sub-class number
@@ -223,17 +242,18 @@ class GamePlayer(object):
 
 		# ---------- #
 
+		# Get the "Today_Is_Christmas" True or False variable
 		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
 
 	def Define_Folders_And_Files(self):
 		# If there is no current year variable inside the self object
 		if hasattr(self, "current_year") == False:
-			# Get the current year variable from the "Years" module
+			# Get the "Current year" dictionary from the "Years" class
 			self.current_year = self.Years.years["Current year"]
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Define a shortcut for the folder
+			# Create a shortcut for the folder
 			folder = self.current_year["Folders"][language]
 
 			# Get the "Gaming sessions" text in the current language to be the folder name
@@ -268,12 +288,15 @@ class GamePlayer(object):
 		# Define the current year folder for easier typing
 		self.folders["Play History"]["Current year"] = self.folders["Play History"][self.current_year["Number"]]
 
+	def Define_History(self):
 		# Define the "History" dictionary
 		self.history = {
+			"Class title": self.language_texts["GamePlayer"],
 			"Key": "Sessions",
 			"Numbers": {
 				"Gaming sessions played": ""
 			},
+			"Number key": "Gaming session number",
 			"Folder": self.Folder.folders["Notepad"]["Data Networks"]["Games"]["Play History"]["root"]
 		}
 
@@ -797,7 +820,7 @@ class GamePlayer(object):
 		if game_title not in dictionary["Numbers"]:
 			dictionary["Numbers"][game_title] = 0
 
-		# Define a shortcut for the game variable
+		# Create a shortcut for the game variable
 		game = dictionary["Numbers"][game_title]
 
 		# If the game variable is an integer
@@ -901,7 +924,7 @@ class GamePlayer(object):
 			}
 		}
 
-		# Define a shortcut for the statistic key
+		# Create a shortcut for the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #
@@ -912,7 +935,7 @@ class GamePlayer(object):
 		if "Romanized" in game["Titles"]:
 			title_key = "Romanized"
 
-		# Define a shortcut for the game title
+		# Create a shortcut for the game title
 		game_title = game["Titles"][title_key]
 
 		# Iterate through the list of keys
@@ -1212,7 +1235,7 @@ class GamePlayer(object):
 
 						# If the sub-game title key is inside the statistics dictionary of the module
 						if sub_game_title in statistics[key]["Dictionary"]:
-							# Define a shortcut for the root sub-game dictionary as the "item dictionary" variable
+							# Create a shortcut for the root sub-game dictionary as the "item dictionary" variable
 							item_dictionary = statistics[key]["Dictionary"]
 
 							# Define the "key to use" as the sub-game title
@@ -1223,7 +1246,7 @@ class GamePlayer(object):
 							# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
 							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
 
-							# Define a shortcut for the sub-game dictionary on the game title dictionary as the "item dictionary" variable
+							# Create a shortcut for the sub-game dictionary on the game title dictionary as the "item dictionary" variable
 							item_dictionary = statistics[key]["Dictionary"][game_title]["Dictionary"]
 
 							# Define the "key to use" as the item title
@@ -1767,7 +1790,7 @@ class GamePlayer(object):
 			# Define the default game language as the user language
 			game["Language"] = self.language["Full"]
 
-			# Define a shortcut to the "Original language" text
+			# Create a shortcut to the "Original language" text
 			original_language_text = self.Language.language_texts["original_language"]
 
 			# If the "Original language" key exists in the game "Details" dictionary
@@ -1782,7 +1805,7 @@ class GamePlayer(object):
 			if game["Language"] in full_languages:
 				# Iterate through the language keys and dictionaries
 				for small_language, language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# If the full current language is the same as the media language
@@ -2190,8 +2213,11 @@ class GamePlayer(object):
 			# Define the list of sub-games inside the dictionary as the list of folders
 			game["Sub-games"]["Items"]["List"] = self.Folder.Contents(game["Sub-games"]["Folders"]["root"])["folder"]["names"]
 
-			# Update the "List.txt" file
-			self.File.Edit(game["Sub-games"]["Folders"]["List"], self.Text.From_List(game["Sub-games"]["Items"]["List"], next_line = True), "w")
+			# Convert the list of items into a text string
+			items_list = self.Text.From_List(game["Sub-games"]["Items"]["List"])
+
+			# Update the "List.txt" file with the list of items
+			self.File.Edit(game["Sub-games"]["Folders"]["List"], items_list, "w")
 
 		# Update the number of sub-games
 		game["Sub-games"]["Items"]["Number"] = len(game["Sub-games"]["Items"]["List"])
@@ -2297,10 +2323,10 @@ class GamePlayer(object):
 			game["Sub-game"] != None and
 			game["Sub-game"] != game["Title"]
 		):
-			# Define a shortcut for the "Items" dictionary
+			# Create a shortcut for the "Items" dictionary
 			items_dictionary = game["Sub-games"]["Items"]["Dictionary"]
 
-			# Define a shortcut for the sub-game title
+			# Create a shortcut for the sub-game title
 			sub_game_title = game["Sub-game"]
 
 			# If the sub-game title is present inside the dictionary
@@ -2850,7 +2876,7 @@ class GamePlayer(object):
 		self.Check_Status(dictionary)
 
 	def Check_Status(self, dictionary):
-		# Define a shortcut for the game type
+		# Create a shortcut for the game type
 		game_type = dictionary
 
 		# If the "Type" key is inside the dictionary parameter
@@ -2990,54 +3016,57 @@ class GamePlayer(object):
 		return title
 
 	def Define_Year_Summary_Data(self, entry, language):
+		# Get the game type from the entry dictionary
+		game_type = entry["Game type"]
+
 		# Get the language game type
-		game_type = self.game_types[entry["Type"]]["Type"][language]
+		game_type = self.game_types[game_type]["Type"][language]
 
-		# Define the game text, with the entry title with quotes
-		text = '"' + self.Define_Title(entry["Game titles"], language) + '"'
+		# Define the game title in the local language
+		game_title = self.Define_Title(entry["Game titles"], language)
 
-		# If the "Sub-game titles" key is in the entry dictionary
+		# If the "Sub-game titles" key is inside the entry dictionary
 		if "Sub-game titles" in entry:
-			# Get the language sub-game title (and do not remove the colon)
-			sub_game_title = self.Define_Title(entry["Sub-game titles"], remove_colon = False)
+			# Get the language sub-game title (and do not remove colons)
+			sub_game_title = self.Define_Title(entry["Sub-game titles"], language, remove_colon = False)
 
 			# If the number of characters in the sub-game title is more than one
 			# And the first two characters of the sub-game title are not colon and a space
 			if (
-				len(title) > 1 and
-				title[0] + title[1] != ": "
+				len(sub_game_title) > 1 and
+				sub_game_title[0] + sub_game_title[1] != ": "
 			):
 				# Add a space before the sub-game title
 				sub_game_title = " " + sub_game_title
 
-			# Add it to the entry text
-			text += sub_game_title
+			# Add the sub-game title to the game title text
+			game_title += sub_game_title
 
-		# Add the game type with a space to the text
-		#text += " (" + game_type + ")"
+		# Define the gaming session text as the game title in the local language around quotes
+		text = '"' + game_title + '"'
 
-		# Add a comma
+		# Add a comma to the gaming session text
 		text += ", "
 
-		# Add the gaming session duration to the text
+		# Get the gaming session duration dictionary
 		duration = deepcopy(entry["Times"]["Gaming session duration"])
 
-		# Remove the text key
+		# Remove the "Text" key
 		duration.pop("Text")
 
-		# Make the time text in the defined language
-		duration = self.Date.Make_Time_Text(duration)[language]
+		# Create the time text in the local language
+		duration = self.Date.Create_Time_Text(duration)[language]
 
-		# Add the duration text and the duration
+		# Add the "Duration" text in the local language and the duration to the gaming session text
 		text += self.Date.texts["duration, title()"][language] + ": " + duration + ", "
 
 		# Get the date that the gaming session was finished
 		date = self.texts["played_in"][language] + ": " + entry["Times"]["Finished playing"]
 
-		# Add it to the text
+		# Add it to the gaming session text
 		text += date
 
-		# Return the text to the class that called the method
+		# Return the gaming session text to the class that called the method
 		return text
 
 	def Show_Information(self, dictionary):

@@ -20,7 +20,7 @@ class Show_Friend_Information(Friends):
 				self.language["Full"]: self.information_items["information_items, type: dict, en: " + self.language["Small"]],
 			},
 
-			"Social Networks": {
+			"Social networks": {
 				"English": self.Social_Networks.texts["information_items, type: list"]["en"],
 				self.language["Full"]: self.Social_Networks.texts["information_items, type: list"]["information_items, type: dict, en: " + self.language["Small"]]
 			}
@@ -45,7 +45,7 @@ class Show_Friend_Information(Friends):
 			if self.file_name == self.Language.texts["information, title()"]["en"]:
 				self.friend_social_networks[friend] = {"None": None}
 
-			if self.file_name == "Social Networks":
+			if self.file_name == "Social networks":
 				self.friend_social_networks[friend] = friend_data["List"]
 
 				friend_data = friend_data["Data"]
@@ -53,7 +53,7 @@ class Show_Friend_Information(Friends):
 			friend_sub_data = friend_data
 
 			for social_network in self.friend_social_networks[friend]:
-				if self.file_name == "Social Networks":
+				if self.file_name == "Social networks":
 					self.friend_information_items[friend][social_network] = {}
 
 					friend_sub_data = friend_data[social_network]
@@ -63,7 +63,7 @@ class Show_Friend_Information(Friends):
 						if self.file_name == self.Language.texts["information, title()"]["en"]:
 							self.friend_information_items[friend][information_item] = friend_sub_data[information_item]
 
-						if self.file_name == "Social Networks":
+						if self.file_name == "Social networks":
 							self.friend_information_items[friend][social_network][information_item] = friend_sub_data[information_item]
 
 		self.social_networks_information_items = {}
@@ -76,14 +76,14 @@ class Show_Friend_Information(Friends):
 					if self.file_name == self.Language.texts["information, title()"]["en"]:
 						friend_information_items = self.friend_information_items[friend]
 
-					if self.file_name == "Social Networks":
+					if self.file_name == "Social networks":
 						friend_information_items = self.friend_information_items[friend][social_network]
 
 					if information_item in friend_information_items:
 						if information_item not in self.social_networks_information_items:
 							self.social_networks_information_items[information_item] = ""
 
-						if self.file_name == "Social Networks" and social_network not in self.social_networks_information_items[information_item]:
+						if self.file_name == "Social networks" and social_network not in self.social_networks_information_items[information_item]:
 							self.social_networks_information_items[information_item] += social_network
 
 							string = self.social_networks_information_items[information_item]
@@ -100,7 +100,7 @@ class Show_Friend_Information(Friends):
 					if information_item in self.information_items[self.language["Small"]]:
 						self.information_items[self.language["Small"]].pop(information_item)
 
-		if self.file_name == "Social Networks":
+		if self.file_name == "Social networks":
 			for friend in self.friends:
 				for social_network in self.friend_social_networks[friend]:
 					for information_item in self.english_information_items:
@@ -120,7 +120,7 @@ class Show_Friend_Information(Friends):
 		self.information_item = self.option_info["option"]
 		self.information_item_number = self.option_info["number"]
 
-		if self.file_name == "Social Networks":
+		if self.file_name == "Social networks":
 			self.language_information_item_with_social_network = self.information_items[self.language["Small"]][self.information_item]
 
 		self.language_information_item = self.information_items[self.language["Small"]].copy()[self.information_item]
@@ -130,7 +130,7 @@ class Show_Friend_Information(Friends):
 				if self.file_name == self.Language.texts["information, title()"]["en"]:
 					friend_information_items = self.friend_information_items[friend]
 
-				if self.file_name == "Social Networks":
+				if self.file_name == "Social networks":
 					friend_information_items = self.friend_information_items[friend][social_network]
 
 				if self.information_item not in friend_information_items and social_network in self.friend_social_networks[friend]:
@@ -154,7 +154,7 @@ class Show_Friend_Information(Friends):
 			for social_network in self.friend_social_networks[friend]:
 				friend_information_items = self.friend_information_items[friend]
 
-				if self.file_name == "Social Networks":
+				if self.file_name == "Social networks":
 					friend_information_items = friend_information_items[social_network]
 
 				i = 0
@@ -162,7 +162,7 @@ class Show_Friend_Information(Friends):
 					if information_item == self.information_item:
 						information = friend_information_items[information_item]
 
-						if self.file_name == "Social Networks":
+						if self.file_name == "Social networks":
 							if social_network != self.friend_social_networks[friend][0]:
 								print()
 
@@ -177,7 +177,7 @@ class Show_Friend_Information(Friends):
 						if self.file_name == self.Language.texts["information, title()"]["en"]:
 							print("---")
 
-						if self.file_name == "Social Networks":
+						if self.file_name == "Social networks":
 							if len(self.friend_social_networks[friend]) == 1 or \
 								len(self.friend_social_networks[friend]) > 1 and social_network == self.friend_social_networks[friend][-1]:
 								print("---")

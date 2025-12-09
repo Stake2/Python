@@ -12,8 +12,10 @@ class Stories(object):
 		# Define the folders of the module
 		self.folders = self.Define_Folders(object = self).folders
 
-		# Module related methods
+		# Define basic variables for the class
 		self.Define_Basic_Variables()
+
+		# Define the text dictionaries of the class
 		self.Define_Texts()
 
 		# Import some usage classes
@@ -202,7 +204,7 @@ class Stories(object):
 				# Create the "Sub-classes" dictionary
 				class_dictionary["Sub-classes"] = {}
 
-				# Define a shortcut to the sub-classes dictionary
+				# Create a shortcut to the sub-classes dictionary
 				sub_classes = class_dictionary["Sub-classes to import"]
 
 				# Define a sub-class number
@@ -267,7 +269,7 @@ class Stories(object):
 
 		# ---------- #
 
-		# Import the "Social Networks" dictionary from the "Social_Networks" class
+		# Import the "Social networks" dictionary from the "Social_Networks" class
 		self.social_networks = self.Social_Networks.social_networks
 
 	def Define_Folders_And_Files(self):
@@ -1103,7 +1105,7 @@ class Stories(object):
 		# Get the sub-folders of the "Stories" folder
 		contents = self.Folder.Contents(self.stories["Folders"]["root"])
 
-		# Define a shortcut to the dictionary of story folders
+		# Create a shortcut to the dictionary of story folders
 		story_folders = contents["Folder"]["Dictionary"]
 
 		# Define a list of folders to remove
@@ -1247,14 +1249,14 @@ class Stories(object):
 			# ---------- #
 
 			# Update the "Authors.txt" file with the list of authors
-			text_to_write = self.Text.From_List(story["Information"]["Authors"], next_line = True)
+			text_to_write = self.Text.From_List(story["Information"]["Authors"])
 
 			self.File.Edit(story["Folders"]["Authors"], text_to_write, "w")
 
 			# If the number of authors is more than one
 			if len(story["Information"]["Authors"]) > 1:
 				# Transform the list of authors into a text without line breaks
-				story["Information"]["Author"] = self.Text.From_List(story["Information"]["Authors"], language = "en")
+				story["Information"]["Author"] = self.Text.From_List(story["Information"]["Authors"], next_line = False, language = "en")
 
 			# ---------- #
 
@@ -1301,7 +1303,7 @@ class Stories(object):
 			for cover_type in self.stories["Cover types"]["List"]:
 				# Iterate through the language keys and dictionaries
 				for small_language, language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# Define the full language cover folder
@@ -1352,7 +1354,7 @@ class Stories(object):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Read the chapter "Titles.txt" file for the current language
@@ -1361,7 +1363,7 @@ class Stories(object):
 				# Add the language chapter titles to the chapter "Titles" dictionary inside the "Lists" dictionary
 				story["Information"]["Chapters"]["Lists"]["Titles"][small_language] = self.File.Contents(file)["Lines"]
 
-			# Define a shortcut to the "Chapters.json" file
+			# Create a shortcut to the "Chapters.json" file
 			chapters_file = story["Folders"]["Information"]["Chapters"]
 
 			# Get its contents
@@ -1397,7 +1399,7 @@ class Stories(object):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
 				# Define the file as the "Synopsis" folder
@@ -1415,10 +1417,10 @@ class Stories(object):
 
 			# Iterate through the language keys and dictionaries
 			for small_language, language in self.languages["Dictionary"].items():
-				# Define a shortcut to the full language
+				# Create a shortcut to the full language
 				full_language = language["Full"]
 
-				# Define a shortcut to the synopsis file in the current language
+				# Create a shortcut to the synopsis file in the current language
 				file = story["Folders"]["Information"]["Synopsis"][small_language]
 
 				# Add the synopsis in the current language to the "Synopsis" dictionary
@@ -1457,7 +1459,7 @@ class Stories(object):
 				# Add the local writing mode dictionary to the default "Writing" dictionary
 				writing[writing_mode] = writing_mode_dictionary
 
-			# Define a shortcut to the "Writing.json" file
+			# Create a shortcut to the "Writing.json" file
 			writing_file = story["Folders"]["Information"]["Writing"]
 
 			# Read the "Writing.json" file if it is not empty
@@ -1720,7 +1722,7 @@ class Stories(object):
 			story_number += 1
 
 		# Update the "Stories list.txt" file with the updated list of story titles in the user language
-		text_to_write = self.Text.From_List(self.stories["Titles"][self.language["Small"]], next_line = True)
+		text_to_write = self.Text.From_List(self.stories["Titles"][self.language["Small"]])
 
 		self.File.Edit(self.stories["Folders"]["Stories list"], text_to_write, "w")
 
@@ -1797,7 +1799,7 @@ class Stories(object):
 					if sub_key == "Language":
 						# Iterate through the language keys and dictionaries
 						for small_language, language in self.languages["Dictionary"].items():
-							# Define a shortcut to the full language
+							# Create a shortcut to the full language
 							full_language = language["Full"]
 
 							# Define the sub-folder
@@ -1810,10 +1812,10 @@ class Stories(object):
 
 							# If the root key is "Chapters"
 							if key == "Chapters":
-								# Define a shortcut to the root folder
+								# Create a shortcut to the root folder
 								root_folder = folder_dictionary[full_language]["root"]
 
-								# Define a shortcut to the "Titles" text in the current language
+								# Create a shortcut to the "Titles" text in the current language
 								titles_text = self.Language.texts["titles, title()"][small_language]
 
 								# Define the "Titles" folder
@@ -1824,7 +1826,7 @@ class Stories(object):
 								# Create the "Titles" folder
 								self.Folder.Create(story["Folders"]["Chapters"][full_language]["Titles"]["root"])
 
-								# Define a shortcut to the root folder
+								# Create a shortcut to the root folder
 								root_folder = folder_dictionary[full_language]["Titles"]["root"]
 
 								# Define and create the "Titles" file
@@ -2003,7 +2005,7 @@ class Stories(object):
 							# Add one to the year total chapters number
 							statistics["Years"][year_number]["Total"] += 1
 
-							# Define a shortcut for the year dictionary
+							# Create a shortcut for the year dictionary
 							year_dictionary = statistics["Years"][year_number]
 
 							# ----- #
@@ -2115,7 +2117,7 @@ class Stories(object):
 			}
 		}
 
-		# Define a shortcut for the statistic key
+		# Create a shortcut for the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #
@@ -2477,7 +2479,7 @@ class Stories(object):
 		# Get the story dictionary of the selected story and defined it inside the "Stories" class
 		self.story = self.stories["Dictionary"][story]
 
-		# Define a shortcut to the story "Chapters" and "Writing" dictionaries
+		# Create a shortcut to the story "Chapters" and "Writing" dictionaries
 		for key in ["Chapters", "Writing"]:
 			self.story[key] = self.story["Information"][key]
 
@@ -2572,7 +2574,7 @@ class Stories(object):
 	def Select_Chapter(self, custom_parameters = {}, chapter_number = None):
 		# If the chapter number parameter is None
 		if chapter_number == None:
-			# Define a shortcut to the list of chapter titles in the user language
+			# Create a shortcut to the list of chapter titles in the user language
 			chapter_titles = self.story["Chapters"]["Lists"]["Titles"][self.language["Small"]]
 
 			# Define the parameters dictionary to use inside the "Select" method of the "Input" utility module
@@ -2624,12 +2626,12 @@ class Stories(object):
 		# Define the chapter number with leading zeroes
 		chapter["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(chapter["Number"]))
 
-		# Define a shortcut to the chapter titles dictionary for easier typing
+		# Create a shortcut to the chapter titles dictionary for easier typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Define a shortcut to the full language
+			# Create a shortcut to the full language
 			full_language = language["Full"]
 
 			# Define the default chapter title as the chapter number with leading zeroes
@@ -2694,7 +2696,7 @@ class Stories(object):
 
 			# Iterate through the dictionary of story websites
 			for story_website_name, story_website in self.stories["Story websites"]["Dictionary"].items():
-				# Define a shortcut to the story website dictionary inside the story "Information" dictionary
+				# Create a shortcut to the story website dictionary inside the story "Information" dictionary
 				story_website_dictionary = self.story["Information"]["Links"][story_website_name]
 
 				# If the "IDs" dictionary is not an empty dictionary
@@ -2703,7 +2705,7 @@ class Stories(object):
 					if story_website_name not in chapter["Links"]:
 						chapter["Links"][story_website_name] = {}
 
-					# Define a shortcut to the link of the story on the story website in the current language
+					# Create a shortcut to the link of the story on the story website in the current language
 					story_website_link = story_website_dictionary["Links"][small_language]
 
 					# If the "Chapter" link is inside the story website "Links" dictionary

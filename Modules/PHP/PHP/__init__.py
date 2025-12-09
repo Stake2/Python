@@ -127,7 +127,7 @@ class PHP(object):
 			while len(string) != number:
 				string += "-"
 
-			# Add the string to the Separators dictionary
+			# Add the string to the separators dictionary
 			self.separators[str(number)] = string
 
 	def Define_Dictionaries(self):
@@ -139,7 +139,7 @@ class PHP(object):
 			"URL": ""
 		}
 
-		# Define a shortcut to the website file
+		# Create a shortcut to the website file
 		website_file = self.folders["Mega"]["Websites"]["Website"]
 
 		# If the websites "Website.json" file exists

@@ -40,7 +40,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 		# Passing the "select_media_item" parameter as True to ask for the user to select a media item
 		self.dictionary = self.Select_Media_Type_And_Media(self.dictionary, watch = True, select_media_item = True)
 
-		# Define a shortcut to the "Media" dictionary
+		# Create a shortcut to the "Media" dictionary
 		self.media = self.dictionary["Media"]
 
 		# ---------- #
@@ -79,7 +79,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
-		# Define a shortcut to the methods dictionary
+		# Create a shortcut to the methods dictionary
 		methods = self.root_dictionary["Methods"]
 
 		# Get the keys
@@ -148,7 +148,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 			# Format the "Episode titles file in {}" text with the translated language
 			text = self.language_text["episode_titles_file_in_{}"].format(translated_language)
 
-			# Define a shortcut to the file
+			# Create a shortcut to the file
 			file = self.root_dictionary["Populate episode titles"]["Episodes"]["Titles"]["Files"][small_language]
 
 			# Show the text and the file in the current language
@@ -225,7 +225,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 				# Add one to the total number of episodes up to the current media item
 				self.episodes["Numbers"]["Total episodes of all media items up to the current one"] += 1
 
-			# Define a shortcut to a text telling the user that they finished populating the episode titles files
+			# Create a shortcut to a text telling the user that they finished populating the episode titles files
 			text = self.language_texts["you_finished_populating_the_episode_titles_files"]
 
 		# ---------- #
@@ -240,7 +240,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 			# Get the IDs from the user (or the media item files)
 			self.Get_IDs()
 
-			# Define a shortcut to a text telling the user that they finished populating the episode titles and IDs files
+			# Create a shortcut to a text telling the user that they finished populating the episode titles and IDs files
 			text = self.language_texts["you_finished_populating_the_episode_titles_and_ids_files"]
 
 		# ---------- #
@@ -327,7 +327,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 			# ---------- #
 
-			# Define a shortcut to the number of episodes of the current media item
+			# Create a shortcut to the number of episodes of the current media item
 			current_media_item_episodes_number = self.episodes["Numbers"]["Total episodes of the media item"]
 
 			# ---------- #
@@ -340,7 +340,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 				self.media["States"]["Has a list of media items"] == True and
 				self.media["Item"]["Title"] != self.media["Items"]["List"][0]
 			):
-				# Define a shortcut to the number of episodes up to (and including) the current media item
+				# Create a shortcut to the number of episodes up to (and including) the current media item
 				media_items_episodes_number = self.episodes[
 					"Numbers"
 				]["Total episodes of all media items up to the current one"]
@@ -385,7 +385,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 				# Iterate through the language keys and dictionaries
 				for small_language, language in self.languages["Dictionary"].items():
-					# Define a shortcut to the full language
+					# Create a shortcut to the full language
 					full_language = language["Full"]
 
 					# Get the current language translated to the user language
@@ -537,7 +537,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 			file = self.episodes["Titles"]["Files"][small_language]
 
 			# Transform the list of episode titles into a text string
-			text = self.Text.From_List(self.episodes["Titles"][small_language], next_line = True)
+			text = self.Text.From_List(self.episodes["Titles"][small_language])
 
 			# Write the list of episode titles into the language episode titles file
 			self.File.Edit(file, text, "w")
@@ -547,9 +547,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 		# If the media is a video channel
 		if self.media["States"]["Video"] == True:
 			# Get the list of video IDs and transform it into a text string
-			video_ids = self.Text.From_List(self.videos["Lists"]["IDs"], next_line = True)
+			video_ids = self.Text.From_List(self.videos["Lists"]["IDs"])
 
-			# Define a shortcut to the "IDs.txt" file
+			# Create a shortcut to the "IDs.txt" file
 			file = self.media["Item"]["Folders"]["Titles"]["IDs"]
 
 			# Write the list of video IDs into the "IDs.txt" file
@@ -558,9 +558,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 			# ----- #
 
 			# Get the list of video dates and transform it into a text string
-			video_dates = self.Text.From_List(self.videos["Lists"]["Dates"], next_line = True)
+			video_dates = self.Text.From_List(self.videos["Lists"]["Dates"])
 
-			# Define a shortcut to the "Dates.txt" file
+			# Create a shortcut to the "Dates.txt" file
 			file = self.media["Item"]["Folders"]["Titles"]["Dates"]
 
 			# Write the list of video dates into the "Dates.txt" file
@@ -587,7 +587,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
-		# Define a shortcut to the list of video IDs
+		# Create a shortcut to the list of video IDs
 		video_ids = self.media["Item"]["Episodes"]["Titles"]["IDs"]
 
 		# ---------- #
@@ -602,10 +602,10 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# If it is not empty
 		else:
-			# Define a shortcut to the list of video titles in the user language
+			# Create a shortcut to the list of video titles in the user language
 			video_titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]
 
-			# Define a shortcut to the list of video dates
+			# Create a shortcut to the list of video dates
 			video_dates = self.media["Item"]["Episodes"]["Titles"]["Dates"]
 
 			# Define a local video number
@@ -734,10 +734,10 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
-		# Define a shortcut to the media item "Episode" key
+		# Create a shortcut to the media item "Episode" key
 		media_item_episode = self.media["Item"]["Details"][self.Language.language_texts["episode, title()"]]
 
-		# Define a shortcut to the last episode
+		# Create a shortcut to the last episode
 		last_episode = self.media["Item"]["Episodes"]["Titles"][self.media["Language"]][-1]
 
 		# If the media item episode is the last episode

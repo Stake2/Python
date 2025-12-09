@@ -650,6 +650,20 @@ class JSON():
 		# Return the dictionary with the keys and values changed
 		return dictionary
 
+	def Find_Key(self, dictionary, value_to_find):
+		# Iterate through the keys and values of the dictionary
+		for key, value in dictionary:
+			# If the value is equal to the value to find
+			if value == value_to_find:
+				# Define the found key as the current key
+				found_key = key
+
+				# Break the loop when the key is found
+				break
+
+		# Return the found key
+		return found_key
+
 	def List_Has_Only_Numbers(self, items):
 		return all(isinstance(item, int) for item in items)
 

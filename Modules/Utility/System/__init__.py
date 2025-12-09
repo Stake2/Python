@@ -67,21 +67,33 @@ class System():
 		# Define the "Language texts" dictionary
 		self.language_texts = self.Language.Item(self.texts)
 
-	def Verbose(self, text, item, verbose = True):
-		import inspect
-
-		verbose_text = "\n" + \
-		self.module["Name"] + "." + inspect.stack()[1][3] + "():" + "\n" + \
-		"\t" + text + ":" + "\n" + \
-		"\t" + item
-
+	def Verbose(self, text, item, verbose = None, first_space = True):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
 		if (
-			self.switches["Verbose"] == True or
+			self.switches["Verbose"] == True and
+			verbose == None or
 			verbose == True
 		):
-			print(verbose_text)
+			import inspect
 
-		return verbose_text
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
+
+			# If the "first space" parameter is True
+			if first_space == True:
+				# Show the first space separator
+				print()
+
+			# Show the module name (Text) and the method which ran this method (the "Verbose" one)
+			print(self.module["Name"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
+			print("\t" + text + ":")
+
+			# Show the verbose item
+			print("\t" + item)
 
 	def Sanitize(self, path, restricted_characters = False):
 		if restricted_characters == False:
@@ -102,7 +114,7 @@ class System():
 
 		return path
 
-	def Open(self, item, open = False, verbose = True):
+	def Open(self, item, open = False, verbose = True, first_space = True):
 		# Import the validators module
 		import validators
 
@@ -112,7 +124,7 @@ class System():
 			item = self.Sanitize(item)
 
 		# Show the verbose text about opening the item
-		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose)
+		verbose_text = self.Verbose(self.language_texts["opening, title()"], item, verbose = verbose, first_space = first_space)
 
 		# If the "Testing" switch is False
 		# Or the "open" parameter is True

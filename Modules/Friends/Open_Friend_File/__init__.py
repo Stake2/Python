@@ -59,15 +59,15 @@ class Open_Friend_File(Friends):
 			# And also update the "Selected a Friend" state in the "States" dictionary
 			self.dictionary["States"] = self.Select_Friend(states = self.dictionary["States"])["States"]
 
-			# If the file name is "Social Network"
-			if self.file_name["en"] == "Social Network":
-				# List the Friend Social Networks list
-				social_networks = self.friend["Social Networks"]
+			# If the file name is "Social network"
+			if self.file_name["en"] == "Social network":
+				# Create a shortcut to the list of social networks of the friend
+				social_networks = self.friend["Social networks"]
 
 				# Define the select text
 				select_text = self.language_texts["select_one_social_network_to_open_its_profile_file"]
 
-				# Select a Friend Social Network
+				# Select a social network of the friend
 				self.social_network = self.Select_Social_Network(social_networks = social_networks, select_text = select_text)
 
 			# Define the friend file
@@ -88,9 +88,9 @@ class Open_Friend_File(Friends):
 			"First space": False
 		}
 
-		# If the file name in English is "Social Network"
-		if self.file_name["en"] == "Social Network":
-			# Define the Social Network Information items to be selected
+		# If the file name in English is "Social network"
+		if self.file_name["en"] == "Social network":
+			# Define the social network information items to be selected
 			self.dictionary["Search"]["Information items"] = self.Social_Networks.information_items
 
 			self.dictionary["Search"]["First space"] = True
@@ -113,7 +113,7 @@ class Open_Friend_File(Friends):
 		# Update the "Information item" inside the "Search" dictionary
 		self.dictionary["Search"]["Information item"] = self.information_item
 
-		# Define a basic Social Networks list
+		# Define a basic list of social networks
 		social_networks_list = [
 			"One"
 		]
@@ -123,31 +123,31 @@ class Open_Friend_File(Friends):
 			# Define the friend file for the "Information" file name
 			friend["File"] = friend["Files"][self.file_name["Plural"]["en"]]
 
-			# If the file name is "Social Network"
-			if self.file_name["en"] == "Social Network":
-				social_networks_list = friend["Social Networks"]["List"]
+			# If the file name is "Social network"
+			if self.file_name["en"] == "Social network":
+				social_networks_list = friend["Social networks"]["List"]
 
-			# Iterate through the local list of Social Networks
+			# Iterate through the local list of social networks
 			for social_network in social_networks_list:
-				# Update the "self.social_network" variable
+				# Update the root "social_network" variable with the dictionary of the current social network
 				social_network = self.Select_Social_Network(social_network)
 
-				# If the file name is "Social Network"
+				# If the file name is "Social network"
 				# And the social network is inside the list of social networks of the friend
 				if (
-					self.file_name["en"] == "Social Network" and
-					social_network["Name"] in friend["Social Networks"]["Dictionary"]
+					self.file_name["en"] == "Social network" and
+					social_network["Name"] in friend["Social networks"]["Dictionary"]
 				):
-					# Define the friend file for the "Social Network" file name
+					# Define the friend file for the "Social network" file name
 					friend["File"] = friend["Files"][self.file_name["Plural"]["en"]][social_network["Name"]]["Profile"]
 
-					# Change the Information dictionary to the Social Network Information dictionary
-					friend["Information"] = friend["Social Networks"]["Dictionary"][social_network["Name"]]
+					# Change the Information dictionary to the social network Information dictionary
+					friend["Information"] = friend["Social networks"]["Dictionary"][social_network["Name"]]
 
 				# Create the search "Results" list
 				self.dictionary["Search"]["Results"] = []
 
-				# If the information item is inside the Friend/Social Network Information dictionary
+				# If the information item is inside the friend "Information" dictionary
 				if self.information_item["Name"] in friend["Information"]:
 					# If the search needs an exact match
 					if self.dictionary["States"]["Exact match"] == True:
@@ -172,13 +172,13 @@ class Open_Friend_File(Friends):
 						dictionary = {
 							"Name": friend["Name"],
 							"File": friend["File"],
-							"Social Network": social_network
+							"Social network": social_network
 						}
 
-						# If the information item is "Origin Social Network"
-						if self.information_item["Name"] == "Origin Social Network":
-							# Define the "Social Network" key inside the local Friend dictionary as the search query
-							dictionary["Social Network"] = self.dictionary["Search"]["Query"]
+						# If the information item is "Origin social network"
+						if self.information_item["Name"] == "Origin social network":
+							# Define the "Social network" key inside the local Friend dictionary as the search query
+							dictionary["Social network"] = self.dictionary["Search"]["Query"]
 
 						# Define the root Friend dictionary as the local Friend dictionary
 						self.dictionary["Search"]["Found"][friend["Name"]] = dictionary
@@ -190,8 +190,14 @@ class Open_Friend_File(Friends):
 
 		# If the friend file was found
 		if self.dictionary["States"]["Found file"] == True:
-			# Define the "self" Social Network as the Social Network inside the Friend Found dictionary
-			self.social_network = list(self.dictionary["Search"]["Found"].values())[0]["Social Network"]
+			# Get the dictionaries of the found friends
+			found_friends = list(self.dictionary["Search"]["Found"].values())
+
+			# Create a shortcut to the first found friend
+			first_found_friend = found_friends[0]
+
+			# Define the root social network as the social network inside the dictionary of the first found friend
+			self.social_network = first_found_friend["Social network"]
 
 			# If the found friends are more than one
 			if len(self.dictionary["Search"]["Found"]) >= 2:
@@ -205,8 +211,8 @@ class Open_Friend_File(Friends):
 
 				self.Select_Friend(friends_list = friends, select_text = select_text)
 
-				# Define the "self" Social Network as the Social Network inside the Friend Found dictionary
-				self.social_network = self.dictionary["Search"]["Found"][self.friend["Name"]]["Social Network"]
+				# Define the root social network as the social network inside the dictionary of the found friend
+				self.social_network = self.dictionary["Search"]["Found"][self.friend["Name"]]["Social network"]
 
 				# Define the "Found multiple files" state as True
 				self.dictionary["States"]["Found multiple files"] = True
@@ -219,25 +225,25 @@ class Open_Friend_File(Friends):
 
 			self.dictionary["States"]["Found file"] = True
 
-		# If the file name is "Social Network"
+		# If the file name is "Social network"
 		# And the user selected a friend
 		if (
-			self.file_name["en"] == "Social Network" and
+			self.file_name["en"] == "Social network" and
 			self.dictionary["States"]["Selected a Friend"] == True
 		):
-			# Get the Social Network profile file
-			self.friend["File"] = self.friend["Files"]["Social Networks"][self.social_network["Name"]]["Profile"]
+			# Get the profile file of the social network
+			self.friend["File"] = self.friend["Files"]["Social networks"][self.social_network["Name"]]["Profile"]
 
 			self.dictionary["States"]["Found file"] = True
 
 	def Show_Information(self):
-		# If the file name is "Social Network"
+		# If the file name is "Social network"
 		# And the user searched for a friend
 		if (
-			self.file_name["en"] == "Social Network" and
+			self.file_name["en"] == "Social network" and
 			self.dictionary["States"]["Search"] == True
 		):
-			# Update the language information item to add the Social Network name
+			# Update the language information item to add the social network name
 			self.information_item[self.language["Small"]] = self.information_item[self.language["Small"]].lower() + " " + self.language_texts["of_the_social_network"] + ' "' + self.social_network["Name"] + '"'
 
 		# Define the local file name
@@ -278,21 +284,21 @@ class Open_Friend_File(Friends):
 			# Show the "Friend" text and name
 			print(friend_text)
 
-			# If the file name is "Social Network"
-			if self.file_name["en"] == "Social Network":
+			# If the file name is "Social network"
+			if self.file_name["en"] == "Social network":
 				# If the "Search" key is not present in the root dictionary
 				# Or it is present
-				# And the information item is not "Origin Social Network"
+				# And the information item is not "Origin social network"
 				if (
 					"Search" not in self.dictionary or
 					"Search" in self.dictionary and
-					self.dictionary["Search"]["Information item"]["Name"] != "Origin Social Network"
+					self.dictionary["Search"]["Information item"]["Name"] != "Origin social network"
 				):
-					# Define the Social Network text
+					# Define the social network text
 					social_network_text = self.Language.language_texts["social_network"] + ":" + "\n" + \
 					"\t" + self.social_network["Name"]
 
-					# Show the "Social Network" text and name
+					# Show the "social network" text and name
 					print()
 					print(social_network_text)
 
@@ -323,7 +329,7 @@ class Open_Friend_File(Friends):
 			# Define the local information item
 			information_item = self.information_item[self.language["Small"]]
 
-			if self.file_name["en"] != "Social Network":
+			if self.file_name["en"] != "Social network":
 				# Transform the information item into lowercase
 				information_item = information_item.lower()
 

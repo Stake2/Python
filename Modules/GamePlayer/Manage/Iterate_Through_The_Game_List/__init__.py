@@ -131,7 +131,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				# Select the game and define its variables, returning the game dictionary (without asking the user to select the game)
 				dictionary = self.Select_Game(dictionary)
 
-				# Define a shortcut to the "Game" dictionary for easier typing
+				# Create a shortcut to the "Game" dictionary for easier typing
 				game = dictionary["Game"]
 
 				# ----- #
@@ -151,7 +151,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 				# ----- #
 
-				# Define a shortcut to the game titles dictionary
+				# Create a shortcut to the game titles dictionary
 				game_titles = game["Titles"]
 
 				# Get the language game title
@@ -227,7 +227,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				self.Input.Type(self.Language.language_texts["continue, title()"] + " ({})".format(self.language_texts["game_type"].lower()))
 
 	def Update_Sub_Games(self, dictionary):
-		# Define a shortcut to the "Game" dictionary
+		# Create a shortcut to the "Game" dictionary
 		game = dictionary["Game"]
 
 		# Initialize the index of the current sub-game, starting at one
@@ -263,12 +263,12 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			# Define the sub-game dictionary
 			dictionary = self.Define_Sub_Games(dictionary, sub_game_title = sub_game_title)
 
-			# Define a shortcut to the sub-game dictionary
+			# Create a shortcut to the sub-game dictionary
 			sub_game = game["Sub-game"]
 
 			# ----- #
 
-			# Define a shortcut to the sub-game titles dictionary
+			# Create a shortcut to the sub-game titles dictionary
 			sub_game_titles = sub_game["Titles"]
 
 			# Get the original sub-game title
@@ -284,7 +284,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 
 			# ----- #
 
-			# Define a shortcut to the sub-game played "Entries.json" file
+			# Create a shortcut to the sub-game played "Entries.json" file
 			sub_game_entries_file = sub_game["Folders"]["Played"]["entries"]
 
 			# ----- #
@@ -320,7 +320,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			date = entry_name.split("(")[1].strip(")")
 
 			# Convert the date to a date dictionary
-			date = self.Date.From_String(date)
+			date = self.Date.From_String(date, format = "%H:%M %d/%m/%Y")
 
 			# Get the year from the date
 			year = date["Units"]["Year"]
