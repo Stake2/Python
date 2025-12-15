@@ -169,12 +169,12 @@ class Social_Networks(object):
 
 		# ---------- #
 
-		# Define and create the social networks image "Digital Identities" folder
-		self.folders["Social networks"]["Image"]["Digital Identities"] = {
+		# Define and create the social networks image "Digital identities" folder
+		self.folders["Social networks"]["Image"]["Digital identities"] = {
 			"root": self.folders["Social networks"]["Image"]["root"] + self.Language.language_texts["digital_identities"] + "/"
 		}
 
-		self.Folder.Create(self.folders["Social networks"]["Image"]["Digital Identities"]["root"])
+		self.Folder.Create(self.folders["Social networks"]["Image"]["Digital identities"]["root"])
 
 	def Define_Information_Items_Dictionary(self):
 		# Create the root "Default dictionaries" dictionary
@@ -357,11 +357,39 @@ class Social_Networks(object):
 
 		# ---------- #
 
-		# Get the list of social networks
-		self.social_networks["List"] = self.JSON.To_Python(self.folders["Social networks"]["Text"]["Social networks"])["List"]
+		# Get the sub-folders of the "Social networks" folder
+		contents = self.Folder.Contents(self.folders["Social networks"]["Text"]["root"])
 
-		# Sort the list of social networks
-		self.social_networks["List"] = sorted(self.social_networks["List"], key = str.lower)
+		# Get the list of social networks from the list of folders
+		self.social_networks["List"] = contents["Folder"]["Names"]
+
+		# Define a list of folders to remove
+		remove_list = [
+			"Database",
+			"4chan",
+			"Google+",
+			"Plug DJ"
+		]
+
+		# Iterate through the list of folders
+		for folder in remove_list:
+			# Create the text key by converting the folder into lowercase and replacing spaces with underscores
+			text_key = folder.lower().replace(" ", "_")
+
+			# If the underscore character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text
+				text_key += ", title()"
+
+			# If the text key is inside the language texts dictionary of the "Language" utility class
+			if text_key in self.Language.language_texts:
+				# Get the folder name in the user language
+				folder = self.Language.language_texts[text_key]
+
+			# Remove the folder from the list
+			self.social_networks["List"].remove(folder)
+
+		# ---------- #
 
 		# Write the social networks list to the "Social networks list.txt" file
 		text_to_write = self.Text.From_List(self.social_networks["List"])

@@ -262,10 +262,10 @@ class Input():
 			):
 				print("\t" + dictionary["language_option"])
 
-				if type(option) == dict:
-					option = self.JSON.Show(deepcopy(option), return_text = True)
-
-				print("\t" + str(option))
+				#if type(option) == dict:
+				#	option = self.JSON.Show(deepcopy(option), return_text = True)
+				#
+				#print("\t" + str(option))
 
 			if (
 				language_options == None or

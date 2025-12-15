@@ -1391,7 +1391,10 @@ class Language():
 				language_texts[key + ", masculine"] = language_texts[key]
 				language_texts[key + ", feminine"] = language_texts[key]
 
-				if add_gender_texts == True and type(language_texts[key]) == dict:
+				if (
+					add_gender_texts == True and
+					type(language_texts[key]) == dict
+				):
 					if "masculine" in language_texts[key]:
 						language_texts[key + ", masculine"] = language_texts[key]["masculine"]
 

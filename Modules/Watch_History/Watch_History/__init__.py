@@ -189,7 +189,7 @@ class Watch_History(object):
 		# ---------- #
 
 		# Get the "Today_Is_Christmas" True or False variable
-		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
+		self.Today_Is_Christmas = self.Christmas.Today_Is_Day()
 
 	def Define_Folders_And_Files(self):
 		# If there is no current year variable inside the self object
@@ -199,7 +199,7 @@ class Watch_History(object):
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Create a shortcut for the folder
+			# Create a shortcut to the folder
 			folder = self.current_year["Folders"][language]
 
 			# Get the "Watched media" text in the current language to be the folder name
@@ -214,7 +214,7 @@ class Watch_History(object):
 			self.Folder.Create(folder["Watched media"]["root"])
 
 			# Update the folder shortcut
-			folder = self.current_year["Folders"][language]["Firsts of the Year"]
+			folder = self.current_year["Folders"][language]["Firsts of the year"]
 
 			# Define the sub-folder name
 			sub_folder_name = self.Language.texts["media, title()"][language]
@@ -720,7 +720,7 @@ class Watch_History(object):
 						# Add "s" to create the plural text key
 						text_key_copy += "s"
 
-					# If the underline is not inside the text key
+					# If the underscore character is not inside the text key
 					if "_" not in text_key_copy:
 						# Add the ", title()" text
 						text_key_copy += ", title()"
@@ -1421,7 +1421,7 @@ class Watch_History(object):
 		if media_title not in media_type_dictionary["Dictionary"]:
 			media_type_dictionary["Dictionary"][media_title] = 0
 
-		# Create a shortcut for the media variable
+		# Create a shortcut to the media variable
 		media = media_type_dictionary["Dictionary"][media_title]
 
 		# If the media variable is an integer
@@ -1510,7 +1510,7 @@ class Watch_History(object):
 			}
 		}
 
-		# Create a shortcut for the statistic key
+		# Create a shortcut to the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #
@@ -1521,7 +1521,7 @@ class Watch_History(object):
 		if "Romanized" in media["Titles"]:
 			title_key = "Romanized"
 
-		# Create a shortcut for the media title
+		# Create a shortcut to the media title
 		media_title = media["Titles"][title_key]
 
 		# ---------- #
@@ -2070,7 +2070,7 @@ class Watch_History(object):
 			# Get the gender of the media item
 			gender = self.Define_Media_Item_Text(root_dictionary)[2]
 
-			# Create a shortcut for the item type
+			# Create a shortcut to the item type
 			item_type = media["Item"]["Type"][self.language["Small"]].lower()
 
 			# Get the item title in the user language
@@ -2742,7 +2742,7 @@ class Watch_History(object):
 					"Remote"
 				]
 
-				# Create a shortcut for the "Origin type" key
+				# Create a shortcut to the "Origin type" key
 				origin_type_key = self.Language.language_texts["origin_type"]
 
 				# Define the "has origin type key" switch as False
@@ -4482,7 +4482,7 @@ class Watch_History(object):
 		return title
 
 	def Show_Media_Title(self, root_dictionary, is_media_item = False, include_media_title = False):
-		# Create a shortcut for the media dictionary
+		# Create a shortcut to the media dictionary
 		media = root_dictionary["Media"]
 
 		# If the "Is media item" parameter is True
@@ -5295,7 +5295,7 @@ class Watch_History(object):
 				media["States"]["Single unit"] == False and
 				media["States"]["Replace title"] == False
 			):
-				# Create a shortcut for the media item type text
+				# Create a shortcut to the media item type text
 				media_item_type_text = media["Texts"]["item"][self.language["Small"]]
 
 				# If the media item type text is not inside the defined list
@@ -5575,13 +5575,13 @@ class Watch_History(object):
 			print(self.Language.language_texts["remote_origin"] + ":")
 			print("\t" + media["Episode"]["Remote"]["Title"])
 
-			# Create a shortcut for the "Episode ID" and "Episode link" texts
+			# Create a shortcut to the "Episode ID" and "Episode link" texts
 			episode_id_text = self.language_texts["episode_id"]
 			episode_link_text = self.language_texts["episode_link"]
 
 			# If the media is a video channel
 			if media["States"]["Video"] == True:
-				# Create a shortcut for the "Episode" text by language (uppercase for English, lowercase for other languages)
+				# Create a shortcut to the "Episode" text by language (uppercase for English, lowercase for other languages)
 				episode_text = self.Language.language_texts["episode, by language"]
 
 				# Replace the "Episode" text with the "Video" text by language (uppercase for English, lowercase for other languages)
@@ -5682,7 +5682,7 @@ class Watch_History(object):
 					if media["States"]["Video"] == False:
 						container = container.lower()
 
-					# Create a shortcut for the words dictionary
+					# Create a shortcut to the words dictionary
 					words = dictionary["Media type"]["Genders"][self.language["Small"]]
 
 					# Define the list of items to use to format the text

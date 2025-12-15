@@ -220,7 +220,7 @@ class Tasks(object):
 			# Add the class to the current class
 			setattr(self, class_title, class_dictionary["Object"])
 
-		# Sort the dictionary of classes with the order of the list of classes
+		# Sort the dictionary of classes with the order being the list of classes
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 	def Define_Folders_And_Files(self):
@@ -233,7 +233,7 @@ class Tasks(object):
 			"Folders": self.folders["Notepad"]["Data Networks"]["Productivity"]
 		}
 
-		# Create a shortcut for the current year folder
+		# Create a shortcut to the current year folder
 		self.tasks["Folders"]["Task History"]["Current year"] = self.tasks["Folders"]["Task History"][self.current_year["Number"]]
 
 		# Define and create the "Task types" folder
@@ -380,7 +380,7 @@ class Tasks(object):
 
 			# ----- #
 
-			# Create a shortcut for the by task type folder, to not be ugly and big
+			# Create a shortcut to the by task type folder, to not be ugly and big
 			by_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["By task type"]
 
 			# Create the "By task type" task type folder for the current year
@@ -504,7 +504,7 @@ class Tasks(object):
 
 		# ---------- #
 
-		# Create a shortcut for the "History.json" file
+		# Create a shortcut to the "History.json" file
 		history_file = self.tasks["Folders"]["Task History"]["History"]
 
 		# If the history file is not empty and the list of years is not empty
@@ -561,7 +561,7 @@ class Tasks(object):
 		# Create the "By task type" key inside the "Numbers" dictionary of the "Tasks" dictionary
 		self.dictionaries["Tasks"]["Numbers"]["By task type"] = {}
 
-		# Create a shortcut for the "Tasks.json" file
+		# Create a shortcut to the "Tasks.json" file
 		tasks_file = self.tasks["Folders"]["Task History"]["Current year"]["Tasks"]
 
 		# If the "Tasks.json" file is not empty and the list of years is not an empty list
@@ -579,7 +579,7 @@ class Tasks(object):
 			# Define the default task type dictionary as the template one
 			self.dictionaries["Task type"][key] = deepcopy(self.template)
 
-			# Create a shortcut for the file for the "if" not to be ugly and big
+			# Create a shortcut to the file for the "if" not to be ugly and big
 			file = task_type["Folders"]["By task type"]["Tasks"]
 
 			# If the task type "Tasks.json" file is not empty and the list of years is not an empty list
@@ -640,7 +640,7 @@ class Tasks(object):
 
 					# If the key is not "First task type task in year"
 					if key != "First task type task in year":
-						# Define the text key, making it lowercase and replacing spaces with underline
+						# Define the text key, making it lowercase and replacing spaces with underscore
 						text_key = key.lower().replace(" ", "_")
 
 						# If the text key is inside the "Texts" dictionary of the "Language" class

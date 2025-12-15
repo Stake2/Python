@@ -88,7 +88,7 @@ class Convert_History(Watch_History):
 					},
 					"Year": {
 						"Watched media": {},
-						"Firsts of the Year": {}
+						"Firsts of the year": {}
 					}
 				},
 				"Watch History": {
@@ -227,7 +227,7 @@ class Convert_History(Watch_History):
 			# Year folders
 
 			# Iterate through the list of folder types
-			for folder_type in ["Watched media", "Firsts of the Year"]:
+			for folder_type in ["Watched media", "Firsts of the year"]:
 				# Get the folder dictionary of the folder type
 				dictionary = year["Folders"]["Year"][folder_type]
 
@@ -240,7 +240,7 @@ class Convert_History(Watch_History):
 					# Get the root year folders dictionary from the "Years" module
 					year_folders = self.Years.years["Dictionary"][year_number]["Folders"]
 
-					# Create a shortcut for the [folder type] folder
+					# Create a shortcut to the [folder type] folder
 					folder = year_folders[language][folder_type]
 
 					# If the folder type is "Watched media"
@@ -258,12 +258,12 @@ class Convert_History(Watch_History):
 								"root": folder["root"] + language_media_type + "/"
 							}
 
-					# If the folder type is "Firsts of the Year"
-					if folder_type == "Firsts of the Year":
+					# If the folder type is "Firsts of the year"
+					if folder_type == "Firsts of the year":
 						# Define the sub-folder name as the "Media" text in the current language
 						sub_folder_name = self.Language.texts["media, title()"][language]
 
-						# Define the folder as the root "Firsts of the Year" plus the sub-folder
+						# Define the folder as the root "Firsts of the year" plus the sub-folder
 						folder = {
 							"root": folder["root"] + sub_folder_name + "/"
 						}
@@ -312,7 +312,7 @@ class Convert_History(Watch_History):
 		#
 		# Year:
 		# [X] - "Watched media" entry text files
-		# [X] - "Firsts of the Year" entry text files
+		# [X] - "Firsts of the year" entry text files
 
 		# Iterate through the medias inside the root medias dictionary:
 		# 
@@ -377,7 +377,7 @@ class Convert_History(Watch_History):
 		# - Entry text files (to update the "Entry" and "When I finished watching" texts):
 		# - Media type entry text files
 		# - Year "Watched media" entry text files
-		# - Year "Firsts of the Year" entry text files
+		# - Year "Firsts of the year" entry text files
 		# - For medias with no media items, update the "Watched" root media entry text files
 		# - For medias with media items, update the "Watched" media item entry text files (for all media items of the root media)
 		# 
@@ -1562,7 +1562,7 @@ class Convert_History(Watch_History):
 				#
 				# Year:
 				# - "Watched media" entry text files
-				# - "Firsts of the Year" entry text files
+				# - "Firsts of the year" entry text files
 				# 
 				# For medias with no media items, update the "Watched":
 				# - Root media entry text files
@@ -1578,7 +1578,7 @@ class Convert_History(Watch_History):
 				# Entry text files (to update the "Entry" and "When I finished watching" texts):
 				# - Media type entry text files
 				# - Year "Watched media" entry text files
-				# - Year "Firsts of the Year" entry text files
+				# - Year "Firsts of the year" entry text files
 				# - For medias with no media items, update the "Watched" root media entry text files
 				# - For medias with media items, update the "Watched" media item entry text files (for all media items of the root media)
 				# (And also rename the file to update the entry time in the file name)
@@ -1588,8 +1588,8 @@ class Convert_History(Watch_History):
 					"Watch History (by media type)": {},
 					"Watched media (Português)": {},
 					"Watched media (English)": {},
-					"Firsts of the Year (Português)": {},
-					"Firsts of the Year (English)": {},
+					"Firsts of the year (Português)": {},
+					"Firsts of the year (English)": {},
 					"Watched": {},
 					"Watched (media item)": {}
 				}
@@ -1625,11 +1625,11 @@ class Convert_History(Watch_History):
 					# If the watched media is the first one in the year
 					if watched_media_number == 1:
 						# Create a shortcut to the folder
-						folder = year["Folders"]["Year"]["Firsts of the Year"][small_language]["root"]
+						folder = year["Folders"]["Year"]["Firsts of the year"][small_language]["root"]
 
-						# Define the language "Firsts of the Year" entry file dictionary
+						# Define the language "Firsts of the year" entry file dictionary
 						# With the updated entry name as a file name
-						entry_files["Firsts of the Year ({})".format(full_language)] = {
+						entry_files["Firsts of the year ({})".format(full_language)] = {
 							"File key text": self.Language.language_texts["entry_file_in_the_firsts_of_the_year_folder_by_year"],
 							"Text language": small_language,
 							"Folder": folder,

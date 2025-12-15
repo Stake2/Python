@@ -45,7 +45,7 @@ class Show_Year_Information(Years):
 		# Create the text key for the key
 		text_key = key.lower().replace(" ", "_")
 
-		# If the underline is not inside the text key
+		# If the underscore character is not inside the text key
 		if "_" not in text_key:
 			# Add the ", title()" text
 			text_key += ", title()"

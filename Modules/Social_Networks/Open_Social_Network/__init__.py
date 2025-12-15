@@ -61,24 +61,35 @@ class Open_Social_Network(Social_Networks):
 
 			# If the type of the social networks parameter is a dictionary
 			if type(social_networks) == dict:
-				# Define the list of keys to import
+				# Define a list of keys to import
 				to_import = [
 					"Numbers",
 					"Custom links",
+					"Do not open",
+					"Input texts",
 					"Input text"
+				]
+
+				# Define a list of keys to import to the root "Social networks" dictionary
+				social_network_keys = [
+					"Numbers",
+					"Custom links",
+					"Do not open",
+					"Input texts"
 				]
 
 				# Iterate through the list
 				for key in to_import:
 					# If the key is inside the parameter dictionary
 					if key in social_networks:
-						# If the key inside the defined list
-						if key in ["Numbers", "Custom links"]:
+						# If the key inside the list of keys to import to the root "Social networks" dictionary
+						if key in social_network_keys:
 							# Add it to the "Social networks" dictionary
 							self.open_social_network["Social networks"][key] = social_networks[key]
 
-						# If the key is "Input text", add it to the root "Open social network" dictionary
-						if key == "Input text":
+						# If not
+						else:
+							# Add it to the root "Open social network" dictionary
 							self.open_social_network[key] = social_networks[key]
 
 						# If the key is "Numbers"
@@ -132,8 +143,11 @@ class Open_Social_Network(Social_Networks):
 		self.Open_Social_Networks()
 
 	def Open_Social_Networks(self):
-		# Iterate through the list of social network names and dictionaries
-		for social_network_name, social_network in self.open_social_network["Social networks"]["Dictionary"].items():
+		# Create a shortcut to the root "Social networks" dictionary
+		social_networks_dicitonary = self.open_social_network["Social networks"]
+
+		# Iterate through the social network names and dictionaries inside the root "Social networks" dictionary
+		for social_network_name, social_network in social_networks_dicitonary["Dictionary"].items():
 			# Update the root "social_network" variable with the dictionary of the current social network
 			self.Select_Social_Network(social_network)
 
@@ -179,8 +193,22 @@ class Open_Social_Network(Social_Networks):
 			# Show information about the opening of the social network link
 			self.Show_Information(social_network_name)
 
-			# Open the social network link
-			self.System.Open(link_to_open, verbose = False)
+			# Define the local "open" switch as True
+			open = True
+
+			# If the "Do not open" key is present inside the root "Social networks" dictionary
+			# And the current social network is inside of that list
+			if (
+				"Do not open" in social_networks_dicitonary and
+				social_network_name in social_networks_dicitonary["Do not open"]
+			):
+				# Change the local "open" switch to False
+				open = False
+
+			# If the local "open" switch is True
+			if open == True:
+				# Open the social network link
+				self.System.Open(link_to_open, verbose = False)
 
 			# If there are more than one social network to open
 			# And the current social network is not the last one
@@ -193,19 +221,48 @@ class Open_Social_Network(Social_Networks):
 				# Create a shortcut to the input text
 				input_text = self.open_social_network["Input text"]
 
-				# If the "{social network}" format string is inside the input text
-				if "{social network}" in input_text:
+				# If the "Input texts" key is inside the root "Social networks" dictionary
+				# And the social network name is inside that dictionary
+				if (
+					"Input texts" in social_networks_dicitonary and
+					social_network_name in social_networks_dicitonary["Input texts"]
+				):
+					# Get the input text related to the current social network
+					input_text = social_networks_dicitonary["Input texts"][social_network_name]
+
+				# If the user language is inside the input text
+				if self.language["Small"] in input_text:
+					# Get the input text in the user language
+					input_text = input_text[self.language["Small"]]
+
+				# If the "{social_network}" format string is inside the input text
+				if "{social_network}" in input_text:
 					# Format it with the name of the social network
-					input_text = input_text.replace("{social network}", social_network_name)
+					input_text = input_text.replace("{social_network}", social_network_name)
 
 				# Ask for the user input using the defined input text
 				self.Input.Type(input_text)
 
+			# If the "Numbers" dictionary were not imported from the "social networks" parameter dictionary
+			if self.states["Imported numbers"] == False:
+				# Add one to the "Iteration" number
+				self.open_social_network["Social networks"]["Numbers"]["Iteration"] += 1
+
 	def Show_Information(self, social_network_name):
-		# If the first space is on
-		if self.spaces["First"] == True:
-			# Show a space separator
-			print()
+		# If there are multiple social networks to open
+		# And the current social network is not the first one
+		# Or the "Numbers" dictionary were imported from the "social networks" parameter dictionary
+		# And the "Iteration" number is not one (the first number)
+		if (
+			self.states["One social network"] == False and
+			social_network_name != self.open_social_network["Social networks"]["List"][0] or
+			self.states["Imported numbers"] == True and
+			self.open_social_network["Social networks"]["Numbers"]["Iteration"] != 1
+		):
+			# If the first space is on
+			if self.spaces["First"] == True:
+				# Show a space separator
+				print()
 
 		# If there is only one social network to open
 		# If there are multiple
@@ -232,9 +289,9 @@ class Open_Social_Network(Social_Networks):
 			total_number = self.open_social_network["Social networks"]["Numbers"]["Total"]
 
 			# Combine the current and total numbers with a slash in between
-			number_text = str(current_number) + "/" + str(total_number)
+			number_text = "[" + str(current_number) + "/" + str(total_number) + "]"
 
-			# If the current social network is not the last one
+			# If the current social network is not the first one
 			if social_network_name != self.open_social_network["Social networks"]["List"][0]:
 				# Show a one dash space separator
 				print(self.separators["1"])
@@ -285,13 +342,3 @@ class Open_Social_Network(Social_Networks):
 		if self.open_social_network["Link type"]["en"] == "Profile":
 			# To-Do: Show information about the link, splitting the template link
 			variable = True
-
-		# If there are multiple social networks to open
-		# And the current social network is the last one
-		if (
-			self.states["One social network"] == False and
-			self.social_network["Name"] == self.open_social_network["Social networks"]["List"][-1]
-		):
-			# Show a five dash space separator
-			print()
-			print(self.separators["5"])

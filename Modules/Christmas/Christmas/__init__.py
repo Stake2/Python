@@ -2,6 +2,7 @@
 
 # Import some useful modules
 import importlib
+from copy import deepcopy
 
 class Christmas():
 	def __init__(self):
@@ -22,6 +23,9 @@ class Christmas():
 
 		# Define the dictionaries of the class
 		self.Define_Dictionaries()
+
+		# Define the Christmas "Texts" dictionary
+		self.Define_Christmas_Texts()
 
 	def Import_Utility_Classes(self):
 		# Define the classes to be imported
@@ -234,7 +238,7 @@ class Christmas():
 			# Add the class to the current class
 			setattr(self, class_title, class_dictionary["Object"])
 
-		# Sort the dictionary of classes with the order of the list of classes
+		# Sort the dictionary of classes with the order being the list of classes
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 		# ---------- #
@@ -244,23 +248,36 @@ class Christmas():
 
 	def Define_Dictionaries(self):
 		# Define the root "Christmas" dictionary
-		self.christmas = {}
+		self.christmas = {
+			"Dates": {}
+		}
 
 		# ---------- #
 
-		# Define the date string as 25 of December of the current year
-		date_string = "25/12/" + str(self.date["Units"]["Year"])
+		# Define a local list of days
+		days = [
+			"24",
+			"25"
+		]
 
-		# Define the Christmas "Date" dictionary
-		self.christmas["Date"] = self.Date.From_String(date_string, format = "%d/%m/%Y")
+		# Iterate through the list of days
+		for day in days:
+			# Define the date string as [Day] of December of the [Current year]
+			date_string = day + "/12/" + str(self.date["Units"]["Year"])
+
+			# Define the date key as "[Day] of December"
+			date_key = day + " of December"
+
+			# Define the "[Day] of December" date dictionary using the defined date string
+			self.christmas["Dates"][date_key] = self.Date.From_String(date_string, format = "%d/%m/%Y")
 
 		# Define the "States" dictionary
 		self.christmas["States"] = {
 			"Today is Christmas": False
 		}
 
-		# Check if today is Christmas to update the "States" dictionary
-		self.Today_Is_Christmas()
+		# Check if today is Christmas to update the "Today is Christmas" state
+		self.christmas["States"]["Today is Christmas"] = self.Today_Is_Day()
 
 		# ---------- #
 
@@ -285,20 +302,42 @@ class Christmas():
 
 		# ---------- #
 
+		# Define a shortcut to the root year texts "Christmas" dictionary
+		year_texts = self.Years.years["Texts"]["Files"]["Christmas"]
+
 		# Define the "Files" dictionary
 		self.christmas["Files"] = {
-			"Merry Christmas": {
-				"Texts": "",
-				"Social networks": {}
-			},
-			"Planning": "",
-			"Objects": ""
+			"Merry Christmas": {}
 		}
 
 		# ----- #
 
 		# Define the merry Christmas "Texts" key as the Christmas texts file
-		self.christmas["Files"]["Merry Christmas"]["Texts"] = self.current_year["Folders"]["Christmas"]["Merry Christmas"]["Texts"]
+		self.christmas["Files"]["Merry Christmas"]["Texts"] = self.current_year["Files"]["Christmas"]["Merry Christmas"]["Texts"]
+
+		# Define a list of files to import from the "Merry Christmas" dictionary of the year "Texts" files dictionary
+		to_import = [
+			"Social networks",
+			"Friends"
+		]
+
+		# Import them to the "Merry Christmas" dictionary
+		for file in to_import:
+			self.christmas["Files"]["Merry Christmas"][file] = year_texts["Merry Christmas"][file]
+
+		# ----- #
+
+		# Define a list of files to import from the root "Christmas" dictionary of the year "Texts" files dictionary
+		to_import = [
+			"Steps",
+			"Profile pictures to change",
+			"Watch",
+			"Eat"
+		]
+
+		# Import them to the "Files" dictionary
+		for file in to_import:
+			self.christmas["Files"][file] = year_texts[file]
 
 		# ----- #
 
@@ -314,55 +353,13 @@ class Christmas():
 				"Wattpad": self.Social_Networks.social_networks["Dictionary"]["Wattpad"]["Profile"]["Links"]["Conversations"]
 			},
 			"States": {
-				"First separator": False
+				"First separator": True
 			},
 			"Spaces": {
-				"First": False
+				"First": True
 			},
 			"Input text": ""
 		}
-
-		# Define a local list of social networks
-		social_networks = [
-			"Discord",
-			"Instagram {} Facebook",
-			"Twitter",
-			"Bluesky {} Threads",
-			"Wattpad",
-			"WhatsApp"
-		]
-
-		# Iterate through the local list of social networks
-		for key in social_networks:
-			# If the "{}" format string is present inside the key
-			if "{}" in key:
-				# Format the key with the "and" text
-				key = key.format("and")
-
-			# Get the Christmas texts file for the social network from the texts "Merry Christmas" dictionary
-			texts_file = self.christmas["Folders"]["Texts"]["Merry Christmas"]["Social networks"][key]
-
-			# Define the texts file inside the merry Christmas "Social networks" dictionary
-			self.christmas["Files"]["Merry Christmas"]["Social networks"][key] = texts_file
-
-		# ----- #
-
-		# Iterate through the list of defined keys
-		for key in ["Planning", "Objects"]:
-			# Get the text file for the key from the texts "Planning" dictionary
-			text_file = self.christmas["Folders"]["Texts"]["Planning"]
-
-			# If the key is "Planning"
-			if key == "Planning":
-				# Get the text file in the user language
-				text_file = text_file[self.language["Small"]]
-
-			# Else, use the key
-			else:
-				text_file = text_file[key]
-
-			# Define the text file inside the "Files" dictionary
-			self.christmas["Files"][key] = text_file
 
 		# ---------- #
 
@@ -379,20 +376,18 @@ class Christmas():
 			}
 		}
 
-		# Define a "Music player" dictionary by choosing one of the music players inside the "Music players" dictionary
-		dictionary = self.christmas["Music players"]
-
-		self.christmas["Music player"] = dictionary["Foobar2000"]
-
 		# ---------- #
 
 		# Define the "Methods" dictionary
 		self.christmas["Methods"] = {
 			"List": [
+				"Copy_Christmas_Text",
+				"Open_Social_Networks",
+				"Change_Profile_Pictures",
+				"Wish_Merry_Christmas_To_Friends",
 				"Open_Christmas_Theme",
 				"Open_Folder",
 				"Open_Music_Player",
-				"Open_Social_Networks",
 				"Create_Discord_Status",
 				"Open_File",
 				"Open_Module"
@@ -412,46 +407,451 @@ class Christmas():
 			# Add it to the methods "Dictionary"
 			self.christmas["Methods"]["Dictionary"][method_title] = method
 
-	def Today_Is_Christmas(self, date_parameter = None):
-		# Define the date as the date parameter
-		date = date_parameter
+	def Define_Christmas_Texts(self):
+		# Create a shortcut to the Christmas "Texts" file
+		texts_file = self.christmas["Files"]["Merry Christmas"]["Texts"]
 
-		# If the date parameter is None
-		if date_parameter == None:
+		# Get the contents of the file
+		contents = self.File.Contents(texts_file)
+
+		# Read the Merry Christmas "Texts" file to get the "Texts" file dictionary
+		self.christmas["Texts"] = self.File.Dictionary_2(texts_file, convert_lists_into_texts = True)
+
+		# Define a dictionary of text keys to replace
+		text_keys = {
+			"General": "general, title()",
+			"General with hashtags": "general_with_hashtags",
+			"User language": self.language["Full"],
+			"User language with hashtags": "[language]_with_hashtags",
+			"For friends": "for_friends"
+		}
+
+		# Iterate through the list of text key to use and to replace
+		for to_use, to_replace in text_keys.items():
+			# If the to use key is not "User language"
+			if to_use != "User language":
+				# Get the text to replace
+				to_replace = self.Language.language_texts[to_replace]
+
+			# Replace the text key in the root "Texts" dictionary with the to use key
+			self.christmas["Texts"][to_use] = self.christmas["Texts"][to_replace]
+
+			# Remove the to replace key
+			self.christmas["Texts"].pop(to_replace)
+
+		# Define the "For friends" key as the last three lines of the file
+		self.christmas["Texts"]["For friends"] = self.Text.From_List(contents["Lines"][-3:])
+
+	def Today_Is_Day(self, days = [25], today = None):
+		# Define the local date as the "today" parameter
+		date = today
+
+		# If the "today" parameter is None
+		if today == None:
 			# Define the local date as the root one
 			date = self.date
 
-		# Define the local "today is Christmas" state as False
-		today_is_christmas = False
+		# Define the local "today is day" state as False
+		today_is_day = False
 
-		# If today is 24 or 25 of December
-		# The day 24 is also fine to start Christmas (probably close to midnight of day 25)
+		# If the current day is inside the local list of days
+		# And the current month is the Christmas month (12 - December)
 		if (
-			date["Units"]["Day"] in [24, 25] and # Day is either 24 or 25
-			date["Units"]["Month"] == self.christmas["Date"]["Units"]["Month"] # Month is 12
+			date["Units"]["Day"] in days and
+			date["Units"]["Month"] == self.christmas["Dates"]["25 of December"]["Units"]["Month"]
 		):
-			# Change the local "today is Christmas" state to True
-			today_is_christmas = True
-
-		# If the date parameter is None
-		if date_parameter == None:
-			# Change the root "Today is Christmas" state to the local one
-			self.christmas["States"]["Today is Christmas"] = today_is_christmas
+			# Change the local "today is day" state to True
+			today_is_day = True
 
 		# Return the local state
-		return today_is_christmas
+		return today_is_day
+
+	def Current_Month_Is_December(self, today):
+		# Define the local date as the "today" parameter
+		date = today
+
+		# If the "today" parameter is None
+		if today == None:
+			# Define the local date as the root one
+			date = self.date
+
+		# Define the local "current month is December" state as False
+		current_month_is_december = False
+
+		# If the current month is the Christmas month (12 - December)
+		if date["Units"]["Month"] == self.christmas["Dates"]["25 of December"]["Units"]["Month"]:
+			# Change the local "current month is December" state to True
+			current_month_is_december = True
+
+		# Return the local state
+		return current_month_is_december
+
+	def Copy_Christmas_Text(self, key):
+		# Copy the Christmas text
+		self.Text.Copy(self.christmas["Texts"][key], first_space = False)
+
+	def Open_Social_Networks(self, social_networks):
+		# Define a list of keys to import
+		to_import = [
+			"List",
+			"Do not open",
+			"Input texts"
+		]
+
+		# Iterate through the list
+		for key in to_import:
+			# If the key is inside the parameter dictionary
+			if key in social_networks:
+				# Import it to the root dictionary
+				self.social_networks[key] = social_networks[key]
+
+		# Update the total number of social networks
+		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
+
+		# Create a local copy of the root "List" of social networks
+		social_networks_copy = self.social_networks["List"].copy()
+
+		# Iterate through the social network numbers and names inside the local copy of the list of social networks
+		for social_network_number, social_network_name in enumerate(social_networks_copy, start = 1):
+			# Update the "Iteration" number to be the current one
+			self.social_networks["Numbers"]["Iteration"] = social_network_number
+
+			# Update the list of social networks to be the local current social network
+			self.social_networks["List"] = [
+				social_network_name
+			]
+
+			# Make a copy of the root social networks dictionary
+			social_networks_copy = deepcopy(self.social_networks)
+
+			# If the "Custom links" key is inside the parameter dictionary
+			if "Custom links" in social_networks:
+				# Iterate through the custom link names and links
+				for name, custom_link in social_networks["Custom links"].items():
+					# Import the link
+					social_networks_copy["Custom links"][name] = social_networks["Custom links"][name]
+
+			# If the "Input text" key is inside the parameter dictionary
+			if "Input text" in social_networks:
+				# Define the local input text as the root "Input text" key
+				input_text = social_networks["Input text"]
+
+				# If the user language is inside the input text
+				if self.language["Small"] in input_text:
+					# Get the input text in the user language
+					input_text = input_text[self.language["Small"]]
+
+				# Update the "Input text" key of the local copy dictionary
+				social_networks_copy["Input text"] = input_text
+
+			# If the "States" key is inside the parameter dictionary
+			if "States" in social_networks:
+				# Update the "States" key of the local copy dictionary
+				social_networks_copy["States"] = social_networks["States"]
+
+			# Open the social network using the "Open_Social_Network" sub-class of the "Social_Networks" class
+			self.Social_Networks.Open_Social_Network(social_networks_copy)
+
+		# If the "Last separator" key is inside the parameter dictionary
+		if "Last separator" in social_networks:
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+	def Change_Profile_Pictures(self):
+		# Create a shortcut to the Christmas "Profile pictures to change" file
+		file = self.christmas["Files"]["Profile pictures to change"]
+
+		# Read the "Profile pictures to change" file to get the file dictionary
+		self.christmas["Profile pictures to change"] = self.File.Dictionary_2(file)
+
+		# ---------- #
+
+		# Define the "Digital identities" dictionary
+		self.christmas["Digital identities"] = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [
+				"Stake2",
+				"Funkysnipa Cat",
+				"Sunset Shimmer and Stake2"
+			],
+			"Dictionary": {
+				"Stake2": {
+					"List": [
+						"Stake2"
+					],
+					"Genders": [
+						"masculine"
+					],
+					"Folder": "",
+					"Social networks": [],
+					"Use profile folder": True
+				},
+				"Funkysnipa Cat": {
+					"List": [
+						"Funkysnipa Cat"
+					],
+					"Genders": [
+						"masculine"
+					],
+					"Folder": "",
+					"Social networks": [],
+					"Use profile folder": True
+				},
+				"Sunset Shimmer and Stake2": {
+					"List": [
+						"Sunset Shimmer",
+						"Stake2"
+					],
+					"Genders": [
+						"feminine",
+						"masculine"
+					],
+					"Folder": "",
+					"Social networks": []
+				}
+			}
+		}
+
+		# Update the total number of digital identities
+		self.christmas["Digital identities"]["Numbers"]["Total"] = len(self.christmas["Digital identities"]["List"])
+
+		# ---------- #
+
+		# Define the text key to get the "Christmas version {}" text template
+		text_key = "christmas_version_{}"
+
+		# Get the Christmas version text template
+		christmas_version_text_template = self.Language.language_texts[text_key]
+
+		# ---------- #
+
+		# Create a shortcut to the "Digital identities" image folders
+		digital_identities_folder = self.folders["Image"]["Social networks"]["Digital identities"]["root"]
+
+		# Make a local copy of the "Digital identities" dictionary
+		digital_identities = deepcopy(self.christmas["Digital identities"])
+
+		# Get a list of identity keys
+		keys = list(digital_identities["Dictionary"].keys())
+
+		# Define a local digital identity
+		digital_identity_number = 1
+
+		# Create a shortcut to the total number of digital identities
+		total_digital_identities_number = self.christmas["Digital identities"]["Numbers"]["Total"]
+
+		# Iterate through the dictionary of digital identities
+		for identity, dictionary in digital_identities["Dictionary"].items():
+			# Transform the list of digital identities into a text in the English language
+			english_identity = self.Text.From_List(dictionary["List"], language = "en", next_line = False)
+
+			# Transform the list of digital identities into a text in the user language
+			language_identity_name = self.Text.From_List(dictionary["List"], language = self.language["Small"], next_line = False)
+
+			# Transform the list of digital identities into a text and add the "of {}" prefix text in the gender of the digital identity before each digital identity name
+			identity_name = self.Text.From_List(dictionary["List"], genders = dictionary["Genders"], language = self.language["Small"], next_line = False)
+
+			# Add quote around the identity name
+			identity_name_with_quotes = self.Text.From_List(dictionary["List"], genders = dictionary["Genders"], language = self.language["Small"], next_line = False, quotes = True)
+
+			# Add the identity name to the start of the dictionary
+			dictionary = {
+				"Name": language_identity_name,
+				**dictionary
+			}
+
+			# ---------- #
+
+			# If the identity is not the first one
+			if identity != keys[0]:
+				# Show a space separator
+				print()
+
+			# Define the number of separators as five
+			separators = "5"
+
+			# If the identity is not the first one
+			if identity != keys[0]:
+				# Change the number of separators to three
+				separators = "3"
+
+			# Show the defined number of dash space separators
+			print(self.separators[separators])
+			print()
+
+			# Show the current and total digital identity numbers
+			print(self.Language.language_texts["number_of_the_digital_identity"] + ":")
+			print("\t" + "[" + str(digital_identity_number) + "/" + str(total_digital_identities_number) + "]")
+			print()
+
+			# Show the digital identity
+			print(self.Language.language_texts["digital_identity"] + ":")
+			print("\t" + language_identity_name)
+			print()
+
+			# ---------- #
+
+			# Format the Christmas version text template with the name of the digital identity and define it as the key
+			key = christmas_version_text_template.format(identity_name)
+
+			# Get the folder of the digital identity using its name
+			folder = digital_identities_folder + language_identity_name + "/"
+
+			# If the "Use profile folder" key is not present
+			if "Use profile folder" not in dictionary:
+				# Define it as False
+				dictionary["Use profile folder"] = False
+
+			# If the "Use profile folder" switch is True
+			if dictionary["Use profile folder"] == True:
+				# Add the "Profile" folder to the folder
+				folder += self.Language.language_texts["profile, title()"] + "/"
+
+			# Add the folder to the dictionary
+			dictionary["Folder"] = folder
+
+			# ----- #
+
+			# Show the "Christmas step action" text in the user language
+			print(self.Language.language_texts["christmas_step_action"] + ":")
+
+			# Define the text template as "Opening the image folder of the Digital Identity "{}""
+			text_template = self.language_texts["opening_the_image_folder_of_the_digital_identity_{}"]
+
+			# Format the template with the language identity name
+			text = text_template.format(language_identity_name)
+
+			# Show the text
+			print("\t" + text + "...")
+
+			# Open the folder
+			self.System.Open(dictionary["Folder"])
+
+			# If the identity is the first one
+			if identity == keys[0]:
+				# Show a space separator
+				print()
+
+			# ---------- #
+
+			# Get the list of social networks of the digital identity and add it to the dictionary
+			dictionary["Social networks"] = self.christmas["Profile pictures to change"][key]
+
+			# Define the input text as "Press Enter when you finish changing your profile picture [identity_name] on {social_network}"
+			input_text = self.language_texts["press_enter_when_you_finish_changing_your_profile_picture_[identity_name]_on_{social_network}"]
+
+			# Replace the "[identity_name]" with the identity name with quotes around it
+			input_text = input_text.replace("[identity_name]", identity_name_with_quotes)
+
+			# Define a local dictionary of social networks
+			social_networks = {
+				# Define the list of social networks to open
+				"List": dictionary["Social networks"],
+
+				# Define the empty "Custom links" dictionary
+				"Custom links": {},
+
+				# Import the local input text
+				"Input text": input_text
+			}
+
+			# Define a list of social networks to update
+			to_update = [
+				"Instagram",
+				"Spirit Fanfics",
+				"Steam",
+				"Twitter",
+				"Wattpad",
+				"YouTube"
+			]
+
+			# Iterate through the list of social network names
+			for social_network_name in to_update:
+				# If the social network is inside the list of social networks
+				if social_network_name in social_networks["List"]:
+					# Create a shortcut to the root link
+					link = self.Social_Networks.social_networks["Dictionary"][social_network_name]["Profile"]["Links"]["Profile"]
+
+					# If the current social network is "Instagram"
+					if social_network_name == "Instagram":
+						# Update the link to be the root link of the social network
+						link = self.Social_Networks.social_networks["Dictionary"][social_network_name]["Information"]["Link"]
+
+						# Add the "edit profile picture" part
+						link += "accounts/edit/"
+
+					# If the current social network is "Spirit Fanfics"
+					if social_network_name == "Spirit Fanfics":
+						# Update the link to be the root link of the social network
+						link = self.Social_Networks.social_networks["Dictionary"][social_network_name]["Information"]["Link"]
+
+						# Add the "edit avatar" part
+						link += "editar/avatar"
+
+					# If the current social network is "Steam"
+					if social_network_name == "Steam":
+						# Add the "edit avatar" part
+						link += "/edit/avatar"
+
+					# If the current social network is "YouTube"
+					if social_network_name == "YouTube":
+						# Replace "www" with "studio" in the link
+						link = link.replace("www", "studio")
+
+						# Add the "edit profile picture" part
+						link += "/editing/profile"
+
+					# Update the root link
+					social_networks["Custom links"][social_network_name] = link
+
+			# If the identity is not the first one
+			if identity != keys[0]:
+				# Show a space separator
+				print()
+
+			# Open the list of social networks
+			self.Open_Social_Networks(social_networks)
+
+			# ---------- #
+
+			# Update the root dictionary with the local one using the English identity as a key
+			self.christmas["Digital identities"][english_identity] = dictionary
+
+			# ---------- #
+
+			# Add one to the digital identity number
+			digital_identity_number += 1
+
+	def Wish_Merry_Christmas_To_Friends(self):
+		# Copy the Christmas text for friends
+		self.Text.Copy(self.christmas["Texts"]["For friends"], first_space = False)
+
+		# Show a space separator
+		print()
+
+		# Open the "Friends" file which is inside the "Merry Christmas" folder
+		self.Open_File("Friends")
 
 	def Open_Christmas_Theme(self):
+		# Show the "Christmas step action" text in the user language
+		print(self.Language.language_texts["christmas_step_action"] + ":")
+
 		# Create a shortcut to the text about defining the Christmas theme for the computer
 		text = self.language_texts["using_the_christmas_theme_for_the_computer"]
 
-		# Show the text
-		print(text + "...")
+		# Show the text with a tab
+		print("\t" + text + "...")
 
 		# Open the Christmas theme to use it on the computer
 		self.System.Open(self.christmas["Theme"])
 
 	def Open_Folder(self, folder_name):
+		# Show the "Christmas step action" text in the user language
+		print(self.Language.language_texts["christmas_step_action"] + ":")
+
 		# Get the text key for the folder name
 		text_key = folder_name.lower() + ", title()"
 
@@ -464,8 +864,8 @@ class Christmas():
 		# Format the text template with the folder text
 		text = text_template.format(folder_text)
 
-		# Show the text
-		print(text + "...")
+		# Show the text with a tab
+		print("\t" + text + "...")
 
 		# Get the folder
 		folder = self.christmas["Folders"]["Year"][folder_name]["root"]
@@ -473,15 +873,21 @@ class Christmas():
 		# Open it
 		self.System.Open(folder)
 
-	def Open_Music_Player(self):
+	def Open_Music_Player(self, music_player):
+		# Show the "Christmas step action" text in the user language
+		print(self.Language.language_texts["christmas_step_action"] + ":")
+
+		# Updates the "Music player" dictionary with the value corresponding to the specified "music player" parameter
+		self.christmas["Music player"] = self.christmas["Music players"][music_player]
+
 		# Create a shortcut to the text template about opening the music player for the user to listen to the playlist of Christmas songs
 		text_template = self.language_texts["opening_the_{}_music_player_for_you_to_listen_to_the_playlist_of_christmas_songs"]
 
 		# Format the text template with the name of the music player
 		text = text_template.format(self.christmas["Music player"]["Name"])
 
-		# Show the text
-		print(text + "...")
+		# Show the text with a tab
+		print("\t" + text + "...")
 
 		# Open the music player program so the user can listen to the soundtrack of the story
 		self.System.Open(self.christmas["Music player"]["Link"], verbose = False)
@@ -490,75 +896,6 @@ class Christmas():
 		if self.switches["Testing"] == False:
 			# Wait for one second
 			self.Date.Sleep(1)
-
-	def Open_Social_Networks(self, social_networks):
-		# Define a local "skip" switch initially as False
-		skip = False
-
-		# If the "social networks" parameter is "Twitter"
-		if social_networks == "Twitter":
-			# Define the list of social networks as only Twitter
-			self.social_networks["List"] = [
-				"Twitter"
-			]
-
-			# Define the input text to be about when the user finishes scheduling the tweets
-			self.social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_scheduling_the_tweets_of_the, type: long"]
-
-		# If the "social networks" parameter not "Twitter"
-		if social_networks != "Twitter":
-			# Reset the list of social networks to be empty
-			self.social_networks["List"] = []
-
-			# If the social networks parameter is a string
-			if type(social_networks) == str:
-				# Add it to the list of social networks
-				self.social_networks["List"].append(social_networks)
-
-			# If the social networks parameter is a list
-			if type(social_networks) == list:
-				# Extend the list of social networks with it
-				self.social_networks["List"].extend(social_networks)
-
-			# Update the number of social networks
-			self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
-
-		# Create a local copy of the list of social networks
-		social_networks_copy = self.social_networks["List"].copy()
-
-		# Iterate through the local list of social networks
-		for social_network_number, social_network in enumerate(social_networks_copy, start = 1):
-			# Update the "Iteration" number
-			self.social_networks["Numbers"]["Iteration"] = social_network_number
-
-			# Update the list of social networks to be the local current social network
-			self.social_networks["List"] = [
-				social_network
-			]
-
-			# If the "social networks" parameter is not "Twitter"
-			if social_networks != "Twitter":
-				# Create a shortcut to the text template to ask the user to press Enter when they finish posting the "Merry Christmas" text on the social network
-				text_template = self.language_texts["press_enter_when_you_finish_posting_the_merry_christmas, type: long"]
-
-				# Format the text template with the social network name
-				text = text_template.format(social_network)
-
-				# Update the input text
-				self.social_networks["Input text"] = text
-
-				# If the "social networks" parameter is not "Wattpad"
-				if social_networks != "Wattpad":
-					# Change the "First separator" state to True
-					self.social_networks["States"]["First separator"] = True
-
-			# If the "social networks" parameter is "Wattpad"
-			if social_networks == "Wattpad":
-				# Show the first space
-				self.social_networks["Spaces"]["First"] = True
-
-			# Open the social network using the "Open_Social_Network" sub-class of the "Social_Networks" class
-			self.Social_Networks.Open_Social_Network(self.social_networks)
 
 	def Create_Discord_Status(self):
 		# Define the status as the "Merry Christmas" in the user language plus the current year, and the Christmas tree and present emojis
@@ -580,10 +917,10 @@ class Christmas():
 
 		# Iterate through the list of file names
 		for file_name in file_names:
-			# If the file name is "Texts"
-			if file_name == "Texts":
-				# Define the file as the merry Christmas "Texts" file
-				file = self.christmas["Files"]["Merry Christmas"]["Texts"]
+			# If the file name is inside the "Merry Christmas" dictionary
+			if file_name in self.christmas["Files"]["Merry Christmas"]:
+				# Define the file as the file inside that dictionary
+				file = self.christmas["Files"]["Merry Christmas"][file_name]
 
 			# Else, get the file from the merry Christmas "Social networks" dictionary
 			else:
@@ -602,7 +939,7 @@ class Christmas():
 
 	def Open_Module(self, module_title):
 		# Get the list of files from the apps "Shortcuts" folder
-		files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["White"]["root"])["file"]["list"]
+		files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["White"]["root"])["File"]["List"]
 
 		# Iterate through the list of files
 		for file in files:
@@ -614,27 +951,30 @@ class Christmas():
 		# Open the "Apps.lnk" shortcut
 		self.System.Open(apps, verbose = False)
 
-		# Create a shortcut to the "Planning" folder of the "Christmas" folder of the current year
-		planning_folder = self.current_year["Folders"]["Christmas"]["Planning"]
+		# Define the local list of item types
+		item_types = [
+			"Watch",
+			"Eat"
+		]
 
-		# Iterate through the list of item types
-		for item_type in ["Watch", "Eat"]:
-			# Define the text key for the file
-			text_key = item_type.lower() + ", title()"
+		# Iterate through the local list of item types
+		for item_type in item_types:
+			# Define the text key for the file as "things_to_" plus the item type in lowercase
+			text_key = "things_to_" + item_type.lower()
 
 			# Get the text for the file in the user language
-			text = self.Language.language_texts[text_key]
+			text = self.language_texts[text_key]
 
 			# Show the text in the user language
 			print(text + ":")
 
-			# Get the text_file
-			text_file = planning_folder[item_type]
+			# Get the text file
+			text_file = self.christmas["Files"][item_type]
 
 			# Open the text file
 			self.System.Open(text_file, verbose = False)
 
-			# Get the lines of the text files
+			# Get the lines of the text file
 			lines = self.File.Contents(text_file)["Lines"]
 
 			# Define the tab as one tab
@@ -645,22 +985,18 @@ class Christmas():
 				# Show the "[Nothing]" text with the tab
 				print(tab + "[" + self.Language.language_texts["nothing, title()"] + "]")
 
-			# Iterate through the list of lines
-			i = 1
-			for line in lines:
+			# Iterate through the line numbers and lines inside the list of lines
+			for line_number, line in enumerate(lines, start = 1):
 				# Show the tab, the line number, and the line
-				print(tab + str(i) + ". " + line)
+				print(tab + str(line_number) + ". " + line)
 
-				# Add one to the "i" number
-				i += 1
-
-			# If the item type is not "Eat"
-			if item_type != "Eat":
+			# If the item type is not the last one
+			if item_type != item_types[-1]:
 				# Show a space separator at the end
 				print()
 
-		# Define the input text to be about when the user finishes watching all of the Christmas episodes
-		input_text = self.language_texts["press_enter_when_you_finish_watching_all_of_the_christmas_episodes"]
+		# Define the input text to be about when the user finishes watching all of the Christmas-special episodes
+		input_text = self.language_texts["press_enter_when_you_finish_watching_all_of_the_christmas_special_episodes"]
 
 		# Use it to ask the user to press Enter when they finish watching
 		self.Input.Type(input_text)

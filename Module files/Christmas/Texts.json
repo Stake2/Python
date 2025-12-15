@@ -1,15 +1,55 @@
 {
-	"today_is_not_the_christmas_day_wait_until": {
-		"pt": "Hoje não é o dia de Natal, espere até",
-		"en": "Today is not the Christmas day, wait until"
+	"executing_the_christmas_steps_that_are_not_done_on_christmas_dedicated_days": {
+		"pt": "Executando as etapas de Natal que não são feitas em dias dedicados ao Natal",
+		"en": "Executing the Christmas steps that are not done on Christmas-dedicated days"
 	},
-	"starting_christmas_day_for_the_year_{}": {
-		"en": "Starting Christmas day for the year {}",
+	"you_finished_completing_the_christmas_steps, type: long": {
+		"pt": "Você terminou de completar as etapas de Natal que não são feitas em dias dedicados ao Natal",
+		"en": "You finished completing the Christmas steps that are not done on Christmas-dedicated days"
+	},
+	"starting_christmas_day_for_the_year_of_{}": {
+		"en": "Starting Christmas day for the year of {}",
 		"pt": "Iniciando o dia de Natal para o ano de {}"
 	},
-	"opening_the_christmas_planning_file": {
-		"en": "Opening the Christmas planning file",
-		"pt": "Abrindo o arquivo de planejamento de Natal"
+	"your_christmas_of_{}_is_finished_congratulations": {
+		"pt": "Seu Natal de {} está concluído, parabéns!",
+		"en": "Your Christmas of {} is finished, congratulations!"
+	},
+	"today_is_not_the_day_of_the_first_christmas_step": {
+		"pt": "Hoje não é o dia da primeira etapa de Natal",
+		"en": "Today is not the day of the first Christmas step"
+	},
+	"you_completed_all_the_christmas_steps_that_are_not_for_the_for_the_actual_christmas, type: long": {
+		"pt": "Você completou todas as etapas de Natal que não são para os dias de Natal, e hoje não é um dia escolhido para celebrar o Natal",
+		"en": "You completed all the Christmas steps that are not for the actual Christmas days, and today is not a day chosen to celebrate Christmas"
+	},
+	"status_of_the_christmas_steps": {
+		"pt": "Status das etapas de Natal",
+		"en": "Status of the Christmas steps"
+	},
+	"day_to_complete_the_christmas_step": {
+		"pt": "Dia para completar a etapa de Natal",
+		"en": "Day to complete the Christmas step"
+	},
+	"interval_of_days_to_complete_the_christmas_step": {
+		"pt": "Intervalo de dias para completar a etapa de Natal",
+		"en": "Interval of days to complete the Christmas step"
+	},
+	"do_you_want_to_make_a_pause_and_continue_later": {
+		"pt": "Você quer fazer uma pausa e continuar depois",
+		"en": "Do you want to make a pause and continue later"
+	},
+	"come_back_when_you_want_to_continue_completing_the_christmas_steps, type: long": {
+		"pt": "Volte quando quiser continuar realizando as etapas de Natal para o {}!",
+		"en": "Come back when you want to continue completing the Christmas steps for the {}!"
+	},
+	"opening_the_image_folder_of_the_digital_identity_{}": {
+		"en": "Opening the image folder of the digital identity \"{}\"",
+		"pt": "Abrindo a pasta de imagens da identidade digital \"{}\""
+	},
+	"press_enter_when_you_finish_changing_your_profile_picture_[identity_name]_on_{social_network}": {
+		"en": "Press Enter when you finish changing your profile picture [identity_name] on {social_network}",
+		"pt": "Pressione Enter quando você terminar de mudar a sua foto de perfil [identity_name] no {social_network}"
 	},
 	"using_the_christmas_theme_for_the_computer": {
 		"en": "Using the Christmas theme for the computer",
@@ -23,29 +63,9 @@
 		"en": "Opening the \"{}\" music player for you to listen to the playlist of Christmas songs",
 		"pt": "Abrindo o tocador de música \"{}\" para você ouvir a playlist de músicas de Natal"
 	},
-	"press_enter_when_you_finish_scheduling_the_tweets_of_the, type: long": {
-		"en": "Press Enter when you finish scheduling the tweets of the screenshot and the picture of the decorated computer",
-		"pt": "Pressione Enter quando você terminar de programar os tweets da print e da foto do computador decorado"
-	},
-	"press_enter_when_you_finish_posting_the_merry_christmas, type: long": {
-		"en": "Press Enter when you finish posting the Merry Christmas text on {}",
-		"pt": "Pressione Enter quando você terminar de postar o texto de Feliz Natal no {}"
-	},
-	"do_you_want_to_skip_changing_the_profile_pictures_of_the_social_networks": {
-		"pt": "Você quer pular a mudança das fotos de perfil das redes sociais",
-		"en": "Do you want to skip changing the profile pictures of the social networks"
-	},
-	"opening_this_website_to_change_the_profile_picture": {
-		"pt": "Abrindo esse site para mudar a foto de perfil",
-		"en": "Opening this website to change the profile picture"
-	},
-	"press_enter_when_you_finish_changing_the_profile_picture_of_{}": {
-		"en": "Press Enter when you finish changing the profile picture of {}",
-		"pt": "Pressione Enter quando você terminar de mudar a foto de perfil do {}"
-	},
-	"press_enter_when_you_finish_watching_all_of_the_christmas_episodes": {
-		"pt": "Pressione Enter quando você terminar de assistir todos os episódios de Natal",
-		"en": "Press Enter when you finish watching all of the Christmas episodes"
+	"press_enter_when_you_finish_watching_all_of_the_christmas_special_episodes": {
+		"pt": "Pressione Enter quando você terminar de assistir todos os episódios especiais de Natal",
+		"en": "Press Enter when you finish watching all of the Christmas-special episodes"
 	},
 	"things_to_watch": {
 		"pt": "Coisas para assistir",
@@ -54,13 +74,5 @@
 	"things_to_eat": {
 		"pt": "Coisas para comer",
 		"en": "Things to eat"
-	},
-	"press_enter_when_you_finish_spending_time_with_monika_on_the_game_called_monika_after_story": {
-		"pt": "Pressione Enter quando você terminar de passar um tempo com a Monika no jogo chamado \"Monika After Story\"",
-		"en": "Press Enter when you spending time with Monika on the game called \"Monika After Story\""
-	},
-	"your_christmas_of_{}_is_finished_congratulations!": {
-		"pt": "Seu Natal de {} está concluído, parabéns!",
-		"en": "Your Christmas of {} is finished, congratulations!"
 	}
 }

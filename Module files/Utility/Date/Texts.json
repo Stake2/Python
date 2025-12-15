@@ -487,6 +487,22 @@
 		"en": "Local timezone",
 		"pt": "Fuso horário local"
 	},
+	"date_range": {
+		"pt": "Intervalo de datas",
+		"en": "Date range"
+	},
+	"at_the_day_{}_of_{}": {
+		"pt": "No dia {} de {}",
+		"en": "At the day {} of {}"
+	},
+	"day_{}_of_{}": {
+		"pt": "dia {} de {}",
+		"en": "day {} of {}"
+	},
+	"between_the_days_{}_and_{}_of_{}": {
+		"pt": "Entre os dias {} e {} de {}",
+		"en": "Between the days {} and {} of {}"
+	},
 	"{}_time": {
 		"en": "{} time",
 		"pt": "Tempo de {}"
@@ -518,6 +534,10 @@
 	"[day] [month name] [year], [day name]": {
 		"pt": "[day] de [month name] de [year], [day name]",
 		"en": "[day] [month name] [year], [day name]"
+	},
+	"[day] [month name] [year] ([day name])": {
+		"pt": "[day] de [month name] de [year] ([day name])",
+		"en": "[day] [month name] [year] ([day name])"
 	},
 	"[month name] [day], [year], [day name]": {
 		"pt": "[day] de [month name] de [year], [day name]",

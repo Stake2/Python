@@ -360,6 +360,7 @@ class Date():
 			"[Day] [Month name] [Year]",
 			"[Day name], [Day] [Month name] [Year]",
 			"[Day] [Month name] [Year], [Day name]",
+			"[Day] [Month name] [Year] ([Day name])"
 		]
 
 		# Iterate through the list of date names

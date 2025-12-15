@@ -102,13 +102,13 @@ class Watch_Media(Watch_History):
 			# Ask the user to select the media to be watched
 			self.Select_The_Media()
 
-		# Create a shortcut for the media dictionary
+		# Create a shortcut to the media dictionary
 		self.media = self.dictionary["Media"]
 
 		# Define the open media variable inside the states dictionary of the media
 		self.media["States"]["Open media"] = self.open_media
 
-		# Create a shortcut for the media status
+		# Create a shortcut to the media status
 		media_watching_status = self.media["Details"][self.Language.language_texts["status, title()"]]
 
 		# If the media watching status is equal to "Completed"
@@ -553,7 +553,7 @@ class Watch_Media(Watch_History):
 					self.media["States"]["Dubbing"]["Has dubbing"] == True and
 					self.media["States"]["Dubbing"]["Watch dubbed"] == True
 				):
-					# Create a shortcut for the origin location
+					# Create a shortcut to the origin location
 					origin_location = self.media["Episode"]["Remote"]["origin_location"]
 
 					# Add the "dubbed" text to the origin location

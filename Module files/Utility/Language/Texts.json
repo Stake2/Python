@@ -78,6 +78,14 @@
 			"en": "in English"
 		}
 	},
+	"general_with_hashtags": {
+		"pt": "Geral com hashtags",
+		"en": "General with hashtags"
+	},
+	"[language]_with_hashtags": {
+		"pt": "Português com hashtags",
+		"en": "English with hashtags"
+	},
 	"language_class": {
 		"pt": "Classe \"Language\" (Idioma)",
 		"en": "\"Language\" class"
@@ -321,6 +329,10 @@
 	"take_you": {
 		"en": "take you",
 		"pt": "você levou"
+	},
+	"come_back_when_it_is": {
+		"en": "Come back when it is",
+		"pt": "Volte quando for"
 	},
 	"press_enter_when_you_start": {
 		"en": "Press Enter when you start",
@@ -657,8 +669,8 @@
 		"pt": "Próximo ano"
 	},
 	"firsts_of_the_year": {
-		"pt": "Primeiros do Ano",
-		"en": "Firsts of the Year"
+		"pt": "Primeiros do ano",
+		"en": "Firsts of the year"
 	},
 	"this_year_i": {
 		"pt": "Esse Ano Eu",
@@ -755,8 +767,8 @@
 		"pt": "Texto da entrada atualizado"
 	},
 	"entry_file_in_the_firsts_of_the_year_folder_by_year": {
-		"en": "Entry file in the \"Firsts of the Year\" folder by year",
-		"pt": "Arquivo da entrada na pasta \"Primeiros do Ano\" por ano"
+		"en": "Entry file in the \"Firsts of the year\" folder by year",
+		"pt": "Arquivo da entrada na pasta \"Primeiros do ano\" por ano"
 	},
 	"number_of_the_iteration": {
 		"en": "Number of the iteration",
@@ -1046,6 +1058,10 @@
 		"en": "Difference from UTC",
 		"pt": "Diferença em relação ao UTC"
 	},
+	"wait_until": {
+		"en": "Wait until",
+		"pt": "Espere até"
+	},
 	"profile, title()": {
 		"en": "Profile",
 		"pt": "Perfil"
@@ -1053,6 +1069,10 @@
 	"profiles, title()": {
 		"en": "Profiles",
 		"pt": "Perfis"
+	},
+	"profile_pictures_to_change": {
+		"en": "Profile pictures to change",
+		"pt": "Fotos de perfil para trocar"
 	},
 	"home, title()": {
 		"en": "Home",
@@ -1110,6 +1130,10 @@
 		"en": "Member since",
 		"pt": "Membro desde"
 	},
+	"joined_on": {
+		"en": "Joined on",
+		"pt": "Inscreveu-se em"
+	},
 	"contact_name": {
 		"en": "Contact name",
 		"pt": "Nome de contato"
@@ -1137,6 +1161,10 @@
 	"social_network_number": {
 		"en": "Social network number",
 		"pt": "Número da rede social"
+	},
+	"social_networks_texts": {
+		"en": "Social networks texts",
+		"pt": "Textos das redes socials"
 	},
 	"social_network_information": {
 		"en": "Social network information",
@@ -1170,9 +1198,17 @@
 		"pt": "Usar executável",
 		"en": "Use executable"
 	},
+	"number_of_the_digital_identity": {
+		"en": "Number of the digital identity",
+		"pt": "Número da identidade digital"
+	},
+	"digital_identity": {
+		"en": "Digital identity",
+		"pt": "Identidade digital"
+	},
 	"digital_identities": {
-		"en": "Digital Identities",
-		"pt": "Identidades Digitais"
+		"en": "Digital identities",
+		"pt": "Identidades digitais"
 	},
 	"date_i_met": {
 		"pt": "Data que eu conheci",
@@ -1500,6 +1536,22 @@
 		"en": "Merry Christmas",
 		"pt": "Feliz Natal"
 	},
+	"christmas_step": {
+		"en": "Christmas step",
+		"pt": "Etapa de Natal"
+	},
+	"christmas_step_text": {
+		"en": "Christmas step text",
+		"pt": "Texto da etapa de Natal"
+	},
+	"christmas_step_action": {
+		"en": "Christmas step action",
+		"pt": "Ação da etapa de Natal"
+	},
+	"christmas_version_{}": {
+		"en": "Christmas version {}",
+		"pt": "Versão Natalina {}"
+	},
 	"new_year": {
 		"pt": "Ano Novo",
 		"en": "New Year"
@@ -1766,6 +1818,13 @@
 	"episode_separator": {
 		"en": "Episode separator",
 		"pt": "Separador de episódio"
+	},
+	"of_{}": {
+		"en": "of {}",
+		"pt": {
+			"masculine": "do {}",
+			"feminine": "da {}"
+		}
 	},
 	"of_the_{}": {
 		"pt": "da {}",
@@ -2199,6 +2258,10 @@
 	"friends, title()": {
 		"en": "Friends",
 		"pt": "Amigos"
+	},
+	"for_friends": {
+		"en": "For friends",
+		"pt": "Para amigos"
 	},
 	"memories, title()": {
 		"en": "Memories",

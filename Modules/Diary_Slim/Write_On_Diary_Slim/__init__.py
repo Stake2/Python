@@ -1171,7 +1171,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 		# If the "Text decorator" is inside the statistic dictionary
 		if "Text decorator" in self.dictionary["Text"]["Statistic"]:
-			# Create a shortcut for the text decorator
+			# Create a shortcut to the text decorator
 			text_decorator = self.dictionary["Text"]["Statistic"]["Text decorator"]
 
 			# Get the decorator text key and text

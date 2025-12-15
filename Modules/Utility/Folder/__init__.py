@@ -633,18 +633,36 @@ class Folder():
 			# Define the Network folders dictionary as the local folders dictionary
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
-		# Define the Mega "Image" folders
-		folders = {
-			"Christmas": self.Language.language_texts["christmas, title()"],
-			"Diary": self.Language.language_texts["diary, title()"],
-			"Friends": self.Language.language_texts["friends, title()"],
-			"Social networks": self.Language.language_texts["social_networks"],
-			"Years": self.Date.language_texts["years, title()"]
-		}
+		# ---------- #
 
-		for name, folder in folders.items():
-			self.folders["Image"][name] = {
-				"root": self.folders["Image"]["root"] + folder + "/"
+		# Define the list of folders inside the the Mega "Image" folder
+		folders = [
+			"Christmas",
+			"Diary",
+			"Friends",
+			"Social networks",
+			"Years"
+		]
+
+		# Define the root folder as the Mega "Image" folder
+		root_folder = self.folders["Image"]
+
+		# Iterate through the local list of folder keys
+		for key in folders:
+			# Create the text key by converting the key into lowercase and replacing spaces with underscores
+			text_key = key.lower().replace(" ", "_")
+
+			# If the underscore character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text
+				text_key += ", title()"
+
+			# Get the folder name in the user language
+			folder_name = self.Language.language_texts[text_key]
+
+			# Define the folder inside the root folder dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
 		# ----- #
@@ -655,10 +673,10 @@ class Folder():
 			"Theme"
 		]
 
-		# Define the root folder as the Christmas folder
+		# Define the root folder as the "Christmas" image folder
 		root_folder = self.folders["Image"]["Christmas"]
 
-		# Iterate through the list of folder keys
+		# Iterate through the local list of folder keys
 		for key in folders:
 			# Define the text key for the key
 			text_key = key.lower() + ", title()"
@@ -709,6 +727,34 @@ class Folder():
 
 				# Add the file to the root folder dictionary with the new key
 				root_folder[new_key] = file
+
+		# ----- #
+
+		# Define the list of folders inside the the "Social networks" folder of the Mega "Image" folder
+		folders = [
+			"Digital identities"
+		]
+
+		# Define the root folder as the "Social networks" folder of the Mega "Image" folder
+		root_folder = self.folders["Image"]["Social networks"]
+
+		# Iterate through the local list of folder keys
+		for key in folders:
+			# Create the text key by converting the key into lowercase and replacing spaces with underscores
+			text_key = key.lower().replace(" ", "_")
+
+			# If the underscore character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text
+				text_key += ", title()"
+
+			# Get the folder name in the user language
+			folder_name = self.Language.language_texts[text_key]
+
+			# Define the folder inside the root folder dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
 
 		# ----- #
 

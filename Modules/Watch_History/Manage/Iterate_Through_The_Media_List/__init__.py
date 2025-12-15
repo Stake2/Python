@@ -98,7 +98,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Define the media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
-						# Create a shortcut for the "Media" dictionary for easier typing
+						# Create a shortcut to the "Media" dictionary for easier typing
 						self.media = self.dictionary["Media"]
 
 						# Show the media item title
@@ -287,7 +287,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						(self.dictionary["Media type"]["Plural"]["en"] == "Videos" and
 						not self.media["States"]["Episodic"])
 					):
-						# Create a shortcut for the singular media type
+						# Create a shortcut to the singular media type
 						singular_media_type = self.dictionary["Media type"]["Singular"][self.language["Small"]]
 
 						# Determine the case of the singular media type based on the position of the "{}" characters

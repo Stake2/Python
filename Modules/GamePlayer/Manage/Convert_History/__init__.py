@@ -106,7 +106,7 @@ class Convert_History(GamePlayer):
 					},
 					"Year": {
 						"Gaming sessions": {},
-						"Firsts of the Year": {}
+						"Firsts of the year": {}
 					}
 				},
 				"Entries": {
@@ -212,7 +212,7 @@ class Convert_History(GamePlayer):
 			# Year folders
 
 			# Iterate through the list of folder types
-			for folder_type in ["Gaming sessions", "Firsts of the Year"]:
+			for folder_type in ["Gaming sessions", "Firsts of the year"]:
 				# Get the folder dictionary of the folder type
 				dictionary = year["Folders"]["Year"][folder_type]
 
@@ -225,7 +225,7 @@ class Convert_History(GamePlayer):
 					# Get the root year folders dictionary from the "Years" module
 					year_folders = self.Years.years["Dictionary"][year_number]["Folders"]
 
-					# Create a shortcut for the [folder type] folder
+					# Create a shortcut to the [folder type] folder
 					folder = year_folders[language][folder_type]
 
 					# If the folder type is "Gaming sessions"
@@ -243,12 +243,12 @@ class Convert_History(GamePlayer):
 								"root": folder["root"] + language_game_type + "/"
 							}
 
-					# If the folder type is "Firsts of the Year"
-					if folder_type == "Firsts of the Year":
+					# If the folder type is "Firsts of the year"
+					if folder_type == "Firsts of the year":
 						# Define the sub-folder name as the "Gaming session" text in the current language
 						sub_folder_name = self.Language.texts["gaming_session"][language]
 
-						# Define the folder as the root "Firsts of the Year" plus the sub-folder
+						# Define the folder as the root "Firsts of the year" plus the sub-folder
 						folder = {
 							"root": folder["root"] + sub_folder_name + "/"
 						}
@@ -709,8 +709,8 @@ class Convert_History(GamePlayer):
 					"Play History (by game type)": {},
 					"Gaming sessions (Português)": {},
 					"Gaming sessions (English)": {},
-					"Firsts of the Year (Português)": {},
-					"Firsts of the Year (English)": {},
+					"Firsts of the year (Português)": {},
+					"Firsts of the year (English)": {},
 					"Played": {},
 					"Played (sub-game)": {}
 				}
@@ -741,12 +741,12 @@ class Convert_History(GamePlayer):
 					# If the gaming session is the first one in the year
 					if gaming_session_number == 1:
 						# Define the entry key to create the dictionary
-						entry_key = "Firsts of the Year ({})".format(full_language)
+						entry_key = "Firsts of the year ({})".format(full_language)
 
 						# Define the file
-						file = year["Folders"]["Year"]["Firsts of the Year"][small_language]["root"] + file_names["Sanitized"][small_language] + ".txt"
+						file = year["Folders"]["Year"]["Firsts of the year"][small_language]["root"] + file_names["Sanitized"][small_language] + ".txt"
 
-						# Define the language "Firsts of the Year" entry file dictionary
+						# Define the language "Firsts of the year" entry file dictionary
 						entry_files[entry_key] = {
 							"Language": small_language,
 							"File": file

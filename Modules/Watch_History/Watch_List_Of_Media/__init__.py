@@ -43,7 +43,7 @@ class Watch_List_Of_Media(Watch_History):
 		self.Watch_The_Media()
 
 	def Define_Media_List(self):
-		# Create a shortcut for the watch list file
+		# Create a shortcut to the watch list file
 		file = self.dictionary["Files"]["Watch list"]
 
 		# If the file exists and is not empty

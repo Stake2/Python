@@ -237,13 +237,13 @@ class GamePlayer(object):
 			# Add the class to the current class
 			setattr(self, class_title, class_dictionary["Object"])
 
-		# Sort the dictionary of classes with the order of the list of classes
+		# Sort the dictionary of classes with the order being the list of classes
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 		# ---------- #
 
 		# Get the "Today_Is_Christmas" True or False variable
-		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
+		self.Today_Is_Christmas = self.Christmas.Today_Is_Day()
 
 	def Define_Folders_And_Files(self):
 		# If there is no current year variable inside the self object
@@ -253,7 +253,7 @@ class GamePlayer(object):
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Create a shortcut for the folder
+			# Create a shortcut to the folder
 			folder = self.current_year["Folders"][language]
 
 			# Get the "Gaming sessions" text in the current language to be the folder name
@@ -268,7 +268,7 @@ class GamePlayer(object):
 			self.Folder.Create(folder["Gaming sessions"]["root"])
 
 			# Update the folder shortcut
-			folder = self.current_year["Folders"][language]["Firsts of the Year"]
+			folder = self.current_year["Folders"][language]["Firsts of the year"]
 
 			# Update the folder name to "Gaming session"
 			folder_name = self.Language.texts["gaming_session"][language]
@@ -820,7 +820,7 @@ class GamePlayer(object):
 		if game_title not in dictionary["Numbers"]:
 			dictionary["Numbers"][game_title] = 0
 
-		# Create a shortcut for the game variable
+		# Create a shortcut to the game variable
 		game = dictionary["Numbers"][game_title]
 
 		# If the game variable is an integer
@@ -924,7 +924,7 @@ class GamePlayer(object):
 			}
 		}
 
-		# Create a shortcut for the statistic key
+		# Create a shortcut to the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #
@@ -935,7 +935,7 @@ class GamePlayer(object):
 		if "Romanized" in game["Titles"]:
 			title_key = "Romanized"
 
-		# Create a shortcut for the game title
+		# Create a shortcut to the game title
 		game_title = game["Titles"][title_key]
 
 		# Iterate through the list of keys
@@ -1235,7 +1235,7 @@ class GamePlayer(object):
 
 						# If the sub-game title key is inside the statistics dictionary of the module
 						if sub_game_title in statistics[key]["Dictionary"]:
-							# Create a shortcut for the root sub-game dictionary as the "item dictionary" variable
+							# Create a shortcut to the root sub-game dictionary as the "item dictionary" variable
 							item_dictionary = statistics[key]["Dictionary"]
 
 							# Define the "key to use" as the sub-game title
@@ -1246,7 +1246,7 @@ class GamePlayer(object):
 							# Add the item title to the dictionary with the correct number (zero or the number of times the user played the root game)
 							statistics[key]["Dictionary"][game_title]["Dictionary"][item_title] = number
 
-							# Create a shortcut for the sub-game dictionary on the game title dictionary as the "item dictionary" variable
+							# Create a shortcut to the sub-game dictionary on the game title dictionary as the "item dictionary" variable
 							item_dictionary = statistics[key]["Dictionary"][game_title]["Dictionary"]
 
 							# Define the "key to use" as the item title
@@ -2323,10 +2323,10 @@ class GamePlayer(object):
 			game["Sub-game"] != None and
 			game["Sub-game"] != game["Title"]
 		):
-			# Create a shortcut for the "Items" dictionary
+			# Create a shortcut to the "Items" dictionary
 			items_dictionary = game["Sub-games"]["Items"]["Dictionary"]
 
-			# Create a shortcut for the sub-game title
+			# Create a shortcut to the sub-game title
 			sub_game_title = game["Sub-game"]
 
 			# If the sub-game title is present inside the dictionary
@@ -2876,7 +2876,7 @@ class GamePlayer(object):
 		self.Check_Status(dictionary)
 
 	def Check_Status(self, dictionary):
-		# Create a shortcut for the game type
+		# Create a shortcut to the game type
 		game_type = dictionary
 
 		# If the "Type" key is inside the dictionary parameter

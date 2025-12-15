@@ -667,6 +667,24 @@ class JSON():
 	def List_Has_Only_Numbers(self, items):
 		return all(isinstance(item, int) for item in items)
 
+	def Add_To_End_Of_Dictionary(self, dictionary, to_add):
+		# List the keys of the items dictionary
+		keys = list(dictionary.keys())
+
+		# Remove the keys
+		for key in to_add:
+			keys.remove(key)
+
+		# Add them to the end
+		for key in to_add:
+			keys.append(key)
+
+		# Sort the dictionary keys using the updated order
+		dictionary = self.Sort_Item_List(dictionary, order = keys)
+
+		# Return the dictionary
+		return dictionary
+
 	def Sort_Item_List(self, items, order):
 		# Define the new items as an empty dictionary
 		new_items = {}

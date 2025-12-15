@@ -214,7 +214,7 @@ class Python(object):
 			# Add the module type dictionary to the root dictionary
 			self.python["Modules"]["Types"]["Dictionary"][module_type["Name"]] = module_type
 
-		# Create a shortcut for the "Modules" dictionary
+		# Create a shortcut to the "Modules" dictionary
 		self.modules = self.python["Modules"]["Dictionary"]
 
 		# ---------- #

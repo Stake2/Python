@@ -61,7 +61,7 @@ class Write(Stories):
 
 		# Iterate through the list of chapter writing steps
 		for key in self.writing["Steps"]["List"]:
-			# Define the method name for the step by converting the key into title case and replacing spaces with underlines
+			# Define the method name for the step by converting the key into title case and replacing spaces with underscores
 			method_name = key.title().replace(" ", "_")
 
 			# Define the writing step dictionary with the key, method name, and method

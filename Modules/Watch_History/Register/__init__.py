@@ -85,7 +85,7 @@ class Register(Watch_History):
 		super().__init__()
 
 	def Register_In_JSON(self):
-		# Create a shortcut for the plural form of the media type in English
+		# Create a shortcut to the plural form of the media type in English
 		self.media_type = self.dictionary["Media type"]["Plural"]["en"]
 
 		# ---------- #
@@ -239,7 +239,7 @@ class Register(Watch_History):
 			}
 		}
 
-		# Create a shortcut for the entry dictionary
+		# Create a shortcut to the entry dictionary
 		self.entry_dictionary = self.dictionaries["Entries"]["Dictionary"][self.entry_name]
 
 		# ---------- #
@@ -334,7 +334,7 @@ class Register(Watch_History):
 		if "Comment" in self.dictionary["Comment Writer"]:
 			self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Comment"] = self.dictionary["Comment Writer"]["Comment"]
 
-			# Create a shortcut for the "Comment" dictionary
+			# Create a shortcut to the "Comment" dictionary
 			comment = self.dictionaries["Entries"]["Dictionary"][self.entry_name]["Comment"]
 
 			# If the "Comment times" is in the comment dictionary
@@ -798,7 +798,7 @@ class Register(Watch_History):
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
 		for small_language in self.languages["Small"]:
-			# Create a shortcut for the folder
+			# Create a shortcut to the folder
 			folder = self.current_year["Folders"][small_language]["Watched media"]
 
 			# Define the media type folder name
@@ -829,7 +829,7 @@ class Register(Watch_History):
 			# Create the "First of the Year" entry file
 			if self.media["States"]["First media type entry in year"] == True:
 				# Define the folder shortcut
-				folder = self.current_year["Folders"][small_language]["Firsts of the Year"]["Media"]
+				folder = self.current_year["Folders"][small_language]["Firsts of the year"]["Media"]
 
 				# Define and create the "First of the Year" entry file
 				folder["Entry file"] = folder["root"] + entry_file_name + ".txt"

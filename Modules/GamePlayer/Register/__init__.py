@@ -181,7 +181,7 @@ class Register(GamePlayer):
 					}
 
 	def Register_In_JSON(self):
-		# Create a shortcut for the plural form of the game type in English and make a sanitized version
+		# Create a shortcut to the plural form of the game type in English and make a sanitized version
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
 		self.sanitized_game_type = self.game_type.lower().replace(" ", "_")
 
@@ -341,7 +341,7 @@ class Register(GamePlayer):
 			"Gaming environment": self.game["Gaming environment"]["en"] # The gaming environment where the game was played
 		}
 
-		# Create a shortcut for the entry dictionary
+		# Create a shortcut to the entry dictionary
 		self.entry_dictionary = self.dictionaries["Sessions"]["Dictionary"][self.entry_name]
 
 		# ---------- #
@@ -827,7 +827,7 @@ class Register(GamePlayer):
 			# Define an empty string to add the descriptions to
 			descriptions = ""
 
-			# Create a shortcut for the descriptions dictionary
+			# Create a shortcut to the descriptions dictionary
 			descriptions_dictionary = self.dictionary["Entry"]["Diary Slim"]["Descriptions"]
 
 			# Define the description to be added based on the language
@@ -861,7 +861,7 @@ class Register(GamePlayer):
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Create a shortcut for the folder
+			# Create a shortcut to the folder
 			folder = self.current_year["Folders"][language]["Gaming sessions"]
 
 			# Define the game type folder name
@@ -892,7 +892,7 @@ class Register(GamePlayer):
 			# Create the "First of the Year" entry file
 			if self.game["States"]["First gaming session by game type in the year"] == True:
 				# Define the folder shortcut
-				folder = self.current_year["Folders"][language]["Firsts of the Year"]["Gaming sessions"]
+				folder = self.current_year["Folders"][language]["Firsts of the year"]["Gaming sessions"]
 
 				# Define and create the "First of the Year" entry file
 				folder["Entry file"] = folder["root"] + entry_file_name + ".txt"

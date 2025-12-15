@@ -605,17 +605,195 @@ class File():
 
 		return dictionary
 
-	def Open(self, item, open = False):
-		if "https" not in item:
-			item = self.Sanitize(item)
+	def Text_From_List(self, items, genders = [], language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False):
+		# Define the text initially as an empty string
+		text = ""
 
-		self.Verbose(self.language_texts["opening, title()"], item, verbose = True)
+		# Define the texts dictionary as the "language texts" dictionary of the "Language" utility class
+		texts = self.Language.language_texts
 
-		if self.switches["Testing"] == False or open == True:
-			os.startfile(item)
+		# If the "language" parameter is not None
+		if language != None:
+			# Define the texts dictionary as the "texts" dictionary of the "Language" utility class
+			texts = self.Language.texts
 
-	def Close(self, program):
-		import psutil
+		# Iterate through the indexes and items inside the list of items
+		for index, item in enumerate(items):
+			# Create a backup of the item
+			item_backup = item
 
-		for process in (process for process in psutil.process_iter() if program.split("\\")[program.count("\\")] in process.name()):
-			process.kill()
+			# If the list of genders is not empty
+			if genders != []:
+				# Get the current gender
+				gender = genders[index]
+
+				# Define the text key for the prefix as the "of_{}" text
+				text_key = "of_{}"
+
+				# Get the prefix text using the text key
+				prefix_text = texts[text_key]
+
+				# If the "language" parameter is not None
+				if language != None:
+					# Get the text in the correct language
+					prefix_text = prefix_text[language]
+
+				# If the current gender is inside the prefix text
+				if gender in prefix_text:
+					# Get the text in the currrent gender
+					prefix_text = prefix_text[gender]
+
+			# If the item backup is the last one inside the list
+			# And the "next line" parameter is False
+			if (
+				item_backup == items[-1] and
+				next_line == False
+			):
+				# If the list of items is two or greater than two
+				if (
+					len(items) == 2 or
+					len(items) > 2
+				):
+					# Define the separator text as an empty string
+					separator_text = ""
+
+					# If the "and text" parameter is True, define the separator text as "and"
+					if and_text == True:
+						separator_text = texts["and"]
+
+					# If the "or text" parameter is True, define the separator text as "or"
+					if or_text == True:
+						separator_text = texts["or"]
+
+					# If the "language" parameter is not None
+					# And the separator text is not empty
+					if (
+						language != None and
+						separator_text != ""
+					):
+						# Get the separator text in the correct language
+						separator_text = separator_text[language]
+
+					# If the separator is not empty, add the separator to the text first
+					if separator_text != "":
+						text += separator_text + " "
+
+			# If the "lower" parameter is True, then convert the item into lowercase
+			if lower == True:
+				item = item.lower()
+
+			# If the "quotes" parameter is True, add quotes around the item
+			if quotes == True:
+				item = '"' + item + '"'
+
+			# If the list of genders is not empty
+			if genders != []:
+				# If the "language" parameter is not English
+				# Or it is
+				# And the item is the first one
+				if (
+					language != "en" or
+					language == "en" and
+					index == 0
+				):
+					# Format the item using the prefix text
+					item = prefix_text.format(item)
+
+			# If the item index is not the last one inside the list
+			# And the "next line" parameter is False
+			if (
+				index != len(items) - 1 and
+				next_line == False
+			):
+				# If the number of items is two
+				if len(items) == 2:
+					# Add a space to the end of the item
+					item += " "
+
+				# If the number of items is greater than two
+				if len(items) > 2:
+					# Add a comma and a space to the end of the item
+					item += ", "
+
+			# If the item index is not the last one inside the list
+			# And the "next line" parameter is True
+			if (
+				index < len(items) - 1 and
+				next_line == True
+			):
+				# Add a line break to the item
+				item += "\n"
+
+			# If the item backup is an empty string
+			# And the "next line" parameter is True
+			if (
+				item_backup == "" and
+				next_line == True
+			):
+				# Define the item as the line break
+				item = "\n"
+
+			# Add the item to the text
+			text += item
+
+		# Return the full text
+		return text
+
+	def Dictionary_2(self, file, convert_lists_into_texts = False, convert_single_lists = False):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Get the contents of the file
+		contents = self.Contents(file)
+
+		# Get the list of lines of the file
+		lines = contents["Lines"]
+
+		# Define the empty dictionary
+		dictionary = {}
+
+		# Define the current key as an empty string
+		current_key = ""
+
+		# Iterate through the list of lines of the file
+		for line in lines:
+			# If the line is not empty and it ends with a colon
+			if line.endswith(":"):
+				# Define the current key as the line
+				current_key = line.replace(":", "")
+
+				# Create the list inside the current key
+				dictionary[current_key] = []
+
+			# If the line is not a key
+			# And the current key is defined
+			elif current_key != "":
+				# Add the line to the current list
+				dictionary[current_key].append(line)
+
+		# Iterate through the keys and values
+		for key, value in dictionary.items():
+			# If the last line inside the value is an empty string
+			if value[-1] == "":
+				# Remove it
+				value.pop(-1)
+
+			# If the "convert lists into texts" parameter is True
+			if convert_lists_into_texts == True:
+				# Convert the value list into a text
+				value = self.Text_From_List(value)
+
+			# If the "convert single lists" parameter is True
+			# And the number of items inside the value is only one
+			if (
+				convert_single_lists == True and
+				len(value) == 1
+			):
+				# Update the value to be only the first item
+				value = value[0]
+
+			# Update the value inside the root dictionary to be local value
+			dictionary[key] = value
+
+		# Return the dictionary
+		return dictionary

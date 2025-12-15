@@ -292,7 +292,7 @@ class Comment_Writer(Watch_History):
 				(self.dictionary["Media type"]["Plural"]["en"] == "Videos" and
 				not self.media["States"]["Episodic"])
 			):
-				# Create a shortcut for the singular media type
+				# Create a shortcut to the singular media type
 				singular_media_type = self.dictionary["Media type"]["Singular"][self.language["Small"]]
 
 				# Determine the case of the singular media type based on the position of the "{}" characters

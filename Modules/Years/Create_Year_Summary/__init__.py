@@ -615,10 +615,10 @@ class Create_Year_Summary(Years):
 
 			# Iterate through the keys and header texts inside the summary "Header"
 			for key, header_text in self.summary["Header"].items():
-				# Define the text key for the key
+				# Create the text key by converting the key into lowercase and replacing spaces with underscores
 				text_key = key.lower().replace(" ", "_")
 
-				# If the underline is not inside the text key
+				# If the underscore character is not inside the text key
 				if "_" not in text_key:
 					# Add the ", title()" text
 					text_key += ", title()"

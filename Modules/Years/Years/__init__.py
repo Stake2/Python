@@ -24,8 +24,14 @@ class Years(object):
 		# Define the dictionaries of the class
 		self.Define_Dictionaries()
 
-		# Define the "Folder item names" dictionary
-		self.Define_Folder_Item_Names_Dictionary()
+		# Define the "Folder items" dictionary
+		self.Define_Folder_Items_Dictionary()
+
+		# Define the "Social networks" dictionary
+		self.Define_Social_Networks()
+
+		# Define the "Format strings" dictionary
+		self.Define_Format_Strings()
 
 		# Define the root "Years" dictionary
 		self.Define_Years_Dictionary()
@@ -161,13 +167,13 @@ class Years(object):
 
 		# Iterate through the separators and enumerate them
 		for number, key in enumerate(keys.copy()):
-			# Replace the dashes with underlines
+			# Replace the dashes with underscores
 			separator = separators_copy[key].replace("-", "_")
 
 			# Update the separator inside the root list
 			separators_copy[key] = separator
 
-		# Add the underline separators to the original separators dictionary
+		# Add the underscore separators to the original separators dictionary
 		self.separators["Underlines"] = separators_copy
 
 	def Define_Folders_And_Files(self):
@@ -247,314 +253,119 @@ class Years(object):
 			}
 		}
 
-		# Update the number of websites
+		# Update the total number of websites
 		self.years["Summary"]["Websites"]["Numbers"]["Total"] = len(list(self.years["Summary"]["Websites"]["Dictionary"].keys()))
 
-	def Define_Folder_Item_Names_Dictionary(self):
-		# Define the root "Folder item names" dictionary
-		self.years["Folder item names"] = {
-			"Root": {
-				"Folders": [
-					"Christmas",
-					"Summary",
-					"New Year"
-					# Language folders
-				],
-				"Files": [
-					"Created in",
-					"Edited in"
-				]
+	def Define_Social_Networks(self):
+		# Define the root "Social networks" dictionary
+		self.social_networks = {
+			"Numbers": {
+				"Total": 0
 			},
-			"Language": {
-				"Folders": [
-					"Completed tasks",
-					"Firsts of the Year",
-					"Gaming sessions",
-					"Watched media"
-				],
-				"Files": [
-					"Welcome",
-					"Summary",
-					"This Year I",
-					"This Year I (post)",
-					"This Year I (personal version)",
-					"Goodbye"
-				],
-				"User language files": [
-					"Yearly statistics",
-					"FutureMe"
-				]
-			},
-			"Christmas": {
-				"Folders": [
-					"Planning",
-					"Merry Christmas"
-				],
-				"Files": [
-					"Texts"
-				]
-			},
-			"New Year": {
-				"Folders": [
-					"Social networks"
-				],
-				"Files": [
-					"Texts"
-				]
-			},
-			"Additional items": {
-				"Christmas": {
-					"Planning": {
-						"Files": [
-							"Watch",
-							"Eat"
-						]
+			"List": [
+				"Merry Christmas",
+				"Summary",
+				"New Year"
+			],
+			"Dictionary": {
+				"Merry Christmas": {
+					"Name": {},
+					"Numbers": {
+						"Total": 0
 					},
-					"Merry Christmas": {
-						"Files": [
-							"Texts"
-						]
-					}
-				}
-			},
-			"Texts": {
-				"Christmas": {
-					"Planning": {
-						"Files": [
-							"Objects"
-							# Full language files
-						],
-						"JSON": [
-							"Objects"
-						]
-					},
-					"Merry Christmas": {
-						"Folders": [
-							"Social networks"
-						],
-						"Files": [
-							"Texts"
-						]
-					}
+					"List": [
+						"Twitter",
+						"Bluesky {} Threads",
+						"WhatsApp",
+						"Instagram {} Facebook",
+						"Discord",
+						"Wattpad"
+					],
+					"Dictionary": {}
 				},
-				"New Year": {
-					"Files": [
-						"Planning",
-						"Texts"
-					]
+				"Summary": {
+					"Name": {},
+					"Numbers": {
+						"Total": 0
+					},
+					"List": [
+						"Twitter, Bluesky, {} Threads",
+						"WhatsApp",
+						"Instagram {} Facebook",
+						"Discord"
+					],
+					"Dictionary": {}
 				}
-			},
-			"Social networks": {
-				"New Year": [
-					
-				]
 			}
 		}
 
-		# Define the list of keys to use as the list of keys of the "folder item names" dictionary
-		keys = list(self.years["Folder item names"].keys())
+		# Update the total number of social network lists
+		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
 
-		# Define the keys to remove
-		to_remove = [
-			"Additional items",
-			"Texts",
-			"Social networks"
-		]
+		# Iterate through the list names and dictionaries isnide the root social networks "Dictionary"
+		for list_name, dictionary in deepcopy(self.social_networks["Dictionary"]).items():
+			# Update the total number of social networks
+			dictionary["Numbers"]["Total"] = len(dictionary["List"])
 
-		# Remove the keys
-		for key in to_remove:
-			keys.remove(key)
+			# If the "Name" dictionary is empty
+			if dictionary["Name"] == {}:
+				# Create the text key by converting the list name into lowercase and replacing spaces with underscores
+				text_key = list_name.lower().replace(" ", "_")
 
-		# Iterate through the list of keys
-		# keys = ["Root", "Language", "Christmas", "New Year"]
-		for folder_key in keys:
-			# Get the item types list
-			item_types = self.years["Folder item names"][folder_key]
+				# If the underscore character is not inside the text key
+				if "_" not in text_key:
+					# Add the ", title()" text
+					text_key += ", title()"
 
-			# Iterate through the list of item types
-			# item_types = ["Folders", "Files"]
-			for item_type in item_types:
-				# Transform the names list into a dictionary
-				dictionary = {
-					"List": item_types[item_type],
-					"Dictionary": {}
+				# Define the name as the text dictionary inside the text key
+				name = self.Language.texts[text_key]
+
+				# Update the root "Name" dictionary
+				dictionary["Name"] = name
+
+			# Define a local social network number
+			social_network_number = 0
+
+			# Iterate through the list of social network names
+			for social_network_name in dictionary["List"].copy():
+				# Create the local social network dictionary
+				social_network = {
+					"Name": {}
 				}
 
-				# Iterate through the items inside the list
-				for item_name in dictionary["List"]:
-					# Define the item as a dictionary inside the local dictionary
-					dictionary["Dictionary"][item_name] = {}
+				# Iterate through the list of small languages
+				for language in self.languages["Small"]:
+					# Define the language social network name as the root name
+					language_social_network_name = social_network_name
 
-					# Define the list of small languages
-					languages = self.languages["Small"]
+					# If the "{}" format string is inside the language social network name
+					if "{}" in language_social_network_name:
+						# Format it with the "and" text in the current language
+						language_social_network_name = language_social_network_name.format(self.Language.texts["and"][language])
 
-					# If the item type is "User language files"
-					if item_type == "User language files":
-						# Define the list of small languages as just the user language
-						languages = [
-							self.language["Small"]
-						]
+					# Add the language social network name to the social network "Name" dictionary in the current language
+					social_network["Name"][language] = language_social_network_name
 
-					# Iterate through the list of small languages
-					for language in languages:
-						# Replace spaces with underscores and lowercase the item name to make the text key
-						text_key = item_name.lower().replace(" ", "_")
+				# Update the social network name to be the one with the "and" text in English
+				social_network_name = social_network_name.format(self.Language.texts["and"]["en"])
 
-						# Remove the parenthesis from the text key
-						text_key = text_key.replace("(", "")
-						text_key = text_key.replace(")", "")
+				# Also update the social network name in the list
+				dictionary["List"][social_network_number] = social_network_name
 
-						# If the underline is not inside the text key
-						if "_" not in text_key:
-							# Add the ", title()" text
-							text_key += ", title()"
+				# Add the social network to the social networks "Dictionary" of the current list
+				dictionary["Dictionary"][social_network_name] = social_network
 
-						# If the text key is inside the language texts dictionary of the "Language" class
-						if text_key in self.Language.texts:
-							# Define the text
-							text = self.Language.texts[text_key][language]
+				# Add one to the local social network number
+				social_network_number += 1
 
-						# Else, use the own item name
-						else:
-							text = item_name
+			# Update the root dictionary with the local one
+			self.social_networks["Dictionary"][list_name] = dictionary
 
-						# Define the folder or file name in the current language as the text
-						dictionary["Dictionary"][item_name][language] = text
+		# Define the "New Year" dictionary as the "Merry Christmas" dictionary because their list of social networks are the same
+		self.social_networks["Dictionary"]["New Year"] = self.social_networks["Dictionary"]["Merry Christmas"]
 
-				# Update the root folder item names dictionary to add the local dictionary
-				self.years["Folder item names"][folder_key][item_type] = dictionary
-
-		# Iterate through the "Additional items" dictionary
-		# Example:
-		# folder: "Christmas"
-		for key, folder in self.years["Folder item names"]["Additional items"].items():
-			# Example:
-			# sub_folder: "Planning"
-			for sub_folder in folder:
-				# Transform the names list into a dictionary
-				dictionary = {
-					"List": folder[sub_folder]["Files"],
-					"Dictionary": {}
-				}
-
-				# Iterate through the items inside the list
-				for item_name in dictionary["List"]:
-					# Define the item as a dictionary inside the local dictionary
-					dictionary["Dictionary"][item_name] = {}
-
-					# Iterate through the list of small languages
-					for language in self.languages["Small"]:
-						# Replace spaces with underscores and lowercase the item name to make the text key
-						text_key = item_name.lower().replace(" ", "_")
-
-						# If the underline is not inside the text key
-						if "_" not in text_key:
-							# Add the ", title()" text
-							text_key += ", title()"
-
-						# Define the folder or file name in the current language as the text
-						dictionary["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
-
-				# Example:
-				# key: "Christmas", sub_folder: "Planning"
-				self.years["Folder item names"]["Additional items"][key][sub_folder]["Files"] = dictionary
-
-		# Iterate through the "Texts" dictionary
-		# Example:
-		# folder: "Christmas"
-		for key, items in self.years["Folder item names"]["Texts"].items():
-			# If the key is "Christmas"
-			if key == "Christmas":
-				# Define the list of sub-folders as the copy of the items dictionary
-				sub_folders = items.copy()
-
-				# Example:
-				# sub_folder: "Planning"
-				for sub_folder, item_types in sub_folders.items():
-					# Iterate through the list of item types
-					# item_types = ["Folders", "Files"]
-					for item_type in item_types:
-						# Define the items as the item type of the sub-folders
-						# Example:
-						# sub_folder: "Planning", item_type: "Folders"
-						items = sub_folders[sub_folder][item_type]
-
-						# Transform the names list into a dictionary
-						dictionary = {
-							"List": items,
-							"Dictionary": {}
-						}
-
-						# Iterate through the item names in the list
-						# Example:
-						# item_name: "Objects"
-						for item_name in dictionary["List"].copy():
-							# Define the empty item name dictionary
-							dictionary["Dictionary"][item_name] = {}
-
-							# Iterate through list of small languages
-							for language in self.languages["Small"]:
-								# Get the text key by converting the item name into lowercase and replace spaces with underlines
-								text_key = item_name.lower().replace(" ", "_")
-
-								# If the underline is not inside the text key
-								if "_" not in text_key:
-									# Add the ", title()" text
-									text_key += ", title()"
-
-								# Define the item name in the current language as the text in the current language
-								dictionary["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
-
-							# Define the local folder dictionary
-							# Example:
-							# key: "Christmas", sub_folder: "Planning"
-							folder_dictionary = self.years["Folder item names"]["Texts"][key][sub_folder]
-
-							# Define the item type key as the local dictionary
-							# Example:
-							# item_type: "Files"
-							folder_dictionary[item_type] = dictionary
-
-			# If the key is "New Year"
-			if key == "New Year":
-				# Iterate through the list of item types
-				# item_types = ["Folders", "Files"]
-				for item_type, sub_items in items.items():
-					# Transform the items list into a dictionary
-					dictionary = {
-						"List": sub_items,
-						"Dictionary": {}
-					}
-
-					# Iterate through the item names in the list
-					# Example:
-					# item_name: "Objects"
-					for item_name in dictionary["List"].copy():
-						# Define the empty dictionary
-						dictionary["Dictionary"][item_name] = {}
-
-						# Iterate through list of small languages
-						for language in self.languages["Small"]:
-							# Get the text key by converting the item name into lowercase and replace spaces with underlines
-							text_key = item_name.lower().replace(" ", "_")
-
-							# If the underline is not inside the text key
-							if "_" not in text_key:
-								# Add the ", title()" text
-								text_key += ", title()"
-
-							# Define the item name in the current language as the text in the current language
-							dictionary["Dictionary"][item_name][language] = self.Language.texts[text_key][language]
-
-						# Define the local folder dictionary
-						# Example:
-						# key: "New Year"
-						folder_dictionary = self.years["Folder item names"]["Texts"][key]
-
-						# Define the item type key as the local dictionary
-						# Example:
-						# item_type: "Files"
-						folder_dictionary[item_type] = dictionary
+		# Update the root "Name" dictionary to be the "New Year" text dictionary
+		self.social_networks["Dictionary"]["New Year"]["Name"] = self.Language.texts["new_year"]
 
 	def Define_Years_Dictionary(self):
 		# Define the root "Years" dictionary
@@ -601,6 +412,9 @@ class Years(object):
 		# Get the list of years (from 2018 to the current year)
 		self.years["List"] = self.Date.Create_Years_List(function = str)
 
+		# Update the total number of years
+		self.years["Numbers"]["Total"] = len(self.years["List"])
+
 		# Define the current year folder
 		current_year_folder = self.years["Folders"]["Text"]["root"] + str(self.date["Units"]["Year"]) + "/"
 
@@ -630,96 +444,48 @@ class Years(object):
 
 			# Iterate through the list of folder types
 			for folder_type in ["Text", "Image"]:
-				# Define the root folder
-				folder = self.years["Folders"][folder_type]["root"] + year_number + "/"
+				# Iterate through the defined list of item types
+				for item_type in ["Folders", "Files"]:
+					# If the folder type is not image
+					# Or it is
+					# And the item type is not "Files"
+					if (
+						folder_type != "Image" or
+						folder_type == "Image" and
+						item_type != "Files"
+					):
+						# Create the empty folder type dictionary inside the item type dictionary
+						# Example: item_type: "Folders", folder_type: "Text"
+						year[item_type][folder_type] = {}
 
-				# Create the local folders dictionary
-				folders = {
-					"root": folder
+				# Create the local year folders dictionary of the folder type
+				year["Folders"][folder_type] = {
+					"root": self.years["Folders"][folder_type]["root"] + year_number + "/"
 				}
 
 				# Create the root year folder
-				self.Folder.Create(folders["root"])
+				self.Folder.Create(year["Folders"][folder_type]["root"])
 
 				# ----- #
 
-				# Define the folder type inside the "Files" dictionary
-				year["Files"][folder_type] = {}
-
 				# If the folder type is "Text"
-				# Then create the year text folders and files
 				if folder_type == "Text":
-					# Define the local data dictionary
-					# With the year number, the folders dictionary, the year dictionary, and the folder type as the current one in the loop
-					data = {
-						"Year": year_number,
-						"Folders": folders,
-						"Dictionary": year,
-						"Folder type": folder_type
-					}
-
-					# Create the folders of the year
-					data = self.Create_Year_Folders(data)
-
-					# Update the root year "Folders" dictionary with the one inside the data dictionary
-					folders = data["Folders"]
-
-					# Update the local year dictionary with the one inside the data dictionary
-					year = data["Dictionary"]
+					# Create the text folders of the year and get back the updated year dictionary
+					year = self.Create_Text_Folders(year)
 
 				# ----- #
 
 				# If the folder type is "Image"
-				# Then create the year image folders and files
 				if folder_type == "Image":
-					# Create image folders of the year "Images" folder
-					folders = self.Create_Image_Folders(folders)
+					# Create the image folders of the year and get back the updated year dictionary
+					year = self.Create_Image_Folders(year)
 
-					# --- #
-
-					# Define the "Christmas" image folders
-
-					# Define the image folder names dictionary
-					folder_names = {
-						"Screenshots": "",
-						"Pictures": ""
-					}
-
-					# Iterate through the folder names
-					for key, folder_name in folder_names.items():
-						# If the folder name is empty
-						if folder_name == "":
-							# Replace spaces with underscores and lowercase the key to make the text key
-							text_key = key.lower().replace(" ", "_")
-
-							# If the underline is not inside the text key
-							if "_" not in text_key:
-								# Add the ", title()" text
-								text_key += ", title()"
-
-							# Get the folder name
-							folder_name = self.Language.language_texts[text_key]
-
-						# Define the folder inside the local folders dictionary
-						folders["Christmas"][key] = {
-							"root": folders["Christmas"]["root"] + folder_name + "/"
-						}
-
-						# Create the folder
-						self.Folder.Create(folders["Christmas"][key]["root"])
-
-					# Define the "Dates.txt" file inside the "Memories" folder
-					year["Files"][folder_type]["Memories"] = {
-						"Dates": folders["Memories"]["root"] + "Dates.txt"
-					}
-
-					self.File.Create(year["Files"][folder_type]["Memories"]["Dates"])
-
-				# Add the local folders dictionary to the local year dictionary
-				year["Folders"][folder_type] = folders
-
-			# Add the keys of the "Text" folders dictionary to the root year "Folders" dictionary
-			year["Folders"].update(year["Folders"]["Text"])
+			# Iterate through the text folders inside the "Text" folders dictionary
+			for key, folder in year["Folders"]["Text"].items():
+				# If the key is not "root"
+				if key != "root":
+					# Add the folder key and value to the root dictionary
+					year["Folders"][key] = folder
 
 			# If the "Text" key is inside the year "Files" dictionary
 			if "Text" in year["Files"]:
@@ -732,62 +498,58 @@ class Years(object):
 		# Define the "Current year" key as the current year dictionary which is inside the root "Years" dictionary
 		self.years["Current year"] = self.years["Dictionary"][self.current_year_number]
 
-		# Update the total number of years
-		self.years["Numbers"]["Total"] = len(self.years["List"])
-
 		# ---------- #
 
 		# Define the root "Texts" dictionary
 		texts = {
-			"Name": "Texts",
+			"Number": "Texts",
 			"Folders": {
-				"Text": {}
+				"Text": {
+					"root": self.years["Folders"]["Text"]["Texts"]["root"]
+				}
 			},
 			"Files": {
 				"Text": {}
 			}
 		}
 
-		# Create the local "Texts" folders dictionary
-		folders = {
-			"root": self.years["Folders"]["Text"]["Texts"]["root"]
-		}
+		# Create the root "Texts" text folder
+		self.Folder.Create(texts["Folders"]["Text"]["root"])
 
-		self.Folder.Create(folders["root"])
+		# Create the text folders of the "Texts" folder and get back the updated texts dictionary
+		texts = self.Create_Text_Folders(texts)
 
-		# Define the local data dictionary
-		# With the year as 2018, the folders dictionary, the "Texts" dictionary, and the folder type as "Text"
-		data = {
-			"Year": "2018",
-			"Folders": folders,
-			"Dictionary": texts,
-			"Folder type": "Text"
-		}
+		# Iterate through the text folders inside the "Text" folders dictionary
+		for key, folder in texts["Folders"]["Text"].items():
+			# If the key is not "root"
+			if key != "root":
+				# Add the folder key and value to the root dictionary
+				texts["Folders"][key] = folder
 
-		# Define the folders of the "Texts" dictionary
-		data = self.Create_Year_Folders(data)
-
-		# Update the root texts "Folders" dictionary with the one inside the data dictionary
-		texts["Folders"] = data["Folders"]
-
-		# Update the root texts "Files" dictionary with the one inside the data dictionary
-		texts["Files"] = data["Dictionary"]["Files"]["Text"]
+		# If the "Text" key is inside the texts "Files" dictionary
+		if "Text" in texts["Files"]:
+			# Add the keys of the "Text" files dictionary to the root texts "Files" dictionary
+			texts["Files"].update(texts["Files"]["Text"])
 
 		# Define the root "Texts" dictionary as the local one
 		self.years["Texts"] = texts
 
 		# ---------- #
 
-		# Create the local "Images" folders dictionary
-		folders = {
-			"root": self.years["Folders"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
+		# Create the local "Images" dictionary
+		images = {
+			"Number": "Image",
+			"Folders": {
+				"root": self.years["Folders"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
+			},
+			"Files": {}
 		}
 
-		# Create image folders of the "Images" folder
-		folders = self.Create_Image_Folders(folders)
+		# Create the image folders and files of the "Images" folder
+		images = self.Create_Image_Folders(images)
 
-		# Define the "Images" folders dictionary as the local images folders dictionary
-		self.years["Folders"]["Image"]["Images"] = folders
+		# Define the "Images" dictionary as the local "Images" dictionary
+		self.years["Folders"]["Image"]["Images"] = images
 
 		# ---------- #
 
@@ -798,443 +560,724 @@ class Years(object):
 		to_remove = [
 			"Folders",
 			"Summary",
-			"Folder item names",
+			"Folder items",
 			"Author",
-			"States"
+			"States",
+			"Format strings"
 		]
 
 		# Remove the keys
 		for key in to_remove:
 			dictionary.pop(key)
 
+		# Define a list of item types to iterate through
+		item_types = [
+			"Folders",
+			"Files"
+		]
+
+		# Define a list of keys to add at the end of the dictionary
+		add_to_end = [
+			"Image"
+		]
+
 		# Iterate through the year numbers and dictionaries inside the root "Years" dictionary
 		for year_number, year in self.years["Dictionary"].items():
 			# Create a copy of the year dictionary
 			year = deepcopy(year)
 
-			# Remove the "Folders" key
-			year.pop("Folders")
+			# Iterate through the defined list of item types
+			for item_type in item_types:
+				# Remove the "Text" key of the item type dictionary inside the year dictionary
+				year[item_type].pop("Text")
 
-			# If the "Text" key is inside the year "Files" dictionary
-			if "Text" in year["Files"]:
-				# Remove the "Text" key
-				year["Files"].pop("Text")
+			# Add the keys above to the end of the year "Folders" dictionary
+			year["Folders"] = self.JSON.Add_To_End_Of_Dictionary(year["Folders"], to_add = add_to_end)
 
 			# Update the year dictionary inside the local "Years" dictionary
 			dictionary["Dictionary"][year_number] = year
 
-		# Remove the "Folders" key of the "Current year" dictionary
-		dictionary["Current year"].pop("Folders")
+		# Add the keys above to the end of the year "Folders" dictionary
+		dictionary["Current year"]["Folders"] = self.JSON.Add_To_End_Of_Dictionary(dictionary["Current year"]["Folders"], to_add = add_to_end)
 
-		# Remove the "Text" key of the current year "Files" dictionary
-		dictionary["Current year"]["Files"].pop("Text")
+		# Iterate through the defined list of item types
+		for item_type in item_types:
+			# Remove the "Text" key of the item type dictionary inside the "Current year" dictionary
+			dictionary["Current year"][item_type].pop("Text")
 
-		# Remove the "Folders" keys of the "Texts" dictionary
-		dictionary["Texts"].pop("Folders")
+			# Remove the "Text" key of the item type dictionary inside the "Texts" dictionary
+			dictionary["Texts"][item_type].pop("Text")
 
 		# Write the local updated "Years" dictionary to the "Years.json" file
 		self.JSON.Edit(self.years["Folders"]["Text"]["Years"], dictionary)
 
-	def Create_Year_Folders(self, data):
-		# Define the folder type key inside the "Files" dictionary
-		data["Dictionary"]["Files"][data["Folder type"]] = {}
+	def Define_Folder_Items_Dictionary(self):
+		# Define the root "Folder items" dictionary
+		self.years["Folder items"] = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [
+				"Root",
+				"Language",
+				"Christmas",
+				"New Year",
+				"Texts"
+			],
+			"Dictionary": {
+				"Root": {
+					"Folders": [
+						"Language",
+						"Christmas",
+						"Summary",
+						"New Year"
+					],
+					"Files": [
+						"Created in",
+						"Edited in"
+					]
+				},
+				"Language": {
+					"Folders": [
+						"Completed tasks",
+						"Firsts of the year",
+						"Gaming sessions",
+						"Watched media"
+					],
+					"Files": [
+						"Welcome",
+						"Summary",
+						"This Year I",
+						"This Year I (post)",
+						"This Year I (personal version)",
+						"Goodbye",
+						"Yearly statistics",
+						"FutureMe"
+					],
+					"User language files": [
+						"Yearly statistics",
+						"FutureMe"
+					]
+				},
+				"Christmas": {
+					"Folders": {
+						"Merry Christmas": {
+							"Files": [
+								"Texts",
+								"Friends"
+							]
+						}
+					},
+					"Files": [
+						"Watch",
+						"Eat"
+					]
+				},
+				"New Year": {
+					"Folders": [
+						"Social networks"
+					],
+					"Files": [
+						"Texts"
+					]
+				},
+				"Texts": {
+					"Folders": {
+						"Christmas": {
+							"Folders": {
+								"Merry Christmas": {
+									"Folders": [
+										"Social networks"
+									]
+								}
+							},
+							"Files": {
+								"Steps": {
+									"JSON": True
+								},
+								"Profile pictures to change": {}
+							}
+						}
+					}
+				}
+			}
+		}
 
-		# Define the folder keys with the keys inside the defined list
-		for item in ["Christmas", "New Year"]:
-			data["Dictionary"]["Files"][data["Folder type"]][item] = {}
+		# Update the total number of folder item dictionaries
+		self.years["Folder items"]["Numbers"]["Total"] = len(self.years["Folder items"]["List"])
 
-		# Iterate through list of small languages to define the language folder keys
-		for language in self.languages["Small"]:
-			data["Dictionary"]["Files"][data["Folder type"]][language] = {}
+		# Iterate through the folder item keys and dictionaries inside the root folder items "Dictionary"
+		# 
+		# Folder item keys: [Root, Language, Christmas, New Year, Texts]
+		for folder_item, folder_item_dictionary in self.years["Folder items"]["Dictionary"].items():
+			# Iterate through the item type keys and dictionaries inside the folder item dictionary
+			# 
+			# Item types: ["Folders", "Files", and sometimes "User language files"]
+			for item_type, item_type_dicitionary in folder_item_dictionary.items():
+				# If the item type dictionary is a list
+				if type(item_type_dicitionary) == list:
+					# Create a dictionary of empty dictionaries using the list of item types as keys
+					item_type_dicitionary = {key: {} for key in item_type_dicitionary}
 
-		# Create the language text folders
+				# Iterate through the item names and dictionaries inside the item type dictionary
+				# 
+				# Item names list example: [Christmas, Summary, New Year, Language]
+				for item_name, item_dictionary in item_type_dicitionary.items():
+					# If the item dictionary is not empty
+					if item_dictionary != {}:
+						# Iterate through the sub-item type keys and dictionaries inside the item dictionary
+						# 
+						# Sub-item type list example: [Folders, Files]
+						for sub_item_type, sub_item_type_dictionary in item_dictionary.items():
+							# If the sub-item type dictionary is a list
+							if type(sub_item_type_dictionary) == list:
+								# Create a dictionary of empty dictionaries using the list of sub-item types as keys
+								sub_item_type_dictionary = {key: {} for key in sub_item_type_dictionary}
 
-		# Iterate through the language keys and dictionaries
-		for small_language, language in self.languages["Dictionary"].items():
-			# Define the folder with the full language
-			data["Folders"][small_language] = {
-				"root": data["Folders"]["root"] + language["Full"] + "/"
+							# Iterate through the sub-item names and dictionaries inside the sub-item type dictionary
+							# 
+							# Sub-item names list examples: [Watch, Eat], [Texts]
+							for sub_item_name, sub_item_dictionary in sub_item_type_dictionary.items():
+								# Define the folder sub-item name and get the sub-item dictionary back
+								sub_item_dictionary = self.Define_Folder_Item_Name(sub_item_type, sub_item_name, sub_item_dictionary)
+
+								# Iterate through the sub-sub-item type keys and dictionaries inside the item dictionary
+								# 
+								# Sub-sub-item type list example: [Folders, Files]
+								for sub_sub_item_type, sub_sub_item_type_dictionary in sub_item_dictionary.items():
+									# If the sub-sub-item type dictionary is not a boolean
+									if type(sub_sub_item_type_dictionary) != bool:
+										# If the sub-sub-item type dictionary is a list
+										if type(sub_sub_item_type_dictionary) == list:
+											# Create a dictionary of empty dictionaries using the list of sub-sub-item types as keys
+											sub_sub_item_type_dictionary = {key: {} for key in sub_sub_item_type_dictionary}
+
+										# If the sub-sub-item type is inside the defined list
+										if sub_sub_item_type in ["Folders", "Files"]:
+											# Iterate through the sub-sub-item names and dictionaries inside the sub-sub-item type dictionary
+											# 
+											# Sub-sub-item names list examples: [Social networks], [Texts], [Steps]
+											for sub_sub_item_name, sub_sub_item_dictionary in sub_sub_item_type_dictionary.items():
+												# Get the sub-sub-item dictionary
+												sub_sub_item_dictionary = sub_sub_item_type_dictionary[sub_sub_item_name]
+
+												# If the sub-sub-item dictionary is a list
+												if type(sub_sub_item_dictionary) == list:
+													# Create a dictionary of empty dictionaries using the list of sub-sub-items as keys
+													sub_sub_item_dictionary = {key: {} for key in sub_sub_item_dictionary}
+
+												# Define the folder sub-sub-item name and get the sub-sub-item dictionary back
+												sub_sub_item_dictionary = self.Define_Folder_Item_Name(sub_sub_item_type, sub_sub_item_name, sub_sub_item_dictionary)
+
+												# Update the root sub-item dictionary with the local one
+												sub_sub_item_type_dictionary[sub_sub_item_name] = sub_sub_item_dictionary
+
+									# Update the root sub-item dictionary with the local one
+									sub_item_dictionary[sub_sub_item_type] = sub_sub_item_type_dictionary
+
+								# Update the root sub-item dictionary with the local one
+								sub_item_type_dictionary[sub_item_name] = sub_item_dictionary
+
+							# Update the root sub-item type dictionary with the local one
+							item_dictionary[sub_item_type] = sub_item_type_dictionary
+
+					# Define the folder item name and get the item dictionary back
+					item_dictionary = self.Define_Folder_Item_Name(item_type, item_name, item_dictionary)
+
+					# Update the root item dictionary with the local one
+					item_type_dicitionary[item_name] = item_dictionary
+
+				# Update the root item type dictionary with the local one
+				folder_item_dictionary[item_type] = item_type_dicitionary
+
+			# Update the root folder item dictionary with the local one
+			self.years["Folder items"]["Dictionary"][folder_item] = folder_item_dictionary
+
+	def Define_Folder_Item_Name(self, item_type, item_name, item_dictionary):
+		# Create the "Name" dictionary at the top of the item dictionary
+		item_dictionary = {
+			"Name": {},
+			**item_dictionary
+		}
+
+		# Define the local list of small languages
+		languages = self.languages["Small"]
+
+		# If the item type is "User language files"
+		if item_type == "User language files":
+			# Define the local list of small languages to contain only the user language
+			languages = [
+				self.language["Small"]
+			]
+
+		# Iterate through the local list of small languages
+		for language in languages:
+			# If the item name is not "Language"
+			if item_name != "Language":
+				# Create the text key by converting the item name into lowercase and replacing spaces with underscores
+				text_key = item_name.lower().replace(" ", "_")
+
+				# Remove the parentheses from the text key
+				text_key = text_key.replace("(", "")
+				text_key = text_key.replace(")", "")
+
+				# If the underscore character is not inside the text key
+				if "_" not in text_key:
+					# Add the ", title()" text
+					text_key += ", title()"
+
+				# Define the text as the item name
+				text = item_name
+
+				# If the text key is inside the language texts dictionary of the "Language" utility class
+				if text_key in self.Language.texts:
+					# Define the text as the text inside that dictionary and in the current language key
+					text = self.Language.texts[text_key][language]
+
+			# If the item name is "Language"
+			if item_name == "Language":
+				# Define the text as the full language
+				text = self.languages["Full"][language]
+
+			# Define the item name inside the "Name" dictionary as the text in the current language
+			item_dictionary["Name"][language] = text
+
+		# Return the item dictionary
+		return item_dictionary
+
+	def Create_Folder_Item(self, dictionary):
+		# Create a shortcut to the key
+		key = dictionary["Key"]
+
+		# If the item type is "Folders"
+		if dictionary["Item type"] == "Folders":
+			# Define the folder with the folder name being the item name in the current language
+			dictionary["Folders"][key] = {
+				"root": dictionary["Folders"]["root"] + dictionary["Language item name"] + "/"
 			}
 
-			# Create it
-			self.Folder.Create(data["Folders"][small_language]["root"])
+			# Define the item as the root folder
+			item = dictionary["Folders"][key]["root"]
 
-		# Create the root text folders and files
-		for item_type in ["Folders", "Files", "User language files"]:
-			# folders = ["Christmas", "Summary", "New Year"]
-			# files = ["Created in", "Edited in"]
+			# Define the class to use as the "Folder" utility class
+			Class = self.Folder
 
-			# If the current item type is inside the dictionary of root names
-			if item_type in self.years["Folder item names"]["Root"]:
-				for key, folder_item in self.years["Folder item names"]["Root"][item_type]["Dictionary"].items():
-					# Define the folder
-					data["Folders"][key] = {
-						"root": data["Folders"]["root"] + folder_item[self.language["Small"]] + "/"
-					}
+		# If the item type is "Files"
+		if dictionary["Item type"] == "Files":
+			# Define the file extension initially as "txt"
+			file_extension = "txt"
 
-					# Define the folder item as the root folder
-					item = data["Folders"][key]["root"]
-
-					# Define the class as "self.Folder"
-					Class = self.Folder
-
-					if item_type in ["Files", "User language files"]:
-						# Define the file
-						data["Folders"][key] = data["Folders"]["root"] + folder_item[self.language["Small"]] + ".txt"
-
-						# Define the class as "self.File"
-						Class = self.File
-
-						# Define the folder item as the file
-						item = data["Folders"][key]
-
-					# Create it
-					Class.Create(item)
-
-					if item_type in ["Files", "User language files"]:
-						# Add it to the "Files" dictionary
-						data["Dictionary"]["Files"][data["Folder type"]][key] = data["Folders"][key]
-
-			# folders = ["Done tasks", "Firsts of the Year", "Gaming sessions", "Watched media"]
-			# files = ["Welcome", "This Year I", "This Year I (post)", "This Year I (personal version)", "Summary", "Goodbye"]
-			# user_language_files = ["Yearly statistics", "FutureMe"]
-			keys = list(self.years["Folder item names"]["Language"][item_type]["Dictionary"].keys())
-
-			# If the "Name" is inside the data dictionary
-			# And the dictionary name is "Texts"
-			# And the item type is inside the list of ["Files", "User language files"]
-			# files = ["This Year I (post)"]
+			# If the "JSON" key is inside the dictionary and it is True
 			if (
-				"Name" in data["Dictionary"] and
-				data["Dictionary"]["Name"] == "Texts" and
-				item_type == "Files"
+				"JSON" in dictionary and
+				dictionary["JSON"] == True
 			):
-				# Define the list of keys as only the "This Year I (post)" key
-				keys = [
-					"This Year I (post)"
+				# Change the file extension to "json"
+				file_extension = "json"
+
+			# Define the file with the file name being the item name in the current language and the file extension being the defined extension
+			dictionary["Files"][key] = dictionary["Folders"]["root"] + dictionary["Language item name"] + "." + file_extension
+
+			# Define the item as the file
+			item = dictionary["Files"][key]
+
+			# Define the class to use as the "File" utility class
+			Class = self.File
+
+		# Create the item using the "Create" method of the defined class
+		Class.Create(item)
+
+	def Create_Text_Folders(self, year):
+		# Define the local folder items dictionary as the "Root" folder item dictionary
+		folder_item_dictionary = self.years["Folder items"]["Dictionary"]["Root"]
+
+		# Iterate through the item type keys and dictionaries inside the "Root" folder item dictionary
+		# 
+		# Item types: [Folders, Files]
+		for item_type, item_type_dicitionary in folder_item_dictionary.items():
+			# Iterate through the item names and dictionaries inside the item type dictionary
+			# 
+			# Item names (folders): [Christmas, Summary, New Year, Language]
+			# Item names (files): [Created in, Edited in]
+			for item_name, item_dictionary in item_type_dicitionary.items():
+				# Define the local list of small languages as a list containing only the user language
+				languages = [
+					self.language["Small"]
 				]
 
-			# Iterate through list of small languages
-			for language in self.languages["Small"]:
-				data["Dictionary"]["Files"][data["Folder type"]][language]
+				# If the item name is "Language"
+				if item_name == "Language":
+					# Define the local list of small languages as the root one
+					languages = self.languages["Small"]
 
-				# Create the language folder text folders
-				for key in keys:
-					# Get the folder item in the language dictionary of the current item type
-					folder_item = self.years["Folder item names"]["Language"][item_type]["Dictionary"][key]
+				# Iterate through the local list of small languages
+				for language in languages:
+					# Define the language item name as the item name in the current language
+					language_item_name = item_dictionary["Name"][language]
 
-					# If the language key exists inside the data local dictionary
-					# And also inside the folder item dictionary
+					# Define the key as the item name
+					key = item_name
+
+					# If the item name is "Language"
+					if item_name == "Language":
+						# Change the key to be the current language
+						key = language
+
+					# Define the dictionary to use in the "Create_Folder_Item" method
+					dictionary = {
+						"Item type": item_type,
+						"Key": key,
+						"Language item name": language_item_name,
+						"Folders": year["Folders"]["Text"],
+						"Files": year["Files"]["Text"]
+					}
+
+					# Create the folder item
+					self.Create_Folder_Item(dictionary)
+
+		# ---------- #
+
+		# Define the local folder items dictionary as the "Language" folder item dictionary
+		folder_item_dictionary = self.years["Folder items"]["Dictionary"]["Language"]
+
+		# List the item types
+		item_types = list(folder_item_dictionary.keys())
+
+		# Remove the "User language files" item type
+		item_types.remove("User language files")
+
+		# Iterate through the list of item types inside the "Language" folder item dictionary
+		# 
+		# Item types: [Folders, Files]
+		for item_type in item_types:
+			# Get the item type dictionary
+			item_type_dicitionary = folder_item_dictionary[item_type]
+
+			# Iterate through the item names and dictionaries inside the item type dictionary
+			# 
+			# Item names (folders): [Completed tasks, Firsts of the year, Gaming sessions, Watched media]
+			# Item names (files): [Welcome, Summary, This Year I, This Year I (post), This Year I (personal version), Goodbye]
+			for item_name, item_dictionary in item_type_dicitionary.items():
+				# Define the local list of languages as the list of keys inside the item "Name" dictionary
+				languages = list(item_dictionary["Name"].keys())
+
+				# Iterate through the local list of small languages
+				for language in languages:
+					# Define the language item name as the item name in the current language
+					language_item_name = item_dictionary["Name"][language]
+
+					# If the current language dictionary is not inside the files "Text" dictionary
+					if language not in year["Files"]["Text"]:
+						# Create the empty language dictionary
+						year["Files"]["Text"][language] = {}
+
+					# If the item name is not inside the "User language files" list
+					# Or it is
+					# And the current language is the user language
+					# (This is to create the file only in the folder of the user language)
 					if (
-						language in data["Folders"] and
-						language in folder_item
+						item_name not in folder_item_dictionary["User language files"] or
+						item_name in folder_item_dictionary["User language files"] and
+						language == self.language["Small"]
 					):
-						# Define the folder
-						data["Folders"][language][key] = {
-							"root": data["Folders"][language]["root"] + folder_item[language] + "/"
+						# Define the dictionary to use in the "Create_Folder_Item" method
+						dictionary = {
+							"Item type": item_type,
+							"Key": item_name,
+							"Language item name": language_item_name,
+							"Folders": year["Folders"]["Text"][language],
+							"Files": year["Files"]["Text"][language]
 						}
 
-						# Define the folder item as the root folder
-						item = data["Folders"][language][key]["root"]
-
-						if item_type in ["Files", "User language files"]:
-							# Define the file
-							data["Folders"][language][key] = data["Folders"][language]["root"] + folder_item[language] + ".txt"
-
-							# Define the class as "self.File"
-							Class = self.File
-
-							# Define the folder item as the file
-							item = data["Folders"][language][key]
-
-						# Create it
-						Class.Create(item)
-
-						if item_type in ["Files", "User language files"]:
-							# Add it to the "Files" dictionary
-							data["Dictionary"]["Files"][data["Folder type"]][language][key] = data["Folders"][language][key]
+						# Create the folder item
+						self.Create_Folder_Item(dictionary)
 
 		# ---------- #
 
-		# Create the "Christmas" folders
+		# Define the local folder items dictionary as the "Christmas" folder item dictionary
+		folder_item_dictionary = self.years["Folder items"]["Dictionary"]["Christmas"]
 
-		# Iterate through the "Christmas" files dictionary
-		# keys = ["Planning", "Merry Christmas"]
-		for key, folder in self.years["Folder item names"]["Christmas"]["Folders"]["Dictionary"].items():
-			data["Folders"]["Christmas"][key] = {
-				"root": data["Folders"]["Christmas"]["root"] + folder[self.language["Small"]] + "/"
-			}
+		# List the item types
+		item_types = list(folder_item_dictionary.keys())
 
-			self.Folder.Create(data["Folders"]["Christmas"][key]["root"])
+		# If the "Christmas" dictionary is not inside the files "Text" dictionary
+		if "Christmas" not in year["Files"]["Text"]:
+			# Create the empty "Christmas" dictionary
+			year["Files"]["Text"]["Christmas"] = {}
 
-			data["Dictionary"]["Files"][data["Folder type"]]["Christmas"][key] = {}
+		# Iterate through the item type keys and dictionaries inside the "Christmas" folder item dictionary
+		# 
+		# Item types: [Folders, Files]
+		for item_type, item_type_dicitionary in folder_item_dictionary.items():
+			# Iterate through the item names and dictionaries inside the item type dictionary
+			# 
+			# Item names (folders): [Merry Christmas]
+			# Item names (files): [Watch, Eat]
+			for item_name, item_dictionary in item_type_dicitionary.items():
+				# Define the language item name as the item name in the user language
+				language_item_name = item_dictionary["Name"][self.language["Small"]]
 
-		# ---------- #
-
-		# If the year is not the current year
-		# Or it is the current year
-		# And its year folder exists
-		if (
-			data["Year"] != self.current_year_number or
-			data["Year"] == self.current_year_number and
-			self.years["States"]["Current year folder exists"] == True
-		):
-			# Define the local Christmas "Merry Christmas" folder and dictionary
-			folder = data["Folders"]["Christmas"]["Merry Christmas"]
-
-			dictionary = deepcopy(self.years["Folder item names"]["Christmas"]["Files"]["Dictionary"])
-
-			# Iterate through the "Merry Christmas" files dictionary
-			# keys = ["Texts"]
-			for key, file in dictionary.items():
-				# Define the file
-				folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
-
-				# Create it
-				self.File.Create(folder[key])
-
-				# And add it to the "Files" dictionary
-				data["Dictionary"]["Files"][data["Folder type"]]["Christmas"]["Merry Christmas"][key] = folder[key]
-
-		# ---------- #
-
-		# Define the list of files to create
-		social_networks_list = [
-			"Discord",
-			"Instagram {} Facebook",
-			"Twitter",
-			"Bluesky {} Threads",
-			"Wattpad",
-			"WhatsApp"
-		]
-
-		# If the "Name" is inside the data dictionary
-		# And the dictionary name is "Texts"
-		if (
-			"Name" in data["Dictionary"] and
-			data["Dictionary"]["Name"] == "Texts"
-		):
-			# Define the local Christmas "Planning" folder and dictionary
-			folder = data["Folders"]["Christmas"]["Planning"]
-
-			dictionary = self.years["Folder item names"]["Texts"]["Christmas"]["Planning"]
-
-			# Create the Christmas "Planning" files
-			# Iterate through the files dictionary
-			# keys = ["Objects", self.languages["Full"].values()]
-			for key, file in dictionary["Files"]["Dictionary"].items():
-				# Define the root folder
-				folder[key] = folder["root"]
-
-				# Define the file name and extension
-				# (Language file name and "txt")
-				file_name = file[self.language["Small"]]
-
-				extension = "txt"
-
-				# If the file is a JSON file
-				if key in dictionary["JSON"]["List"]:
-					# Update the file name to the English file name
-					file_name = file["en"]
-
-					# And define the extension as "JSON"
-					extension = "json"
-
-				# Add the file name and extension to the file dictionary
-				folder[key] += file_name + "." + extension
-
-				# Create the file
-				self.File.Create(folder[key])
-
-				# And add it to the "Files" dictionary
-				data["Dictionary"]["Files"][data["Folder type"]]["Christmas"]["Planning"][key] = folder[key]
-
-			# ---------- #
-
-			# Define the local Christmas "Merry Christmas" folder and dictionary
-			folder = data["Folders"]["Christmas"]["Merry Christmas"]
-
-			dictionary = self.years["Folder item names"]["Texts"]["Christmas"]["Merry Christmas"]
-
-			# Create the Christmas "Merry Christmas" folders
-			# Iterate through the folders dictionary
-			# keys = ["Social networks"]
-			for key, folder_name in dictionary["Folders"]["Dictionary"].items():
-				# Define the root folder
-				folder[key] = {
-					"root": folder["root"] + folder_name[self.language["Small"]] + "/"
+				# Define the dictionary to use in the "Create_Folder_Item" method
+				dictionary = {
+					"Item type": item_type,
+					"Key": item_name,
+					"Language item name": language_item_name,
+					"Folders": year["Folders"]["Text"]["Christmas"],
+					"Files": year["Files"]["Text"]["Christmas"]
 				}
 
-				# Create the folder
-				self.Folder.Create(folder[key]["root"])
+				# Create the folder item
+				self.Create_Folder_Item(dictionary)
 
-			# Create the Christmas "Merry Christmas" social networks files
-			for file_name in social_networks_list:
-				# Define the file key as the file name
-				key = file_name
+				# Iterate through the sub-item type keys and dictionaries inside the item dictionary
+				# 
+				# Sub-item type list example: [Folders, Files]
+				for sub_item_type, sub_item_type_dictionary in item_dictionary.items():
+					# If the sub-item type is inside the root list of item types
+					# Item types: [Folders, Files]
+					if sub_item_type in item_types:
+						# If the [item name] dictionary is not inside the files Christmas "Text" dictionary
+						if item_name not in year["Files"]["Text"]["Christmas"]:
+							# Create the empty "[item name]" dictionary
+							year["Files"]["Text"]["Christmas"][item_name] = {}
 
-				# If the "{}" format string is present inside the key
-				if "{}" in key:
-					# Format the key with the "and" text
-					key = key.format("and")
+						# Iterate through the sub-item names and dictionaries inside the sub-item type dictionary
+						# 
+						# Sub-item names list examples: [Texts]
+						for sub_item_name, sub_item_dictionary in sub_item_type_dictionary.items():
+							# Define the language sub-item name as the sub-item name in the user language
+							language_sub_item_name = sub_item_dictionary["Name"][self.language["Small"]]
 
-					# Format the file name with the "and" text in the user language
-					file_name = file_name.format(self.Language.language_texts["and"])
+							# Define the dictionary to use in the "Create_Folder_Item" method
+							dictionary = {
+								"Item type": sub_item_type,
+								"Key": sub_item_name,
+								"Language item name": language_sub_item_name,
+								"Folders": year["Folders"]["Text"]["Christmas"][item_name],
+								"Files": year["Files"]["Text"]["Christmas"][item_name]
+							}
 
-				# Define the file
-				folder["Social networks"][key] = folder["Social networks"]["root"] + file_name + ".txt"
-
-				# Create the file
-				self.File.Create(folder["Social networks"][key])
+							# Create the folder item
+							self.Create_Folder_Item(dictionary)
 
 		# ---------- #
 
-		# Define the local "New Year" folder and dictionary
-		folder = data["Folders"]["New Year"]
+		# Iterate through the social network names and dictionaries inside the "Summary" social networks dictionary
+		for social_network_name, social_network in self.social_networks["Dictionary"]["Summary"]["Dictionary"].items():
+			# If the "Summary" dictionary is not inside the files "Text" dictionary
+			if "Summary" not in year["Files"]["Text"]:
+				# Create the empty "Summary" dictionary
+				year["Files"]["Text"]["Summary"] = {}
 
-		dictionary = self.years["Folder item names"]["New Year"]
+			# Define the language item name as the social network name in the user language
+			language_item_name = social_network["Name"][self.language["Small"]]
 
-		# Create the New Year "Social networks" file
-		# Iterate through the files dictionary
-		for key, folder_name in dictionary["Folders"]["Dictionary"].items():
-			# Define the root folder
-			folder[key] = {
-				"root": folder["root"] + folder_name[self.language["Small"]] + "/"
+			# Define the dictionary to use in the "Create_Folder_Item" method
+			dictionary = {
+				"Item type": "Files",
+				"Key": social_network_name,
+				"Language item name": language_item_name,
+				"Folders": year["Folders"]["Text"]["Summary"],
+				"Files": year["Files"]["Text"]["Summary"]
 			}
 
-			# Create it
-			self.Folder.Create(folder[key]["root"])
-
-			# And add it to the "Files" dictionary
-			data["Dictionary"]["Files"][data["Folder type"]]["New Year"][key] = {}
-
-			# Define and create the social network files
-			for social_network_name in social_networks_list:
-				# Define the sub key as the social network name
-				sub_key = social_network_name
-
-				# If the "{}" format string is present inside the sub-key
-				if "{}" in sub_key:
-					# Format the sub-key with the "and" text
-					sub_key = sub_key.format("and")
-
-					# Format the social network name with the "and" text in the user language
-					social_network_name = social_network_name.format(self.Language.language_texts["and"])
-
-				# Define the file with the root folder and the social network name
-				folder[key][sub_key] = folder[key]["root"] + social_network_name + ".txt"
-
-				# Create it
-				self.File.Create(folder[key][sub_key])
-
-				# And add it to the Files "Social networks" dictionary
-				data["Dictionary"]["Files"][data["Folder type"]]["New Year"][key][sub_key] = folder[key][sub_key]
-
-		# Create the New Year "Texts" file
-		# Iterate through the files dictionary
-		for key, file in dictionary["Files"]["Dictionary"].items():
-			# Define the file
-			folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
-
-			# Create it
-			self.File.Create(folder[key])
-
-			# And add it to the "Files" dictionary
-			data["Dictionary"]["Files"][data["Folder type"]]["New Year"][key] = folder[key]
+			# Create the folder item
+			self.Create_Folder_Item(dictionary)
 
 		# ---------- #
 
-		# If the year is not the current year
-		# Or it is the current year
-		# And its year folder exists
-		if (
-			data["Year"] != self.current_year_number or
-			data["Year"] == self.current_year_number and
-			self.years["States"]["Current year folder exists"] == True
-		):
-			# Create the "Christmas" additional items
-			for folder_key in self.years["Folder item names"]["Additional items"]["Christmas"]:
-				# Get the list of files to create
-				# Example:
-				# folder_key: "Planning"
-				files = self.years["Folder item names"]["Additional items"]["Christmas"][folder_key]["Files"]
+		# Define the local folder items dictionary as the "New Year" folder item dictionary
+		folder_item_dictionary = self.years["Folder items"]["Dictionary"]["New Year"]
 
-				# Define the folder dictionary
-				folder = data["Folders"]["Christmas"][folder_key]
+		# List the item types
+		item_types = list(folder_item_dictionary.keys())
 
-				# Define the keys list
-				keys = list(files["Dictionary"].keys())
+		# If the "New Year" dictionary is not inside the files "Text" dictionary
+		if "New Year" not in year["Files"]["Text"]:
+			# Create the empty "New Year" dictionary
+			year["Files"]["Text"]["New Year"] = {}
 
-				# If the "Name" is inside the data dictionary
-				# And the dictionary name is "Texts"
-				if (
-					"Name" in data["Dictionary"] and
-					data["Dictionary"]["Name"] == "Texts"
-				):
-					# Remove the "Watch" and "Eat" from the list of keys if they exist
-					for key in ["Watch", "Eat"]:
-						if key in keys:
-							keys.remove(key)
+		# Iterate through the item type keys and dictionaries inside the "New Year" folder item dictionary
+		# 
+		# Item types: [Folders, Files]
+		for item_type, item_type_dicitionary in folder_item_dictionary.items():
+			# Iterate through the item names and dictionaries inside the item type dictionary
+			# 
+			# Item names (folders): [Social networks]
+			# Item names (files): [Texts]
+			for item_name, item_dictionary in item_type_dicitionary.items():
+				# Define the language item name as the item name in the user language
+				language_item_name = item_dictionary["Name"][self.language["Small"]]
 
-				# Iterate through the keys list
-				for key in keys:
-					# Get the file dictionary
-					file = files["Dictionary"][key]
+				# Define the dictionary to use in the "Create_Folder_Item" method
+				dictionary = {
+					"Item type": item_type,
+					"Key": item_name,
+					"Language item name": language_item_name,
+					"Folders": year["Folders"]["Text"]["New Year"],
+					"Files": year["Files"]["Text"]["New Year"]
+				}
 
-					# Define the file
-					folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
+				# Create the folder item
+				self.Create_Folder_Item(dictionary)
 
-					# Create it
-					self.File.Create(folder[key])
+				# If the [item name] dictionary is not inside the files New Year "Text" dictionary
+				if item_name not in year["Files"]["Text"]["New Year"]:
+					# Create the empty "[item name]" dictionary
+					year["Files"]["Text"]["New Year"][item_name] = {}
 
-					# And add it to the "Files" dictionary
-					data["Dictionary"]["Files"][data["Folder type"]]["Christmas"][folder_key][key] = folder[key]
+		# Iterate through the social network names and dictionaries inside the "New Year" social networks dictionary
+		for social_network_name, social_network in self.social_networks["Dictionary"]["New Year"]["Dictionary"].items():
+			# Define the language item name as the social network name in the user language
+			language_item_name = social_network["Name"][self.language["Small"]]
 
-			# Create the "Christmas" language files for the "Texts" folder
+			# Define the dictionary to use in the "Create_Folder_Item" method
+			dictionary = {
+				"Item type": "Files",
+				"Key": social_network_name,
+				"Language item name": language_item_name,
+				"Folders": year["Folders"]["Text"]["New Year"]["Social networks"],
+				"Files": year["Files"]["Text"]["New Year"]["Social networks"]
+			}
 
-			# If the "Name" is inside the data dictionary
-			# And the dictionary name is "Texts"
-			if (
-				"Name" in data["Dictionary"] and
-				data["Dictionary"]["Name"] == "Texts"
-			):
-				# Define the local folder dictionary to use
-				folder = data["Folders"]["Christmas"]["Planning"]
+			# Create the folder item
+			self.Create_Folder_Item(dictionary)
 
-				# Iterate through the language keys and dictionaries
-				for small_language, language in self.languages["Dictionary"].items():
-					# Create a shortcut to the full language
-					full_language = language["Full"]
+		# ---------- #
 
-					# Define the file
-					folder[small_language] = folder["root"] + full_language + ".txt"
+		# If the year "Number" is "Texts"
+		if year["Number"] == "Texts":
+			# Define the local folder items dictionary as the "Christmas" folder item dictionary inside the "Texts" folder item dictionary
+			folder_item_dictionary = self.years["Folder items"]["Dictionary"]["Texts"]["Folders"]["Christmas"]
 
-					# Create it
-					self.File.Create(folder[small_language])
+			# List the item types
+			item_types = list(folder_item_dictionary.keys())
 
-					# And add it to the Christmas "Planning" text files dictionary
-					data["Dictionary"]["Files"]["Text"]["Christmas"]["Planning"][small_language] = folder[small_language]
+			# Remove the "Name" item type
+			item_types.remove("Name")
+
+			# Iterate through the item types inside the defined folder item dictionary
+			# 
+			# Item types: [Folders, Files]
+			for item_type in item_types:
+				# Get the item type dictionary
+				item_type_dicitionary = folder_item_dictionary[item_type]
+
+				# Iterate through the item names and dictionaries inside the item type dictionary
+				# 
+				# Item names (folders): [Social networks]
+				# Item names (files): [Texts]
+				for item_name, item_dictionary in item_type_dicitionary.items():
+					# Define the language item name as the item name in the user language
+					language_item_name = item_dictionary["Name"][self.language["Small"]]
+
+					# Define the "json" variable as False
+					json = False
+
+					# If the "JSON" key is inside the item dictionary
+					# And it is True
+					if (
+						"JSON" in item_dictionary and
+						item_dictionary["JSON"] == True
+					):
+						# Update the "json" variable to True
+						json = True
+
+						# Update the language item name to be the item name
+						language_item_name = item_name
+
+					# Define the dictionary to use in the "Create_Folder_Item" method
+					dictionary = {
+						"Item type": item_type,
+						"Key": item_name,
+						"Language item name": language_item_name,
+						"Folders": year["Folders"]["Text"]["Christmas"],
+						"Files": year["Files"]["Text"]["Christmas"],
+						"JSON": json
+					}
+
+					# Create the folder item
+					self.Create_Folder_Item(dictionary)
+
+					# Iterate through the sub-item type keys and dictionaries inside the item dictionary
+					# 
+					# Sub-item type list: [Folders]
+					for sub_item_type, sub_item_type_dictionary in item_dictionary.items():
+						# If the sub-item type is inside the root list of item types
+						# Item types: [Folders, Files]
+						if sub_item_type in item_types:
+							# If the [item name] dictionary is not inside the files Christmas "Text" dictionary
+							if item_name not in year["Files"]["Text"]["Christmas"]:
+								# Create the empty "[item name]" dictionary
+								year["Files"]["Text"]["Christmas"][item_name] = {}
+
+							# Iterate through the sub-item names and dictionaries inside the sub-item type dictionary
+							# 
+							# Sub-item names list examples: [Texts]
+							for sub_item_name, sub_item_dictionary in sub_item_type_dictionary.items():
+								# If the [sub-item name] dictionary is not inside the files Christmas [item name] "Text" dictionary
+								if sub_item_name not in year["Files"]["Text"]["Christmas"][item_name]:
+									# Create the empty "[item name]" dictionary
+									year["Files"]["Text"]["Christmas"][item_name][sub_item_name] = {}
+
+								# Define the language sub-item name as the sub-item name in the user language
+								language_sub_item_name = sub_item_dictionary["Name"][self.language["Small"]]
+
+								# Define the dictionary to use in the "Create_Folder_Item" method
+								dictionary = {
+									"Item type": sub_item_type,
+									"Key": sub_item_name,
+									"Language item name": language_sub_item_name,
+									"Folders": year["Folders"]["Text"]["Christmas"][item_name],
+									"Files": year["Files"]["Text"]["Christmas"][item_name]
+								}
+
+								# Create the folder item
+								self.Create_Folder_Item(dictionary)
 
 			# ---------- #
 
-			# Create the "New Year" files
-			# keys = ["Texts"]
-			folder = data["Folders"]["New Year"]
+			# Iterate through the social network names and dictionaries inside the "Merry Christmas" social networks dictionary
+			for social_network_name, social_network in self.social_networks["Dictionary"]["Merry Christmas"]["Dictionary"].items():
+				# Define the language item name as the social network name in the user language
+				language_item_name = social_network["Name"][self.language["Small"]]
 
-			# Iterate through the files dictionary
-			for key, file in self.years["Folder item names"]["New Year"]["Files"]["Dictionary"].items():
-				folder[key] = folder["root"] + file[self.language["Small"]] + ".txt"
+				# Define the dictionary to use in the "Create_Folder_Item" method
+				dictionary = {
+					"Item type": "Files",
+					"Key": social_network_name,
+					"Language item name": language_item_name,
+					"Folders": year["Folders"]["Text"]["Christmas"]["Merry Christmas"]["Social networks"],
+					"Files": year["Files"]["Text"]["Christmas"]["Merry Christmas"]["Social networks"]
+				}
 
-				self.File.Create(folder[key])
+				# Create the folder item
+				self.Create_Folder_Item(dictionary)
 
-				# And add it to the "Files" dictionary
-				data["Dictionary"]["Files"][data["Folder type"]]["New Year"][key] = folder[key]
+			# Add the "Social networks" key to the start of the "Merry Christmas" dictionary
+			year["Files"]["Text"]["Christmas"]["Merry Christmas"] = {
+				"Social networks": year["Files"]["Text"]["Christmas"]["Merry Christmas"]["Social networks"],
+				**year["Files"]["Text"]["Christmas"]["Merry Christmas"]
+			}
 
-		# Return the local data dictionary
-		return data
+		# ---------- #
 
-	def Create_Image_Folders(self, folders):
-		# Define the image folder names dictionary
+		# Define a list of keys to add at the end of the dictionary
+		keys = [
+			"Created in",
+			"Edited in"
+		]
+
+		# Add the keys above to the end of the year files "Text" dictionary
+		year["Files"]["Text"] = self.JSON.Add_To_End_Of_Dictionary(year["Files"]["Text"], to_add = keys)
+
+		# ---------- #
+
+		# Return the local year dictionary
+		return year
+
+	def Create_Image_Folders(self, year):
+		# Define the dictionary of image folder names
 		folder_names = {
 			"Christmas": "",
 			"Memories": "",
@@ -1243,19 +1286,27 @@ class Years(object):
 			"New Year": ""
 		}
 
+		# Define the local folders dictionary as the root year folders dictionary
+		folders = year["Folders"]
+
+		# If the "Image" key is inside the local folders dictionary
+		if "Image" in folders:
+			# Change the local folders dictionary to that dictionary
+			folders = folders["Image"]
+
 		# Iterate through the folder keys and names
 		for key, folder_name in folder_names.items():
 			# If the folder name is empty
 			if folder_name == "":
-				# Replace spaces with underscores and lowercase the key to make the text key
+				# Create the text key by converting the key into lowercase and replacing spaces with underscores
 				text_key = key.lower().replace(" ", "_")
 
-				# If the underline is not inside the text key
+				# If the underscore character is not inside the text key
 				if "_" not in text_key:
 					# Add the ", title()" text
 					text_key += ", title()"
 
-				# Get the folder name
+				# Get the folder name in the user language
 				folder_name = self.Language.language_texts[text_key]
 
 			# If the folder name is "Key"
@@ -1271,8 +1322,48 @@ class Years(object):
 			# Create the folder
 			self.Folder.Create(folders[key]["root"])
 
-		# Return the local folders dictionary
-		return folders
+		# Define the "Dates.txt" file inside the "Memories" folder
+		folders["Memories"]["Dates"] = folders["Memories"]["root"] + "Dates.txt"
+
+		# Create the file
+		self.File.Create(folders["Memories"]["Dates"])
+
+		# ---------- #
+
+		# Define the "Christmas" image folders
+
+		# Define the list of image folder names
+		folder_names = [
+			"Screenshots",
+			"Pictures"
+		]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Create the text key by converting the key into lowercase and replacing spaces with underscores
+			text_key = key.lower().replace(" ", "_")
+
+			# If the underscore character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text
+				text_key += ", title()"
+
+			# Get the folder name in the user language
+			folder_name = self.Language.language_texts[text_key]
+
+			# Define the folder inside the local "Christmas" folders dictionary
+			folders["Christmas"][key] = {
+				"root": folders["Christmas"]["root"] + folder_name + "/"
+			}
+
+			# Create the folder
+			self.Folder.Create(folders["Christmas"][key]["root"])
+
+		# Return the year dictionary
+		return year
 
 	def Select_Year(self, years = None, select_text = None):
 		# If the years parameter is None
@@ -1296,3 +1387,45 @@ class Years(object):
 
 		# Return it
 		return self.year
+
+	def Define_Format_Strings(self):
+		# Define the root "Format strings" dictionary with the format strings and their values
+		self.years["Format strings"] = {
+			"Current year": {
+				# The list of texts to replace with the current year number
+				"List": [
+					"{current_year}",
+					"[" + self.Language.language_texts["current_year"] + "]"
+				],
+		
+				# The year number
+				"Value": str(self.date["Units"]["Year"])
+			},
+			"Next year": {
+				# The list of texts to replace with the next year number
+				"List": [
+					"{next_year}",
+					"[" + self.Language.language_texts["next_year"] + "]"
+				],
+
+				# The next year number
+				"Value": str(self.date["Units"]["Year"] + 1)
+			}
+		}
+
+	def Replace_Year_Format_Strings(self, text):
+		# Iterate through the string dictionaries inside the root "Format strings" dictionary
+		# 
+		# Current year: "{current_year}", "[Current year]"
+		# Next year: "{next_year}", "[Next year]"
+		for strings in self.years["Format strings"].values():
+			# Iterate through the list of strings to search for
+			for string in strings["List"]:
+				# If the string is inside the text
+				if string in text:
+					# Replace the string with the value on the text
+					# Example: "{current_year}" and "[Current year]" would both become "2025"
+					text = text.replace(string, strings["Value"])
+
+		# Return the text
+		return text

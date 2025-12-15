@@ -248,7 +248,7 @@ class Stories(object):
 			# Add the class to the current class
 			setattr(self, class_title, class_dictionary["Object"])
 
-		# Sort the dictionary of classes with the order of the list of classes
+		# Sort the dictionary of classes with the order being the list of classes
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 		# ---------- #
@@ -620,7 +620,7 @@ class Stories(object):
 			# Define the text addon
 			addon = ""
 
-			# If the underline character is not inside the text key, add the ", title()" string to get the titlecase text
+			# If the underscore character is not inside the text key, add the ", title()" string to get the titlecase text
 			if "_" not in text_key:
 				addon = ", title()"
 
@@ -2005,7 +2005,7 @@ class Stories(object):
 							# Add one to the year total chapters number
 							statistics["Years"][year_number]["Total"] += 1
 
-							# Create a shortcut for the year dictionary
+							# Create a shortcut to the year dictionary
 							year_dictionary = statistics["Years"][year_number]
 
 							# ----- #
@@ -2117,7 +2117,7 @@ class Stories(object):
 			}
 		}
 
-		# Create a shortcut for the statistic key
+		# Create a shortcut to the statistic key
 		statistic_key = statistics["Statistic key"]
 
 		# ---------- #

@@ -549,19 +549,29 @@ class Friends(object):
 		contents = self.Folder.Contents(self.folders["Friends"]["Text"]["root"])
 
 		# Get the list of friends from the list of folders
-		self.friends["List"] = contents["folder"]["names"]
+		self.friends["List"] = contents["Folder"]["Names"]
 
-		# Define a list of olders to remove
+		# Define a list of folders to remove
 		remove_list = [
-			"archive",
-			"database",
-			"family"
+			"Archive",
+			"Database",
+			"Family"
 		]
 
 		# Iterate through the list of folders
-		for key in remove_list:
-			# Get the folder name
-			folder = self.Language.language_texts[key + ", title()"]
+		for folder in remove_list:
+			# Create the text key by converting the folder into lowercase and replacing spaces with underscores
+			text_key = folder.lower().replace(" ", "_")
+
+			# If the underscore character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text
+				text_key += ", title()"
+
+			# If the text key is inside the language texts dictionary of the "Language" utility class
+			if text_key in self.Language.language_texts:
+				# Get the folder name in the user language
+				folder = self.Language.language_texts[text_key]
 
 			# Remove the folder from the list
 			self.friends["List"].remove(folder)

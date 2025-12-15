@@ -469,7 +469,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 			i = 0
 			for key, time in times.items():
-				# If the key is inisde the dictionary
+				# If the key is inside the dictionary
 				if key in self.dictionary["Times"]:
 					# Create the data dictionary if it does not exist
 					if "Data" not in day:

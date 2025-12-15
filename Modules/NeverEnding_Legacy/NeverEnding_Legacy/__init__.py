@@ -508,7 +508,7 @@ class NeverEnding_Legacy(object):
 
 				# ----- #
 
-				# Create a shortcut for the key
+				# Create a shortcut to the key
 				key = "Replaces data.js"
 
 				# If the key is inside the dictionary
@@ -577,10 +577,10 @@ class NeverEnding_Legacy(object):
 		return dictionary
 
 	def Update_Files(self):
-		# Create a shortcut for the root "Authors" dictionary
+		# Create a shortcut to the root "Authors" dictionary
 		authors = self.neverending_legacy["Authors"]
 
-		# Create a shortcut for the root "Mods" dictionary
+		# Create a shortcut to the root "Mods" dictionary
 		mods = self.neverending_legacy["Mods"]
 
 		# ---------- #

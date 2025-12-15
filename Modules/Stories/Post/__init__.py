@@ -221,7 +221,7 @@ class Post(Stories):
 
 		# Iterate through the list of chapter posting steps
 		for key in self.posting["Steps"]["List"]:
-			# Define the method name for the step by converting the key into title case and replacing spaces with underlines
+			# Define the method name for the step by converting the key into title case and replacing spaces with underscores
 			method_name = key.title().replace(" ", "_")
 
 			# Define the posting step dictionary with the key, method name, and method

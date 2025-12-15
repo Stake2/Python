@@ -137,7 +137,7 @@ class Database(object):
 		# ---------- #
 
 		# Get the "Today_Is_Christmas" True or False variable
-		self.Today_Is_Christmas = self.Christmas.Today_Is_Christmas()
+		self.Today_Is_Christmas = self.Christmas.Today_Is_Day()
 
 	def Define_Folders_And_Files(self):
 		# Get the "Current year" dictionary from the "Years" class

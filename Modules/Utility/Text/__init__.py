@@ -235,7 +235,7 @@ class Text():
 		# Show the verbose text about the copied text
 		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose, first_space = first_space)
 
-	def From_List(self, items, language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False):
+	def From_List(self, items, genders = [], language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False):
 		# Define the text initially as an empty string
 		text = ""
 
@@ -251,6 +251,27 @@ class Text():
 		for index, item in enumerate(items):
 			# Create a backup of the item
 			item_backup = item
+
+			# If the list of genders is not empty
+			if genders != []:
+				# Get the current gender
+				gender = genders[index]
+
+				# Define the text key for the prefix as the "of_{}" text
+				text_key = "of_{}"
+
+				# Get the prefix text using the text key
+				prefix_text = texts[text_key]
+
+				# If the "language" parameter is not None
+				if language != None:
+					# Get the text in the correct language
+					prefix_text = prefix_text[language]
+
+				# If the current gender is inside the prefix text
+				if gender in prefix_text:
+					# Get the text in the currrent gender
+					prefix_text = prefix_text[gender]
 
 			# If the item backup is the last one inside the list
 			# And the "next line" parameter is False
@@ -294,6 +315,19 @@ class Text():
 			# If the "quotes" parameter is True, add quotes around the item
 			if quotes == True:
 				item = '"' + item + '"'
+
+			# If the list of genders is not empty
+			if genders != []:
+				# If the "language" parameter is not English
+				# Or it is
+				# And the item is the first one
+				if (
+					language != "en" or
+					language == "en" and
+					index == 0
+				):
+					# Format the item using the prefix text
+					item = prefix_text.format(item)
 
 			# If the item index is not the last one inside the list
 			# And the "next line" parameter is False

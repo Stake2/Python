@@ -231,7 +231,7 @@ class Diary_Slim():
 			# Add the class to the current class
 			setattr(self, class_title, class_dictionary["Object"])
 
-		# Sort the dictionary of classes with the order of the list of classes
+		# Sort the dictionary of classes with the order being the list of classes
 		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 	def Define_Folders_And_Files(self):
@@ -1108,7 +1108,7 @@ class Diary_Slim():
 
 		# Iterate through the keys and dictionaries inside the dictionary of text dictionaries that have a statistic
 		for key, dictionary in dictionaries.items():
-			# Create a shortcut for the statistic dictionary
+			# Create a shortcut to the statistic dictionary
 			statistic = dictionary["Statistic"]
 
 			# ----- #
@@ -1182,7 +1182,7 @@ class Diary_Slim():
 
 			# If the "Question" key is inside the statistic dictionary
 			if "Question" in statistic:
-				# Create a shortcut for the question
+				# Create a shortcut to the question
 				question = statistic["Question"]
 
 				# If the question has a key
@@ -1400,7 +1400,7 @@ class Diary_Slim():
 			"Dictionary": {}
 		}
 
-		# Create a shortcut for the file
+		# Create a shortcut to the file
 		file = self.diary_slim["Folders"]["Data"]["External statistics"]["Statistics"]
 
 		# If the external statistics file is not empty

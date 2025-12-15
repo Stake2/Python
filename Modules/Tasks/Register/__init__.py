@@ -107,7 +107,7 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Create a shortcut for the task dictionary
+		# Create a shortcut to the task dictionary
 		self.task = self.dictionary["Task"]
 
 		# If the "Descriptions" key is not inside the task dictionary
@@ -598,7 +598,7 @@ class Register(Tasks):
 		self.File.Delete(files["Backup"])
 
 	def Register_In_JSON(self):
-		# Create a shortcut for the task type dictionary
+		# Create a shortcut to the task type dictionary
 		self.task_type = self.dictionary["Type"]["Names"]["Plural"]["en"]
 
 		# ---------- #
@@ -700,7 +700,7 @@ class Register(Tasks):
 			"Lines": len(self.task["Descriptions"]["en"].splitlines())
 		}
 
-		# Create a shortcut for the entry dictionary
+		# Create a shortcut to the entry dictionary
 		self.entry_dictionary = self.dictionaries["Tasks"]["Dictionary"][self.entry_name]
 
 		# ---------- #
@@ -1084,22 +1084,22 @@ class Register(Tasks):
 			# Define and create the "Firsts Of The Year" subfolder folder
 			subfolder_name = self.dictionary["Type"]["Type folder"][language]
 
-			folder = self.current_year["Folders"][language]["Firsts of the Year"]["root"]
+			folder = self.current_year["Folders"][language]["Firsts of the year"]["root"]
 
-			self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name] = {
+			self.current_year["Folders"][language]["Firsts of the year"][subfolder_name] = {
 				"root": folder + subfolder_name + "/"
 			}
 
-			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"])
+			self.Folder.Create(self.current_year["Folders"][language]["Firsts of the year"][subfolder_name]["root"])
 
 			# Define and create the "First task type task in year" file
 			if self.task["States"]["First task type task in year"] == True:
-				folder = self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name]["root"]
+				folder = self.current_year["Folders"][language]["Firsts of the year"][subfolder_name]["root"]
 
-				self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name] = folder + file_name + ".txt"
-				self.File.Create(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name])
+				self.current_year["Folders"][language]["Firsts of the year"][subfolder_name][file_name] = folder + file_name + ".txt"
+				self.File.Create(self.current_year["Folders"][language]["Firsts of the year"][subfolder_name][file_name])
 
-				self.File.Edit(self.current_year["Folders"][language]["Firsts of the Year"][subfolder_name][file_name], self.dictionary["Text"][language], "w")
+				self.File.Edit(self.current_year["Folders"][language]["Firsts of the year"][subfolder_name][file_name], self.dictionary["Text"][language], "w")
 
 	def Write_On_Diary_Slim(self):
 		# Define the Diary Slim text as the task description in the user language

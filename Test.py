@@ -586,7 +586,7 @@ class Main():
 			i += 1
 
 	def Notepad_Theme(self):
-		self.File.Close("notepad++")
+		self.System.Close("notepad++")
 
 		self.folders["notepad++"] = {
 			"root": self.folders["appdata"]["roaming"]["root"] + "Notepad++/"
@@ -621,7 +621,7 @@ class Main():
 
 		notepad = self.folders["root"]["program_files"]["root"] + "Notepad++/notepad++.exe"
 
-		self.File.Open(notepad)
+		self.System.Open(notepad)
 
 	def Time_Difference(self):
 		# Define the before time
