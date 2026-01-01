@@ -79,9 +79,13 @@
 		"pt": "Selecione um ano",
 		"en": "Select a year"
 	},
+	"post_the_year_summary_on_this_website": {
+		"pt": "Poste o resumo do ano nesse site",
+		"en": "Post the year summary on this website"
+	},
 	"post_the_year_summary_on_these_websites": {
-		"en": "Post the year summary on these websites",
-		"pt": "Poste o resumo do ano nestes sites"
+		"pt": "Poste o resumo do ano nesses sites",
+		"en": "Post the year summary on these websites"
 	},
 	"select_a_year_to_show_its_information": {
 		"pt": "Selecione um ano para mostrar suas informações",

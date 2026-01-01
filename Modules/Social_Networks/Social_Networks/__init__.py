@@ -33,11 +33,6 @@ class Social_Networks(object):
 		# Update the social networks file
 		self.Update_Social_Networks_File()
 
-		# If the "Discord" social network is inside the list of social networks
-		if "Discord" in self.social_networks["List"]:
-			# Try to find the Discord executable
-			self.Find_Discord()
-
 	def Import_Utility_Classes(self):
 		# Define the classes to be imported
 		classes = [
@@ -650,6 +645,18 @@ class Social_Networks(object):
 				if files["Text"]["Size"] != files["Image"]["Size"]:
 					# Replace the file on the image folder with the one on the text folder, updating the file
 					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
+
+			# ---------- #
+
+			# Define the shortcut file for the social network
+			shortcut_file = social_network["Folders"]["root"] + social_network_name + ".lnk"
+
+			# If the shortcut file exists
+			if self.File.Exists(shortcut_file) == True:
+				# Define the shortcut file inside the social network dictionary
+				social_network["Shortcut"] = shortcut_file
+
+			# ---------- #
 
 			# Define the "Social network" dictionary as the local "Social network" dictionary
 			self.social_networks["Dictionary"][social_network_name] = social_network
@@ -1461,41 +1468,3 @@ class Social_Networks(object):
 
 		# Return the social network dictionary
 		return social_network
-
-	def Find_Discord(self):
-		# Import some useful modules
-		import os
-		import re
-
-		# Define a list of paths where the Discord executable may be in
-		possible_paths = [
-			self.folders["User"]["AppData"]["Local"]["root"],
-			self.folders["User"]["AppData"]["Roaming"]["root"],
-			self.folders["Program Files"]["root"]
-		]
-
-		# Iterate through the list of possible folders
-		for folder in possible_paths:
-			# Add the "Discord" folder to the folder
-			folder += "Discord/"
-
-			# Regex pattern to find the "app-" folder
-			pattern = re.compile(r"app-\d+\.\d+\.\d+")
-
-			# If the folder exists
-			if self.Folder.Exists(folder) == True:
-				# Get the sub-folders
-				sub_folders = os.listdir(folder)
-
-				# Iterate through the sub-folders
-				for sub_folder in sub_folders:
-					# If the sub-folder contains the "app-" string
-					if "app-" in sub_folder:
-						# Define the executable as the root folder plus the sub-folder and the executable
-						executable = folder + sub_folder + "/Discord.exe"
-
-						# Add the Discord executable to the dictionary of the "Discord" social network
-						self.social_networks["Dictionary"]["Discord"]["Executable"] = executable
-
-						# Break the for loop
-						break

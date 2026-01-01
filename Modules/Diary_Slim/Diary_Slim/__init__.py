@@ -1974,9 +1974,17 @@ class Diary_Slim():
 				# Define the text as it
 				text = statistic["Text"]
 
-			# Else, try to find it inside the root statistics dictionary
-			else:
+			# If the "Text" key is inside the statistics dictionary
+			if "Text" in statistics:
 				text = statistics["Text"]
+
+			# Define the local "show text" switch as True
+			show_text = True
+
+			# If the "in text" is already inside the text
+			if in_text in text:
+				# Change the local "show text" to False
+				show_text = False
 
 			# Add the in text text and a colon and space
 			text = "\t" + text + " " + in_text + ": "
@@ -1995,11 +2003,19 @@ class Diary_Slim():
 			# Add the old number with the "before" text
 			text += " (" + self.Date.language_texts["before, title()"].lower() + ": " + str(old_number) + ")"
 
-			# Add the text to the root statistics text
-			statistics_text += text
+			# If the local "show text" switch is True
+			if show_text == True:
+				# Add the text to the root statistics text
+				statistics_text += text
 
-			# If the "return text" parameter is False
-			if return_text == False:
+			# If the old and new numbers are not zero
+			# And the "return text" parameter is False
+			# And the local "show text" switch is True
+			if (
+				(old_number, new_number) != (0, 0) and
+				return_text == False and
+				show_text == True
+			):
 				# Show the text and number with a tab
 				print(text)
 

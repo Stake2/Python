@@ -812,10 +812,16 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the number to add as one
 		number = 1
 
+		# Define the "added to statistic" switch initially as False
+		added_to_statistic = False
+
 		# ---------- #
 
 		# If the "Has questions" state is True
 		if statistic["Has questions"] == True:
+			# Define a local question number
+			question_number = 0
+
 			# Iterate through the questions inside the dictionary, getting the key and question dictionary
 			for key, question in questions.items():
 				# Get the response
@@ -857,44 +863,92 @@ class Write_On_Diary_Slim(Diary_Slim):
 					number = 0
 
 				# If the "Key" key is inside the question dictionary
+				# And the key is numeric
 				# And the key is not inside the range of the number of questions
+				# Or the "Key" key is inside the question dictionary
+				# And the question number is not inside the range of the number of questions
 				if (
 					"Key" in question and
-					int(question["Key"]) not in range(1, len(questions) + 1)
+					question["Key"].isnumeric() == True and
+					int(question["Key"]) not in range(1, len(questions) + 1) or
+					"Key" in question and
+					question_number not in range(1, len(questions) + 1)
 				):
+					# Define the local statistic key
+					statistic_key = question["Key"]
+
+					# If the question key is numeric
+					if statistic_key.isnumeric() == True:
+						# Change the statistic key to be the actual statistic key
+						statistic_key = statistic["Key"]
+
+					# If the statistic key is "List"
+					if statistic_key == "List":
+						# Define the key as the question response
+						statistic_key = question["Response"]
+
 					# Define the local text key
-					local_text_key = question["Key"].replace(" ", "_").lower()
+					local_text_key = statistic_key.replace(" ", "_").lower()
+
+					# If the local text key is inside the language texts dictionary of the "Language" utility class
+					if local_text_key in self.Language.language_texts:
+						# Define the statistic text to be the text using the text key
+						statistic_text = self.Language.language_texts[local_text_key]
+
+					# If the question has a response
+					if "Response" in question:
+						# Define the statistic text to be the response
+						statistic_text = question["Response"]
 
 					# Define the old number
-					old_number = current_year_statistics[question["Key"]]
+					old_number = current_year_statistics[statistic_key]
 
 					# Define the number to add as the response number
 					number_to_add = number
 
-					# Add the additional question key to the root statistics dictionary
-					self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]] = {
-						"Text": self.Language.language_texts[local_text_key],
+					# Create the local year statistic dictionary
+					dictionary = {
+						"Text": statistic_text,
 						"Old number": old_number,
 						"Number": old_number + number_to_add
 					}
 
+					# If the statistic key is "List"
+					if statistic["Key"] == "List":
+						# Remove the "Text" key
+						dictionary.pop("Text")
+
+					# Add the local dictionary to the root one
+					self.dictionary["Text"]["Statistics"]["Dictionary"][statistic_key] = dictionary
+
 					# Update the number in the month statistic key
-					current_year_statistics[question["Key"]] = self.dictionary["Text"]["Statistics"]["Dictionary"][question["Key"]]["Number"]
+					current_year_statistics[statistic_key] = self.dictionary["Text"]["Statistics"]["Dictionary"][statistic_key]["Number"]
 
 					# ----- #
 
 					# Define the old number
-					old_number = current_month_statistics[question["Key"]]
+					old_number = current_month_statistics[statistic_key]
 
-					# Add the additional question key to the month statistics dictionary
-					self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][question["Key"]] = {
-						"Text": self.Language.language_texts[local_text_key],
+					# Create the local month statistic dictionary
+					dictionary = {
+						"Text": statistic_text,
 						"Old number": old_number,
 						"Number": old_number + number_to_add
 					}
 
+					# If the statistic key is "List"
+					if statistic["Key"] == "List":
+						# Remove the "Text" key
+						dictionary.pop("Text")
+
+					# Add the local dictionary to the root one
+					self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][statistic_key] = dictionary
+
 					# Update the number in the month statistic key
-					current_month_statistics[question["Key"]] = self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][question["Key"]]["Number"]
+					current_month_statistics[statistic_key] = self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][statistic_key]["Number"]
+
+					# Change the "added to statistic" switch to True
+					added_to_statistic = True
 
 					# Define the number as one
 					number = 1
@@ -1075,6 +1129,9 @@ class Write_On_Diary_Slim(Diary_Slim):
 						# Format the text with the list of items, updating the text to write
 						self.dictionary["Text to write"] = self.Language.language_texts[format_text].format(*items)
 
+				# Add one to the local question number
+				question_number += 1
+
 		# ---------- #
 
 		# If the "Secondary statistics" key is inside the statistic dictionary
@@ -1143,16 +1200,20 @@ class Write_On_Diary_Slim(Diary_Slim):
 			statistic_key in current_year_statistics and
 			number != 0
 		):
-			# Add the defined number to the defined year statistic key
-			current_year_statistics[statistic_key] += number
+			# If the "added to statistic" switch is False
+			if added_to_statistic == False:
+				# Add the defined number to the defined year statistic key
+				current_year_statistics[statistic_key] += number
 
 			# Update the number inside the statistics dictionary inside the Diary Slim text dictionary
 			self.dictionary["Text"]["Statistics"]["Dictionary"][statistic["Key"]]["Number"] = current_year_statistics[statistic_key]
 
 			# ---------- #
 
-			# Add the defined number to the defined month statistic key
-			current_month_statistics[statistic_key] += number
+			# If the "added to statistic" switch is False
+			if added_to_statistic == False:
+				# Add the defined number to the defined month statistic key
+				current_month_statistics[statistic_key] += number
 
 			# Update the number inside the month statistics dictionary inside the Diary Slim text dictionary
 			self.dictionary["Text"]["Statistics"]["Month"]["Dictionary"][statistic["Key"]]["Number"] = current_month_statistics[statistic_key]

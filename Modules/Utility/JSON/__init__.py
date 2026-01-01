@@ -671,13 +671,22 @@ class JSON():
 		# List the keys of the items dictionary
 		keys = list(dictionary.keys())
 
+		# Create a copy of the list
+		keys_copy = keys.copy()
+
 		# Remove the keys
 		for key in to_add:
-			keys.remove(key)
+			# If the key exists inside the copy of the list
+			if key in keys_copy:
+				# Remove it
+				keys.remove(key)
 
 		# Add them to the end
 		for key in to_add:
-			keys.append(key)
+			# If the key exists inside the copy of the list
+			if key in keys_copy:
+				# Add it
+				keys.append(key)
 
 		# Sort the dictionary keys using the updated order
 		dictionary = self.Sort_Item_List(dictionary, order = keys)

@@ -23,10 +23,9 @@ class Start_Christmas(Christmas):
 		# Define the root states dictionary
 		self.states = {
 			"Current month is December": False,
-			"Today is Christmas": False,
-			"Today is in the first step date range": False,
-			"Completed non Christmas day steps": False, 
-			"Today is a chosen Christmas day": False
+			"Today is within the interval of dates for the first step": False,
+			"Completed all steps not done on Christmas days": False,
+			"Today is a day chosen to celebrate Christmas": False
 		}
 
 		# ---------- #
@@ -37,14 +36,14 @@ class Start_Christmas(Christmas):
 		# Check the step dates
 		self.Check_Step_Dates()
 
-		# If today is in the date range of the first Christmas step
-		# And the "Completed non Christmas day steps" state is False
+		# If today is within the interval of dates of the first Christmas step
+		# And the "Completed all steps not done on Christmas days" state is False
 		# (The user did not complete all of the Christmas steps that are not done on the Christmas day)
 		# Or today is a chosen Christmas day (days 24 or 25)
 		if (
-			self.states["Today is in the first step date range"] == True and
-			self.states["Completed non Christmas day steps"] == False or
-			self.states["Today is a chosen Christmas day"] == True
+			self.states["Today is within the interval of dates for the first step"] == True and
+			self.states["Completed all steps not done on Christmas days"] == False or
+			self.states["Today is a day chosen to celebrate Christmas"] == True
 		):
 			# Execute the Christmas steps
 			self.Execute_Christmas_Steps()
@@ -431,29 +430,68 @@ class Start_Christmas(Christmas):
 	def Check_Step_Dates(self):
 		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
-			# Define today as "30 of November"
-			#self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 30, month = 11))
+			# Define a list of date units to change
+			date_units = [
+				# 1. "30 of November"
+				{
+					"day": 30,
+					"month": 11
+				},
 
-			# Define today as "19 of December"
-			#self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 19))
+				# 2. "19 of December"
+				{
+					"day": 19,
+					"month": 12
+				},
 
-			# Define today as "20 of December"
-			#self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 20))
+				# 3. "20 of December"
+				{
+					"day": 20,
+					"month": 12
+				},
 
-			# Define today as "24 of December"
-			self.start_christmas["Dates"]["Today"] = self.Date.Now(self.date["Object"].replace(day = 24))
+				# 4. "22 of December"
+				{
+					"day": 22,
+					"month": 12
+				},
 
-			# Change the "Completed non Christmas day steps" to True
-			self.states["Completed non Christmas day steps"] = True
+				# 5. "24 of December"
+				{
+					"day": 24,
+					"month": 12
+				}
+			]
+
+			# Define the empty dates dictionary
+			dates = {}
+
+			# Iterate through the date numbers and unit dictionaries inside the list of date units
+			for number, date_unit in enumerate(date_units, start = 1):
+				# Replace the date units inside the today date object to create the local date
+				date = self.Date.Now(self.date["Object"].replace(**date_unit))
+
+				# Add the date to the dictionary of cases
+				dates[str(number)] = date
+
+			# Define a local "test date" switch
+			test_date = False
+
+			# If the local "test date" switch is True
+			if test_date == True:
+				# Select a date manually
+				date = "4"
+
+				# Change the today date based on the date number
+				self.start_christmas["Dates"]["Today"] = dates[date]
+
+			# Change the "Completed all steps not done on Christmas days" state to True
+			#self.states["Completed all steps not done on Christmas days"] = True
+
+		# ---------- #
 
 		# Create a shortcut to the today date
 		today = self.start_christmas["Dates"]["Today"]
-
-		# Check if today is Christmas and update the "Today is Christmas" state with the returned boolean
-		# Checking if today is either 24 or 25 of December (days = [24, 25])
-		self.states["Today is Christmas"] = self.Today_Is_Day(days = [24, 25], today = today)
-
-		# ---------- #
 
 		# Check if the current month is December and update the "Current month is December" state with the returned boolean
 		self.states["Current month is December"] = self.Current_Month_Is_December(today = today)
@@ -480,8 +518,8 @@ class Start_Christmas(Christmas):
 		# Define the list of days based on the list of dates
 		days = self.Define_List_Of_Days(first_step_date_range["List"])
 
-		# Check if the current day is within the first step date range and update the "Today is in the first step date range" state with the returned boolean
-		self.states["Today is in the first step date range"] = self.Today_Is_Day(days = days, today = today)
+		# Check if the current day is within the first step date range and update the "Today is within the interval of dates for the first step" state with the returned boolean
+		self.states["Today is within the interval of dates for the first step"] = self.Today_Is_Day(days = days, today = today)
 
 		# ----- #
 
@@ -496,8 +534,8 @@ class Start_Christmas(Christmas):
 
 		# If the number of category steps is the same as the number of steps in the completed list
 		if category["Number"] == len(completed):
-			# Then change the "Completed non Christmas day steps" to True
-			self.states["Completed non Christmas day steps"] = True
+			# Then change the "Completed all steps not done on Christmas days" to True
+			self.states["Completed all steps not done on Christmas days"] = True
 
 		# ----- #
 
@@ -513,13 +551,13 @@ class Start_Christmas(Christmas):
 			# And the user completed all of the Christmas steps that are not done on the Christmas day
 			if (
 				end_date["Units"]["Day"] == 25 and
-				self.states["Completed non Christmas day steps"] == True
+				self.states["Completed all steps not done on Christmas days"] == True
 			):
 				# Define the list of days based on the list of dates
 				days = self.Define_List_Of_Days(dates)
 
-				# Check if the current day is inside the list of days and update the "Today is a chosen Christmas day" state with the returned boolean
-				self.states["Today is a chosen Christmas day"] = self.Today_Is_Day(days = days, today = today)
+				# Check if the current day is inside the list of days and update the "Today is a day chosen to celebrate Christmas" state with the returned boolean
+				self.states["Today is a day chosen to celebrate Christmas"] = self.Today_Is_Day(days = days, today = today)
 
 		# ---------- #
 
@@ -552,10 +590,10 @@ class Start_Christmas(Christmas):
 		# ---------- #
 
 		# If the current month is not December
-		# Or today is not in the date range of the first Christmas step
+		# Or today is not within the interval of dates of the first Christmas step
 		if (
 			self.states["Current month is December"] == False or
-			self.states["Today is in the first step date range"] == False
+			self.states["Today is within the interval of dates for the first step"] == False
 		):
 			# Define the end date as the date of the first step
 			end_date = self.start_christmas["Dates"]["Date of the first step"]
@@ -568,33 +606,33 @@ class Start_Christmas(Christmas):
 
 		# ---------- #
 
-		# If today is in the date range of the first Christmas step
-		# And the "Completed non Christmas day steps" state is False
+		# If today is within the interval of dates of the first Christmas step
+		# And the "Completed all steps not done on Christmas days" state is False
 		# (The user did not complete all of the Christmas steps that are not done on the Christmas day)
 		if (
-			self.states["Today is in the first step date range"] == True and
-			self.states["Completed non Christmas day steps"] == False
+			self.states["Today is within the interval of dates for the first step"] == True and
+			self.states["Completed all steps not done on Christmas days"] == False
 		):
-			# Define the show text as "Executing the Christmas steps that are not done on Christmas-dedicated days"
-			show_text = self.language_texts["executing_the_christmas_steps_that_are_not_done_on_christmas_dedicated_days"] + "..."
+			# Define the show text as "Executing the Christmas steps that are not done on days chosen to celebrate Christmas"
+			show_text = self.language_texts["executing_the_christmas_steps_that_are_not_done_on_days_chosen_to_celebrate_christmas"] + "..."
 
-			# Define the root "Finish text" as "You finished completing the Christmas steps that are not done on Christmas-dedicated days"
-			self.start_christmas["Finish text"] = self.language_texts["you_finished_completing_the_christmas_steps, type: long"] + "."
+			# Define the finish text as "You finished completing the Christmas steps that are not done on days chosen to celebrate Christmas"
+			finish_text = self.language_texts["you_finished_completing_the_christmas_steps, type: long"] + "."
 
 			# Add two line breaks to the "Finish text"
-			self.start_christmas["Finish text"] += "\n\n"
+			finish_text += "\n\n"
 
 			# Add the "Today is" text in the user language and a line break
-			self.start_christmas["Finish text"] += self.Language.language_texts["today_is"] + ":" + "\n"
+			finish_text += self.Language.language_texts["today_is"] + ":" + "\n"
 
 			# Add the current date text in the defined date format and a line break
-			self.start_christmas["Finish text"] += "\t" + self.start_christmas["Dates"]["Today date text"] + "\n"
+			finish_text += "\t" + self.start_christmas["Dates"]["Today date text"] + "\n"
 
 			# Add one line breaks to the "Finish text"
-			self.start_christmas["Finish text"] += "\n"
+			finish_text += "\n"
 
 			# Add the "Come back when it is" text
-			self.start_christmas["Finish text"] += self.Language.language_texts["come_back_when_it_is"] + " "
+			finish_text += self.Language.language_texts["come_back_when_it_is"] + " "
 
 			# Get the step key of the first Christmas-day step
 			step_key = self.start_christmas["Steps"]["Categories"]["Christmas day"]["List"][0]
@@ -635,22 +673,28 @@ class Start_Christmas(Christmas):
 			date_range_text = text_template.format(*items)
 
 			# Add the date range text
-			self.start_christmas["Finish text"] += date_range_text + "."
+			finish_text += date_range_text
+
+			# Add a comma, the text "so you can begin to execute the Christmas steps for the days chosen to celebrate Christmas", and a period
+			finish_text += ", " + self.language_texts["so_you_can_begin_to_execute_the_christmas_steps_for_the_days_chosen_to, type: long"] + "."
+
+			# Define the root "Finish text" key as the local finish text
+			self.start_christmas["Finish text"] = finish_text
 
 		# ---------- #
 
-		# If the "Completed non Christmas day steps" state is True
+		# If the "Completed all steps not done on Christmas days" state is True
 		# (The user completed all of the Christmas steps that are not done on the Christmas day)
 		# And today is not a chosen Christmas day (not day 24 or 25)
 		if (
-			self.states["Completed non Christmas day steps"] == True and
-			self.states["Today is a chosen Christmas day"] == False
+			self.states["Completed all steps not done on Christmas days"] == True and
+			self.states["Today is a day chosen to celebrate Christmas"] == False
 		):
 			# Define the end date as "24 of December" date
 			end_date = self.christmas["Dates"]["24 of December"]
 
-			# Define the show text as "You completed all the Christmas steps that are not for the actual Christmas days, and today is not a day chosen to celebrate Christmas"
-			show_text = self.language_texts["you_completed_all_the_christmas_steps_that_are_not_for_the_for_the_actual_christmas, type: long"]
+			# Define the show text as "You completed all the steps that are not done on days chosen to celebrate Christmas, and today is not a day to celebrate Christmas"
+			show_text = self.language_texts["you_completed_all_the_steps_that_are_not_done_on_days, type: long"]
 
 			# Change the local "calculate remaining time" switch to True
 			calculate_remaining_time = True
@@ -658,9 +702,9 @@ class Start_Christmas(Christmas):
 		# ---------- #
 
 		# If today is a chosen Christmas day (days 24 or 25)
-		if self.states["Today is a chosen Christmas day"] == True:
-			# Define the text template as "Starting Christmas day for the year of {}"
-			text_template = self.language_texts["starting_christmas_day_for_the_year_of_{}"]
+		if self.states["Today is a day chosen to celebrate Christmas"] == True:
+			# Define the text template as "Starting the Christmas celebration for the year {}"
+			text_template = self.language_texts["starting_the_christmas_celebration_for_the_year_of_{}"]
 
 			# Format the text template with the current year number to create the show text
 			show_text = text_template.format(self.date["Units"]["Year"]) + "..."
@@ -695,69 +739,53 @@ class Start_Christmas(Christmas):
 				self.Calculate_Remaining_Time(today, end_date)
 
 	def Calculate_Remaining_Time(self, today, end_date):
-		# Create a shortcut to the units of the current date
-		current_date_units = today["Units"]
+		# Define a list of time units to reset
+		to_reset = [
+			"hour",
+			"minute",
+			"second"
+		]
 
-		# Create a shortcut to the units of the end date
-		end_date_units = end_date["Units"]
+		# Define the local time units dictionary
+		time_units = {}
 
-		# ---------- #
+		# Iterate through the list of time units
+		for time_unit in to_reset:
+			# Add the time unit to the local time units dictionary as zero
+			time_units[time_unit] = 0
 
-		# Define a dictionary to store the remaining time until Christmas
-		time_left = {}
+		# Replace the defined time units with zero in the today date
+		today = self.Date.Now(today["Object"].replace(**time_units))
 
-		# Calculate the difference in years from the current year to the end year
-		years_left = (current_date_units["Year"] - end_date_units["Year"])
+		# Replace the defined time units with zero in the end date
+		end_date = self.Date.Now(end_date["Object"].replace(**time_units))
 
-		# Calculate the difference in months from the current month to the Christmas month
-		months_left = (current_date_units["Month"] - end_date_units["Month"])
+		# Calculate the time difference between today and the end date
+		difference = self.Date.Difference(today, end_date)
 
-		# Convert the years left to months (years left times 12) and add the months left
-		time_left["Months"] = years_left * 12 + months_left
-
-		# Calculate the absolute difference in days from the current date to Christmas
-		days_left = abs((today["Object"] - end_date["Object"]).days)
-
-		# Calculate the total number of days left in the current month,
-		# by multiplying the months left until Christmas by the number of days in the current month
-		month_days_left = time_left["Months"] * self.Date.Monthrange(current_date_units["Year"], current_date_units["Month"])[1]
-
-		# Define the number of days left
-		time_left["Days"] = days_left - abs(month_days_left)
-
-		# Get the absolute value of each time
-		for key in time_left:
-			time_left[key] = abs(time_left[key])
-
-		# ---------- #
-
-		# Create a shortcut to the language texts dictionary of the "Date" class
-		texts_dictionary = self.Date.language_texts
-
-		# Iterate through the items and times inside the time left
-		for item, time in time_left.items():
+		# Iterate through the items and times inside the "Difference" dictionary
+		for item, time in difference["Difference"].items():
 			# Define the plural text key
 			plural_text_key = item.lower()
 
 			# Define the singular text key (by removing the "s" letter from the end)
 			singular_text_key = plural_text_key[:-1]
 
-			# If the time is not zero
-			if time != 0:
-				# Define the list of items
-				items = [
-					time,
-					texts_dictionary[singular_text_key + "_left"],
-					texts_dictionary[plural_text_key + "_left"]
-				]
+			# Define the list of items
+			items = [
+				time,
+				self.Date.language_texts[singular_text_key + "_left"],
+				self.Date.language_texts[plural_text_key + "_left"]
+			]
 
-				# Define the singular or plural time text based on the time
-				time_text = self.Text.By_Number(*items)
+			# Define the singular or plural time text based on the time
+			# Example: "Day left" or "Days left"
+			time_text = self.Text.By_Number(*items)
 
-				# Show the time text and the time left
-				print()
-				print(time_text + ":")
-				print("\t" + str(time) + " " + time_text.lower())
+			# Show the time text and the time left
+			print()
+			print(time_text + ":")
+			print("\t" + str(time) + " " + time_text.lower())
 
 	def Execute_Christmas_Steps(self):
 		# Show a three dash space separator
@@ -766,18 +794,18 @@ class Start_Christmas(Christmas):
 
 		# ---------- #
 
-		# If today is in the date range of the first Christmas step
-		# And the "Completed non Christmas day steps" state is False
+		# If today is within the interval of dates of the first Christmas step
+		# And the "Completed all steps not done on Christmas days" state is False
 		# (The user did not complete all of the Christmas steps that are not done on the Christmas day)
 		if (
-			self.states["Today is in the first step date range"] == True and
-			self.states["Completed non Christmas day steps"] == False
+			self.states["Today is within the interval of dates for the first step"] == True and
+			self.states["Completed all steps not done on Christmas days"] == False
 		):
 			# Define the category key as "Non-Christmas day"
 			category_key = "Non-Christmas day"
 
 		# If today is a chosen Christmas day (days 24 or 25)
-		if self.states["Today is a chosen Christmas day"] == True:
+		if self.states["Today is a day chosen to celebrate Christmas"] == True:
 			# Define the category key as "Christmas day"
 			category_key = "Christmas day"
 
@@ -797,8 +825,6 @@ class Start_Christmas(Christmas):
 		# Get the total number of steps in the local list of steps
 		total_steps_number = len(steps)
 
-		# Define the local last date range text as an empty string
-		last_date_range_text = ""
 
 		# Iterate through the Christmas step numbers and keys inside the local list of steps
 		for step_number, step_key in enumerate(steps, start = 1):
@@ -812,6 +838,18 @@ class Start_Christmas(Christmas):
 			print(self.Language.language_texts["christmas_step"] + ":")
 			print("\t" + "[" + str(step_number) + "/" + str(total_steps_number) + "]")
 
+			# If the Christmas step has a "Methods" dictionary
+			# And the first method is "Open_Music_Player"
+			if (
+				step["States"]["Has methods"] == True and
+				step["Methods"]["List"][0] == "Open_Music_Player"
+			):
+				# Get the method dictionary
+				method = list(step["Methods"]["Dictionary"].values())[0]
+
+				# Replace the "{music_player}" format string with the music player name
+				step["Text"] = step["Text"].replace("{music_player}", method["Value"])
+
 			# Show the Christmas step text
 			print()
 			print(self.Language.language_texts["christmas_step_text"] + ":")
@@ -819,46 +857,46 @@ class Start_Christmas(Christmas):
 
 			# ---------- #
 
-			# Create a shortcut to the list of date ranges
-			date_ranges = step["Date ranges"]
+			# If today is not a chosen Christmas day (days 24 or 25)
+			if self.states["Today is a day chosen to celebrate Christmas"] == False:
+				# Create a shortcut to the list of date ranges
+				date_ranges = step["Date ranges"]
 
-			# Get the start date
-			start_date = date_ranges[0]
+				# Get the start date
+				start_date = date_ranges[0]
 
-			# Get the end date
-			end_date = date_ranges[-1]
+				# Get the end date
+				end_date = date_ranges[-1]
 
-			# Define the text to show as "Day to complete the Christmas step"
-			text_to_show = self.language_texts["day_to_complete_the_christmas_step"]
+				# Define the text to show as "Day to complete the Christmas step"
+				text_to_show = self.language_texts["day_to_complete_the_christmas_step"]
 
-			# Define the date range text template as the "At the day {} of {}" text template of the "Date" utility class
-			text_template = self.Date.language_texts["at_the_day_{}_of_{}"]
+				# Define the date range text template as the "At the day {} of {}" text template of the "Date" utility class
+				text_template = self.Date.language_texts["at_the_day_{}_of_{}"]
 
-			# Define the list of items to use to format the date range text template
-			items = [
-				# The day of the end date
-				end_date["Units"]["Day"],
+				# Define the list of items to use to format the date range text template
+				items = [
+					# The day of the end date
+					end_date["Units"]["Day"],
 
-				# The month name in the user language
-				end_date["Texts"]["Month name"][self.language["Small"]]
-			]
+					# The month name in the user language
+					end_date["Texts"]["Month name"][self.language["Small"]]
+				]
 
-			# If the number of date ranges is more than one
-			if len(date_ranges) > 1:
-				# Define the text to show as "Interval of days to complete the Christmas step"
-				text_to_show = self.language_texts["interval_of_days_to_complete_the_christmas_step"]
+				# If the number of date ranges is more than one
+				if len(date_ranges) > 1:
+					# Define the text to show as "Interval of days to complete the Christmas step"
+					text_to_show = self.language_texts["interval_of_days_to_complete_the_christmas_step"]
 
-				# Change the date range text template to the "Between the days {} and {} of {}" text template of the "Date" utility class
-				text_template = self.Date.language_texts["between_the_days_{}_and_{}_of_{}"]
+					# Change the date range text template to the "Between the days {} and {} of {}" text template of the "Date" utility class
+					text_template = self.Date.language_texts["between_the_days_{}_and_{}_of_{}"]
 
-				# Add the start date to the list of items
-				items.insert(0, start_date["Units"]["Day"])
+					# Add the start date to the list of items
+					items.insert(0, start_date["Units"]["Day"])
 
-			# Format the date range text template with the list of items to create the date range text
-			date_range_text = text_template.format(*items)
+				# Format the date range text template with the list of items to create the date range text
+				date_range_text = text_template.format(*items)
 
-			# If the current date range text is not the same as the last one
-			if date_range_text != last_date_range_text:
 				# Show the "Today is" text in the user language
 				print()
 				print(self.Language.language_texts["today_is"] + ":")
@@ -878,9 +916,6 @@ class Start_Christmas(Christmas):
 
 				# Show the date range text
 				print("\t" + date_range_text)
-
-			# Update the local last date range text
-			last_date_range_text = date_range_text
 
 			# ---------- #
 
@@ -930,12 +965,8 @@ class Start_Christmas(Christmas):
 
 			# If the "Ask to make a pause" key is inside the Christmas step dictionary
 			if "Ask to make a pause" in step:
-				# Show a five dash space separator
-				print()
-				print(self.separators["5"])
-
-				# Define the question as "Do you want to make a pause and continue later?"
-				question = self.language_texts["do_you_want_to_make_a_pause_and_continue_later"]
+				# Define the question as "Do you want to make a pause and continue executing the Christmas steps later?"
+				question = self.language_texts["do_you_want_to_make_a_pause_and_continue_executing_the_christmas, type: long"]
 
 				# Ask the user if they want to make a pause
 				make_a_pause = self.Input.Yes_Or_No(question)
@@ -944,6 +975,9 @@ class Start_Christmas(Christmas):
 				if make_a_pause == True:
 					# Define the text template as the "day {} of {}" text template of the "Date" utility class
 					text_template = self.Date.language_texts["day_{}_of_{}"]
+
+					# Define the end date as "24 of December" date
+					end_date = self.christmas["Dates"]["24 of December"]
 
 					# Define the list of items to use to format the date range text template
 					items = [
@@ -957,8 +991,8 @@ class Start_Christmas(Christmas):
 					# Format the text template with the list of items to create the date text
 					date_text = text_template.format(*items)
 
-					# Define the text template as "Come back when you want to continue completing the Christmas steps for the {}!"
-					text_template = self.language_texts["come_back_when_you_want_to_continue_completing_the_christmas_steps, type: long"]
+					# Define the text template as "Come back when you want to continue executing the Christmas steps for the {}!"
+					text_template = self.language_texts["come_back_when_you_want_to_continue_executing_the_christmas_steps, type: long"]
 
 					# Format the new text template with the date text
 					text = text_template.format(date_text)

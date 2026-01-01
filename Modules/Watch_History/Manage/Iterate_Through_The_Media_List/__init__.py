@@ -39,7 +39,6 @@ class Iterate_Through_The_Media_List(Watch_History):
 				#self.texts["videos, title()"]["en"]
 			]
 
-			#string = ""
 			ask_for_input = True
 
 			# Remove a media type from the list (optional)
@@ -153,9 +152,6 @@ class Iterate_Through_The_Media_List(Watch_History):
 						ask_for_input == True
 					):
 						self.Input.Type(self.Language.language_texts["continue, title()"])
-
-			#self.Text.Copy(string)
-			#input()
 
 			if (
 				self.switches["Testing"] == True and

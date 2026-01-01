@@ -32,7 +32,8 @@ class Open_Social_Network(Social_Networks):
 		self.states = {
 			"First separator": True,
 			"One social network": False,
-			"Imported numbers": False
+			"Imported numbers": False,
+			"Imported input text": False
 		}
 
 		# Define the "Social networks" dictionary
@@ -96,6 +97,11 @@ class Open_Social_Network(Social_Networks):
 						if key == "Numbers":
 							# Change the "Imported numbers" state to True
 							self.states["Imported numbers"] = True
+
+						# If the key is "Input text"
+						if key == "Input text":
+							# Change the "Imported input text" state to True
+							self.states["Imported input text"] = True
 
 				# If the "List" of social networks inside the parameter dictionary is not empty
 				if social_networks["List"] != []:
@@ -184,17 +190,14 @@ class Open_Social_Network(Social_Networks):
 				"Opening link" in self.social_network["Information"] and
 				opening_link == self.Language.language_texts["use_executable"]
 			):
-				# Define the link to open as the executable of the social network
-				link_to_open = self.social_network["Executable"]
+				# Define the link to open as the shortcut of the social network
+				link_to_open = self.social_network["Shortcut"]
 
 			# Define the root link to open as the local one
 			self.social_network["Link to open"] = link_to_open
 
-			# Show information about the opening of the social network link
-			self.Show_Information(social_network_name)
-
-			# Define the local "open" switch as True
-			open = True
+			# Define the root "Open" switch as True
+			social_network["Open"] = True
 
 			# If the "Do not open" key is present inside the root "Social networks" dictionary
 			# And the current social network is inside of that list
@@ -202,21 +205,26 @@ class Open_Social_Network(Social_Networks):
 				"Do not open" in social_networks_dicitonary and
 				social_network_name in social_networks_dicitonary["Do not open"]
 			):
-				# Change the local "open" switch to False
-				open = False
+				# Change the root "Open" switch to False
+				social_network["Open"] = False
 
-			# If the local "open" switch is True
-			if open == True:
+			# If the the root "Open" switch is True
+			if social_network["Open"] == True:
 				# Open the social network link
 				self.System.Open(link_to_open, verbose = False)
 
+			# Show information about the opening of the social network link
+			self.Show_Information(social_network_name, social_network)
+
 			# If there are more than one social network to open
 			# And the current social network is not the last one
-			# Or the "Numbers" dictionary were imported from the "social networks" parameter dictionary
+			# Or the "Numbers" dictionary was imported from the "social networks" parameter dictionary
+			# Or the "Input text" key was imported from the "social networks" parameter dictionary
 			if (
 				self.states["One social network"] == False and
 				social_network_name != self.open_social_network["Social networks"]["List"][-1] or
-				self.states["Imported numbers"] == True
+				self.states["Imported numbers"] == True or
+				self.states["Imported input text"] == True
 			):
 				# Create a shortcut to the input text
 				input_text = self.open_social_network["Input text"]
@@ -248,7 +256,7 @@ class Open_Social_Network(Social_Networks):
 				# Add one to the "Iteration" number
 				self.open_social_network["Social networks"]["Numbers"]["Iteration"] += 1
 
-	def Show_Information(self, social_network_name):
+	def Show_Information(self, social_network_name, social_network):
 		# If there are multiple social networks to open
 		# And the current social network is not the first one
 		# Or the "Numbers" dictionary were imported from the "social networks" parameter dictionary
@@ -305,7 +313,6 @@ class Open_Social_Network(Social_Networks):
 			# Show the "Social network" text and the social network name
 			print(self.Language.language_texts["social_network"] + ":")
 			print("\t" + social_network_name)
-			print()
 
 		# Define the text template as the default one
 		text_template = self.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
@@ -315,8 +322,8 @@ class Open_Social_Network(Social_Networks):
 			# Change the template text to reflect that
 			text_template = self.language_texts["opening_the_social_network_{}_with_this_link"]
 
-		# If the social network has an executable
-		if "Executable" in self.social_network:
+		# If the social network has a shortcut
+		if "Shortcut" in self.social_network:
 			# Change the template text to reflect that
 			text_template = self.language_texts["opening_the_executable_of_the_social_network_{}"]
 
@@ -334,11 +341,14 @@ class Open_Social_Network(Social_Networks):
 		# Format the text template with the list of items to create the text
 		text = text_template.format(*items)
 
-		# Show the text and the link to open
-		print(text + ":")
-		print("\t" + self.social_network["Link to open"])
+		# If the social network "Open" switch is True
+		if social_network["Open"] == True:
+			# Show the text and the link to open
+			print()
+			print(text + ":")
+			print("\t" + self.social_network["Link to open"])
 
-		# If the link type is "Profile"
-		if self.open_social_network["Link type"]["en"] == "Profile":
-			# To-Do: Show information about the link, splitting the template link
-			variable = True
+			# If the link type is "Profile"
+			if self.open_social_network["Link type"]["en"] == "Profile":
+				# To-Do: Show information about the link, splitting the template link
+				variable = True

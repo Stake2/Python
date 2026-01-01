@@ -315,6 +315,10 @@
 		"en": "Select {} to watch",
 		"pt": "Selecione {} para assistir"
 	},
+	"select_an_additional_option_to_show_the_media_with_other_watching_statuses": {
+		"en": "Select an additional option to show the media with other watching statuses",
+		"pt": "Selecione uma opção adicional para mostrar as mídias com outros status de assistindo"
+	},
 	"video_serie": {
 		"pt": "série de vídeos",
 		"en": "video series"
@@ -431,7 +435,6 @@
 		"en": "You finished watching",
 		"pt": "Você terminou de assistir"
 	},
-	
 	"type_the_number_of_times_that_you_watched": {
 		"pt": "Digite o número de vezes que você assistiu",
 		"en": "Type the number of times that you watched"
@@ -465,12 +468,16 @@
 		"en": "I just finished watching {}"
 	},
 	"i_posted_the_watched_text, type: template": {
-		"pt": "Postei o texto de assistido e {} no meu servidor no {}, no status do {}, e também no {}",
-		"en": "I posted the watched text and {} on my server on {}, on the status of {}, and also on {}"
+		"pt": "Postei o texto de assistido e {} nas minhas redes sociais",
+		"en": "I posted the watched text and {} on my social networks"
 	},
-	"press_enter_to_copy_the_watched_text": {
-		"pt": "Pressione Enter para copiar o texto de assistido",
-		"en": "Press Enter to copy the watched text"
+	"press_enter_when_you_finish_rendering_{}_on_photoshop": {
+		"en": "Press Enter when you finish rendering {} on Photoshop",
+		"pt": "Pressione Enter quando você terminar de renderizar {} no Photoshop"
+	},
+	"press_enter_when_you_finish_posting_the_status_and_the_[media_cover], type: long": {
+		"pt": "Pressione Enter quando você terminar de postar o status e [media_cover] no {social_network}",
+		"en": "Press Enter when you finish posting the status and [media_cover] on {social_network}"
 	},
 	"{}_is_{}_that_you_watched_{}": {
 		"pt": "{} é {} que você assistiu {}",
@@ -560,13 +567,13 @@
 		"en": "Media being watched",
 		"pt": "Mídias sendo assistidas"
 	},
-	"things_watched_since_{}_until_{}": {
-		"en": "things watched since {} (until {})",
-		"pt": "coisas assistidas desde {} (até {})"
+	"media_watched_since_{}_until_{}": {
+		"en": "media watched since {} (until {})",
+		"pt": "mídias assistidas desde {} (até {})"
 	},
-	"things_watched_in": {
-		"en": "Things watched in",
-		"pt": "Coisas assistidas em"
+	"media_watched_in": {
+		"en": "Media watched in",
+		"pt": "Mídias assistidas em"
 	},
 	"media_types_watched_in_all_years": {
 		"en": "Media types watched in all years",

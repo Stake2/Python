@@ -1047,7 +1047,7 @@ class Folder():
 				# Folder is not empty
 				shutil.rmtree(folder)
 
-			self.Verbose(self.language_texts["folder"].title() + " " + self.language_texts["deleted, feminine"], folder)
+			self.Verbose(self.language_texts["folder"].title() + " " + self.Language.language_texts["deleted, feminine"], folder)
 
 			return True
 

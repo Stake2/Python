@@ -259,8 +259,6 @@ class Watch_Media(Watch_History):
 				self.media["Details"][self.Language.language_texts["remote_origin"]] = remote_origin
 
 	def Define_Episode_Variables(self):
-		
-
 		# The original media "Episode" dictionary is this one:
 		# Defined by the root method "Select_Media"
 		"""
@@ -393,81 +391,78 @@ class Watch_Media(Watch_History):
 				# Define the episode number as one
 				self.media["Episode"]["Number"] = 1
 
-			# If the media item is not a single unit (that means it has episodes)
-			if self.media["States"]["Single unit"] == False:
-				# Iterate through the episode titles inside the media language list of episode titles
-				# To find the current episode number
-				i = 1
-				for episode_title in language_titles[self.media["Language"]]:
-					# If the separator is not an empty string and is present in the current episode title
-					if (
-						self.media["Episode"]["Separator"] != "" and
-						self.media["Episode"]["Separator"] in episode_title
-					):
-						# Define the language title as the root episode title
-						language_title = self.media["Episode"]["Title"]
+			# Iterate through the episode titles inside the media language list of episode titles
+			# To find the current episode number
+			i = 1
+			for episode_title in language_titles[self.media["Language"]]:
+				# If the separator is not an empty string and is present in the current episode title
+				if (
+					self.media["Episode"]["Separator"] != "" and
+					self.media["Episode"]["Separator"] in episode_title
+				):
+					# Define the language title as the root episode title
+					language_title = self.media["Episode"]["Title"]
 
-						# Remove the separator and episode number from the episode title
-						episode_title = re.sub(self.media["Episode"]["Separator"] + "[0-9]{1,3} ", "", episode_title)
+					# Remove the separator and episode number from the episode title
+					episode_title = re.sub(self.media["Episode"]["Separator"] + "[0-9]{1,3} ", "", episode_title)
 
-						# Define the expression as "current episode title is inside the media episode title" (not an exact match)
-						# We remove the episode number from the current episode title to be easier to match it with the correct episode title (the one inside the "Episode" dictionary)
-						expression = episode_title in language_title
+					# Define the expression as "current episode title is inside the media episode title" (not an exact match)
+					# We remove the episode number from the current episode title to be easier to match it with the correct episode title (the one inside the "Episode" dictionary)
+					expression = episode_title in language_title
 
-					# If the separator is not an empty string and is not present in the current episode title
-					# Or the media type is "Videos", and the media is a video channel
-					# (Video media is not episodic, that means they do not follow a specific order, so exact match is used)
-					# Or the media is non-episodic (exact match is also used for non-episodic media)
-					# Or the separator is empty
-					elif (
-						self.media["Episode"]["Separator"] != "" and
-						self.media["Episode"]["Separator"] not in episode_title or
-						self.media["States"]["Video"] == True or
-						self.media["States"]["Episodic"] == False or
-						self.media["Episode"]["Separator"] == ""
-					):
-						# Define the language title as the root episode title
-						language_title = self.media["Episode"]["Title"]
+				# If the separator is not an empty string and is not present in the current episode title
+				# Or the media type is "Videos", and the media is a video channel
+				# (Video media is not episodic, that means they do not follow a specific order, so exact match is used)
+				# Or the media is non-episodic (exact match is also used for non-episodic media)
+				# Or the separator is empty
+				elif (
+					self.media["Episode"]["Separator"] != "" and
+					self.media["Episode"]["Separator"] not in episode_title or
+					self.media["States"]["Video"] == True or
+					self.media["States"]["Episodic"] == False or
+					self.media["Episode"]["Separator"] == ""
+				):
+					# Define the language title as the root episode title
+					language_title = self.media["Episode"]["Title"]
 
-						# Define the expression as "current episode title is equal to the language episode title" (an exact match)
-						# For example, the current "episode title" is (EP12 "The Big Flowers")
-						# This expression checks if the current episode title is equal to the current language title (the one inside the "i" line number inside the list of language episode titles)
-						expression = episode_title == language_title
+					# Define the expression as "current episode title is equal to the language episode title" (an exact match)
+					# For example, the current "episode title" is (EP12 "The Big Flowers")
+					# This expression checks if the current episode title is equal to the current language title (the one inside the "i" line number inside the list of language episode titles)
+					expression = episode_title == language_title
 
-					# If the defined expression is True, define the episode number as the current "i" number
-					if expression == True:
-						self.media["Episode"]["Number"] = i
+				# If the defined expression is True, define the episode number as the current "i" number
+				if expression == True:
+					self.media["Episode"]["Number"] = i
 
-					# Add one to the "i" number
-					i += 1
+				# Add one to the "i" number
+				i += 1
 
-				# Iterate through the list of small languages
-				for language in self.languages["Small"]:
-					# Get the list of episode titles in the current language
-					episode_titles = self.media["Item"]["Episodes"]["Titles"][language]
+			# Iterate through the list of small languages
+			for language in self.languages["Small"]:
+				# Get the list of episode titles in the current language
+				episode_titles = self.media["Item"]["Episodes"]["Titles"][language]
 
-					# Define the local episode title as an empty string
-					episode_title = ""
+				# Define the local episode title as an empty string
+				episode_title = ""
 
-					# If the list of episode titles is not empty
-					if episode_titles != []:
-						# Define the line number to use to find the episode title
-						line_number = self.media["Episode"]["Number"] - 1
+				# If the list of episode titles is not empty
+				if episode_titles != []:
+					# Define the line number to use to find the episode title
+					line_number = self.media["Episode"]["Number"] - 1
 
-						# Get the language episode title using the defined line number
-						# (Less one because lists in Python starts in zero, and the episode number starts in one)
-						episode_title = episode_titles[line_number]
+					# Get the language episode title using the defined line number
+					# (Less one because lists in Python starts in zero, and the episode number starts in one)
+					episode_title = episode_titles[line_number]
 
-					# Define the episode title in the current language as the local episode title, inside the "Titles" key
-					self.media["Episode"]["Titles"][language] = episode_title
+				# Define the episode title in the current language as the local episode title, inside the "Titles" key
+				self.media["Episode"]["Titles"][language] = episode_title
 
 			# For the video media type, when the media is a video channel
 			# Get the episode ID from the "IDs.txt" file using the episode number
 			if self.media["States"]["Video"] == True:
 				self.media["Episode"]["ID"] = self.media["Item"]["Episodes"]["Titles"]["IDs"][self.media["Episode"]["Number"] - 1]
 
-		# If the media is not a series media (without media items or seasons)
-		# That means it is a movie
+		# If the media is not a series media (without media items or seasons), that means it is a movie
 		if self.media["States"]["Series media"] == False:
 			# Sanitize the media title to get the sanitized title
 			self.media["Episode"]["Sanitized"] = self.Sanitize_Title(self.media["Titles"][self.media["Language"]])
@@ -763,41 +758,69 @@ class Watch_Media(Watch_History):
 			# Get the correct media title
 			media_title = self.Get_Media_Title(self.dictionary)
 
-			# Replace media title with media item title if "replace title" setting exists inside media details
+			# Get the original media title
+			original_media_title = self.media["Titles"]["Original"]
+
+			# If the "Romanized" key is inside the media "Titles" dictionary
+			if "Romanized" in self.media["Titles"]:
+				# Define the local original media title as the romanized one
+				original_media_title = self.media["Titles"]["Romanized"]
+
+			# Get the original media item title
+			original_media_item_title = self.media["Item"]["Titles"]["Original"]
+
+			# If the "Romanized" key is inside the media item "Titles" dictionary
+			if "Romanized" in self.media["Item"]["Titles"]:
+				# Define the local original media item title as the romanized one
+				original_media_item_title = self.media["Item"]["Titles"]["Romanized"]
+
+			# If the "Replace title" media state is True
 			if self.media["States"]["Replace title"] == True:
+				# If the local language is inside the media item "Titles" dictionary
 				if language in self.media["Item"]["Titles"]:
-					media_title = self.media["Item"]["Titles"][language]
+					# Change the local original media title to be the media item title in that key
+					original_media_title = self.media["Item"]["Titles"][language]
 
+				# Else, change the local original media title to be the original media item title
 				else:
-					media_title = self.media["Item"]["Titles"]["Original"]
+					original_media_title = original_media_item_title
 
-					if "Romanized" in self.media["Item"]["Titles"]:
-						media_title = self.media["Item"]["Titles"]["Romanized"]
+			# Define the original "with media title" episode title
+			self.media["Episode"]["with_title"]["Original"] = original_media_title + self.media["Separators"]["Title"] + self.media["Episode"]["Title"]
 
-			self.media["Episode"]["with_title"]["Original"] = media_title + self.media["Separators"]["Title"] + self.media["Episode"]["Title"]
-
-			# Define the episode with title texts by language
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
+				# Get the correct media title for the current language
 				media_title = self.Get_Media_Title(self.dictionary, language = language)
 
-				# Replace media title with media item title if "replace title" setting exists inside media details
+				# If the "Replace title" media state is True
 				if self.media["States"]["Replace title"] == True:
+					# If the local language is inside the media item "Titles" dictionary
 					if language in self.media["Item"]["Titles"]:
+						# Change the local media title to be the media item title in that key
 						media_title = self.media["Item"]["Titles"][language]
 
 					else:
+						# Change the local media title to be the original media item title
 						media_title = self.media["Item"]["Titles"]["Original"]
 
+						# If the "Romanized" key is inside the media item "Titles" dictionary
 						if "Romanized" in self.media["Item"]["Titles"]:
+							# Define the local media item title as the romanized one
 							media_title = self.media["Item"]["Titles"]["Romanized"]
 
+				# Define the "with media title" episode title in the current language
 				self.media["Episode"]["with_title"][language] = media_title + self.media["Separators"]["Title"] + self.media["Episode"]["Titles"][language]
 
+			# If the media does not have a list of media items
+			# Or the media item title is equal to the media title
+			# Or the media item is a single unit
 			if (
 				self.media["States"]["Has a list of media items"] == False or
 				self.media["Item"]["Title"] == self.media["Title"] or
 				self.media["States"]["Single unit"] == True
 			):
+				# Change the default "With media title" episode title as the "With media title" one in the user language
 				self.media["Episode"]["with_title_default"] = self.media["Episode"]["with_title"][self.language["Small"]]
 
 		# ---------- #
@@ -946,6 +969,51 @@ class Watch_Media(Watch_History):
 			# Replace the "watch" text with the "re-watch" text in the header text
 			self.dictionary["Header text"] = self.dictionary["Header text"].replace(self.language_texts["watch"], self.language_texts["re_watch"])
 
+	def Define_Episode_Title_With_Media_Title(self, language = True):
+		# Define the episode key for the episode title
+		episode_key = "with_title"
+
+		# If the media has a list of media
+		# And the media item is not the media
+		# And the media is not a video channel
+		# And the media item is not single unit
+		# And the "Replace title" state is deactivated
+		if (
+			self.media["States"]["Has a list of media items"] == True and
+			self.media["States"]["The media item is the root media"] == False and
+			self.media["States"]["Video"] == False and
+			self.language_texts["single_unit"] not in self.media["Item"]["Details"] and
+			self.media["States"]["Replace title"] == False
+		):
+			# Change the episode key to "With media title and media item"
+			episode_key = "with_title_and_item"
+
+		# If the episode key is present in the "Episode" dictionary
+		if episode_key in self.media["Episode"]:
+			# Define the episode title using the episode key
+			episode_title = self.media["Episode"][episode_key][self.language["Small"]]
+
+		# If the media is not a series media (it is a movie)
+		if self.media["States"]["Series media"] == False:
+			# Define the media key as "Original"
+			media_key = "Original"
+
+			# If the "Romanized" key is inside the media "Titles" dictionary
+			if "Romanized" in self.media["Titles"]:
+				# Define it as the media key
+				media_key = "Romanized"
+
+			# Get the media title using the media key and define it as the episode title
+			episode_title = self.media["Episode"]["Titles"][media_key]
+
+			# If the "language" parameter is True
+			if language == True:
+				# Define the episode title as the media title in the user language, plus the additional information about the movie (year and distributor)
+				episode_title = self.media["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
+
+		# Return the episode title
+		return episode_title
+
 	def Define_Re_Watching(self):
 		# Define the default "Re-watching" dictionary
 		self.media["Episode"]["Re-watching"] = {
@@ -981,8 +1049,11 @@ class Watch_Media(Watch_History):
 			print()
 			print(self.Language.language_texts["title, title()"] + ":")
 
-			# Show the default "with media title" version of the episode
-			print("\t" + self.media["Episode"]["with_title_default"])
+			# Define the media or episode title with the media title
+			title = self.Define_Episode_Title_With_Media_Title()
+
+			# Show the defined title
+			print("\t" + title)
 
 			# While the watched times variable is not an integer
 			while not isinstance(watched_times, int):
@@ -1002,7 +1073,8 @@ class Watch_Media(Watch_History):
 					# Ask for the number of times the user watched the media unit (episode, single unit, or movie)
 					watched_times = self.Input.Type(type_text)
 
-				else:
+				# If the "Testing" switch is True
+				if self.switches["Testing"] == True:
 					# Define it as one
 					watched_times = 1
 
@@ -1238,52 +1310,31 @@ class Watch_Media(Watch_History):
 	def Create_Discord_Status(self):
 		# Make a custom status of the media to put on the Discord custom status, with the media and episode title
 
-		# Define the status
-		status = self.media["Details"][self.Language.language_texts["status, title()"]]
+		# Get the watching status
+		watching_status = self.media["Details"][self.Language.language_texts["status, title()"]]
 
-		# Define the key for the episode title
-		key = "with_title"
+		# Define the media or episode title with the media title
+		media_title = self.Define_Episode_Title_With_Media_Title()
 
-		# If the media has a list of media
-		# And the media item is not the media
-		# And the media is not a video channel
-		# And the media item is not single unit
-		# And the "Replace title" state is deactivated
-		if (
-			self.media["States"]["Has a list of media items"] == True and
-			self.media["States"]["The media item is the root media"] == False and
-			self.media["States"]["Video"] == False and
-			self.language_texts["single_unit"] not in self.media["Item"]["Details"] and
-			self.media["States"]["Replace title"] == False
-		):
-			key = "with_title_and_item"
-
-		# If the key is present in the "Episode" dictionary
-		if key in self.media["Episode"]:
-			# Define the title using the key
-			title = self.media["Episode"][key][self.language["Small"]]
-
-		# Define the title using the key
-		#title = self.media["Episode"]["with_title_default"]
-
-		# If the media is not a series media
-		if self.media["States"]["Series media"] == False:
-			# Define the title as the episode title in the user language, plus the original title of the episode
-			title = self.media["Episode"]["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
-
-		# Define the "Discord" dictionary and the status
+		# Define the "Discord" dictionary and the empty "Status" key
 		self.dictionary["Discord"] = {
 			"Status": ""
 		}
 
-		# Define the status, adding the media item status, media type, and media title + episode title
-		self.dictionary["Discord"]["Status"] = status + " " + self.dictionary["Media type"]["Singular"][self.language["Small"]] + ": " + title
+		# Define the Discord status as the watching status
+		self.dictionary["Discord"]["Status"] = watching_status + " "
+
+		# Add the lowercase version of the singular media type in the user language
+		self.dictionary["Discord"]["Status"] += self.dictionary["Media type"]["Singular"][self.language["Small"]].lower()
+
+		# Add a colon and the defined media title
+		self.dictionary["Discord"]["Status"] += ": " + media_title
 
 		# Show a three dash space separator
 		print()
 		print(self.separators["3"])
 
-		# Copy the status
+		# Copy the Discord status to the clipboard
 		self.Text.Copy(self.dictionary["Discord"]["Status"])
 
 	def Start_Watching_Media(self):

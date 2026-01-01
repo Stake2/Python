@@ -1194,6 +1194,10 @@
 		"pt": "Postar nas redes sociais",
 		"en": "Post on the social networks"
 	},
+	"i_made_tweets_on_{}, type: template": {
+		"pt": "Fiz tweets no {}, postagens no {}, {} e {}, postei nos status do {}, nos stories do {} e {}, e no meu servidor do {}",
+		"en": "I made tweets on {}, posts on {}, {} and {}, posted on the {} status, on the stories of {} and {}, and on my server of {}"
+	},
 	"use_executable": {
 		"pt": "Usar executável",
 		"en": "Use executable"
@@ -1453,10 +1457,6 @@
 	"watched_media": {
 		"en": "Watched media",
 		"pt": "Mídias assistidas"
-	},
-	"watched_things": {
-		"en": "Watched things",
-		"pt": "Coisas assistidas"
 	},
 	"media_information": {
 		"en": "Media information",
@@ -1862,6 +1862,14 @@
 			"masculine": "último",
 			"feminine": "última"
 		},
+		"en": "last"
+	},
+	"last, singular, masculine": {
+		"pt": "último",
+		"en": "last"
+	},
+	"last, singular, feminine": {
+		"pt": "última",
 		"en": "last"
 	},
 	"last, plural, masculine": {

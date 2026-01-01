@@ -330,13 +330,13 @@ class Update_Websites(PHP):
 			"Update all websites": {
 				"List": self.websites["List"]["en"]
 			},
-			"Update all story websites": {
+			"Update all stories websites": {
 				"List": self.websites["By type"]["Story"]["en"],
-				"Item": "story"
+				"Item": "stories"
 			},
-			"Update all year websites": {
+			"Update all years websites": {
 				"List": self.websites["By type"]["Year"],
-				"Item": "year"
+				"Item": "years"
 			},
 			"Finish selection": {}
 		}
@@ -355,10 +355,10 @@ class Update_Websites(PHP):
 				# Define the text key for the custom option
 				text_key = key.lower().replace(" ", "_")
 
-				# If the "story" or "year" text is inside the option
+				# If the "stories" or "years" text is inside the option
 				if (
-					"story" in key or
-					"year" in key
+					"stories" in key or
+					"years" in key
 				):
 					# Define the text key as the template key
 					text_key = "update_all_{}_websites"
@@ -373,13 +373,15 @@ class Update_Websites(PHP):
 				# Get the text for the option
 				text = texts[text_key][language]
 
-				# If the "story" or "year" text is inside the option
+				# If the "stories" or "years" text is inside the option
 				if (
-					"story" in key or
-					"year" in key
+					"stories" in key or
+					"years" in key
 				):
-					# Define the item text
+					# Define the text key for the item
 					text_key = option["Item"].lower().replace(" ", "_") + ", title()"
+
+					# Get the item text
 					item_text = self.Language.texts[text_key][language].lower()
 
 					# Format the text template with the item of the option
@@ -470,7 +472,7 @@ class Update_Websites(PHP):
 					self.System.Open(link, verbose = False)
 
 				# Create the link text with the current language translated into the user language
-				text = self.Language.language_texts["link, title()"] + " " + texts["in"] + " " + translated_language
+				text = self.Language.language_texts["link, title()"] + " " + self.Language.language_texts["in"] + " " + translated_language
 
 				# Show the link of the website
 				print()

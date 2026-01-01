@@ -134,57 +134,115 @@ class Watch_History(object):
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Import_Usage_Classes(self):
-		# Define the list of classes to be imported
-		self.classes = [
-			"Years",
-			"Christmas"
-		]
+		# Define a local dictionary of classes
+		classes = {
+			"List": [
+				"Years",
+				"Christmas",
+				"Diary_Slim",
+				"Social_Networks"
+			],
+			"Dictionary": {
+				"Diary_Slim": {
+					"Sub-classes to import": {
+						"List": [
+							"Write_On_Diary_Slim_Module"
+						],
+						"Titles": [
+							"Write_On_Diary_Slim"
+						]
+					}
+				},
+				"Social_Networks": {
+					"Sub-classes to import": {
+						"List": [
+							"Open_Social_Network"
+						]
+					}
+				}
+			},
+			"Do not run": [
+				"Diary_Slim",
+				"Social_Networks"
+			]
+		}
 
 		# Iterate through the list of classes
-		for class_title in self.classes:
+		for class_title in classes["List"]:
+			# Define the class dictionary
+			class_dictionary = {
+				"Title": class_title,
+				"Module": "",
+				"Object": ""
+			}
+
+			# If the class title is inside the dictionary of classes
+			if class_title in classes["Dictionary"]:
+				# Get the "Sub-classes to import" dictionary from it
+				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
+
 			# Import the module
-			module = importlib.import_module("." + class_title, class_title)
+			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
 
-			# Get the sub-class
-			sub_class = getattr(module, class_title)
+			# Get the class object
+			class_dictionary["Object"] = getattr(class_dictionary["Module"], class_title)
 
-			# Run the class to define its variables
-			sub_class = sub_class()
+			# If the class title is not inside the list of classes to not run
+			if class_title not in classes["Do not run"]:
+				# Run the class to define its variables
+				class_dictionary["Object"] = class_dictionary["Object"]()
 
-			# Iterate through the list of utility modules
-			for module_title in self.modules["Utility"]["List"]:
-				# If the module title is not inside the defined list
-				if module_title not in ["Language", "Modules"]:
-					# Get the sub-class of the module
-					local_sub_class = getattr(self, module_title)
+			# If the "Sub-classes to import" key is present
+			if "Sub-classes to import" in class_dictionary:
+				# Create the "Sub-classes" dictionary
+				class_dictionary["Sub-classes"] = {}
 
-					# Add the sub-class to the current class
-					setattr(sub_class, module_title, local_sub_class)
+				# Create a shortcut to the sub-classes dictionary
+				sub_classes = class_dictionary["Sub-classes to import"]
 
-			# If the sub-class has a list of classes
-			if hasattr(sub_class, "classes") == True:
-				# Get the list of classes of the current class
-				current_class_classes = getattr(sub_class, "classes")
+				# Define a sub-class number
+				sub_class_number = 0
 
-				# Define a copy of the list of classes
-				classes_copy = self.classes.copy()
+				# Iterate through the list of sub-classes
+				for sub_class_title in sub_classes["List"]:
+					# Create the sub-class dictionary
+					sub_class_dictionary = {
+						"Title": sub_class_title,
+						"Module": "",
+						"Object": ""
+					}
 
-				# Remove the current class
-				classes_copy.remove(class_title)
+					# Import the sub-module
+					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
 
-				# Iterate through the local list of classes
-				for local_class_title in classes_copy:
-					# If the local class title is inside the list of classes of the current class
-					# And it also is inside this class (Watch_History)
-					if (
-						local_class_title in current_class_classes and
-						hasattr(self, local_class_title) != None
-					):
-						# Give the local class to the current class
-						setattr(sub_class, local_class_title, getattr(self, local_class_title))
+					# Get the sub-class
+					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, class_title, sub_class)
+					# If the "Titles" list is present
+					if "Titles" in sub_classes:
+						# Change the sub-class title to the one in the list of sub-class titles
+						sub_class_title = sub_classes["Titles"][sub_class_number]
+
+					# Add the sub-class dictionary to the root sub-classes dictionary
+					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
+
+					# Add the sub-class to the root class
+					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
+
+					# Add one to the sub-class number
+					sub_class_number += 1
+
+				# Remove the "Sub-classes to import" dictionary
+				class_dictionary.pop("Sub-classes to import")
+
+			# Add the class dictionary to the root classes dictionary
+			classes["Dictionary"][class_title] = class_dictionary
+
+			# Add the class to the current class
+			setattr(self, class_title, class_dictionary["Object"])
+
+		# Sort the dictionary of classes with the order being the list of classes
+		classes["Dictionary"] = self.JSON.Sort_Item_List(classes["Dictionary"], order = classes["List"])
 
 		# ---------- #
 
@@ -243,7 +301,7 @@ class Watch_History(object):
 			"Class title": self.language_texts["Watch_History"],
 			"Key": "Entries",
 			"Numbers": {
-				"Watched things": "",
+				"Watched media": "",
 				"Media comments": "Comments"
 			},
 			"Number key": "Watched media number",
@@ -1114,9 +1172,13 @@ class Watch_History(object):
 							# Get the full media title from the root media dictionary
 							title = self.media["Dictionary"][media_title]
 
-							# Add the new key at the position of the original key
-							# Parameters: numbers, original key, new key, new value
-							year["Numbers"]["Dictionary"][plural_media_type]["Dictionary"] = self.Add_To_Index(year["Numbers"]["Dictionary"][plural_media_type]["Dictionary"], media_title, title, media["Total"])
+							# Define the key-value as the title key and total media number
+							key_value = {
+								title: media["Total"]
+							}
+
+							# Replace the media title key with the new title key
+							year["Numbers"]["Dictionary"][plural_media_type]["Dictionary"] = self.JSON.Add_Key_After_Key(year["Numbers"]["Dictionary"][plural_media_type]["Dictionary"], key_value, after_key = media_title, remove_after_key = True)
 
 				# Iterate through the list of months from 1 to 12
 				for month in range(1, 13):
@@ -1144,9 +1206,13 @@ class Watch_History(object):
 									# Get the full media title from the root media dictionary
 									title = self.media["Dictionary"][media_title]
 
-									# Add the new key at the position of the original key
-									# Parameters: numbers, original key, new key, new value
-									month["Numbers"]["Dictionary"][plural_media_type]["Dictionary"] = self.Add_To_Index(month["Numbers"]["Dictionary"][plural_media_type]["Dictionary"], media_title, title, media["Total"])
+									# Define the key-value as the title key and total media number
+									key_value = {
+										title: media["Total"]
+									}
+
+									# Replace the media title key with the new title key
+									month["Numbers"]["Dictionary"][plural_media_type]["Dictionary"] = self.JSON.Add_Key_After_Key(month["Numbers"]["Dictionary"][plural_media_type]["Dictionary"], key_value, after_key = media_title, remove_after_key = True)
 
 			# ---------- #
 
@@ -1452,35 +1518,6 @@ class Watch_History(object):
 
 		return dictionary
 
-	def Add_To_Index(self, dictionary, original_key, new_key, new_value):
-		# List the keys of the dictionary
-		keys = list(dictionary.keys())
-
-		# Checks if the original key exists inside the dictionary
-		if original_key not in keys:
-			# Returns the original dictionary if not
-			return dictionary
-
-		# Get the index of the original key
-		index = keys.index(original_key)
-
-		# Define a new local dictionary
-		new_dictionary = {}
-
-		# Iterate through the indexes and keys of the list of keys
-		for i, key in enumerate(keys):
-			# If the "i" variable is the index we are looking for
-			if i == index:
-				# Replace the original key with the new key
-				new_dictionary[new_key] = new_value
-
-			else:
-				# Add the original key that existed before
-				new_dictionary[key] = dictionary[key]
-
-		# Return the new dictionary
-		return new_dictionary
-
 	def Update_Statistics(self, root_dictionary, media, media_type):
 		# Get the "diary_slim" dictionary from the class above
 		self.diary_slim = self.Diary_Slim.diary_slim
@@ -1536,30 +1573,29 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# Iterate through the list of keys
-		for key in ["Year", "Month"]:
+		# Iterate through the list of date keys
+		for date_key in ["Year", "Month"]:
 			# Define the default dictionary as the year dictionary
 			dictionary = self.diary_slim["Current year"]
 
-			# If the key is "Month"
-			if key == "Month":
+			# If the date key is "Month"
+			if date_key == "Month":
 				# Define the default dictionary as the month dictionary
 				dictionary = self.diary_slim["Current year"]["Month"]
 
 			# Get the year statistics for the "Stories" module
-			statistics[key] = dictionary["Statistics"][statistic_key]
+			statistics[date_key] = dictionary["Statistics"][statistic_key]
 
 			# Add one to the total number of statistics
-			statistics[key]["Total"] += 1
+			statistics[date_key]["Total"] += 1
 
 			# If the "Dictionary" key is not inside the "Watched Media" dictionary
-			if "Dictionary" not in statistics[key]["Dictionary"]:
+			if "Dictionary" not in statistics[date_key]["Dictionary"]:
 				# Define the key as a copy of the "statistic media types" default dictionary
-				statistics[key]["Dictionary"] = deepcopy(self.statistic_media_types)
-				
+				statistics[date_key]["Dictionary"] = deepcopy(self.statistic_media_types)
 
 			# Get the media type dictionary
-			media_type_dictionary = statistics[key]["Dictionary"]["Dictionary"][media_type["Plural"]]
+			media_type_dictionary = statistics[date_key]["Dictionary"]["Dictionary"][media_type["Plural"]]
 
 			# Add one to the total number of the media type
 			media_type_dictionary["Total"] += 1
@@ -1567,11 +1603,11 @@ class Watch_History(object):
 			# ---------- #
 
 			# If the media title is not inside the translation dictionary
-			if media_title not in statistics[key]["Dictionary"]["Translation dictionary"]:
+			if media_title not in statistics[date_key]["Dictionary"]["Translation dictionary"]:
 				# Get the media titles
 				titles = root_dictionary["Media"]["Titles"]
 
-				# Define the key to get the media title
+				# Define the title key to get the media title
 				title_key = "Original"
 
 				if "Romanized" in titles:
@@ -1607,12 +1643,12 @@ class Watch_History(object):
 					titles[title_key] = title
 
 				# Add the media title key to the translation dictionary
-				statistics[key]["Dictionary"]["Translation dictionary"][media_title] = {
+				statistics[date_key]["Dictionary"]["Translation dictionary"][media_title] = {
 					media_title: titles
 				}
 
 			# Get the media dictionary
-			media_dictionary = statistics[key]["Dictionary"]["Translation dictionary"][media_title]
+			media_dictionary = statistics[date_key]["Dictionary"]["Translation dictionary"][media_title]
 
 			# ---------- #
 
@@ -1691,9 +1727,15 @@ class Watch_History(object):
 					media_dictionary[item_title] = titles
 
 			# Correct the translation dictionary
-			statistics[key]["Dictionary"]["Translation dictionary"] = self.Correct_Translation_Dictionary(statistics[key]["Dictionary"]["Translation dictionary"])
+			statistics[date_key]["Dictionary"]["Translation dictionary"] = self.Correct_Translation_Dictionary(statistics[date_key]["Dictionary"]["Translation dictionary"])
 
 			# ---------- #
+
+			# Make a copy of the statistics dictionary
+			statistics_copy = deepcopy(media_type_dictionary["Dictionary"])
+
+			# Define the local "added media title" switch initially as False
+			added_media_title = False
 
 			# If the "Items" key does not exist in the local media dictionary
 			# Or the "Items" key exists in the local media dictionary
@@ -1709,6 +1751,9 @@ class Watch_History(object):
 				if media_title not in media_type_dictionary["Dictionary"]:
 					# Define the media statistic key as zero
 					media_type_dictionary["Dictionary"][media_title] = 0
+
+					# Change the local "added media title" switch to True
+					added_media_title = True
 
 			# ---------- #
 
@@ -1727,8 +1772,13 @@ class Watch_History(object):
 						# Get the item dictionary from it
 						item = media["Items"]["Dictionary"][item_title]
 
-						# Define the key to get the number of times the media item was watched
-						media_item_title = item["With media title"]["Original"]
+						# Define the media item title "Original" media item title
+						media_item_title = item["Titles"]["Original"]
+
+						# If the "With media title" dictionary is present inside the item dictionary
+						if "With media title" in item:
+							# Define the media item title as the value of the "Original" key inside that dictionary
+							media_item_title = item["With media title"]["Original"]
 
 						# If the media item title with the media title is inside the media type statistics dictionary
 						# And the current media item title is the same as the title of the watched media item
@@ -1755,18 +1805,21 @@ class Watch_History(object):
 
 			# ---------- #
 
+			# Define the local old number as None
+			old_number = None
+
 			# If the "Items" key exists in the local media dictionary
 			# And the "Item" key is inside the media titles dictionary
-			# And the media item title is not the same as the media title
-			# And the media item was not found inside the statistics dictionary
 			if (
 				"Items" in media and
-				"Item" in media["Titles"] and
-				media["Titles"]["Item"][item_key] != media["Titles"][title_key] and
-				media_item_found_in_dictionary == False
+				"Item" in media["Titles"]
 			):
-				# If the media title is inside the statistics dictionary of the module
-				if media_title in media_type_dictionary["Dictionary"]:
+				# If the media title is inside the media type statistics dictionary
+				# And the local "added media title" switch is False
+				if (
+					media_title in media_type_dictionary["Dictionary"] and
+					added_media_title == False
+				):
 					# If the media title key is a number
 					if isinstance(media_type_dictionary["Dictionary"][media_title], int):
 						# Create the media statistics dictionary
@@ -1807,38 +1860,64 @@ class Watch_History(object):
 						# Add the item title to the dictionary with the correct number (zero or the number of times the user watched the root media)
 						media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] = number
 
-						# Define the default title as the media title
-						title = media["Titles"]["Original"]
+						# Define the default watched title as the media title
+						watched_title = media["Titles"]["Original"]
 
 						# If the "Item" key is inside the media titles dictionary
 						if "Item" in media["Titles"]:
-							# Define the title as the media item title
-							title = media["Titles"]["Item"]["Original (no media title)"]
+							# Define the watched title as the media item title
+							watched_title = media["Titles"]["Item"]["Original (no media title)"]
 
 						# If the item title is not the media title
 						# And the current media item is the media item that was watched
 						if (
 							local_item_title != media_title and
-							local_item_title == title
+							local_item_title == watched_title
 						):
+							# Change the local old number to be the current number
+							old_number = media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title]
+
 							# Add one to the number of times the media item was watched
 							media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] += 1
 
-				# If the media title is not inside the statistics dictionary of the module
-				if media_title not in media_type_dictionary["Dictionary"]:
+				# If the media title is not inside the media type statistics dictionary
+				# Or it is
+				# And the local "added media title" switch is True
+				if (
+					media_title not in media_type_dictionary["Dictionary"] or
+					media_title in media_type_dictionary["Dictionary"] and
+					added_media_title == True
+				):
 					# Make a list of media items to iterate through
 					media_items = media["Items"]["List"]
 
-					# Make a copy of the statistics dictionary
-					statistics_copy = deepcopy(media_type_dictionary["Dictionary"])
-
 					# Define the new key
 					new_key = media_title
+
+					# Define the default watched title as the media title
+					watched_title = media["Titles"]["Original"]
+
+					# If the "Item" key is inside the media titles dictionary
+					if "Item" in media["Titles"]:
+						# Define the watched title as the media item title
+						watched_title = media["Titles"]["Item"]["Original (no media title)"]
+
+					# Define the local "has previous key" switch initially as False
+					has_previous_key = False
 
 					# Iterate through the list of items
 					for item_title in media_items:
 						# Define the default media item title as the item title
 						media_item_title = item_title
+
+						# If the length of the item title is greater than one
+						# And the first two characters of the item title are a space and a colon
+						if (
+							len(item_title) > 1 and
+							item_title[0] + item_title[1] == ": "
+						):
+							# Remove them
+							item_title = item_title[2:]
 
 						# If the media item title key exists inside the items dictionary
 						if item_title in media["Items"]["Dictionary"]:
@@ -1862,16 +1941,14 @@ class Watch_History(object):
 							# Define the local number as the total number times the media item was watched
 							number = statistics_copy[media_item_title]
 
-						# Define the default title as the media title
-						title = media["Titles"]["Original"]
-
-						# If the "Item" key is inside the media titles dictionary
-						if "Item" in media["Titles"]:
-							# Define the title as the media item title
-							title = media["Titles"]["Item"]["Original (no media title)"]
-
-						# If the media title is not inside the statistics dictionary of the module
-						if media_title not in media_type_dictionary["Dictionary"]:
+						# If the media title is not inside the media type statistics dictionary
+						# Or it is
+						# And the local "added media title" switch is True
+						if (
+							media_title not in media_type_dictionary["Dictionary"] or
+							media_title in media_type_dictionary["Dictionary"] and
+							added_media_title == True
+						):
 							# Define the new value dictionary as the media statistics dictionary
 							new_value = {
 								"Total": number,
@@ -1882,9 +1959,6 @@ class Watch_History(object):
 							if item_title == media_title:
 								# Add the media title to the media dictionary
 								new_value["Dictionary"][item_title] = 0
-
-							# Define the "has previous key" switch as False
-							has_previous_key = False
 
 							# Define the default original key as None
 							original_key = None
@@ -1900,24 +1974,22 @@ class Watch_History(object):
 								if "Romanized" in local_item["With media title"]:
 									item_key = "Romanized"
 
-								# Define local media item title
+								# Define the local media item title
 								local_media_item_title = local_item["With media title"][item_key]
 
-								# If the media item title (with the media title) is inside the statistics dictionary
-								if local_media_item_title in media_type_dictionary["Dictionary"]:
+								# If the media item title (with the media title) is inside the copy of the statistics dictionary
+								if local_media_item_title in statistics_copy:
 									# Define the original key as the media item title
 									original_key = local_media_item_title
 
-									# Set the "has previous key" switch to True
+									# Change the local "has previous key" switch to True
 									has_previous_key = True
 
-							# If the "has previous key" switch is False
-							# And the item title is not the media title
+							# If the local "has previous key" switch is False
 							# And the current media item is the root media or media item that was watched
 							if (
 								has_previous_key == False and
-								item_title != media_title and
-								item_title == title
+								item_title == watched_title
 							):
 								# Define the new value as zero
 								new_value = 0
@@ -1929,31 +2001,27 @@ class Watch_History(object):
 								media_title_key = media_item_title
 
 							# If the original key is not None (it was found)
+							# And the current item title is equal to the watched title
 							if (
 								original_key != None and
-								item_title == title
+								item_title == watched_title
 							):
-								# Replaces the media item key with the root media key using the previous index
-								media_type_dictionary["Dictionary"] = self.Add_To_Index(
-									media_type_dictionary["Dictionary"], # The dictionary of statistics
-									original_key, # The original media item title key
-									new_key, # The new key that is the root media title
-									new_value # The new value to replace the media item dictionary
-								)
+								# Define the key-value as the new key and new value
+								key_value = {
+									new_key: new_value
+								}
+
+								# Replace the original key with the new key
+								media_type_dictionary["Dictionary"] = self.JSON.Add_Key_After_Key(media_type_dictionary["Dictionary"], key_value, after_key = original_key, remove_after_key = True)
 
 							# If the original key is None (it was not found)
+							# And the current item title is equal to the watched title
 							if (
 								original_key == None and
-								item_title == title
+								item_title == watched_title
 							):
 								# Adds the the media dictionary to the end of the statistics dictionary
 								media_type_dictionary["Dictionary"][new_key] = new_value
-
-						# If the first two characters of the item title is a colon and a space
-						# (Remove the colon and space from the item title so the media item title is more beautiful inside the dictionary)
-						if item_title[0] + item_title[1] == ": ":
-							# Remove the colon and space
-							item_title = item_title[2:]
 
 						# If the media key is not a number
 						# And the "Dictionary" key is inside the media dictionary
@@ -1966,16 +2034,48 @@ class Watch_History(object):
 							media_type_dictionary["Dictionary"][new_key]["Dictionary"][item_title] = number
 
 							# If the current media item is the root media or media item that was watched
-							if item_title == title:
+							if item_title == watched_title:
+								# Change the local old number to be the current number
+								old_number = media_type_dictionary["Dictionary"][new_key]["Dictionary"][item_title]
+
 								# Add one to the number of times the media item was watched
 								media_type_dictionary["Dictionary"][new_key]["Dictionary"][item_title] += 1
 
+					# Iterate through the list of items
+					for item_title in media_items:
+						# Define the default media item title as the item title
+						media_item_title = item_title
+
+						# If the length of the item title is greater than one
+						# And the first two characters of the item title are a space and a colon
+						if (
+							len(item_title) > 1 and
+							item_title[0] + item_title[1] == ": "
+						):
+							# Remove them
+							item_title = item_title[2:]
+
+						# If the media item title key exists inside the items dictionary
+						if item_title in media["Items"]["Dictionary"]:
+							# Get the item dictionary from it
+							item = media["Items"]["Dictionary"][item_title]
+
+							# Define the key to get the media item title
+							item_key = "Original"
+
+							if "Romanized" in item["With media title"]:
+								item_key = "Romanized"
+
+							# Define the key to get the number of times the media item was watched
+							media_item_title = item["With media title"][item_key]
+
 						# If the media item title is not the same as the media title
-						# And the old media item title (with the media title) key is present inside the root media statistics dictionary
+						# And the media item title is inside the statistics dictionary
+						# And the media item title is not equal to the watched title
 						if (
 							item_title != media_title and
-							media_item_title in statistics[key]["Dictionary"] and
-							item_title != title
+							media_item_title in statistics[date_key]["Dictionary"] and
+							item_title != watched_title
 						):
 							# Remove the key
 							media_type_dictionary["Dictionary"].pop(media_item_title)
@@ -1998,12 +2098,17 @@ class Watch_History(object):
 			# ---------- #
 
 			# Define the old number as the current number
-			statistics["Dictionary"]["Numbers"][key]["Old"] = media_type_dictionary["Dictionary"][media_title_key]
+			statistics["Dictionary"]["Numbers"][date_key]["Old"] = media_type_dictionary["Dictionary"][media_title_key]
+
+			# If the local old number is not None
+			if old_number != None:
+				# Define the root old number as the local one
+				statistics["Dictionary"]["Numbers"][date_key]["Old"] = old_number
 
 			# If the old key is a dictionary
-			if isinstance(statistics["Dictionary"]["Numbers"][key]["Old"], dict):
+			if isinstance(statistics["Dictionary"]["Numbers"][date_key]["Old"], dict):
 				# Get the number of the "Total" key
-				statistics["Dictionary"]["Numbers"][key]["Old"] = statistics["Dictionary"]["Numbers"][key]["Old"]["Total"]
+				statistics["Dictionary"]["Numbers"][date_key]["Old"] = statistics["Dictionary"]["Numbers"][date_key]["Old"]["Total"]
 
 				# If the "Items" key does exist in the local media dictionary
 				# And the "Item" key is inside the media titles dictionary
@@ -2013,9 +2118,8 @@ class Watch_History(object):
 					"Item" in media["Titles"] and
 					media["Titles"]["Item"]["Original"] != media_title
 				):
-					input()
-					# Define the title as the media item title
-					title = media["Titles"]["Item"]["Original (no media title)"]
+					# Define the watched title as the media item title
+					watched_title = media["Titles"]["Item"]["Original (no media title)"]
 
 					# If the media key is not a number
 					# And the "Dictionary" key is inside the media dictionary
@@ -2024,16 +2128,15 @@ class Watch_History(object):
 						"Dictionary" in media_type_dictionary["Dictionary"][media_title]
 					):
 						# Remove one from the number of times the media item was watched
-						statistics["Dictionary"]["Numbers"][key]["Old"] = media_type_dictionary["Dictionary"][media_title]["Dictionary"][title] - 1
+						statistics["Dictionary"]["Numbers"][date_key]["Old"] = media_type_dictionary["Dictionary"][media_title]["Dictionary"][watched_title] - 1
 
 					# If the media title key is a number
 					if isinstance(media_type_dictionary["Dictionary"][media_title], int) == True:
-						# Define the title as the media item title
-						title = media["Titles"]["Item"]["Original"]
-						print(title)
+						# Define the watched title as the media item title
+						watched_title = media["Titles"]["Item"]["Original"]
 
 						# Remove one from the number of times the media item was watched
-						statistics["Dictionary"]["Numbers"][key]["Old"] = media_type_dictionary["Dictionary"][title] - 1
+						statistics["Dictionary"]["Numbers"][date_key]["Old"] = media_type_dictionary["Dictionary"][watched_title] - 1
 
 			# ---------- #
 
@@ -2045,19 +2148,19 @@ class Watch_History(object):
 			# ---------- #
 
 			# Define the new number as the old number
-			statistics["Dictionary"]["Numbers"][key]["New"] = statistics["Dictionary"]["Numbers"][key]["Old"]
+			statistics["Dictionary"]["Numbers"][date_key]["New"] = statistics["Dictionary"]["Numbers"][date_key]["Old"]
 
 			# If the "Items" key does exist in the local media dictionary
 			# (If the "Items" key exists inside the media dictionary, we add 1 to the new number, because the old number has been decreased by one before, to be correct)
 			if "Items" in media:
 				# Add one to the new number
-				statistics["Dictionary"]["Numbers"][key]["New"] += 1
+				statistics["Dictionary"]["Numbers"][date_key]["New"] += 1
 
 		# Define the local media title as the media title in the user language
 		media_title = '"' + media["Titles"]["Language"] + '"'
 
-		# Define the parameter as the media type plus the media title
-		parameter = media_type["The"] + " " + media_title
+		# Define the local statistic text as the media type plus the media title
+		statistic_text = media_type["The"] + " " + media_title
 
 		# If the "Items" key exists in the local media dictionary
 		# And the "Item" key is inside the media titles dictionary
@@ -2071,25 +2174,36 @@ class Watch_History(object):
 			gender = self.Define_Media_Item_Text(root_dictionary)[2]
 
 			# Create a shortcut to the item type
-			item_type = media["Item"]["Type"][self.language["Small"]].lower()
+			item_type = media["Item"]["Type"][self.language["Small"]]
+
+			# If the item type is not inside the defined list
+			if item_type not in ["OVA", "ONA"]:
+				# Make it lowercase
+				item_type = item_type.lower()
 
 			# Get the item title in the user language
 			item_title = self.Get_Media_Title(root_dictionary, language = self.language["Small"], item = True)
 
-			# Define the text to add as the "the" text in the item gender, the item type and the media type "of the" text
+			# If the length of the item title is greater than one
+			# And the first two characters of the item title are a space and a colon
+			if (
+				len(item_title) > 1 and
+				item_title[0] + item_title[1] == ": "
+			):
+				# Remove them
+				item_title = item_title[2:]
+
+			# Get the media type "the" text in the user language and the defined gender
 			the_text = self.media_types["Genders"][self.language["Small"]][gender]["the"]
+
+			# Create a shortcut to the media "of the container" text
 			of_the_text = media["Texts"]["Container texts"]["Of the"]
 
-			text = the_text + " " + item_type + ' "{}"'.format(item_title) + " " + of_the_text
+			# Define the statistic text as the media type "the" text in the item gender, the media item type, the media item title, the media "of the container" text, and the media title in the user language
+			statistic_text = the_text + " " + item_type + ' "{}"'.format(item_title) + " " + of_the_text + " " + media_title
 
-			# Define the local media title as the media title in the user language
-			text = text + " " + media_title
-
-			# Define the parameter as the defined text
-			parameter = text
-
-		# Define the statistic text, formatting the template with the parameter
-		statistics["Text"] = self.language_texts["times_that_i_watched_{}"].format(parameter)
+		# Format the text template with the local statistic text to create the root statistic text
+		statistics["Text"] = self.language_texts["times_that_i_watched_{}"].format(statistic_text)
 
 		# ---------- #
 
@@ -2274,11 +2388,6 @@ class Watch_History(object):
 			# Add one to the media number
 			media_number += 1
 
-		# If the list of media (options version) is empty, remove it from the dictionary
-		# (That means there are no medias for the current media type)
-		if dictionary["Medias"]["List (with statuses)"] == []:
-			dictionary["Medias"].pop("List (with statuses)")
-
 		# Return the root dictionary
 		return dictionary
 
@@ -2289,7 +2398,7 @@ class Watch_History(object):
 			"Show non-watching media": self.language_texts["show_non_watching_media"]
 		}
 
-		# Define the dictionary to match status and questions
+		# Define the dictionary to match questions and watching statuses
 		status_dictionary = {
 			"Show plan to watch media": [
 				self.texts["plan_to_watch, title()"]["en"]
@@ -2327,8 +2436,10 @@ class Watch_History(object):
 				# Remove the brackets from the item
 				item = item.replace("[", "").replace("]", "")
 
-				# Remove the item
-				questions.pop(item)
+				# If the item is inside the questions dictionary
+				if item in questions:
+					# Remove the item
+					questions.pop(item)
 
 		# Iterate through the questions inside the dictionary
 		for question, text in questions.items():
@@ -2345,10 +2456,10 @@ class Watch_History(object):
 			# Add the question name to the list of additional options
 			additional_options.append(question)
 
-		# Return the lists of options, language options, and additional options
-		return options, language_options, additional_options
+		# Return the lists of options, language options, additional options, and the media list
+		return options, language_options, additional_options, media_list
 
-	def Update_Media_List(self, dictionary, options, language_options, additional_options_selected, status_type):
+	def Update_Media_List(self, dictionary, options, language_options, additional_options_selected, selection):
 		# Define the list of statuses with the "watching" statuses
 		statuses = [
 			self.texts["watching, title()"]["en"],
@@ -2357,60 +2468,61 @@ class Watch_History(object):
 
 		# Update the list of statuses based on the provided status type
 
-		# If the "plan to watch" text is present in the status type text
+		# If the "plan to watch" text is present in the selection text
 		# Or if there is any option in the "additional_options_selected" list that contains "plan to watch"
 		if (
-			"plan to watch" in status_type["Original"] or
+			"plan to watch" in selection["Original"] or
 			any("plan to watch" in option for option in additional_options_selected)
 		):
-			# If any of the above conditions are true, add the "Plan to watch" status to the list of statuses
+			# If any of the above conditions are true, add the "Plan to watch" watching status to the list of statuses
 			statuses.extend([
 				self.texts["plan_to_watch, title()"]["en"]
 			])
 
-		# If the "non-watching" text is present in the status type text
+		# If the "non-watching" text is present in the selection text
 		# Or if there is any option in the "additional_options_selected" list that contains "non-watching"
 		if (
-			"non-watching" in status_type["Original"] or
+			"non-watching" in selection["Original"] or
 			any("non-watching" in option for option in additional_options_selected)
 		):
-			# If any of the above conditions are true, add the "On hold" and "Completed" statuses to the list of statuses
+			# If any of the above conditions are true, add the "On hold" and "Completed" watching statuses to the list of statuses
 			statuses.extend([
 				self.Language.texts["on_hold, title()"]["en"],
 				self.Language.texts["completed, title()"]["en"]
 			])
 
-		# If the "To remove" key does not exist
+		# If the "To remove" list does not exist
 		if "To remove" not in dictionary:
+			# Create it
 			dictionary["To remove"] = []
 
 		# Add the selected option to the "To remove" list
-		dictionary["To remove"].append(status_type["Original"])
+		dictionary["To remove"].append(selection["Original"])
 
 		# Create a shortcut to the media type dictionary
 		media_type = dictionary["Media type"]
 
-		# Update the statuses list inside the "Media type" dictionary
+		# Update the watching statuses list inside the "Media type" dictionary
 		media_type["Statuses"] = statuses
 
-		# Get the list of media using the new list of statuses
+		# Get the list of media using the new list of watching statuses
 		options = self.Get_Media_List(media_type)
 
-		# Define the list of language options to show to the user as the list of media
+		# Define the list of language options to show to the user as the local list of media
 		language_options = options
 
-		# Update the list of media inside the "Media type" dictionary
+		# Update the list of media inside the media type "Medias" dictionary
 		media_type["Medias"]["List"] = options
 
 		# Check if the status should be added to the list of media
 		if self.add_status == True:
-			# Call the method to add watching statuses to the list of media and update the dictionary
+			# Call the method to add the watching statuses to the list of media and update the dictionary
 			media_type = self.Add_Status_To_Media_List(media_type)
 
-			# Use the list of media with their respective watching statuses as the list of language options
+			# Define the list of language options as a copy of the list of media of the current media type with watching statuses
 			language_options = media_type["Medias"]["List (with statuses)"]
 
-		# Get the number of medias
+		# Get the total number of media
 		media_number = str(len(media_type["Medias"]["List"]))
 
 		# Update the singular and plural "Show" texts to update the number of medias
@@ -2421,15 +2533,21 @@ class Watch_History(object):
 			# Add the media type text and the media number to update the "Show" text in the current grammatical number
 			media_type[grammatical_number]["Show"] = text + " (" + media_number + ")"
 
-		# Define the show text based on the number of medias in the list
-		# Before adding the additional options
+		# Define the show text based on the number of media in the list (before adding the additional options)
 		show_text = self.Text.By_Number(media_type["Medias"]["List"], media_type["Singular"]["Show"], media_type["Plural"]["Show"])
 
-		# Add additional options to the lists of options
-		options, language_options, additional_options = self.Add_Additional_Options(dictionary, options, language_options, [], to_remove = dictionary["To remove"])
+		# Define the local media list as a copy of the list of language options
+		media_list = deepcopy(language_options)
 
-		# Return the lists of options, language options, and the show text
-		return options, language_options, show_text
+		# Make a copy of the local media list
+		media_list_copy = deepcopy(media_list)
+
+		# Add additional options to the lists of options
+		# And get back the lists of options, language options, additional options, and the media list
+		options, language_options, additional_options, media_list = self.Add_Additional_Options(dictionary, options, language_options, [], to_remove = dictionary["To remove"])
+
+		# Return the lists of options, language options, the show text, and the copy of the media list
+		return options, language_options, show_text, media_list_copy
 
 	def Select_Media(self, options = None, item = False, watch = False, select_media_item = False):
 		self.item = item
@@ -2457,38 +2575,61 @@ class Watch_History(object):
 
 		# Ask the user to select the media
 		if "Title" not in media:
-			# Define the list of options as the default list of media
-			options = dictionary["Media type"]["Medias"]["List"]
+			# Define the list of options as a copy of the list of media of the current media type
+			options = deepcopy(dictionary["Media type"]["Medias"]["List"])
 
-			# Define the list of language options to show to the user as the default list of media
-			language_options = dictionary["Media type"]["Medias"]["List"]
+			# Define the list of language options as a copy of the list of media of the current media type
+			language_options = deepcopy(dictionary["Media type"]["Medias"]["List"])
 
-			# If a list of media with their respective statuses is inside the media type "Medias" dictionary, use it
+			# If a list of media with their respective watching statuses is inside the media type "Medias" dictionary, use it
 			if "List (with statuses)" in dictionary["Media type"]["Medias"]:
-				language_options = dictionary["Media type"]["Medias"]["List (with statuses)"]
+				# Define the list of language options as a copy of the list of media of the current media type with watching statuses
+				language_options = deepcopy(dictionary["Media type"]["Medias"]["List (with statuses)"])
 
-			# Define the list of additional options
+			# Define the list of additional options with only one option
 			additional_options = [
 				"Additional option"
 			]
 
-			# Define the list of additional options selected
+			# Define the list of additional options that were selected
 			additional_options_selected = []
 
-			# If the "Add status option" is inside the "Media" dictionary
+			# If the "Add status option" key is inside the "Media" dictionary
 			if "Add status options" in dictionary["Media"]:
-				# Update the lists of options, language options, and additional options using the method
-				options, language_options, additional_options = self.Add_Additional_Options(dictionary, options, language_options, additional_options)
+				# Update the lists of options, language options, and additional options using the "Add_Additional_Options" method
+				# And get back the three lists and the media list
+				options, language_options, additional_options, media_list = self.Add_Additional_Options(dictionary, options, language_options, additional_options)
 
-			# Define the option as "Additional option" by default, to run the while loop
+			# Define the selection dictionary with an empty "Original" option
+			selection = {
+				"Original": ""
+			}
+
+			# Send the option to the "Update_Media_List" method to update the list of media
+			# And get back the lists of options, language options, additional options, and the media list
+			options, language_options, show_text, media_list = self.Update_Media_List(dictionary, options, language_options, additional_options_selected, selection)
+
+			# Define the local option as "Additional option" by default to run the while loop
 			option = "Additional option"
 
-			# Define the show and select texts
+			# Define the show and select texts as the ones inside the dictionary "Texts" dictionary
 			show_text = dictionary["Texts"]["Show"]
 			select_text = dictionary["Texts"]["Select"]
 
 			# While the selected option is inside the list of additional options
 			while option in additional_options:
+				# Define the select texts as the one inside the dictionary "Texts" dictionary
+				select_text = dictionary["Texts"]["Select"]
+
+				# If the list of media is empty
+				# And the list of additional options is not empty
+				if (
+					media_list == [] and
+					additional_options != []
+				):
+					# Change the select text to be the one asking the user to select and additional option
+					select_text = self.language_texts["select_an_additional_option_to_show_the_media_with_other_watching_statuses"]
+
 				# Ask the user to select an option from the list of options
 				selection = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)
 
@@ -2501,7 +2642,8 @@ class Watch_History(object):
 					additional_options_selected.append(option)
 
 					# Send the option to the "Update_Media_List" method to update the list of media
-					options, language_options, show_text = self.Update_Media_List(dictionary, options, language_options, additional_options_selected, selection["Option"])
+					# And get back the lists of options, language options, additional options, and the media list
+					options, language_options, show_text, media_list = self.Update_Media_List(dictionary, options, language_options, additional_options_selected, selection["Option"])
 
 				# If the selected option is not inside the list of additional options
 				elif option not in additional_options:
@@ -2887,9 +3029,33 @@ class Watch_History(object):
 		# Get the class that called this method (Define_Media_Item)
 		self.caller = inspect.stack()[3][1].split("\\")[-2]
 
+		# If the media is not a series media (it is a movie)
+		if dictionary["Media"]["States"]["Series media"] == False:
+			# Define the media "Items" dictionary with its keys
+			dictionary["Media"]["Items"] = {
+				"Folders": {
+					"root": dictionary["Media"]["Folders"]["root"]
+				},
+				"Number": 1,
+				"Current": dictionary["Media"]["Title"],
+				"List": [
+					dictionary["Media"]["Title"]
+				],
+				"Dictionary": {}
+			}
+
+			# Define the local item dictionary as the root media dictionary
+			item_dictionary = deepcopy(dictionary["Media"])
+
+			# Define the "With media title" dicitonary as the media "Titles" dictionary
+			item_dictionary["With media title"] = item_dictionary["Titles"]
+
+			# Add the local item dictionary to the media "Items" dictionary
+			dictionary["Media"]["Items"]["Dictionary"][dictionary["Media"]["Title"]] = item_dictionary
+
 		# If the media is a series media (not a movie)
 		if dictionary["Media"]["States"]["Series media"] == True:
-			# Define the media items dictionary with the folders and number keys
+			# Define the media "Items" dictionary with its keys
 			dictionary["Media"]["Items"] = {
 				"Folders": {
 					"root": dictionary["Media"]["Folders"]["root"] + dictionary["Media type"]["Subfolders"]["Plural"] + "/"
@@ -2908,38 +3074,48 @@ class Watch_History(object):
 				# The media has a media items list
 				dictionary["Media"]["States"]["Has a list of media items"] = True
 
-				# Iterate through item type keys
-				for name in ["List", "Current"]:
-					key = name
-
-					if name == "List":
-						key = "Plural"
-
-					# Define the item type text file
-					dictionary["Media"]["Items"]["Folders"][name.lower()] = dictionary["Media"]["Items"]["Folders"]["root"] + dictionary["Media type"]["Subfolders"][key] + ".txt"
-
-					# Create the file
-					self.File.Create(dictionary["Media"]["Items"]["Folders"][name.lower()])
-
-					# Get the contents of the text file
-					dictionary["Media"]["Items"][name] = self.File.Contents(dictionary["Media"]["Items"]["Folders"][name.lower()])["lines"]
-
-					# If the name is "Current" and the file contents are not empty
-					if (
-						name == "Current" and
-						dictionary["Media"]["Items"][name] != []
-					):
-						# Define the contents as the first line of the text file
-						dictionary["Media"]["Items"][name] = dictionary["Media"]["Items"][name][0]
+				# Iterate through the list of item types
+				for item_type in ["List", "Current"]:
+					# Define the key as the item type
+					key = item_type
 
 					# If the item type is "List"
-					if name == "List":
-						# Define the items number as the number of lines of the text file
+					if item_type == "List":
+						# Define the key as "Plural"
+						key = "Plural"
+
+					# Convert the item type into lowercase
+					lower_item_type = item_type.lower()
+
+					# Define the item type text file
+					dictionary["Media"]["Items"]["Folders"][lower_item_type] = dictionary["Media"]["Items"]["Folders"]["root"] + dictionary["Media type"]["Subfolders"][key] + ".txt"
+
+					# Create the file
+					self.File.Create(dictionary["Media"]["Items"]["Folders"][lower_item_type])
+
+					# Get the lines of the file
+					dictionary["Media"]["Items"][item_type] = self.File.Contents(dictionary["Media"]["Items"]["Folders"][lower_item_type])["Lines"]
+
+					# If the item type is "Current"
+					# And the list of file lines is not empty
+					if (
+						item_type == "Current" and
+						dictionary["Media"]["Items"][item_type] != []
+					):
+						# Define the item value as the first file line
+						dictionary["Media"]["Items"][item_type] = dictionary["Media"]["Items"][item_type][0]
+
+					# If the item type is "List"
+					if item_type == "List":
+						# Define the total number of items as the number of file lines
 						dictionary["Media"]["Items"]["Number"] = len(dictionary["Media"]["Items"]["List"])
 
 				# Define the media item folders
 				for name in dictionary["Media"]["Items"]["List"]:
-					# Get the media item name
+					# Define the media item title as the media item name
+					item_title = name
+
+					# Sanitize the media item name
 					name = self.Sanitize_Title(name)
 
 					# ---------- #
@@ -2966,9 +3142,6 @@ class Watch_History(object):
 
 					# Get the media title
 					media_title = dictionary["Media"]["Titles"][key]
-
-					# Get the media item title
-					item_title = name
 
 					# Define the default separator as a space
 					separator = " "
@@ -3606,9 +3779,6 @@ class Watch_History(object):
 
 		# If the media is a series media (not a movie)
 		if dictionary["Media"]["States"]["Series media"] == True:
-			# Create a shortcut to the "Titles" folder dictionary
-			titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
-
 			# Define the "Episodes" dictionary with the "Number" and "Titles" keys
 			dictionary["Media"]["Item"]["Episodes"] = {
 				"Number": 0,
@@ -3636,6 +3806,9 @@ class Watch_History(object):
 			if dictionary["Media"]["States"]["Video"] == True:
 				# Define the episode separator as nothing
 				dictionary["Media"]["Episode"]["Separator"] = ""
+
+				# Create a shortcut to the "Titles" folder dictionary
+				titles_folder = dictionary["Media"]["Item"]["Folders"]["Titles"]
 
 				# Iterate through the list of video file keys
 				for file_key in ["IDs", "Dates"]:
@@ -3789,7 +3962,7 @@ class Watch_History(object):
 			# Define it as the media item type
 			dictionary["Media"]["Item"]["Type"] = dictionary["Media"]["Item"]["Details"][self.Language.language_texts["type, title()"]]
 
-		# If the media is not a series media (a movie)
+		# If the media is not a series media (it is a movie)
 		# And the media item "Type" dictionary is empty
 		if (
 			dictionary["Media"]["States"]["Series media"] == False and
@@ -4986,7 +5159,12 @@ class Watch_History(object):
 				media["States"]["The media item is the root media"] == False
 			):
 				# Define the text as the media item text in the user language
-				text = media["Texts"]["item"][self.language["Small"]].lower()
+				text = media["Texts"]["item"][self.language["Small"]]
+
+				# If the text is not inside the defined list
+				if text not in ["OVA", "ONA"]:
+					# Make it lowercase
+					text = text.lower()
 
 				# If the media episode text parameter is not None
 				# And the text with a space on the beginning is not inside the media episode text
@@ -5013,7 +5191,12 @@ class Watch_History(object):
 			of_the_text = self.media_types["Genders"][self.language["Small"]]["masculine"]["of_the"] + " "
 
 			# Create a shortcut to the item type
-			item_type = media["Item"]["Type"][self.language["Small"]].lower()
+			item_type = media["Item"]["Type"][self.language["Small"]]
+
+			# If the item type is not inside the defined list
+			if item_type not in ["OVA", "ONA"]:
+				# Make it lowercase
+				item_type = item_type.lower()
 
 			# If the item type is inside the list of singular media types of the user language
 			if media["Item"]["Type"][self.language["Small"]] in self.media_types["Singular"][self.language["Small"]]:
@@ -5165,7 +5348,11 @@ class Watch_History(object):
 		# Show the media episode title if the media is a series media (not a movie)
 		if media["States"]["Series media"] == True:
 			# If the media item is not the media (not the same title as the media)
-			if media["States"]["The media item is the root media"] == False:
+			# And the media item is not a single unit one
+			if (
+				media["States"]["The media item is the root media"] == False and
+				media["States"]["Single unit"] == False
+			):
 				# Define the "of the" text as the "of the" text in the feminine gender
 				dictionary["Media type"]["Genders"][self.language["Small"]]["of_the"] = self.media_types["Genders"][self.language["Small"]]["feminine"]["of_the"]
 
@@ -5427,7 +5614,7 @@ class Watch_History(object):
 			# Episode
 			# Movie
 			# Video
-			media_unit_text += " (" + media["Texts"]["unit"][self.language["Small"]] + ")"
+			media_unit_text += " (" + media["Texts"]["unit"][self.language["Small"]].lower() + ")"
 
 			# Show the media unit text and the media unit
 			print()

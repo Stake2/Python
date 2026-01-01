@@ -867,35 +867,6 @@ class GamePlayer(object):
 
 		return dictionary
 
-	def Add_To_Index(self, dictionary, original_key, new_key, new_value):
-		# List the keys of the dictionary
-		keys = list(dictionary.keys())
-
-		# Checks if the original key exists inside the dictionary
-		if original_key not in keys:
-			# Returns the original dictionary if not
-			return dictionary
-
-		# Get the index of the original key
-		index = keys.index(original_key)
-
-		# Define a new local dictionary
-		new_dictionary = {}
-
-		# Iterate through the indexes and keys of the list of keys
-		for i, key in enumerate(keys):
-			# If the "i" variable is the index we are looking for
-			if i == index:
-				# Replace the original key with the new key
-				new_dictionary[new_key] = new_value
-
-			else:
-				# Add the original key that existed before
-				new_dictionary[key] = dictionary[key]
-
-		# Return the new dictionary
-		return new_dictionary
-
 	def Update_Statistics(self, game, game_type):
 		# Get the "diary_slim" dictionary from the class above
 		self.diary_slim = self.Diary_Slim.diary_slim
@@ -1184,13 +1155,13 @@ class GamePlayer(object):
 
 							# If the original key is not None (it was found)
 							if original_key != None:
-								# Replaces the sub-game key with the root game key using the previous index
-								statistics[key]["Dictionary"] = self.Add_To_Index(
-									statistics_copy, # The dictionary of statistics
-									original_key, # The original sub-game title key
-									game_title, # The new key that is the root game title
-									new_value # The new value to replace the sub-game dictionary
-								)
+								# Define the key-value as the new key and new value
+								key_value = {
+									game_title: new_value
+								}
+
+								# Replace the original key with the new game title key
+								statistics[key]["Dictionary"] = self.JSON.Add_Key_After_Key(statistics_copy, key_value, after_key = original_key, remove_after_key = True)
 
 							# If the "has previous key" switch is False
 							if has_previous_key == False:
@@ -2700,7 +2671,7 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Make the difference between the first time and the added time
+		# Calculate the difference between the first time and the added time
 		difference = self.Date.Difference(game["Gaming time"]["Times"]["First"]["Object"], game["Gaming time"]["Times"]["Added"]["Object"])
 
 		# Transform the times back into date strings

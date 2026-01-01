@@ -21,8 +21,8 @@
 			"pt": "Assistir lista de mídia"
 		},
 		"Manage": {
-			"en": "Manage the [Media Information] Database and [Watched Media] History",
-			"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+			"en": "Manage the [Media information] Database and [Watched media] History",
+			"pt": "Gerenciar o Banco de Dados de [Informações de mídia] e Histórico de [Mídias assistidas]"
 		},
 		"View": {
 			"en": "View database",
@@ -49,10 +49,10 @@
 			},
 			"Manage": {
 				"Descriptions": {
-					"en": "Manage the [Media Information] Database and [Watched Media] History",
-					"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+					"en": "Manage the [Media information] Database and [Watched media] History",
+					"pt": "Gerenciar o Banco de Dados de [Informações de mídia] e Histórico de [Mídias assistidas]"
 				},
-				"Description": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+				"Description": "Gerenciar o Banco de Dados de [Informações de mídia] e Histórico de [Mídias assistidas]",
 				"Object": "<class 'Watch_History.Manage.Manage'>"
 			},
 			"View": {
@@ -67,7 +67,7 @@
 		"Descriptions": [
 			"Assistir mídia",
 			"Assistir lista de mídia",
-			"Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+			"Gerenciar o Banco de Dados de [Informações de mídia] e Histórico de [Mídias assistidas]",
 			"Visualizar banco de dados"
 		]
 	}

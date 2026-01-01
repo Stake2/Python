@@ -471,16 +471,22 @@ class Create_Year_Summary(Years):
 							# Define the type header as the number of local entries plus the language entry type
 							entry_type_header = str(local_entries["Number"]) + " " + text_by_number.lower()
 
-							# If the total number of entries is not zero
-							if local_entries["Number"] != 0:
-								# Get the plural "last" text in the type gender
-								last_text = self.Language.texts["last, plural, " + gender][language]
+							# If the total number of entries is not zero and not one
+							if local_entries["Number"] not in [0, 1]:
+								# Define the grammatical number as plural
+								grammatical_number = "plural"
+
+								# Get the "last" text in the defined grammatical number, type gender, and current language
+								last_text = self.Language.texts["last, " + grammatical_number  + ", " + gender][language]
 
 								# Get the number name of the maxmium number
 								number_name = self.Date.texts["number_names, type: list"][language][maximum_number]
 
-								# Add the last text and number name inside parentheses and a colon to the entry type header
-								entry_type_header += " (" + last_text + " " + number_name + ")" + ":"
+								# Add a comma, a space, and the last text and number name to the entry text
+								entry_type_header += ", " + last_text + " " + number_name
+
+							# Add the colon
+							entry_type_header += ":"
 
 							# Add the entry type header to the class history data "Text" in the current language
 							history["Data"]["Text"][language] += "\t" + entry_type_header
@@ -555,7 +561,7 @@ class Create_Year_Summary(Years):
 		# Get the number of memory images from the current year
 
 		# Get the memories "Dates.txt" file
-		file = self.years["Current year"]["Files"]["Image"]["Memories"]["Dates"]
+		file = self.years["Current year"]["Files"]["Memories"]["Dates"]
 
 		# Get the number of lines
 		memories = self.File.Contents(file)["Length"]
@@ -699,8 +705,8 @@ class Create_Year_Summary(Years):
 			# Add the "the sum of numbers below" text in the current language around parentheses
 			text += " (" + self.texts["the_sum_of_numbers_below"][language] + ")"
 
-			# Add the text and a line break to the summary "Text" dictionary in the current language
-			self.summary["Text"][language] += text + "\n"
+			# Add the text and two line breaks to the summary "Text" dictionary in the current language
+			self.summary["Text"][language] += text + "\n\n"
 
 			# ---------- #
 
@@ -800,14 +806,14 @@ class Create_Year_Summary(Years):
 						# Use that gender
 						gender = class_history["Gender"]
 
-						# Get the plural "last" text in the type gender
-						last_text = self.Language.texts["last, plural, " + gender][language]
+					# Get the plural "last" text in the type gender
+					last_text = self.Language.texts["last, plural, " + gender][language]
 
-						# Get the number name of the maxmium number
-						number_name = self.Date.texts["number_names, type: list"][language][data["Number"]]
+					# Get the number name of the maxmium number
+					number_name = self.Date.texts["number_names, type: list"][language][data["Number"]]
 
-						# Add the last text and number name inside parentheses and a colon to the entry text
-						entry_text += " (" + last_text + " " + number_name + ")" + ":"
+					# Add a comma, a space, and the last text and number name to the entry text
+					entry_text += ", " + last_text + " " + number_name + ""
 
 				# Add a colon and a line break to the entry text
 				entry_text += ":" + "\n"
@@ -925,18 +931,27 @@ class Create_Year_Summary(Years):
 
 		# ---------- #
 
-		# Show a text telling the user to post the year summary on the summary websites
-		print()
-		print(self.language_texts["post_the_year_summary_on_these_websites"] + ":")
-
 		# If the total number of summary websites is not zero
 		if self.summary["Websites"]["Numbers"]["Total"] != 0:
+			# Define the list of items
+			items = [
+				self.summary["Websites"]["Numbers"]["Total"],
+				self.language_texts["post_the_year_summary_on_this_website"],
+				self.language_texts["post_the_year_summary_on_these_websites"]
+			]
+
+			# Define the singular or plural time text based on the number of summary websites
+			# Example: "website" or "websites"
+			text = self.Text.By_Number(*items)
+
+			# Show a text telling the user to post the year summary on the summary websites, be it singular or plural
+			print()
+			print(text + ":")
+
 			# Iterate through the names and websites inside the websites "Dictionary" (of where to post the year summary)
 			for name, website in self.summary["Websites"]["Dictionary"].items():
-				# Show a space
+				# Show the website name with a colon
 				print()
-
-				# Show the website name with a tab and a colon
 				print(name + ":")
 
 				# Show the website link in the user language

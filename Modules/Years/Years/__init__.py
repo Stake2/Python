@@ -223,8 +223,7 @@ class Years(object):
 					"Total": 0
 				},
 				"List": [
-					"WriteAs",
-					"Fandom Stake2"
+					"WriteAs"
 				],
 				"Dictionary": {}
 			}
@@ -243,15 +242,6 @@ class Years(object):
 
 			# Add it to the links dictionary
 			self.years["Summary"]["Websites"]["Dictionary"]["WriteAs"]["Links"][language] = link
-
-		# Add the "Fandom" website
-		self.years["Summary"]["Websites"]["Dictionary"]["Fandom Stake2"] = {
-			"Name": "Fandom Stake2",
-			"Links": {
-				"pt": "https://the-stake2.fandom.com/pt-br/wiki/{current_year}#Resumo_do_Ano",
-				"en": "https://stake2.fandom.com/wiki/{current_year}#Year_Summary"
-			}
-		}
 
 		# Update the total number of websites
 		self.years["Summary"]["Websites"]["Numbers"]["Total"] = len(list(self.years["Summary"]["Websites"]["Dictionary"].keys()))
@@ -480,6 +470,16 @@ class Years(object):
 					# Create the image folders of the year and get back the updated year dictionary
 					year = self.Create_Image_Folders(year)
 
+			# Define a list of keys to add at the end of the dictionary
+			keys = [
+				"Memories",
+				"Created in",
+				"Edited in"
+			]
+
+			# Add the keys above to the end of the year files "Text" dictionary
+			year["Files"]["Text"] = self.JSON.Add_To_End_Of_Dictionary(year["Files"]["Text"], to_add = keys)
+
 			# Iterate through the text folders inside the "Text" folders dictionary
 			for key, folder in year["Folders"]["Text"].items():
 				# If the key is not "root"
@@ -542,7 +542,9 @@ class Years(object):
 			"Folders": {
 				"root": self.years["Folders"]["Image"]["root"] + self.Language.language_texts["images, title()"] + "/"
 			},
-			"Files": {}
+			"Files": {
+				"Text": {}
+			}
 		}
 
 		# Create the image folders and files of the "Images" folder
@@ -1281,7 +1283,7 @@ class Years(object):
 		folder_names = {
 			"Christmas": "",
 			"Memories": "",
-			"Story": "Key",
+			"Stories": "Key",
 			"Summary": "",
 			"New Year": ""
 		}
@@ -1322,11 +1324,15 @@ class Years(object):
 			# Create the folder
 			self.Folder.Create(folders[key]["root"])
 
-		# Define the "Dates.txt" file inside the "Memories" folder
-		folders["Memories"]["Dates"] = folders["Memories"]["root"] + "Dates.txt"
+		# ---------- #
+
+		# Create the "Memories" dictionary inside the year "Text" files dictionary and create the "Dates.txt" file inside it
+		year["Files"]["Text"]["Memories"] = {
+			"Dates": folders["Memories"]["root"] + "Dates.txt"
+		}
 
 		# Create the file
-		self.File.Create(folders["Memories"]["Dates"])
+		self.File.Create(year["Files"]["Text"]["Memories"]["Dates"])
 
 		# ---------- #
 

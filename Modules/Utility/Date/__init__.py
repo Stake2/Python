@@ -589,8 +589,10 @@ class Date():
 				# Define the language key as the text in the current language
 				dictionary["Text (with time units)"][language] = dictionary["Text"][language]
 
-			# Add the time units text to the full text
-			dictionary["Text (with time units)"][language] += " (" + dictionary["Time units text"] + ")"
+			# If the "Time units text" is not an empty string
+			if dictionary["Time units text"] != "":
+				# Add the time units text to the full text
+				dictionary["Text (with time units)"][language] += " (" + dictionary["Time units text"] + ")"
 
 		# Return the dictionary
 		return dictionary

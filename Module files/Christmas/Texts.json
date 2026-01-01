@@ -1,15 +1,15 @@
 {
-	"executing_the_christmas_steps_that_are_not_done_on_christmas_dedicated_days": {
-		"pt": "Executando as etapas de Natal que não são feitas em dias dedicados ao Natal",
-		"en": "Executing the Christmas steps that are not done on Christmas-dedicated days"
+	"executing_the_christmas_steps_that_are_not_done_on_days_chosen_to_celebrate_christmas": {
+		"pt": "Executando as etapas de Natal que não são feitas em dias escolhidos para celebrar o Natal",
+		"en": "Executing the Christmas steps that are not done on days chosen to celebrate Christmas"
 	},
 	"you_finished_completing_the_christmas_steps, type: long": {
-		"pt": "Você terminou de completar as etapas de Natal que não são feitas em dias dedicados ao Natal",
-		"en": "You finished completing the Christmas steps that are not done on Christmas-dedicated days"
+		"pt": "Você terminou de completar as etapas de Natal que não são feitas em dias escolhidos para celebrar o Natal",
+		"en": "You finished completing the Christmas steps that are not done on days chosen to celebrate Christmas"
 	},
-	"starting_christmas_day_for_the_year_of_{}": {
-		"en": "Starting Christmas day for the year of {}",
-		"pt": "Iniciando o dia de Natal para o ano de {}"
+	"starting_the_christmas_celebration_for_the_year_of_{}": {
+		"en": "Starting the Christmas celebration for the year {}",
+		"pt": "Iniciando a celebração de Natal para o ano de {}"
 	},
 	"your_christmas_of_{}_is_finished_congratulations": {
 		"pt": "Seu Natal de {} está concluído, parabéns!",
@@ -19,9 +19,13 @@
 		"pt": "Hoje não é o dia da primeira etapa de Natal",
 		"en": "Today is not the day of the first Christmas step"
 	},
-	"you_completed_all_the_christmas_steps_that_are_not_for_the_for_the_actual_christmas, type: long": {
-		"pt": "Você completou todas as etapas de Natal que não são para os dias de Natal, e hoje não é um dia escolhido para celebrar o Natal",
-		"en": "You completed all the Christmas steps that are not for the actual Christmas days, and today is not a day chosen to celebrate Christmas"
+	"you_completed_all_the_steps_that_are_not_done_on_days, type: long": {
+		"pt": "Você completou todas as etapas que não são feitas em dias escolhidos para celebrar o Natal, e hoje não é um dia para celebrar o Natal",
+		"en": "You completed all the steps that are not done on days chosen to celebrate Christmas, and today is not a day to celebrate Christmas"
+	},
+	"so_you_can_begin_to_execute_the_christmas_steps_for_the_days_chosen_to, type: long": {
+		"pt": "para você começar a executar as etapas de Natal para os dias escolhidos para celebrar o Natal",
+		"en": "so you can begin to execute the Christmas steps for the days chosen to celebrate Christmas"
 	},
 	"status_of_the_christmas_steps": {
 		"pt": "Status das etapas de Natal",
@@ -35,29 +39,33 @@
 		"pt": "Intervalo de dias para completar a etapa de Natal",
 		"en": "Interval of days to complete the Christmas step"
 	},
-	"do_you_want_to_make_a_pause_and_continue_later": {
-		"pt": "Você quer fazer uma pausa e continuar depois",
-		"en": "Do you want to make a pause and continue later"
+	"do_you_want_to_make_a_pause_and_continue_executing_the_christmas, type: long": {
+		"pt": "Você quer fazer uma pausa e continuar executando as etapas de Natal depois",
+		"en": "Do you want to make a pause and continue executing the Christmas steps later"
 	},
-	"come_back_when_you_want_to_continue_completing_the_christmas_steps, type: long": {
-		"pt": "Volte quando quiser continuar realizando as etapas de Natal para o {}!",
-		"en": "Come back when you want to continue completing the Christmas steps for the {}!"
+	"come_back_when_you_want_to_continue_executing_the_christmas_steps, type: long": {
+		"pt": "Volte quando você quiser continuar executando as etapas de Natal para o {}!",
+		"en": "Come back when you want to continue executando the Christmas steps for the {}!"
 	},
 	"opening_the_image_folder_of_the_digital_identity_{}": {
 		"en": "Opening the image folder of the digital identity \"{}\"",
 		"pt": "Abrindo a pasta de imagens da identidade digital \"{}\""
 	},
-	"press_enter_when_you_finish_changing_your_profile_picture_[identity_name]_on_{social_network}": {
-		"en": "Press Enter when you finish changing your profile picture [identity_name] on {social_network}",
-		"pt": "Pressione Enter quando você terminar de mudar a sua foto de perfil [identity_name] no {social_network}"
+	"press_enter_when_you_finish_changing_your_profile_picture_[identity_name], type: long": {
+		"en": "Press Enter when you finish changing your profile picture [identity_name] on {social_network} to their Christmas version",
+		"pt": "Pressione Enter quando você terminar de mudar a sua foto de perfil [identity_name] no {social_network} para a sua versão de Natal"
 	},
-	"using_the_christmas_theme_for_the_computer": {
-		"en": "Using the Christmas theme for the computer",
-		"pt": "Usando o tema de Natal para o computador"
+	"applying_the_christmas_theme_on_the_computer": {
+		"en": "Applying the special Christmas theme on the computer",
+		"pt": "Aplicando o tema especial de Natal no computador"
 	},
-	"opening_the_{}_folder_for_the_current_year": {
-		"en": "Opening the {} folder for the current year",
-		"pt": "Abrindo a pasta de {} para o ano atual"
+	"opening_the_christmas_{}_folder_for_{}": {
+		"en": "Opening the Christmas {} folder for {}",
+		"pt": "Abrindo a pasta de {} de Natal para {}"
+	},
+	"opening_the_{}_christmas_folder_of_{}": {
+		"en": "Opening the {} Christmas folder of {}",
+		"pt": "Abrindo a pasta de Natal {} de {}"
 	},
 	"opening_the_{}_music_player_for_you_to_listen_to_the_playlist_of_christmas_songs": {
 		"en": "Opening the \"{}\" music player for you to listen to the playlist of Christmas songs",

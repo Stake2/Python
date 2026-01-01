@@ -652,7 +652,7 @@ class Main():
 			# Define the after, with the before time and the current difference
 			after = self.Date.Now(before["Object"] + diff)
 
-			# Define the time difference
+			# Calculate the time difference between the before and after times
 			difference = self.Date.Difference(before, after)
 
 			# Show a five dash space separator

@@ -211,7 +211,7 @@ class Comment_Writer(Watch_History):
 			self.dictionary["Comment Writer"]["States"]["New"] == False
 		):
 			# Get the comment text from the backup file
-			text = self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])["string"]
+			text = self.File.Contents(self.folders["Comments"]["Backups"]["Backup"])["String"]
 
 			# Add the text to the "String" and "Lines" keys
 			self.media["Comment"]["Text"]["String"] += text
@@ -230,7 +230,7 @@ class Comment_Writer(Watch_History):
 		show_text += "\n"
 
 		# Add the gender text based on the gender "the" text of the media type and the media unit text
-		show_text += self.language_texts["type_the_comment_for"] + " " + self.dictionary["Media type"]["Genders"][self.language["Small"]]["the"] + " " + self.media["Texts"]["unit"][self.language["Small"]] + ": "
+		show_text += self.language_texts["type_the_comment_for"] + " " + self.dictionary["Media type"]["Genders"][self.language["Small"]]["the"] + " " + self.media["Texts"]["unit"][self.language["Small"]].lower() + ": "
 
 		# Add ten dash separators
 		show_text += "\n\n" + self.separators["10"]

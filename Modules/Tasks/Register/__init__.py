@@ -148,6 +148,11 @@ class Register(Tasks):
 		# Passing the root dictionary and the states dictionary as parameters
 		self.Show_Information(self.dictionary, self.states)
 
+		# Re-initiate the root class to update the files
+		del self.folders
+
+		super().__init__()
+
 	def Select_Task_Type(self):
 		# Define the list of options and language options
 		options = self.tasks["Types"]["Lists"]["Plural"]["en"]

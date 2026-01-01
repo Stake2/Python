@@ -545,7 +545,7 @@ class Write(Stories):
 				file = self.writing["Chapter"]["Files"][small_language]
 
 				# Open the chapter file
-				self.System.Open(file, verbose = False)
+				self.System.Open(file)
 
 				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
@@ -796,9 +796,14 @@ class Write(Stories):
 
 		# Define the dictionary of custom parameters to add to the URL
 		parameters = {
-			"chapter": str(self.chapter["Number"]), # The number of the chapter
-			"write": "true", # The write switch, to activate the writing mode in the story website
-			"show_chapter_covers": "true" # To show the story chapter covers in the chapter tabs
+			# Add the number of the chapter
+			"chapter": str(self.chapter["Number"]),
+
+			# Define the "write" parameter as True, to activate the writing mode in the story website
+			"write": "true", 
+
+			# Define the "show chapter covers" parameter as True, to show the story chapter covers in the chapter tabs
+			"show_chapter_covers": "true"
 		}
 
 		# Encode the parameters into a query string
@@ -807,7 +812,7 @@ class Write(Stories):
 		# Add the query string to the URL
 		url += "&" + query_string
 
-		# Define the language chapter link inside the chapter "Links" dictionary
+		# Define the chapter link in the user language inside the new chapter "Links" dictionary
 		self.chapter["Links"] = {
 			"Local website": {
 				self.language["Small"]: url
@@ -827,7 +832,7 @@ class Write(Stories):
 		print(text + "...")
 
 		# Open the story website link in the current chapter in the default browser
-		self.System.Open_Link(self.chapter["Links"]["Local website"][self.language["Small"]], verbose = False)
+		self.System.Open_Link(self.chapter["Links"]["Local website"][self.language["Small"]])
 
 		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
@@ -865,7 +870,7 @@ class Write(Stories):
 			print(text + "...")
 
 			# Open the link of the translator website in the default browser
-			self.System.Open_Link(self.stories["Writing"]["Translator website"]["Link"], verbose = False)
+			self.System.Open_Link(self.stories["Writing"]["Translator website"]["Link"])
 
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
@@ -891,7 +896,7 @@ class Write(Stories):
 		print(text + "...")
 
 		# Open the music player program so the user can listen to the soundtrack of the story
-		self.System.Open(self.stories["Writing"]["Music player"]["Link"], verbose = False)
+		self.System.Open(self.stories["Writing"]["Music player"]["Link"])
 
 		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
@@ -1452,7 +1457,7 @@ class Write(Stories):
 					# (The second pause adds 15 pause minutes)
 					after_time = self.Date.Now(self.writing["Session"]["Pause"]["After"]["Object"] + relative_delta)
 
-				# Get the difference between the before pausing time and the after pausing time
+				# Calculate the difference between the before pausing time and the after pausing time
 				difference = self.Date.Difference(self.writing["Session"]["Pause"]["After"], after_time)
 
 				# Define the local add dictionary
@@ -1470,7 +1475,7 @@ class Write(Stories):
 
 			# ---------- #
 
-			# Define the pause duration difference between the before and after pausing times
+			# Calculate the duration difference between the before and after pausing times
 			self.writing["Session"]["Pause"]["Duration"] = self.Date.Difference(self.writing["Session"]["Pause"]["Before"], self.writing["Session"]["Pause"]["After"])
 
 			# Define the time to be subtracted from the pausing time
@@ -1491,7 +1496,7 @@ class Write(Stories):
 			# Define the local after time as the copy of the after writing time with the pause subtract time subtracted
 			after_time = self.Date.Now(self.writing["Session"]["After (copy)"]["Object"] - relative_delta)
 
-			# Define the time difference between the before writing time and the local after time
+			# Calculate the time difference between the before writing time and the local after time
 			difference = self.Date.Difference(self.writing["Session"]["Before"], after_time)
 
 			# Define the text to show as the "Duration of writing" text
@@ -1596,7 +1601,7 @@ class Write(Stories):
 					# Update the root after time with the local after time
 					dictionary["After"] = after_time
 
-		# Get the time difference between the before and the after times
+		# Calculate the time difference between the before and the after times
 		difference = self.Date.Difference(dictionary["Before"], after_time)
 
 		# Return the difference dictionary
@@ -2151,7 +2156,7 @@ class Write(Stories):
 			# Add the relative delta to the time to add object to create the added time
 			added_time = self.Date.Now(time_to_add["Object"] + relative_delta)
 
-			# Get the difference between the started writing time and the added time
+			# Calculate the difference between the started writing time and the added time
 			difference = self.Date.Difference(started_writing_time, added_time)
 
 			# Create a shortcut to the time units dictionary

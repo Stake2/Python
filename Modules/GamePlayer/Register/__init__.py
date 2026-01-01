@@ -1065,81 +1065,129 @@ class Register(GamePlayer):
 
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
-			self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
+			# Define the local states text initially as two line breaks and the "States:" text, followed by another like break
+			states_text += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
-			for key in self.dictionary["States"]["Texts"]:
-				self.dictionary["Entry"]["Diary Slim"]["Text"] += self.dictionary["States"]["Texts"][key][self.language["Small"]]
+			# Create a shortcut to the state "Texts" dictionary
+			texts =	self.dictionary["States"]["Texts"]
 
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
-					self.dictionary["Entry"]["Diary Slim"]["Text"] += "\n"
+			# List the state keys
+			keys = list(texts.keys())
 
-	def Post_On_Social_Networks(self):
-		# Define the "Social networks" dictionary
-		self.social_networks = {
-			"List": [
-				"Discord",
-				"WhatsApp",
-				"Instagram",
-				"Facebook"
-			],
-			"List text": ""
-		}
+			# Iterate through the list of state keys
+			for key in keys:
+				# Add the state text in the user language to the local states text
+				states_text += texts[key][self.language["Small"]]
 
-		# Define the list text, with all the social networks separated by commas
-		self.social_networks["List text"] = self.Text.From_List(self.social_networks["List"], next_line = False, and_text = False)
+				# If the key is not the last one
+				if key != keys[-1]:
+					# Add a line break to the local states text
+					states_text += "\n"
 
-		# Remove the "Discord" social networks
-		self.social_networks["List"].remove("Discord")
+			# Define the Diary Slim "States text" key as the local states text
+			self.dictionary["Entry"]["Diary Slim"]["States text"] = states_text
 
-		# Define the list text, with all the social networks separated by commas, but without Discord
-		self.social_networks["List text (without Discord)"] = self.Text.From_List(self.social_networks["List"], next_line = False)
+			# Add the local states text to the Diary Slim text
+			self.dictionary["Entry"]["Diary Slim"]["Text"] += states_text
 
-		# Define the item text to be used
-		self.social_networks["Item text"] = self.language_texts["the_game_cover"]
+		# ---------- #
 
-		# Define the "posted" template
-		self.social_networks["Template"] = self.language_texts["i_posted_the_played_game_text, type: template"] + "."
+		# Add the finished playing time to the Diary Slim "Time" key
+		self.dictionary["Entry"]["Diary Slim"]["Time"] = self.dictionary["Entry"]["Times"]["Finished playing"]["Formats"]["HH:MM DD/MM/YYYY"]
 
-		# Define the template list of items
-		self.social_networks["Items"] = [
-			self.social_networks["Item text"],
-			"Discord",
-			self.social_networks["List text (without Discord)"],
-			"Twitter, Bluesky, " + self.Language.language_texts["and"] + " Threads"
-		]
-
-		# Format the template with the list of items
-		self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"] = self.social_networks["Template"].format(*self.social_networks["Items"])
-
-		# Define the text to show while asking the user if they want to post on the social networks
-		text = self.Language.language_texts["post_on_the_social_networks"] + " (" + self.social_networks["List text"]
-
-		# Add the "and others" text
-		text += ", " + self.Language.language_texts["and_others, feminine"]
-
-		# Add the closing parenthesis
-		text += ")"
-
-		# Define the "Social networks" dictionary
+	def Post_On_The_Social_Networks(self):
+		# Define the local "Social networks" dictionary
 		social_networks = {
 			"List": [
+				"Twitter",
+				"Bluesky",
+				"Threads",
+				"Facebook",
 				"WhatsApp",
+				"Instagram",
 				"Facebook",
 				"Discord"
 			],
-			"Custom links": {
-				# Define the custom link for Discord as the "#play-history" channel on my Discord server
-				"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762"
-			}
+			"Item text": "",
+			"Text template": ""
 		}
 
-		# Define the input text to be about when the user finishes posting about the gaming session on the current social network
-		social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_posting_about_the_gaming_session_on_{}"]
+		# ---------- #
 
-		# Open the links of the social networks one by one for the user to post about the gaming session on the social networks
-		#self.Social_Networks.Open_Social_Network(social_networks)
+		# Define the item text as "the game cover"
+		social_networks["Item text"] = self.language_texts["the_game_cover"]
 
-		# Show a separator
+		# ---------- #
+
+		# Define the "Text template" key as the "I posted the text of the played game" text template
+		social_networks["Text template"] = self.language_texts["i_posted_the_text_of_the_played_game, type: template"] + "."
+
+		# Format the text template with the item text to create the posted text
+		social_networks["Posted text"] = social_networks["Text template"].format(social_networks["Item text"])
+
+		# Add the "I made tweets on {}" text template to the posted text
+		social_networks["Posted text"] += "\n" + self.Language.language_texts["i_made_tweets_on_{}, type: template"] + "."
+
+		# Format the text template with the list of social networks
+		social_networks["Posted text"] = social_networks["Posted text"].format(*social_networks["List"])
+
+		# Add the text to the Diary Slim "Posted on the social networks text" key
+		self.dictionary["Entry"]["Diary Slim"]["Posted on the social networks text"] = social_networks["Posted text"]
+
+		# ---------- #
+
+		# If the "Post on the social networks" state is True
+		if self.dictionary["Entry"]["States"]["Post on the social networks"] == True:
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# Create a shortcut to the Diary Slim time
+			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Time"] + ":" + "\n"
+
+			# Add the Diary Slim time
+			diary_slim_text += self.dictionary["Entry"]["Diary Slim"]["Text"]
+
+			# Remove the memory date text
+			diary_slim_text = diary_slim_text.replace("\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
+
+			# Remove the states text
+			diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["States text"], "")
+
+			# Copy the local Diary Slim text
+			self.Text.Copy(diary_slim_text)
+
+			# Show a space separator
+			print()
+
+			# Define the local "Social networks" dictionary
+			social_networks = {
+				"List": [
+					"Twitter",
+					"Bluesky",
+					"Threads",
+					"Facebook",
+					"WhatsApp",
+					"Instagram",
+					"Discord"
+				],
+				"Do not open": [
+					"Instagram"
+				],
+				"Custom links": {
+					# Define the custom link for Discord as the "#play-history" channel on my Discord server
+					"Discord": "https://discord.com/channels/311004778777935872/1126797917693427762"
+				},
+				"Input text": ""
+			}
+
+			# Define the input text to be about when the user finishes posting the status and the cover of the played game on the current social network
+			social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_posting_the_status_and_the_cover_of_the_played_game_on_{social_network}"]
+
+			# Open the links of the social networks one by one for the user to post about the watched media on the social networks
+			self.Social_Networks.Open_Social_Network(social_networks)
+
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
