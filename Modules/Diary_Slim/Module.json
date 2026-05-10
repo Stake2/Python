@@ -1,14 +1,14 @@
 {
 	"Module": "Diary_Slim",
 	"Folders": {
-		"root": "C:/Apps/Modules/Diary_Slim/",
+		"root": "C:/Python/Modules/Diary_Slim/",
 		"Texts": {
-			"root": "C:/Apps/Module files/Diary_Slim/"
+			"root": "C:/Python/Files/Diary_Slim/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Diary_Slim/Descriptions.json",
-		"Module": "C:/Apps/Modules/Diary_Slim/Module.json"
+		"Descriptions": "C:/Python/Modules/Diary_Slim/Descriptions.json",
+		"Module": "C:/Python/Modules/Diary_Slim/Module.json"
 	},
 	"Descriptions": {
 		"Show text": "Gerenciar o Diário Slim",

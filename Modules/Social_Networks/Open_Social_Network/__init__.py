@@ -3,6 +3,9 @@
 # Import the root class
 from Social_Networks.Social_Networks import Social_Networks as Social_Networks
 
+# Import some useful modules
+import inspect
+
 class Open_Social_Network(Social_Networks):
 	def __init__(self, social_networks = None):
 		# Run the root class to import its methods and variables
@@ -22,12 +25,6 @@ class Open_Social_Network(Social_Networks):
 			"Input text": self.language_texts["press_enter_to_open_the_next_social_network"]
 		}
 
-		# Define the root spaces dictionary
-		self.spaces = {
-			"First": True,
-			"Second": False
-		}
-
 		# Define the root states dictionary
 		self.states = {
 			"First separator": True,
@@ -35,6 +32,21 @@ class Open_Social_Network(Social_Networks):
 			"Imported numbers": False,
 			"Imported input text": False
 		}
+
+		# Define the root spaces dictionary
+		self.spaces = {
+			"First": True,
+			"Second": False,
+			"Before opening": True
+		}
+
+		# Get the method which ran this class (the "Open_Social_Network" one)
+		self.open_social_network["Runner method"] = inspect.stack()[1][3]
+
+		# If the runner method is "Select_Class"
+		if self.open_social_network["Runner method"] == "Select_Class":
+			# Deactivate the "Before opening" space
+			self.spaces["Before opening"] = False
 
 		# Define the "Social networks" dictionary
 		self.Define_Social_Networks(social_networks)
@@ -67,6 +79,7 @@ class Open_Social_Network(Social_Networks):
 					"Numbers",
 					"Custom links",
 					"Do not open",
+					"Show text",
 					"Input texts",
 					"Input text"
 				]
@@ -76,6 +89,7 @@ class Open_Social_Network(Social_Networks):
 					"Numbers",
 					"Custom links",
 					"Do not open",
+					"Show text",
 					"Input texts"
 				]
 
@@ -199,7 +213,7 @@ class Open_Social_Network(Social_Networks):
 			# Define the root "Open" switch as True
 			social_network["Open"] = True
 
-			# If the "Do not open" key is present inside the root "Social networks" dictionary
+			# If the "Do not open" list is present inside the root "Social networks" dictionary
 			# And the current social network is inside of that list
 			if (
 				"Do not open" in social_networks_dicitonary and
@@ -248,8 +262,16 @@ class Open_Social_Network(Social_Networks):
 					# Format it with the name of the social network
 					input_text = input_text.replace("{social_network}", social_network_name)
 
-				# Ask for the user input using the defined input text
-				self.Input.Type(input_text)
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Ask for the user input using the defined input text
+					self.Input.Type(input_text)
+
+				# If the "Testing" switch is True
+				if self.switches["Testing"] == True:
+					# Show the text
+					print()
+					print(input_text + ":")
 
 			# If the "Numbers" dictionary were not imported from the "social networks" parameter dictionary
 			if self.states["Imported numbers"] == False:
@@ -317,7 +339,7 @@ class Open_Social_Network(Social_Networks):
 		# Define the text template as the default one
 		text_template = self.language_texts["opening_the_social_network_{}_on_its_{}_page_with_this_link"]
 
-		# If there are custom links in the dictionary
+		# If there are custom links in the "Social networks" dictionary
 		if "Custom links" in self.open_social_network["Social networks"]:
 			# Change the template text to reflect that
 			text_template = self.language_texts["opening_the_social_network_{}_with_this_link"]
@@ -326,6 +348,11 @@ class Open_Social_Network(Social_Networks):
 		if "Shortcut" in self.social_network:
 			# Change the template text to reflect that
 			text_template = self.language_texts["opening_the_executable_of_the_social_network_{}"]
+
+		# If there is a custom show text in the "Social networks" dictionary
+		if "Show text" in self.open_social_network["Social networks"]:
+			# Change the template text to that text
+			text_template = self.open_social_network["Social networks"]["Show text"]
 
 		# Define the text template items
 		items = [
@@ -343,8 +370,16 @@ class Open_Social_Network(Social_Networks):
 
 		# If the social network "Open" switch is True
 		if social_network["Open"] == True:
-			# Show the text and the link to open
-			print()
+			# If there are multiple social networks to open
+			# Or the "Before opening" space is True
+			if (
+				self.states["One social network"] == False or
+				self.spaces["Before opening"] == True
+			):
+				# Show a space separator
+				print()
+
+			# Show the opening text and the link to open
 			print(text + ":")
 			print("\t" + self.social_network["Link to open"])
 

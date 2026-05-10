@@ -65,8 +65,8 @@ class Folder():
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Import the "settings" dictionary
-		self.settings = self.Language.settings
+		# Import the "user" dictionary
+		self.user = self.Language.user
 
 		# ---------- #
 
@@ -101,312 +101,327 @@ class Folder():
 		# Define the hard drive letter
 		self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
 
+		# ---------- #
+
+		# Define the root folders
+
 		# Define the folders dictionary with the root folders
 		self.folders = {
-			"root": {
-				"root": self.hard_drive_letter,
-				"Hard drive letter": self.hard_drive_letter,
-				"users": self.Sanitize(pathlib.Path.home().parent),
-				"system32": {
-					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
-				}
-			},
-			"Root": {
-				"root": self.hard_drive_letter,
-				"Hard drive letter": self.hard_drive_letter,
-				"Users": self.Sanitize(pathlib.Path.home().parent),
-				"System32": {
-					"root": self.Sanitize(os.path.join(os.environ["SystemRoot"], "SysNative" if platform.architecture()[0] == "32bit" else "System32"))
-				}
-			}
+			"root": self.hard_drive_letter,
+			"Hard drive letter": self.hard_drive_letter
 		}
 
-		# Define the folder names to be used to create the folders
-		folder_names = {
-			"Program Files": "",
-			"Program Files (x86)": "",
-			"Apps": "",
-			"Art": "",
-			"Mega": "",
-			"Media": "media, title(), type: plural",
-			"Games": "",
-			"XAMPP": ""
+		# ---------- #
+
+		# System folders
+
+		# Define the system folders
+		folder_names = [
+			"Users",
+			"Program Files",
+			"Program Files (x86)"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the folder dictionary inside the root "folders" dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ---------- #
+
+		# User folders
+
+		# Define the user folder with the user name
+		self.folders["User"] = {
+			"root": self.folders["Users"]["root"] + self.user["Name"] + "/"
 		}
 
-		# Define the language texts dictionary variable for easier typing
-		language_texts = self.Language.language_texts
+		# Define the user folders
+		folder_names = [
+			"AppData",
+			"Documents",
+			"Pictures",
+			"Videos",
+			"Downloads"
+		]
 
-		# Iterate through the folder names dictionary
-		for name, text_key in folder_names.items():
-			# Get the key
-			key = name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+		# Define the root folder to use
+		root_folder = self.folders["User"]
 
-			# Define the folder variable
-			folder = name
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
-			# If the text key is empty
-			if text_key == "":
-				# Define the text key
-				text_key = name.lower().replace(" ", "_")
-
-				if "_" not in text_key:
-					text_key += ", title()"
-
-			# If the text key is inside the language texts dictionary
-			if text_key in language_texts:
-				# Define the folder name as the language text
-				folder = language_texts[text_key]
-
-			# Define the folder inside the "root" key
-			self.folders["root"][key] = {
-				"root": self.folders["root"]["root"] + folder + "/"
+			# Define the folder dictionary inside the root "folders" dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-			# Define the folder dictionary inside the root folders dictionary
-			self.folders[key] = {
-				"root": self.folders["root"]["root"] + folder + "/"
+		# ----- #
+
+		# AppData folders
+
+		# Define the AppData folders
+		folder_names = [
+			"Local",
+			"LocalLow",
+			"Roaming"
+		]
+
+		# Define the root folder to use
+		root_folder = root_folder["AppData"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the folder dictionary inside the root "folders" dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-			# Define the folder dictionary inside the root folders dictionary
-			self.folders[name] = {
-				"root": self.folders["root"]["root"] + folder + "/"
-			}
-
-		if "Media folder" in self.settings:
-			self.folders["root"]["media"]["root"] = self.settings["Media folder"]
-			self.folders["Media"]["root"] = self.settings["Media folder"]
-
-		if "Game folder" in self.settings:
-			self.folders["root"]["games"]["root"] = self.settings["Game folder"]
-			self.folders["Games"]["root"] = self.settings["Game folder"]
+		# ---------- #
 
 		# "Program files (x86)" folders
+
+		# Define the "Program files (x86)" folders
 		folder_names = [
 			"Foobar2000"
 		]
 
-		for folder in folder_names:
-			self.folders["Program Files (x86)"][folder] = {
-				"root": self.folders["Program Files (x86)"]["root"] + folder + "/"
+		# Define the root folder to use
+		root_folder = self.folders["Program Files (x86)"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the folder dictionary with the root folder
+			root_folder[folder_name] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-		# Define the "Foobar2000.exe" program
-		self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"] = self.folders["Program Files (x86)"]["Foobar2000"]["root"] + "foobar2000.exe"
+		# Define the "Foobar2000" files
+		file_names = [
+			"Foobar2000"
+		]
 
-		# "Apps" sub-folders
-		folders = [
-			"Module files",
+		# Define the root folder to use
+		root_folder = root_folder["Foobar2000"]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the "Foobar2000" folder
+			root_folder[file_name] = root_folder["root"] + file_name.lower() + ".exe"
+
+		# ---------- #
+
+		# Folders that Python modules use
+
+		# Define the root folders
+		folder_names = [
+			"Python",
+			"Media",
+			"Games",
+			"XAMPP",
+			"Mega"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the text key as an empty one
+			text_key = ""
+
+			# If the folder name is "Media"
+			if folder_name == "Media":
+				# Define the text key as "Media" (plural)
+				text_key = "media, title(), type: plural"
+
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name, text_key = text_key)
+
+			# Define the folder dictionary inside the root "folders" dictionary
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ---------- #
+
+		# Python folders
+
+		# Define the Python folders
+		folder_names = [
 			"Modules",
+			"Files",
 			"Shortcuts"
 		]
 
-		# Iterate through the list of folders
-		for key in folders:
-			# Define the folder as the key
-			folder = key
+		# Define the root folder to use
+		root_folder = self.folders["Python"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
 			# If the key is "Shortcuts"
 			if key == "Shortcuts":
 				# Change the folder name to its user language variant
-				folder = self.Language.language_texts["shortcuts, title()"]
+				folder_name = self.Language.language_texts["shortcuts, title()"]
 
-			# Define the folder dictionary
-			self.folders["Apps"][key] = {
-				"root": self.folders["Apps"]["root"] + folder + "/"
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-		# Define the "Utility" folders
-		for folder in ["Modules", "Module files"]:
-			self.folders["Apps"][folder]["Utility"] = {
-				"root": self.folders["Apps"][folder]["root"] + "Utility/"
+		# ----- #
+
+		# Utility module folders
+
+		# Remove the "Shortcuts" folder from the local list of folder names
+		folder_names.remove("Shortcuts")
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the "Utility" folder inside that folder
+			root_folder[folder_name]["Utility"] = {
+				"root": root_folder[folder_name]["root"] + "Utility/"
 			}
 
-		# Define the "Modules.json" file
-		self.folders["Apps"]["Modules"]["Modules"] = self.folders["Apps"]["Modules"]["root"] + "Modules.json"
+		# ----- #
 
-		# Define the "White" folder
-		self.folders["Apps"]["Shortcuts"]["White"] = {
-			"root": self.folders["Apps"]["Shortcuts"]["root"] + self.Language.language_texts["whites, title()"] + "/"
-		}
+		# Modules files
 
-		# Jogos (Games) folders
-		folders = {
-			"Shortcuts": self.Language.language_texts["shortcuts, title()"],
-			"Folders": self.Language.language_texts["folders, title()"]
-		}
-
-		for key, folder in folders.items():
-			self.folders["Games"][key] = {
-				"root": self.folders["Games"]["root"] + folder + "/"
-			}
-
-		# Define the user folder
-		self.folders["User"] = {
-			"root": self.folders["Root"]["Users"] + pathlib.Path.home().name + "/"
-		}
-
-		# Define the "User" sub-folders
-		for folder in ["AppData", "Documents", "Downloads", "Pictures", "Videos"]:
-			self.folders["User"][folder] = {
-				"root": self.folders["User"]["root"] + folder + "/"
-			}
-
-		# Define the "Downloads" folders
-		folders = {
-			"Mega": "",
-			"Videos": self.Language.language_texts["videos, title()"]
-		}
-
-		for key, folder in folders.items():
-			key = key.lower().replace(" ", "_")
-
-			folder_title = folder
-
-			if folder == "":
-				folder = self.Capitalize(key)
-
-			self.folders["User"]["Downloads"][folder_title] = {
-				"root": self.folders["User"]["Downloads"]["root"] + folder + "/"
-			}
-
-		# Define the "AppData" folders
-		for folder in ["Local", "Roaming"]:
-			key = folder.lower().replace(" ", "_")
-
-			self.folders["User"]["AppData"][folder] = {
-				"root": self.folders["User"]["AppData"]["root"] + folder + "/"
-			}
-
-		# Define the "System32" sub-folders
-		self.folders["root"]["system32"]["drivers/etc"] = self.folders["root"]["system32"]["root"] + "drivers/etc/"
-
-		# Definet the "Art" sub-folders
-		folders = [
-			"Paint Tool SAI",
-			"Photoshop",
-			"Videos"
+		# Define the Modules files
+		file_names = [
+			"Modules"
 		]
 
-		# Iterate through the folders list
-		for name in folders:
-			# Define the folder name variable
-			folder_name = name
+		# Define the root folder to use
+		root_folder = root_folder["Modules"]
 
-			# Define the text key for the name of the folder
-			text_key = name.lower().replace(" ", "_")
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder
+			root_folder[file_name] = root_folder["root"] + file_name + ".json"
 
-			if "_" not in text_key:
-				text_key += ", title()"
+		# ----- #
 
-			# If the key is present inside the language texts dictionary
-			if text_key in language_texts:
-				# Define the folder name variable as the folder name in the user language
-				folder_name = language_texts[text_key]
+		# Shortcuts folder
 
-			# Define the folder inside the dictionary
-			self.folders["Art"][name] = {
-				"root": self.folders["Art"]["root"] + folder_name + "/"
+		# Define the Shortcuts folders
+		folder_names = {
+			"White": "Whites"
+		}
+
+		# Define the root folder to use
+		root_folder = self.folders["Python"]["Shortcuts"]
+
+		# Iterate through the dictionary of folder names and text keys
+		for folder_name, text_key in folder_names.items():
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(text_key)
+
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-		# Art "Photoshop" sub-folders
-		folders = [
-			"Ana",
-			"Media",
-			"Operational System",
-			"PHP",
-			"Render",
-			"Stake2",
-			"Stories",
-			"Websites"
+		# ---------- #
+
+		# Games folders
+
+		# Define the Games folders
+		folder_names = [
+			"Shortcuts",
+			"Folders"
 		]
 
-		# Define the dictionary variable for easier typing
-		dictionary = self.folders["Art"]["Photoshop"]
+		# Define the root folder to use
+		root_folder = self.folders["Games"]
 
-		# Iterate through the folders list
-		for name in folders:
-			# Define the folder name variable
-			folder_name = name
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
-			# Define the text key for the name of the folder
-			text_key = name.lower().replace(" ", "_")
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name)
 
-			if "_" not in text_key:
-				text_key += ", title()"
-
-			# If the key is present inside the language texts dictionary
-			if text_key in language_texts:
-				# Define the folder name variable as the folder name in the user language
-				folder_name = language_texts[text_key]
-
-			# Define the folder inside the dictionary
-			dictionary[name] = {
-				"root": dictionary["root"] + folder_name + "/"
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-		# Art "Videos" sub-folders
-		folders = [
-			"Render",
-			"Story covers"
+		# ---------- #
+
+		# XAMPP files
+
+		# Define the XAMPP files
+		file_names = [
+			"XAMPP Control"
 		]
 
-		# Define the dictionary variable for easier typing
-		dictionary = self.folders["Art"]["Videos"]
+		# Define the root folder to use
+		root_folder = self.folders["XAMPP"]
 
-		# Iterate through the folders list
-		for name in folders:
-			# Define the folder name variable
-			folder_name = name
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder
+			root_folder[file_name] = root_folder["root"] + file_name.lower().replace(" ", "-") + ".exe"
 
-			# Define the text key for the name of the folder
-			text_key = name.lower().replace(" ", "_")
+		# ---------- #
 
-			if "_" not in text_key:
-				text_key += ", title()"
+		# Mega folders
 
-			# If the key is present inside the language texts dictionary
-			if text_key in language_texts:
-				# Define the folder name variable as the folder name in the user language
-				folder_name = language_texts[text_key]
-
-			# Define the folder inside the dictionary
-			dictionary[name] = {
-				"root": dictionary["root"] + folder_name + "/"
-			}
-
-		# XAMPP folders and files
-		self.folders["XAMPP"]["XAMPP Control"] = self.folders["root"]["xampp"]["root"] + "xampp-control.exe"
-
-		# Mega sub-folders
-		folders = [
+		# Define the Mega folders
+		folder_names = [
 			"Notepad",
-			"Image",
+			"Images",
 			"PHP",
-			"Obsidian's Vaults",
-			"Stories",
-			"Websites"
+			"Websites",
+			"Stories"
 		]
 
-		for folder in folders:
-			key = folder
+		# Define the root folder to use
+		root_folder = self.folders
 
-			if folder == "Notepad":
-				folder = self.Language.language_texts["notepad, title()"]
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
-			if folder == "Stories":
-				folder = self.Language.language_texts["stories, title()"]
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name)
 
-			self.folders["Mega"][key] = {
-				"root": self.folders["Mega"]["root"] + folder + "/"
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": self.folders["Mega"]["root"] + folder_name + "/"
 			}
 
-		# Define all of the Mega sub-folders as a root key in the folders dictionary
-		for key, dictionary in self.folders["Mega"].items():
-			if key not in self.folders:
-				self.folders[key] = dictionary
+		# ---------- #
 
-		# Mega "Notepad" folders
-		folders = [
+		# Notepad folders
+
+		# Define the Notepad folders
+		folder_names = [
 			"Diary",
 			"Diary Slim",
 			"Friends",
@@ -415,33 +430,57 @@ class Folder():
 			"Years"
 		]
 
-		# Define the dictionary variable for easier typing
-		dictionary = self.folders["Notepad"]
+		# Define the root folder to use
+		root_folder = self.folders["Notepad"]
 
-		# Iterate through the folders list
-		for name in folders:
-			# Define the folder name variable
-			folder_name = name
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
-			# Define the text key for the name of the folder
-			text_key = name.lower().replace(" ", "_")
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name)
 
-			if "_" not in text_key:
-				text_key += ", title()"
-
-			# If the key is present inside the language texts dictionary
-			if text_key in language_texts:
-				# Define the folder name variable as the folder name in the user language
-				folder_name = language_texts[text_key]
-
-			# Define the folder inside the dictionary
-			dictionary[name] = {
-				"root": dictionary["root"] + folder_name + "/"
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
 			}
 
-		# Mega "Notepad" Data Networks folders
+		# ----- #
+
+		# Data Networks folders
+
+		# Define the Data Network folders
+		folder_names = [
+			"Productivity",
+			"Audiovisual Media",
+			"Games",
+			"Database"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Notepad"]["Data Networks"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name)
+
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ----- #
+
+		# Temporary code:
+		# <!--
+
+		# Define the dictionary of data networks
 		networks = {
-			"Audiovisual Media": self.Language.language_texts["audiovisual_media"],
 			"Database": self.Language.language_texts["database, title()"],
 			"Games": self.Language.language_texts["games, title()"],
 			"Productivity": self.Language.language_texts["productivity, title()"]
@@ -467,22 +506,6 @@ class Folder():
 
 			# Define the default network starting year
 			starting_year = 2023
-
-			# Define the "Audiovisual Media" network information
-			if network["Title"] == "Audiovisual Media":
-				# Add the "Comments" folder as a sub-folder
-				network["Subfolders"].append("Comments")
-
-				# Add some name information
-				network.update({
-					"Information": "Media",
-					"Lowercase information": True,
-					"History": "Watch",
-					"Type": "Media"
-				})
-
-				# Define the starting year as 2018
-				starting_year = 2018
 
 			# Define the "Database" network information
 			if network["Title"] == "Database":
@@ -568,21 +591,6 @@ class Folder():
 					"root": dictionary["root"] + sub_folder + "/"
 				}
 
-			if network["Title"] == "Audiovisual Media":
-				# "Audiovisual Media/Comments" folders
-				for item in ["Backups"]:
-					dictionary["Comments"][item] = {
-						"root": dictionary["Comments"]["root"] + item + "/"
-					}
-
-				dictionary["Comments"]["Comments"] = dictionary["Comments"]["root"] + "Comments.json"
-
-				# "Audiovisual Media/Watch History" folders
-				for item in ["Movies"]:
-					dictionary[network["History"]][item] = {
-						"root": dictionary[network["History"]]["root"] + item + "/"
-					}
-
 			if network["Information"] != "":
 				# Network "Information" folders and files
 				for item in ["Information.json"]:
@@ -633,6 +641,9 @@ class Folder():
 			# Define the Network folders dictionary as the local folders dictionary
 			self.folders["Notepad"]["Data Networks"][network["Title"]] = dictionary
 
+		# End of Temporary code
+		# -->
+
 		# ---------- #
 
 		# Define the list of folders inside the the Mega "Image" folder
@@ -645,7 +656,7 @@ class Folder():
 		]
 
 		# Define the root folder as the Mega "Image" folder
-		root_folder = self.folders["Image"]
+		root_folder = self.folders["Images"]
 
 		# Iterate through the local list of folder keys
 		for key in folders:
@@ -674,7 +685,7 @@ class Folder():
 		]
 
 		# Define the root folder as the "Christmas" image folder
-		root_folder = self.folders["Image"]["Christmas"]
+		root_folder = self.folders["Images"]["Christmas"]
 
 		# Iterate through the local list of folder keys
 		for key in folders:
@@ -707,7 +718,7 @@ class Folder():
 		]
 
 		# Define the root folder as the Christmas "Theme" folder
-		root_folder = self.folders["Image"]["Christmas"]["Theme"]
+		root_folder = self.folders["Images"]["Christmas"]["Theme"]
 
 		# Iterate through the list of file keys
 		for key in files:
@@ -736,7 +747,7 @@ class Folder():
 		]
 
 		# Define the root folder as the "Social networks" folder of the Mega "Image" folder
-		root_folder = self.folders["Image"]["Social networks"]
+		root_folder = self.folders["Images"]["Social networks"]
 
 		# Iterate through the local list of folder keys
 		for key in folders:
@@ -764,8 +775,8 @@ class Folder():
 		}
 
 		for key, folder in folders.items():
-			self.folders["Image"]["Years"][key] = {
-				"root": self.folders["Image"]["Years"]["root"] + folder + "/"
+			self.folders["Images"]["Years"][key] = {
+				"root": self.folders["Images"]["Years"]["root"] + folder + "/"
 			}
 
 		# Mega "PHP" folders
@@ -776,9 +787,9 @@ class Folder():
 		for item in folders:
 			key = item.lower().replace(" ", "_")
 
-			folder = self.folders["Mega"]["PHP"]["root"] + item + "/"
+			folder = self.folders["PHP"]["root"] + item + "/"
 
-			self.folders["Mega"]["PHP"][item] = {
+			self.folders["PHP"][item] = {
 				"root": folder
 			}
 
@@ -792,35 +803,7 @@ class Folder():
 		for item in files:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["Mega"]["PHP"]["JSON"][item] = self.folders["Mega"]["PHP"]["JSON"]["root"] + item + ".json"
-
-		# Mega "Obsidian's Vaults" folders
-		for item in ["Creativity"]:
-			self.folders["Mega"]["Obsidian's Vaults"][item] = {
-				"root": self.folders["Mega"]["Obsidian's Vaults"]["root"] + item + "/"
-			}
-
-		# Mega "Obsidian's Vaults" Creativity folders
-		for item in ["Literature"]:
-			self.folders["Mega"]["Obsidian's Vaults"]["Creativity"][item] = {
-				"root": os.path.join(self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["root"], item + "/")
-			}
-
-		# Mega "Creativity" Literature folders
-		for item in ["Stories"]:
-			self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"][item] = {
-				"root": os.path.join(self.folders["Mega"]["Obsidian's Vaults"]["Creativity"]["Literature"]["root"], item + "/")
-			}
-
-		# Mega "Stories" folders
-		folders = {
-			"Game Multiverse Bubble": self.Language.language_texts["game_multiverse_bubble"]
-		}
-
-		for key, folder in folders.items():
-			self.folders["Stories"][key] = {
-				"root": self.folders["Stories"]["root"] + folder + "/"
-			}
+			self.folders["PHP"]["JSON"][item] = self.folders["PHP"]["JSON"]["root"] + item + ".json"
 
 		# Define the Mega "Websites" folders and files
 		items = {
@@ -840,13 +823,13 @@ class Folder():
 		for item in items["Folders"]:
 			key = item.lower().replace(" ", "_")
 
-			self.folders["Mega"]["Websites"][item] = {
-				"root": self.folders["Mega"]["Websites"]["root"] + item + "/"
+			self.folders["Websites"][item] = {
+				"root": self.folders["Websites"]["root"] + item + "/"
 			}
 
 		# Create the files
 		for item in items["Files"]:
-			file = self.folders["Mega"]["Websites"]["root"] + item + "."
+			file = self.folders["Websites"]["root"] + item + "."
 
 			if item in items["JSON"]:
 				file += "json"
@@ -854,10 +837,24 @@ class Folder():
 			else:
 				file += ".txt"
 
-			self.folders["Mega"]["Websites"][item] = file
+			self.folders["Websites"][item] = file
 
 		# Define the "Colors.css" file inside the "CSS" folder
-		self.folders["Mega"]["Websites"]["CSS"]["Colors"] = self.folders["Mega"]["Websites"]["CSS"]["root"] + "Colors.css"
+		self.folders["Websites"]["CSS"]["Colors"] = self.folders["Websites"]["CSS"]["root"] + "Colors.css"
+
+		# ---------- #
+
+		# Stories folders
+
+		# Define the Stories folders
+		folders = {
+			"Game Multiverse Bubble": self.Language.language_texts["game_multiverse_bubble"]
+		}
+
+		for key, folder in folders.items():
+			self.folders["Stories"][key] = {
+				"root": self.folders["Stories"]["root"] + folder + "/"
+			}
 
 	def Define_Texts(self):
 		# Define the "Texts" dictionary

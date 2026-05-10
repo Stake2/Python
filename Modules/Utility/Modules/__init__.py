@@ -86,7 +86,7 @@ class Modules():
 			"Module": self.object.__module__,
 			"Sub-module": "",
 			"Folders": {
-				"root": self.folders["Apps"]["Modules"]["root"] + self.object.__module__ + "/"
+				"root": self.folders["Python"]["Modules"]["root"] + self.object.__module__ + "/"
 			},
 			"Files": {},
 			"Descriptions": {}
@@ -103,14 +103,15 @@ class Modules():
 
 		# Define the root folder
 		self.module["Folders"] = {
-			"root": self.folders["Apps"]["Modules"]["root"] + self.module["Module"] + "/"
+			"root": self.folders["Python"]["Modules"]["root"] + self.module["Module"] + "/"
 		}
 
+		# Create a shortcut to the root folder
 		folder = self.module["Folders"]["root"]
 
 		# Define the texts folder
 		self.module["Folders"]["Texts"] = {
-			"root": self.folders["Apps"]["Module files"]["root"] + self.module["Module"] + "/"
+			"root": self.folders["Python"]["Files"]["root"] + self.module["Module"] + "/"
 		}
 
 		# Define the sub-module folder if it exists
@@ -206,7 +207,7 @@ class Modules():
 			"select_text": self.Language.language_texts["select_one_class_to_execute"]
 		}
 
-		# Define the "pre-selected class" switch as False
+		# Define the local "pre-selected class" switch as False
 		pre_selected_class = False
 
 		# If there is a "List of classes" list inside the module "Descriptions" dictionary
@@ -218,13 +219,13 @@ class Modules():
 			# Then define the "Selected class" as the first item in the list
 			self.module["Selected class"] = self.module["Descriptions"]["List of classes"][0]
 
-			# Transform the selected class into a class dictionary
+			# Transform the selected class title into a class dictionary
 			self.module["Selected class"] = self.classes["Dictionary"][self.module["Selected class"]]
 
 			# Define the "Automatically selected class" switch inside the class object
 			setattr(self.module["Selected class"]["Object"], "automatically_selected_class", True)
 
-			# Switch the "pre-selected class" switch to True
+			# Switch the local "pre-selected class" switch to True
 			pre_selected_class = True
 
 		# If the "pre-selected class" switch is False

@@ -1,7 +1,7 @@
 {
 	"Show text": {
-		"en": "Manage Audiovisual Media Network",
-		"pt": "Gerenciar Rede de Mídias Audiovisuais (Audiovisual Media Network)"
+		"en": "Manage the Audiovisual Media Network",
+		"pt": "Gerenciar a Rede de Mídias Audiovisuais (Audiovisual Media Network)"
 	},
 	"Watch_Media": {
 		"en": "Watch media",
@@ -12,8 +12,8 @@
 		"pt": "Assistir lista de mídia"
 	},
 	"Manage": {
-		"en": "Manage the [Media information] Database and [Watched media] History",
-		"pt": "Gerenciar o Banco de Dados de [Informações de mídia] e Histórico de [Mídias assistidas]"
+		"en": "Manage the [Media information] database and the [Watched media] history",
+		"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
 	},
 	"View": {
 		"en": "View database",

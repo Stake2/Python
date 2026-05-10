@@ -1,11 +1,11 @@
 {
 	"Show text": {
-		"en": "Manage the [Media Information] Database and [Watched Media] History",
-		"pt": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]"
+		"en": "Manage the [Media information] database and the [Watched media] history",
+		"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
 	},
 	"Add_A_New_Media": {
-		"en": "Add a new media to the Database",
-		"pt": "Adicionar uma nova mídia ao Banco de Dados"
+		"en": "Add a new media to the database",
+		"pt": "Adicionar uma nova mídia ao banco de dados"
 	},
 	"Iterate_Through_The_Media_List": {
 		"en": "Iterate through the list of media",

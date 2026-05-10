@@ -15,10 +15,10 @@
 		"Module": "C:/Apps/Modules/Watch_History/Manage/Module.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar o Banco de Dados de [Informações de Mídia] e Histórico de [Mídias Assistidas]",
+		"Show text": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]",
 		"Add_A_New_Media": {
-			"en": "Add a new media to the Database",
-			"pt": "Adicionar uma nova mídia ao Banco de Dados"
+			"en": "Add a new media to the database",
+			"pt": "Adicionar uma nova mídia ao banco de dados"
 		},
 		"Iterate_Through_The_Media_List": {
 			"en": "Iterate through the list of media",
@@ -44,10 +44,10 @@
 		"Dictionary": {
 			"Add_A_New_Media": {
 				"Descriptions": {
-					"en": "Add a new media to the Database",
-					"pt": "Adicionar uma nova mídia ao Banco de Dados"
+					"en": "Add a new media to the database",
+					"pt": "Adicionar uma nova mídia ao banco de dados"
 				},
-				"Description": "Adicionar uma nova mídia ao Banco de Dados",
+				"Description": "Adicionar uma nova mídia ao banco de dados",
 				"Object": "<class 'Watch_History.Manage.Add_A_New_Media.Add_A_New_Media'>"
 			},
 			"Iterate_Through_The_Media_List": {
@@ -76,7 +76,7 @@
 			}
 		},
 		"Descriptions": [
-			"Adicionar uma nova mídia ao Banco de Dados",
+			"Adicionar uma nova mídia ao banco de dados",
 			"Iterar através da lista de mídia",
 			"Preencher os arquivos de episódios de mídia",
 			"Converter histórico"

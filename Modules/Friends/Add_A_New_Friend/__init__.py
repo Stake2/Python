@@ -362,10 +362,11 @@ class Add_A_New_Friend(Friends):
 							"List": folder_dictionary[key]
 						}
 
+			# If the current item is "Image"
 			if item == "Image":
 				# Create the image "Media" folder
 				dict_["Media"] = {
-					"root": dict_["root"] + self.Language.language_texts["media, title()"] + "/"
+					"root": dict_["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
 				}
 
 				self.Folder.Create(dict_["Media"]["root"])

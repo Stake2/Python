@@ -68,13 +68,19 @@ class JSON():
 				self.switches["File"][switch] = False
 
 	def Define_Texts(self):
-		# Define the "Date" utility dictionary
-		self.folders["Apps"]["Module files"]["Utility"]["Date"] = {
-			"Texts": self.folders["Apps"]["Module files"]["Utility"]["root"] + "Date/Texts.json"
+		# Define the "Date" utility module "Files" dictionary
+		self.folders["Python"]["Files"]["Utility"]["Date"] = {
+			"root": self.folders["Python"]["Files"]["Utility"]["root"] + "Date/"
 		}
 
+		# Create a shortcut to the dictionary
+		dictionary = self.folders["Python"]["Files"]["Utility"]["Date"]
+
+		# Define the "Texts.json"
+		dictionary["Texts"] = dictionary["root"] + "Texts.json"
+
 		# Define the "Date texts" text dictionary
-		self.date_texts = self.To_Python(self.folders["Apps"]["Module files"]["Utility"]["Date"]["Texts"])
+		self.date_texts = self.To_Python(dictionary["Texts"])
 
 	def Sanitize(self, path):
 		# Replace double backwards slashes with one forward slash

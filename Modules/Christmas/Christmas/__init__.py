@@ -63,7 +63,7 @@ class Christmas():
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -380,7 +380,7 @@ class Christmas():
 		# ---------- #
 
 		# Define the "Theme" key as the "Christmas.lnk" key which links to the theme file
-		self.christmas["Theme"] = self.folders["Image"]["Christmas"]["Theme"]["Christmas.lnk"]
+		self.christmas["Theme"] = self.folders["Images"]["Christmas"]["Theme"]["Christmas.lnk"]
 
 		# ---------- #
 
@@ -651,7 +651,7 @@ class Christmas():
 		# ---------- #
 
 		# Create a shortcut to the "Digital identities" image folders
-		digital_identities_folder = self.folders["Image"]["Social networks"]["Digital identities"]["root"]
+		digital_identities_folder = self.folders["Images"]["Social networks"]["Digital identities"]["root"]
 
 		# Make a local copy of the "Digital identities" dictionary
 		digital_identities = deepcopy(self.christmas["Digital identities"])
@@ -991,18 +991,18 @@ class Christmas():
 			self.System.Open(file, first_space = first_space)
 
 	def Open_Module(self, module_title):
-		# Get the list of files from the apps "Shortcuts" folder
-		files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["White"]["root"])["File"]["List"]
+		# Get the list of files from the Python "Shortcuts" folder
+		files = self.Folder.Contents(self.folders["Python"]["Shortcuts"]["White"]["root"])["File"]["List"]
 
 		# Iterate through the list of files
 		for file in files:
-			# Try to find the "Apps.lnk" shortcut inside the file
-			if "Apps.lnk" in file:
-				# If found, define the "apps" variable as the current file
-				apps = file
+			# Try to find the "Python.lnk" shortcut inside the file
+			if "Python.lnk" in file:
+				# If found, define the "python" variable as the current file
+				python = file
 
-		# Open the "Apps.lnk" shortcut
-		self.System.Open(apps, verbose = False)
+		# Open the "Python.lnk" shortcut
+		self.System.Open(python, verbose = False)
 
 		# Define the local list of item types
 		item_types = [

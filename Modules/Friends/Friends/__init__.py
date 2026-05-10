@@ -67,7 +67,7 @@ class Friends(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		self.modules["Remove list"] = [
@@ -205,7 +205,7 @@ class Friends(object):
 				"root": self.folders["Notepad"]["Friends"]["root"]
 			},
 			"Image": {
-				"root": self.folders["Image"]["Friends"]["root"]
+				"root": self.folders["Images"]["Friends"]["root"]
 			}
 		}
 
@@ -492,10 +492,12 @@ class Friends(object):
 			"Dictionary": {}
 		}
 
-		# Read the "Friends.json" file if it is not empty
+		# Create a shortcut to the root "Friends.json" file
 		file = self.folders["Friends"]["Text"]["Friends"]
 
-		if self.File.Contents(file)["lines"] != []:
+		# If the "Friends.json" file is not empty
+		if self.File.Contents(file)["Lines"] != []:
+			# Define it as the root "Friends" dictionary
 			self.friends = self.JSON.To_Python(file)
 
 		# ---------- #
@@ -674,7 +676,7 @@ class Friends(object):
 				if item == "Image":
 					# Create the image "Media" folder
 					dict_["Media"] = {
-						"root": dict_["root"] + self.Language.language_texts["media, title()"] + "/"
+						"root": dict_["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
 					}
 
 					self.Folder.Create(dict_["Media"]["root"])

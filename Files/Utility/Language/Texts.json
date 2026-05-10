@@ -1,0 +1,2736 @@
+{
+	"your_{}_is": {
+		"pt": "Seu {} é",
+		"en": "Your {} is"
+	},
+	"custom": {
+		"en": "custom",
+		"pt": {
+			"masculine": "personalizado",
+			"feminine": "personalizada"
+		}
+	},
+	"language": {
+		"pt": "idioma",
+		"en": "language"
+	},
+	"languages": {
+		"pt": "idiomas",
+		"en": "languages"
+	},
+	"small_language": {
+		"en": "Small language",
+		"pt": "Idioma pequeno"
+	},
+	"small, title()": {
+		"en": "Small",
+		"pt": "Pequeno"
+	},
+	"language_with_country": {
+		"pt": "idioma com país",
+		"en": "language with country"
+	},
+	"with_country": {
+		"pt": "Com país",
+		"en": "With country"
+	},
+	"full_language": {
+		"pt": "Idioma completo",
+		"en": "Full language"
+	},
+	"full, title()": {
+		"pt": "Completo",
+		"en": "Full"
+	},
+	"full_language_translated": {
+		"pt": "Idioma completo traduzido",
+		"en": "Full language translated"
+	},
+	"full_translated": {
+		"pt": "Completo traduzido",
+		"en": "Full translated"
+	},
+	"text_language": {
+		"pt": "Idioma de texto",
+		"en": "Text language"
+	},
+	"title_in_language": {
+		"pt": {
+			"pt": "Título em Português",
+			"en": "Title in Portuguese"
+		},
+		"en": {
+			"pt": "Título em Inglês",
+			"en": "Title in English"
+		},
+		"ja": {
+			"pt": "Título em Japonês",
+			"en": "Title in Japanese"
+		}
+	},
+	"in_[language]": {
+		"pt": {
+			"pt": "em Português",
+			"en": "in Portuguese"
+		},
+		"en": {
+			"pt": "em Inglês",
+			"en": "in English"
+		}
+	},
+	"number_of_the_language": {
+		"en": "Number of the language",
+		"pt": "Número do idioma"
+	},
+	"general_with_hashtags": {
+		"pt": "Geral com hashtags",
+		"en": "General with hashtags"
+	},
+	"[language]_with_hashtags": {
+		"pt": "Português com hashtags",
+		"en": "English with hashtags"
+	},
+	"language_class": {
+		"pt": "Classe \"Language\" (Idioma)",
+		"en": "\"Language\" class"
+	},
+	"user_language": {
+		"en": "User language",
+		"pt": "Idioma do usuário"
+	},
+	"original_title": {
+		"en": "Original title",
+		"pt": "Título original"
+	},
+	"original_language": {
+		"en": "Original language",
+		"pt": "Idioma original"
+	},
+	"class": {
+		"pt": "classe",
+		"en": "class"
+	},
+	"class_being_executed": {
+		"en": "Class being executed",
+		"pt": "Classe sendo executada"
+	},
+	"folder": {
+		"en": "folder",
+		"pt": "pasta"
+	},
+	"folder, title()": {
+		"pt": "Pasta",
+		"en": "Folder"
+	},
+	"folders, title()": {
+		"en": "Folders",
+		"pt": "Pastas"
+	},
+	"primary_folder": {
+		"en": "primary folder",
+		"pt": "pasta primária"
+	},
+	"secondary_folder": {
+		"en": "secondary folder",
+		"pt": "pasta secundária"
+	},
+	"ignored_folders": {
+		"en": "Ignored folders",
+		"pt": "Pastas ignoradas"
+	},
+	"image_folder": {
+		"pt": "Pasta de imagem",
+		"en": "Image folder"
+	},
+	"type_the_image_folder": {
+		"pt": "Digite a pasta de imagem",
+		"en": "Type the image folder"
+	},
+	"it_will_be_updated": {
+		"en": "It will be updated",
+		"pt": "Ele será atualizado"
+	},
+	"it_will_not_be_updated": {
+		"en": "It will not be updated",
+		"pt": "Ele não será atualizado"
+	},
+	"updated_files": {
+		"en": "Updated files",
+		"pt": "Arquivos atualizados"
+	},
+	"archive, title()": {
+		"en": "Archive",
+		"pt": "Arquivo"
+	},
+	"create": {
+		"en": "create",
+		"pt": "criar"
+	},
+	"created": {
+		"en": "created",
+		"pt": {
+			"masculine": "criado",
+			"feminine": "criada"
+		}
+	},
+	"edit": {
+		"en": "edit",
+		"pt": "editar"
+	},
+	"edit, title()": {
+		"en": "Edit",
+		"pt": "Editar"
+	},
+	"edited": {
+		"en": "edited",
+		"pt": {
+			"masculine": "editado",
+			"feminine": "editada"
+		}
+	},
+	"add": {
+		"en": "add",
+		"pt": "adicionar"
+	},
+	"update": {
+		"en": "update",
+		"pt": "atualizar"
+	},
+	"delete": {
+		"en": "delete",
+		"pt": "apagar"
+	},
+	"deleted": {
+		"en": "deleted",
+		 "pt": {
+			"masculine": "apagado",
+			"feminine": "apagada"
+		}
+	},
+	"settings": {
+		"en": "settings",
+		"pt": "configurações"
+	},
+	"type_{}": {
+		"en": "Type {}",
+		"pt": "Digite {}"
+	},
+	"type_the_{}": {
+		"en": "Type the {}",
+		"pt": "Digite o {}"
+	},
+	"type_or_paste_the_text": {
+		"en": "Type or paste the text",
+		"pt": "Digite ou cole o texto"
+	},
+	"texts, title()": {
+		"pt": "Textos",
+		"en": "Texts"
+	},
+	"diary, title()": {
+		"pt": "Diário",
+		"en": "Diary"
+	},
+	"diary_slim": {
+		"pt": "Diário Slim",
+		"en": "Diary Slim"
+	},
+	"header, title()": {
+		"pt": "Cabeçalho",
+		"en": "Header"
+	},
+	"data, title()": {
+		"pt": "Dados",
+		"en": "Data"
+	},
+	"data_networks": {
+		"pt": "Redes de Dados",
+		"en": "Data Networks"
+	},
+	"yes": {
+		"en": "yes",
+		"pt": "sim"
+	},
+	"no": {
+		"en": "no",
+		"pt": "não"
+	},
+	"options": {
+		"pt": "opções",
+		"en": "options"
+	},
+	"options, title()": {
+		"pt": "Opções",
+		"en": "Options"
+	},
+	"item": {
+		"en": "item",
+		"pt": "item"
+	},
+	"item, title()": {
+		"en": "Item",
+		"pt": "Item"
+	},
+	"items": {
+		"en": "items",
+		"pt": "itens"
+	},
+	"items, title()": {
+		"en": "Items",
+		"pt": "Itens"
+	},
+	"from_{}_to_{}": {
+		"en": "from {} to {}",
+		"pt": "do {} para o {}"
+	},
+	"select_an_item_from_the_list": {
+		"en": "Select an item from the list",
+		"pt": "Selecionar um item da lista"
+	},
+	"select_a_language, type: question": {
+		"en": "Select a language",
+		"pt": "Selecionar um idioma"
+	},
+	"yes_or_no": {
+		"en": "yes or no",
+		"pt": "sim ou não"
+	},
+	"select_one_{}_(number_or_word)": {
+		"en": "Select one {} (number or word)",
+		"pt": {
+			"masculine": "Selecione um {} (número ou palavra)",
+			"feminine": "Selecione uma {} (número ou palavra)"
+		}
+	},
+	"you_selected_this_option": {
+		"en": "You selected this option",
+		"pt": "Você selecionou essa opção"
+	},
+	"leave_empty_to_use_the_default_value": {
+		"en": "Leave empty to use the default value",
+		"pt": "Deixe vazio para usar o valor padrão"
+	},
+	"when_i_started": {
+		"pt": "Quando eu comecei a",
+		"en": "When I started"
+	},
+	"when_i_finished": {
+		"pt": "Quando eu terminei de",
+		"en": "When I finished"
+	},
+	"when_you_started": {
+		"pt": "Quando você começou a",
+		"en": "When you started"
+	},
+	"when_you_finished": {
+		"pt": "Quando você terminou de",
+		"en": "When you finished"
+	},
+	"take_me": {
+		"en": "take me",
+		"pt": "eu levei"
+	},
+	"take_you": {
+		"en": "take you",
+		"pt": "você levou"
+	},
+	"come_back_when_it_is": {
+		"en": "Come back when it is",
+		"pt": "Volte quando for"
+	},
+	"press_enter_when_you_start": {
+		"en": "Press Enter when you start",
+		"pt": "Pressione Enter quando você começar a"
+	},
+	"press_enter_when_you_finish": {
+		"en": "Press Enter when you finish",
+		"pt": "Pressione Enter quando você terminar de"
+	},
+	"press_enter_when_you_finish_reading_the_information_summary": {
+		"en": "Press Enter when you finish reading the information summary",
+		"pt": "Pressione Enter quando você terminar de ler o resumo de informações"
+	},
+	"press_enter_when_you": {
+		"en": "Press Enter when you",
+		"pt": "Pressione Enter quando você"
+	},
+	"multi_selection": {
+		"en": "Multi-selection",
+		"pt": "Seleção múltipla"
+	},
+	"finish_selection": {
+		"en": "Finish selection",
+		"pt": "Terminar seleção"
+	},
+	"list, title()": {
+		"en": "List",
+		"pt": "Lista"
+	},
+	"original_list": {
+		"en": "Original list",
+		"pt": "Lista original"
+	},
+	"list_of_items": {
+		"en": "List of items",
+		"pt": "Lista de itens"
+	},
+	"current, title()": {
+		"en": "Current",
+		"pt": "Atual"
+	},
+	"custom_language": {
+		"en": "custom language",
+		"pt": "idioma personalizado"
+	},
+	"this_folder_already_exists": {
+		"en": "This folder already exists",
+		"pt": "Essa pasta já existe"
+	},
+	"this_folder_does_not_exists": {
+		"en": "This folder does not exists",
+		"pt": "Essa pasta não existe"
+	},
+	"this_file_does_not_exists": {
+		"en": "This file does not exists",
+		"pt": "Esse arquivo não existe"
+	},
+	"select_{}_or_{}_(number_or_word)": {
+		"en": "Select Yes or No (number or word)",
+		"pt": "Selecione Sim ou Não (número ou palavra)"
+	},
+	"your_{}_is, title()": {
+		"pt": "Seu {} É",
+		"en": "Your {} Is"
+	},
+	"custom, title(), masculine": {
+		"pt": "personalizado"
+	},
+	"custom, title(), feminine": {
+		"pt": "personalizada"
+	},
+	"custom, title()": {
+		"pt": "personalizado",
+		"en": "Custom"
+	},
+	"language, title()": {
+		"pt": "Idioma",
+		"en": "Language"
+	},
+	"languages, title()": {
+		"pt": "Idiomas",
+		"en": "Languages"
+	},
+	"class, title()": {
+		"pt": "Classe",
+		"en": "Class"
+	},
+	"file": {
+		"en": "file",
+		"pt": "arquivo"
+	},
+	"file, title()": {
+		"pt": "Arquivo",
+		"en": "File"
+	},
+	"with_file": {
+		"en": "With file",
+		"pt": "Com arquivo"
+	},
+	"file_format, type: format": {
+		"en": "file:///{}",
+		"pt": "file:///{}"
+	},
+	"it_was_not_possible_to_{}_the_file_permission_not_granted": {
+		"en": "It was not possible to {} the file, permission not granted",
+		"pt": "Não foi possível {} o arquivo, permissão não concedida"
+	},
+	"link": {
+		"en": "link",
+		"pt": "link"
+	},
+	"link, title()": {
+		"en": "Link",
+		"pt": "Link"
+	},
+	"program": {
+		"en": "program",
+		"pt": "programa"
+	},	
+	"settings, title()": {
+		"pt": "Configurações",
+		"en": "Settings"
+	},
+	"parameters, title()": {
+		"pt": "Parâmetros",
+		"en": "Parameters"
+	},
+	"with_these_commands": {
+		"pt": "Com esses comandos",
+		"en": "With these commands"
+	},
+	"type_or_paste_the_text, title()": {
+		"pt": "Digite Ou Cole O Texto",
+		"en": "Type Or Paste The Text"
+	},
+	"yes, title()": {
+		"pt": "Sim",
+		"en": "Yes"
+	},
+	"no, title()": {
+		"pt": "Não",
+		"en": "No"
+	},
+	"yes_or_no, title()": {
+		"pt": "Sim Ou Não",
+		"en": "Yes Or No"
+	},
+	"select_one_{}_(number_or_word), title(), masculine": {
+		"pt": "Selecione um {} (número ou palavra)"
+	},
+	"select_one_{}_(number_or_word), title(), feminine": {
+		"pt": "Selecione uma {} (número ou palavra)"
+	},
+	"select_one_{}_(number_or_word), title()": {
+		"pt": "Selecione um {} (número ou palavra)",
+		"en": "Select One {} (Number Or Word)"
+	},
+	"press_enter_when_you_finish_reading_the_info_summary, title()": {
+		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+		"en": "Press Enter When You Finish Reading The Info Summary"
+	},
+	"finish_selection, title()": {
+		"pt": "Terminar Seleção",
+		"en": "Finish Selection"
+	},
+	"list, title()": {
+		"pt": "Lista",
+		"en": "List"
+	},
+	"custom_language, title()": {
+		"pt": "Idioma Personalizado",
+		"en": "Custom Language"
+	},
+	"your_{}_is, title()": {
+		"pt": "Seu {} É",
+		"en": "Your {} Is"
+	},
+	"language, title()": {
+		"pt": "Idioma",
+		"en": "Language"
+	},
+	"languages, title()": {
+		"pt": "Idiomas",
+		"en": "Languages"
+	},
+	"class, title()": {
+		"pt": "Classe",
+		"en": "Class"
+	},
+	"settings, title()": {
+		"pt": "Configurações",
+		"en": "Settings"
+	},
+	"type_or_paste_the_text, title()": {
+		"pt": "Digite Ou Cole O Texto",
+		"en": "Type Or Paste The Text"
+	},
+	"yes, title()": {
+		"pt": "Sim",
+		"en": "Yes"
+	},
+	"no, title()": {
+		"pt": "Não",
+		"en": "No"
+	},
+	"yes_or_no, title()": {
+		"pt": "Sim Ou Não",
+		"en": "Yes Or No"
+	},
+	"select_one_{}_(number_or_word), title(), masculine, title()": {
+		"pt": "Selecione Um {} (Número Ou Palavra)"
+	},
+	"select_one_{}_(number_or_word), title(), feminine, title()": {
+		"pt": "Selecione Uma {} (Número Ou Palavra)"
+	},
+	"select_one_{}_(number_or_word), title()": {
+		"pt": "Selecione Um {} (Número Ou Palavra)",
+		"en": "Select One {} (Number Or Word)"
+	},
+	"press_enter_when_you_finish_reading_the_info_summary, title()": {
+		"pt": "Pressione Enter Quando Você Terminar De Ler O Resumo De Informações",
+		"en": "Press Enter When You Finish Reading The Info Summary"
+	},
+	"finish_selection, title()": {
+		"pt": "Terminar Seleção",
+		"en": "Finish Selection"
+	},
+	"list, title()": {
+		"pt": "Lista",
+		"en": "List"
+	},
+	"custom_language, title()": {
+		"pt": "Idioma Personalizado",
+		"en": "Custom Language"
+	},
+	"select_{}_or_{}_(number_or_word), title()": {
+		"pt": "Selecione Sim Ou Não (Número Ou Palavra)",
+		"en": "Select Yes Or No (Number Or Word)"
+	},
+	"type_the_text_in_{}": {
+		"pt": "Digite o texto em {}",
+		"en": "Type the text in {}"
+	},
+	"copied_text": {
+		"pt": "Texto copiado",
+		"en": "Copied text"
+	},
+	"is_the_json_file_empty": {
+		"pt": "O arquivo JSON está vazio",
+		"en": "Is the JSON file empty"
+	},
+	"select_one_class_to_execute": {
+		"en": "Select one class to execute",
+		"pt": "Selecione uma classe para executar"
+	},
+	"select_one_thing_to_do": {
+		"en": "Select one thing to do",
+		"pt": "Selecione uma coisa para fazer"
+	},
+	"type_or_paste_the_folder_where_you_want_to_create_the_settings_file": {
+		"en": "Type or paste the folder where you want to create the settings file",
+		"pt": "Digite ou cole a pasta onde você quer criar o arquivo de configurações"
+	},
+	"string_numbers, type: format": {
+		"en": "0 1",
+		"pt": "1 0"
+	},
+	"format": {
+		"en": "format",
+		"pt": "formato"
+	},
+	"format, title()": {
+		"en": "Format",
+		"pt": "Formato"
+	},
+	"empty, title()": {
+		"en": "Empty",
+		"pt": "Vazio"
+	},
+	"empty, title(), feminine": {
+		"en": "Empty",
+		"pt": "Vazia"
+	},
+	"nothing, title()": {
+		"en": "Nothing",
+		"pt": "Nada"
+	},
+	"length, title()": {
+		"en": "Length",
+		"pt": "Comprimento"
+	},
+	"example, title()": {
+		"pt": "Exemplo",
+		"en": "Example"
+	},
+	"{}_time": {
+		"en": "{} time",
+		"pt": "{} vez"
+	},
+	"{}_times": {
+		"en": "{} times",
+		"pt": "{} vezes"
+	},
+	"duration, title()": {
+		"en": "Duration",
+		"pt": "Duração"
+	},
+	"duration_of": {
+		"en": "Duration of",
+		"pt": "Duração de"
+	},
+	"total_duration_of": {
+		"en": "Total duration of",
+		"pt": "Duração total de"
+	},
+	"duration_of_the_pause": {
+		"en": "Duration of the pause",
+		"pt": "Duração da pausa"
+	},
+	"totaling, title()": {
+		"en": "Totaling",
+		"pt": "Totalizando"
+	},
+	"along_with_the_previous_duration": {
+		"en": "along with the previous duration",
+		"pt": "junto com a duração anterior"
+	},
+	"{}_information": {
+		"pt": "Informações de {}",
+		"en": "{} information"
+	},
+	"type, title()": {
+		"en": "Type",
+		"pt": "Tipo"
+	},
+	"types, title()": {
+		"en": "Types",
+		"pt": "Tipos"
+	},
+	"select_a_type": {
+		"en": "Select a type",
+		"pt": "Selecione um tipo"
+	},
+	"type_number": {
+		"en": "Type number",
+		"pt": "Número de tipo"
+	},
+	"current_year": {
+		"en": "Current year",
+		"pt": "Ano atual"
+	},
+	"next_year": {
+		"en": "Next year",
+		"pt": "Próximo ano"
+	},
+	"third_year": {
+		"en": "Third year",
+		"pt": "Terceiro ano"
+	},
+	"firsts_of_the_year": {
+		"pt": "Primeiros do ano",
+		"en": "Firsts of the year"
+	},
+	"this_year_i": {
+		"pt": "Esse Ano Eu",
+		"en": "This Year I"
+	},
+	"this_year_i_post": {
+		"pt": "Esse Ano Eu (post)",
+		"en": "This Year I (post)"
+	},
+	"this_year_i_personal_version": {
+		"pt": "Esse Ano Eu (versão pessoal)",
+		"en": "This Year I (personal version)"
+	},
+	"next": {
+		"en": "next",
+		"pt": {
+			"masculine": "próximo",
+			"feminine": "próxima"
+		}
+	},
+	"next, title()": {
+		"en": "Next",
+		"pt": {
+			"masculine": "Próximo",
+			"feminine": "Próxima"
+		}
+	},
+	"welcome, title()": {
+		"en": "Welcome",
+		"pt": "Bem-vindo"
+	},
+	"goodbye, title()": {
+		"en": "Goodbye",
+		"pt": "Adeus"
+	},
+	"when, title()": {
+		"en": "When",
+		"pt": "Quando"
+	},
+	"entry": {
+		"en": "entry",
+		"pt": "entrada"
+	},
+	"entry, title()": {
+		"en": "Entry",
+		"pt": "Entrada"
+	},
+	"entries, title()": {
+		"en": "Entries",
+		"pt": "Entradas"
+	},
+	"entry_name": {
+		"en": "Entry name",
+		"pt": "Nome da entrada"
+	},
+	"number_of_the_entry": {
+		"en": "Number of the entry",
+		"pt": "Número da entrada"
+	},
+	"entry_time": {
+		"en": "Entry time",
+		"pt": "Tempo da entrada"
+	},
+	"entry_time_in_utc": {
+		"en": "Entry time in UTC",
+		"pt": "Tempo da entrada em UTC"
+	},
+	"original_entry_time": {
+		"en": "Original entry time",
+		"pt": "Tempo original da entrada"
+	},
+	"new_entry_time": {
+		"en": "New entry time",
+		"pt": "Novo tempo da entrada"
+	},
+	"the_file_text_is_different_than_the_updated_entry_text_the_file_will_be_updated": {
+		"en": "The file text is different than the updated entry text, the file will be updated",
+		"pt": "O texto do arquivo é diferente do texto da entrada atualizado, o arquivo vai ser atualizado"
+	},
+	"the_old_entry_time_was_wrong_and_will_be_updated": {
+		"en": "The old entry time was wrong and will be updated",
+		"pt": "O tempo da entrada estava errado e vai ser atualizado"
+	},
+	"the_entry_file_was_renamed": {
+		"en": "The entry file was renamed",
+		"pt": "O arquivo da entrada foi renomeado"
+	},
+	"the_entry_file_does_not_exist": {
+		"en": "The entry file does not exist",
+		"pt": "O arquivo da entrada não existe"
+	},
+	"updated_entry_text": {
+		"en": "Updated entry text",
+		"pt": "Texto da entrada atualizado"
+	},
+	"entry_file_in_the_firsts_of_the_year_folder_by_year": {
+		"en": "Entry file in the \"Firsts of the year\" folder by year",
+		"pt": "Arquivo da entrada na pasta \"Primeiros do ano\" por ano"
+	},
+	"number_of_the_iteration": {
+		"en": "Number of the iteration",
+		"pt": "Número da iteração"
+	},
+	"notices, title()": {
+		"pt": "Avisos",
+		"en": "Notices"
+	},
+	"title, title()": {
+		"pt": "Título",
+		"en": "Title"
+	},
+	"titles, title()": {
+		"pt": "Títulos",
+		"en": "Titles"
+	},
+	"with_the_title": {
+		"pt": "com o título",
+		"en": "with the title"
+	},
+	"id, upper()": {
+		"en": "ID",
+		"pt": "ID"
+	},
+	"ids, title()": {
+		"en": "IDs",
+		"pt": "IDs"
+	},
+	"ids_file": {
+		"en": "IDs file",
+		"pt": "Arquivo de IDs"
+	},
+	"comment": {
+		"en": "comment",
+		"pt": "comentário"
+	},
+	"comments": {
+		"en": "comments",
+		"pt": "comentários"
+	},
+	"comment, title()": {
+		"pt": "Comentário",
+		"en": "Comment"
+	},
+	"comments, title()": {
+		"pt": "Comentários",
+		"en": "Comments"
+	},
+	"commented, title()": {
+		"en": "Commented",
+		"pt": "Comentou"
+	},
+	"country, title()": {
+		"pt": "País",
+		"en": "Country"
+	},
+	"country_code": {
+		"pt": "Código do país",
+		"en": "Country code"
+	},
+	"country_name": {
+		"pt": "Nome do país",
+		"en": "Country name"
+	},
+	"state": {
+		"pt": "estado",
+		"en": "state"
+	},
+	"states, title()": {
+		"pt": "Estados",
+		"en": "States"
+	},
+	"and": {
+		"en": "and",
+		"pt": "e"
+	},
+	"and_in": {
+		"en": "and in",
+		"pt": "e em"
+	},
+	"and_others, feminine": {
+		"en": "and others",
+		"pt": "e outras"
+	},
+	"or": {
+		"en": "or",
+		"pt": "ou"
+	},
+	"iterate, title()": {
+		"en": "Iterate",
+		"pt": "Iterar"
+	},
+	"continue, title()": {
+		"en": "Continue",
+		"pt": "Continuar"
+	},
+	"art, title()": {
+		"en": "Art",
+		"pt": "Arte"
+	},
+	"programming, title()": {
+		"en": "Programming",
+		"pt": "Programação"
+	},
+	"python_module": {
+		"en": "Python module",
+		"pt": "módulo Python"
+	},
+	"python_modules": {
+		"en": "Python modules",
+		"pt": "módulos Python"
+	},
+	"of, neutral": {
+		"en": "of",
+		"pt": "de"
+	},
+	"first_{}_in_year": {
+		"en": "First {} in year",
+		"pt": "Primeiro {} no ano"
+	},
+	"first_{}_in_year, feminine": {
+		"en": "First {} in year",
+		"pt": "Primeira {} no ano"
+	},
+	"first_entry_in_year": {
+		"en": "First entry in year",
+		"pt": "Primeira entrada no ano"
+	},
+	"details, title()": {
+		"en": "Details",
+		"pt": "Detalhes"
+	},
+	"information, title()": {
+		"en": "Information",
+		"pt": "Informação"
+	},
+	"informations, title()": {
+		"en": "Information",
+		"pt": "Informações"
+	},
+	"developer, title()": {
+		"en": "Developer",
+		"pt": "Desenvolvedor"
+	},
+	"information_item": {
+		"en": "Information item",
+		"pt": "Item de informação"
+	},
+	"information_items": {
+		"en": "Information items",
+		"pt": "Itens de informação"
+	},
+	"select_the_information_item": {
+		"pt": "Selecione o item de informação",
+		"en": "Select the information item"
+	},
+	"select_one_information_item": {
+		"pt": "Selecione um item de informação",
+		"en": "Select a information item"
+	},
+	"name, title()": {
+		"en": "Name",
+		"pt": "Nome"
+	},
+	"names, title()": {
+		"en": "Names",
+		"pt": "Nomes"
+	},
+	"age, title()": {
+		"pt": "Idade",
+		"en": "Age"
+	},
+	"ages, title()": {
+		"pt": "Idades",
+		"en": "Ages"
+	},
+	"gender, title()": {
+		"pt": "Gênero",
+		"en": "Gender"
+	},
+	"genders, title()": {
+		"pt": "Gêneros",
+		"en": "Genders"
+	},
+	"sexuality, title()": {
+		"pt": "Sexualidade",
+		"en": "Sexuality"
+	},
+	"sexuality, title(), type: plural": {
+		"pt": "Sexualidades",
+		"en": "Sexualities"
+	},
+	"birthday, title()": {
+		"pt": "Aniversário",
+		"en": "Birthday"
+	},
+	"birthdays, title()": {
+		"pt": "Aniversários",
+		"en": "Birthdays"
+	},
+	"date_of_birth": {
+		"pt": "Data de nascimento",
+		"en": "Date of birth"
+	},
+	"date_of_birth, type: plural": {
+		"pt": "Datas de nascimento",
+		"en": "Dates of birth"
+	},
+	"height, title()": {
+		"pt": "Altura",
+		"en": "Height"
+	},
+	"heights, title()": {
+		"pt": "Alturas",
+		"en": "Heights"
+	},
+	"hometown, title()": {
+		"pt": "Cidade natal",
+		"en": "Hometown"
+	},
+	"hometowns, title()": {
+		"pt": "Cidades natais",
+		"en": "Hometowns"
+	},
+	"locality, title()": {
+		"pt": "Localidade",
+		"en": "Locality"
+	},
+	"united_states": {
+		"pt": "Estados Unidos",
+		"en": "United States"
+	},
+	"residence_place": {
+		"pt": "Local de residência",
+		"en": "Residence place"
+	},
+	"residence_places": {
+		"pt": "Locais de residência",
+		"en": "Residence places"
+	},
+	"hometowns, title()": {
+		"pt": "Cidades natais",
+		"en": "Hometowns"
+	},
+	"showing_user_information": {
+		"en": "Showing user information",
+		"pt": "Mostrando informações do usuário"
+	},
+	"show_user_information_method": {
+		"pt": "método \"Mostrar_Informações_Do_Usuário\"",
+		"en": "\"Show_User_Information\" method"
+	},
+	"username, title(), type: self": {
+		"en": "Username",
+		"pt": "Nome do usuário"
+	},
+	"username, title()": {
+		"en": "Username",
+		"pt": "Nome de usuário"
+	},
+	"usernames, title()": {
+		"en": "Usernames",
+		"pt": "Nomes de usuário"
+	},
+	"user_folder": {
+		"en": "User folder",
+		"pt": "Pasta do usuário"
+	},
+	"user_timezone": {
+		"en": "User timezone",
+		"pt": "Fuso horário do usuário"
+	},
+	"timezone_information": {
+		"en": "Timezone information",
+		"pt": "Informações do fuso horário"
+	},
+	"utc": {
+		"en": "UTC",
+		"pt": "UTC"
+	},
+	"difference_from_utc": {
+		"en": "Difference from UTC",
+		"pt": "Diferença em relação ao UTC"
+	},
+	"wait_until": {
+		"en": "Wait until",
+		"pt": "Espere até"
+	},
+	"profile, title()": {
+		"en": "Profile",
+		"pt": "Perfil"
+	},
+	"profiles, title()": {
+		"en": "Profiles",
+		"pt": "Perfis"
+	},
+	"profile_pictures_to_change": {
+		"en": "Profile pictures to change",
+		"pt": "Fotos de perfil para trocar"
+	},
+	"home, title()": {
+		"en": "Home",
+		"pt": "Início"
+	},
+	"originally, title()": {
+		"en": "Originally",
+		"pt": "Originalmente"
+	},
+	"id, title()": {
+		"en": "ID",
+		"pt": "ID"
+	},
+	"ids, title()": {
+		"en": "IDs",
+		"pt": "IDs"
+	},
+	"message_id": {
+		"en": "Message ID",
+		"pt": "ID de mensagem"
+	},
+	"message_ids": {
+		"en": "Message IDs",
+		"pt": "IDs de mensagem"
+	},
+	"message_link": {
+		"en": "Message link",
+		"pt": "Link de mensagem"
+	},
+	"message_links": {
+		"en": "Message links",
+		"pt": "Links de mensagem"
+	},
+	"profile_id": {
+		"en": "Profile ID",
+		"pt": "ID de perfil"
+	},
+	"profile_ids": {
+		"en": "Profile IDs",
+		"pt": "IDs de perfil"
+	},
+	"profile_link": {
+		"en": "Profile link",
+		"pt": "Link de perfil"
+	},
+	"profile_links": {
+		"en": "Profile links",
+		"pt": "Links de perfil"
+	},
+	"pronouns, title()": {
+		"en": "Pronouns",
+		"pt": "Pronomes"
+	},
+	"member_since": {
+		"en": "Member since",
+		"pt": "Membro desde"
+	},
+	"joined_on": {
+		"en": "Joined on",
+		"pt": "Inscreveu-se em"
+	},
+	"contact_name": {
+		"en": "Contact name",
+		"pt": "Nome de contato"
+	},
+	"contact_names": {
+		"en": "Contact names",
+		"pt": "Nomes de contato"
+	},
+	"handle, title()": {
+		"en": "Handle",
+		"pt": "Arroba"
+	},
+	"handles, title()": {
+		"en": "Handles",
+		"pt": "Arrobas"
+	},
+	"social_network": {
+		"en": "Social network",
+		"pt": "Rede social"
+	},
+	"social_networks": {
+		"en": "Social networks",
+		"pt": "Redes sociais"
+	},
+	"social_network_number": {
+		"en": "Social network number",
+		"pt": "Número da rede social"
+	},
+	"social_networks_texts": {
+		"en": "Social networks texts",
+		"pt": "Textos das redes socials"
+	},
+	"social_network_information": {
+		"en": "Social network information",
+		"pt": "Informações da rede social"
+	},
+	"social_networks_information": {
+		"en": "Social networks information",
+		"pt": "Informações das redes sociais"
+	},
+	"added_social_network_information": {
+		"en": "Added social network information",
+		"pt": "Informações da rede social adicionada"
+	},
+	"added_social_networks_information": {
+		"en": "Added social networks information",
+		"pt": "Informações das redes sociais adicionadas"
+	},
+	"origin_social_network": {
+		"pt": "Rede social de origem",
+		"en": "Origin social network"
+	},
+	"origin_social_networks": {
+		"pt": "Redes sociais de origem",
+		"en": "Origin social networks"
+	},
+	"post_on_the_social_networks": {
+		"pt": "Postar nas redes sociais",
+		"en": "Post on the social networks"
+	},
+	"list_of_social_networks": {
+		"pt": "Lista de redes sociais",
+		"en": "List of social networks"
+	},
+	"i_made_tweets_on_{}, type: template": {
+		"pt": "Fiz tweets no {}, postagens no {}, {} e {}, postei nos status do {}, nos stories do {} e {}, e no meu servidor do {}",
+		"en": "I made tweets on {}, posts on {}, {} and {}, posted on the {} status, on the stories of {} and {}, and on my server of {}"
+	},
+	"press_enter_when_you_finish_rendering_{}_on_photoshop": {
+		"en": "Press Enter when you finish rendering {} on Photoshop",
+		"pt": "Pressione Enter quando você terminar de renderizar {} no Photoshop"
+	},
+	"use_executable": {
+		"pt": "Usar executável",
+		"en": "Use executable"
+	},
+	"number_of_the_digital_identity": {
+		"en": "Number of the digital identity",
+		"pt": "Número da identidade digital"
+	},
+	"digital_identity": {
+		"en": "Digital identity",
+		"pt": "Identidade digital"
+	},
+	"digital_identities": {
+		"en": "Digital identities",
+		"pt": "Identidades digitais"
+	},
+	"date_i_met": {
+		"pt": "Data que eu conheci",
+		"en": "Date I met"
+	},
+	"date_i_met, type: plural": {
+		"pt": "Datas que eu conheci",
+		"en": "Dates I met"
+	},
+	"year_i_met": {
+		"pt": "Ano que eu conheci",
+		"en": "Year I met"
+	},
+	"year_i_met, type: plural": {
+		"pt": "Anos que eu conheci",
+		"en": "Years I met"
+	},
+	"image_folders": {
+		"en": "Image folders",
+		"pt": "Pastas de imagens"
+	},
+	"create_image_folders": {
+		"en": "Create image folders",
+		"pt": "Criar pastas de imagens"
+	},
+	"setting, title()": {
+		"en": "Setting",
+		"pt": "Configuração"
+	},
+	"settings, title()": {
+		"en": "Settings",
+		"pt": "Configurações"
+	},
+	"developers, title()": {
+		"en": "Developers",
+		"pt": "Desenvolvedores"
+	},
+	"publisher, title()": {
+		"en": "Publisher",
+		"pt": "Publicador"
+	},
+	"publishers, title()": {
+		"en": "Publishers",
+		"pt": "Publicadores"
+	},
+	"producer, title()": {
+		"en": "Producer",
+		"pt": "Produtor"
+	},
+	"producers, title()": {
+		"en": "Producers",
+		"pt": "Produtores"
+	},
+	"distributor, title()": {
+		"en": "Distributor",
+		"pt": "Distribuidor"
+	},
+	"distributors, title()": {
+		"en": "Distributors",
+		"pt": "Distribuidores"
+	},
+	"creator, title()": {
+		"en": "Creator",
+		"pt": "Criador"
+	},
+	"creators, title()": {
+		"en": "Creators",
+		"pt": "Criadores"
+	},
+	"company, title()": {
+		"en": "Company",
+		"pt": "Empresa"
+	},
+	"company, title(), type: plural": {
+		"en": "Companies",
+		"pt": "Empresas"
+	},
+	"release, title()": {
+		"en": "Release",
+		"pt": "Lançamento"
+	},
+	"releases, title()": {
+		"en": "Releases",
+		"pt": "Lançamentos"
+	},
+	"release_date": {
+		"en": "Release date",
+		"pt": "Data de lançamento"
+	},
+	"written_in": {
+		"en": "Written in",
+		"pt": "Escrito em"
+	},
+	"opening, title()": {
+		"en": "Opening",
+		"pt": "Abrindo"
+	},
+	"opening_the": {
+		"en": "Opening",
+		"pt": "Abrindo o"
+	},
+	"opening_this_file": {
+		"en": "Opening this file",
+		"pt": "Abrindo esse arquivo"
+	},
+	"opening_link": {
+		"en": "Opening link",
+		"pt": "Link de abertura"
+	},
+	"link_format": {
+		"en": "Link format",
+		"pt": "Formato de link"
+	},
+	"defining, title()": {
+		"en": "Defining",
+		"pt": "Definindo"
+	},
+	"engine, title()": {
+		"en": "Engine",
+		"pt": "Motor"
+	},
+	"engines, title()": {
+		"en": "Engines",
+		"pt": "Motores"
+	},
+	"system_information": {
+		"en": "System information",
+		"pt": "Informações do sistema"
+	},
+	"operating_system": {
+		"en": "Operating system",
+		"pt": "Sistema operacional"
+	},
+	"operating_systems": {
+		"en": "Operating systems",
+		"pt": "Sistemas operacionais"
+	},
+	"architecture, title()": {
+		"en": "Architecture",
+		"pt": "Arquitetura"
+	},
+	"browser, title()": {
+		"en": "Browser",
+		"pt": "Navegador"
+	},
+	"installed_browsers": {
+		"en": "Installed browsers",
+		"pt": "Navegadores instalados"
+	},
+	"director, title()": {
+		"en": "Director",
+		"pt": "Diretor"
+	},
+	"directors, title()": {
+		"en": "Directors",
+		"pt": "Diretores"
+	},
+	"completed": {
+		"en": "completed",
+		"pt": "completo"
+	},
+	"completed, title()": {
+		"pt": "Completo",
+		"en": "Completed"
+	},
+	"completed, past_perfect, title()": {
+		"pt": "Completou",
+		"en": "Completed"
+	},
+	"studio, title()": {
+		"en": "Studio",
+		"pt": "Estúdio"
+	},
+	"studios, title()": {
+		"en": "Studios",
+		"pt": "Estúdios"
+	},
+	"website, title()": {
+		"en": "Website",
+		"pt": "Site"
+	},
+	"{}_website_link": {
+		"en": "{} website link",
+		"pt": "Link do site {}"
+	},
+	"website_link": {
+		"en": "Website link",
+		"pt": "Link do site"
+	},
+	"website_image_folder": {
+		"en": "Website image folder",
+		"pt": "Pasta de imagens do site"
+	},
+	"official_website": {
+		"en": "Official website",
+		"pt": "Site oficial"
+	},
+	"php_website": {
+		"en": "PHP website",
+		"pt": "site em PHP"
+	},
+	"php_websites": {
+		"en": "PHP websites",
+		"pt": "sites em PHP"
+	},
+	"short": {
+		"en": "short",
+		"pt": "curta"
+	},
+	"shorts": {
+		"en": "shorts",
+		"pt": "curtas"
+	},
+	"special": {
+		"en": "special",
+		"pt": "especial"
+	},
+	"specials": {
+		"en": "specials",
+		"pt": "especiais"
+	},
+	"pilot": {
+		"en": "pilot",
+		"pt": "piloto"
+	},
+	"song": {
+		"en": "song",
+		"pt": "música"
+	},
+	"songs": {
+		"en": "songs",
+		"pt": "músicas"
+	},
+	"media": {
+		"en": "media",
+		"pt": "mídia"
+	},
+	"media, title()": {
+		"en": "Media",
+		"pt": "Mídia"
+	},
+	"media, title(), type: plural": {
+		"en": "Media",
+		"pt": "Mídias"
+	},
+	"watched_media": {
+		"en": "Watched media",
+		"pt": "Mídias assistidas"
+	},
+	"media_information": {
+		"en": "Media information",
+		"pt": "Informações de mídias"
+	},
+	"audiovisual_media": {
+		"en": "Audiovisual Media",
+		"pt": "Mídias Audiovisuais"
+	},
+	"media_list": {
+		"en": "Media list",
+		"pt": "Lista de mídia"
+	},
+	"media_comments": {
+		"en": "Media comments",
+		"pt": "Comentários de mídia"
+	},
+	"watch, title()": {
+		"en": "Watch",
+		"pt": "Assistir"
+	},
+	"database, title()": {
+		"en": "Database",
+		"pt": "Banco de Dados"
+	},
+	"productivity, title()": {
+		"en": "Productivity",
+		"pt": "Produtividade"
+	},
+	"other, title()": {
+		"en": "Other",
+		"pt": {
+			"masculine": "Outro",
+			"feminine": "Outra"
+		}
+	},
+	"others, title()": {
+		"en": "Others",
+		"pt": {
+			"masculine": "Outros",
+			"feminine": "Outras"
+		}
+	},
+	"rubbish, title()": {
+		"en": "Rubbish",
+		"pt": "Lixeira"
+	},
+	"and_also": {
+		"en": "and also",
+		"pt": "e também"
+	},
+	"status": {
+		"en": "status",
+		"pt": "status"
+	},
+	"status, title()": {
+		"en": "Status",
+		"pt": "Status"
+	},
+	"statuses": {
+		"en": "statuses",
+		"pt": "status"
+	},
+	"statuses, title()": {
+		"en": "Statuses",
+		"pt": "Status"
+	},
+	"christmas, title()": {
+		"en": "Christmas",
+		"pt": "Natal"
+	},
+	"christmas_date": {
+		"en": "Christmas date",
+		"pt": "Data do Natal"
+	},
+	"merry_christmas": {
+		"en": "Merry Christmas",
+		"pt": "Feliz Natal"
+	},
+	"christmas_step": {
+		"en": "Christmas step",
+		"pt": "Etapa de Natal"
+	},
+	"christmas_step_text": {
+		"en": "Christmas step text",
+		"pt": "Texto da etapa de Natal"
+	},
+	"christmas_step_action": {
+		"en": "Christmas step action",
+		"pt": "Ação da etapa de Natal"
+	},
+	"christmas_version_{}": {
+		"en": "Christmas version {}",
+		"pt": "Versão Natalina {}"
+	},
+	"new_year": {
+		"pt": "Ano Novo",
+		"en": "New Year"
+	},
+	"happy_new_year": {
+		"en": "Happy New Year",
+		"pt": "Feliz Ano Novo"
+	},
+	"created_in": {
+		"en": "Created in",
+		"pt": "Criado em"
+	},
+	"edited_in": {
+		"en": "Edited in",
+		"pt": "Editado em"
+	},
+	"summary, title()": {
+		"pt": "Resumo",
+		"en": "Summary"
+	},
+	"objects, title()": {
+		"pt": "Objetos",
+		"en": "Objects"
+	},
+	"planning, title()": {
+		"en": "Planning",
+		"pt": "Planejamento"
+	},
+	"post_planning": {
+		"en": "Post planning",
+		"pt": "Planejamento dos posts"
+	},
+	"theme, title()": {
+		"en": "Theme",
+		"pt": "Tema"
+	},
+	"video, title()": {
+		"en": "Video",
+		"pt": "Vídeo"
+	},
+	"video, by language": {
+		"en": "Video",
+		"pt": "vídeo"
+	},
+	"videos, title()": {
+		"en": "Videos",
+		"pt": "Vídeos"
+	},
+	"notepad, title()": {
+		"en": "Notepad",
+		"pt": "Bloco de notas"
+	},
+	"effort, title()": {
+		"en": "Effort",
+		"pt": "Dedicação"
+	},
+	"images, title()": {
+		"en": "Images",
+		"pt": "Imagens"
+	},
+	"pictures, title()": {
+		"en": "Pictures",
+		"pt": "Fotos"
+	},
+	"screenshots, title()": {
+		"en": "Screenshots",
+		"pt": "Prints"
+	},
+	"shortcut": {
+		"en": "shortcut",
+		"pt": "atalho"
+	},
+	"shortcut, title()": {
+		"en": "Shortcut",
+		"pt": "Atalho"
+	},
+	"shortcuts, title()": {
+		"en": "Shortcuts",
+		"pt": "Atalhos"
+	},
+	"shortcut_path": {
+		"en": "Shortcut path",
+		"pt": "Caminho do atalho"
+	},
+	"whites, title()": {
+		"en": "White",
+		"pt": "Brancos"
+	},
+	"on_hold, title()": {
+		"en": "On hold",
+		"pt": "Em pausa"
+	},
+	"origin_type": {
+		"en": "Origin type",
+		"pt": "Tipo de origem"
+	},
+	"origin_types": {
+		"en": "Origin types",
+		"pt": "Tipos de origem"
+	},
+	"origin_types, type: list": {
+		"en": [
+			"Remote",
+			"Local"
+		],
+		"pt": [
+			"Remota",
+			"Local"
+		]
+	},
+	"remote, title()": {
+		"pt": "Remota",
+		"en": "Remote"
+	},
+	"local, title()": {
+		"pt": "Local",
+		"en": "Local"
+	},
+	"romanized_title": {
+		"en": "Romanized title",
+		"pt": "Título romanizado"
+	},
+	"session_duration": {
+		"en": "Session duration",
+		"pt": "Duração da sessão"
+	},
+	"category, title()": {
+		"en": "Category",
+		"pt": "Categoria"
+	},
+	"play, title()": {
+		"en": "Play",
+		"pt": "Jogar"
+	},
+	"played, title()": {
+		"en": "Played",
+		"pt": "Jogado"
+	},
+	"alright": {
+		"pt": "Tudo bem",
+		"en": "Alright"
+	},
+	"platform, title()": {
+		"en": "Platform",
+		"pt": "Plataforma"
+	},
+	"platforms, title()": {
+		"en": "Platforms",
+		"pt": "Plataformas"
+	},
+	"resolution, title()": {
+		"en": "Resolution",
+		"pt": "Resolução"
+	},
+	"width, title()": {
+		"en": "Width",
+		"pt": "Largura"
+	},
+	"height, title()": {
+		"en": "Height",
+		"pt": "Altura"
+	},
+	"wrong, title()": {
+		"en": "Wrong",
+		"pt": {
+			"masculine": "Errado",
+			"feminine": "Errada"
+		}
+	},
+	"right, title()": {
+		"en": "Right",
+		"pt": {
+			"masculine": "Certo",
+			"feminine": "Certa"
+		}
+	},
+	"correct, title()": {
+		"en": "Correct",
+		"pt": {
+			"masculine": "Correto",
+			"feminine": "Correta"
+		}
+	},
+	"description, title()": {
+		"en": "Description",
+		"pt": "Descrição"
+	},
+	"description_in_{}": {
+		"en": "Description in {}",
+		"pt": "Descrição em {}"
+	},
+	"steam, title()": {
+		"en": "Steam",
+		"pt": "Steam"
+	},
+	"path, title()": {
+		"en": "Path",
+		"pt": "Caminho"
+	},
+	"root, title()": {
+		"en": "Root",
+		"pt": "Raiz"
+	},
+	"title_in_{}": {
+		"pt": "Título em {}",
+		"en": "Title in {}"
+	},
+	"titles_in_{}": {
+		"pt": "Títulos em {}",
+		"en": "Titles in {}"
+	},
+	"title_of_the_video_in_{}": {
+		"pt": "Título do vídeo em {}",
+		"en": "Title of the video in {}"
+	},
+	"subbed, title()": {
+		"pt": "Legendado",
+		"en": "Subbed"
+	},
+	"dubbed, title()": {
+		"pt": "Dublado",
+		"en": "Dubbed"
+	},
+	"has_dub": {
+		"en": "Has dub",
+		"pt": "Tem dublagem"
+	},
+	"dubbed_{}": {
+		"en": "dubbed {}",
+		"pt": "{} dublado"
+	},
+	"dubbing, title()": {
+		"en": "Dubbing",
+		"pt": "Dublagem"
+	},
+	"origin_location": {
+		"en": "Origin location",
+		"pt": "Local de origem"
+	},
+	"remote_origin": {
+		"pt": "Origem remota",
+		"en": "Remote origin"
+	},
+	"channel, title()": {
+		"pt": "Canal",
+		"en": "Channel"
+	},
+	"channels, title()": {
+		"pt": "Canais",
+		"en": "Channels"
+	},
+	"episode, title()": {
+		"pt": "Episódio",
+		"en": "Episode"
+	},
+	"episodes, title()": {
+		"pt": "episódios",
+		"en": "episodes"
+	},
+	"episode, by language": {
+		"pt": "episódio",
+		"en": "Episode"
+	},
+	"separator, title()": {
+		"en": "Separator",
+		"pt": "Separador"
+	},
+	"title_separator": {
+		"en": "Title separator",
+		"pt": "Separador de título"
+	},
+	"episode_separator": {
+		"en": "Episode separator",
+		"pt": "Separador de episódio"
+	},
+	"of_{}": {
+		"en": "of {}",
+		"pt": {
+			"masculine": "do {}",
+			"feminine": "da {}"
+		}
+	},
+	"of_the_{}": {
+		"pt": "da {}",
+		"en": "of the {}"
+	},
+	"congratulations": {
+		"pt": "Parabéns",
+		"en": "Congratulations"
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
+	"numbers, title()": {
+		"en": "Numbers",
+		"pt": "Números"
+	},
+	"episodic, title()": {
+		"en": "Episodic",
+		"pt": "Episódica"
+	},
+	"current_{}": {
+		"en": "Current {}",
+		"pt": "{} atual"
+	},
+	"first": {
+		"pt": {
+			"masculine": "primeiro",
+			"feminine": "primeira"
+		},
+		"en": "first"
+	},
+	"last": {
+		"pt": {
+			"masculine": "último",
+			"feminine": "última"
+		},
+		"en": "last"
+	},
+	"last, singular, masculine": {
+		"pt": "último",
+		"en": "last"
+	},
+	"last, singular, feminine": {
+		"pt": "última",
+		"en": "last"
+	},
+	"last, plural, masculine": {
+		"pt": "últimos",
+		"en": "last"
+	},
+	"last, plural, feminine": {
+		"pt": "últimas",
+		"en": "last"
+	},
+	"the_first": {
+		"pt": {
+			"masculine": "o primeiro",
+			"feminine": "a primeira"
+		},
+		"en": "the first"
+	},
+	"the_second": {
+		"pt": {
+			"masculine": "o segundo",
+			"feminine": "a segunda"
+		},
+		"en": "the second"
+	},
+	"the_last": {
+		"pt": {
+			"masculine": "o último",
+			"feminine": "a última"
+		},
+		"en": "the last"
+	},
+	"with": {
+		"en": "with",
+		"pt": "com"
+	},
+	"was": {
+		"en": "was",
+		"pt": "foi"
+	},
+	"was_not": {
+		"en": "was not",
+		"pt": "não foi"
+	},
+	"to": {
+		"en": "to",
+		"pt": "para"
+	},
+	"with_{}": {
+		"en": "with {}",
+		"pt": "com {}"
+	},
+	"with_{}_title": {
+		"en": "with {} title",
+		"pt": "com título d{}"
+	},
+	"like": {
+		"en": "like",
+		"pt": "como"
+	},
+	"format": {
+		"en": "format",
+		"pt": "formato"
+	},
+	"add_more": {
+		"en": "Add more",
+		"pt": "Adicionar mais"
+	},
+	"addition": {
+		"en": "addition",
+		"pt": "adição"
+	},
+	"additions": {
+		"en": "additions",
+		"pt": "adições"
+	},
+	"deletion": {
+		"en": "deletion",
+		"pt": "exclusão"
+	},
+	"deletions": {
+		"en": "deletions",
+		"pt": "exclusões"
+	},
+	"change": {
+		"en": "change",
+		"pt": "mudança"
+	},
+	"changes": {
+		"en": "changes",
+		"pt": "mudanças"
+	},
+	"general, title()": {
+		"en": "General",
+		"pt": "Geral"
+	},
+	"first": {
+		"en": "first",
+		"pt": "primeiro"
+	},
+	"second": {
+		"en": "second",
+		"pt": "segundo"
+	},
+	"today_is": {
+		"pt": "Hoje é",
+		"en": "Today is"
+	},
+	"type_the_time_that_you_{}": {
+		"en": "Type the time that you {}",
+		"pt": "Digite a hora em que você {}"
+	},
+	"have_gone_to_sleep": {
+		"en": "have gone to sleep",
+		"pt": "foi dormir"
+	},
+	"woke_up": {
+		"en": "woke up",
+		"pt": "acordou"
+	},
+	"wrong_format_utilize_this_one": {
+		"en": "Wrong format, utilize this one",
+		"pt": "Formato incorreto, utilize esse"
+	},
+	"text_difference": {
+		"en": "Text difference",
+		"pt": "Diferença de texto"
+	},
+	"text, title()": {
+		"en": "Text",
+		"pt": "Texto"
+	},
+	"background, title()": {
+		"en": "Background",
+		"pt": "Fundo"
+	},
+	"highlight, title()": {
+		"en": "Highlight",
+		"pt": "Destaque"
+	},
+	"line, title()": {
+		"en": "Line",
+		"pt": "Linha"
+	},
+	"playlist, title()": {
+		"en": "Playlist",
+		"pt": "Lista de reprodução"
+	},
+	"relative, title()": {
+		"pt": "Relativo",
+		"en": "Relative"
+	},
+	"exit, title()": {
+		"en": "Exit",
+		"pt": "Sair"
+	},
+	"classes, title()": {
+		"en": "Classes",
+		"pt": "Classes"
+	},
+	"author, title()": {
+		"en": "Author",
+		"pt": "Autor"
+	},
+	"authors, title()": {
+		"en": "Authors",
+		"pt": "Autores"
+	},
+	"creation_date": {
+		"en": "Creation date",
+		"pt": "Data de criação"
+	},
+	"synopsis, title()": {
+		"en": "Synopsis",
+		"pt": "Sinopse"
+	},
+	"skip, title()": {
+		"en": "Skip",
+		"pt": "Pular"
+	},
+	"skip_the": {
+		"en": "Skip the",
+		"pt": {
+			"masculine": "Pular o",
+			"feminine": "Pular a"
+		}
+	},
+	"you_skipped_the": {
+		"en": "You skipped the",
+		"pt": {
+			"masculine": "Você pulou o",
+			"feminine": "Você pulou a"
+		}
+	},
+	"join": {
+		"en": "join",
+		"pt": "juntar"
+	},
+	"story": {
+		"en": "story",
+		"pt": "história"
+	},
+	"story, title()": {
+		"en": "Story",
+		"pt": "História"
+	},
+	"stories": {
+		"en": "stories",
+		"pt": "histórias"
+	},
+	"stories, title()": {
+		"en": "Stories",
+		"pt": "Histórias"
+	},
+	"story_title": {
+		"en": "Story title",
+		"pt": "Título da história"
+	},
+	"story_title, type: generic": {
+		"en": "Story title",
+		"pt": "Título de história"
+	},
+	"story_titles": {
+		"en": "Story titles",
+		"pt": "Títulos da história"
+	},
+	"history_of_story_titles": {
+		"en": "History of story titles",
+		"pt": "Histórico de títulos da história"
+	},
+	"story_links": {
+		"en": "Story links",
+		"pt": "Links da história"
+	},
+	"story_acronym": {
+		"en": "Story acronym",
+		"pt": "Acrônimo de história"
+	},
+	"story_acronyms": {
+		"en": "Story acronyms",
+		"pt": "Acrônimos de história"
+	},
+	"story_information": {
+		"en": "Story information",
+		"pt": "Informações da história"
+	},
+	"story_covers": {
+		"en": "Story covers",
+		"pt": "Capas de histórias"
+	},
+	"in_progress": {
+		"en": "in progress",
+		"pt": "em andamento"
+	},
+	"reader, title()": {
+		"en": "Reader",
+		"pt": "Leitor"
+	},
+	"readers, title()": {
+		"en": "Readers",
+		"pt": "Leitores"
+	},
+	"read, title()": {
+		"en": "Read",
+		"pt": "Leitura"
+	},
+	"reading, title()": {
+		"en": "Reading",
+		"pt": "Leitura"
+	},
+	"reads, title()": {
+		"en": "Reads",
+		"pt": "Leituras"
+	},
+	"lore, title()": {
+		"en": "Lore",
+		"pt": "Lore"
+	},
+	"visual, title()": {
+		"en": "Visual",
+		"pt": "Visual"
+	},
+	"chapter": {
+		"en": "chapter",
+		"pt": "capítulo"
+	},
+	"chapter, title()": {
+		"en": "Chapter",
+		"pt": "Capítulo"
+	},
+	"chapters": {
+		"en": "chapters",
+		"pt": "capítulos"
+	},
+	"chapters, title()": {
+		"en": "Chapters",
+		"pt": "Capítulos"
+	},
+	"story_chapter": {
+		"en": "Story chapter",
+		"pt": "Capítulo de história"
+	},
+	"story_chapters": {
+		"en": "Story chapters",
+		"pt": "Capítulos de histórias"
+	},
+	"portrait, title()": {
+		"en": "Portrait",
+		"pt": "Retrato"
+	},
+	"landscape, title()": {
+		"en": "Landscape",
+		"pt": "Paisagem"
+	},
+	"in_{}_mode": {
+		"en": "in {} mode",
+		"pt": "em modo {}"
+	},
+	"acronym, title()": {
+		"en": "Acronym",
+		"pt": "Acrônimo"
+	},
+	"join_{}": {
+		"en": "Join {}",
+		"pt": "Juntar {}"
+	},
+	"quit, title()": {
+		"en": "Quit",
+		"pt": "Sair"
+	},
+	"writing, title()": {
+		"en": "Writing",
+		"pt": "Escrevendo"
+	},
+	"write, title()": {
+		"en": "Write",
+		"pt": "Escrever"
+	},
+	"revise, title()": {
+		"en": "Revise",
+		"pt": "Revisar"
+	},
+	"translate, title()": {
+		"en": "Translate",
+		"pt": "Traduzir"
+	},
+	"google_translate": {
+		"en": "Google Translate",
+		"pt": "Google Tradutor"
+	},
+	"space, title()": {
+		"en": "Space",
+		"pt": "Espaço"
+	},
+	"arguments, title()": {
+		"en": "Arguments",
+		"pt": "Argumentos"
+	},
+	"colors, title()": {
+		"en": "Colors",
+		"pt": "Cores"
+	},
+	"color_name": {
+		"en": "Color name",
+		"pt": "Nome da cor"
+	},
+	"code, title()": {
+		"en": "Code",
+		"pt": "Código"
+	},
+	"key, title()": {
+		"en": "Key",
+		"pt": "Chave"
+	},
+	"response, title()": {
+		"en": "Response",
+		"pt": "Resposta"
+	},
+	"drawing, title()": {
+		"en": "Drawing",
+		"pt": "Desenho"
+	},
+	"drawings, title()": {
+		"en": "Drawings",
+		"pt": "Desenhos"
+	},
+	"drawing_program": {
+		"en": "Drawing program",
+		"pt": "Programa de desenho"
+	},
+	"drawing_programs": {
+		"en": "Drawing programs",
+		"pt": "Programas de desenho"
+	},
+	"friends, title()": {
+		"en": "Friends",
+		"pt": "Amigos"
+	},
+	"for_friends": {
+		"en": "For friends",
+		"pt": "Para amigos"
+	},
+	"memories, title()": {
+		"en": "Memories",
+		"pt": "Memórias"
+	},
+	"to, title()": {
+		"en": "To",
+		"pt": "Para"
+	},
+	"eat, title()": {
+		"en": "Eat",
+		"pt": "Comer"
+	},
+	"things_done_in_the_year_of_{}": {
+		"pt": "Coisas feitas no ano de {}",
+		"en": "Things done in the year of {}"
+	},
+	"completed_tasks": {
+		"en": "Completed tasks",
+		"pt": "Tarefas concluídas"
+	},
+	"productive_things": {
+		"en": "Productive things",
+		"pt": "Coisas produtivas"
+	},
+	"games, title()": {
+		"en": "Games",
+		"pt": "Jogos"
+	},
+	"gaming_session": {
+		"en": "Gaming session",
+		"pt": "Sessão de jogatina"
+	},
+	"gaming_sessions": {
+		"en": "Gaming sessions",
+		"pt": "Sessões de jogatina"
+	},
+	"gaming_session_duration": {
+		"en": "Gaming session duration",
+		"pt": "Duração da sessão de jogatina"
+	},
+	"gaming_sessions_played": {
+		"en": "Gaming sessions played",
+		"pt": "Sessões de jogatina jogadas"
+	},
+	"game_information": {
+		"en": "Game information",
+		"pt": "Informações de jogos"
+	},
+	"mods, title()": {
+		"en": "Mods",
+		"pt": "Modificações"
+	},
+	"known_people": {
+		"en": "Known people",
+		"pt": "Pessoas conhecidas"
+	},
+	"search, title()": {
+		"en": "Search",
+		"pt": "Pesquisa"
+	},
+	"can_be_long": {
+		"en": "can be long",
+		"pt": {
+			"masculine": "pode ser longo",
+			"feminine": "pode ser longa"
+		}
+	},
+	"date, title()": {
+		"pt": "Data",
+		"en": "Date"
+	},
+	"dates, title()": {
+		"pt": "Datas",
+		"en": "Dates"
+	},
+	"writing_dates": {
+		"pt": "Datas de escrita",
+		"en": "Writing dates"
+	},
+	"operational_system": {
+		"en": "Operational System",
+		"pt": "Sistema Operacional"
+	},
+	"render, title()": {
+		"en": "Render",
+		"pt": "Renderização"
+	},
+	"covers, title()": {
+		"en": "Covers",
+		"pt": "Capas"
+	},
+	"websites, title()": {
+		"pt": "Sites",
+		"en": "Websites"
+	},
+	"year, title()": {
+		"pt": "Ano",
+		"en": "Year"
+	},
+	"years, title()": {
+		"pt": "Anos",
+		"en": "Years"
+	},
+	"console, title()": {
+		"pt": "Vídeo game",
+		"en": "Console"
+	},
+	"mobile, title()": {
+		"pt": "Celular",
+		"en": "Mobile"
+	},
+	"game_multiverse_bubble": {
+		"pt": "Bolha de Multiverso de Jogos",
+		"en": "Game Multiverse Bubble"
+	},
+	"city, title()": {
+		"en": "City",
+		"pt": "Cidade"
+	},
+	"cities, title()": {
+		"en": "Cities",
+		"pt": "Cidades"
+	},
+	"survivor, title()": {
+		"en": "Survivor",
+		"pt": "Sobrevivente"
+	},
+	"survivors, title()": {
+		"en": "Survivors",
+		"pt": "Sobreviventes"
+	},
+	"deceased, title()": {
+		"en": "Deceased",
+		"pt": "Falecidos"
+	},
+	"wikipedia, title()": {
+		"en": "Wikipedia",
+		"pt": "Wikipédia"
+	},
+	"it_is": {
+		"en": "it is",
+		"pt": "é"
+	},
+	"in": {
+		"en": "in",
+		"pt": "em"
+	},
+	"on, style: in": {
+		"en": "on",
+		"pt": "no"
+	},
+	"and_on, style: in": {
+		"en": "and on",
+		"pt": "e no"
+	},
+	"posted": {
+		"en": "posted",
+		"pt": "postado"
+	},
+	"post": {
+		"en": "post",
+		"pt": "postagem"
+	},
+	"copying_the_discord_status": {
+		"en": "Copying the Discord status",
+		"pt": "Copiando o status do Discord"
+	},
+	"my, type: both genders": {
+		"en": "My",
+		"pt": "Meu/Minha"
+	},
+	"family, title()": {
+		"en": "Family",
+		"pt": "Família"
+	},
+	"siblings, title()": {
+		"en": "Siblings",
+		"pt": "Irmãos"
+	},
+	"sibling, type: both genders": {
+		"en": "sibling",
+		"pt": "irmão/irmã"
+	},
+	"my_brother": {
+		"en": "My brother",
+		"pt": "Meu irmão"
+	},
+	"my_sister": {
+		"en": "My sister",
+		"pt": "Minha irmã"
+	},
+	"yearly_statistics": {
+		"en": "Yearly statistics",
+		"pt": "Estatísticas anuais"
+	},
+	"updated_year_statistic": {
+		"en": "Updated year statistic",
+		"pt": "Estatística de ano atualizada"
+	},
+	"updated_year_statistics": {
+		"en": "Updated year statistics",
+		"pt": "Estatísticas de ano atualizadas"
+	},
+	"updated_month_statistic": {
+		"en": "Updated month statistic",
+		"pt": "Estatística de mês atualizada"
+	},
+	"updated_month_statistics": {
+		"en": "Updated month statistics",
+		"pt": "Estatísticas de mês atualizadas"
+	},
+	"bike_rides": {
+		"en": "Bike rides",
+		"pt": "Passeios de bicicleta"
+	},
+	"times_i_drove_the_car": {
+		"en": "Times I drove the car",
+		"pt": "Vezes que dirigi o carro"
+	},
+	"showers_taken": {
+		"en": "Showers taken",
+		"pt": "Banhos tomados"
+	},
+	"times_i_washed_my_clothes": {
+		"en": "Times I washed my clothes",
+		"pt": "Vezes que lavei minhas roupas"
+	},
+	"drawings_made": {
+		"en": "Drawings made",
+		"pt": "Desenhos feitos"
+	},
+	"new_websites": {
+		"en": "New websites",
+		"pt": "Novos sites"
+	},
+	"videos_posted": {
+		"en": "Videos posted",
+		"pt": "Vídeos postados"
+	},
+	"days_that_i_worked": {
+		"en": "Days that I worked",
+		"pt": "Dias que eu trabalhei"
+	},
+	"times_i_worked_on_the_website": {
+		"en": "Times I worked on the website",
+		"pt": "Vezes que trabalhei no site"
+	},
+	"i_worked_on_{}_and_earned_{}": {
+		"en": "I worked on {} and earned {}",
+		"pt": "Trabalhei no {} e ganhei {}"
+	},
+	"money_that_i_earned": {
+		"en": "Money that I earned",
+		"pt": "Dinheiro que eu ganhei"
+	},
+	"money_text, type: format": {
+		"en": "${}",
+		"pt": "R$ {}"
+	},
+	"money_text_extended, type: format": {
+		"en": "{} dollars",
+		"pt": "{} reais"
+	},
+	"before, title()": {
+		"en": "Before",
+		"pt": "Antes"
+	},
+	"after, title()": {
+		"en": "After",
+		"pt": "Depois"
+	},
+	"visits_of": {
+		"en": "Visits of",
+		"pt": "Visitas de"
+	},
+	"visits_of, masculine": {
+		"en": "Visits of",
+		"pt": "Visitas do"
+	},
+	"visits_of, feminine": {
+		"en": "Visits of",
+		"pt": "Visitas da"
+	},
+	"in": {
+		"en": "in",
+		"pt": "em"
+	},
+	"the": {
+		"en": "the",
+		"pt": {
+			"masculine": "o",
+			"feminine": "a"
+		}
+	},
+	"genders, type: dictionary": {
+		"en": {
+			"masculine": {
+				"the": "the",
+				"the, plural": "the",
+				"these": "these",
+				"this": "this",
+				"a": "a",
+				"of": "of",
+				"of_the": "of the",
+				"part_of": "part of",
+				"or": "or",
+				"first": "first",
+				"last": "last",
+				"in": "in"
+			},
+			"feminine": {
+				"the": "the",
+				"the, plural": "the",
+				"these": "these",
+				"this": "this",
+				"a": "a",
+				"of": "of",
+				"of_the": "of the",
+				"part_of": "part of",
+				"or": "or",
+				"first": "first",
+				"last": "last",
+				"in": "in"
+			}
+		},
+		"pt": {
+			"masculine": {
+				"the": "o",
+				"the, plural": "os",
+				"these": "esses",
+				"this": "esse",
+				"a": "um",
+				"of": "do",
+				"of_the": "do",
+				"part_of": "parte do",
+				"or": "ou",
+				"first": "primeiro",
+				"last": "último",
+				"in": "em"
+			},
+			"feminine": {
+				"the": "a",
+				"the, plural": "as",
+				"these": "essas",
+				"this": "essa",
+				"a": "uma",
+				"of": "da",
+				"of_the": "da",
+				"part_of": "parte da",
+				"or": "ou",
+				"first": "primeira",
+				"last": "última",
+				"in": "em"
+			}
+		}
+	},
+	"gender_items": [
+		"the",
+		"the, plural",
+		"these",
+		"this",
+		"a",
+		"of",
+		"of_the",
+		"part_of",
+		"or",
+		"first",
+		"last",
+		"in"
+	],
+	"select_the_gender": {
+		"en": "Select the gender",
+		"pt": "Selecione o gênero"
+	},
+	"genders, type: list": {
+		"en": [
+			"Feminine",
+			"Masculine"
+		],
+		"pt": [
+			"Feminino",
+			"Masculino"
+		]
+	},
+	"sexualities, type: list": {
+		"en": [
+			"Straight",
+			"Homosexual",
+			"Bisexual",
+			"Pansexual"
+		],
+		"pt": [
+			"Heterossexual",
+			"Homossexual",
+			"Bissexual",
+			"Pansexual"
+		]
+	},
+	"convert_history": {
+		"en": "Convert history",
+		"pt": "Converter histórico"
+	},
+	"computer, title()": {
+		"en": "Computer",
+		"pt": "Computador"
+	},
+	"methods_of_the_{}_class_to_run": {
+		"en": "Methods of the \"{}\" class to run",
+		"pt": "Métodos da classe \"{}\" para executar"
+	},
+	"select_one_method_to_run": {
+		"en": "Select one method to run",
+		"pt": "Selecione um método para executar"
+	},
+	"testing_mode": {
+		"en": "testing mode",
+		"pt": "modo de testes"
+	}
+}

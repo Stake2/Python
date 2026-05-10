@@ -89,20 +89,22 @@ class Text():
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Add_Leading_Zeroes(self, number):
+		# If the number is lesser than or equal to nine
 		if int(number) <= 9:
+			# Add a zero before the number
 			number = str("0" + str(number))
 
+		# Return the number
 		return number
 
 	def Remove_Leading_Zeroes(self, number):
-		# If the number is lesser than or equal to nine
-		# And the zero number is inside the number
-		if (
-			int(number) <= 9 and
-			"0" in str(number)
-		):
-			# Remove the zero number
-			number = str(number)[1:]
+		# Convert the number to a string first
+		number = str(number)
+
+		# If the first character of the number is a zero
+		if number.startswith("0"):
+			# Remove the zero numbers from the left of the string
+			number = number.lstrip("0")
 
 		# Return the number
 		return number
@@ -205,9 +207,17 @@ class Text():
 	def Remove_Special_Characters(self, text):
 		# Define a list of special characters
 		special_characters = [
-			"-", " ", ".", ",", ";", ":", "!", "?", "'", '"', "“", "”",
-			"(", ")", "[", "]", "{", "}", "/", "&", "$", "`",
-			"´", "~", "#"
+			# Hyphen, space, period, comma, semicolon, colon, exclamation mark
+			"-", " ", ".", ",", ";", ":", "!",
+
+			# Question mark, apostrophe, quotation mark, beautiful opening and closing quotation marks, opening and closing parenthesis
+			"?", "'", '"', "“", "”", "(", ")",
+
+			# Opening and closing brackets, opening and closing braces, backslash, forward slash, ampersand
+			"[", "]", "{", "}", "\\", "/", "&",
+
+			# Money sign, backtick, acute accent, tilde, hash, unicode triangle
+			"$", "`", "´", "~", "#", "△"
 		]
 
 		 # Remove each special character from the text
@@ -235,7 +245,7 @@ class Text():
 		# Show the verbose text about the copied text
 		self.Verbose(self.Language.language_texts["copied_text"], "[" + text + "]", verbose = verbose, first_space = first_space)
 
-	def From_List(self, items, genders = [], language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False):
+	def From_List(self, items, genders = [], language = None, lower = False, next_line = True, and_text = True, or_text = False, quotes = False, prefix = ""):
 		# Define the text initially as an empty string
 		text = ""
 
@@ -307,6 +317,11 @@ class Text():
 					# If the separator is not empty, add the separator to the text first
 					if separator_text != "":
 						text += separator_text + " "
+
+			# If the "prefix" parameter is not an empty string
+			if prefix != "":
+				# Add the prefix to the item
+				item = prefix + item
 
 			# If the "lower" parameter is True, then convert the item into lowercase
 			if lower == True:

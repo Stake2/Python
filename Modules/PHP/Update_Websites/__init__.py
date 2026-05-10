@@ -496,12 +496,23 @@ class Update_Websites(PHP):
 		print()
 		print(self.separators["5"])
 
-		# Ask for user input when the pages finish loading
-		self.Input.Type(self.language_texts["press_enter_when_the_pages_finish_loading"])
+		# Define the input text to ask for user input when the pages finish loading
+		input_text = self.language_texts["press_enter_when_the_pages_finish_loading"]
+
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Ask for user input using the input text
+			self.Input.Type(input_text)
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Show the input text
+			print()
+			print(input_text + ":")
 
 	def Open_Git(self):
 		# Get the list of files on the apps "Shortcuts" folder
-		files = self.Folder.Contents(self.folders["Apps"]["Shortcuts"]["root"])["file"]["list"]
+		files = self.Folder.Contents(self.folders["Python"]["Shortcuts"]["root"])["File"]["List"]
 
 		# Iterate through the list of files
 		for file in files:
@@ -526,5 +537,16 @@ class Update_Websites(PHP):
 		print()
 		print(self.separators["5"])
 
-		# Ask for user input when the the user finish pushing the changes to Github
-		self.Input.Type(self.language_texts["press_enter_when_you_finish_pushing_the_changes_to_the_github_repository"])
+		# Define the input text to ask for user input when the the user finish pushing the changes to Github
+		input_text = self.language_texts["press_enter_when_you_finish_pushing_the_changes_to_the_github_repository"]
+
+		# If the "Testing" switch is False
+		if self.switches["Testing"] == False:
+			# Ask for user input using the input text
+			self.Input.Type(input_text)
+
+		# If the "Testing" switch is True
+		if self.switches["Testing"] == True:
+			# Show the input text
+			print()
+			print(input_text + ":")

@@ -51,7 +51,7 @@ class PHP(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -139,8 +139,8 @@ class PHP(object):
 			"URL": ""
 		}
 
-		# Create a shortcut to the website file
-		website_file = self.folders["Mega"]["Websites"]["Website"]
+		# Create a shortcut to the "Website.json" file
+		website_file = self.folders["Websites"]["Website"]
 
 		# If the websites "Website.json" file exists
 		if self.File.Exists(website_file) == True:
@@ -160,13 +160,13 @@ class PHP(object):
 		# ---------- #
 
 		# Read the "Websites.json" file to get the "Websites" dictionary
-		self.websites = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Websites"])
+		self.websites = self.JSON.To_Python(self.folders["PHP"]["JSON"]["Websites"])
 
 		# Read the "URL.json" file to get the "URL" dictionary
-		self.url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
+		self.url = self.JSON.To_Python(self.folders["PHP"]["JSON"]["URL"])
 
 		# Read the "Colors.json" file to get the "Colors" dictionary
-		self.colors = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["Colors"])
+		self.colors = self.JSON.To_Python(self.folders["PHP"]["JSON"]["Colors"])
 
 	def Define_Server(self):
 		# Define the "Server" dictionary
@@ -176,7 +176,7 @@ class PHP(object):
 			"Programs": [
 				"xampp-control",
 				"httpd",
-				"mysql"
+				"mysqld"
 			]
 		}
 
@@ -196,7 +196,7 @@ class PHP(object):
 
 		# If the separator number is not zero and not None
 		if separator_number not in [0, None]:
-			# Get the separator with the separator number
+			# Get the separator text with the separator number
 			separator = self.separators[str(separator_number)]
 
 		# If the "open" parameter is True
@@ -209,7 +209,8 @@ class PHP(object):
 			# Define the text key as "closing"
 			text_key = "closing"
 
-		# Define the correct text based on the "open" and "close" parameters
+		# Define the correct text based on the defined text key
+		# ("Opening" or "Closing" + " the server")
 		text = self.language_texts[text_key + "_the_server"]
 
 		# Add the server name to the [open/close] text
@@ -230,7 +231,7 @@ class PHP(object):
 		# If the "open" parameter is True
 		if open == True:
 			# Open the server
-			self.System.Open(self.server["Server"], verbose = False)
+			self.System.Open(self.server["Server"])
 
 			# If the "Testing" switch is False
 			if self.switches["Testing"] == False:
@@ -240,5 +241,4 @@ class PHP(object):
 		# If the "close" parameter is True
 		if close == True:
 			# Close the programs of the server
-			for program in self.server["Programs"]:
-				self.System.Close(program)
+			self.System.Close(self.server["Programs"])

@@ -69,7 +69,7 @@ class Social_Networks(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -139,7 +139,7 @@ class Social_Networks(object):
 				"root": self.folders["Notepad"]["Social networks"]["root"]
 			},
 			"Image": {
-				"root": self.folders["Image"]["Social networks"]["root"]
+				"root": self.folders["Images"]["Social networks"]["root"]
 			}
 		}
 
@@ -252,10 +252,12 @@ class Social_Networks(object):
 			"Dictionary": {}
 		}
 
-		# Read the "Social networks.json" file if it is not empty
+		# Create a shortcut to the root "Social networks.json" file
 		file = self.folders["Social networks"]["Text"]["Social networks"]
 
+		# If the "Social networks.json" file is not empty
 		if self.File.Contents(file)["Lines"] != []:
+			# Define it as the root "Social networks" dictionary
 			self.social_networks = self.JSON.To_Python(file)
 
 		# ---------- #
@@ -276,31 +278,53 @@ class Social_Networks(object):
 		# Iterate through the file names list
 		for file_name in dictionary["List"]:
 			# Create the file name dictionary
-			file_name_dictionary = {}
+			file_name_dictionary = {
+				"Singular": {},
+				"Plural": {},
+				"Key": "Singular",
+				"Extension": "txt",
+				"Language": self.language["Small"]
+			}
 
 			# Define the text key
 			text_key = file_name.lower().replace(" ", "_")
 
-			# Define the text key addon
+			# Define the addon initally as an empty string
 			addon = ""
 
+			# If the "_" (underscore) character is not inside the text key
 			if "_" not in text_key:
-				addon = ", title()"
+				# Add the ", title()" text to the addon
+				addon += ", title()"
 
 			# Iterate through list of small languages
+			# To define the singular texts of the file name in all languages
 			for language in self.languages["Small"]:
 				# Define the language file name text
-				file_name_dictionary[language] = self.Language.texts[text_key + addon][language]
+				file_name_dictionary["Singular"][language] = self.Language.texts[text_key + addon][language]
 
+			# If the "s" character is not inside the text key
 			if "s" not in text_key:
+				# Add it to make it plural
 				text_key += "s"
 
-			# Define the plural texts of the file name
-			file_name_dictionary["Plural"] = {}
-
 			# Iterate through list of small languages
+			# To define the plural texts of the file name in all languages
 			for language in self.languages["Small"]:
 				file_name_dictionary["Plural"][language] = self.Language.texts[text_key + addon][language]
+
+			# If the file name is "Information"
+			if file_name == "Information":
+				# Change the file name key to "Plural"
+				file_name_dictionary["Key"] = "Plural"
+
+			# If the file name is "Items" or "Social network"
+			if file_name in ["Items", "Social network"]:
+				# Change the file extension to "json"
+				file_name_dictionary["Extension"] = "json"
+
+				# Change the file language to "en" (English)
+				file_name_dictionary["Language"] = "en"
 
 			# Add the file name dictionary to the root "File names" dictionary
 			dictionary["Dictionary"][file_name] = file_name_dictionary
@@ -391,7 +415,7 @@ class Social_Networks(object):
 
 		self.File.Edit(self.folders["Social networks"]["Text"]["Social networks list"], text_to_write, "w")
 
-		# Get the number of social networks
+		# Get the total number of social networks
 		self.social_networks["Numbers"]["Total"] = len(self.social_networks["List"])
 
 		# Reset the numbers on the "By year" dictionary to zero
@@ -426,36 +450,24 @@ class Social_Networks(object):
 				folder = self.folders["Social networks"][item]["root"] + social_network_name + "/"
 
 				# Create the folders dictionary
-				dict_ = {
+				dictionary = {
 					"root": folder
 				}
 
-				self.Folder.Create(dict_["root"])
+				# Create the root folder
+				self.Folder.Create(dictionary["root"])
 
 				# Iterate through the friend file names
 				for key, file_name_dictionary in self.social_networks["File names"]["Dictionary"].items():
-					# Define the file name
-					file_name = file_name_dictionary
+					# Create a shortcut to the file name key and language
+					file_name_key = file_name_dictionary["Key"]
+					language = file_name_dictionary["Language"]
 
-					if key == "Information":
-						file_name = file_name["Plural"]
+					# Get the correct file name using the file name key and language
+					file_name = file_name_dictionary[file_name_key][language]
 
-					# Define the file name language
-					language = self.language["Small"]
-
-					if key in ["Items", "Social network"]:
-						language = "en"
-
-					file_name = file_name[language]
-
-					# Define the extension
-					extension = "txt"
-
-					if key in ["Items", "Social network"]:
-						extension = "json"
-
-					# Define the file
-					dict_[key] = dict_["root"] + file_name + "." + extension
+					# Define the file using the root folder, file name, and file extension
+					dictionary[key] = dictionary["root"] + file_name + "." + file_name_dictionary["Extension"]
 
 					# If the key is not "Settings" nor "Image folders"
 					# Or the key is "Image folders"
@@ -472,22 +484,22 @@ class Social_Networks(object):
 							key == "Social network"
 						):
 							# Create the file
-							self.File.Create(dict_[key])
+							self.File.Create(dictionary[key])
 
-							# Add the file to the "Files" dictionary
-							social_network["Files"][key] = dict_[key]
+							# Add the file to the root "Files" dictionary
+							social_network["Files"][key] = dictionary[key]
 
 						# Add the file to the "Files" dictionary
-						social_network["Files"][item][key] = dict_[key]
+						social_network["Files"][item][key] = dictionary[key]
 
-					# If the file is the settings file
+					# If the file is the "Settings" file
 					# And the settings file exists
 					if (
 						key == "Settings" and
-						self.File.Exists(dict_[key]) == True
+						self.File.Exists(dictionary[key]) == True
 					):
 						# Add the file to the "Files" dictionary
-						social_network["Files"][item][key] = dict_[key]
+						social_network["Files"][item][key] = dictionary[key]
 
 						# Read the settings file
 						settings = self.File.Dictionary(social_network["Files"]["Text"][key], next_line = True)
@@ -502,19 +514,18 @@ class Social_Networks(object):
 						for setting in self.texts["settings, type: list"]:
 							# Get the English and language setting texts
 							english_text = texts_dictionary[setting]["en"]
-
 							language_text = texts_dictionary[setting][self.language["Small"]]
 
-							# If the language setting is inside the Settings dictionary
+							# If the language setting is inside the local settings dictionary
 							if language_text in settings:
-								# Add the setting value to the Settings dictionary, with the English key
+								# Add the setting value to the new settings dictionary using the English text as a key
 								new_settings[english_text] = settings[language_text]
 
 						# Update the root settings dictionary
 						social_network["Settings"] = new_settings
 
-				# Define the folders dictionary as the local folders dictionary
-				social_network["Folders"][item] = dict_
+				# Define the root folders dictionary in the item key as the local folders dictionary
+				social_network["Folders"][item] = dictionary
 
 			# Add the keys of the "Text" folders dictionary to the root folders dictionary
 			social_network["Folders"].update(social_network["Folders"]["Text"])

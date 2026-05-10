@@ -52,7 +52,7 @@ class Main():
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# ---------- #
 
@@ -106,9 +106,9 @@ class Main():
 		self.Sanitize = self.File.Sanitize
 
 	def Get_Methods(self):
-		# Get the members
 		import inspect
  
+		# Get the methods
 		members = inspect.getmembers(self, predicate = inspect.ismethod)
 
 		# Define a list of methods to remove
@@ -134,26 +134,50 @@ class Main():
 		# Create the dictionary of methods
 		methods = {}
 
+		# Create the list of method names
+		method_names = []
+
 		# Iterate through the members, create their dictionaries, and add them to the methods dictionary
 		for member in members:
-			method = member[1]
+			# Define the key as the method name
+			key = member[0]
 
-			# Replace the underlines in the method name with spaces
-			key = member[0].replace("_", " ")
+			# Replace the underlines in the key with spaces and capitalize it to create the edited method name
+			method_name = key.replace("_", " ").capitalize()
+
+			# Add it to the list of method names
+			method_names.append(method_name)
+
+			# Get the method (second item in the tuple)
+			method = member[1]
 
 			# Add the method to the methods dictionary
 			methods[key] = method
 
-		# List the names
+		# List the method names
 		names = list(methods.keys())
 
-		# List the methods
-		methods = list(methods.values())
+		# Define a local selected method variable
+		selected_method = ""
 
-		# Ask the user to select a method
-		method = self.Input.Select(methods, names)["option"]
+		# If the selected method is an empty string
+		if selected_method == "":
+			# Ask the user to select a method
+			selected_method = self.Input.Select(names, language_options = method_names)["Option"]["Original"]
 
-		# Run the method
+		# Get the method using the method name
+		method = methods[selected_method]
+
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+		print()
+
+		# Show the method name
+		print("Method:")
+		print(selected_method)
+
+		# Run the selected method
 		method()
 
 	def Create_Text(self):
@@ -210,37 +234,60 @@ class Main():
 			self.Text.Copy(selected_date)
 
 	def Enumerate_Lines(self):
-		# Ask for the format text
-		format_text = self.Input.Type("Type the format text", next_line = True)
+		# Ask the user to press Enter to get the clipboard
+		self.Input.Type("Press Enter to get the clipboard")
 
-		# Replace tabs with real tabs
-		format_text = format_text.replace("\\t", "\t")
+		# Get the lines from the clipboard
+		lines = self.Text.Get_Clipboard().splitlines()
 
-		# Ask for the number of lines
-		number_of_lines = int(self.Input.Type("Type the number of lines", next_line = True))
+		# Get the number of lines
+		number_of_lines = len(lines)
 
-		# Define an empty list of lines
-		lines = []
-
-		# Define an "i" number
+		# Define the "i" number
 		i = 1
 
-		# While the "i" number is not equal to the number of lines plus one
-		while i != number_of_lines + 1:
-			# Format the format text with the "i" number
-			formatted_text = format_text.format(str(i))
+		# Define a list of new lines
+		new_lines = []
 
-			# Add the formatted text to the list of lines
-			lines.append(formatted_text)
+		# Iterate through the list of lines
+		for line in lines:
+			# Add the "i" number to the line
+			line = str(i) + ". " + line
+			
+			# Add the line to the list of new lines
+			new_lines.append(line)
 
 			# Add one to the "i" number
 			i += 1
 
-		# Convert the lines into a text
-		text = self.Text.From_List(lines, next_line = True)
+		# Convert the list of new lines into a text
+		text = self.Text.From_List(new_lines)
 
 		# Copy the text to the clipboard
-		self.Text.Copy(text, verbose = False)
+		self.Text.Copy(text)
+
+	def Test_Processes(self):
+		import psutil
+
+		# Define the local list of attributes to get
+		attributes = [
+			"pid",
+			"name",
+			"status",
+			"username",
+			"exe",
+			"cmdline",
+			"create_time",
+			"memory_info",
+			"cpu_percent",
+			"num_threads",
+			"open_files"
+		]
+
+		# Iterate through the list of processes
+		for process in psutil.process_iter(attrs = attributes):
+			# Show the process name
+			print(process.info["name"])
 
 	def Make_Dual_Audio_Of_Media(self):
 		import os
@@ -619,7 +666,7 @@ class Main():
 
 		self.Date.Sleep(1)
 
-		notepad = self.folders["root"]["program_files"]["root"] + "Notepad++/notepad++.exe"
+		notepad = self.folders["Root"]["Program Files"]["root"] + "Notepad++/notepad++.exe"
 
 		self.System.Open(notepad)
 
@@ -1066,7 +1113,11 @@ class Main():
 		}
 
 		# If the key is "Comment"
-		if key == "Comment":
+		# And the "v" parameter is inside the dictionary of URL parameters
+		if (
+			key == "Comment" and
+			"v" in url_parameters
+		):
 			# Also define the video ID
 			response["Video ID"] = url_parameters["v"][0]
 

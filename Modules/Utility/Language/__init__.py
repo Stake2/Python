@@ -811,9 +811,6 @@ class Language():
 		# Create a shortcut to a copy of the user "Language" dictionary
 		self.language = deepcopy(self.user["Language"])
 
-		# Remove the "With country" key
-		self.language.pop("With country")
-
 	def Define_Architecture_Folder(self, browser_folder, architecture = ""):
 		# If the "architecture" parameter is empty
 		if architecture == "":
@@ -1434,7 +1431,8 @@ class Language():
 
 			self.language_texts["your_" + language_type + "_is"] = self.language_texts["your_{}_is"].format(self.Item(self.texts[language_type]))
 
-		self.settings_file = self.folders["Apps"]["root"] + self.language_texts["settings"].capitalize() + ".json"
+		# Define the settings file
+		self.settings_file = self.folders["Python"]["root"] + self.language_texts["settings"].capitalize() + ".json"
 
 		if self.File_Exists(self.settings_file) == False:
 			self.Create(self.settings_file)
@@ -1486,7 +1484,7 @@ class Language():
 			}
 
 			# Define the global settings file
-			settings_file = self.folders["Apps"]["root"] + "Settings.json"
+			settings_file = self.folders["Python"]["root"] + "Settings.json"
 
 			# Create it
 			self.File_Create(settings_file)
@@ -2007,3 +2005,28 @@ class Language():
 
 		# Return the verbose text
 		return verbose_text
+
+	def Define_Folder_Name(self, folder_name, text_key = "", texts = {}):
+		# If the text key is empty
+		if text_key == "":
+			# Define the text key for the name of the folder
+			text_key = folder_name.lower().replace(" ", "_")
+			
+			# If the "_" (underscore) character is not inside the text key
+			if "_" not in text_key:
+				# Add the ", title()" text to the text key
+				text_key += ", title()"
+
+		# If the key is present inside the "language texts" dictionary of the "Language" class (this class)
+		if text_key in self.language_texts:
+			# Define the folder name variable as the text inside that text key and dictionary
+			folder_name = self.language_texts[text_key]
+
+		# If the "texts" parameter is not an empty dictionary
+		if texts != {}:
+			# Try to find the text key and folder name inside it
+			if text_key in texts:
+				folder_name = texts[text_key]
+
+		# Return the folder name
+		return folder_name

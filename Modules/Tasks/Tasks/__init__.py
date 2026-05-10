@@ -19,7 +19,7 @@ class Tasks(object):
 		# Import some usage classes
 		self.Import_Usage_Classes()
 
-		# Folders and files method
+		# Define the folders and files of the module
 		self.Define_Folders_And_Files()
 
 		# Define the "history" dictionary of the "Task History" database
@@ -59,7 +59,7 @@ class Tasks(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -734,7 +734,7 @@ class Tasks(object):
 			# "Tasks.Register()" (in the user language)
 			print()
 			print(self.Language.language_texts["class_being_executed"] + ":")
-			print("\t" + self.language_texts["Tasks.Register"])
+			print("\t" + self.language_texts["Tasks.Register"] + "()")
 
 		# ---------- #
 
@@ -849,6 +849,7 @@ class Tasks(object):
 		# Format the template with the item, making the show text
 		show_text = self.language_texts["{}_was_written_on_the_current_diary_slim, gender: " + gender].format(item)
 
+		# Show the show text and the date
 		print()
 		print(show_text + ":")
 		print("\t" + date)

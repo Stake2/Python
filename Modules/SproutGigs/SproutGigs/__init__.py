@@ -53,7 +53,7 @@ class SproutGigs():
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -118,11 +118,11 @@ class SproutGigs():
 
 	def Define_Folders_And_Files(self):
 		# Folders
-		self.categories_folder = self.module["Folders"]["Module files"]["root"] + "Categories/"
+		self.categories_folder = self.module["Folders"]["Files"]["root"] + "Categories/"
 		self.Folder.Create(self.categories_folder)
 
 		# Files
-		self.website_file = self.module["Folders"]["Module files"]["root"] + "Website.txt"
+		self.website_file = self.module["Folders"]["Files"]["root"] + "Website.txt"
 		self.File.Create(self.website_file)
 
 		self.categories_file = self.categories_folder + "Categories.txt"

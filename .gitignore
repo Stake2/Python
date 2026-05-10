@@ -1,21 +1,19 @@
 # Root folders
-Archive
+Arquivo
+Archive/
 Atalhos
-AutoHotKey
-File Syncs
-Java
-JavaScript
-Lua
 Rubbish
 
 # Root files
 desktop.ini
+.megaignore
+Sincronizar módulos.ffs_batch
 Sync.lnk
 
 # Module files
-Module Files/Code/Last Setting Data
-Module Files/SproutGigs/Categories
-Module Files/Utility/API/Services.json
+Files/SproutGigs/Categories
+Files/Utility/API/Services.json
+Files/Discord_Bot/Bot.json
 
 # Template ignores
 

@@ -293,7 +293,7 @@ class Help_With_Programming(Code):
 
 		i = 0
 		for setting_file_name in self.settings_files_data[self.File.language_texts["file_names"]]:
-			self.last_setting_data_folder = self.folders["Apps"]["Module files"][self.module["key"]]["root"] + "Last setting data/"
+			self.last_setting_data_folder = self.folders["Python"]["Files"][self.module["key"]]["root"] + "Last setting data/"
 
 			self.last_data_file = self.last_setting_data_folder + setting_file_name
 			self.File.Create(self.last_data_file)
@@ -425,8 +425,8 @@ class Help_With_Programming(Code):
 				self.language_texts["close_tool"] not in tool_data and
 				self.switches["Testing"] == False
 			):
-				for program in programs_to_close:
-					self.System.Close(program)
+				# Close the programs to close
+				self.System.Close(programs_to_close)
 
 			if mode == "open" and self.switches["Testing"] == False:
 				Open(tool_path)

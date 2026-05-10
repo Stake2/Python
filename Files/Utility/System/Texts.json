@@ -1,0 +1,29 @@
+{
+	"opening_this_{}": {
+		"en": "Opening this {}",
+		"pt": {
+			"masculine": "Abrindo esse {}",
+			"feminine": "Abrindo essa {}"
+		}
+	},
+	"opening_this_link": {
+		"en": "Opening this link",
+		"pt": "Abrindo esse link"
+	},
+	"using_this_browser": {
+		"en": "Using this browser",
+		"pt": "Usando esse navegador"
+	},
+	"closing_this_program": {
+		"en": "Closing this program",
+		"pt": "Fechando esse programa"
+	},
+	"closing_these_programs": {
+		"en": "Closing these programs",
+		"pt": "Fechando esses programas"
+	},
+	"shortcut, title()": {
+		"en": "Shortcut",
+		"pt": "Atalho"
+	}
+}

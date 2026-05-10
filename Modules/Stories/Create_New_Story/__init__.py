@@ -116,7 +116,7 @@ class Create_New_Story(Stories):
 
 				# Define the exclude list
 				exclude_list = [
-					"Status",
+					"Writing status",
 					"Synopsis",
 					"Author"
 				]

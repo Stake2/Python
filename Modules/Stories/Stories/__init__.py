@@ -67,7 +67,7 @@ class Stories(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -276,7 +276,7 @@ class Stories(object):
 		# Define the root "Stories" dictionary with its "Folders" dictionary
 		self.stories = {
 			"Folders": {
-				"root": self.folders["Mega"]["Stories"]["root"]
+				"root": self.folders["Stories"]["root"]
 			}
 		}
 
@@ -506,7 +506,11 @@ class Stories(object):
 			"Music players": {
 				"Foobar2000": {
 					"Name": "Foobar2000",
-					"Link": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"]
+					"Link": self.folders["Program Files (x86)"]["Foobar2000"]["Foobar2000"],
+					"Commands": {
+						"Switch to playlist": '/run_main:View/Switch to playlist/{}',
+						"Play first track of playlist": '/run_main:File/Scheduler/Play track number one'
+					}
 				}
 			}
 		}
@@ -629,8 +633,18 @@ class Stories(object):
 
 			# Iterate through list of small languages
 			for language in self.languages["Small"]:
-				# Get the information text for the current language using the text key and addon
-				text = self.Language.texts[text_key + addon][language]
+				# Define a new text key which is the text key plus the addon
+				new_text_key = text_key + addon
+
+				# If the new text key is inside the texts dictionary of the "Language" utility class
+				if new_text_key in self.Language.texts:
+					# Define the information item text as the text inside that dictionary and in the current language
+					text = self.Language.texts[text_key + addon][language]
+
+				# If the new text key is inside the texts dictionary of this class (Stories)
+				if new_text_key in self.texts:
+					# Define the information item text as the text inside that dictionary and in the current language
+					text = self.texts[text_key + addon][language]
 
 				# Define the language information item inside the "Texts" dictionary
 				information_item["Texts"][language] = text
@@ -653,7 +667,7 @@ class Stories(object):
 				information_item["Format"] = dictionary["Formats"][key]
 
 			# Define the "Select_" + [Information item] text as the method name
-			method_name = "Select_" + key.capitalize().replace(" ", "_")
+			method_name = "Select_" + key.title().replace(" ", "_")
 
 			# If the method is present inside the root (self) class
 			if hasattr(self, method_name) == True:
@@ -933,8 +947,35 @@ class Stories(object):
 						if key not in story["Information"][story_website_name]:
 							story["Information"][story_website_name][key] = {}
 
-						# Add the story ID to the additional link
-						additional_link = additional_link + story_id
+						# Define a dictionary of format strings to search for and their values
+						format_strings = {
+							# Get the story title in the current language, make it lowercase, and replace spaces with hyphens
+							"Story title": story["Titles"][small_language].lower().replace(" ", "-"),
+
+							# The story ID in the story website
+							"Story ID": story_id
+						}
+
+						# Define a local "found format string" switch initially as False
+						found_format_string = False
+
+						# Iterate through the keys and values inside the format strings dictionary
+						for format_string, value in format_strings.items():
+							# Add brackets around the format string
+							format_string = "{" + format_string + "}"
+
+							# If it is found inside the additional link
+							if format_string in additional_link:
+								# Replace the format string with the actual value
+								additional_link = additional_link.replace(format_string, value)
+
+								# Switch the "found format string" switch to True
+								found_format_string = True
+
+						# If no format string is present in the additional link
+						if found_format_string == False:
+							# Add the story ID to the additional link
+							additional_link = additional_link + story_id
 
 						# Add the additional link to its language dictionary
 						story["Information"][story_website_name][key][small_language] = additional_link
@@ -1321,7 +1362,7 @@ class Stories(object):
 
 			# Define the story covers folder inside the "Websites" images folder
 			story["Folders"]["Covers"]["Websites"] = {
-				"root": self.folders["Mega"]["Websites"]["Images"]["root"] + story_title + "/"
+				"root": self.folders["Websites"]["Images"]["root"] + story_title + "/"
 			}
 
 			# Create the folder
@@ -1636,15 +1677,12 @@ class Stories(object):
 
 			# Change the order of the keys inside the "Information" dictionary to a better order
 
-			# Define the empty copy dictionary
-			copy = {}
-
-			# Define the list and order of the keys
+			# Define a local list of keys to import and their order
 			keys = [
 				"Titles",
 				"Chapters",
 				"Creation date",
-				"Status",
+				"Writing status",
 				"Synopsis",
 				"Author",
 				"Authors",
@@ -1654,10 +1692,15 @@ class Stories(object):
 				"Links"
 			]
 
-			# Iterate through the list of keys
+			# Define an empty copy dictionary
+			copy = {}
+
+			# Define a local key number
 			key_number = 0
+
+			# Iterate through the local list of keys
 			for key in keys:
-				# Copy the value of the key
+				# Copy the value of the key from the root story "Information" dictionary
 				copy[key] = story["Information"][key]
 
 				# Remove it from the "Information" dictionary
@@ -1671,31 +1714,32 @@ class Stories(object):
 				# If the key is the first one
 				if key == keys[0]:
 					# Define the after key as "Author" (the default first key)
-					# And the number to add as zero, to add the key before the "Author" key
 					after_key = "Author"
+
+					# Define the number to add as zero, to add the key before the "Author" key
 					number_to_add = 0
 
 				# If the key is not the first one
 				if key != keys[0]:
-					# Define the key as the key that existed before
+					# Define the after key as the key that existed before
 					after_key = keys[key_number - 1]
 
-					# And the number to add as one, to add the key after the key above
+					# Define the number to add as one, to add the key after the key above
 					number_to_add = 1
 
-				# Add the key to the "Information" dictionary on the correct position
+				# Add the key to the story "Information" dictionary on the correct position
 				story["Information"] = self.JSON.Add_Key_After_Key(story["Information"], key_value, after_key = after_key, number_to_add = number_to_add)
 
-				# Add one to the key number
+				# Add one to the local key number
 				key_number += 1
 
-			# Add the "Title" key to the top of the dictionary
+			# Add the story "Title" key to the top of the dictionary
 			story["Information"] = {
 				"Title": story["Title"],
 				**story["Information"]
 			}
 
-			# Define a list of keys to remove from the "Information" dictionary
+			# Define a list of keys to remove from the "Information" dictionary if they exist
 			keys_to_remove = [
 				"Story titles",
 				"History of story titles",
@@ -2132,6 +2176,15 @@ class Stories(object):
 				# Define the default dictionary as the month dictionary
 				dictionary = self.diary_slim["Current year"]["Month"]
 
+			# If the statistic key is not inside the "Statistics" dictionary
+			if statistic_key not in dictionary["Statistics"]:
+				# Add it
+				dictionary["Statistics"][statistic_key] = {
+					"Module": statistics["Module"],
+					"Total": 0,
+					"Dictionary": {}
+				}
+
 			# Get the year statistics for the "Stories" module
 			statistics[key] = dictionary["Statistics"][statistic_key]
 
@@ -2176,41 +2229,64 @@ class Stories(object):
 		# And return the statistics text
 		return self.Diary_Slim.Update_External_Statistics(statistic_key, statistics)
 
-	def Select_Status(self):
-		# Define the parameters dictionary for the "Select" method of the "Input" class
+	def Select_Writing_Status(self):
+		# Define the parameters dictionary for the "Select" method of the "Input" utility class
 		parameters = {
-			"options": self.texts["status, type: list"]["en"],
-			"language_options": self.language_texts["status, type: list"],
+			# The list of writing statuses
+			"options": self.texts["writing_status, type: list"]["en"],
+
+			# The list of language writing statuses
+			"language_options": self.language_texts["writing_status, type: list"],
+
+			# The show and select texts
 			"show_text": self.language_texts["writing_statuses"],
 			"select_text": self.language_texts["select_a_writing_status"]
 		}
 
+		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
-			# Ask the user to select a status from the list
-			option = self.Input.Select(**parameters)
+			# Ask the user to select a writing status from the list
+			selection = self.Input.Select(**parameters)
 
+		# If the "Testing" switch is True
 		if self.switches["Testing"] == True:
-			option = {
-				"number": 0,
-				"option": self.texts["write, type: dictionary"]["Infinitive action"]["en"],
-				"language_option": self.language_texts["write, type: dictionary"]["Infinitive action"]
+			# Define the selection dictionary
+			selection = {
+				# Define the number as "0"
+				"Number": 0,
+
+				# Define the option as "Writing"
+				"Option": {
+					# Define the "Original" option as "Writing"
+					"Original": "Writing",
+
+					# Define the "Language" option as "Writing" (action) in the user language
+					"Language": self.language_texts["write, type: dictionary"]["Action"]
+				}
 			}
 
+			# Show the language writing status
 			print()
 			print(self.language_texts["writing_status"] + ":")
-			print(option["language_option"])
+			print(selection["Option"]["Language"])
 
-		# Create the "Status" dictionary
-		status = {
-			"Number": option["number"],
+		# Create the local writing status dictionary
+		writing_status = {
+			# Add the number
+			"Number": selection["Number"],
+
+			# Create the "Names" dictionary
 			"Names": {
-				"en": option["option"],
-				self.language["Small"]: option["language_option"]
+				# The English (original) option
+				"en": selection["Option"]["Original"],
+
+				# The user language (language) option
+				self.language["Small"]: selection["Option"]["Language"]
 			}
 		}
 
-		# Return the "Status" dictionary
-		return status
+		# Return the local writing status dictionary
+		return writing_status
 
 	def Select_Author(self):
 		# Define a local list of authors with the first root author
@@ -2375,19 +2451,35 @@ class Stories(object):
 
 		# ---------- #
 
+		# If the "Entry" dictionary is inside the task dictionary
+		if "Entry" in task_dictionary:
+			# Define the local time variable as a copy of the "Time" key
+			time = deepcopy(task_dictionary["Entry"]["Time"])
+
+			# Remove the "Time" key
+			task_dictionary["Entry"].pop("Time")
+
+			# Create the "Times" dictionary
+			task_dictionary["Entry"]["Times"] = {}
+
 		# If the "Entry" dictionary is not inside the task dictionary
 		if "Entry" not in task_dictionary:
-			# Create it
+			# Define the local time variable as now
+			time = self.Date.Now()
+
+			# Create the "Entry" dictionary with the "Times" dictionary
 			task_dictionary["Entry"] = {
 				"Times": {}
 			}
 
-			# Define the completed task time in the "Times" dictionary
-			time_key = "Completed task"
-			task_dictionary["Entry"]["Times"][time_key] = self.Date.Now()
+		# Define the time key as "Completed task"
+		time_key = "Completed task"
 
-			# Define the completed task time in the UTC time zone
-			task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = task_dictionary["Entry"]["Times"][time_key]
+		# Add the completed task time to the "Times" dictionary in the time key
+		task_dictionary["Entry"]["Times"][time_key] = time
+
+		# Define the completed task time in the UTC time zone and in the UTC time key
+		task_dictionary["Entry"]["Times"][time_key + " (UTC)"] = task_dictionary["Entry"]["Times"][time_key]
 
 		# ---------- #
 
@@ -2414,6 +2506,11 @@ class Stories(object):
 				# Show the "This text was written to the current Diary Slim" text
 				"Show text": True
 			}
+
+			# If the "Add" dictionary is inside the task dictionary
+			if "Add" in task_dictionary:
+				# Add it to the local dictionary
+				dictionary["Add"] = task_dictionary["Add"]
 
 			# Write the task text on Diary Slim using the "Write_On_Diary_Slim_Module" sub-class of the "Diary_Slim" class
 			self.Diary_Slim.Write_On_Diary_Slim(dictionary)
@@ -2724,7 +2821,7 @@ class Stories(object):
 
 						# Iterate through them
 						for format_string, value in format_strings.items():
-							# Add curly brackets around the format string
+							# Add brackets around the format string
 							format_string = "{" + format_string + "}"
 
 							# If it is found, replace with the actual value

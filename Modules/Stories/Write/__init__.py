@@ -498,8 +498,8 @@ class Write(Stories):
 		# Define the show text as the writing mode in the action verb tense
 		show_text = self.writing["Writing mode"]["Language texts"]["Action"].title()
 
-		# Add the " this chapter" text
-		show_text += " " + self.language_texts["this_chapter"]
+		# Add the " this chapter of the story" text
+		show_text += " " + self.language_texts["this_chapter_of_the_story"]
 
 		# Show the text with the writing text in the action tense
 		print(show_text + ":")
@@ -510,7 +510,7 @@ class Write(Stories):
 			if self.writing["Writing mode"]["Text addon"] != {}:
 				chapter_title += " (" + self.writing["Writing mode"]["Text addon"][small_language] + ")"
 
-			# Show the chapter title in the current language
+			# Show the current chapter title
 			print("\t" + chapter_title)
 
 		# ---------- #
@@ -561,7 +561,7 @@ class Write(Stories):
 			# Get the lines of the chapter file in the current language
 			lines = self.File.Contents(chapter_file)["Lines"]
 
-			# ---------- #
+			# ---------- #	
 
 			# If the selected writing mode is "Translate"
 			# And if the current language dictionary matches the "Destiny language" dictionary
@@ -569,7 +569,7 @@ class Write(Stories):
 			# And if the user has just started writing this chapter
 			if (
 				self.writing_mode == "Translate" and
-				small_language == self.chapter["Destiny language"] and
+				language == self.chapter["Destiny language"] and
 				self.states["Ongoing writing session"] == False
 			):
 				# Create a shortcut to the origin language
@@ -628,6 +628,15 @@ class Write(Stories):
 
 				# If the key is "Translate"
 				if key == "Translate":
+					# Get the user language translated into the current small language
+					translated_user_language = self.language["Translated"][small_language]
+
+					# Add the translated user language to the list of items
+					# (The "Translate" chapter date text template includes an additional "{}" format string to insert the user language (the origin language))
+					items.insert(0, translated_user_language)
+
+					# ----- #
+
 					# Get the English language dictionary
 					english_language = self.languages["Dictionary"]["en"]
 
@@ -635,8 +644,8 @@ class Write(Stories):
 					translated_english_language = english_language["Translated"][small_language]
 
 					# Add the translated English language to the list of items
-					# (The "Translate" chapter date text template includes an additional "{}" format string to insert the "Destiny language")
-					items.insert(0, translated_english_language)
+					# (The "Translate" chapter date text template includes an additional "{}" format string to insert the "Destiny language" (English))
+					items.insert(1, translated_english_language)
 
 				# ---------- #
 
@@ -772,7 +781,7 @@ class Write(Stories):
 		# ----- #
 
 		# Get the PHP websites "URL" dictionary
-		url = self.JSON.To_Python(self.folders["Mega"]["PHP"]["JSON"]["URL"])
+		url = self.JSON.To_Python(self.folders["PHP"]["JSON"]["URL"])
 
 		# Get the "Code" URL template with language and define it as the local template
 		template = url["Code"]["Templates"]["With language"]
@@ -879,15 +888,62 @@ class Write(Stories):
 
 		# ---------- #
 
+		# Define the music player
+		self.Define_Music_Player()
+
+		# Control the music player to open it and switch to the playlist of the story soundtrack
+		self.Control_Music_Player("Open and switch to playlist")
+
+	def Define_Music_Player(self):
+		# Define a shortcut to the music player dictionary
+		music_player = self.stories["Writing"]["Music player"]
+
+		# Iterate through the list of command keys and commands of the music player
+		for key, command in music_player["Commands"].items():
+			# If the "{}" format string is inside the command
+			if "{}" in command:
+				# Format the command with the story title in the user language
+				command = command.format(self.story["Titles"][self.language["Small"]])
+
+			# Update the root command
+			music_player["Commands"][key] = command
+
+	def Control_Music_Player(self, action):
+		# Define a shortcut to the music player dictionary
+		music_player = self.stories["Writing"]["Music player"]
+
+		# Define the "verbose" switch a True by default
+		verbose = True
+
+		# Define the empty list of commands
+		commands = []
+
+		# If the action is "Open and switch to playlist"
+		if action == "Open and switch to playlist":
+			# Add the "Switch to playlist" command to the local list of commands
+			commands.append(music_player["Commands"]["Switch to playlist"])
+
+			# Define text key as the one from the text about opening the music player for the user to listen to the soundtrack of the story
+			text_key = "opening_the_music_player_called_{}_for_you_to_listen_to_the_soundtrack_of_the_story"
+
+		# If the action is "Play first track of playlist"
+		if action == "Play first track of playlist":
+			# Add the "Play first track of playlist" command to the local list of commands
+			commands.append(music_player["Commands"]["Play first track of playlist"])
+
+			# Switch the "verbose" switch to False
+			verbose = False
+
+			# Define text key as the one from the text about playing the soundtrack of the story on the music player
+			text_key = "playing_the_soundtrack_of_the_story_on_the_music_player_called_{}"
+
 		# Show a three space separator
 		print()
 		print(self.separators["3"])
 		print()
 
-		# ---------- #
-
-		# Create a shortcut to the text template about opening the music player for the user to listen to the soundtrack of the story
-		text_template = self.language_texts["opening_the_{}_music_player_for_you_to_listen_to_the_soundtrack_of_the_story"]
+		# Get the text template using the text key
+		text_template = self.language_texts[text_key]
 
 		# Format the text template with the name of the music player
 		text = text_template.format(self.stories["Writing"]["Music player"]["Name"])
@@ -896,7 +952,8 @@ class Write(Stories):
 		print(text + "...")
 
 		# Open the music player program so the user can listen to the soundtrack of the story
-		self.System.Open(self.stories["Writing"]["Music player"]["Link"])
+		# And pass the "commands" parameter as the local list of commands
+		self.System.Open(music_player["Link"], commands = commands, verbose = verbose)
 
 		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:
@@ -1058,6 +1115,15 @@ class Write(Stories):
 
 		# ---------- #
 
+		# Control the music player to start playing the first track of the story soundtrack playlist
+		self.Control_Music_Player("Play first track of playlist")
+
+		# Show a three space separator
+		print()
+		print(self.separators["3"])
+
+		# ---------- #
+
 		# Make a backup of the before writing time
 		self.Make_Backup_Of_Duration("Create", "Before")
 
@@ -1115,6 +1181,7 @@ class Write(Stories):
 
 		# Ask the user to press Enter when they stop writing
 		# (Not when the user finishes writing the whole chapter, but when they write for a while and want to continue writing later)
+		# Infinitive action: [writing/revising/translating]
 		type_text = self.language_texts["press_enter_when_you_stop"] + " " + self.writing["Writing mode"]["Language texts"]["Infinitive action"]
 
 		self.Input.Type(type_text)
@@ -1288,6 +1355,7 @@ class Write(Stories):
 		type_text = self.language_texts["did_you_finished_{}_the_whole_chapter"]
 
 		# Format the text with the infinitive action of the writing mode
+		# Infinitive action: [writing/revising/translating]
 		type_text = type_text.format(self.writing["Writing mode"]["Language texts"]["Infinitive action"])
 
 		# If the writing session has not been postponed
@@ -1296,7 +1364,7 @@ class Write(Stories):
 			self.states["Finished writing"] = self.Input.Yes_Or_No(type_text)
 
 		# Close the server
-		self.Manage_Server(close = True, show_text = False)
+		self.Manage_Server(close = True, separator_number = 3)
 
 		# ---------- #
 
@@ -1322,10 +1390,6 @@ class Write(Stories):
 			self.states["Finished writing"] == False and
 			self.states["Postpone writing session"] == False
 		):
-			# Show a five dash space separator
-			print()
-			print(self.separators["5"])
-
 			# Register the writing task only on Diary Slim
 			self.Register_Task(register_task = False)
 
@@ -1369,6 +1433,7 @@ class Write(Stories):
 			after_time_text = self.language_texts["time_after_{}_for_a_while"]
 
 			# Format the text with the infinitive action of the writing mode
+			# Infinitive action: [writing/revising/translating]
 			after_time_text = after_time_text.format(self.writing["Writing mode"]["Language texts"]["Infinitive action"])
 
 			# Create a shortcut to the after writing date dictionary
@@ -1521,6 +1586,7 @@ class Write(Stories):
 				after_time_text = self.language_texts["time_after_{}_for_a_while"]
 
 				# Format the text with the infinitive action of the writing mode
+				# Infinitive action: [writing/revising/translating]
 				after_time_text = after_time_text.format(self.writing["Writing mode"]["Language texts"]["Infinitive action"])
 
 				# Add the " (testing mode)" text to the after time text
@@ -1625,6 +1691,9 @@ class Write(Stories):
 		# Reset the writing mode "Writing" dictionary to its default version
 		self.Update_Writing_Duration(purge = True)
 
+		# Show information about the chapter the user finished writing
+		self.Show_Information()
+
 	def Update_Chapter(self):
 		# If the writing mode is "Revise"
 		if self.writing_mode == "Revise":
@@ -1643,9 +1712,17 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
+		# If the writing mode is "Write"
+		# Or the writing mode is "Revise"
+		# And the "Update chapter titles" state is True
+		if (
+			self.writing_mode == "Write" or
+			self.writing_mode == "Revise" and
+			self.states["Update chapter titles"] == True
+		):
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
@@ -1833,8 +1910,22 @@ class Write(Stories):
 		# Update the "Titles" key
 		chapter["Titles"] = self.chapter["Titles"]["Normal"]
 
-		# Get the root chapter dictionary
+		# Create a shortcut to the root chapter dictionary
 		root_chapter = self.chapter["Dictionary"]
+
+		# Define a local dictionary to map the writing modes to their dictionary keys
+		writing_modes = {
+			"Write": "Writing",
+			"Revise": "Revisions",
+			"Translate": "Translations"
+		}
+
+		# Iterate through the local writing modes and their dictionary keys
+		for local_writing_mode, key in writing_modes.items():
+			# If the current root writing mode is not the local writing mode
+			if self.writing_mode != local_writing_mode:
+				# Import the writing mode dictionary from the root chapter dictionary
+				chapter[key] = root_chapter[key]
 
 		# If the "Posting" dictionary of the root chapter dictionary is not the same as the local one
 		if chapter["Posting"] != root_chapter["Posting"]:
@@ -1883,15 +1974,12 @@ class Write(Stories):
 
 		# If the writing mode is either "Revise" or "Translate"
 		if self.writing_mode in ["Revise", "Translate"]:
-			# Import the "Writing" dictionary from the root chapter dictionary
-			chapter["Writing"] = root_chapter["Writing"]
-
 			# If the root writings dictionary is not empty
 			if root_chapter[chapter_dictionary_key]["List"] != []:
 				# Update the local dictionary with the root one
 				chapter[chapter_dictionary_key] = root_chapter[chapter_dictionary_key]
 
-			# Get the writings dictionary for the writing mode
+			# Create a shortcut to the writings dictionary for the writing mode
 			writings_dictionary = chapter[chapter_dictionary_key]
 
 			# Add the finished writing time to the "List" of the writings dictionary
@@ -2087,10 +2175,16 @@ class Write(Stories):
 			"Done plural": self.writing["Writing mode"]["Texts"]["Done plural"][self.language["Small"]]
 		}
 
+		# Run the root "Diary_Slim" class to define its variables
+		self.Diary_Slim = self.Diary_Slim()
+
 		# Update the story statistics for the current year and month, passing the story titles and writing mode dictionary
 		self.writing["Statistics text"] = Stories.Update_Statistics(self, story_titles, writing_mode)
 
 	def Update_Writing_Duration(self, purge = False):
+		# Create a backup of the total duration
+		self.writing["Total duration backup"] = deepcopy(self.writing["Writing"]["Total duration"])
+
 		# If the "purge" parameter is False
 		if purge == False:
 			# Create a shortcut to the started writing time
@@ -2101,7 +2195,7 @@ class Write(Stories):
 				# Convert it into a date dictionary with the timezone format
 				started_writing_time = self.Date.From_String(started_writing_time, format = "%H:%M %d/%m/%Y")
 
-			# Define the added time variable as an empty dictionary
+			# Define the added time as an empty dictionary
 			added_time = {}
 
 			# ---------- #
@@ -2145,16 +2239,16 @@ class Write(Stories):
 			# Define the relative delta method with the time to add
 			relative_delta = self.Date.Relativedelta(**add)
 
-			# Define the time to add as the started writing time
-			time_to_add = deepcopy(started_writing_time)
+			# Define the time to add to as the started writing time
+			time_to_add_to = deepcopy(started_writing_time)
 
 			# If the added time is not an empty dictionary
 			if added_time != {}:
-				# Define the time to add as the already defined added time
-				time_to_add = added_time
+				# Define the time to add to as the already defined added time
+				time_to_add_to = added_time
 
 			# Add the relative delta to the time to add object to create the added time
-			added_time = self.Date.Now(time_to_add["Object"] + relative_delta)
+			added_time = self.Date.Now(time_to_add_to["Object"] + relative_delta)
 
 			# Calculate the difference between the started writing time and the added time
 			difference = self.Date.Difference(started_writing_time, added_time)
@@ -2164,9 +2258,14 @@ class Write(Stories):
 
 			# Define the "Total duration" dictionary with the time unit and duration text
 			self.writing["Writing"]["Total duration"] = {
-				"Units": time_units, # Import the time units dictionary into the "Units"
-				"Text": difference["Text"], # Add the duration text
-				"Text (with time units)": difference["Text (with time units)"] # Add the duration text with time units
+				# Define the "Units" key as the time units dictionary
+				"Units": time_units,
+
+				# Add the duration text
+				"Text": difference["Text"],
+
+				# Add the duration text with time units
+				"Text (with time units)": difference["Text (with time units)"]
 			}
 
 		# ---------- #
@@ -2234,9 +2333,6 @@ class Write(Stories):
 
 			# Show the local "Writing" dictionary
 			self.JSON.Show(writing_copy)
-
-			# Copy it
-			self.JSON.Copy(writing_copy)
 
 		# Update the "Writing.json" file with the local updated "Writing" dictionary
 		self.JSON.Edit(self.story["Folders"]["Information"]["Writing"], writing_copy)
@@ -2320,8 +2416,14 @@ class Write(Stories):
 				"Titles": {},
 				"Descriptions": {},
 				"Custom task item": self.writing["Writing mode"]["Texts"]["Chapter"]
+			},
+			# Define the entry "Time" as the after writing time
+			"Entry": {
+				"Time": self.writing["Session"]["After"]
 			}
 		}
+
+		# ---------- #
 
 		# If the "Statistics text" key is present inside the root dictionary
 		if "Statistics text" in self.writing:
@@ -2358,9 +2460,6 @@ class Write(Stories):
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
-			# Get the user language translated to the current language
-			translated_user_language = self.language["Translated"][small_language]
-
 			# Create the dictionary for the "Create_Task_Title" method with the language and the text template
 			dictionary = {
 				"Small language": small_language,
@@ -2556,16 +2655,16 @@ class Write(Stories):
 				# Get the list of durations
 				durations = list(self.writing["Writing"]["Durations"]["Dictionary"].values())
 
-				# Get the penultimate duration
-				penultimate_duration = durations[-2]
-
 				# If the list has at least two durations
 				if len(durations) >= 2:
-					# Add the "along with the previous duration" text in the current language to the task description
-					task_description += " " + self.Language.texts["along_with_the_previous_duration"][small_language] + " "
+					# Create the previous total duration text start with "along with the previous total duration" text in the current language
+					previous_total_duration_text = " " + self.Language.texts["along_with_the_previous_duration"][small_language] + " "
 
-					# Add its text to the task description text
-					task_description += "(" + penultimate_duration["Text"][small_language] + ")"
+					# Add the previous total duration text in the current language with quotes around it
+					previous_total_duration_text += "(" + self.writing["Total duration backup"]["Text"][small_language] + ")"
+
+					# Add the previous total duration text to the task description text
+					task_description += previous_total_duration_text
 
 				# Add the end period to the task description
 				task_description += "."
@@ -2577,3 +2676,66 @@ class Write(Stories):
 
 		# Register the task with the root "Register_Task" method
 		Stories.Register_Task(self, self.task_dictionary, register_task = register_task)
+
+	def Show_Information(self):
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
+		# Show the "Class being executed" and the name of the module and class
+		# So the user is sure that this is the Stories module, not another one (for example, the "Tasks" module)
+		# "Stories.Write()" (in the user language)
+		print()
+		print(self.Language.language_texts["class_being_executed"] + ":")
+		print("\t" + self.language_texts["Stories.Write"] + "()")
+
+		# Show the "Congratulations!" text in the user language
+		print()
+		print(self.Language.language_texts["congratulations"] + "!")
+
+		# Define the text template to be:
+		# 'You finished [writing] this chapter of your story "[story title]"'
+		text_template = self.language_texts["you_finished_{}_this_chapter_of_your_story_{}"]
+
+		# Define the list of items to use to format the text template
+		items = [
+			# The infinitive action of the writing mode
+			# Infinitive action: [writing/revising/translating]
+			self.writing["Writing mode"]["Language texts"]["Infinitive action"],
+
+			# The story title in the user language
+			self.story["Titles"][self.language["Small"]]
+		]
+
+		# Format the text template with the list of items to create the information text
+		text = text_template.format(*items)
+
+		# Show the formatted "finished writing chapter" text with a colon
+		print()
+		print(text + ":")
+
+		# Show the chapter titles with a tab
+		for chapter_title in self.chapter["Titles"]["With number"].values():
+			# Show the current chapter title
+			print("\t" + chapter_title)
+
+		# Define the text template to be:
+		# 'You finished [writing] it on [time]'
+		text_template = self.language_texts["you_finished_{}_it_on_{}"]
+
+		# Define the list of items to use to format the text template
+		items = [
+			# The infinitive action of the writing mode
+			# Infinitive action: [writing/revising/translating]
+			self.writing["Writing mode"]["Language texts"]["Infinitive action"],
+
+			# The finished writing time in the "[Day] [Month Name] [Year] at [Hour] [Minute]" format
+			self.writing["Session"]["After"]["Timezone"]["DateTime"]["Formats"]["[Day] [Month Name] [Year] at [Hour] [Minute]"][self.language["Small"]]
+		]
+
+		# Format the text template with the list of items to create the information text
+		text = text_template.format(*items)
+
+		# Show the formatted "finished writing chapter on [time]" text with an end dot
+		print()
+		print(text + ".")

@@ -393,7 +393,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 					# Iterate through the text keys inside the list of keys
 					for text_key in question["Genders"]["Keys"]:
-						# Get the text from the text key and add curly brackets
+						# Get the language text using the text key and add brackets around it
 						text = "{" + self.Language.language_texts[text_key] + "}"
 
 						# If the item text is not inside the key
@@ -473,6 +473,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 			"Has questions": has_questions
 		}
 
+		# Return it
 		return return_dictionary
 
 	def Define_Input_Text(self, question):
@@ -896,7 +897,13 @@ class Write_On_Diary_Slim(Diary_Slim):
 						statistic_text = self.Language.language_texts[local_text_key]
 
 					# If the question has a response
-					if "Response" in question:
+					# And the question dictionary has the "Type" key
+					# And the question type is not "Number"
+					if (
+						"Response" in question and
+						"Type" in question and
+						question["Type"] != "Number"
+					):
 						# Define the statistic text to be the response
 						statistic_text = question["Response"]
 

@@ -61,12 +61,22 @@ class Register(Tasks):
 
 		# If the parameter dictionary is not empty
 		if dictionary_parameter != {}:
-			# Iterate through the defined list of keys
-			for key in ["Type", "Task", "Entry"]:
+			# Define a list of keys to import
+			to_import = [
+				"Type",
+				"Task",
+				"Entry",
+				"Additional text"
+			]
+
+			# Iterate through the list of keys to import
+			for key in to_import:
 				# If the key exists inside the parameter dictionary
 				if key in dictionary_parameter:
-					# Update the root key with the value inside the parameter dictionary
+					# Import the key to the root dictionary
 					self.dictionary[key] = dictionary_parameter[key]
+
+			# ----- #
 
 			# Define the "Used as module" state as True
 			self.states["Used as module"] = True
@@ -158,19 +168,19 @@ class Register(Tasks):
 		options = self.tasks["Types"]["Lists"]["Plural"]["en"]
 		language_options = self.tasks["Types"]["Lists"]["Plural"][self.language["Small"]]
 
-		# Define the "t" variable for task type number
-		type_number = 0
+		# Define a local task type number
+		task_type_number = 0
 
 		# Iterate through the keys inside the task "Types" dictionary
 		for task_type in self.tasks["Types"]["Dictionary"].values():
 			# If the "Module-only" key is inside the task type dictionary
 			if "Module-only" in task_type:
 				# Remove the task type from the lists above
-				options.pop(type_number)
-				language_options.pop(type_number)
+				options.pop(task_type_number)
+				language_options.pop(task_type_number)
 
-			# Add to the "type number" number
-			type_number += 1
+			# Add one to the local task type number
+			task_type_number += 1
 
 		# Define the show and select texts
 		show_text = self.language_texts["task_types"]
@@ -210,7 +220,7 @@ class Register(Tasks):
 			# "Tasks.Register()" (in the user language)
 			print()
 			print(self.Language.language_texts["class_being_executed"] + ":")
-			print("\t" + self.language_texts["Tasks.Register"])
+			print("\t" + self.language_texts["Tasks.Register"] + "()")
 
 			# Show the task type
 			print()
@@ -382,7 +392,7 @@ class Register(Tasks):
 					# Define the task title
 					task_title = self.dictionary["Task"]["Titles"][language]
 
-					# If the format character "{}" is present in the task title in the current language
+					# If the format string "{}" is present in the task title in the current language
 					if "{}" in task_title:
 						# Format the task title
 						task_title = task_title.format(response)
@@ -423,7 +433,7 @@ class Register(Tasks):
 				# Get the user language version of the input text
 				input_text = input_text[self.language["Small"]]
 
-			# If the format character is inside the input text
+			# If the format string is inside the input text
 			if "{}" in input_text:
 				# Define the item as the singular version of the task type name in the user language
 				item = self.dictionary["Type"]["Names"]["Singular"][self.language["Small"]]
@@ -456,9 +466,27 @@ class Register(Tasks):
 		print()
 		print(self.separators["5"])
 
-		# Show the explanation text about opening the task description files for the user to type on them
+		# Define the default text key
+		text_key = "opening_the_task_description_files_for_you_to_type_on_them, type: explanation, version: "
+
+		# Define the default number text as "plural"
+		number_text = "plural"
+
+		# If the "Register task" state is False
+		if self.states["Register task"] == False:
+			# Change the number text to be "singular"
+			# (When the task is not registered, but its progress is, there is only one file to write to: the file in the user language)
+			number_text = "singular"
+
+		# Add the number text to the text key
+		text_key += number_text
+
+		# Define the show text as the text in the text key
+		show_text = self.language_texts[text_key]
+
+		# Show the explanation text about opening the task description file(s) for the user to type on [it/them], based on the number of files
 		print()
-		print(self.language_texts["opening_the_task_description_files_for_you_to_type_on_them, type: explanation"])
+		print(show_text)
 
 		# ---------- #
 
@@ -818,25 +846,16 @@ class Register(Tasks):
 		# Task number by task type:
 		# [Task number by task type]
 		# 
+		# Task type:
+		# [Task type]
+		# 
+		# Entry:
+		# [Number. Type (Time)]
+		# 
 		# Task titles:
 		# [Portuguese title]
 		# [English title]
 		# 
-		# Task type:
-		# [Task type]
-		# 
-		# When I completed the task:
-		# [Completed task time in the local timezone]
-		# 
-		# When I completed the task (UTC):
-		# [Completed task time in the UTC time]
-		# 
-		# Entry:
-		# [Number. Type (Time)]
-		# (
-		# States:
-		# [Task states]
-		# )
 		# Task descriptions:
 		# 
 		# Português:
@@ -846,6 +865,17 @@ class Register(Tasks):
 		# 
 		# English:
 		# [English task description]
+		# 
+		# When I completed the task:
+		# [Completed task time in the local timezone]
+		# 
+		# When I completed the task (UTC):
+		# [Completed task time in the UTC time]
+		# 
+		# (
+		# States:
+		# [Task states]
+		# )
 
 		# Define the task folder, file name, and file by task type
 		by_task_type_folder = self.tasks["Folders"]["Task History"]["Current year"]["By task type"][self.task_type]["Files"]["root"]
@@ -885,33 +915,66 @@ class Register(Tasks):
 		# ---------- #
 
 		# Define the list of lines for the task text
-		# Starting with the total number of tasks and the task number by task type
 		lines = [
+			# Add the task number
 			self.texts["task_number"][language] + ":" + "\n" + str(self.dictionaries["Tasks"]["Numbers"]["Total"]) + "\n",
-			self.texts["task_number_by_task_type"][language] + ":" + "\n" + str(self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"])
+
+			# Add the task number by task type
+			self.texts["task_number_by_task_type"][language] + ":" + "\n" + str(self.dictionaries["Task type"][self.task_type]["Numbers"]["Total"]) + "\n",
+
+			# Add the task type
+			self.texts["task_type"][language] + ":" + "\n" + self.dictionary["Type"]["Names"]["Plural"][language] + "\n",
+
+			# Add the entry text and the entry name
+			self.Language.texts["entry, title()"][language] + ":" + "\n" + self.task["Name"]["en"]["Normal"] + "\n"
 		]
 
 		# ---------- #
 
-		# Define the "Title(s)" text based on the language (singular or plural)
+		# Define the "Task title(s)" text based on the language (singular or plural)
 		if language_parameter != "General":
+			# Define the "Task title" text as the singular one
 			text = self.texts["task_title"][language]
 
 		else:
+			# Define the "Task title" text as the plural one
 			text = self.texts["task_titles"][language]
 
-		# Add that text to the list of lines with a format character
-		lines.append("\n" + text + ":" + "\n" + "{}")
+		# Add that text to the list of lines with a format string
+		lines.append(text + ":" + "\n" + "{}")
 
 		# ---------- #
 
-		# Add the task type to the list of lines
-		lines.append(self.texts["task_type"][language] + ":" + "\n" + self.dictionary["Type"]["Names"]["Plural"][language] + "\n")
+		# If the language parameter is not "General"
+		if language_parameter != "General":
+			# Define the "Task description" text as the singular one
+			text = self.texts["task_description"][language]
+
+			# Define the line break as one
+			line_break = "\n"
+
+		# If the language parameter is "General"
+		else:
+			# Define the "Task description" text as the plural one
+			text = self.texts["task_descriptions"][language]
+
+			# Define the line break as two
+			line_break = "\n\n"
+
+		# Create a shortcut to the English task title and English task description
+		english_title = self.dictionary["Task"]["Titles"]["en"]
+		english_description = self.dictionary["Task"]["Descriptions"]["en"]
+
+		# If the task title is not the same as the task description
+		if english_title != english_description:
+			# Add the "Task description" text and the line break(s) with a format string
+			# (This is used to not add the task description when it is the same as the task title, as there is no task description in that case)
+			lines.append(text + ":" + line_break + "{}")
 
 		# ---------- #
 
 		# Add the "When I completed the task" (local timezone) title and format string
-		completed_task_timezone_text = self.texts["when_i_completed_the_task"][language] + ":" + "\n" + "{}"
+		completed_task_timezone_text = "\n" + self.texts["when_i_completed_the_task"][language] + ":" + "\n" + "{}"
 		lines.append(completed_task_timezone_text)
 
 		# Add the "When I completed the task (UTC)" title and format string
@@ -920,46 +983,29 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Add the entry text and the entry name
-		lines.append(self.Language.texts["entry, title()"][language] + ":" + "\n" + self.task["Name"]["en"]["Normal"])
-
-		# ---------- #
-
-		# Add the state texts if there are states
+		# If there are state texts to be added
 		if self.dictionary["States"]["Texts"] != {}:
-			# Define the text variable
+			# Define the text as "States:" and line breaks
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
-			# Add the state texts
-			for key in self.dictionary["States"]["Texts"]:
+			# Get the list of state keys
+			keys = list(self.dictionary["States"]["Texts"].keys())
+
+			# Iterate through the list of state keys
+			for key in keys:
+				# Get the text for the current state in the local language
 				language_text = self.dictionary["States"]["Texts"][key][language]
 
+				# Add the current state text to the local text
 				text += language_text
 
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+				# If the state is not the last one
+				if key != keys[-1]:
+					# Add a line break to the local text
 					text += "\n"
 
-			# Add the text to the list of lines
+			# Append the constructed state text to the list of lines
 			lines.append(text)
-
-		# ---------- #
-
-		# If the language parameter is not "General"
-		if language_parameter != "General":
-			# Define the task description text as the singular one
-			text = self.texts["task_description"][language]
-			line_break = "\n"
-
-		# If the language parameter is "General"
-		else:
-			# Define the task description text as the plural one
-			text = self.texts["task_descriptions"][language]
-			line_break = "\n\n"
-
-		# If the description of the task is not the same as the task title
-		if self.dictionary["Task"]["Titles"]["en"] != self.dictionary["Task"]["Descriptions"]["en"]:
-			# Add the task description text and the line break(s) with a format character
-			lines.append("\n" + text + ":" + line_break + "{}")
 
 		# ---------- #
 
@@ -968,88 +1014,94 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Add the task titles to the list of itens
-		titles = ""
+		# Define a local empty string to store the task titles
+		task_titles = ""
 
-		# Define the "Title(s)" text based on the language (singular or plural)
+		# Define the list of task titles based on the language (singular or plural)
 		if language_parameter != "General":
-			titles = self.task["Titles"][language] + "\n"
+			# Singular (only user language)
+			task_titles = self.task["Titles"][language] + "\n"
 
 		else:
+			# Plural (all languages)
 			for language in self.languages["Small"]:
-				titles += self.task["Titles"][language] + "\n"
+				task_titles += self.task["Titles"][language] + "\n"
 
 		# Add the task titles to the list of items
-		items.append(titles)
+		items.append(task_titles)
 
 		# ---------- #
 
-		# Iterate over the relevant keys to obtain the times
-		for time_key in ["Completed task", "Completed task (UTC)"]:
-			# Check if the key exists
-			if time_key in self.dictionary["Entry"]["Times"]:
-				# Define the timezone key as "Timezone"
-				timezone_key = "Timezone"
-
-				# Define the format as the timezone one
-				format = "HH:MM DD/MM/YYYY"
-
-				# If the "UTC" text is inside the time key
-				if "UTC" in time_key:
-					# Update the timezone key to be the UTC one
-					timezone_key = "UTC"
-
-					# Define the format as the UTC one
-					format = "YYYY-MM-DDTHH:MM:SSZ"
-
-				# Retrieve the formatted datetime string from the "Times" dictionary,
-				# using the specified time key (e.g., "Completed task"), timezone key (e.g., "UTC"),
-				# and format (e.g., "YYYY-MM-DDTHH:MM:SSZ")
-				time = self.dictionary["Entry"]["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
-
-				# Append the times to the items list
-				items.append(time + "\n")
-
-		# ---------- #
-
-		# Define an empty string to add the descriptions to
-		descriptions = ""
+		# Define a local empty string to store the task descriptions
+		task_descriptions = ""
 
 		# Define the task description to be added based on the language
-		# Only the description for the current language
 		if language_parameter != "General":
-			descriptions = self.task["Descriptions"][language]
-
-		# Or all language descriptions
+			# Only the task description in the user language
+			task_descriptions = self.task["Descriptions"][language]
+		
 		else:
+			# The task descriptions in all languages
+
 			# Iterate through the language keys and dictionaries
 			for small_language, local_language in self.languages["Dictionary"].items():
 				# Create a shortcut to the full language
 				full_language = local_language["Full"]
 
-				# Add the full language and the language description to the root descriptions text
-				descriptions += full_language + ":" + "\n" + self.task["Descriptions"][small_language]
+				# Add the full language and the language task description to the root task descriptions text
+				task_descriptions += full_language + ":" + "\n" + self.task["Descriptions"][small_language]
 
 				# If the local language is not the last language in the list
 				if small_language != self.languages["Small"][-1]:
-					descriptions += "\n\n"
-
-		# Create a shortcut to the English title and English description
-		english_title = self.dictionary["Task"]["Titles"]["en"]
-		english_description = self.dictionary["Task"]["Descriptions"]["en"]
+					# Add two line breaks to the root task descriptions text
+					task_descriptions += "\n\n"
 
 		# If the task title is not the same as the task description
 		if english_title != english_description:
-			# Add the descriptions to the list of items
-			items.append(descriptions)
+			# Add the task descriptions to the list of items
+			# (This is used to not add the task description when it is the same as the task title, as there is no task description in that case)
+			items.append(task_descriptions)
+
+		# ---------- #
+
+		# Iterate through the list of time keys
+		for time_key in ["Completed task", "Completed task (UTC)"]:
+			# If the key exists inside the entry "Times" dictionary
+			if time_key in self.dictionary["Entry"]["Times"]:
+				# Define the timezone key as "Timezone"
+				timezone_key = "Timezone"
+
+				# Define the format as the timezone one (Hours:Minutes Day/Month/Year)
+				format = "HH:MM DD/MM/YYYY"
+
+				# If the "UTC" key is inside the time key
+				if "UTC" in time_key:
+					# Update the timezone key to be the UTC one
+					timezone_key = "UTC"
+
+					# Update the format to be the UTC one
+					format = "YYYY-MM-DDTHH:MM:SSZ"
+
+				# Get the formatted datetime string from the "Times" dictionary using the current time key and the defined timezone key and format
+				task_time = self.dictionary["Entry"]["Times"][time_key][timezone_key]["DateTime"]["Formats"][format]
+
+				# Add the task time to the list of items
+				items.append(task_time + "\n")
 
 		# ---------- #
 
 		# Transform the list of lines into a text with the next line
 		file_text = self.Text.From_List(lines)
 
-		# Return the file text template formatted with the list of items
-		return file_text.format(*items)
+		# Format the file text template with the list of items
+		file_text = file_text.format(*items)
+
+		# Remove the last space if it is present
+		if file_text[-1] == "\n":
+			file_text = file_text[:-1]
+
+		# Return the file text
+		return file_text
 
 	def Add_Entry_File_To_Year_Folder(self):
 		# Iterate through the list of small languages

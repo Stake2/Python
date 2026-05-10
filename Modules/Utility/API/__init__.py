@@ -83,10 +83,10 @@ class API():
 
 	def Define_API(self):
 		# Define and create the "Services.json" file
-		self.module["Files"]["Services"] = self.module["Folders"]["Module files"]["root"] + "Services.json"
+		self.module["Files"]["Services"] = self.module["Folders"]["Files"]["root"] + "Services.json"
 		self.File.Create(self.module["Files"]["Services"])
 
-		# Create a root API dictionary
+		# Create the root API dictionary
 		self.api = {
 			"Services": {},
 			"Service": {}
@@ -180,15 +180,15 @@ class API():
 			# Convert the credentials to JSON
 			service_copy["Credentials"] = self.JSON.To_Python(service_copy["Credentials"].to_json())
 
-			# If the "App flow" key is present in the dictionary
+			# If the "App flow" key is present in the copy dictionary
 			if "App flow" in service_copy:
 				# Remove the "App flow" key
 				service_copy.pop("App flow")
 
-			# Remove the "Request" key
+			# Remove the "Request" key from the copy dictionary
 			service_copy.pop("Request")
 
-			# Update the service dictionary inside the services "Dictionary"
+			# Update the root service dictionary inside the services "Dictionary" using the copy of the dictionary
 			self.api["Services"]["Dictionary"][service["Name"]] = service_copy
 
 			# Save the credentials for the next run by editing the "Services.json" file
@@ -239,7 +239,7 @@ class API():
 			# Define it as the mapped "Item" key
 			request["Method"] = request["Item"]["Mapped"]
 
-		# If the submethod is not present inside the request dictionary
+		# If the "Submethod" key is not present inside the request dictionary
 		if "Submethod" not in request:
 			# Define it as "List"
 			request["Submethod"] = "List"

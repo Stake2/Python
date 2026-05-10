@@ -48,28 +48,23 @@ class Register(GamePlayer):
 		# Ask the user if it wants to write a description for the gaming session
 		self.Ask_For_Gaming_Session_Description()
 
-		# Define the "test things" switch as [the value I am using if I am testing the class]
-		test_stuff = False
+		# Register the gaming session inside the "Play History" database in the JSON format
+		self.Register_In_JSON()
 
-		# If the switch is False
-		if test_stuff == False:
-			# Save the entry to the database in the JSON format
-			self.Register_In_JSON()
+		# Create the entry file for the gaming session
+		self.Create_Entry_File()
 
-			# Create the individual entry file for the played game
-			self.Create_Entry_File()
+		# Create the entry files inside their corresponding year folders
+		self.Add_Entry_File_To_Year_Folder()
 
-			# Create the entry files inside their corresponding year folders
-			self.Add_Entry_File_To_Year_Folder()
+		# Create the Diary Slim text for the gaming session
+		self.Define_Diary_Slim_Text()
 
-			# Diary Slim related methods
-			self.Define_Diary_Slim_Text()
+		# Post about the gaming session on the social networks
+		self.Post_On_The_Social_Networks()
 
-			# Post the gaming session on the social networks
-			self.Post_On_Social_Networks()
-
-			# Write the information about the session on Diary Slim
-			self.Write_On_Diary_Slim()
+		# Write the information about the gaming session on Diary Slim
+		self.Write_On_Diary_Slim()
 
 		# Update the statistic about the gaming session played
 		self.Update_Statistic()
@@ -731,30 +726,29 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Add the state texts lines if there are any state texts defined
+		# If there are state texts to be added
 		if self.dictionary["States"]["Texts"] != {}:
-			# Initialize the text for the states section
+			# Define the text as "States:" and line breaks
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
-			# Iterate through each state text in the dictionary
-			for key in self.dictionary["States"]["Texts"]:
-				# Get the text for the current state in the specified language
+			# Get the list of state keys
+			keys = list(self.dictionary["States"]["Texts"].keys())
+
+			# Iterate through the list of state keys
+			for key in keys:
+				# Get the text for the current state in the local language
 				language_text = self.dictionary["States"]["Texts"][key][language]
 
-				# Append the current state text to the overall text
+				# Add the current state text to the local text
 				text += language_text
 
-				# Add a newline if this is not the last state text
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+				# If the state is not the last one
+				if key != keys[-1]:
+					# Add a line break to the local text
 					text += "\n"
 
 			# Append the constructed state text to the list of lines
 			lines.append(text)
-
-		# ---------- #
-
-		# Define the language entry text by converting the list of lines to a single text block
-		file_text = self.Text.From_List(lines)
 
 		# ---------- #
 
@@ -854,6 +848,9 @@ class Register(GamePlayer):
 			items.append(descriptions)
 
 		# ---------- #
+
+		# Define the language entry text by converting the list of lines to a single text block
+		file_text = self.Text.From_List(lines)
 
 		# Return the formatted text with the items, including the times
 		return file_text.format(*items)
@@ -1066,7 +1063,7 @@ class Register(GamePlayer):
 		# If there are states, add the texts to the Diary Slim text
 		if self.dictionary["States"]["States"] != {}:
 			# Define the local states text initially as two line breaks and the "States:" text, followed by another like break
-			states_text += "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
+			states_text = "\n\n" + self.Language.language_texts["states, title()"] + ":" + "\n"
 
 			# Create a shortcut to the state "Texts" dictionary
 			texts =	self.dictionary["States"]["Texts"]
@@ -1148,11 +1145,40 @@ class Register(GamePlayer):
 			# Add the Diary Slim time
 			diary_slim_text += self.dictionary["Entry"]["Diary Slim"]["Text"]
 
-			# Remove the memory date text
+			# Show the full local Diary Slim text
+			print()
+			print(diary_slim_text)
+			print()
+			print(self.separators["5"])
+
+			# Define the text to use to ask the to press Enter when they finish rendering the game cover on Photoshop
+			input_text = self.Language.language_texts["press_enter_when_you_finish_rendering_{}_on_photoshop"]
+
+			# Format it with the game cover text
+			input_text = input_text.format(social_networks["Item text"])
+
+			# If the "Testing" switch is False
+			if self.switches["Testing"] == False:
+				# Ask for the user input using the defined input text
+				self.Input.Type(input_text)
+
+			# If the "Testing" switch is True
+			if self.switches["Testing"] == True:
+				# Show the text
+				print()
+				print(input_text + ":")
+
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# Remove the memory date text from the local Diary Slim text
 			diary_slim_text = diary_slim_text.replace("\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
 
-			# Remove the states text
-			diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["States text"], "")
+			# If the "States text" key is inside the "Diary Slim" dictionary
+			if "States text" in self.dictionary["Entry"]["Diary Slim"]:
+				# Remove the states text
+				diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["States text"], "")
 
 			# Copy the local Diary Slim text
 			self.Text.Copy(diary_slim_text)
@@ -1172,7 +1198,13 @@ class Register(GamePlayer):
 					"Discord"
 				],
 				"Do not open": [
-					"Instagram"
+					"Twitter",
+					"Bluesky",
+					"Threads",
+					"Facebook",
+					"WhatsApp",
+					"Instagram",
+					"Discord"
 				],
 				"Custom links": {
 					# Define the custom link for Discord as the "#play-history" channel on my Discord server
@@ -1182,7 +1214,7 @@ class Register(GamePlayer):
 			}
 
 			# Define the input text to be about when the user finishes posting the status and the cover of the played game on the current social network
-			social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_posting_the_status_and_the_cover_of_the_played_game_on_{social_network}"]
+			social_networks["Input text"] = self.language_texts["press_enter_when_you_finish_posting_the_status_and_the_cover, type: long"]
 
 			# Open the links of the social networks one by one for the user to post about the watched media on the social networks
 			self.Social_Networks.Open_Social_Network(social_networks)

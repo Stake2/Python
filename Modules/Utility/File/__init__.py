@@ -126,15 +126,34 @@ class File():
 		# Return the path
 		return path
 
-	def Name(self, file):
+	def Split_Text(self, file):
 		# Sanitize the file
 		file = self.Sanitize(file)
 
+		# Split it
+		text = os.path.splitext(os.path.basename(file))
+
+		# Return the text
+		return text
+
+	def Name(self, file):
 		# Get the file name
-		file_name = os.path.splitext(os.path.basename(file))[0]
+		file_name = self.Split_Text(file)[0]
 
 		# Return it
 		return file_name
+
+	def Extension(self, file, remove_dot = False):
+		# Get the file extension with the dot
+		file_extension = self.Split_Text(file)[1]
+
+		# If the "remove dot" parameter is True
+		if remove_dot == True:
+			# Remove the dot
+			file_extension = file_extension[1:]
+
+		# Return the file extension
+		return file_extension
 
 	def Folder(self, file):
 		# Sanitize the file

@@ -72,7 +72,7 @@ class Years(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -184,7 +184,7 @@ class Years(object):
 					"root": self.folders["Notepad"]["Years"]["root"]
 				},
 				"Image": {
-					"root": self.folders["Image"]["Years"]["root"]
+					"root": self.folders["Images"]["Years"]["root"]
 				}
 			}
 		}
@@ -474,7 +474,8 @@ class Years(object):
 			keys = [
 				"Memories",
 				"Created in",
-				"Edited in"
+				"Edited in",
+				"Year"
 			]
 
 			# Add the keys above to the end of the year files "Text" dictionary
@@ -491,6 +492,22 @@ class Years(object):
 			if "Text" in year["Files"]:
 				# Add the keys of the "Text" files dictionary to the root year "Files" dictionary
 				year["Files"].update(year["Files"]["Text"])
+
+			# ---------- #
+
+			# Create a copy of the local year dictionary
+			year_copy = deepcopy(year)
+
+			# Remove the "Folders" dictionary
+			year_copy.pop("Folders")
+
+			# Remove the "Text" key of the "Files" dictionary inside the year dictionary
+			year_copy["Files"].pop("Text")
+
+			# Write the copy of the local year dictionary to the "Year.json" file
+			self.JSON.Edit(year["Files"]["Year"], year_copy)
+
+			# ---------- #
 
 			# Add the local year dictionary to the root years "Dictionary"
 			self.years["Dictionary"][year_number] = year
@@ -636,7 +653,11 @@ class Years(object):
 					],
 					"Files": [
 						"Created in",
-						"Edited in"
+						"Edited in",
+						"Year"
+					],
+					"JSON": [
+						"Year"
 					]
 				},
 				"Language": {
@@ -650,15 +671,17 @@ class Years(object):
 						"Welcome",
 						"Summary",
 						"This Year I",
-						"This Year I (post)",
 						"This Year I (personal version)",
+						"This Year I (post)",
 						"Goodbye",
 						"Yearly statistics",
-						"FutureMe"
+						"Letter to my future self"
 					],
 					"User language files": [
+						"This Year I (personal version)",
+						"This Year I (post)",
 						"Yearly statistics",
-						"FutureMe"
+						"Letter to my future self"
 					]
 				},
 				"Christmas": {
@@ -831,6 +854,11 @@ class Years(object):
 				# Define the text as the item name
 				text = item_name
 
+				# If the text key is inside the language texts dictionary of the "Years" class (this class)
+				if text_key in self.texts:
+					# Define the text as the text inside that dictionary and in the current language key
+					text = self.texts[text_key][language]
+
 				# If the text key is inside the language texts dictionary of the "Language" utility class
 				if text_key in self.Language.texts:
 					# Define the text as the text inside that dictionary and in the current language key
@@ -893,10 +921,19 @@ class Years(object):
 		# Define the local folder items dictionary as the "Root" folder item dictionary
 		folder_item_dictionary = self.years["Folder items"]["Dictionary"]["Root"]
 
-		# Iterate through the item type keys and dictionaries inside the "Root" folder item dictionary
+		# List the item types
+		item_types = list(folder_item_dictionary.keys())
+
+		# Remove the "JSON" item type
+		item_types.remove("JSON")
+
+		# Iterate through the list of item types inside the "Root" folder item dictionary
 		# 
 		# Item types: [Folders, Files]
-		for item_type, item_type_dicitionary in folder_item_dictionary.items():
+		for item_type in item_types:
+			# Get the item type dictionary
+			item_type_dicitionary = folder_item_dictionary[item_type]
+
 			# Iterate through the item names and dictionaries inside the item type dictionary
 			# 
 			# Item names (folders): [Christmas, Summary, New Year, Language]
@@ -917,6 +954,21 @@ class Years(object):
 					# Define the language item name as the item name in the current language
 					language_item_name = item_dictionary["Name"][language]
 
+					# Define the "json" variable as False
+					json = False
+
+					# If item type is "Files"
+					# And the item name is inside the "JSON" list
+					if (
+						item_type == "Files" and
+						item_name in folder_item_dictionary["JSON"]
+					):
+						# Update the "json" variable to True
+						json = True
+
+						# Update the language item name to be the item name
+						language_item_name = item_name
+
 					# Define the key as the item name
 					key = item_name
 
@@ -931,7 +983,8 @@ class Years(object):
 						"Key": key,
 						"Language item name": language_item_name,
 						"Folders": year["Folders"]["Text"],
-						"Files": year["Files"]["Text"]
+						"Files": year["Files"]["Text"],
+						"JSON": json
 					}
 
 					# Create the folder item
@@ -1416,6 +1469,16 @@ class Years(object):
 
 				# The next year number
 				"Value": str(self.date["Units"]["Year"] + 1)
+			},
+			"Third year": {
+				# The list of texts to replace with the third year number
+				"List": [
+					"{third_year}",
+					"[" + self.Language.language_texts["third_year"] + "]"
+				],
+
+				# The third year number
+				"Value": str(self.date["Units"]["Year"] + 2)
 			}
 		}
 

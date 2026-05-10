@@ -568,55 +568,19 @@ class Comment_Writer(Watch_History):
 
 			# ---------- #
 
-			# Import the validators module
-			import validators
+			# Define the input text as "Paste the link of the comment on YouTube"
+			input_text = self.language_texts["paste_the_link_of_the_comment_on_youtube"]
 
-			# Define the original link variable as an empty string
-			original_link = ""
-
-			# Define the "found comment parameter" switch as False
-			found_comment_parameter = False
-
-			# While the "found comment parameter" switch is False
-			while found_comment_parameter == False:
-				# If the "Testing" switch is False
-				if self.switches["Testing"] == False:
-					# Ask for the link of the comment
-					original_link = self.Input.Type(self.language_texts["paste_the_comment_link_of_youtube"], accept_enter = False)
-
-					# If the original link is an URL
-					if validators.url(original_link) == True:
-						# Parse the link to get the comment ID
-						comment_id = self.Parse_Link(original_link, "Comment")
-
-						# If the comment ID is not None
-						if comment_id != None:
-							# Switch the "found comment parameter" switch to True
-							found_comment_parameter = True
-
-				# If the "Testing" switch is True
-				if self.switches["Testing"] == True:
-					# Define the comment link
-					original_link = "https://www.youtube.com/watch?v=bbmtQkCcWY4&lc="
-
-					# Define the comment ID
-					comment_id = "UgxuNs35fO-gFEDY7l14AaABAg"
-
-					# Add it to the link
-					original_link += comment_id
-
-					# Show the input text and the defined comment link
-					print()
-					print(self.language_texts["paste_the_comment_link_of_youtube"] + ":")
-					print(original_link)
-
-					# Switch the "found comment parameter" switch to True
-					found_comment_parameter = True
+			# Get the comment ID from the video link
+			comment_id = self.Get_ID_From_Link(input_text, "Comment")
 
 			# Add the comment ID and link to the "Comment link" dictionary
 			comment["Comment link"] = {
-				"ID": comment_id, # The comment ID
-				"Link": "" # The video link with the comment ID
+				# The comment ID
+				"ID": comment_id,
+
+				# The video link with the comment ID
+				"Link": ""
 			}
 
 			# Define the comment link as the "Video and comment" template

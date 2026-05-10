@@ -47,30 +47,25 @@ class Register(Watch_History):
 				# Check the media and media item dates and the date files
 				self.Check_Media_Dates()
 
-		# Flag to control whether test-specific behavior should be executed
-		test_stuff = False
+		# Register the watched media (and episode) inside the "Watch History" database in the JSON format
+		self.Register_In_JSON()
 
-		# Execute the full workflow only if not in test mode
-		if test_stuff == False:
-			# Save the entry to the database in the JSON format
-			self.Register_In_JSON()
+		# Create the entry file for the watched media (and episode)
+		self.Create_Entry_File()
 
-			# Create the individual entry file for the completed task
-			self.Create_Entry_File()
+		# Create the entry files inside their corresponding year folders
+		self.Add_Entry_File_To_Year_Folder()
 
-			# Create the entry files inside their corresponding year folders
-			self.Add_Entry_File_To_Year_Folder()
+		# Create the Diary Slim text for the watched media
+		self.Define_Diary_Slim_Text()
 
-			# Generate the Diary Slim text for the watched media
-			self.Define_Diary_Slim_Text()
+		# If the "Defined title" key is not inside the root dictionary
+		if "Defined title" not in self.dictionary:
+			# Post about the watched media (and episode) on the social networks
+			self.Post_On_The_Social_Networks()
 
-			# If the "Defined title" key is not inside the root dictionary
-			if "Defined title" not in self.dictionary:
-				# Post about the watched media (and episode) on the social networks
-				self.Post_On_The_Social_Networks()
-
-			# Write the final Diary Slim text in the user's language on the Diary Slim
-			self.Write_On_Diary_Slim()
+		# Write the final Diary Slim text in the user's language on the Diary Slim
+		self.Write_On_Diary_Slim()
 
 		# Update the statistic about the media watched
 		self.Update_Statistic()
@@ -693,30 +688,29 @@ class Register(Watch_History):
 
 		# ---------- #
 
-		# Add the state texts lines if there are any state texts defined
+		# If there are state texts to be added
 		if self.dictionary["States"]["Texts"] != {}:
-			# Initialize the text for the states section
+			# Define the text as "States:" and line breaks
 			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
 
-			# Iterate through each state text in the dictionary
-			for key in self.dictionary["States"]["Texts"]:
-				# Get the text for the current state in the specified language
+			# Get the list of state keys
+			keys = list(self.dictionary["States"]["Texts"].keys())
+
+			# Iterate through the list of state keys
+			for key in keys:
+				# Get the text for the current state in the local language
 				language_text = self.dictionary["States"]["Texts"][key][language]
 
-				# Append the current state text to the overall text
+				# Add the current state text to the local text
 				text += language_text
 
-				# Add a newline if this is not the last state text
-				if key != list(self.dictionary["States"]["Texts"].keys())[-1]:
+				# If the state is not the last one
+				if key != keys[-1]:
+					# Add a line break to the local text
 					text += "\n"
 
 			# Append the constructed state text to the list of lines
 			lines.append(text)
-
-		# ---------- #
-
-		# Define the language entry text by converting the list of lines to a single text block
-		file_text = self.Text.From_List(lines)
 
 		# ---------- #
 
@@ -812,6 +806,9 @@ class Register(Watch_History):
 		items.append(self.entry_dictionary["Times"]["Watching session duration"][language])
 
 		# ---------- #
+
+		# Define the language entry text by converting the list of lines to a single text block
+		file_text = self.Text.From_List(lines)
 
 		# Return the formatted text with the items, including the times
 		return file_text.format(*items)
@@ -1292,29 +1289,17 @@ class Register(Watch_History):
 			# Add two line breaks and the "Finished watching text" to the Diary Slim dates "Media" key
 			self.dictionary["Entry"]["Diary Slim"]["Dates"]["Media"] += "\n\n" + self.media["Finished watching text"]
 
-	def Define_Episode_Title_With_Media_Title(self, language = False):
-		# Define the episode key for the episode title
-		episode_key = "with_title"
+	def Define_Media_Title(self, language = False):
+		# If the media is a series media (it is not a movie)
+		if self.media["States"]["Series media"] == True:
+			# Define the key to get the media title
+			key = "Original"
 
-		# If the media has a list of media
-		# And the media item is not the media
-		# And the media is not a video channel
-		# And the media item is not single unit
-		# And the "Replace title" state is deactivated
-		if (
-			self.media["States"]["Has a list of media items"] == True and
-			self.media["States"]["The media item is the root media"] == False and
-			self.media["States"]["Video"] == False and
-			self.language_texts["single_unit"] not in self.media["Item"]["Details"] and
-			self.media["States"]["Replace title"] == False
-		):
-			# Change the episode key to "With media title and media item"
-			episode_key = "with_title_and_item"
+			if "Romanized" in self.media["Titles"]:
+				key = "Romanized"
 
-		# If the episode key is present in the "Episode" dictionary
-		if episode_key in self.media["Episode"]:
-			# Define the episode title using the episode key
-			episode_title = self.media["Episode"][episode_key][self.language["Small"]]
+			# Get the media title using the key
+			media_title = self.media["Titles"][key]			
 
 		# If the media is not a series media (it is a movie)
 		if self.media["States"]["Series media"] == False:
@@ -1328,15 +1313,15 @@ class Register(Watch_History):
 
 			# Get the media title using the media key and define it as the episode title
 			# (Split it to get only the movie title, and not the additional information about the movie, like the year and distributor)
-			episode_title = self.media["Episode"]["Titles"][media_key].split("(")[0]
+			media_title = self.media["Episode"]["Titles"][media_key].split("(")[0]
 
 			# If the "language" parameter is True
 			if language == True:
-				# Define the episode title as the media title in the user language, plus the additional information about the movie (year and distributor)
-				episode_title = self.media["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
+				# Define the media title as the media title in the user language, plus the additional information about the movie (year and distributor)
+				media_title = self.media["Titles"][self.media["Language"]] + " (" + self.media["Episode"]["Titles"]["Original"].split("(")[1]
 
-		# Return the episode title
-		return episode_title
+		# Return the media title
+		return media_title
 
 	def Define_Diary_Slim_Text(self):
 		# Define the text template as "I just finished watching {}"
@@ -1585,7 +1570,7 @@ class Register(Watch_History):
 		hashtags += " #" + plural_media_type
 
 		# Get the media title
-		media_title = self.Define_Episode_Title_With_Media_Title()
+		media_title = self.Define_Media_Title()
 
 		# Remove accents
 		media_title = self.Text.Remove_Accents(media_title)
@@ -1726,26 +1711,46 @@ class Register(Watch_History):
 			print()
 			print(self.separators["5"])
 
-			# Define the text to use to ask the to press Enter when they finish rendering the media cover on Photoshop
-			input_text = self.language_texts["press_enter_when_you_finish_rendering_{}_on_photoshop"]
-
-			# Format it with the media cover text
-			input_text = input_text.format(social_networks["Media cover text"])
-
-			# Ask for the user input using the defined input text
-			self.Input.Type(input_text)
-
 			# Create a shortcut to the Diary Slim time
 			diary_slim_text = self.dictionary["Entry"]["Diary Slim"]["Time"] + ":" + "\n"
 
 			# Add the Diary Slim time
 			diary_slim_text += self.dictionary["Entry"]["Diary Slim"]["Text"]
 
-			# Remove the memory date text
+			# Show the full local Diary Slim text
+			print()
+			print(diary_slim_text)
+			print()
+			print(self.separators["5"])
+
+			# Define the text to use to ask the to press Enter when they finish rendering the media cover on Photoshop
+			input_text = self.Language.language_texts["press_enter_when_you_finish_rendering_{}_on_photoshop"]
+
+			# Format it with the media cover text
+			input_text = input_text.format(social_networks["Media cover text"])
+
+			# If the "Testing" switch is False
+			if self.switches["Testing"] == False:
+				# Ask for the user input using the defined input text
+				self.Input.Type(input_text)
+
+			# If the "Testing" switch is True
+			if self.switches["Testing"] == True:
+				# Show the text
+				print()
+				print(input_text + ":")
+
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+			# Remove the memory date text from the local Diary Slim text
 			diary_slim_text = diary_slim_text.replace("\n\n" + self.dictionary["Entry"]["Diary Slim"]["Memory date text"], "")
 
-			# Remove the states text
-			diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["States text"], "")
+			# If the "States text" key is inside the "Diary Slim" dictionary
+			if "States text" in self.dictionary["Entry"]["Diary Slim"]:
+				# Remove the states text
+				diary_slim_text = diary_slim_text.replace(self.dictionary["Entry"]["Diary Slim"]["States text"], "")
 
 			# Copy the local Diary Slim text
 			self.Text.Copy(diary_slim_text)
@@ -1765,7 +1770,13 @@ class Register(Watch_History):
 					"Discord"
 				],
 				"Do not open": [
-					"Instagram"
+					"Twitter",
+					"Bluesky",
+					"Threads",
+					"Facebook",
+					"WhatsApp",
+					"Instagram",
+					"Discord"
 				],
 				"Custom links": {
 					# Define the custom link for Discord as the "#watch-history" channel on my Discord server

@@ -34,32 +34,32 @@ class Define_Folders():
 			"root": self.hard_drive_letter
 		}
 
-		# Define the "Apps" folder
-		self.folders["Apps"] = {
-			"root": self.folders["root"] + "Apps/"
+		# Define the "Python" folder
+		self.folders["Python"] = {
+			"root": self.folders["root"] + "Python/"
 		}
 
-		# Define its sub-folders
-		folders = [
-			"Module files",
-			"Modules"
+		# Define a list of folder names
+		folder_names = [
+			"Modules",
+			"Files"
 		]
 
-		# Iterate through the list of folders
-		for folder in folders:
+		# Define the root "Python" folders
+		for folder_name in folder_names:
 			# Define the folder dictionary
-			self.folders["Apps"][folder] = {
-				"root": self.folders["Apps"]["root"] + folder + "/"
+			self.folders["Python"][folder_name] = {
+				"root": self.folders["Python"]["root"] + folder_name + "/"
 			}
 
 		# Define the "Utility" folders
-		for folder in ["Modules", "Module files"]:
-			self.folders["Apps"][folder]["Utility"] = {
-				"root": self.folders["Apps"][folder]["root"] + "Utility/"
+		for folder_name in folder_names:
+			self.folders["Python"][folder_name]["Utility"] = {
+				"root": self.folders["Python"][folder_name]["root"] + "Utility/"
 			}
 
 		# Define the "Modules.json" file
-		self.folders["Apps"]["Modules"]["Modules"] = self.folders["Apps"]["Modules"]["root"] + "Modules.json"
+		self.folders["Python"]["Modules"]["Modules"] = self.folders["Python"]["Modules"]["root"] + "Modules.json"
 
 	def Define_Module(self):
 		# Define the "Module" dictionary
@@ -90,10 +90,21 @@ class Define_Folders():
 			else:
 				self.module["Name"] = self.module["Module"].split(".")[0]
 
-		# Define the module folders
-		for key in ["Modules", "Module files"]:
+		# If the module is "__main__"
+		if self.module["Module"] == "__main__":
+			# Change the module to be the module name
+			self.module["Module"] = self.module["Name"]
+
+		# Define a list of folder names
+		folder_names = [
+			"Modules",
+			"Files",
+		]
+
+		# Iterate through that list
+		for key in folder_names:
 			# Define the root folder
-			root_folder = self.folders["Apps"][key]
+			root_folder = self.folders["Python"][key]
 
 			# If the module is an utility module
 			if self.module["Utility"] == True:
@@ -106,7 +117,8 @@ class Define_Folders():
 
 		# Iterate through the files of the module
 		for file in self.files:
-			self.module["Files"][file] = self.module["Folders"]["Module files"]["root"] + file + ".json"
+			# Define the current module JSON file inside the module "Files" dictionary
+			self.module["Files"][file] = self.module["Folders"]["Files"]["root"] + file + ".json"
 
 		# Define the "Module" dictionary inside the object
 		setattr(self.object, "module", self.module)

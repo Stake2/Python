@@ -21,14 +21,19 @@ class Watch_History(object):
 		# Import some usage classes
 		self.Import_Usage_Classes()
 
-		# Folders, files, lists, and dictionaries methods
+		# Define the folders and files of the module
 		self.Define_Folders_And_Files()
+
+		# Define the folders of the Data Network
+		self.Define_Data_Network_Folders()
+
+		# Define the lists and dictionaries of the module
 		self.Define_Lists_And_Dictionaries()
 
 		# Define the "history" dictionary of the "Watch History" database
 		self.Define_History()
 
-		# Define the media types dictionary
+		# Define the "Media types" dictionary
 		self.Define_Media_Types()
 
 		# Define the format of the registry
@@ -70,7 +75,7 @@ class Watch_History(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		self.modules["Remove list"] = [
@@ -282,17 +287,265 @@ class Watch_History(object):
 				"root": folder["root"] + sub_folder_name + "/"
 			}
 
+			# Create the folder
 			self.Folder.Create(folder["Media"]["root"])
 
-		# ---------- #
+	def Define_Data_Network_Folders(self):
+		# Define the data network dictionary
+		self.data_network = {
+			"Name": "Audiovisual Media",
+			"Starting year": 2018,
+			"Years list": [],
+			"Information": "Media information",
+			"History": "Watch History",
+			"Type": {
+				"Name": "Media",
+				"Singular": "{} type",
+				"Plural": "{} types",
+				"By type": "By {} type"
+			},
+			"Entries": "",
+			"Sub-folders": [
+				"Comments"
+			]
+		}
 
-		# Replace the "self.folders" folder dictionary with the "Audiovisual Media" network folder dictionary
-		self.folders = self.folders["Notepad"]["Data Networks"]["Audiovisual Media"]
+		# --- #
 
-		# Audiovisual Media Network root files
-		self.folders["Watch list"] = self.folders["root"] + "Watch list.txt"
+		# Create a list of years starting from the year starting year to the current year 
+		self.data_network["Years list"] = self.Date.Create_Years_List(start = self.data_network["Starting year"], function = str)
 
-		# Define the current year folder for easier typing
+		# --- #
+
+		# List the keys of the "Type" dictionary
+		keys = list(self.data_network["Type"].keys())
+
+		# Remove the "Name" key
+		keys.remove("Name")
+
+		# Iterate through the list of keys
+		for key in keys:
+			# Get the text template
+			text_template = self.data_network["Type"][key]
+
+			# Get the type name
+			type_name = self.data_network["Type"]["Name"]			
+
+			# If the key is "By type"
+			if key == "By type":
+				# Lowercase the type name
+				type_name = type_name.lower()
+
+			# Format the text template with the type name
+			text = text_template.format(type_name)
+
+			# Update the key
+			self.data_network["Type"][key] = text
+
+		# --- #
+
+		# If the "Entries" key is empty or not present
+		if (
+			"Entries" in self.data_network and
+			self.data_network["Entries"] == "" or
+			"Entries" not in self.data_network
+		):
+			# Define it as "Entries"
+			self.data_network["Entries"] = "Entries"
+
+		# --- #
+
+		# Add the plural type text to the list of sub-folders
+		self.data_network["Sub-folders"].append(self.data_network["Type"]["Plural"])
+
+		# Define a local list of folder names
+		folder_names = [
+			"Information",
+			"History"
+		]
+
+		# Iterate through the local list of folders
+		for folder_name in folder_names:
+			# If the folder name is inside the data network dictionary
+			if folder_name in self.data_network:
+				# Get the folder name
+				folder_name = self.data_network[folder_name]
+
+				# Add the folder name to the list of sub-folders
+				self.data_network["Sub-folders"].append(folder_name)
+
+		# --- #
+
+		# Create a shortcut to the data network name
+		data_network = self.data_network["Name"]
+
+		# Create a shortcut to the data network folder
+		self.folders[data_network] = self.folders["Notepad"]["Data Networks"][data_network]
+
+		# ----- #
+
+		# Define the root folder to use
+		root_folder = self.folders
+
+		# Iterate through the list of sub-folder names
+		for folder_name in self.data_network["Sub-folders"]:
+			# Define the key as the folder name
+			key = folder_name
+
+			# Define the folder name
+			folder_name = self.Language.Define_Folder_Name(folder_name, texts = self.language_texts)
+
+			# Define the folder dictionary inside the root "folders" dictionary
+			root_folder[key] = {
+				"root": root_folder[data_network]["root"] + folder_name + "/"
+			}
+
+			# Create the folder
+			self.Folder.Create(root_folder[key]["root"])
+
+		# ----- #
+
+		# Define the Type files
+		file_names = [
+			self.data_network["Type"]["Plural"]
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders[self.data_network["Type"]["Plural"]]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder with the file name and extension
+			root_folder[file_name] = root_folder["root"] + file_name + ".json"
+
+			# Create the file
+			self.File.Create(root_folder[file_name])
+
+		# ----- #
+
+		# Define the Information files
+		file_names = [
+			"Information"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders[self.data_network["Information"]]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder with the file name and extension
+			root_folder[file_name] = root_folder["root"] + file_name + ".json"
+
+			# Create the file
+			self.File.Create(root_folder[file_name])
+
+		# ----- #
+
+		# If the "Comments" folder is inside the list of sub-folders
+		if "Comments" in self.data_network["Sub-folders"]:
+			# Create the Comments folders
+			folder_names = [
+				"Backups"
+			]
+
+			# Define the root folder to use
+			root_folder = self.folders["Comments"]
+
+			# Iterate through the list of folder names
+			for folder_name in folder_names:
+				# Define the folder dictionary with the root folder
+				root_folder[folder_name] = {
+					"root": root_folder["root"] + folder_name + "/"
+				}
+
+				# Create the folder
+				self.Folder.Create(root_folder[folder_name]["root"])
+
+			# Define the Comments files
+			file_names = [
+				"Comments"
+			]
+
+			# Iterate through the list of file names
+			for file_name in file_names:
+				# Define the file inside the root folder with the file name and extension
+				root_folder[file_name] = root_folder["root"] + file_name + ".json"
+
+				# Create the file
+				self.File.Create(root_folder[file_name])
+
+		# ----- #
+
+		# Define the Watch History folders
+		folder_names = [
+			"Movies"
+		]
+
+		# Extend the list of folder names to add the years of the data network
+		folder_names.extend(self.data_network["Years list"])
+
+		# Define the root folder to use
+		# (Watch History)
+		root_folder = self.folders[self.data_network["History"]]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the folder dictionary with the root folder
+			root_folder[folder_name] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+			# Create the folder
+			self.Folder.Create(root_folder[folder_name]["root"])
+
+			# If the folder name is inside the list of years of the data network
+			if folder_name in self.data_network["Years list"]:
+				# Define the folder name as the "By type" text
+				by_type_text = self.data_network["Type"]["By type"]
+
+				# Define the "By type" folder dictionary with the root folder
+				root_folder[folder_name][by_type_text] = {
+					"root": root_folder[folder_name]["root"] + by_type_text + "/"
+				}
+
+				# Define the dictionary of files of the year folder
+				files = {
+					"Entries": self.data_network["Entries"],
+					"Entry list": "Entry list"
+				}
+
+				# Iterate through the list of file keys and names
+				for key, file_name in files.items():
+					# Define the extension initially as "json"
+					extension = "json"
+
+					# If the key is "Entry list"
+					if key == "Entry list":
+						# Define the extension as "txt"
+						extension = "txt"
+
+					# Define the file inside the year folder with the file name and extension
+					root_folder[folder_name][key] = root_folder[folder_name]["root"] + file_name + "." + extension
+
+					# Create the file
+					self.File.Create(root_folder[folder_name][key])
+
+		# Define the Watch History files
+		file_names = [
+			"History"
+		]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder
+			root_folder[file_name] = root_folder["root"] + file_name + ".json"
+
+		# ----- #
+
+		# Define and create the "Watch list.txt" file
+		self.folders["Watch list"] = self.folders[data_network]["root"] + "Watch list.txt"
+
+		# Create a shortcut to the Watch History folder of the current year
 		self.folders["Watch History"]["Current year"] = self.folders["Watch History"][self.current_year["Number"]]
 
 	def Define_History(self):
@@ -306,7 +559,7 @@ class Watch_History(object):
 			},
 			"Number key": "Watched media number",
 			"By type": True,
-			"Folder": self.Folder.folders["Notepad"]["Data Networks"]["Audiovisual Media"]["Watch History"]["root"]
+			"Folder": self.folders["Watch History"]["root"]
 		}
 
 	def Define_Lists_And_Dictionaries(self):
@@ -451,7 +704,7 @@ class Watch_History(object):
 
 	def Define_Media_Types(self):
 		# Get the media types dictionary from the "Types.json" file
-		self.media_types = self.JSON.To_Python(self.folders["Data"]["Types"])
+		self.media_types = self.JSON.To_Python(self.folders["Media types"]["Media types"])
 
 		# Add or update the "Genders" key to the media types dictionary
 		self.media_types["Genders"] = self.Language.texts["genders, type: dictionary"]
@@ -827,8 +1080,8 @@ class Watch_History(object):
 			# Add one to the local media type number
 			media_type_number += 1
 
-		# Write the media types dictionary into the "Types.json" file
-		self.JSON.Edit(self.folders["Data"]["Types"], self.media_types)
+		# Write the media types dictionary into the "Media types.json" file
+		self.JSON.Edit(self.folders["Media types"]["Media types"], self.media_types)
 
 		# Update the root "Information.json" file with the updated root information dictionary
 		self.JSON.Edit(self.folders["Media information"]["Information"], root_information)
@@ -1563,11 +1816,6 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# Get the current month statistics dictionary
-		current_month_statistics = self.diary_slim["Current year"]["Month"]["Statistics"]
-
-		# ---------- #
-
 		# Create the "statistic media types" dictionary
 		self.Create_Statistic_Media_Types_Dictionary()
 
@@ -1582,6 +1830,15 @@ class Watch_History(object):
 			if date_key == "Month":
 				# Define the default dictionary as the month dictionary
 				dictionary = self.diary_slim["Current year"]["Month"]
+
+			# If the statistic key is not inside the "Statistics" dictionary
+			if statistic_key not in dictionary["Statistics"]:
+				# Add it
+				dictionary["Statistics"][statistic_key] = {
+					"Module": statistics["Module"],
+					"Total": 0,
+					"Dictionary": {}
+				}
 
 			# Get the year statistics for the "Stories" module
 			statistics[date_key] = dictionary["Statistics"][statistic_key]
@@ -2256,6 +2513,7 @@ class Watch_History(object):
 		return media_list
 
 	def Select_Media_Type(self, options = None):
+		# Define the root select media type dictionary
 		dictionary = {
 			"Texts": {
 				"Show": self.language_texts["media_types"],
@@ -2322,7 +2580,8 @@ class Watch_History(object):
 			show_text = dictionary["Texts"]["Show"]
 			select_text = dictionary["Texts"]["Select"]
 
-			dictionary["option"] = self.Input.Select(options = options, language_options = language_options, show_text = show_text, select_text = select_text)["option"]
+			# Ask the user to select a media type from the list of media types
+			dictionary["option"] = self.Input.Select(options = options, language_options = language_options, show_text = show_text, select_text = select_text)["Option"]["Original"]
 
 		# If the "number" key is inside the dictionary
 		if "number" in dictionary:
@@ -3188,58 +3447,82 @@ class Watch_History(object):
 						}
 					}
 
-				# Define current media item
-				title = dictionary["Media"]["Items"]["Current"]
+				# Define current media item title as the selected media item (by default)
+				media_item_title = dictionary["Media"]["Items"]["Current"]
 
+				# Define a local media item text as the singular one
+				media_item_text = dictionary["Media type"]["Subfolders"]["Singular"]
+
+				# Define the show and select texts to select a media item (season)
 				show_text = self.Text.Capitalize(dictionary["Media type"]["Subfolders"]["Plural"])
 				select_text = self.language_texts["select_a_season"]
 
-				items_list = dictionary["Media"]["Items"]["List"].copy()
+				# Make a local copy of the list of media items
+				media_items_list = dictionary["Media"]["Items"]["List"].copy()
 
-				# Define show and select text for video media
+				# If the media is a video channel
 				if dictionary["Media"]["States"]["Video"] == True:
+					# Change the local media item text to be the singular "video series" text
+					media_item_text = self.language_texts["video_series, type: singular"]
+
+					# Change the show and select texts to be about video series
 					show_text = self.Text.Capitalize(self.language_texts["video_series, capitalize()"])
 					select_text = self.language_texts["select_a_youtube_video_series"]
 
-				# Iterate through media items list
-				for media_list_item in dictionary["Media"]["Items"]["List"].copy():
+				# Iterate through the local copy of the list of media items
+				for local_media_item in media_items_list.copy():
+					# Define a dictionary of folders for the current local media item
 					folders = {
-						"root": dictionary["Media"]["Items"]["Folders"]["root"] + self.Sanitize_Title(media_list_item) + "/"
+						"root": dictionary["Media"]["Items"]["Folders"]["root"] + self.Sanitize_Title(local_media_item) + "/"
 					}
 
-					# Define the details file
+					# Define the media item "Details.txt" file inside that dictionary
 					folders["details"] = folders["root"] + self.Language.language_texts["details, title()"] + ".txt"
 
-					# Read details file
-					details = self.File.Dictionary(folders["details"])
+					# Read the media item "Details.txt" file to get the details dictionary
+					media_item_details = self.File.Dictionary(folders["details"])
 
-					# If the media item is a single unit media item and the "Type" key is inside the details
-					if self.Language.language_texts["type, title()"] in details:
-						# Define the empty secondary types list
+					# If the "Type" text in the user language is inside the media item details dictionary
+					if self.Language.language_texts["type, title()"] in media_item_details:
+						# If the "Secondary types" dictionary is not inside the media "Items" dictionary
 						if "Secondary types" not in dictionary["Media"]["Items"]:
+							# Add it
 							dictionary["Media"]["Items"]["Secondary types"] = {}
 
-						for item_type in ["Singular", "Plural"]:
+						# Define a local list of item types
+						item_types = [
+							"Singular",
+							"Plural"
+						]
+
+						# Iterate through the local list of item types
+						for item_type in item_types:
+							# If the item type dictionary is not inside the "Secondary types" dictionary
 							if item_type not in dictionary["Media"]["Items"]["Secondary types"]:
+								# Add it
 								dictionary["Media"]["Items"]["Secondary types"][item_type] = {}
 
+							# Iterate through the list of small languages
 							for language in self.languages["Small"]:
+								# If the language list is not inside the item type dictionary
 								if language not in dictionary["Media"]["Items"]["Secondary types"][item_type]:
+									# Add it
 									dictionary["Media"]["Items"]["Secondary types"][item_type][language] = []
 
-						# Iterate through the list of singular secondary types
+						# Iterate through the list of root singular secondary types in the user language
+						# This whole process is made to list the secondary types of all the media items of the current media
 						i = 0
 						for secondary_type in self.secondary_types["Singular"][self.language["Small"]]:
-							# If the type inside the media item details is equal to the singular type
-							if details[self.Language.language_texts["type, title()"]] == secondary_type:
-								# Iterate through the list of item types
-								for item_type in ["Singular", "Plural"]:
+							# If the secondary type inside the media item details dictionary is equal to the current secondary type
+							if media_item_details[self.Language.language_texts["type, title()"]] == secondary_type:
+								# Iterate through the local list of item types
+								for item_type in item_types:
 									# Iterate through the list of small languages
 									for language in self.languages["Small"]:
-										# Get the secondary type in the current item type and language
+										# Get the current secondary type in the current item type and language
 										secondary_type = self.secondary_types[item_type][language][i]
 
-										# If the secondary type is not inside the list of secondary types in the current item type and language
+										# If the secondary type is not inside the language list of secondary types in the current item type and language
 										if secondary_type not in dictionary["Media"]["Items"]["Secondary types"][item_type][language]:
 											# Add it
 											dictionary["Media"]["Items"]["Secondary types"][item_type][language].append(secondary_type)
@@ -3247,66 +3530,89 @@ class Watch_History(object):
 							# Add one to the "i" number
 							i += 1
 
-					# If the "Status" key is present inside the details dictionary and the status is "Completed", remove the media item from the media items list
+					# If the "Status" key is present inside the media item details dictionary
+					# And the status is "Completed"
 					if (
-						self.Language.language_texts["status, title()"] in details and
-						details[self.Language.language_texts["status, title()"]] == self.Language.language_texts["completed, title()"]
+						self.Language.language_texts["status, title()"] in media_item_details and
+						media_item_details[self.Language.language_texts["status, title()"]] == self.Language.language_texts["completed, title()"]
 					):
-						items_list.remove(media_list_item)
+						# Remove the local media item from the list of media items
+						media_items_list.remove(local_media_item)
 
+					# If the caller of this method is the "Populate_Media_Episodes_Files" class
+					# And the media item is not a single unit one
+					# And the media is not a video channel
 					if (
-						self.caller == "Fill_Media_Files" and
-						self.language_texts["single_unit"] not in details and
+						self.caller == "Populate_Media_Episodes_Files" and
+						self.language_texts["single_unit"] not in media_item_details and
 						dictionary["Media"]["States"]["Video"] == False
 					):
-						# Define the "Titles" folder
+						# Define the "Titles" folders dictionary
 						folders["Titles"] = {
 							"root": folders["root"] + self.Language.language_texts["titles, title()"] + "/"
 						}
 
 						# Define the titles files
-
 						# Iterate through the language keys and dictionaries
 						for small_language, language in self.languages["Dictionary"].items():
 							# Create a shortcut to the full language
 							full_language = language["Full"]
 
 							# Define the titles file
-							folders["titles"][small_language] = folders["titles"]["root"] + full_language + ".txt"
+							folders["Titles"][small_language] = folders["Titles"]["root"] + full_language + ".txt"
 
-						# Remove media item from the media items list if its titles file is filled (for "Fill_Media_Files")
-						if self.File.Contents(folders["titles"]["en"])["length"] > 0:
-							items_list.remove(media_list_item)
+						# If the English titles file is not empty (it is already populated)
+						if self.File.Contents(folders["Titles"]["en"])["Length"] > 0:
+							# Remove the media item from the local list of media items
+							# (The "Populate_Media_Episodes_Files" class only wants media items whose title files have not been populated yet)
+							media_items_list.remove(local_media_item)
 
-					if (
-						self.language_texts["single_unit"] in details and
-						media_list_item in items_list
-					):
-						items_list.remove(media_list_item)
-
+				# If the media is a video channel
+				# Or the "select media item" parameter is True
 				if (
 					dictionary["Media"]["States"]["Video"] == True or
 					select_media_item == True
 				):
-					if (
-						watch == True and
-						len(items_list) != 1
-					):
-						title = self.Input.Select(items_list, show_text = show_text, select_text = select_text)["option"]
+					# If there is more than one media item in the list
+					if len(media_items_list) > 1:
+						# Ask the user to select a media item from the local list of media items and get the selected media item title
+						media_item_title = self.Input.Select(media_items_list, show_text = show_text, select_text = select_text)["Option"]["Original"]
 
+					# If there is only one media item in the list
+					if len(media_items_list) == 1:
+						# Define the show text as "This {} was automatically selected because it was the only one" in the user language
+						show_text = self.language_texts["this_{}_was_automatically_selected_because_it_was_the_only_one"]
+						
+						# Format the "{}" with the local media item text
+						show_text = show_text.format(media_item_text)
+
+						# Get the media item titles dictionary
+						titles = dictionary["Media"]["Items"]["Dictionary"][media_item_title]["Titles"]
+
+						# Get the correct media item title in the user language
+						media_item_title = self.Get_Media_Title(titles, language = self.language["Small"], item = True)
+
+						# Show the show text and the media item title
+						print()
+						print(show_text + ":")
+						print("\t" + media_item_title)
+
+				# If the "media item" parameter is not None
 				if media_item != None:
-					title = media_item
+					# Define the local media item title as the "media item" parameter
+					media_item_title = media_item
 
-				sanitized_title = self.Sanitize_Title(title)
+				# Sanitize the media item title
+				sanitized_media_item_title = self.Sanitize_Title(media_item_title)
 
 				# Define the media item dictionary and its keys
 				dictionary["Media"]["Item"] = {
-					"Title": title,
+					"Title": media_item_title,
 					"Titles": {},
 					"With media title": {},
-					"Sanitized": sanitized_title,
+					"Sanitized": sanitized_media_item_title,
 					"Folders": {
-						"root": dictionary["Media"]["Items"]["Folders"]["root"] + sanitized_title + "/"
+						"root": dictionary["Media"]["Items"]["Folders"]["root"] + sanitized_media_item_title + "/"
 					},
 					"Number": 0
 				}
@@ -3422,33 +3728,34 @@ class Watch_History(object):
 					# Get the media title in the current language
 					media_title = self.Get_Media_Title(dictionary, language = language)
 
-					# Define the local empty title
-					title = ""
+					# Define the local empty full title
+					full_title = ""
 
 					# Get the correct media item title in the current language
-					item_title = self.Get_Media_Title(dictionary, language = language, item = True)
+					media_item_title = self.Get_Media_Title(dictionary, language = language, item = True)
 
 					# Define the default separator as a space
 					separator = " "
 
-					# If the item title has two or more characters
-					# And the item title has a colon and a space at the start
+					# If the media item title has two or more characters
+					# And the media item title has a colon and a space at the start
 					if (
-						len(item_title) >= 2 and
-						item_title[0] + item_title[1] == ": "
+						len(media_item_title) >= 2 and
+						media_item_title[0] + media_item_title[1] == ": "
 					):
 						# Define the separator as an empty string
 						separator = ""
 
-					# Add the original media title if it is not present in the item title
-					if media_title not in item_title:
-						title += media_title + separator
+					# If the media title is not present in the media item title
+					if media_title not in media_item_title:
+						# Add the media title to the empty full title
+						full_title += media_title + separator
 
-					# Add the item title to the local title
-					title += item_title
+					# Add the media item title to the local full title
+					full_title += media_item_title
 
-					# Define the root language title as the local title
-					dictionary["Media"]["Item"]["With media title"][language] = title
+					# Define the root language "With media title" as the local full title
+					dictionary["Media"]["Item"]["With media title"][language] = full_title
 
 				# ------------------------------ #
 
@@ -4608,23 +4915,41 @@ class Watch_History(object):
 		return dictionary
 
 	def Get_Media_Title(self, dictionary, language = None, item = False, episode = False):
-		titles = dictionary["Media"]["Titles"]
+		# If the "Media" key is inside the dictionary
+		if "Media" in dictionary:
+			# Define the local titles dictionary as the media "Titles" dictionary
+			titles = dictionary["Media"]["Titles"]
 
-		if item == True:
-			titles = dictionary["Media"]["Item"]["Titles"]
+			# If the "item" parameter is True
+			if item == True:
+				# Define the local titles dictionary as the media item "Titles" dictionary
+				titles = dictionary["Media"]["Item"]["Titles"]
 
-		if episode == True:
-			titles = dictionary["Media"]["Episode"]["Titles"]
+			# If the "episode" parameter is True
+			if episode == True:
+				# Define the local titles dictionary as the media episode "Titles" dictionary
+				titles = dictionary["Media"]["Episode"]["Titles"]
 
+		# Else, treat the dictionary parameter as the local titles dictionary
+		else:
+			titles = dictionary
+
+		# If the "language" parameter is not inside the titles dictionary
 		if language not in titles:
+			# Define the local title as the original title
 			title = titles["Original"]
 
+		# If the "language" parameter is inside the titles dictionary
 		if language in titles:
+			# Define the local title as the language parameter title
 			title = titles[language]
 
+		# If the "Romanized" key is inside the titles dictionary
 		if "Romanized" in titles:
+			# Define the local title as the romanized title
 			title = titles["Romanized"]
 
+		# Return the correct title
 		return title
 
 	def Sanitize_Title(self, title, remove_dot = True):
@@ -4848,12 +5173,108 @@ class Watch_History(object):
 		# Return the dictionary
 		return dictionary
 
-	def Parse_Link(self, link, id_parameter):
-		# Define the dictionary of ID parameters to find the correct ID
+	def Get_ID_From_Link(self, input_text, id_parameter):
+		# Import the "validators" module
+		import validators
+
+		# Define a dictionary of ID parameters
 		id_parameters_map = {
-			"Playlist": "list", # For playlists
-			"Video": "v", # For videos
-			"Comment": "lc" # For comments
+			# For playlists
+			"Playlist": "list",
+
+			# For videos
+			"Video": "v", 
+
+			# For comments
+			"Comment": "lc"
+		}
+
+		# Define the "found parameter" switch as False
+		found_parameter = False
+
+		# Define the local "testing" switch
+		testing = True
+
+		# While the "found parameter" switch is False
+		while found_parameter == False:
+			# If the "Testing" switch is False
+			# Or it is True
+			# And the local "testing" switch is True
+			if (
+				self.switches["Testing"] == False or
+				self.switches["Testing"] == True and
+				testing == True
+			):
+				# Ask for the link
+				link = self.Input.Type(input_text, accept_enter = False, next_line = True)
+
+				# If the link is an URL
+				if bool(validators.url(link)) == True:
+					# Parse the link to get the ID parameter
+					id = self.Parse_Link(link, id_parameter)
+
+					# If the ID is not None
+					if id != None:
+						# Switch the "found parameter" switch to True
+						found_parameter = True
+
+			# If the "Testing" switch is True
+			# And the local "testing" switch is False
+			if (
+				self.switches["Testing"] == True and
+				testing == False
+			):
+				# Define a default video link
+				link = "https://www.youtube.com/watch?"
+
+				# Define a dictionary of default IDs
+				default_ids = {
+					"Video": "bbmtQkCcWY4",
+					"Comment": "UgxuNs35fO-gFEDY7l14AaABAg",
+					"Playlist": "PL04_cfk5iWv5utQUFXIo0Xkkvc0u6gzz2"
+				}
+
+				# Iterate through the dictionary of default IDs
+				for key, id in default_ids.items():
+					# Define the default separator as "&"
+					separator = "&"
+
+					# Define a local ID parameter as the ID parameter for the current default ID
+					local_id_parameter = id_parameters_map[key]
+
+					# If the key is "Video"
+					if key == "Video":
+						# Define the separator as an empty string
+						separator = ""
+
+					# Add the separator, local ID parameter, an equals sign, and the default ID to the link
+					link += separator + local_id_parameter + "=" + id
+
+				# Define the ID as the default ID for the respective ID parameter
+				id = default_ids[id_parameter]
+
+				# Show the input text and the defined link
+				print()
+				print(input_text + ":")
+				print(link)
+
+				# Switch the "found parameter" switch to True
+				found_parameter = True
+
+		# Return the ID
+		return id
+
+	def Parse_Link(self, link, id_parameter):
+		# Define a dictionary of ID parameters
+		id_parameters_map = {
+			# For playlists
+			"Playlist": "list",
+
+			# For videos
+			"Video": "v", 
+
+			# For comments
+			"Comment": "lc"
 		}
 
 		# If the "youtube" text is inside the link
@@ -4873,8 +5294,14 @@ class Watch_History(object):
 			# Get the correct key to extract the ID based on the type
 			id_key = id_parameters_map[id_parameter]
 
-			# Get the ID value from the parsed parameters
-			id = url_parameters[id_key][0]
+			# If the ID key is inside the URL parameters dictionary
+			if id_key in url_parameters:
+				# Get the ID value from the parsed parameters
+				id = url_parameters[id_key][0]
+
+			else:
+				# Define the ID as None
+				id = None
 
 			# Return the ID
 			return id

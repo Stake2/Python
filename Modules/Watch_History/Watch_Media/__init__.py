@@ -130,19 +130,23 @@ class Watch_Media(Watch_History):
 			"Select episode" in self.dictionary and
 			self.dictionary["Select episode"] == True
 		):
-			# Get the episode titles
-			titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]	
+			# Get the episode titles in the user language
+			episode_titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]	
 
-			# Ask the user to select an episode
+			# Define the show and select texts to show the episodes to the user
 			show_text = self.language_texts["episodes, title()"]
 			select_text = self.language_texts["episode, title()"]
 
-			episode = self.Input.Select(titles, show_text = show_text, select_text = select_text)["option"]
+			# Ask the user to select an episode from the list of episodes
+			episode_title = self.Input.Select(episode_titles, show_text = show_text, select_text = select_text)["option"]
+
+			# Define the episode text key
+			episode_text_key = self.language_texts["episode"].title()
 
 			# Define the episode in the media (item) details
-			self.media["Item"]["Details"][self.language_texts["episode"].title()] = episode
+			self.media["Item"]["Details"][episode_text_key] = episode_title
 
-			# Update the media (item) "Details.txt" file
+			# Update the media (item) "Details.txt" file to update the "Episode" key
 			self.File.Edit(self.media["Item"]["Folders"]["details"], self.Text.From_Dictionary(self.media["Item"]["Details"]), "w")
 
 		# Define the status list for the "Plan to watch" related statuses
@@ -1138,6 +1142,31 @@ class Watch_Media(Watch_History):
 			# Turn off the re-watching state
 			self.media["States"]["Re-watching"] = False
 
+	def File_Exists(self, file):
+		# Define the "file exists" switch as False by default
+		file_exists = False
+
+		# Iterate through the accepted file extensions
+		for extension in self.dictionary["File extensions"]:
+			# Define the new file as a copy of the file
+			new_file = file
+
+			# If the extension is not inside the file path
+			if "." + extension not in new_file:
+				# Add it
+				new_file += "." + extension
+
+			# If the file exists
+			if self.File.Exists(new_file) == True:
+				# Switch the "file exists" switch to True
+				file_exists = True
+
+				# Update the media unit file
+				self.media["Episode"]["Unit"] = new_file
+
+		# Return the "file exists" switch
+		return file_exists
+
 	def Define_Media_Unit(self):
 		# Define a list of tried files that were not found
 		tried_files = []
@@ -1255,50 +1284,20 @@ class Watch_Media(Watch_History):
 			for file in tried_files:
 				print("\t" + file + "." + str(self.dictionary["File extensions"]).replace("'", "").replace(", ", "/"))
 
-			# Tell the user that the media file does not exist
+			# Define the show text initially as "The episode file was not found"
+			show_text = self.language_texts["the_episode_file_was_not_found"]
+
+			# If the media is not a series media (it is a movie)
+			if self.media["States"]["Series media"] == False:
+				# Change the show text to talk about the movie
+				show_text = self.language_texts["the_movie_file_was_not_found"]
+
+			# Tell the user that the media unit file was not found with the show text
 			print()
-			print(self.language_texts["the_media_file_does_not_exist"] + ".")
-			print()
+			print(show_text + ".")
 
-			# Define the question asking the user if they want to bring the file from another folder
-			question = self.language_texts["do_you_want_to_bring_it_from_another_folder"]
-
-			# Ask the question
-			bring_file = self.Input.Yes_Or_No(question, first_space = False)
-
-			# If the answer is "Yes", use the "Find_Media_File" method to find and move the file
-			if bring_file == True:
-				self.media["Episode"]["Unit"] = self.Find_Media_File(self.media["Episode"]["Sanitized"])
-
-			# Else, finish the program execution
-			if bring_file == False:
-				print()
-				quit(self.Language.language_texts["alright"] + ".")
-
-	def File_Exists(self, file):
-		# Define the "file exists" switch as False by default
-		file_exists = False
-
-		# Iterate through the accepted file extensions
-		for extension in self.dictionary["File extensions"]:
-			# Define the new file as a copy of the file
-			new_file = file
-
-			# If the extension is not inside the file path
-			if "." + extension not in new_file:
-				# Add it
-				new_file += "." + extension
-
-			# If the file exists
-			if self.File.Exists(new_file) == True:
-				# Switch the "file exists" switch to True
-				file_exists = True
-
-				# Update the media unit file
-				self.media["Episode"]["Unit"] = new_file
-
-		# Return the "file exists" switch
-		return file_exists
+			# Terminate the execution of the program
+			quit()
 
 	def Show_Information(self):
 		self.Show_Media_Information(self.dictionary)
@@ -1473,72 +1472,3 @@ class Watch_Media(Watch_History):
 
 		# Use the "Register" class to register the watched media, by giving the root dictionary to it
 		self.Register(self.dictionary)
-
-	def Find_Media_File(self, file_name):
-		self.frequently_used_folders = [
-			self.Folder.folders["User"]["downloads"]["root"],
-			self.Folder.folders["User"]["downloads"]["videos"]["root"],
-			self.Folder.folders["User"]["downloads"]["mega"]["root"]
-		]
-
-		old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
-
-		new_file = self.media["Item"]["Folders"]["Media"]["root"] + self.Sanitize(file_name, restricted_characters = True) + "."
-
-		text = self.language_texts["please_select_a_file_that_is_in_the_format"] + " "
-
-		# Iterate through the accepted file extensions
-		for extension in self.dictionary["File extensions"]:
-			if extension == self.dictionary["File extensions"][-1]:
-				text += self.Language.language_texts["genders, type: dictionary, masculine"]["or"] + " "
-
-			text += extension.upper()
-
-			if extension != self.dictionary["File extensions"][-1]:
-				text += ", "
-
-		if old_file.split(".")[-1] not in self.dictionary["File extensions"]:
-			while old_file.split(".")[-1] not in self.dictionary["File extensions"]:
-				print()
-				print(text + ".")
-
-				old_file = self.Select_Folder_And_Media_File(self.frequently_used_folders)
-
-				new_file = self.media["Item"]["Folders"]["Media"]["root"] + file_name + "."
-
-		self.moved_succesfully = False
-
-		if old_file.split(".")[-1] in self.dictionary["File extensions"]:
-			self.moved_succesfully = self.Move_Media_File(old_file, new_file)
-
-		if self.moved_succesfully == True:
-			unit = new_file
-
-			print()
-			print("-----")
-			print()
-
-			return unit
-
-		if self.moved_succesfully == False:
-			quit()
-
-	def Select_Folder_And_Media_File(self, folders):
-		show_text = self.Folder.language_texts["folders, title()"]
-		select_text = self.language_texts["select_one_folder_to_search_for_the_file"]
-
-		location = self.Input.Select(folders, show_text = show_text, select_text = select_text)["option"]
-
-		files = self.Folder.Contents(location, add_sub_folders = False)["file"]["list"]
-
-		select_text = self.language_texts["select_the_media_file"]
-
-		return self.Input.Select(files, select_text = select_text)["option"]
-
-	def Move_Media_File(self, old_file, new_file):
-		# Iterate through the accepted file extensions
-		for extension in self.dictionary["File extensions"]:
-			if extension in old_file:
-				new_file = new_file + extension
-
-		return self.File.Move(old_file, new_file)

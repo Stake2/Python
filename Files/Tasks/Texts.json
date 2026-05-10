@@ -1,0 +1,190 @@
+{
+	"Tasks": {
+		"pt": "Tasks (Tarefas)",
+		"en": "Tasks"
+	},
+	"Tasks.Register": {
+		"en": "Tasks.Register",
+		"pt": "Tarefas.Registrar"
+	},
+	"task": {
+		"en": "task",
+		"pt": "tarefa"
+	},
+	"task, title()": {
+		"en": "Task",
+		"pt": "Tarefa"
+	},
+	"tasks": {
+		"en": "tasks",
+		"pt": "tarefas"
+	},
+	"tasks, title()": {
+		"en": "Tasks",
+		"pt": "Tarefas"
+	},
+	"task_type": {
+		"en": "Task type",
+		"pt": "Tipo de tarefa"
+	},
+	"task_types": {
+		"en": "Task types",
+		"pt": "Tipos de tarefas"
+	},
+	"task_title": {
+		"en": "Task title",
+		"pt": "Título da tarefa"
+	},
+	"task_titles": {
+		"en": "Task titles",
+		"pt": "Títulos da tarefa"
+	},
+	"times, title()": {
+		"en": "Times",
+		"pt": "Tempos"
+	},
+	"number": {
+		"en": "number",
+		"pt": "número"
+	},
+	"number, title()": {
+		"en": "Number",
+		"pt": "Número"
+	},
+	"this_task_was_registered": {
+		"en": "This task was registered",
+		"pt": "Essa tarefa foi registrada"
+	},
+	"the_progress_of_this_task_was_registered": {
+		"en": "The progress of this task was registered",
+		"pt": "O progresso dessa tarefa foi registrado"
+	},
+	"select_a_task_type": {
+		"en": "Select a task type",
+		"pt": "Selecione um tipo de tarefa"
+	},
+	"describe_the_task_in": {
+		"en": "Describe the task in",
+		"pt": "Descreva a tarefa em"
+	},
+	"[language]_title": {
+		"en": "English title",
+		"pt": "Título em Português"
+	},
+	"task_description": {
+		"en": "Task description",
+		"pt": "Descrição da tarefa"
+	},
+	"task_descriptions": {
+		"en": "Task descriptions",
+		"pt": "Descrições da tarefa"
+	},
+	"task_description_in": {
+		"en": "Task description in",
+		"pt": "Descrição da tarefa em"
+	},
+	"the_task_description": {
+		"en": "The task description",
+		"pt": "A descrição da tarefa"
+	},
+	"the_task_progress": {
+		"en": "The task progress",
+		"pt": "O progresso da tarefa"
+	},
+	"text_of_the_task_progress_in": {
+		"en": "Text of the task progress in",
+		"pt": "Texto do progresso da tarefa em"
+	},
+	"task_text_template": {
+		"en": "Number: {}\nTask type number: {}\nType: {}\nTime: {}\nFile name: {}",
+		"pt": "Número: {}\nNúmero de tipo de tarefa: {}\nTipo: {}\nTempo: {}\nNome de arquivo: {}"
+	},
+	"task_number": {
+		"en": "Task number",
+		"pt": "Número da tarefa"
+	},
+	"task_number_by_task_type": {
+		"en": "Task number by task type",
+		"pt": "Número da tarefa por tipo de tarefa"
+	},
+	"completed_tasks": {
+		"en": "Completed tasks",
+		"pt": "Tarefas concluídas"
+	},
+	"completed_tasks_in": {
+		"en": "Completed tasks in",
+		"pt": "Tarefas concluídas em"
+	},
+	"task_types_completed_in_all_years": {
+		"en": "Task types completed in all years",
+		"pt": "Tipos de tarefas concluídas em todos os anos"
+	},
+	"first_task_in_year": {
+		"en": "First task in year",
+		"pt": "Primeira tarefa no ano"
+	},
+	"{}_task": {
+		"en": "{} task",
+		"pt": "tarefa de {}"
+	},
+	"productive_things_done_{}_until_{}": {
+		"en": "productive things done since {} (until {})",
+		"pt": "coisas produtivas feitas desde {} (até {})"
+	},
+	"say_what_you_did_on_the_{}_in_{}, singular": {
+		"en": "Say what you did on the {} in {}",
+		"pt": "Diga o que você fez no {} em {}"
+	},
+	"say_what_you_did_on_the_{}_in_{}, plural": {
+		"en": "Say what you did on the {} in {}",
+		"pt": "Diga o que você fez nos {} em {}"
+	},
+	"opening_the_task_description_files_for_you_to_type_on_them, type: explanation, version: singular": {
+		"en": "Opening the task description file for you to type on it.\nType the description, save the file, close it, and press Enter to continue.",
+		"pt": "Abrindo o arquivo de descrição de tarefa para você digitar nele.\nDigite a descrição, salve o arquivo, feche-o e pressione Enter para continuar."
+	},
+	"opening_the_task_description_files_for_you_to_type_on_them, type: explanation, version: plural": {
+		"en": "Opening the task description files for you to type on them.\nType the descriptions, save the files, close them, and press Enter to continue.",
+		"pt": "Abrindo os arquivos de descrições de tarefas para você digitar neles.\nDigite as descrições, salve os arquivos, feche-os e pressione Enter para continuar."
+	},
+	"press_enter_when_you_finish_writing_and_saving_the_description_in_{}": {
+		"pt": "Pressione Enter quando você terminar de escrever e salvar a descrição em {}",
+		"en": "Press Enter when you finish writing and saving the description in {}"
+	},
+	"{}_was_written_on_the_current_diary_slim, gender: masculine": {
+		"en": "{} was written on the current Diary Slim",
+		"pt": "{} foi escrito no Diário Slim atual"
+	},
+	"{}_was_written_on_the_current_diary_slim, gender: feminine": {
+		"en": "{} was written on the current Diary Slim",
+		"pt": "{} foi escrita no Diário Slim atual"
+	},
+	"select_the_drawing_program": {
+		"en": "Select the drawing program",
+		"pt": "Selecione o programa de desenho"
+	},
+	"type_the_name_of_the_{}_modules": {
+		"en": "Type the name of the {} module(s)",
+		"pt": "Digite o nome do(s) módulo(s) {}"
+	},
+	"programming_my_module": {
+		"en": "programming my module",
+		"pt": "programando o meu módulo"
+	},
+	"programming_my_modules": {
+		"en": "programming my modules",
+		"pt": "programando os meus módulos"
+	},
+	"when_i_completed_the_task": {
+		"pt": "Quando eu completei a tarefa",
+		"en": "When I completed the task"
+	},
+	"when_you_completed_the_task": {
+		"pt": "Quando você completou a tarefa",
+		"en": "When you completed the task"
+	},
+	"when_you_registered_the_task_progress": {
+		"pt": "Quando você registrou o progresso da tarefa",
+		"en": "When you registered the task progress"
+	}
+}

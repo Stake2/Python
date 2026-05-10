@@ -69,7 +69,7 @@ class Verify_Current_Year(Years):
 				"This Year I",
 				"This Year I (personal version)",
 				"This Year I (post)",
-				"FutureMe",
+				"Letter to my future self",
 				"New Year"
 			],
 			"Dictionary": {
@@ -95,13 +95,16 @@ class Verify_Current_Year(Years):
 					"Use template": True
 				},
 				"This Year I (personal version)": {
+					"User language file": True,
 					"Use template": True
 				},
 				"This Year I (post)": {
+					"User language file": True,
 					"Use template": True
 				},
-				"FutureMe": {
-					"User language file": True
+				"Letter to my future self": {
+					"User language file": True,
+					"Use template": True
 				},
 				"New Year": {
 					"Texts": self.Language.texts["happy_new_year"],
@@ -248,6 +251,11 @@ class Verify_Current_Year(Years):
 					# Remove the parentheses from the text key
 					text_key = text_key.replace("(", "")
 					text_key = text_key.replace(")", "")
+
+					# If the text key is inside the language texts dictionary of the "Years" class (this class)
+					if text_key in self.texts:
+						# Define the texts as the text dictionary inside the text key
+						texts = self.texts[text_key]
 
 					# If the text key is inside the language texts dictionary of the "Language" utility class
 					if text_key in self.Language.texts:
@@ -449,7 +457,7 @@ class Verify_Current_Year(Years):
 
 	def Update_Image_Folder(self):
 		# Define the source folder as the year "Images" folder (it is a template folder for new years)
-		source_folder = self.folders["Image"]["Years"]["Images"]["root"]
+		source_folder = self.folders["Images"]["Years"]["Images"]["root"]
 
 		# Create a shortcut to the "Folder exists" boolean to call the method only one time
 		folder_exists = self.Folder.Exists(source_folder)

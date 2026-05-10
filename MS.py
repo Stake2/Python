@@ -1,9 +1,8 @@
 # Module_Selector.py
 
+# Import some useful modules
 import importlib
 import inspect
-
-# Import the "deepcopy" module
 from copy import deepcopy
 
 class Module_Selector():
@@ -52,8 +51,8 @@ class Module_Selector():
 		self.Reset_Switches()
 
 	def Import_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
+		# Define the list of utility modules to be imported
+		self.utility_modules = [
 			"Define_Folders",
 			"Global_Switches",
 			"Modules",
@@ -62,8 +61,8 @@ class Module_Selector():
 			"Folder"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
+		# Iterate through the list of utility modules
+		for module_title in self.utility_modules:
 			# Import the module
 			module = importlib.import_module("." + module_title, "Utility")
 
@@ -359,7 +358,7 @@ class Module_Selector():
 
 	def Get_Modules(self):
 		# Get the list of modules from the "Modules.json" file
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Iterate through the usage modules list
 		for title in self.modules["Usage"]["List"]:
@@ -371,16 +370,39 @@ class Module_Selector():
 					title.lower()
 				],
 				"Module": importlib.import_module(title),
+				"Root class": "",
 				"Folders": {
 					"Texts": {
-						"root": self.folders["Apps"]["Module files"]["root"] + title + "/"
+						"root": self.folders["Python"]["Files"]["root"] + title + "/"
 					}
 				},
-				"Is module": True
+				"Is module": True,
+				"Root class is Run": False
 			}
 
-			# Add the "Modules" to the "Run" class of the current module
-			setattr(module["Module"].Run, "Modules", self.Modules)
+			# Define a local list of root classes to look for
+			root_classes = [
+				# The "Run" root class
+				"Run",
+
+				# The module title root class
+				title
+			]
+
+			# Iterate through the list of root classes
+			for root_class in root_classes:
+				# If the root class exists inside the current module object
+				if hasattr(module["Module"], root_class) == True:
+					# Define the root "Root class" key as the local "root class"
+					module["Root class"] = getattr(module["Module"], root_class)
+
+					# If the root class is "Run"
+					if root_class == "Run":
+						# Change the "Root class is Run" switch to True
+						module["Root class is Run"] = True
+
+			# Add the "Modules" module to the root class of the current module
+			setattr(module["Root class"], "Modules", self.Modules)
 
 			# Define the "Texts.json" file of the module
 			module["Folders"]["Texts"]["Texts"] = module["Folders"]["Texts"]["root"] + "Texts.json"
@@ -735,11 +757,11 @@ class Module_Selector():
 					# Remove the disposable dictionary from the module dictionary
 					module.pop("Disposable dictionary")
 
-				# Add the arguments inside the "Run" class of the module
-				setattr(self.module["Module"].Run, "arguments", module["Custom arguments"])
+				# Add the arguments inside the root class of the module
+				setattr(self.module["Root class"], "arguments", module["Custom arguments"])
 
-			# Run the selected module
-			self.module["Module"].Run()
+			# Run the root class of the selected module
+			self.module["Root class"]()
 
 		# If the "language" argument is present in the arguments list
 		# Then run the "Create_Language_Text" method of the "Language" class

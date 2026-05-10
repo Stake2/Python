@@ -51,7 +51,7 @@ class Python(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -118,61 +118,48 @@ class Python(object):
 		# Define the root "Python" dictionary
 		self.python = {
 			"Folders": {
-				"root": self.folders["Apps"]["root"]
+				"root": self.folders["Python"]["root"]
 			},
 			"Files": {
 				"Python": {}
 			}
 		}
 
-		# Define the sub-folders folder
-		folders = [
+		# Define a list of folder names
+		folder_names = [
 			"Modules",
-			"Module files",
+			"Files",
 		]
 
-		for folder in folders:
+		# Iterate through that list
+		for folder_name in folder_names:
 			# Define and create the folder
-			self.python["Folders"][folder] = {
-				"root": self.python["Folders"]["root"] + folder + "/"
+			self.python["Folders"][folder_name] = {
+				"root": self.python["Folders"]["root"] + folder_name + "/"
 			}
 
-			self.Folder.Create(self.python["Folders"][folder]["root"])
+			self.Folder.Create(self.python["Folders"][folder_name]["root"])
 
 			# Define and create the "Utility" folder
-			self.python["Folders"][folder]["Utility"] = {
-				"root": self.python["Folders"][folder]["root"] + "Utility/"
+			self.python["Folders"][folder_name]["Utility"] = {
+				"root": self.python["Folders"][folder_name]["root"] + "Utility/"
 			}
 
-			self.Folder.Create(self.python["Folders"][folder]["Utility"]["root"])
+			self.Folder.Create(self.python["Folders"][folder_name]["Utility"]["root"])
 
-		# Define the modules file
+		# Define the "Modules.json" file
 		self.python["Files"]["Modules"] = self.python["Folders"]["Modules"]["root"] + "Modules.json"
 		self.File.Create(self.python["Files"]["Modules"])
 
-		# Define the "Python" module files folder
-		self.python["Folders"]["Module files"]["Python"] = {
-			"root": self.python["Folders"]["Module files"]["root"] + "Python/"
+		# Define the "Python" files folder
+		self.python["Folders"]["Files"]["Python"] = {
+			"root": self.python["Folders"]["Files"]["root"] + "Python/"
 		}
 
 		# Define the "Code templates" folder
-		self.python["Folders"]["Module files"]["Python"]["Code templates"] = {
-			"root": self.python["Folders"]["Module files"]["Python"]["root"] + "Code templates/"
+		self.python["Folders"]["Files"]["Python"]["Code templates"] = {
+			"root": self.python["Folders"]["Files"]["Python"]["root"] + "Code templates/"
 		}
-
-		# ---------- #
-
-		# Define the files of the "Module files" folder
-		files = [
-			"Last module",
-			"Task number"
-		]
-
-		# Iterate through the list of files
-		for file in files:
-			# Define and create the file
-			self.python["Files"][file] = self.python["Folders"]["Module files"]["Python"]["root"] + file + ".txt"
-			self.File.Create(self.python["Files"][file])
 
 		# ---------- #
 
@@ -197,8 +184,8 @@ class Python(object):
 				"Folders": {}
 			}
 
-			# Define the folders of the module type
-			for key in ["Modules", "Module files"]:
+			# Iterate through the list of folder names
+			for key in folder_names:
 				# Define the root folder
 				folder = self.python["Folders"][key]["root"]
 
@@ -219,20 +206,6 @@ class Python(object):
 
 		# ---------- #
 
-		# Define the "Templates" dictionary
-		self.python["Templates"] = {
-			"Task": """				<key name="Task[Number]" modified="2022-02-08 14:24:07" build="210912">
-					<value name="Name" type="string" data="{[Module_Name]}"/>
-					<value name="Flags" type="dword" data="00000004"/>
-					<value name="Hotkey" type="dword" data="00000000"/>
-					<value name="GuiArgs" type="string" data=""/>
-					<value name="Active" type="long" data="0"/>
-					<value name="Count" type="long" data="1"/>
-					<value name="Cmd1" type="string" data="[module_execution_line]"/>
-				</key>""",
-			"Bat": 'cd "C:\Program Files\ConEmu"' + "\n" + 'start ConEmu.exe -Dir "C:\Apps" -Title "[Name]" -FontSize 12 -run {[Module]}'
-		}
-
 		# Define the list of code templates
 		code_templates = [
 			"Root",
@@ -241,7 +214,7 @@ class Python(object):
 		]
 
 		# Define the root folder
-		folder = self.python["Folders"]["Module files"]["Python"]["Code templates"]["root"]
+		folder = self.python["Folders"]["Files"]["Python"]["Code templates"]["root"]
 
 		# Define a file for each code template
 		for template in code_templates:
@@ -251,11 +224,6 @@ class Python(object):
 
 			# Add it to the "Templates" dictionary
 			self.python["Templates"][template] = self.File.Contents(file)["string"]
-
-		# ---------- #
-
-		# Define the "ConEmu.xml" file
-		self.python["Files"]["ConEmu"] = self.folders["User"]["AppData"]["Roaming"]["root"] + "ConEmu.xml"
 
 	def Update_Modules_File(self):
 		# Iterate through the module types list

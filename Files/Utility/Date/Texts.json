@@ -1,0 +1,571 @@
+{
+	"default_format": "%Y-%m-%dT%H:%M:%S",
+	"date_attributes, type: list": {
+		"en": [
+			"year",
+			"month",
+			"day",
+			"hour",
+			"minute",
+			"second"
+		],
+		"pt": [
+			"ano",
+			"mês",
+			"dia",
+			"hora",
+			"minuto",
+			"segundo"
+		]
+	},
+	"plural_date_attributes, type: list": {
+		"en": [
+			"years",
+			"months",
+			"days",
+			"hours",
+			"minutes",
+			"seconds"
+		],
+		"pt": [
+			"anos",
+			"meses",
+			"dias",
+			"horas",
+			"minutos",
+			"segundos"
+		]
+	},
+	"time_attributes, type: list": {
+		"en": [
+			"hour",
+			"minute",
+			"second"
+		],
+		"pt": [
+			"hora",
+			"minuto",
+			"segundo"
+		]
+	},
+	"day_names, type: list": {
+		"pt": [
+			"Segunda-Feira",
+			"Terça-Feira",
+			"Quarta-Feira",
+			"Quinta-Feira",
+			"Sexta-Feira",
+			"Sábado",
+			"Domingo"
+		],
+		"en": [
+			"Monday",
+			"Tuesday",
+			"Wednesday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+			"Sunday"
+		]
+	},
+	"day_names_genders, type: list": {
+		"pt": [
+			"uma",
+			"uma",
+			"uma",
+			"uma",
+			"uma",
+			"um",
+			"um"
+		],
+		"en": [
+			"a",
+			"a",
+			"a",
+			"a",
+			"a",
+			"a",
+			"a"
+		]
+	},
+	"month_names, type: list": {
+		"en": [
+			"",
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December"
+		],
+		"pt": [
+			"",
+			"Janeiro",
+			"Fevereiro",
+			"Março",
+			"Abril",
+			"Maio",
+			"Junho",
+			"Julho",
+			"Agosto",
+			"Setembro",
+			"Outubro",
+			"Novembro",
+			"Dezembro"
+		]
+	},
+	"first_numbers": {
+        "en": [
+            null,
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+            "eleven",
+            "twelve",
+            "thirteen",
+            "fourteen",
+            "fifteen",
+            "sixteen",
+            "seventeen",
+            "eighteen",
+            "nineteen"
+        ],
+        "pt": [
+            null,
+            "um",
+            "dois",
+            "três",
+            "quatro",
+            "cinco",
+            "seis",
+            "sete",
+            "oito",
+            "nove",
+            "dez"
+        ]
+    },
+	"first_numbers_feminine": {
+        "pt": [
+            null,
+            "uma",
+            "duas"
+        ]
+    },
+    "ten_names": {
+        "en": [
+            null,
+            "teen",
+            "twenty",
+            "thirty",
+            "fourty",
+            "fifty",
+            "sixty",
+            "seventy",
+            "eighty",
+            "ninety",
+            "hundred"
+        ],
+        "pt": [
+            null,
+            "dez",
+            "vinte",
+            "trinta",
+            "quarenta",
+            "cinquenta",
+            "sessenta",
+            "setenta",
+            "oitenta",
+            "noventa",
+            "cem"
+        ]
+    },
+    "ten_number_names": {
+        "en": [
+            null,
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+            "eleven",
+            "twelve",
+            "thirteen",
+            "fourteen",
+            "fifteen",
+            "sixteen",
+            "seventeen",
+            "eighteen",
+            "nineteen"
+        ]
+    },
+	"number_separator": {
+		"pt": " e ",
+		"en": " "
+	},
+	"ordinal_numbers, type: list": {
+		"en": [
+			"first",
+			"second",
+			"third",
+			"fourth",
+			"fifth",
+			"sixth",
+			"seventh",
+			"eighth",
+			"ninth",
+			"tenth",
+			"eleventh"
+		],
+		"pt": {
+			"masculine": [
+				"primeiro",
+				"segundo",
+				"terceiro",
+				"quarto",
+				"quinto",
+				"sexto",
+				"sétimo",
+				"oitavo",
+				"nono",
+				"décimo",
+				"décimo primeiro"
+			],
+			"feminine": [
+				"primeira",
+				"segunda",
+				"terceira",
+				"quarta",
+				"quinta",
+				"sexta",
+				"sétima",
+				"oitava",
+				"nona",
+				"décima",
+				"décima primeira"
+			]
+		}
+	},
+	"day": {
+		"en": "day",
+		"pt": "dia"
+	},
+	"days": {
+		"en": "days",
+		"pt": "dias"
+	},
+	"day, title()": {
+		"en": "Day",
+		"pt": "Dia"
+	},
+	"days, title()": {
+		"en": "Days",
+		"pt": "Dias"
+	},
+	"day_left": {
+		"en": "Day left",
+		"pt": "Dia restante"
+	},
+	"days_left": {
+		"en": "Days left",
+		"pt": "Dias restantes"
+	},
+	"month": {
+		"en": "month",
+		"pt": "mês"
+	},
+	"months": {
+		"en": "months",
+		"pt": "meses"
+	},
+	"month, title()": {
+		"en": "Month",
+		"pt": "Mês"
+	},
+	"months, title()": {
+		"en": "Months",
+		"pt": "Meses"
+	},
+	"months, title()": {
+		"en": "Months",
+		"pt": "Meses"
+	},
+	"month_left": {
+		"en": "Month left",
+		"pt": "Mês restante"
+	},
+	"months_left": {
+		"en": "Months left",
+		"pt": "Meses restantes"
+	},
+	"year": {
+		"en": "year",
+		"pt": "ano"
+	},
+	"years": {
+		"en": "years",
+		"pt": "anos"
+	},
+	"year, title()": {
+		"en": "Year",
+		"pt": "Ano"
+	},
+	"years, title()": {
+		"en": "Years",
+		"pt": "Anos"
+	},
+	"number_of_the_year": {
+		"en": "Number of the year",
+		"pt": "Número do ano"
+	},
+	"years_list": {
+		"en": "Years list",
+		"pt": "Lista de anos"
+	},
+	"hour": {
+		"en": "hour",
+		"pt": "hora"
+	},
+	"hours": {
+		"en": "hours",
+		"pt": "horas"
+	},
+	"hour, title()": {
+		"en": "Hour",
+		"pt": "Hora"
+	},
+	"hours, title()": {
+		"en": "Hours",
+		"pt": "Horas"
+	},
+	"minute": {
+		"en": "minute",
+		"pt": "minuto"
+	},
+	"minutes": {
+		"en": "minutes",
+		"pt": "minutos"
+	},
+	"minute, title()": {
+		"en": "Minute",
+		"pt": "Minuto"
+	},
+	"minutes, title()": {
+		"en": "Minutes",
+		"pt": "Minutos"
+	},
+	"second": {
+		"en": "second",
+		"pt": "segundo"
+	},
+	"seconds": {
+		"en": "seconds",
+		"pt": "segundos"
+	},
+	"second, title()": {
+		"en": "Second",
+		"pt": "Segundo"
+	},
+	"seconds, title()": {
+		"en": "Seconds",
+		"pt": "Segundos"
+	},
+	"time, title()": {
+		"en": "Time",
+		"pt": "Tempo"
+	},
+	"times, title()": {
+		"en": "Times",
+		"pt": "Tempos"
+	},
+	"date, title()": {
+		"pt": "Data",
+		"en": "Date"
+	},
+	"dates, title()": {
+		"pt": "Datas",
+		"en": "Dates"
+	},
+	"start_date": {
+		"en": "Start date",
+		"pt": "Data de início"
+	},
+	"end_date": {
+		"en": "End date",
+		"pt": "Data final"
+	},
+	"current_date": {
+		"en": "Current date",
+		"pt": "Data atual"
+	},
+	"current_time": {
+		"en": "Current time",
+		"pt": "Horário atual"
+	},
+	"duration, title()": {
+		"en": "Duration",
+		"pt": "Duração"
+	},
+	"before, title()": {
+		"en": "Before",
+		"pt": "Antes"
+	},
+	"before_time": {
+		"en": "Before time",
+		"pt": "Tempo anterior"
+	},
+	"now, title()": {
+		"en": "Now",
+		"pt": "Agora"
+	},
+	"now_time": {
+		"en": "Now time",
+		"pt": "Tempo agora"
+	},
+	"after, title()": {
+		"en": "After",
+		"pt": "Depois"
+	},
+	"after_time": {
+		"en": "After time",
+		"pt": "Tempo depois"
+	},
+	"short_time": {
+		"pt": "Tempo curto",
+		"en": "Short time"
+	},
+	"long_time": {
+		"pt": "Tempo longo",
+		"en": "Long time"
+	},
+	"short_date": {
+		"pt": "Data curta",
+		"en": "Short date"
+	},
+	"long_date": {
+		"pt": "Data longa",
+		"en": "Long date"
+	},
+	"long_date_with_short_time": {
+		"pt": "Data longa com tempo curto",
+		"en": "Long date with short time"
+	},
+	"long_date_with_day_of_week_and_short_time": {
+		"pt": "Data longa com dia da semana e tempo curto",
+		"en": "Long date with day of week and short time"
+	},
+	"relative, title()": {
+		"pt": "Relativo",
+		"en": "Relative"
+	},
+	"now_time": {
+		"en": "Now time",
+		"pt": "Tempo agora"
+	},
+	"after_{}_time": {
+		"en": "After {} time",
+		"pt": "Tempo após {}"
+	},
+	"time_difference": {
+		"en": "Time difference",
+		"pt": "Diferença de tempo"
+	},
+	"utc": {
+		"en": "UTC",
+		"pt": "UTC"
+	},
+	"utc_time": {
+		"en": "UTC time",
+		"pt": "Tempo em UTC"
+	},
+	"local_timezone": {
+		"en": "Local timezone",
+		"pt": "Fuso horário local"
+	},
+	"date_range": {
+		"pt": "Intervalo de datas",
+		"en": "Date range"
+	},
+	"at_the_day_{}_of_{}": {
+		"pt": "No dia {} de {}",
+		"en": "At the day {} of {}"
+	},
+	"day_{}_of_{}": {
+		"pt": "dia {} de {}",
+		"en": "day {} of {}"
+	},
+	"between_the_days_{}_and_{}_of_{}": {
+		"pt": "Entre os dias {} e {} de {}",
+		"en": "Between the days {} and {} of {}"
+	},
+	"{}_time": {
+		"en": "{} time",
+		"pt": "Tempo de {}"
+	},
+	"date_format": {
+		"en": "%m/%d/%Y",
+		"pt": "%d/%m/%Y"
+	},
+	"date_time_format": {
+		"en": "%H:%M %m/%d/%Y",
+		"pt": "%H:%M %d/%m/%Y"
+	},
+	"today_is_day_{} {} {}, {}": {
+		"pt": "Hoje é dia {} de {} de {}, {}",
+		"en": "Today is day {} {} {}, {}"
+	},
+	"date_format, type: format": {
+		"pt": "[day] de [month name] de [year]",
+		"en": "[month name] [day], [year]"
+	},
+	"[day] [month name] [year]": {
+		"pt": "[day] de [month name] de [year]",
+		"en": "[day] [month name] [year]"
+	},
+	"[day] [month name] [year] at [hour] [minute]": {
+		"pt": "[day] de [month name] de [year] às [hour]:[minute]",
+		"en": "[day] [month name] [year] at [hour]:[minute]"
+	},
+	"[day name], [day] [month name] [year]": {
+		"pt": "[day name], [day] de [month name] de [year]",
+		"en": "[day name], [day] [month name] [year]"
+	},
+	"[day] [month name] [year], [day name]": {
+		"pt": "[day] de [month name] de [year], [day name]",
+		"en": "[day] [month name] [year], [day name]"
+	},
+	"[day] [month name] [year] ([day name])": {
+		"pt": "[day] de [month name] de [year] ([day name])",
+		"en": "[day] [month name] [year] ([day name])"
+	},
+	"[month name] [day], [year], [day name]": {
+		"pt": "[day] de [month name] de [year], [day name]",
+		"en": "[month name] [day], [year], [day name]"
+	},
+	"date_and_time_texts, type: dict": {
+		"short_time": "t",
+		"long_time": "T",
+		"short_date": "d",
+		"long_date": "D",
+		"long_date_with_short_time": "f",
+		"long_date_with_day_of_week_and_short_time": "F",
+		"relative": "R"
+	}
+}

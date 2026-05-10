@@ -35,11 +35,7 @@ class Play(GamePlayer):
 		self.Show_Information(self.dictionary)
 
 		# If the "Open game" state is True
-		# And the "Testing" switch is False
-		if (
-			self.states["Open game"] == True and
-			self.switches["Testing"] == False
-		):
+		if self.states["Open game"] == True:
 			# Open the game
 			self.Open_Game()
 
@@ -164,23 +160,37 @@ class Play(GamePlayer):
 			# Open the game file
 			self.System.Open(self.game["Files"]["Shortcut"]["File"])
 
-		# If the gaming environment is "NVIDIA GeForce Now"
-		if gaming_environment[self.language["Small"]] == "NVIDIA GeForce Now":
+		# If the gaming environment is "NVIDIA GeForce NOW"
+		if gaming_environment[self.language["Small"]] == "NVIDIA GeForce NOW":
 			# Define the browser in which to open the game
 			browser = "Google Chrome"
 
-			# Define the link template
-			template = "https://play.geforcenow.com/games?game-id={}&lang={}&asset-id={}&utm_source=shortcut"
+			# Define the environment link
+			environment_link = "https://play.geforcenow.com/games"
 
-			# Define a list of items to use to format the link template
-			items = [
-				self.game["Game ID"], # The game ID
-				self.language["With country"], # The user language with the country
-				self.game["Asset ID"] # The game asset ID to find the game
-			]
+			# Import the "urlencode" module to use it
+			from urllib.parse import urlencode
 
-			# Format the link with the list of items to get the game link
-			game_link = template.format(*items)
+			# Define the dictionary of game parameters to add to the URL
+			parameters = {
+				# Add the game ID
+				"game-id": self.game["Game ID"],
+
+				# Add the user language with the country
+				"lang": self.language["With country"], 
+
+				# Add the game asset ID to find the game
+				"asset-id": self.game["Asset ID"],
+
+				# Add the utm-source
+				"utm_source": "shortcut"
+			}
+
+			# Encode the parameters into a query string
+			query_string = urlencode(parameters)
+
+			# Add the environment link and the query string together to create the game link
+			game_link = environment_link + "?" + query_string
 
 			# Open the link to the game using the selected browser
 			self.System.Open_Link(game_link, browser = browser)

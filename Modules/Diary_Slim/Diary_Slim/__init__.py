@@ -74,7 +74,7 @@ class Diary_Slim():
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -240,7 +240,7 @@ class Diary_Slim():
 			"Folders": {
 				"root": self.folders["Notepad"]["Diary Slim"]["root"],
 				"Image": {
-					"root": self.folders["Image"]["Diary"]
+					"root": self.folders["Images"]["Diary"]
 				}
 			}
 		}
@@ -1604,7 +1604,7 @@ class Diary_Slim():
 			year["Statistics"] = deepcopy(self.statistics_template)
 
 			# If the statistics file is not empty
-			if self.File.Contents(year["Folders"]["Statistics"])["lines"] != []:
+			if self.File.Contents(year["Folders"]["Statistics"])["Lines"] != []:
 				# Get the JSON dictionary
 				json_dictionary = self.JSON.To_Python(year["Folders"]["Statistics"])
 
@@ -1884,7 +1884,13 @@ class Diary_Slim():
 		# Update the statistic key inside the root year statistics dictionary
 		parameters[0][statistic_key] = year_statistics
 
-		# Get the year statistics text
+		# Define the list of keys to add at the end of the "External statistics" dictionary as the list of external statistics
+		add_to_end = self.statistics["External statistics"]["List"]
+
+		# Add the keys above to the end of the "Year" statistics dictionary
+		parameters[0] = self.JSON.Add_To_End_Of_Dictionary(parameters[0], to_add = add_to_end)
+
+		# Add the year statistics text to the local text
 		text += self.Show_Statistics("Year", statistics, return_text = True) + "\n"
 
 		# ---------- #
@@ -1895,7 +1901,10 @@ class Diary_Slim():
 		# Update the statistic key inside the root month statistics dictionary
 		parameters[1][statistic_key] = month_statistics
 
-		# Get the year statistics text
+		# Add the keys above to the end of the "Month" statistics dictionary
+		parameters[1] = self.JSON.Add_To_End_Of_Dictionary(parameters[1], to_add = add_to_end)
+
+		# Add the month statistics text to the local text
 		text += self.Show_Statistics("Month", statistics, return_text = True)
 
 		# ---------- #

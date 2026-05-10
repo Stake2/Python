@@ -66,7 +66,7 @@ class GamePlayer(object):
 
 	def Define_Basic_Variables(self):
 		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Apps"]["Modules"]["Modules"])
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
 		# Create a list of the modules that will not be imported
 		remove_list = [
@@ -919,6 +919,15 @@ class GamePlayer(object):
 				# Define the default dictionary as the month dictionary
 				dictionary = self.diary_slim["Current year"]["Month"]
 
+			# If the statistic key is not inside the "Statistics" dictionary
+			if statistic_key not in dictionary["Statistics"]:
+				# Add it
+				dictionary["Statistics"][statistic_key] = {
+					"Module": statistics["Module"],
+					"Total": 0,
+					"Dictionary": {}
+				}
+
 			# Get the year statistics for the "Stories" module
 			statistics[key] = dictionary["Statistics"][statistic_key]
 
@@ -1010,6 +1019,9 @@ class GamePlayer(object):
 
 			# Define the "added sub-game dictionary" switch as False
 			added_sub_game_dictionary = False
+
+			# Define the "added to item dictionary" switch as False
+			added_to_item_dictionary = False
 
 			# If the "Items" key exist in the local game dictionary
 			# And the "Sub-game" key is inside the game titles dictionary
@@ -1232,6 +1244,9 @@ class GamePlayer(object):
 							# Add one to the number of times the sub-game was played, inside the item dictionary with the key to use
 							item_dictionary[key_to_use] += 1
 
+							# Change the "added to item dictionary" switch to True
+							added_to_item_dictionary = True
+
 						# If the sub-game title is not the same as the game title
 						# And the old sub-game title (with the game title) key is present inside the root game statistics dictionary
 						# And the game title is inside the statistics dictionary of the module
@@ -1275,11 +1290,11 @@ class GamePlayer(object):
 					# Remove one from the number of times the sub-game was played
 					statistics["Dictionary"]["Numbers"][key]["Old"] = statistics[key]["Dictionary"][game_title]["Dictionary"][played_title] - 1
 
-			# If the "Items" key does not exist in the local game dictionary
-			# And the game title key is a number
+			# If the game title key is a number
+			# And the "added to item dictionary" switch is False
 			if (
-				"Items" not in game and
-				isinstance(statistics[key]["Dictionary"][game_title_key], int)
+				isinstance(statistics[key]["Dictionary"][game_title_key], int) and
+				added_to_item_dictionary == False
 			):
 				# Update the number of times the root game was played
 				statistics[key]["Dictionary"][game_title_key] += 1
@@ -1917,7 +1932,7 @@ class GamePlayer(object):
 					game["Files"]["Shortcut"]["Path"] += "/"
 
 			# Define the bat File for the game if it exists
-			file = self.Folder.folders["Apps"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
+			file = self.Folder.folders["Python"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
 
 			if self.File.Exists(file) == True:
 				game["Files"]["Bat"] = file

@@ -10,20 +10,32 @@ class Populate_Media_Episodes_Files(Watch_History):
 	def __init__(self):
 		super().__init__()
 
-		# Define the root dictionary
-		self.root_dictionary = {
-			"Methods": { # A dictionary of class methods to select from
-				"Populate episode titles files": {
-					"Name": "Populate episode titles files",
-					"Text": self.language_texts["populate_the_episode_titles_files"],
-					"Object": self.Populate_Episode_Titles_Files
+		# Define the root "populate" dictionary
+		self.populate = {
+			"Methods": {
+				"List": [
+					"Populate episode titles files",
+					"Add to the list of videos"
+				],
+				"Dictionary": {
+					"Populate episode titles files": {
+						"Name": "Populate episode titles files",
+						"Language name": self.language_texts["populate_the_episode_titles_files"],
+						"Object": self.Populate_Episode_Titles_Files
+					},
+					"Add to the list of videos": {
+						"Name": "Add to the list of videos",
+						"Language name": self.language_texts["add_to_the_list_of_videos"],
+						"Object": self.Add_To_The_List_Of_Videos
+					}
 				}
-			}
+			},
+			"Episodes": {}
 		}
 
 		# ---------- #
 
-		# Define the media dictionary
+		# Define the root dictionary
 		self.dictionary = {
 			"Media type": {
 				"Status": [
@@ -45,78 +57,53 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
-		# Define the "Populate episode titles" inside the root dictionary
-		self.root_dictionary["Populate episode titles"] = {
-			"Episodes": {
-				"Numbers": {
-					"Total episodes of the media item": 1,
-					"Total episodes of all media items up to the current one": 1
-				},
-				**self.media["Item"]["Episodes"]
-			}
+		# Update the "Episodes" dictionary of the root "populate" dictionary
+		self.populate["Episodes"] = {
+			"Numbers": {
+				"Total episodes of the media item": 1,
+				"Total episodes of all media items up to the current one": 1
+			},
+			**self.media["Item"]["Episodes"]
 		}
+
+		# Create a root shortcut to the "Episodes" dictionary
+		self.episodes = self.populate["Episodes"]
 
 		# ---------- #
 
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
+		# Define the method name initially as "Populate episode titles files"
+		method_name = "Populate episode titles files"
 
 		# If the media is a video channel
 		if self.media["States"]["Video"] == True:
-			# Define the name of the method
-			name = "Add to the list of videos"
+			# Define the list of options as the list of methods
+			options = self.populate["Methods"]["List"]
 
-			# Create the method dictionary of the method
-			method = {
-				"Name": name,
-				"Text": self.language_texts["add_to_the_list_of_videos"],
-				"Object": self.Add_To_The_List_Of_Videos
-			}
+			# Define the list of language options as an empty list
+			language_options = []
 
-			# Add the method dictionary to the root "Methods" dictionary
-			self.root_dictionary["Methods"][name] = method
+			# Iterate through the methods
+			for method in self.populate["Methods"]["Dictionary"].values():
+				# Add the method language name to the list of language options
+				language_options.append(method["Language name"])
 
-		# ---------- #
+			# Define the show text as the "Methods of the {} class to run" and format it with the class name
+			show_text = self.Language.language_texts["methods_of_the_{}_class_to_run"].format(self.language_texts["populate_media_episodes_files"])
 
-		# Create a shortcut to the methods dictionary
-		methods = self.root_dictionary["Methods"]
-
-		# Get the keys
-		keys = list(methods.keys())
-
-		# Get the values
-		values = list(methods.values())
-
-		# Define the method initially as the "Populate episode titles files" method
-		method = "Populate episode titles files"
-
-		# If there is more than one method
-		if len(methods) > 1:
-			# Define the options and language options based on the dictionary of methods
-			options = keys
-			language_options = values
-
-			# Define the show and select texts
-			show_text = self.Language.language_texts["methods_of_the_{}_class_to_run"]
+			# Define the select text as "Select one method to run"
 			select_text = self.Language.language_texts["select_one_method_to_run"]
 
-			# Ask the user to select the method
-			method = self.Input.Select(
-				options,
-				language_options = methods,
-				show_text = show_text,
-				select_text = select_text
-			)["Option"]["Original"]
+			# Ask the user to select a method from the list of methods using the parameters defined above
+			method_name = self.Input.Select(options, language_options = language_options, show_text = show_text, select_text = select_text)["Option"]["Original"]
 
-		# Get the method dictionary
-		method = methods[method]
+		# Get the method dictionary using its name
+		method = self.populate["Methods"]["Dictionary"][method_name]
 
-		# Define the selected method as the local one
+		# Define the root selected method as the local one
 		self.selected_method = method
 
-		# Run the class method
-		method["Object"]()
+		# Run the selected class method
+		self.selected_method["Object"]()
 
 	def Populate_Episode_Titles_Files(self):
 		# Show a five dash space separator
@@ -149,7 +136,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 			text = self.language_text["episode_titles_file_in_{}"].format(translated_language)
 
 			# Create a shortcut to the file
-			file = self.root_dictionary["Populate episode titles"]["Episodes"]["Titles"]["Files"][small_language]
+			file = self.populate["Episodes"]["Titles"]["Files"][small_language]
 
 			# Show the text and the file in the current language
 			print()
@@ -160,9 +147,6 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# If the media is not a video channel
 		if self.media["States"]["Video"] == False:
-			# Define a root shortcut to the "Episodes" dictionary
-			self.episodes = self.root_dictionary["Populate episode titles"]["Episodes"]
-
 			# Define the error variable as True to make the while loop work
 			error = True
 
@@ -237,9 +221,6 @@ class Populate_Media_Episodes_Files(Watch_History):
 			print(self.Language.language_texts["ids_file"] + ":")
 			print("\t" + self.media["Item"]["Folders"]["Titles"]["IDs"])
 
-			# Get the IDs from the user (or the media item files)
-			self.Get_IDs()
-
 			# Create a shortcut to a text telling the user that they finished populating the episode titles and IDs files
 			text = self.language_texts["you_finished_populating_the_episode_titles_and_ids_files"]
 
@@ -305,21 +286,17 @@ class Populate_Media_Episodes_Files(Watch_History):
 		return title
 
 	def Populate_The_Files(self):
-		# Define a local "add to the list of videos" switch as False by default
-		add_to_the_list_of_videos = False
-
-		# If the selected method is "Add to the list of videos"
-		if self.selected_method["Name"] == "Add to the list of videos":
-			# Switch it to True
-			add_to_the_list_of_videos = True
-
 		# If the media is a video channel
-		if self.media["States"]["Video"] == True:
-			# Get the videos dictionary for the media item, passing the "add to the list of videos" switch as a parameter
-			self.videos = self.Get_Videos(add_to_the_list_of_videos)
+		# And the selected method is "Populate episode titles files"
+		if (
+			self.media["States"]["Video"] == True and
+			self.selected_method["Name"] == "Populate episode titles files"
+		):
+			# Get the videos dictionary for the media (item)
+			self.videos = self.Get_Videos()
 
-		# If the selected method is not "Add to the list of videos"
-		if self.selected_method["Name"] != "Add to the list of videos":
+		# If the selected method is "Populate episode titles files"
+		if self.selected_method["Name"] == "Populate episode titles files":
 			# If the media is a video channel
 			if self.media["States"]["Video"] == True:
 				# Update the number of episodes of the current media item to be the number of videos
@@ -461,7 +438,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 					# If the media is a video channel
 					if self.media["States"]["Video"] == True:
 						# Get the list of video titles for the current language
-						video_titles = self.videos["Lists"][small_language]
+						video_titles = self.videos["Titles"][small_language]
 
 						# If the list of video titles in the current language is not empty
 						# And the length of the list is greater than or equal to the episode number less one
@@ -520,77 +497,125 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
+		# Define the writing mode as "write" by default
+		writing_mode = "w"
+
+		# If the selected method is "Add to the list of videos"
+		if self.selected_method["Name"] == "Add to the list of videos":
+			# Change the writing mode to "append"
+			writing_mode = "a"
+
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
+			# Get the episode titles file in the current language
+			file = self.episodes["Titles"]["Files"][small_language]
+
 			# Get the current language translated to the user language
 			translated_language = language["Translated"][self.language["Small"]]
 
-			# Show the translated language
-			print()
-			print(translated_language + ":")
+			# If the selected method is "Populate episode titles files"
+			if self.selected_method["Name"] == "Populate episode titles files":
+				# Define the local dictionary of episode titles as the "episodes" one
+				episode_titles = self.episodes["Titles"]
 
-			# Show the language titles
-			for title in self.episodes["Titles"][small_language]:
-				print("\t" + title)
+				# Show the translated language
+				print()
+				print(translated_language + ":")
 
-			# Get the language episode titles file
-			file = self.episodes["Titles"]["Files"][small_language]
+				# Show the language titles
+				for title in episode_titles[small_language]:
+					print("\t" + title)
 
-			# Transform the list of episode titles into a text string
-			text = self.Text.From_List(self.episodes["Titles"][small_language])
+				# Transform the list of episode titles into a text string
+				text = self.Text.From_List(episode_titles[small_language])
 
-			# Write the list of episode titles into the language episode titles file
-			self.File.Edit(file, text, "w")
+			# If the selected method is "Add to the list of videos"
+			if self.selected_method["Name"] == "Add to the list of videos":
+				# Define the local dictionary of episode titles as the "videos" one
+				episode_titles = self.videos["Titles"]
+
+				# Define the text as the last title (which was added)
+				text = episode_titles[small_language][-1]
+
+			# Write the list of episode titles or new episode title into the language episode titles file
+			self.File.Edit(file, text, writing_mode)
 
 		# ---------- #
 
 		# If the media is a video channel
 		if self.media["States"]["Video"] == True:
-			# Get the list of video IDs and transform it into a text string
-			video_ids = self.Text.From_List(self.videos["Lists"]["IDs"])
-
 			# Create a shortcut to the "IDs.txt" file
 			file = self.media["Item"]["Folders"]["Titles"]["IDs"]
 
-			# Write the list of video IDs into the "IDs.txt" file
-			self.File.Edit(file, video_ids, "w")
+			# If the selected method is "Populate episode titles files"
+			if self.selected_method["Name"] == "Populate episode titles files":
+				# Define the text as the list of video IDs transformed into a text string
+				text = self.Text.From_List(self.videos["IDs"])
+
+			# If the selected method is "Add to the list of videos"
+			if self.selected_method["Name"] == "Add to the list of videos":
+				# Define the text as the last ID (which was added)
+				text = self.videos["IDs"][-1]
+
+			# Write the ID or IDs into the "IDs.txt" file using the defined writing mode
+			self.File.Edit(file, text, writing_mode)
 
 			# ----- #
-
-			# Get the list of video dates and transform it into a text string
-			video_dates = self.Text.From_List(self.videos["Lists"]["Dates"])
 
 			# Create a shortcut to the "Dates.txt" file
 			file = self.media["Item"]["Folders"]["Titles"]["Dates"]
 
-			# Write the list of video dates into the "Dates.txt" file
-			self.File.Edit(file, video_dates, "w")
+			# If the selected method is "Populate episode titles files"
+			if self.selected_method["Name"] == "Populate episode titles files":
+				# Define the text as the list of video dates transformed into a text string
+				text = self.Text.From_List(self.videos["Dates"])
 
-	def Get_Videos(self, add_to_the_list_of_videos = False):
+			# If the selected method is "Add to the list of videos"
+			if self.selected_method["Name"] == "Add to the list of videos":
+				# Define the text as the last date (which was added)
+				text = self.videos["Dates"][-1]
+
+			# Write the date or dates into the "Dates.txt" file using the defined writing mode
+			self.File.Edit(file, text, writing_mode)
+
+	def Get_Videos(self, new_video = None):
 		# Define a root videos dictionary
 		videos = {
 			"Numbers": {
 				"Total": 0
 			},
-			"Lists": {
-				"IDs": [],
-				"Titles": {},
-				"Dates": []
-			},
+			"Titles": {},
+			"IDs": [],
+			"Dates": [],
 			"Dictionary": {}
 		}
 
 		# Iterate through the list of small languages
 		for small_language in self.languages["Small"]:
 			# Create the language titles list
-			videos["Lists"]["Titles"][small_language] = []
+			videos["Titles"][small_language] = []
 
-		# ---------- #
+		# Create a shortcut to the dictionary of video titles
+		video_titles = self.media["Item"]["Episodes"]["Titles"]
 
 		# Create a shortcut to the list of video IDs
 		video_ids = self.media["Item"]["Episodes"]["Titles"]["IDs"]
 
-		# ---------- #
+		# Create a shortcut to the list of video dates
+		video_dates = self.media["Item"]["Episodes"]["Titles"]["Dates"]
+
+		# If the "new video" parameter is not None
+		if new_video != None:
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				# Add the video title in the current language to the dictionary of video titles
+				video_titles[small_language].append(new_video["Titles"][small_language])
+
+			# Add the video ID
+			video_ids.append(new_video["ID"])
+
+			# Add the video date
+			video_dates.append(new_video["Date"])
 
 		# If the list of video IDs is empty
 		if video_ids == []:
@@ -600,72 +625,87 @@ class Populate_Media_Episodes_Files(Watch_History):
 			# Get the videos dictionary from the defined playlist using the root "Get_YouTube_Information" method
 			videos["Dictionary"] = self.Get_YouTube_Information("Playlist videos", playlist_id)["Videos"]
 
-		# If it is not empty
-		else:
-			# Create a shortcut to the list of video titles in the user language
-			video_titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]
-
-			# Create a shortcut to the list of video dates
-			video_dates = self.media["Item"]["Episodes"]["Titles"]["Dates"]
-
+		# If the list of video IDs is not empty
+		if video_ids != []:
 			# Define a local video number
 			video_number = 0
 
 			# Iterate through the video IDs in the list of video IDs
 			for id in video_ids:
-				# Define the video dictionary with its keys inside the local videos "Dictionary" dictionary
-				videos["Dictionary"][id] = {
-					"Title": video_titles[i],
+				# Create a local video dictionary
+				video = {
+					"Titles": {},
 					"ID": id,
-					"Date": video_dates[i]
+					"Date": ""
 				}
+
+				# If the video number is in the range of the list of video dates
+				if video_number <= len(video_dates) - 1:
+					# Define the video date as the one in the video number
+					video["Date"] = video_dates[video_number]
+
+				# Iterate through the list of small languages
+				for small_language in self.languages["Small"]:
+					# Add the video title in the current language
+					video["Titles"][small_language] = video_titles[small_language][video_number]
+
+				# If the video number is not in the range of the list of video dates
+				if video_number > len(video_dates) - 1:
+					# Tell the user that the video date was not found
+					print()
+					print(self.separators["5"])
+					print()
+					print("Video date not found:")
+					print()
+					print("ID:")
+					print(id)
+					print()
+					print("Video title:")
+					print(video["Titles"][self.language["Small"]])
+
+					# Pause the for loop so the user reads the message
+					input()
+
+				# Add the local video dictionary to the local videos dictionary using the video ID as a key
+				videos["Dictionary"][id] = video
 
 				# Add one to the video number
 				video_number += 1
 
 		# ---------- #
 
-		# If the "add to the list of videos" switch is True
-		if add_to_the_list_of_videos == True:
-			# Run the "Add_To_The_List_Of_Videos" method
-			self.Add_To_The_List_Of_Videos(videos)
-
-		# ---------- #
-
 		# Iterate through the videos inside the videos "Dictionary"
 		for id, video in videos["Dictionary"].items():
-			# Add the video ID to the "IDs" list
-			videos["Lists"]["IDs"].append(video["ID"])
+			# Iterate through the list of small languages
+			for small_language in self.languages["Small"]:
+				# Add the video title in the current language
+				videos["Titles"][small_language].append(video["Titles"][small_language])
 
-			# Add the video title to the titles list of the media language
-			videos["Lists"]["Titles"][self.media["Language"]].append(video["Title"])
+			# Add the video ID to the "IDs" list
+			videos["IDs"].append(video["ID"])
 
 			# Add the video date to the "Dates" list
-			videos["Lists"]["Dates"].append(video["Times"]["Timezone"])
+			videos["Dates"].append(video["Date"])
 
 		# ---------- #
 
 		# Update the total number of videos
-		videos["Numbers"]["Total"] = len(videos["Lists"]["IDs"])
+		videos["Numbers"]["Total"] = len(videos["IDs"])
 
 		# ---------- #
 
 		# Return the videos dictionary
 		return videos
 
-	def Add_To_The_List_Of_Videos(self, videos):
-		# Import the "validators" module
-		import validators
-
+	def Add_To_The_List_Of_Videos(self):
 		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
-		print()
 
 		# Define an empty video dictionary
 		video = {
-			"ID": "",
 			"Titles": {},
+			"ID": "",
 			"Date": ""
 		}
 
@@ -676,19 +716,11 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# ---------- #
 
-		# Define the video link as an empty string
-		video_link = ""
+		# Define the input text as "Paste the link of the video on YouTube"
+		input_text = self.language_texts["paste_the_link_of_the_video_on_youtube"]
 
-		# Define the input text as "paste_the_link_to_the_video"
-		input_text = self.language_texts["paste_the_link_to_the_video"]
-
-		# While the video ID is not a link
-		while validators.url(video_link) == False:
-			# Ask for the video link
-			video_link = self.Input.Type(input_text)
-
-		# Parse the video link to get the ID
-		video["ID"] = self.Parse_Link(video_link, "Video")
+		# Get the video ID from the video link
+		video["ID"] = self.Get_ID_From_Link(input_text, "Video")
 
 		# ---------- #
 
@@ -713,11 +745,11 @@ class Populate_Media_Episodes_Files(Watch_History):
 			# Ask the user to translate the video title (only if the title in the current language does not exist)
 			title = self.Translate_Title(small_language, translated_language, video_information["Title"])
 
-			# Add the language title to the correct language titles list
+			# Add the language title to the correct language key
 			video["Titles"][small_language] = title
 
-		# Add the video to the videos dictionary
-		self.videos["Dictionary"][video["ID"]] = video
+		# Get the videos dictionary for the media item, passing the local video dictionary to it
+		self.videos = self.Get_Videos(new_video = video)
 
 		# ---------- #
 
@@ -753,39 +785,54 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 			self.media["Item"]["Details"] = self.JSON.Add_Key_After_Key(self.media["Item"]["Details"], key_value, after_key = after_key)
 
+		# Update the "Episodes" key of the media item details to change it to the new number of episodes
+		key = self.language_texts["episodes, title()"]
+
+		self.media["Item"]["Details"][key] = self.videos["Numbers"]["Total"]
+
 		# Transform the media item details dictionary into a text string
 		media_item_details = self.Text.From_Dictionary(self.media["Item"]["Details"])
 
 		# Update the media item "Details.txt" file with the updated media item details dictionary
 		self.File.Edit(self.media["Item"]["Folders"]["details"], media_item_details, "w")
 
+		# ---------- #
+
+		# Populate the media (item) episode files
+		self.Populate_The_Files()
+
+		# ---------- #
+
 		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 		print()
 
-		# Show the YouTube channel
+		# Show the YouTube channel name
 		print(self.Text.Capitalize(self.language_texts["youtube_channel"]) + ":")
 		print("[" + self.media["Title"] + "]")
 		print()
 
-		# Show the video series
-		text = self.language_texts["video_series, type: singular, capitalize()"]
+		# If the media item title is not the same as the media title
+		if self.media["Item"]["Title"] != self.media["Title"]:
+			# Show the video series text
+			text = self.language_texts["video_series, type: singular, capitalize()"]
 
-		print(text + ":")
-		print("[" + self.media["Item"]["Title"] + "]")
-		print()
+			# Show the video series title
+			print(text + ":")
+			print("[" + self.media["Item"]["Title"] + "]")
+			print()
 
 		# Iterate through the language keys and dictionaries
 		for small_language, language in self.languages["Dictionary"].items():
 			# Get the current language translated to the user language
 			translated_language = language["Translated"][self.language["Small"]]
 
-			# Define the translated language text
-			translated_language_text = self.Language.language_texts["title_in_{}"].format(translated_language)
+			# Define the translated language text as "Title of the video in {}" formatted with the translated language
+			translated_language_text = self.Language.language_texts["title_of_the_video_in_{}"].format(translated_language)
 
-			# Show the the current language translated to the user language
-			print(translated_language + ":")
+			# Show the the translated language text
+			print(translated_language_text + ":")
 
 			# Show the video title in the current language
 			print("[" + video["Titles"][small_language] + "]")
@@ -793,13 +840,9 @@ class Populate_Media_Episodes_Files(Watch_History):
 
 		# Show the video ID
 		print(self.language_texts["video_id"] + ":")
-		print("\t" + video_id)
+		print("[" + video["ID"] + "]")
 		print()
 
 		# Show the video date
-		print(self.Date.language_texts["date, title()"] + ":")
-		print("\t" + video["Date"])
-
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
+		print(self.language_texts["video_date"] + ":")
+		print("[" + video["Date"] + "]")

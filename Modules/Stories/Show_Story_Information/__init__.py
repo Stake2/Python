@@ -109,12 +109,12 @@ class Show_Story_Information(Stories):
 								# Get the user language value
 								item = item[self.language["Small"]]
 
-							# If the information item key not is "Status"
+							# If the information item key not is "Writing status"
 							# Or it is
 							# And the type of the item is not a number
 							if (
-								key != "Status" or
-								key == "Status" and
+								key != "Writing status" or
+								key == "Writing status" and
 								type(item) != int
 							):
 								# Show the item with a tab, transforming the item into a text string

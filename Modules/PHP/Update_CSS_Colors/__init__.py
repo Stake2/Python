@@ -23,7 +23,7 @@ class Update_CSS_Colors(PHP):
 		# With the selectors dictionary
 		self.dictionary = {
 			"Files": {
-				"Colors CSS": self.folders["Mega"]["Websites"]["CSS"]["Colors"]
+				"Colors CSS": self.folders["Websites"]["CSS"]["Colors"]
 			},
 			"Texts": {},
 			"States": {

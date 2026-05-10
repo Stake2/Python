@@ -358,6 +358,7 @@ class Date():
 		# Define a list of formats
 		formats = [
 			"[Day] [Month name] [Year]",
+			"[Day] [Month Name] [Year] at [Hour] [Minute]",
 			"[Day name], [Day] [Month name] [Year]",
 			"[Day] [Month name] [Year], [Day name]",
 			"[Day] [Month name] [Year] ([Day name])"
@@ -482,7 +483,7 @@ class Date():
 
 		# Iterate through the list of date attributes
 		for attribute in self.texts["date_attributes, type: list"]["en"]:
-			# Define the key of the attribute
+			# Define the key of the attribute by capitalizing it
 			key = attribute.capitalize()
 
 			# If the attribute is inside the text
@@ -493,12 +494,17 @@ class Date():
 				# Get the unit of the attribute
 				unit = timezone_datetime["Units"][key]
 
+				# If the attribute is a time attribute
+				if attribute in self.texts["time_attributes, type: list"]["en"]:
+					# Add leading zeroes to the time unit
+					unit = str(self.Text.Add_Leading_Zeroes(unit))
+
 				# Replace the attribute text with the unit
 				text = text.replace(attribute_text, str(unit))
 
 		# Iterate through the list of datetime texts
 		for key in timezone_datetime["Texts"]:
-			# Lower the key
+			# Convert the key into lowercase
 			key = key.lower()
 
 			# If the key is inside the text
