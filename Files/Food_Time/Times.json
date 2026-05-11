@@ -18,7 +18,7 @@
 			"pt": "horas"
 		},
 		"Texts": {
-			"pt": "Esta é a hora que você comeu",
+			"pt": "Essa é a hora que você comeu",
 			"en": "This is the time that you ate"
 		}
 	},
@@ -31,7 +31,7 @@
 			"pt": "minutos"
 		},
 		"Texts": {
-			"pt": "Esta é a hora que você pode beber água",
+			"pt": "Essa é a hora que você pode beber água",
 			"en": "This is the time that you can drink water"
 		}
 	},
@@ -44,7 +44,7 @@
 			"pt": "horas"
 		},
 		"Texts": {
-			"pt": "Esta é a hora que você irá ter fome",
+			"pt": "Essa é a hora que você irá ter fome",
 			"en": "This is the time that you will be hungry"
 		}
 	}
