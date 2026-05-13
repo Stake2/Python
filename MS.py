@@ -372,7 +372,7 @@ class Module_Selector():
 				"Module": importlib.import_module(title),
 				"Root class": "",
 				"Folders": {
-					"Texts": {
+					"Files": {
 						"root": self.folders["Python"]["Files"]["root"] + title + "/"
 					}
 				},
@@ -405,17 +405,17 @@ class Module_Selector():
 			setattr(module["Root class"], "Modules", self.Modules)
 
 			# Define the "Texts.json" file of the module
-			module["Folders"]["Texts"]["Texts"] = module["Folders"]["Texts"]["root"] + "Texts.json"
+			module["Folders"]["Files"]["Texts"] = module["Folders"]["Files"]["root"] + "Texts.json"
 
-			# Add the alternate argument names from the module if they exist
+			# Add the alternative argument names from the module if they exist
 			if (
-				hasattr(module["Module"], "alternate_arguments") == True and
-				type(module["Module"].alternate_arguments) == list
+				hasattr(module["Module"], "alternative_arguments") == True and
+				type(module["Module"].alternative_arguments) == list
 			):
-				# Get the list of alternate arguments
-				arguments = module["Module"].alternate_arguments
+				# Get the list of alternative arguments
+				arguments = module["Module"].alternative_arguments
 
-				# Add them to the arguments list
+				# Add them to the list of arguments of the module
 				for argument in arguments:
 					module["List"].append(argument)
 
@@ -452,7 +452,7 @@ class Module_Selector():
 					}
 
 					# Read the "Texts.json" file of the module to get its texts
-					module["Texts"] = self.JSON.To_Python(module["Folders"]["Texts"]["Texts"])
+					module["Texts"] = self.JSON.To_Python(module["Folders"]["Files"]["Texts"])
 
 					# Define the text key
 					text_key = key
@@ -726,8 +726,20 @@ class Module_Selector():
 
 							# If there is an underline in the custom key
 							if "_" in custom_key:
-								# Replace it with a dash
-								custom_key = custom_key.replace("_", "-")
+								# Define the character to replace with as a space
+								character = " "
+
+								# If the "Hyphenated" key is inside the argument dictionary
+								# And it value is True
+								if (
+									"Hyphenated" in argument and
+									argument["Hyphenated"] == True
+								):
+									# Change the character to be a hyphen
+									character = "-"
+
+								# Replace it with the defined character
+								custom_key = custom_key.replace("_", character)
 
 							# Define the "Custom key" key as the local custom key
 							argument["Custom key"] = custom_key

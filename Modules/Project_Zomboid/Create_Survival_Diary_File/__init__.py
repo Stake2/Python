@@ -79,7 +79,7 @@ class Create_Survival_Diary_File(Project_Zomboid):
 		self.dictionary["City"] = self.project_zomboid["Cities"]["Dictionary"][city]
 
 	def Define_Date(self):
-		# Define the "diary" variable for easier typing
+		# Define the "diary" variable for faster typing
 		self.diary = self.dictionary["Survivor"]["Diary"]
 
 		# Define the "Date" dictionary

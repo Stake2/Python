@@ -35,7 +35,7 @@ class Date():
 			"combine"
 		]
 
-		# Define the globals variable for easier typing
+		# Define the globals variable for faster typing
 		globals_dictionary = globals()
 
 		# Iterate through the list of methods

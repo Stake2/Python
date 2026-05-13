@@ -1,0 +1,14 @@
+{
+	"Dictionary": {
+		"Meal_Times": {
+			"Descriptions": {
+				"en": "Register your meal times",
+				"pt": "Registre os horários das suas refeições"
+			}
+		}
+	},
+	"Module description": {
+		"en": "Register your meal times",
+		"pt": "Registre os horários das suas refeições"
+	}
+}

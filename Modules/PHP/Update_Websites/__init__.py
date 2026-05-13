@@ -430,7 +430,7 @@ class Update_Websites(PHP):
 		# Define the "w" (website) variable
 		w = 1
 
-		# Define the length of the list of websites for easier typing
+		# Define the length of the list of websites for faster typing
 		length = str(len(list(self.dictionary["Websites"]["To update"])))
 
 		# Define the list of dictionary keys

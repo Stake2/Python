@@ -97,7 +97,7 @@ class Write(Stories):
 
 		# ---------- #
 
-		# Create a shortcut to the total number of chapters for easier typing
+		# Create a shortcut to the total number of chapters for faster typing
 		total_chapters = self.story["Chapters"]["Numbers"]["Total"]
 
 		# Make a backup of the "Writing" dictionary
@@ -361,7 +361,7 @@ class Write(Stories):
 			# Change the "Ongoing writing session" state to True
 			self.states["Ongoing writing session"] = True
 
-		# Create a shortcut to the chapter titles dictionary for easier typing
+		# Create a shortcut to the chapter titles dictionary for faster typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
 
 		# Iterate through the language keys and dictionaries
@@ -1789,7 +1789,7 @@ class Write(Stories):
 				# Add or update the chapter title inside the chapter titles "With number" dictionary in the current language
 				self.chapter["Titles"]["With number"][small_language] = self.chapter["Numbers"]["Leading zeroes"] + " - " + chapter_title
 
-				# Create a shortcut to the titles file for easier typing
+				# Create a shortcut to the titles file for faster typing
 				titles_file = self.story["Folders"]["Chapters"][full_language]["Titles"]["Titles"]
 
 				# Define the default write mode as "append"

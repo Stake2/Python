@@ -4,17 +4,19 @@ from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Play(GamePlayer):
 	def __init__(self, dictionary = {}, open_game = True):
-		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		# If the dictionary of arguments is present inside this class
 		if hasattr(self, "arguments") == True:
 			# Add it to the parent class
+			# (It was received from the "Module_Selector" module)
 			setattr(GamePlayer, "arguments", self.arguments)
 
 		# Initiate the root class and import its variables and methods
 		super().__init__()
 
-		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		# If the dictionary of arguments is present inside this class
 		if hasattr(self, "arguments") == True:
 			# Parse the arguments
+			# (The dictionary was received from the "Module_Selector" module)
 			self.Parse_Arguments()
 
 		# Import sub-classes method

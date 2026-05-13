@@ -146,7 +146,7 @@ class Database(object):
 		# Folders dictionary
 		self.folders = self.Folder.Contents(self.folders["Notepad"]["Data Networks"]["Database"]["root"], lower_key = True)["dictionary"]
 
-		# Define the current year folder for easier typing
+		# Define the current year folder for faster typing
 		self.folders["history"]["current_year"] = self.folders["history"][str(self.date["Units"]["Year"])]
 
 	def Define_Types(self):

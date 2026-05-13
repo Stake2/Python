@@ -285,7 +285,7 @@ class GamePlayer(object):
 		# Replace the "self.folders" folder dictionary with the "Games" network folder dictionary
 		self.folders = self.folders["Notepad"]["Data Networks"]["Games"]
 
-		# Define the current year folder for easier typing
+		# Define the current year folder for faster typing
 		self.folders["Play History"]["Current year"] = self.folders["Play History"][self.current_year["Number"]]
 
 	def Define_History(self):
@@ -1467,7 +1467,7 @@ class GamePlayer(object):
 		# Add the "define_item" variable to the class instance
 		self.define_item = define_item
 
-		# Define the "game" variable for easier typing
+		# Define the "game" variable for faster typing
 		game = dictionary["Game"]
 
 		# If the define item variable is True
@@ -2080,7 +2080,7 @@ class GamePlayer(object):
 		return dictionary
 
 	def Define_Sub_Games(self, dictionary, play = False, sub_game_title = None):
-		# Define the "game" variable for easier typing
+		# Define the "game" variable for faster typing
 		game = dictionary["Game"]
 
 		# Define the sub-game type dictionary
@@ -2106,7 +2106,7 @@ class GamePlayer(object):
 
 			game["Sub-games"]["Key"] = game["Details"][key]
 
-		# Define the sub-game type variable for easier typing
+		# Define the sub-game type variable for faster typing
 		sub_game_type = game["Sub-games"]["Key"]
 
 		# Iterate through the text types list
@@ -2210,7 +2210,7 @@ class GamePlayer(object):
 
 		# Define the current sub-game as the first one if it is empty
 		if game["Sub-games"]["Items"]["Current"] == "":
-			# Define the first sub-game variable for easier typing
+			# Define the first sub-game variable for faster typing
 			first_sub_game = game["Sub-games"]["Items"]["List"][0]
 
 			# Define the current sub-game
@@ -2252,7 +2252,7 @@ class GamePlayer(object):
 				# Define the title as the game title in the user language
 				title = game["Titles"][key]
 
-				# Define the sub-game title variable for easier typing
+				# Define the sub-game title variable for faster typing
 				local_sub_game_title = sub_game["Titles"][key]
 
 				# If the first two characters of the title are not a colon and a space
@@ -2767,7 +2767,7 @@ class GamePlayer(object):
 			for language in self.languages["Small"]:
 				# If the time unit key is not the first one
 				if key != keys[0]:
-					# Define the end of text for easier typing
+					# Define the end of text for faster typing
 					end_of_text = gaming_time["Text"][language][-1] + gaming_time["Text"][language][-2]
 
 					# If the number of time units is more than one
@@ -2792,7 +2792,7 @@ class GamePlayer(object):
 					key == keys[-1] and
 					len(time_units) > 2
 				):
-					# Define the end of text for easier typing
+					# Define the end of text for faster typing
 					end_of_text = gaming_time["Text"][language][-1] + gaming_time["Text"][language][-2]
 
 					# If the end of the gaming time text does not contain a space and a comma
@@ -3090,7 +3090,7 @@ class GamePlayer(object):
 			game["States"]["Has sub-games"] == True and
 			game["Sub-game"]["Title"] != game["Title"]
 		):
-			# Define the sub-game variable for easier typing
+			# Define the sub-game variable for faster typing
 			sub_game = game["Sub-game"]
 
 			# Show the sub-game type text
@@ -3281,7 +3281,7 @@ class GamePlayer(object):
 				print()
 				print(self.language_texts["gaming_session_description"] + ":")
 
-				# Define the description variable for easier typing and a more beautiful code
+				# Define the description variable for faster typing and a more beautiful code
 				description = self.dictionary["Entry"]["Diary Slim"]["Descriptions"][self.language["Small"]]["lines"]
 
 				# Show the description lines

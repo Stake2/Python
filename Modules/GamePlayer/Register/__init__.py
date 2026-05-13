@@ -899,7 +899,7 @@ class Register(GamePlayer):
 				self.File.Edit(folder["Entry file"], self.dictionary["Entry"]["Text"][language], "w")
 
 	def Check_Game_Status(self):
-		# Define the game type variable for easier typing
+		# Define the game type variable for faster typing
 		self.game_type = self.dictionary["Type"]["Type"]["en"]
 
 		# Define the "Ask if the game was completed" state as True

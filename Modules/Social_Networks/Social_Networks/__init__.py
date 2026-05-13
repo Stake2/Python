@@ -507,7 +507,7 @@ class Social_Networks(object):
 						# Define a local empty dictionary
 						new_settings = {}
 
-						# Define the texts dictionary for easier typing
+						# Define the texts dictionary for faster typing
 						texts_dictionary = self.Language.texts
 
 						# Iterate through the settings list

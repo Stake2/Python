@@ -35,9 +35,6 @@ class Run():
 					argument["Action"] == "store_true" and
 					argument["Value"] == True
 				):
-					# Then the arguments dictionary has active arguments
-					has_active_arguments = True
-
 					# Add the argument to the "Active arguments" dictionary
 					self.arguments["Active arguments"][name] = argument
 
@@ -46,6 +43,9 @@ class Run():
 					if "Auto-class" in argument:
 						# Store the argument inside the arguments dictionary as the active argument
 						self.arguments["Active argument"] = argument
+
+					# Switch the local "has active arguments" switch to True
+					has_active_arguments = True
 
 			# If the module has active arguments
 			if has_active_arguments == True:
@@ -67,9 +67,9 @@ class Run():
 				# Ask the user to select a class
 				class_ = self.Modules.Select_Class(return_class = True)
 
-		# If the self object (Run) has the "arguments" dictionary
-		# Add it to the module class
+		# If the self object (Run) has a dictionary of arguments
 		if hasattr(self, "arguments") == True:
+			# Add it to the class object
 			setattr(class_["Object"], "arguments", self.arguments)
 
 		# If the "Do not run class" variable is not present in this class
@@ -77,8 +77,8 @@ class Run():
 			# Run the object of the class
 			class_["Object"]()
 
-# Define the alternate arguments for the module
-alternate_arguments = [
+# Define the alternative arguments for the module
+alternative_arguments = [
 	"play"
 ]
 
@@ -89,7 +89,8 @@ custom_arguments = {
 		"Auto-class": "Play"
 	},
 	"sub_game": {
-		"Action": "store"
+		"Action": "store",
+		"Hyphenated": True
 	},
 	"play": {
 		"Action": "store_true",
@@ -97,6 +98,6 @@ custom_arguments = {
 	}
 }
 
-# If the __name__ is "__main__", run the local "Run" class
+# If the script is being executed directly, run the local "Run" class
 if __name__ == "__main__":
 	Run()

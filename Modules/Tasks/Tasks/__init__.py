@@ -281,7 +281,7 @@ class Tasks(object):
 				# Create the language key inside the grammatical number dictionary
 				self.tasks["Types"]["Lists"][grammatical_number][language] = []
 
-		# Define the "Task types.json" file variable for easier typing
+		# Define the "Task types.json" file variable for faster typing
 		file = self.tasks["Folders"]["Task types"]["Task types"]
 
 		# If the "Task types.json" file is not empty

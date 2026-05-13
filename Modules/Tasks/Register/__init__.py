@@ -328,7 +328,7 @@ class Register(Tasks):
 
 			# If the "Grammatical numbers" key is inside the question dictionary
 			if "Grammatical numbers" in question:
-				# Get the grammatical numbers for easier typing
+				# Get the grammatical numbers for faster typing
 				grammatical_numbers = question["Grammatical numbers"]
 
 				# Split the response into a list

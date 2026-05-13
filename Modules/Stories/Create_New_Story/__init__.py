@@ -127,7 +127,7 @@ class Create_New_Story(Stories):
 
 			# If the information item is "Creation date"
 			if key == "Creation date":
-				# Define the format variable for easier typing
+				# Define the format variable for faster typing
 				format = information_item["Format"]
 
 				# Define the text of the information item
@@ -435,7 +435,7 @@ class Create_New_Story(Stories):
 
 			# If the file name exists inside the "Information" folders dictionary
 			if file_name in self.story["Folders"]["Information"]:
-				# Define the file variable for easier typing
+				# Define the file variable for faster typing
 				file = self.story["Folders"]["Information"][file_name]
 
 			# If not, then it must be on the "Readers" folder

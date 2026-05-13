@@ -120,7 +120,7 @@ class Add_A_New_Survivor(Project_Zomboid):
 
 			# If the "Format" key is inside the "Detail" dictionary
 			if "Format" in detail:
-				# Define the format variable for easier typing
+				# Define the format variable for faster typing
 				format = detail["Format"]
 
 				# Update the detail text to add the example

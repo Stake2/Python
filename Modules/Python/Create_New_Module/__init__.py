@@ -222,7 +222,7 @@ class Create_New_Module(Python):
 
 		# Iterate through the classes in the classes dictionary
 		for class_dictionary in self.classes["Dictionary"].values():
-			# Define the class name variable for easier typing
+			# Define the class name variable for faster typing
 			class_name = class_dictionary["Name"]
 
 			# Add the descriptions of the class to the root Descriptions dictionary
@@ -342,7 +342,7 @@ class Create_New_Module(Python):
 
 		# Iterate through the classes inside the classes dictionary
 		for class_dictionary in self.classes["Dictionary"].values():
-			# Define the class name variable for easier typing
+			# Define the class name variable for faster typing
 			class_name = class_dictionary["Name"]
 
 			# Show the name of the class and an opening bracket

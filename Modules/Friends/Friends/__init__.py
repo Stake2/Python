@@ -856,7 +856,7 @@ class Friends(object):
 						"Profile": dict_["Profile"]
 					}
 
-					# Define the file for easier typing
+					# Define the file for faster typing
 					file = dict_["Profile"]
 
 					# Define the File dictionary and size
@@ -1220,7 +1220,7 @@ class Friends(object):
 
 				# If the information item is "Origin social network"
 				if information_item["Name"] == "Origin social network":
-					# Define the genders list for easier typing
+					# Define the genders list for faster typing
 					genders = self.Language.texts["genders, type: list"]
 
 					# Iterate through the genders list

@@ -1,11 +1,11 @@
 {
 	"Show text": {
-		"en": "Manage Game Media Network",
-		"pt": "Gerenciar Rede de Jogos (Game Network)"
+		"en": "Manage the Game Network",
+		"pt": "Gerenciar a Rede de Jogos (Game Network)"
 	},
 	"Play": {
-		"en": "Play",
-		"pt": "Jogar"
+		"en": "Choose a game to play",
+		"pt": "Escolher um jogo para jogar"
 	},
 	"Manage": {
 		"en": "Manage the [Game Information] Database and [Play History]",

@@ -380,7 +380,7 @@ class Project_Zomboid(object):
 
 			# ---------- #
 
-			# Define some variables for easier typing
+			# Define some variables for faster typing
 			numbers = survivor["Diary"]["Numbers"]
 
 			year = str(numbers["Year"])

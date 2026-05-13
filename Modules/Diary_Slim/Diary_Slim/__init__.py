@@ -298,7 +298,7 @@ class Diary_Slim():
 			"External statistics"
 		]
 
-		# Define the folder for easier typing
+		# Define the folder for faster typing
 		folder = self.diary_slim["Folders"]["Data"]
 
 		# Iterate through the names list
@@ -333,7 +333,7 @@ class Diary_Slim():
 
 		# ---------- #
 
-		# Define the folder for easier typing
+		# Define the folder for faster typing
 		folder = self.diary_slim["Folders"]["Data"]["Header"]
 
 		# Define the "Header" files
@@ -356,7 +356,7 @@ class Diary_Slim():
 			"Texts"
 		]
 
-		# Define the folder for easier typing
+		# Define the folder for faster typing
 		folder = self.diary_slim["Folders"]["Data"]["Texts"]
 
 		for name in names:
@@ -373,7 +373,7 @@ class Diary_Slim():
 			"Statistics"
 		]
 
-		# Define the folder for easier typing
+		# Define the folder for faster typing
 		folder = self.diary_slim["Folders"]["Data"]["External statistics"]
 
 		for name in names:
@@ -390,7 +390,7 @@ class Diary_Slim():
 			"History"
 		]
 
-		# Define the folder for easier typing
+		# Define the folder for faster typing
 		folder = self.diary_slim["Folders"]["Years"]
 
 		for name in names:
@@ -542,7 +542,7 @@ class Diary_Slim():
 
 			self.File.Create(folders["Year"])
 
-			# Define the file variable for easier typing
+			# Define the file variable for faster typing
 			file = folders["Year"]
 
 			# If the file is not empty
@@ -740,13 +740,13 @@ class Diary_Slim():
 
 		# ---------- #
 
-		# Define the "current_month" variable for easier typing
+		# Define the "current_month" variable for faster typing
 		self.current_month = self.diary_slim["Current year"]["Month"]
 
 		# Get the current Diary Slim file
 		self.diary_slim["Current year"]["Current Diary Slim file"] = self.Current_Diary_Slim()["File"]
 
-		# Define the "current_year" variable for easier typing
+		# Define the "current_year" variable for faster typing
 		self.current_year = self.diary_slim["Current year"]
 
 	def Current_Diary_Slim(self, current_year = None, date = None, current_diary_slim = True):
@@ -765,7 +765,7 @@ class Diary_Slim():
 		# Get the "Diary Slim" dictionary
 		dictionary = self.Make_Diary_Slim_Dictionary(date, current_year)
 
-		# Define the months and values variables for easier typing
+		# Define the months and values variables for faster typing
 		months = self.diary_slim["Current year"]["Year"]["Months"]
 		values = list(months.values())
 
@@ -810,7 +810,7 @@ class Diary_Slim():
 
 		# ---------- #
 
-		# Define the date variables for easier typing
+		# Define the date variables for faster typing
 		datetime = date["Timezone"]["DateTime"]
 		units = datetime["Units"]
 		texts = datetime["Texts"]
@@ -863,7 +863,7 @@ class Diary_Slim():
 			"Dictionary": {}
 		}
 
-		# Define the "Texts.json" file variable for easier typing
+		# Define the "Texts.json" file variable for faster typing
 		file = self.diary_slim["Folders"]["Data"]["Texts"]["Texts"]
 
 		# If the "Texts.json" file is not empty

@@ -23,7 +23,6 @@
 		"en": "Time that you will be hungry",
 		"pt": "Horário em que você terá fome"
 	},
-	"raw_times, en - pt": "Raw times - Tempos brutos",
 	"hours": {
 		"en": "hours",
 		"pt": "horas"
@@ -40,20 +39,20 @@
 		"en": "Play alarm sound when you are hungry",
 		"pt": "Tocar som de alarme quando você estiver com fome"
 	},
-	"times_taken_from_the_times_file": {
-		"en": "Times taken from the times file",
-		"pt": "Horários retirados do arquivo de horários"
+	"the_times_were_obtained_from_the_times_file": {
+		"en": "The times were obtained from the times file",
+		"pt": "Os horários foram obtidos do arquivo de horários"
 	},
-	"times_registered_into_the_times_file": {
-		"en": "Times registered into the times file",
-		"pt": "Horários registrados no arquivo de horários"
+	"the_times_were_recorded_in_the_times_file": {
+		"en": "The times were recorded in the times file",
+		"pt": "Os horários foram registrados no arquivo de horários"
 	},
-	"set": {
-		"en": "Defines the time a meal was eaten using the {module} module",
-		"pt": "Define a hora em que uma refeição foi consumida usando o módulo {module}"
+	"register_the_meal_times": {
+		"en": "Registers your meal times using the \"{module}\" module",
+		"pt": "Registra os horários das suas refeiçõe usando o módulo \"{module}\""
 	},
-	"check": {
-		"en": "Shows the time a meal was eaten using the {module} module",
-		"pt": "Mostra a hora em que uma refeição foi consumida usando o módulo {module}"
+	"show_the_meal_times": {
+		"en": "Shows your meal times using the \"{module}\" module",
+		"pt": "Mostra os horários das suas refeições usando o módulo \"{module}\""
 	}
 }

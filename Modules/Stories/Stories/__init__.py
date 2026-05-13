@@ -2326,7 +2326,7 @@ class Stories(object):
 				"select_text": self.language_texts["select_an_additional_author"] # The select text telling the user to select an additional author
 			}
 
-			# Define the "finish selection" variable for easier typing
+			# Define the "finish selection" variable for faster typing
 			finish_selection = "[Finish selection]"
 
 			# Add the "[Finish selection]" text to the list of options
@@ -2723,7 +2723,7 @@ class Stories(object):
 		# Define the chapter number with leading zeroes
 		chapter["Numbers"]["Leading zeroes"] = str(self.Text.Add_Leading_Zeroes(chapter["Number"]))
 
-		# Create a shortcut to the chapter titles dictionary for easier typing
+		# Create a shortcut to the chapter titles dictionary for faster typing
 		chapter_titles = self.story["Chapters"]["Lists"]["Titles"]
 
 		# Iterate through the language keys and dictionaries

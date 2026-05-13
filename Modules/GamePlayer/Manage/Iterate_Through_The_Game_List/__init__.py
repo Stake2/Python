@@ -131,7 +131,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				# Select the game and define its variables, returning the game dictionary (without asking the user to select the game)
 				dictionary = self.Select_Game(dictionary)
 
-				# Create a shortcut to the "Game" dictionary for easier typing
+				# Create a shortcut to the "Game" dictionary for faster typing
 				game = dictionary["Game"]
 
 				# ----- #
@@ -395,7 +395,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 	def Check_If_Shortcut_Exists(self):
 		# If the game is not a remote game
 		if game["States"]["Remote game"] == False:
-			# Define the "file" variable for easier typing
+			# Define the "file" variable for faster typing
 			file = game["Files"]["Shortcut"]["File"]
 
 			# If the file does not exist
@@ -422,7 +422,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 				input()
 
 	def Move_Gaming_Time_Files(self):
-		# Define some folder variables for easier typing
+		# Define some folder variables for faster typing
 		played_folder = game["Folders"]["Played"]["root"]
 		gaming_time_folder = game["Folders"]["Gaming time"]["root"]
 
@@ -458,7 +458,7 @@ class Iterate_Through_The_Game_List(GamePlayer):
 		# Re-select the game to update the gaming time dictionary
 		self.dictionary = self.Select_Game(self.dictionary)
 
-		# Define the "game" variable for easier typing
+		# Define the "game" variable for faster typing
 		game = self.dictionary["Game"]
 
 	def Fix_Sub_Games(self):
@@ -469,10 +469,10 @@ class Iterate_Through_The_Game_List(GamePlayer):
 			# Define the "Hamlet" sub-game
 			self.dictionary = self.Define_Sub_Games(self.dictionary, sub_game_title = "Hamlet")
 
-			# Define the "game" variable for easier typing
+			# Define the "game" variable for faster typing
 			game = self.dictionary["Game"]
 
-			# Define the "sub-game" variable for easier typing
+			# Define the "sub-game" variable for faster typing
 			sub_game = game["Sub-game"]
 
 			# Get the sub-game played entries

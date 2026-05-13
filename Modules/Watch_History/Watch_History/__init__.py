@@ -2961,10 +2961,10 @@ class Watch_History(object):
 					# Remove the "Covers" folder
 					folders.remove("Covers")
 
-				# Define the language texts dictionary variable for easier typing
+				# Define the language texts dictionary variable for faster typing
 				language_texts = self.Language.language_texts
 
-				# Define the dictionary variable for easier typing
+				# Define the dictionary variable for faster typing
 				folders_dictionary = media["Folders"]["Media"]
 
 				for name in folders:
@@ -5550,10 +5550,10 @@ class Watch_History(object):
 		return entry_text
 
 	def Define_Media_Item_Text(self, dictionary, media_episode_text = None):
-		# Define a local version of the media dictionary for easier typing
+		# Define a local version of the media dictionary for faster typing
 		media = dictionary["Media"]
 
-		# Define the local "of the" text for easier typing
+		# Define the local "of the" text for faster typing
 		of_the_text = dictionary["Media type"]["Genders"][self.language["Small"]]["of_the"]
 
 		# Define the list of "series types" texts
@@ -5688,10 +5688,10 @@ class Watch_History(object):
 		return text
 
 	def Show_Media_Information(self, dictionary):
-		# Define a local version of the media dictionary for easier typing
+		# Define a local version of the media dictionary for faster typing
 		media = dictionary["Media"]
 
-		# Define the singular media type variable for easier typing
+		# Define the singular media type variable for faster typing
 		singular_media_type = dictionary["Media type"]["Singular"][self.language["Small"]]
 
 		# Define the header text
@@ -5759,7 +5759,7 @@ class Watch_History(object):
 				"Finished watching text" in media and
 				media["Finished watching text"] != ""
 			):
-				# Get the finished watching text for easier typing
+				# Get the finished watching text for faster typing
 				text = media["Finished watching text"]
 
 				# Replace the ":\n" texts to add tabs
@@ -5802,7 +5802,7 @@ class Watch_History(object):
 				print()
 				print(self.separators["3"])
 
-			# Define the unit text variable for easier typing
+			# Define the unit text variable for faster typing
 			unit_text = self.Text.Capitalize(media["Texts"]["unit"][self.language["Small"]])
 
 			# If the media item is a single unit one
@@ -6127,7 +6127,7 @@ class Watch_History(object):
 				"Finished watching text" in media["Item"] and
 				media["Item"]["Finished watching text"] != ""
 			):
-				# Get the finished watching text for easier typing
+				# Get the finished watching text for faster typing
 				text = media["Item"]["Finished watching text"]
 
 				# Replace the ":\n" texts to add tabs
@@ -6244,7 +6244,7 @@ class Watch_History(object):
 
 			# If this is the first media the user watches in the year
 			if media["States"]["First entry in year"] == True:
-				# Define the container text for easier typing
+				# Define the container text for faster typing
 				container = media["Texts"]["container"][self.language["Small"]]
 
 				# If the media is not a video channel, make the container lowercase
@@ -6275,7 +6275,7 @@ class Watch_History(object):
 
 			# If this is the first media type the user watches in the year (first anime, cartoon, series, movie, or video)
 			if media["States"]["First media type entry in year"] == True:
-				# Define the container text for easier typing
+				# Define the container text for faster typing
 				container = media["Texts"]["container"][self.language["Small"]]
 
 				# If the media is a video channel, make the container lowercase

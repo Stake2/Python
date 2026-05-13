@@ -1,9 +1,9 @@
-# Food_Time.py
+# Meal_Times.py
 
 # Import the "importlib" module
 import importlib
 
-class Food_Time():
+class Meal_Times():
 	def __init__(self):
 		# Import the classes
 		self.Import_Classes()
@@ -21,15 +21,16 @@ class Food_Time():
 		# Set the default value of the "register" switch as on
 		self.register_time = True
 
-		# If this module has the "arguments" variable, which was received from the "Module_Selector.py" module
+		# If the dictionary of arguments is present inside this class
 		if hasattr(self, "arguments") == True:
 			# Parse the arguments
+			# (The dictionary of arguments was received from the "Module_Selector" module)
 			self.Parse_Arguments()
 
-		self.registered_text = self.language_texts["times_taken_from_the_times_file"]
+		self.registered_text = self.language_texts["the_times_were_obtained_from_the_times_file"]
 
 		if self.register_time == True:
-			self.registered_text = self.language_texts["times_registered_into_the_times_file"]
+			self.registered_text = self.language_texts["the_times_were_recorded_in_the_times_file"]
 
 			self.Get_Time()
 			self.Set_Timer()
@@ -161,7 +162,9 @@ class Food_Time():
 					self.times[time_type]["Texts"][language] = prefix + self.texts[text_key][language]
 
 	def Parse_Arguments(self):
+		# If the "Verbose" switch is True
 		if self.switches["Verbose"] == True:
+			# Show the dictionary of arguments
 			print()
 			print(self.Language.language_texts["arguments, title()"] + ":")
 			print()
@@ -169,23 +172,23 @@ class Food_Time():
 			print()
 			print(self.separators["5"])
 
-		# Get the arguments from the "Module_Selector.py" module
+		# Iterate through the dictionary of arguments which was received from the "Module_Selector" module
 		for key, argument in self.arguments.items():
-			# If the argument is "Set" and it is True
+			# If the argument is "Show the meal times" and it is True
 			if (
-				key == "Set" and
-				argument["Value"] == True
-			):
-				# Then the meal times will be registered
-				self.register_time = True
-
-			# If the argument is "Check" and it is True
-			if (
-				key == "Check" and
+				key == "Show the meal times" and
 				argument["Value"] == True
 			):
 				# Then the meal times will not be registered
 				self.register_time = False
+
+			# If the argument is "Register the meal times" and it is True
+			if (
+				key == "Register the meal times" and
+				argument["Value"] == True
+			):
+				# Then the meal times will be registered
+				self.register_time = True
 
 	def Get_Time(self):
 		# Iterate through time types
@@ -271,7 +274,7 @@ class Food_Time():
 		# Define scheduled task to play alarm sound when the "Will be hungry" time is reached
 		self.parameters = {
 			"task_title": self.language_texts["play_alarm_sound_when_you_are_hungry"],
-			"path": contents["Play_Alarm"]["__init__"],
+			#"path": contents["Play_Alarm"]["__init__"],
 			"start_time": self.times["Will be hungry"]["Object"]
 		}
 

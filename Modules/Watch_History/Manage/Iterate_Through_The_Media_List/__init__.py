@@ -78,7 +78,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 					# Select the media and define its variables, returning the media dictionary (without asking user to select the media)
 					self.dictionary = self.Select_Media(self.dictionary)
 
-					# Define the "media" variable for easier typing
+					# Define the "media" variable for faster typing
 					self.media = self.dictionary["Media"]
 
 					# Define the media items list as the media title for media without a media item list
@@ -97,7 +97,7 @@ class Iterate_Through_The_Media_List(Watch_History):
 						# Define the media item
 						self.dictionary = self.Define_Media_Item(self.dictionary, media_item = self.media_item)
 
-						# Create a shortcut to the "Media" dictionary for easier typing
+						# Create a shortcut to the "Media" dictionary for faster typing
 						self.media = self.dictionary["Media"]
 
 						# Show the media item title

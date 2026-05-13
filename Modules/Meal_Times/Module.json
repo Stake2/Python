@@ -1,0 +1,20 @@
+{
+	"Module": "Meal_Times",
+	"Folders": {
+		"root": "C:/Python/Modules/Meal_Times/",
+		"Texts": {
+			"root": "C:/Python/Files/Meal_Times/"
+		}
+	},
+	"Files": {
+		"Descriptions": "C:/Python/Modules/Meal_Times/Descriptions.json",
+		"Module": "C:/Python/Modules/Meal_Times/Module.json"
+	},
+	"Descriptions": {
+		"Show text": "Registre os horários das suas refeições"
+	},
+	"Classes": {
+		"Dictionary": {},
+		"Descriptions": []
+	}
+}

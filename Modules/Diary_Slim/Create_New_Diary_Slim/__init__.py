@@ -125,7 +125,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			# Define the information text as the "Skipped Diary Slim day" text
 			self.dictionary["Texts"]["Information"] = self.language_texts["skipped_diary_slim_day"]
 
-		# Define the "Date" and "Units" variables for easier typing
+		# Define the "Date" and "Units" variables for faster typing
 		date = self.dictionary["Dates"]["Now"]
 		units = date["Timezone"]["DateTime"]["Units"]
 
@@ -161,13 +161,13 @@ class Create_New_Diary_Slim(Diary_Slim):
 				self.Check_For_Skipped_Diary_Slims()
 
 	def Check_For_Skipped_Diary_Slims(self):
-		# Define the today variable for easier typing
+		# Define the today variable for faster typing
 		today_date = self.date
 
 		# Get the Diary Slim day for today
 		self.dictionary["Dates"]["Today"] = self.Current_Diary_Slim(date = today_date, current_diary_slim = False)["Day"]
 
-		# Define the yesterday variable for easier typing
+		# Define the yesterday variable for faster typing
 		yesterday_date = self.Date.Now(self.date["Object"] - self.Date.Timedelta(days = 1))
 
 		# Get the Diary Slim day for yesterday
@@ -183,7 +183,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			self.dictionary["Yesterday"] not in diary_slims_list and
 			self.date["Units"]["Month"] != 1
 		):
-			# Define the days list for easier typing
+			# Define the days list for faster typing
 			days_list = list(range(1, self.date["Units"]["Month days"] + 1))
 
 			# Create the empty "Skipped Diary Slims" dictionary
@@ -191,7 +191,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 			# Iterate through the days list
 			for day in days_list:
-				# Define the "Units" and "Date" for easier typing
+				# Define the "Units" and "Date" for faster typing
 				units = self.dictionary["Dates"]["Now"]["Timezone"]["DateTime"]["Units"]
 
 				date = self.Date.Now(self.Date.Date(year = int(units["Year"]), month = int(units["Month"]), day = day))
@@ -278,7 +278,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 			self.states["Skipped Diary Slims"]["Checked"] = True
 
 	def Create_Diary_Slim_Header(self):
-		# Define the units and texts variables for easier typing
+		# Define the units and texts variables for faster typing
 		units = self.dictionary["Dates"]["Now"]["Timezone"]["DateTime"]["Units"]
 		texts = self.dictionary["Dates"]["Now"]["Timezone"]["DateTime"]["Texts"]
 
@@ -340,7 +340,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 		# Format the format text with the "format" text
 		type_text += format_text.format(self.Language.language_texts["format"])
 
-		# Define the helper text variable for easier typing
+		# Define the helper text variable for faster typing
 		format_text_helper = self.Language.language_texts["wrong_format_utilize_this_one"]
 
 		# Import the "Re" module
@@ -389,7 +389,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 			# Define the "Creation time" dictionary
 
-			# Define the day, units, and texts variables for easier typing
+			# Define the day, units, and texts variables for faster typing
 			day = deepcopy(self.templates["Day"])
 
 			units = self.dictionary["Dates"]["Now"]["Timezone"]["DateTime"]["Units"]
@@ -538,7 +538,7 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 			# If the Diary Slim file is empty
 			if file_text == []:
-				# Define the verbose and current Diary Slim variables for easier typing
+				# Define the verbose and current Diary Slim variables for faster typing
 				verbose = True
 				current_diary_slim = True
 

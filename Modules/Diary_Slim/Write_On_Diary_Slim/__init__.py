@@ -301,7 +301,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 
 				# If the text response exists inside the answers dictionary
 				if questions[key]["Response"]["Text"] in question["Answers"]:
-					# Define the response variable for easier typing
+					# Define the response variable for faster typing
 					response = questions[key]["Response"]["Text"]
 
 					# Get the answer dictionary
@@ -542,7 +542,7 @@ class Write_On_Diary_Slim(Diary_Slim):
 		# Define the empty texts list
 		texts = []
 
-		# Define the "finish selection" variable for easier typing
+		# Define the "finish selection" variable for faster typing
 		finish_selection = "[Finish selection]"
 
 		# While the option is not the "[Finish selection]" text

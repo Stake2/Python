@@ -445,7 +445,7 @@ class Add_Social_Network(Social_Networks):
 				self.states["Has"]["Additional items"] == True or
 				item in link_types
 			):
-				# Define the "the text" for easier typing
+				# Define the "the text" for faster typing
 				the_text = self.Language.texts["genders, type: dictionary"][self.language["Small"]][item_gender.lower()]["the"]
 
 				# Define the default "user link" dictionary
@@ -811,7 +811,7 @@ class Add_Social_Network(Social_Networks):
 						# Define a local empty dictionary
 						new_settings = {}
 
-						# Define the texts dictionary for easier typing
+						# Define the texts dictionary for faster typing
 						texts_dictionary = self.Language.texts
 
 						# Iterate through the settings list
@@ -930,7 +930,7 @@ class Add_Social_Network(Social_Networks):
 			# Define the local language settings dictionary (with user language keys)
 			language_settings = {}
 
-			# Define the texts dictionary for easier typing
+			# Define the texts dictionary for faster typing
 			texts_dictionary = self.Language.texts
 
 			# Iterate through the settings list
@@ -1021,7 +1021,7 @@ class Add_Social_Network(Social_Networks):
 
 		# Show the information of the social network
 
-		# Define the "information" variable for easier typing
+		# Define the "information" variable for faster typing
 		information = self.social_network["Information"]
 
 		# List the keys of the "Information items" dictionary
@@ -1078,7 +1078,7 @@ class Add_Social_Network(Social_Networks):
 		print(self.Language.language_texts["profile, title()"] + ":")
 		print()
 
-		# Define the "profile" variable for easier typing
+		# Define the "profile" variable for faster typing
 		profile = self.social_network["Profile"]
 
 		# Define the list of keys

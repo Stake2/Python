@@ -438,7 +438,7 @@ class Add_A_New_Friend(Friends):
 					"Profile": dict_["Profile"]
 				}
 
-				# Define the file for easier typing
+				# Define the file for faster typing
 				file = dict_["Profile"]
 
 				# Define the File dictionary and size
@@ -611,7 +611,7 @@ class Add_A_New_Friend(Friends):
 
 		# ---------- #
 
-		# Define the texts dictionary for easier typing
+		# Define the texts dictionary for faster typing
 		texts_dictionary = self.Language.language_texts
 
 		# Define the local social networks dictionary
@@ -655,7 +655,7 @@ class Add_A_New_Friend(Friends):
 			print()
 			print("\t" + social_network + ":")
 
-			# Define the "information" variable for easier typing
+			# Define the "information" variable for faster typing
 			information = social_networks["Dictionary"][social_network]
 
 			# List the keys of the "Information items" dictionary

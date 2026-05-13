@@ -274,7 +274,7 @@ class Update_CSS_Colors(PHP):
 		self.dictionary["Texts"]["Updated text"] = self.dictionary["Texts"]["Colors CSS"]
 
 	def Show_Information(self):
-		# Define the texts variable for easier typing
+		# Define the texts variable for faster typing
 		texts = self.dictionary["Texts"]
 
 		# Update the "File was updated" state
