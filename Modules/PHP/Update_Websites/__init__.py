@@ -89,6 +89,10 @@ class Update_Websites(PHP):
 		# Close the server as all selected or defined websites were updated
 		self.Manage_Server(close = True, separator_number = 0)
 
+		# Show a five dash space separator
+		print()
+		print(self.separators["5"])
+
 		# Open Git to commit the changes to the repository of the websites
 		self.Open_Git()
 
@@ -427,11 +431,11 @@ class Update_Websites(PHP):
 				# Show it with a tab
 				print("\t" + website_title)
 
-		# Define the "w" (website) variable
-		w = 1
+		# Define the current website number
+		current_website_number = 1
 
-		# Define the length of the list of websites for faster typing
-		length = str(len(list(self.dictionary["Websites"]["To update"])))
+		# Get total number of websites to update
+		total_websites = str(len(list(self.dictionary["Websites"]["To update"])))
 
 		# Define the list of dictionary keys
 		keys = list(self.dictionary["Websites"]["Dictionary"].keys())
@@ -448,9 +452,9 @@ class Update_Websites(PHP):
 
 			# If there are more websites to update
 			if self.states["One website"] == False:
-				# Show the "Number:" text, the number of the current website, and the total number of websites
-				print(self.Language.language_texts["number, title()"] + ":")
-				print("\t" + str(w) + "/" + length)
+				# Show the "Website number" text, the number of the current website, and the total number of websites to update
+				print(self.language_texts["website_number"] + ":")
+				print("\t" + str(current_website_number) + "/" + total_websites)
 				print()
 
 			# Show the "Updating this website:" text
@@ -479,18 +483,18 @@ class Update_Websites(PHP):
 				print(text + ":")
 				print("\t" + link)
 
-				# Open the link if the "testing" switch is False
+				# If the "testing" switch is False
 				if self.switches["Testing"] == False:
-					# Wait for 1 milisecond before opening the next link
-					self.Date.Sleep(1)
+					# Wait for 2 seconds before opening the next link of the website
+					self.Date.Sleep(2)
 
 			# If the website is not the last one
 			if key != keys[-1]:
 				# Ask for user input before continuing to the next website
 				self.Input.Type(self.Language.language_texts["continue, title()"])
 
-			# Add one to the "w" number
-			w += 1
+			# Add one to the current website number
+			current_website_number += 1
 
 		# Show a five dash space separator
 		print()
@@ -511,34 +515,47 @@ class Update_Websites(PHP):
 			print(input_text + ":")
 
 	def Open_Git(self):
+		# Define the root folder used to list the files
+		root_folder = self.folders["Python"]["Shortcuts"]["Bats"]["root"]
+
 		# Get the list of files on the apps "Shortcuts" folder
-		files = self.Folder.Contents(self.folders["Python"]["Shortcuts"]["root"])["File"]["List"]
+		files = self.Folder.Contents(root_folder)["File"]["List"]
+
+		# Define the list of target file names
+		target_file_names = [
+			"GitHub",
+			"Git",
+			"Sites e PHP"
+		]
+
+		# Define a list of allowed extensions
+		allowed_extensions = [
+			"exe",
+			"bat"
+		]
 
 		# Iterate through the list of files
 		for file in files:
-			# If the "Git" or "GitHub" text is inside the file
+			# Get the file name
+			name = self.File.Name(file)
+
+			# Get the file extension without the dot
+			extension = self.File.Extension(file, remove_dot = True)
+
+			# If the file name is inside the list of target file names
+			# And the file extension is inside the list of allowed extensions
 			if (
-				"Git" in file or
-				"GitHub" in file
+				name in target_file_names and
+				extension in allowed_extensions
 			):
-				# If the "bat" or "exe" extension is in the file
-				if (
-					".bat" in file or
-					".exe" in file
-				):
-					# Define the Git file as the current file
-					git_file = file
+				# Then define the Git file as the current file
+				git_file = file
 
-		# If the "Testing" switch is False, open the Git file
-		if self.switches["Testing"] == False:
-			self.System.Open(git_file, verbose = False)
+		# Open the Git file
+		self.System.Open(git_file)
 
-		# Show a five dash space separator
-		print()
-		print(self.separators["5"])
-
-		# Define the input text to ask for user input when the the user finish pushing the changes to Github
-		input_text = self.language_texts["press_enter_when_you_finish_pushing_the_changes_to_the_github_repository"]
+		# Define the input text to ask for input when the the user finishes pushing the changes to the GitHub repository
+		input_text = self.language_texts["press_enter_when_you_finish_pushing_the_changes_to_the_repository_on_github"]
 
 		# If the "Testing" switch is False
 		if self.switches["Testing"] == False:

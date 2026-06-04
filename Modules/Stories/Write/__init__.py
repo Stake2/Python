@@ -238,6 +238,49 @@ class Write(Stories):
 
 		# ---------- #
 
+		# Define the local writing mode as "Revise"
+		writing_mode = "Revise"
+
+		# Create a shortcut to the "Revise" backup writing mode dictionary
+		writing_dictionary = self.story["Writing (backup)"][writing_mode]
+
+		# Get the current chapter of the "Revise" writing mode
+		current_chapter = writing_dictionary["Current chapter"]
+
+		# Create a shortcut to the "Status" dictionary
+		status = writing_dictionary["Status"]
+
+		# Create a shortcut to the "Translate" backup writing mode dictionary
+		translate = self.story["Writing (backup)"]["Translate"]
+
+		# If the chapter number is not the last chapter
+		# And the current chapter has been revised ("Finished" is True)
+		if (
+			current_chapter != total_chapters and
+			status["Finished"] == True
+		):
+			# If the current chapter to revise is the current chapter to translate plus one
+			# And the current chapter to translate has been translated
+			# Or
+			# The current chapter to revise is the current chapter to translate
+			# And the current chapter to translate has not been translated
+			# -
+			# (These two conditions mean that the user needs to translate the current chapter before revising the next chapter
+			# Example: The user revised the chapter 1 but did not translated it, so they need to translate it before revising the chapter 2)
+			if (
+				(current_chapter == translate["Current chapter"] + 1 and
+				translate["Status"]["Finished"] == True)
+				or
+				(current_chapter == translate["Current chapter"] and
+				translate["Status"]["Finished"] == False)
+			):
+				# Then remove the "Revise" writing mode from the list of options and language options
+				# (The current chapter has been revised but not yet translated)
+				parameters["options"].remove(writing_mode)
+				parameters["language_options"].pop(1)
+
+		# ---------- #
+
 		# Define the local writing mode as "Translate"
 		writing_mode = "Translate"
 
@@ -262,7 +305,8 @@ class Write(Stories):
 		# (That means the user needs to revise the current chapter before translating it)
 		if (
 			(current_chapter == total_chapters and
-			status["Finished"] == True) or
+			status["Finished"] == True)
+			or
 			(current_chapter != total_chapters and
 			current_chapter == revise["Current chapter"] and
 			revise["Status"]["Finished"] == False)
@@ -408,7 +452,7 @@ class Write(Stories):
 			self.chapter["Files"][small_language] = self.story["Folders"]["Chapters"][full_language]["root"]
 
 			# Sanitize the chapter title with number
-			sanitized_chapter_title = self.Sanitize(chapter_title_with_number, restricted_characters = True)
+			sanitized_chapter_title = self.File.Sanitize(chapter_title_with_number, restricted_characters = True)
 
 			# Add it to the "Sanitized" key
 			self.chapter["Titles"]["Sanitized"][small_language] = sanitized_chapter_title
@@ -524,7 +568,8 @@ class Write(Stories):
 			# (The chapter files are always opened in both languages for the "Translate" writing mode)
 			if (
 				(self.writing_mode in ["Write", "Revise"] and
-				small_language == self.chapter["Writing language"]["Small"]) or
+				small_language == self.chapter["Writing language"]["Small"])
+				or
 				(self.writing_mode == "Translate")
 			):
 				# Get the current language translated to the user language
@@ -601,7 +646,8 @@ class Write(Stories):
 			# If the list of lines is empty
 			# Or the first line of the file is not "Dates of the chapter:"
 			if (
-				lines == [] or
+				lines == []
+				or
 				lines[0] != dates_of_the_chapter
 			):
 				# Insert the "Dates of the chapter:" text at the beginning of the list of lines
@@ -699,7 +745,8 @@ class Write(Stories):
 				if (
 					(key == "Write" and
 					times != {} and
-					times["Finished"] != "") or
+					times["Finished"] != "")
+					or
 					(key in ["Revise", "Translate"] and
 					writing_dictionary["List"] != [])
 				):
@@ -852,7 +899,8 @@ class Write(Stories):
 		# If the writing mode is "Translate"
 		# Or the "Testing" switch is True
 		if (
-			self.writing_mode == "Translate" or
+			self.writing_mode == "Translate"
+			or
 			self.switches["Testing"] == True
 		):
 			# Show a three space separator
@@ -1716,9 +1764,10 @@ class Write(Stories):
 		# Or the writing mode is "Revise"
 		# And the "Update chapter titles" state is True
 		if (
-			self.writing_mode == "Write" or
-			self.writing_mode == "Revise" and
-			self.states["Update chapter titles"] == True
+			(self.writing_mode == "Write")
+			or
+			(self.writing_mode == "Revise" and
+			self.states["Update chapter titles"] == True)
 		):
 			# Show a five dash space separator
 			print()
@@ -1760,9 +1809,10 @@ class Write(Stories):
 			# Or the writing mode is "Revise"
 			# And the "Update chapter titles" state is True
 			if (
-				self.writing_mode == "Write" or
-				self.writing_mode == "Revise" and
-				self.states["Update chapter titles"] == True
+				(self.writing_mode == "Write")
+				or
+				(self.writing_mode == "Revise" and
+				self.states["Update chapter titles"] == True)
 			):
 				# If the "Testing" switch is False
 				if self.switches["Testing"] == False:
@@ -1831,9 +1881,10 @@ class Write(Stories):
 				# Or the writing mode is "Revise"
 				# And the "Update chapter titles" state is True
 				if (
-					self.writing_mode == "Write" or
-					self.writing_mode == "Revise" and
-					self.states["Update chapter titles"] == True
+					(self.writing_mode == "Write")
+					or
+					(self.writing_mode == "Revise" and
+					self.states["Update chapter titles"] == True)
 				):
 					# Edit the language chapter titles file with the defined text to write and the write mode
 					self.File.Edit(titles_file, text_to_write, write_mode)
@@ -1849,7 +1900,7 @@ class Write(Stories):
 			destination_folder = self.story["Folders"]["Chapters"][full_language]["root"]
 
 			# Sanitize the chapter title with number
-			sanitized_chapter_title = self.Sanitize(self.chapter["Titles"]["With number"][small_language], restricted_characters = True)
+			sanitized_chapter_title = self.File.Sanitize(self.chapter["Titles"]["With number"][small_language], restricted_characters = True)
 
 			# Define the destination file
 			destination_file = destination_folder + sanitized_chapter_title + ".txt"
@@ -1859,10 +1910,11 @@ class Write(Stories):
 			# Or the writing mode is "Revise"
 			# And the "Update chapter titles" state is True
 			if (
-				self.writing_mode == "Write" and
-				small_language == self.language["Small"] or
-				self.writing_mode == "Revise" and
-				self.states["Update chapter titles"] == True
+				(self.writing_mode == "Write" and
+				small_language == self.language["Small"])
+				or
+				(self.writing_mode == "Revise" and
+				self.states["Update chapter titles"] == True)
 			):
 				# Rename the chapter file
 				self.File.Move(source_file, destination_file)
@@ -2300,9 +2352,9 @@ class Write(Stories):
 
 		# Iterate through the writing modes and writing mode dictionaries
 		for writing_mode, writing_mode_dictionary in self.stories["Writing modes"]["Dictionary"].items():
-			# If the writing mode is not the selected one
+			# If the current writing mode is not the selected one
 			if writing_mode != self.writing_mode:
-				# Then redefine its dictionary to the backup version of it
+				# Then redefine the writing mode dictionary to its backup version
 				writing_copy[writing_mode] = self.story["Writing (backup)"][writing_mode]
 
 		# If the root writing mode is "Revise"
@@ -2509,8 +2561,9 @@ class Write(Stories):
 			# And the writing mode is either "Write" or "Revise"
 			# Or the writing mode is "Translate"
 			if (
-				self.states["Finished writing"] == True and
-				self.writing_mode in ["Write", "Revise"] or
+				(self.states["Finished writing"] == True and
+				self.writing_mode in ["Write", "Revise"])
+				or
 				self.writing_mode == "Translate"
 			):
 				# Add the "The chapter with the titles" text to the task description

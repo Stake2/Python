@@ -468,7 +468,7 @@ class Add_A_New_Media(Watch_History):
 
 		# Create the media (item) folders
 		media["Folders"] = {
-			"root": self.dictionary["Media type"]["Folders"]["Media information"]["root"] + self.Sanitize(self.media["Title"], restricted_characters = True) + "/"
+			"root": self.dictionary["Media type"]["Folders"]["Media information"]["root"] + self.File.Sanitize(self.media["Title"], restricted_characters = True) + "/"
 		}
 
 		self.Folder.Create(media["Folders"]["root"])

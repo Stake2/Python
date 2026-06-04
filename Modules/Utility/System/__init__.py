@@ -1,32 +1,23 @@
 # System.py
 
+# Import some useful modules
 import os
 import win32com.client
 import subprocess
 import time
 
+# Define the main "System" class
 class System():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Define the variables of the class
+		self.Define_Variables()
 
-		# Define the folders of the module
-		self.Define_Folders(object = self)
-
-		# Define the "Switches" dictionary
-		self.Define_Switches()
-
-		# Define the texts of the module
-		self.Define_Texts()
-
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# ---------- #
-
 		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		classes = [
+			"Modules",
 			"Global_Switches",
 			"Folder",
 			"File",
@@ -34,21 +25,21 @@ class System():
 			"Text"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# ---------- #
 
@@ -58,11 +49,18 @@ class System():
 		# Import the "system" dictionary from the "Language" class
 		self.system = self.Language.system
 
-	def Define_Switches(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, utility_mode = True)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -70,6 +68,34 @@ class System():
 		self.language_texts = self.Language.Item(self.texts)
 
 	def Verbose(self, text, item = None, verbose = None, first_space = True, item_tab = "\t"):
+		import inspect
+
+		# Define the verbose text
+		verbose_text = ""
+
+		# If the "first space" parameter is True
+		if first_space == True:
+			# Add a first space
+			verbose_text += "\n"
+
+		# Get the name of the method which ran this method (the "Verbose" one)
+		runner_method_name = inspect.stack()[1][3]
+
+		# Add the module name (System) and the method which ran this method (the "Verbose" one) to the verbose text
+		verbose_text += self.module["Module"] + "." + runner_method_name + "():"
+
+		# If the tab is not in the text, add it
+		if "\t" not in text[0]:
+			text = "\t" + text
+
+		# Add the text to the verbose text
+		verbose_text += "\n" + text + ":"
+
+		# If the item is not None, show it
+		if item != None:
+			# Add the verbose item with the item tab to the verbose text
+			verbose_text += "\n" + item_tab + item
+
 		# If the "Verbose" switch is True
 		# And the verbose parameter is None
 		# Or the verbose parameter is True
@@ -78,30 +104,11 @@ class System():
 			verbose == None or
 			verbose == True
 		):
-			import inspect
-
-			# Get the name of the method which ran this method (the "Verbose" one)
-			runner_method_name = inspect.stack()[1][3]
-
-			# If the "first space" parameter is True
-			if first_space == True:
-				# Show the first space separator
-				print()
-
-			# Show the module name (Text) and the method which ran this method (the "Verbose" one)
-			print(self.module["Name"] + "." + runner_method_name + "():")
-
-			# If the tab is not in the text, add it
-			if "\t" not in text[0]:
-				text = "\t" + text
-
 			# Show the verbose text
-			print(text + ":")
+			print(verbose_text)
 
-			# If the item is not None, show it
-			if item != None:
-				# Show the verbose item with the item tab
-				print(item_tab + item)
+		# Return the verbose text
+		return verbose_text
 
 	def Open(self, item, open = False, commands = [], verbose = True, first_space = True):
 		# Import the validators module
@@ -341,7 +348,7 @@ class System():
 			# If the "://" text is not in the shortcut target
 			if "://" not in dictionary["Target"]:
 				# Sanitize the target path
-				shortcut["Target"] = self.Sanitize(shortcut["Target"])
+				shortcut["Target"] = self.File.Sanitize(shortcut["Target"])
 
 				# Define the extension as "lnk" (link)
 				shortcut["Extension"] = "lnk"
@@ -369,7 +376,7 @@ class System():
 			shortcut["Name"] = self.File.Name(shortcut["File"])
 
 			# Get the target path from the already existing shortcut
-			shortcut["Target"] = self.Sanitize(shortcut_file.TargetPath)
+			shortcut["Target"] = self.File.Sanitize(shortcut_file.TargetPath)
 
 			# Get the extension from the file path
 			shortcut["Extension"] = "." + dictionary["File"].split(".")[-1]

@@ -199,7 +199,7 @@ class Create_New_Module(Python):
 		# Iterate through the classes in the classes list
 		for class_name in self.classes["List"]:
 			# Define and create the class folder
-			self.classes["Dictionary"][class_name]["Folder"] = self.module_folder + self.Sanitize(class_name, restricted_characters = True) + "/"
+			self.classes["Dictionary"][class_name]["Folder"] = self.module_folder + self.File.Sanitize(class_name, restricted_characters = True) + "/"
 			self.Folder.Create(self.classes["Dictionary"][class_name]["Folder"])
 
 			# Define and create the class Python init file

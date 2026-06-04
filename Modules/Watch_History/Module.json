@@ -1,74 +1,69 @@
 {
 	"Module": "Watch_History",
+	"Type": "Usage",
 	"Folders": {
 		"root": "C:/Python/Modules/Watch_History/",
-		"Texts": {
+		"Files": {
 			"root": "C:/Python/Files/Watch_History/"
 		}
 	},
 	"Files": {
+		"Module": "C:/Python/Modules/Watch_History/Module.json",
 		"Descriptions": "C:/Python/Modules/Watch_History/Descriptions.json",
-		"Module": "C:/Python/Modules/Watch_History/Module.json"
+		"Texts": "C:/Python/Files/Watch_History/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar a Rede de Mídias Audiovisuais (Audiovisual Media Network)",
-		"Watch_Media": {
-			"en": "Watch media",
-			"pt": "Assistir mídia"
-		},
-		"Watch_List_Of_Media": {
-			"en": "Watch list of media",
-			"pt": "Assistir lista de mídia"
-		},
-		"Manage": {
-			"en": "Manage the [Media information] database and the [Watched media] history",
-			"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
-		},
-		"View": {
-			"en": "View database",
-			"pt": "Visualizar banco de dados"
-		}
+		"en": "Manage the Audiovisual Media Network",
+		"pt": "Gerenciar a Rede de Mídias Audiovisuais (Audiovisual Media Network)"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 4
+		},
+		"List": [
+			"Watch_Media",
+			"Watch_List_Of_Media",
+			"Manage",
+			"View"
+		],
 		"Dictionary": {
 			"Watch_Media": {
+				"Name": "Watch_Media",
 				"Descriptions": {
-					"en": "Watch media",
-					"pt": "Assistir mídia"
+					"en": "Watch a media",
+					"pt": "Assistir uma mídia"
 				},
-				"Description": "Assistir mídia",
 				"Object": "<class 'Watch_History.Watch_Media.Watch_Media'>"
 			},
 			"Watch_List_Of_Media": {
+				"Name": "Watch_List_Of_Media",
 				"Descriptions": {
-					"en": "Watch list of media",
-					"pt": "Assistir lista de mídia"
+					"en": "Watch a list of media",
+					"pt": "Assistir uma lista de mídias"
 				},
-				"Description": "Assistir lista de mídia",
 				"Object": "<class 'Watch_History.Watch_List_Of_Media.Watch_List_Of_Media'>"
 			},
 			"Manage": {
+				"Name": "Manage",
 				"Descriptions": {
 					"en": "Manage the [Media information] database and the [Watched media] history",
 					"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
 				},
-				"Description": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]",
 				"Object": "<class 'Watch_History.Manage.Manage'>"
 			},
 			"View": {
+				"Name": "View",
 				"Descriptions": {
-					"en": "View database",
-					"pt": "Visualizar banco de dados"
+					"en": "View the database",
+					"pt": "Visualizar o banco de dados"
 				},
-				"Description": "Visualizar banco de dados",
 				"Object": "<class 'Watch_History.View.View'>"
 			}
-		},
-		"Descriptions": [
-			"Assistir mídia",
-			"Assistir lista de mídia",
-			"Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]",
-			"Visualizar banco de dados"
-		]
+		}
 	}
 }

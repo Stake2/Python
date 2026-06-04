@@ -11,16 +11,11 @@ import locale as locale_module
 from encodings.aliases import aliases as encoding_aliases
 from copy import deepcopy
 
+# Define the main "Language" class
 class Language():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self, files = ["Languages"]).folders
-
-		# Define the "Switches" dictionary
-		self.Define_Switches()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Define the lists and dictionaries of the module
 		self.Define_Lists_And_Dictionaries()
@@ -40,41 +35,44 @@ class Language():
 		# Define the browsers dictionary
 		self.Define_Browsers()
 
-		# Define the texts of the module
-		self.Define_Texts()
-
 		# Define the language texts
 		self.Define_Language_Texts()
 
 		# Process the user settings
 		self.Process_Settings()
 
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		# Define a list of classes to import
+		classes = [
+			"Modules",
 			"Global_Switches"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
-	def Define_Switches(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, utility_mode = True)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
@@ -97,6 +95,26 @@ class Language():
 				for switch in self.switches[item]:
 					# Define them as False
 					self.switches[item][switch] = False
+
+		# ---------- #
+
+		# Define the "Texts" dictionary
+		self.texts = self.JSON_To_Python(self.module["Files"]["Texts"])
+
+		# Define the "separators" dictionary
+		self.separators = {}
+
+		# Create separators from one to ten characters
+		for number in range(1, 11):
+			# Define the empty string
+			string = ""
+
+			# Add separators to it
+			while len(string) != number:
+				string += "-"
+
+			# Add the string to the separators dictionary
+			self.separators[str(number)] = string
 
 	def Sanitize(self, path):
 		# Replace double backwards slashes with one forward slash
@@ -130,7 +148,7 @@ class Language():
 
 			# Show the module name (Language) and the method which ran this method (the "Verbose" one)
 			print()
-			print(self.module["Name"] + "." + runner_method_name + "():")
+			print(self.module["Module"] + "." + runner_method_name + "():")
 
 			# Show the verbose text
 			print("\t" + text + ":")
@@ -526,6 +544,10 @@ class Language():
 		}
 
 	def Define_Languages(self):
+		# Define and create the "Languages.json" file
+		self.module["Files"]["Languages"] = self.module["Folders"]["Files"]["root"] + "Languages.json"
+		self.File_Create(self.module["Files"]["Languages"])
+
 		# Get the root languages dictionary
 		self.languages = self.JSON_To_Python(self.module["Files"]["Languages"])
 
@@ -563,6 +585,14 @@ class Language():
 				"Full": full_language,
 				"Translated": translated_languages
 			}
+
+			# Define the "With country" language key
+			dictionary["With country"] = self.languages["With country"][small_language]
+
+			# If the "With country" value language is a list
+			if type(dictionary["With country"]) == list:
+				# Change it to be the first item in the list
+				dictionary["With country"] = dictionary["With country"][0]
 
 			# Define the language dictionary inside the languages "Dictionary" using the small language as a key
 			self.languages["Dictionary"][small_language] = dictionary
@@ -1403,25 +1433,6 @@ class Language():
 
 			return language_texts
 
-	def Define_Texts(self):
-		# Define the "Texts" dictionary
-		self.texts = self.JSON_To_Python(self.module["Files"]["Texts"])
-
-		# Define the "separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the separators dictionary
-			self.separators[str(number)] = string
-
 	def Define_Language_Texts(self):
 		# Get the language texts dictionary
 		self.language_texts = self.Item(self.texts)
@@ -2011,11 +2022,15 @@ class Language():
 		if text_key == "":
 			# Define the text key for the name of the folder
 			text_key = folder_name.lower().replace(" ", "_")
-			
-			# If the "_" (underscore) character is not inside the text key
-			if "_" not in text_key:
-				# Add the ", title()" text to the text key
-				text_key += ", title()"
+
+		# If the "_" (underscore) character is not inside the text key
+		# And the ", title()" text is not inside the text key
+		if (
+			"_" not in text_key and
+			", title()" not in text_key
+		):
+			# Add the ", title()" text to the text key
+			text_key += ", title()"
 
 		# If the key is present inside the "language texts" dictionary of the "Language" class (this class)
 		if text_key in self.language_texts:

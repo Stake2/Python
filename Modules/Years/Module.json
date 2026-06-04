@@ -1,61 +1,60 @@
 {
 	"Module": "Years",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/Years/",
-		"Texts": {
-			"root": "C:/Apps/Module files/Years/"
+		"root": "C:/Python/Modules/Years/",
+		"Files": {
+			"root": "C:/Python/Files/Years/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Years/Descriptions.json",
-		"Module": "C:/Apps/Modules/Years/Module.json"
+		"Module": "C:/Python/Modules/Years/Module.json",
+		"Descriptions": "C:/Python/Modules/Years/Descriptions.json",
+		"Texts": "C:/Python/Files/Years/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar os anos",
-		"Verify_Current_Year": {
-			"en": "Verify the current year (for the start of the year)",
-			"pt": "Verificar o ano atual (para o começo do ano)"
-		},
-		"Create_Year_Summary": {
-			"en": "Create a year summary for the current year (for the end of the year)",
-			"pt": "Criar um resumo de ano para o ano atual (para o fim do ano)"
-		},
-		"Show_Year_Information": {
-			"en": "Show information about the year",
-			"pt": "Mostrar informações sobre o ano"
-		}
+		"en": "Manage your years",
+		"pt": "Gerenciar os seus anos"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 3
+		},
+		"List": [
+			"Verify_Current_Year",
+			"Create_Year_Summary",
+			"Show_Year_Information"
+		],
 		"Dictionary": {
 			"Verify_Current_Year": {
+				"Name": "Verify_Current_Year",
 				"Descriptions": {
 					"en": "Verify the current year (for the start of the year)",
 					"pt": "Verificar o ano atual (para o começo do ano)"
 				},
-				"Description": "Verificar o ano atual (para o começo do ano)",
 				"Object": "<class 'Years.Verify_Current_Year.Verify_Current_Year'>"
 			},
 			"Create_Year_Summary": {
+				"Name": "Create_Year_Summary",
 				"Descriptions": {
 					"en": "Create a year summary for the current year (for the end of the year)",
 					"pt": "Criar um resumo de ano para o ano atual (para o fim do ano)"
 				},
-				"Description": "Criar um resumo de ano para o ano atual (para o fim do ano)",
 				"Object": "<class 'Years.Create_Year_Summary.Create_Year_Summary'>"
 			},
 			"Show_Year_Information": {
+				"Name": "Show_Year_Information",
 				"Descriptions": {
 					"en": "Show information about the year",
 					"pt": "Mostrar informações sobre o ano"
 				},
-				"Description": "Mostrar informações sobre o ano",
 				"Object": "<class 'Years.Show_Year_Information.Show_Year_Information'>"
 			}
-		},
-		"Descriptions": [
-			"Verificar o ano atual (para o começo do ano)",
-			"Criar um resumo de ano para o ano atual (para o fim do ano)",
-			"Mostrar informações sobre o ano"
-		]
+		}
 	}
 }

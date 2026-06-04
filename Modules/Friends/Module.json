@@ -1,61 +1,60 @@
 {
 	"Module": "Friends",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/Friends/",
-		"Texts": {
-			"root": "C:/Apps/Module files/Friends/"
+		"root": "C:/Python/Modules/Friends/",
+		"Files": {
+			"root": "C:/Python/Files/Friends/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Friends/Descriptions.json",
-		"Module": "C:/Apps/Modules/Friends/Module.json"
+		"Module": "C:/Python/Modules/Friends/Module.json",
+		"Descriptions": "C:/Python/Modules/Friends/Descriptions.json",
+		"Texts": "C:/Python/Files/Friends/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar amigos",
-		"Open_Friend_File": {
-			"en": "Open friend file",
-			"pt": "Abrir arquivo de amigo"
-		},
-		"Add_A_New_Friend": {
-			"en": "Add a new friend",
-			"pt": "Adicionar um novo amigo"
-		},
-		"Show_Friend_Information": {
-			"en": "Show information of all Friends",
-			"pt": "Mostrar informações de todos os Amigos"
-		}
+		"en": "Manage friends",
+		"pt": "Gerenciar amigos"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 3
+		},
+		"List": [
+			"Open_Friend_File",
+			"Add_A_New_Friend",
+			"Show_Friend_Information"
+		],
 		"Dictionary": {
 			"Open_Friend_File": {
+				"Name": "Open_Friend_File",
 				"Descriptions": {
 					"en": "Open friend file",
 					"pt": "Abrir arquivo de amigo"
 				},
-				"Description": "Abrir arquivo de amigo",
 				"Object": "<class 'Friends.Open_Friend_File.Open_Friend_File'>"
 			},
 			"Add_A_New_Friend": {
+				"Name": "Add_A_New_Friend",
 				"Descriptions": {
 					"en": "Add a new friend",
 					"pt": "Adicionar um novo amigo"
 				},
-				"Description": "Adicionar um novo amigo",
 				"Object": "<class 'Friends.Add_A_New_Friend.Add_A_New_Friend'>"
 			},
 			"Show_Friend_Information": {
+				"Name": "Show_Friend_Information",
 				"Descriptions": {
 					"en": "Show information of all Friends",
 					"pt": "Mostrar informações de todos os Amigos"
 				},
-				"Description": "Mostrar informações de todos os Amigos",
 				"Object": "<class 'Friends.Show_Friend_Information.Show_Friend_Information'>"
 			}
-		},
-		"Descriptions": [
-			"Abrir arquivo de amigo",
-			"Adicionar um novo amigo",
-			"Mostrar informações de todos os Amigos"
-		]
+		}
 	}
 }

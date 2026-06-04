@@ -1222,9 +1222,9 @@
 		"pt": "Lista de redes sociais",
 		"en": "List of social networks"
 	},
-	"i_made_tweets_on_{}, type: template": {
-		"pt": "Fiz tweets no {}, postagens no {}, {} e {}, postei nos status do {}, nos stories do {} e {}, e no meu servidor do {}",
-		"en": "I made tweets on {}, posts on {}, {} and {}, posted on the {} status, on the stories of {} and {}, and on my server of {}"
+	"i_made_a_tweet_on_{}, type: template": {
+		"pt": "Fiz um tweet no {}, postagens no {}, {} e {}, postei nos status do {}, nos stories do {} e {}, e no meu servidor do {}",
+		"en": "I made a tweet on {}, posts on {}, {} and {}, posted on the {} status, on the stories of {} and {}, and on my server of {}"
 	},
 	"press_enter_when_you_finish_rendering_{}_on_photoshop": {
 		"en": "Press Enter when you finish rendering {} on Photoshop",
@@ -1672,9 +1672,9 @@
 		"en": "Shortcut path",
 		"pt": "Caminho do atalho"
 	},
-	"whites, title()": {
-		"en": "White",
-		"pt": "Brancos"
+	"icons, title()": {
+		"en": "Icons",
+		"pt": "Ícones"
 	},
 	"on_hold, title()": {
 		"en": "On hold",

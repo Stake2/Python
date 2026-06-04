@@ -9,85 +9,53 @@ import pytz
 import pandas as pd
 from copy import deepcopy
 
+# Define the main "Date" class
 class Date():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
-
-		# Define the folders of the module
-		self.Define_Folders(object = self)
-
-		# Define the texts of the module
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Generate the number names
 		self.Number_Name_Generator()
 
-		# Define the list of methods to be imported
-		methods = [
-			"sleep",
-			"date",
-			"time",
-			"datetime",
-			"timedelta",
-			"timezone",
-			"relativedelta",
-			"combine"
-		]
+		# Import the default methods
+		self.Import_Default_Methods()
 
-		# Define the globals variable for faster typing
-		globals_dictionary = globals()
-
-		# Iterate through the list of methods
-		for key in methods:
-			# If the method is in the globals dictionary
-			if key in globals_dictionary:
-				# Get the method
-				method = globals_dictionary[key]
-
-			# If the method key is "combine"
-			if key == "combine":
-				method = getattr(self.Datetime, "combine")
-
-			# Add it to the object of this class
-			setattr(self, key.capitalize(), method)
-
+		# Define the now date
 		self.date = self.Now()
 
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# ---------- #
-
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		# Define the classes to be imported
+		classes = [
+			"Modules",
 			"JSON",
 			"Text"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -95,7 +63,13 @@ class Date():
 		# Import the "user" dictionary
 		self.user = self.Language.user
 
-	def Define_Texts(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, utility_mode = True)
+
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -968,3 +942,33 @@ class Date():
 			"", # No password
 			TASK_LOGON_NONE # The logon method is not specified. Used for non-NT credentials.
 		)
+
+	def Import_Default_Methods(self):
+		# Define the list of methods to be imported
+		methods = [
+			"sleep",
+			"date",
+			"time",
+			"datetime",
+			"timedelta",
+			"timezone",
+			"relativedelta",
+			"combine"
+		]
+
+		# Define the globals variable for faster typing
+		globals_dictionary = globals()
+
+		# Iterate through the list of methods
+		for key in methods:
+			# If the method is in the globals dictionary
+			if key in globals_dictionary:
+				# Get the method
+				method = globals_dictionary[key]
+
+			# If the method key is "combine"
+			if key == "combine":
+				method = getattr(self.Datetime, "combine")
+
+			# Add it to the object of this class
+			setattr(self, key.capitalize(), method)

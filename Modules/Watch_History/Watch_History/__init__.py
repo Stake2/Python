@@ -4,19 +4,11 @@
 import importlib
 from copy import deepcopy
 
+# Define the main "Watch_History" class
 class Watch_History(object):
 	def __init__(self):
-		# Import some utility classes
-		self.Import_Utility_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
-
-		# Define basic variables for the class
-		self.Define_Basic_Variables()
-
-		# Define the text dictionaries of the class
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Import some usage classes
 		self.Import_Usage_Classes()
@@ -39,73 +31,55 @@ class Watch_History(object):
 		# Define the format of the registry
 		self.Define_Registry_Format()
 
-	def Import_Utility_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Define_Folders",
-			"JSON"
-		]
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
 
-		# Iterate through the list of classes
-		for class_title in classes:
-			# If the class is not already inside this class (Christmas)
-			# Or the class is "Define_Folders"
-			if (
-				hasattr(self, class_title) == False or
-				class_title == "Define_Folders"
-			):
-				# Import the module
+		# Instance it and add it to the current class
+		self.JSON = JSON()
+
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
+
+		# ---------- #
+
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class (Watch_History)
+			if hasattr(self, class_title) == False:
+				# Import the module of the class
 				module = importlib.import_module("." + class_title, "Utility")
 
-				# Get the sub-class
-				sub_class = getattr(module, class_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-				# If the module title is not "Define_Folders"
-				if class_title != "Define_Folders":
-					# Run the sub-class to define its variable
-					sub_class = sub_class()
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
 
-				# Add the sub-class to the current class
-				setattr(self, class_title, sub_class)
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self)
+
+		# ---------- #
+
+		# Import the switches dictionary from the "Global Switches" class
+		self.switches = self.Global_Switches.switches["Global"]
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-	def Define_Basic_Variables(self):
-		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
-
-		# Create a list of the modules that will not be imported
-		self.modules["Remove list"] = [
-			"Define_Folders",
-			"Modules",
-			"Language",
-			"JSON"
-		]
-
-		# Iterate through the list of utility modules
-		for module_title in self.modules["Utility"]["List"]:
-			# If the module title is not inside the remove list
-			if module_title not in self.modules["Remove list"]:
-				# Import the module
-				module = importlib.import_module("." + module_title, "Utility")
-
-				# Get the sub-class of the module
-				sub_class = getattr(module, module_title)
-
-				# Add the sub-class to the current class
-				setattr(self, module_title, sub_class())
-
-		# ---------- #
-
-		# Get the switches dictionary from the "Global Switches" class
-		self.switches = self.Global_Switches.switches["Global"]
-
-		# ---------- #
-
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -123,15 +97,11 @@ class Watch_History(object):
 
 		# ---------- #
 
-		# Import the "Sanitize" method from the "File" class
-		self.Sanitize = self.File.Sanitize
-
-		# ---------- #
-
 		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -172,7 +142,7 @@ class Watch_History(object):
 			]
 		}
 
-		# Iterate through the list of classes
+		# Iterate through the list of classes to import
 		for class_title in classes["List"]:
 			# Define the class dictionary
 			class_dictionary = {
@@ -186,7 +156,7 @@ class Watch_History(object):
 				# Get the "Sub-classes to import" dictionary from it
 				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
 
-			# Import the module
+			# Import the module of the class
 			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
 
 			# Get the class object
@@ -220,7 +190,7 @@ class Watch_History(object):
 					# Import the sub-module
 					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
 
-					# Get the sub-class
+					# Get the class object inside the module
 					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
 
 					# If the "Titles" list is present
@@ -231,7 +201,7 @@ class Watch_History(object):
 					# Add the sub-class dictionary to the root sub-classes dictionary
 					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
 
-					# Add the sub-class to the root class
+					# Add the class object to the root class
 					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
 
 					# Add one to the sub-class number
@@ -2065,6 +2035,9 @@ class Watch_History(object):
 			# Define the local old number as None
 			old_number = None
 
+			# Define the new key as an empty string
+			new_key = ""
+
 			# If the "Items" key exists in the local media dictionary
 			# And the "Item" key is inside the media titles dictionary
 			if (
@@ -2181,7 +2154,7 @@ class Watch_History(object):
 							# Get the item dictionary from it
 							item = media["Items"]["Dictionary"][item_title]
 
-							# Define the key to get the media item title
+							# Define the item key to get the media item title, original or romanized if it exists
 							item_key = "Original"
 
 							if "Romanized" in item["With media title"]:
@@ -2206,11 +2179,18 @@ class Watch_History(object):
 							media_title in media_type_dictionary["Dictionary"] and
 							added_media_title == True
 						):
-							# Define the new value dictionary as the media statistics dictionary
-							new_value = {
-								"Total": number,
-								"Dictionary": {}
-							}
+							# If the media item title (with the media title) is not inside the copy of the statistics dictionary
+							if media_item_title not in statistics_copy:
+								# Define the new value dictionary as the media statistics dictionary
+								new_value = {
+									"Total": number,
+									"Dictionary": {}
+								}
+
+							# If the media item title (with the media title) is inside the copy of the statistics dictionary
+							if media_item_title in statistics_copy:
+								# Define the new value as the old value
+								new_value = statistics_copy[media_item_title]
 
 							# If the item title is the media title
 							if item_title == media_title:
@@ -2223,9 +2203,12 @@ class Watch_History(object):
 							# Define the new key
 							new_key = media_title
 
+							# Define a list of found media items
+							found_media_items = []
+
 							# Iterate through the list of item titles
 							for local_item in media["Items"]["Dictionary"].values():
-								# Define the key to get the media item title
+								# Define the key to get the media item title, original or romanized if it exists
 								item_key = "Original"
 
 								if "Romanized" in local_item["With media title"]:
@@ -2241,6 +2224,9 @@ class Watch_History(object):
 
 									# Change the local "has previous key" switch to True
 									has_previous_key = True
+
+									# Add the media item title to the list of found media items
+									found_media_items.append(local_media_item_title)
 
 							# If the local "has previous key" switch is False
 							# And the current media item is the root media or media item that was watched
@@ -2258,10 +2244,12 @@ class Watch_History(object):
 								media_title_key = media_item_title
 
 							# If the original key is not None (it was found)
-							# And the current item title is equal to the watched title
+							# And the current media item title is not the watched title
+							# And the current media item title is inside the copy of the statistics dictionary
 							if (
 								original_key != None and
-								item_title == watched_title
+								item_title != watched_title and
+								media_item_title in statistics_copy
 							):
 								# Define the key-value as the new key and new value
 								key_value = {
@@ -2354,8 +2342,18 @@ class Watch_History(object):
 
 			# ---------- #
 
+			# If the media title key is inside the media type dictionary
+			if media_title_key in media_type_dictionary["Dictionary"]:
+				# Define it as the key to use
+				key_to_use = media_title_key
+
+			# Else, if the new key is not empty
+			elif new_key != "":
+				# Define it as the key to use
+				key_to_use = new_key
+
 			# Define the old number as the current number
-			statistics["Dictionary"]["Numbers"][date_key]["Old"] = media_type_dictionary["Dictionary"][media_title_key]
+			statistics["Dictionary"]["Numbers"][date_key]["Old"] = media_type_dictionary["Dictionary"][key_to_use]
 
 			# If the local old number is not None
 			if old_number != None:
@@ -2398,9 +2396,9 @@ class Watch_History(object):
 			# ---------- #
 
 			# If the media title key is a number
-			if isinstance(media_type_dictionary["Dictionary"][media_title_key], int):
+			if isinstance(media_type_dictionary["Dictionary"][key_to_use], int):
 				# Update the number of times the media was watched
-				media_type_dictionary["Dictionary"][media_title_key] += 1
+				media_type_dictionary["Dictionary"][key_to_use] += 1
 
 			# ---------- #
 
@@ -2917,7 +2915,7 @@ class Watch_History(object):
 			if "Folders" in media:
 				if "root" not in media["Folders"]:
 					# Define a local folder to check if it exists
-					folder = dictionary["Media type"]["Folders"]["Media information"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/"
+					folder = dictionary["Media type"]["Folders"]["Media information"]["root"] + self.File.Sanitize(sanitized_title, restricted_characters = True) + "/"
 
 					media["Folders"].update({
 						"root": folder
@@ -2930,11 +2928,11 @@ class Watch_History(object):
 				})
 
 				if sanitized_title + "/" not in media["Folders"]["Media"]["root"]:
-					media["Folders"]["Media"]["root"] += self.Sanitize(sanitized_title, restricted_characters = True) + "/"
+					media["Folders"]["Media"]["root"] += self.File.Sanitize(sanitized_title, restricted_characters = True) + "/"
 
 			if "Folders" not in media:
 				media["Folders"] = {
-					"root": dictionary["Media type"]["Folders"]["Media information"]["root"] + self.Sanitize(sanitized_title, restricted_characters = True) + "/",
+					"root": dictionary["Media type"]["Folders"]["Media information"]["root"] + self.File.Sanitize(sanitized_title, restricted_characters = True) + "/",
 					"Media": {
 						"root": dictionary["Media type"]["Folders"]["Media"]["root"] + self.Sanitize_Title(sanitized_title) + "/"
 					}
@@ -5193,7 +5191,7 @@ class Watch_History(object):
 		found_parameter = False
 
 		# Define the local "testing" switch
-		testing = True
+		testing = False
 
 		# While the "found parameter" switch is False
 		while found_parameter == False:

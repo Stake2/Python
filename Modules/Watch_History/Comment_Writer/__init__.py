@@ -190,7 +190,7 @@ class Comment_Writer(Watch_History):
 			self.media["Comment"]["File name"] += self.media["Episode"]["Re-watching"]["Texts"]["Number"][self.language["Small"]]
 
 		# Define the sanitized version of the comment file name
-		self.media["Comment"]["File name (sanitized)"] = self.Sanitize(self.media["Comment"]["File name"], restricted_characters = True)
+		self.media["Comment"]["File name (sanitized)"] = self.File.Sanitize(self.media["Comment"]["File name"], restricted_characters = True)
 
 		# Define and create the comment file inside the media (item) folder
 		self.media["Item"]["Folders"]["comments"]["files"]["comment"] = self.media["Item"]["Folders"]["comments"]["files"]["root"] + self.media["Comment"]["File name (sanitized)"] + ".txt"

@@ -4,19 +4,11 @@
 import importlib
 from copy import deepcopy
 
+# Define the main "Years" class
 class Years(object):
 	def __init__(self, select_year = False):
-		# Import some utility classes
-		self.Import_Utility_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
-
-		# Define basic variables for the class
-		self.Define_Basic_Variables()
-
-		# Define the text dictionaries of the class
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Define the folders and files of the class
 		self.Define_Folders_And_Files()
@@ -36,77 +28,64 @@ class Years(object):
 		# Define the root "Years" dictionary
 		self.Define_Years_Dictionary()
 
-	def Import_Utility_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Define_Folders",
-			"JSON"
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
+
+		# Instance it and add it to the current class
+		self.JSON = JSON()
+
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
+
+		# ---------- #
+
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+
+		# Define a list of utility classes to not import
+		do_not_import = [
+			"API"
 		]
 
-		# Iterate through the list of classes
-		for class_title in classes:
-			# If the class is not already inside this class (Christmas)
-			# Or the class is "Define_Folders"
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class (Years)
+			# And the class title is not inside the list of utility classes to not import
 			if (
-				hasattr(self, class_title) == False or
-				class_title == "Define_Folders"
+				hasattr(self, class_title) == False and
+				class_title not in do_not_import
 			):
-				# Import the module
+				# Import the module of the class
 				module = importlib.import_module("." + class_title, "Utility")
 
-				# Get the sub-class
-				sub_class = getattr(module, class_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-				# If the module title is not "Define_Folders"
-				if class_title != "Define_Folders":
-					# Run the sub-class to define its variable
-					sub_class = sub_class()
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
 
-				# Add the sub-class to the current class
-				setattr(self, class_title, sub_class)
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self)
+
+		# ---------- #
+
+		# Import the switches dictionary from the "Global Switches" class
+		self.switches = self.Global_Switches.switches["Global"]
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-	def Define_Basic_Variables(self):
-		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
-
-		# Create a list of the modules that will not be imported
-		remove_list = [
-			"Define_Folders",
-			"Modules",
-			"Language",
-			"JSON"
-		]
-
-		# Iterate through the list of utility modules
-		for module_title in self.modules["Utility"]["List"]:
-			# If the module title is not inside the remove list
-			# And the class is not already inside this class ("Christmas")
-			if (
-				module_title not in remove_list and
-				hasattr(self, module_title) == False
-			):
-				# Import the module
-				module = importlib.import_module("." + module_title, "Utility")
-
-				# Get the sub-class of the module
-				sub_class = getattr(module, module_title)
-
-				# Add the sub-class to the current class
-				setattr(self, module_title, sub_class())
-
-		# ---------- #
-
-		# Get the switches dictionary from the "Global Switches" class
-		self.switches = self.Global_Switches.switches["Global"]
-
-		# ---------- #
-
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -114,18 +93,10 @@ class Years(object):
 		# Import the "language" dictionary
 		self.language = self.Language.language
 
-		# Import the "separators" dictionary
-		self.separators = self.Language.separators
-
 		# ---------- #
 
 		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
-
-		# ---------- #
-
-		# Import the "Sanitize" method from the "File" class
-		self.Sanitize = self.File.Sanitize
 
 		# ---------- #
 
@@ -135,7 +106,8 @@ class Years(object):
 		# Define the current year number
 		self.current_year_number = str(self.date["Units"]["Year"])
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 

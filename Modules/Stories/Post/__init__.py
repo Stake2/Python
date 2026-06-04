@@ -90,14 +90,14 @@ class Post(Stories):
 				# Split the sub-class title to get the actual sub-class title
 				class_title = class_title.split(".")[1]
 
-			# Import the module
+			# Import the module of the class
 			module = importlib.import_module("." + class_title, module_title)
 
-			# Get the sub-class
-			sub_class = getattr(module, class_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, class_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 	def Check_Story_Chapters(self):
 		# Create a shortcut to the story "Chapters" dictionary

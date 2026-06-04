@@ -1,0 +1,22 @@
+{
+	"Numbers": {
+		"Total": 1
+	},
+	"List": [
+		"Start_Christmas"
+	],
+	"Dictionary": {
+		"Start_Christmas": {
+			"Name": "Start_Christmas",
+			"Descriptions": {
+				"en": "Start Christmas",
+				"pt": "Começar o Natal"
+			},
+			"Object": "<class 'Christmas.Start_Christmas.Start_Christmas'>"
+		}
+	},
+	"Module descriptions": {
+		"en": "Christmas",
+		"pt": "Natal"
+	}
+}

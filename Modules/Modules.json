@@ -3,7 +3,6 @@
 		"List": [
 			"API",
 			"Date",
-			"Define_Folders",
 			"File",
 			"Folder",
 			"Global_Switches",
@@ -18,7 +17,6 @@
 	"Usage": {
 		"List": [
 			"Christmas",
-			"Code",
 			"Database",
 			"Diary",
 			"Diary_Slim",
@@ -30,12 +28,10 @@
 			"Project_Zomboid",
 			"Python",
 			"Social_Networks",
-			"SproutGigs",
 			"Stories",
 			"Tasks",
 			"Watch_History",
-			"Years",
-			"NeverEnding_Legacy"
+			"Years"
 		]
 	}
 }

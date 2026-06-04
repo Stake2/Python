@@ -2,59 +2,154 @@
 
 # Import some useful modules
 import importlib
+import os
 from copy import deepcopy
 
+# Define the main "Modules" class
 class Modules():
-	def __init__(self, object, select_class = False, return_class = False):
-		# Import some utility classes
-		self.Import_Utility_Classes()
-
-		# Define the object parameter inside this class
-		self.object = object
-
+	def __init__(self, class_object, module_files = [], create_texts = True, define_classes = True, select_class = False, return_class = False, utility_mode = False):
 		# Define the states dictionary
 		self.states = {
-			"Select class": select_class
+			"Utility mode": utility_mode,
+			"Define classes": define_classes,
+			"Select class": select_class,
+			"Return class": return_class
 		}
+
+		# Import some utility classes
+		self.Import_Utility_Classes()
 
 		# Define the dictionaries of the "Modules" class
 		self.Define_Dictionaries()
 
-		# Define the module
-		self.Define_Module()
+		# Define the module, passing it some parameters
+		self.Define_Module(class_object, module_files, create_texts)
 
-		# Define the classes
-		self.Define_Classes()
+		# If the module type is "Usage"
+		if self.module["Type"] == "Usage":
+			# If the "Define classes" state is True
+			if self.states["Define classes"] == True:
+				# Define the classes, passing it the class object
+				self.Define_Classes(class_object)
 
-		# If the "Select class" state is True
-		# And the "do_not_select_class" variable is not present inside the current (self) class object
-		if (
-			self.states["Select class"] == True and
-			hasattr(self, "do_not_select_class") == False
-		):
-			# Run the "Select_Class" method to select a class
-			self.Select_Class(return_class = return_class)
+			# If the "Select class" state is True
+			# And the "do_not_select_class" variable is not present inside the current (self) class object
+			if (
+				self.states["Select class"] == True and
+				hasattr(self, "do_not_select_class") == False
+			):
+				# Run the "Select_Class" method to select a class
+				self.Select_Class(return_class = return_class)
 
 	def Import_Utility_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
-			"Folder",
-			"File"
-		]
+		# If the "Utility mode" state is False
+		if self.states["Utility mode"] == False:
+			# Define the list of utility modules to be imported
+			classes = [
+				"Folder",
+				"JSON",
+				"Input"
+			]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+			# Iterate through the list of classes to import
+			for class_title in classes:
+				# Import the module of the class
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class())
+				# Add the class object to the root class
+				setattr(self, class_title, class_object())
 
-		# Import the "folders" dictionary from the "Folder" class
-		self.folders = self.Folder.folders
+			# Import the "folders" dictionary from the "Folder" class
+			self.folders = self.Folder.folders
+
+			# ---------- #
+
+			# Define the "Language" class as the same class inside the "JSON" class
+			self.Language = self.JSON.Language
+
+			# Import the "language" dictionary from the "Language" class
+			self.language = self.Language.language
+
+		# ---------- #
+
+		# If the "Utility mode" state is True
+		if self.states["Utility mode"] == True:
+			import pathlib
+
+			# Define the hard drive letter
+			self.hard_drive_letter = os.path.normpath(pathlib.Path.home().drive) + "/"
+
+			# Define the "Folders" dictionary
+			self.folders = {
+				"root": self.hard_drive_letter
+			}
+
+			# Define the "Python" folder
+			self.folders["Python"] = {
+				"root": self.folders["root"] + "Python/"
+			}
+
+			# Define a list of folder names
+			folder_names = [
+				"Modules",
+				"Files"
+			]
+
+			# Define the root "Python" folders
+			for folder_name in folder_names:
+				# Define the folder dictionary
+				self.folders["Python"][folder_name] = {
+					"root": self.folders["Python"]["root"] + folder_name + "/"
+				}
+
+			# Define the "Utility" folders
+			for folder_name in folder_names:
+				self.folders["Python"][folder_name]["Utility"] = {
+					"root": self.folders["Python"][folder_name]["root"] + "Utility/"
+				}
+
+			# Define the "Modules.json" file
+			self.folders["Python"]["Modules"]["Modules"] = self.folders["Python"]["Modules"]["root"] + "Modules.json"
+
+	def Sanitize(self, path):
+		# Normalize the path and replace backslashes with forward slashes
+		path = os.path.normpath(path).replace("\\", "/")
+
+		# Return the path
+		return path
+
+	def Folder_Exists(self, folder):
+		# Sanitize the folder path
+		folder = self.Sanitize(folder)
+
+		# Checks if the folder exists and returns True if it does or False if it does not
+		return os.path.isdir(folder)
+
+	def File_Exists(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Checks if the file exists and returns True if it does or False if it does not
+		return os.path.isfile(file)
+
+	def File_Open(self, file, mode = "r", encoding = "UTF8"):
+		# Open the file with the mode and encoding
+		return open(file, mode, encoding = encoding)
+
+	def File_Create(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# If the file does not exist
+		if self.File_Exists(file) == False:
+			# Open the file handle in write mode to create it
+			create = self.File_Open(file, "w")
+
+			# Close the file handle
+			create.close()
 
 	def Define_Dictionaries(self):
 		# Define a dictionary of class modes
@@ -68,133 +163,174 @@ class Modules():
 			],
 			"Dictionary": {
 				"Descriptions": {
-					"Module description key": "Show text",
+					"Module descriptions key": "Show text",
 					"File key": "Descriptions file"
 				},
 				"Classes": {
-					"Module description key": "Module description"
+					"Module descriptions key": "Module descriptions"
 				}
 			}
 		}
 
-	def Define_Module(self):
-		# Import some utility modules
-		modules = [
-			"Input",
-			"JSON"
-		]
+	def Define_Module(self, class_object, module_files, create_texts):
+		# Create a shortcut to the module name
+		module_name = class_object.__module__
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
-
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
-
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class())
-
-		# ---------- #
-
-		# Define the "Language" class as the same class inside the "JSON" class
-		self.Language = self.JSON.Language
-
-		# Import the "language" dictionary from the "Language" class
-		self.language = self.Language.language
-
-		# ---------- #
+		# If the module name is "__main__"
+		if module_name == "__main__":
+			# Get the module name by the class object name
+			module_name = type(class_object).__name__
 
 		# Define the module dictionary
 		self.module = {
-			"Module": self.object.__module__,
-			"Sub-module": "",
-			"Folders": {
-				"root": self.folders["Python"]["Modules"]["root"] + self.object.__module__ + "/"
-			},
-			"Files": {},
-			"Descriptions": {},
-			"Class mode": {},
-			"Classes": {}
+			# Define the module name
+			"Module": module_name,
+
+			# Define the module type
+			"Type": "Usage",
+
+			# Define the folder and file dictionaries
+			"Folders": {},
+			"Files": {}
 		}
 
-		# Define the sub-module
+		# If a dot is inside the module name
 		if "." in self.module["Module"]:
-			self.module["Sub-module"] = self.module["Module"].split(".")[-1]
-			self.module["Module"] = self.module["Module"].split(".")[0]
+			# Split the module name by the dot
+			split = self.module["Module"].split(".")
 
-		else:
-			# Remove the "Sub-module" key
-			self.module.pop("Sub-module")
+			# Define the module name as the name before the dot
+			self.module["Module"] = split[0]
 
-		# Define the root folder
+			# If the name before the dot is "Utility"
+			if split[0] == "Utility":
+				# Define the module name as the sub-module name
+				self.module["Module"] = split[1]
+
+				# Change the module type to "Utility"
+				self.module["Type"] = "Utility"
+
+		# If the module type is "Usage"
+		if self.module["Type"] == "Usage":
+			# Create the module descriptions, class mode, and classes dictionaries
+			self.module.update({
+				"Descriptions": {},
+				"Class mode": {},
+				"Classes": {}
+			})
+
+		# Define the modules and files folders
+		modules_folder = self.folders["Python"]["Modules"]
+		files_folder = self.folders["Python"]["Files"]
+
+		# If the module type is "Utility"
+		if self.module["Type"] == "Utility":
+			# Change the folders to the "Utility" folders
+			modules_folder = modules_folder["Utility"]
+			files_folder = files_folder["Utility"]
+
+		# Define the root folder of the module
 		self.module["Folders"] = {
-			"root": self.folders["Python"]["Modules"]["root"] + self.module["Module"] + "/"
+			"root": modules_folder["root"] + self.module["Module"] + "/"
 		}
-
-		# Create a shortcut to the root folder
-		folder = self.module["Folders"]["root"]
 
 		# Define the "Files" folder
 		self.module["Folders"]["Files"] = {
-			"root": self.folders["Python"]["Files"]["root"] + self.module["Module"] + "/"
+			"root": files_folder["root"] + self.module["Module"] + "/"
 		}
 
-		# Define the sub-module folder if it exists
-		if "Sub-module" in self.module:
-			# Define the folder
-			self.module["Folders"][self.module["Sub-module"]] = {
-				"root": self.module["Folders"]["root"] + self.module["Sub-module"] + "/"
-			}
+		# Create a shortcut to the root folder
+		root_folder = self.module["Folders"]["root"]
 
-			# Update the local folder
-			folder = self.module["Folders"][self.module["Sub-module"]]["root"]
+		# If the module type is "Usage"
+		if self.module["Type"] == "Usage":
+			# If the root folder exists
+			if self.Folder_Exists(root_folder) == True:
+				# Define and create the module "Module.json" file
+				self.module["Files"]["Module"] = root_folder + "Module.json"
+				self.File_Create(self.module["Files"]["Module"])
 
-		# Define and create the "Module.json" file
-		self.module["Files"]["Module"] = folder + "Module.json"
-		self.File.Create(self.module["Files"]["Module"])
+			# Iterate through the list of class mode keys and dictionaries
+			for key, class_mode in self.class_modes["Dictionary"].items():
+				# Add the name of the class mode to its dictionary as the first key
+				class_mode = {
+					"Name": key,
+					**class_mode
+				}
 
-		# Iterate through the list of class mode keys and dictionaries
-		for key, class_mode in self.class_modes["Dictionary"].items():
-			# Add the name of the class mode to its dictionary
-			class_mode = {
-				"Name": key,
-				**class_mode
-			}
+				# Update the root class mode dictionary
+				self.class_modes["Dictionary"][key] = class_mode
 
-			# Update the root class mode dictionary
-			self.class_modes["Dictionary"][key] = class_mode
+				# Define the local class mode JSON file with the class mode key as a filename
+				file = root_folder + key + ".json"
 
-			# Define the local file
-			file = folder + key + ".json"
+				# If the class mode file exists
+				if self.File_Exists(file) == True:
+					# Define it inside the module "Files" dictionary
+					self.module["Files"][key] = file
 
-			# If the file exists
-			if self.File.Exists(file) == True:
-				# Define it inside the "Files" dictionary
-				self.module["Files"][key] = file
+					# Define the file key initially as the class mode key
+					file_key = key
 
-				# Define the file key initially as the key
-				file_key = key
+					# If the class mode has a custom file key
+					if "File key" in class_mode:
+						# Use the custom file key
+						file_key = class_mode["File key"]
 
-				# If the class mode is "Descriptions"
-				if key == "Descriptions":
-					# Change the file key to the correct one
-					file_key = class_mode["File key"]
+					# Get the JSON dictionary from the class mode file and store it in the file key inside the module dictionary
+					self.module[file_key] = self.JSON.To_Python(file)
 
-				# Get the JSON dictionary from the file and store it in the file key
-				self.module[file_key] = self.JSON.To_Python(file)
+					# Create a shortcut to the module descriptions key
+					module_descriptions_key = class_mode["Module descriptions key"]
 
-				# Create a shortcut to the module description key
-				module_description_key = class_mode["Module description key"]
+					# Define the module "Descriptions" dictionary based on the module descriptions key
+					self.module["Descriptions"] = self.module[file_key][module_descriptions_key]
 
-				# Define the module descriptions dictionary based on the module description key
-				self.module["Descriptions"] = self.module[file_key][module_description_key]
+					# Define the root "Class mode" dictionary of the module as the local class mode dictionary
+					self.module["Class mode"] = class_mode
 
-				# Add the class mode dictionary to the module dictionary
-				self.module["Class mode"] = class_mode
+		# ---------- #
 
-	def Define_Classes(self):
-		# Define a local classes dictionary
+		# If the module files is a string
+		if type(module_files) == str:
+			# Transform it into a list with the string as the only item
+			module_files = [
+				module_files
+			]
+
+		# If the "create texts" parameter is True
+		if create_texts == True:
+			# Add the "Texts" file at the top of the list
+			module_files = [
+				"Texts",
+				*module_files
+			]
+
+		# Create a shortcut to the "Files" folder
+		files_folder = self.module["Folders"]["Files"]["root"]
+
+		# Iterate through the list of file names
+		for file_name in module_files:
+			# Define and create the module JSON file
+			self.module["Files"][file_name] = files_folder + file_name + ".json"
+			self.File_Create(self.module["Files"][file_name])
+
+		# ---------- #
+
+		# Define a dictionary of attributes to add to the selected class object
+		attributes = {
+			"Modules": Modules,
+			"module": self.module,
+			"folders": self.folders
+		}
+
+		# Iterate through the attribute names and values
+		for name, attribute in attributes.items():
+			# Add the attribute to the selected class object
+			setattr(class_object, name, attribute)
+
+	def Define_Classes(self, class_object):
+		# Define a local classes dictionary to store information about the classes of the module
 		classes = {
 			"Numbers": {
 				"Total": 0
@@ -205,31 +341,26 @@ class Modules():
 
 		# ----- #
 
-		# If the class mode is "Classes"
-		if self.module["Class mode"]["Name"] == "Classes":
-			# Update the local "Dictionary" with the root one
+		# Create a shortcut to the class mode name
+		class_mode = self.module["Class mode"]["Name"]
+
+		# If the class mode name is "Classes"
+		if class_mode == "Classes":
+			# Update the local classes "Dictionary" with the root one
 			classes["Dictionary"] = self.module["Classes"]["Dictionary"]
 
-			# Create a shortcut to the module description key
-			module_description_key = self.module["Class mode"]["Module description key"]
+			# Create a shortcut to the module descriptions key
+			module_descriptions_key = self.module["Class mode"]["Module descriptions key"]
 
-			# Import the module description key to the local classes dictionary
-			classes[module_description_key] = self.module["Classes"][module_description_key]
+			# Import the module descriptions key to the local classes dictionary
+			classes[module_descriptions_key] = self.module["Classes"][module_descriptions_key]
 
 		# ----- #
 
-		# If the class mode is "Descriptions"
-		# (This is a compatibility layer for the old way of defining class descriptions, which is by using the old "Descriptions.json" file)
-		if self.module["Class mode"]["Name"] == "Descriptions":
-			# Define a local classes dictionary
-			classes = {
-				"Numbers": {
-					"Total": 0
-				},
-				"List": [],
-				"Dictionary": {}
-			}
-
+		# If the class mode name is "Descriptions"
+		# (This is a temporary compatibility layer for the old way of defining class descriptions
+		# Which is by using the old "Descriptions.json" file)
+		if class_mode == "Descriptions":
 			# Define the list of keys to remove
 			remove_list = [
 				"Show text",
@@ -244,7 +375,7 @@ class Modules():
 					# Import that key to the local classes dictionary
 					classes[key] = self.module["Descriptions file"][key]
 
-			# If there is a "Remove list" inside the module "Descriptions" dictionary
+			# If there is a "Remove list" inside the module "Descriptions file" dictionary
 			if "Remove list" in self.module["Descriptions file"]:
 				# Extend the local remove list with the one inside the "Descriptions" dictionary
 				remove_list.extend(self.module["Descriptions file"]["Remove list"])
@@ -268,17 +399,14 @@ class Modules():
 
 		# ----- #
 
-		# Create the list of class "Descriptions" in the user language
-		classes["Descriptions"] = []
-
 		# Iterate through the dictionary of class keys and dictionaries
 		for key, dictionary in self.module["Classes"]["Dictionary"].items():
 			# Add the class to the list of classes
 			classes["List"].append(key)
 
-			# If the class mode is "Classes"
-			if self.module["Class mode"]["Name"] == "Classes":
-				# Update the class dictionary to add its name
+			# If the class mode name is "Classes"
+			if class_mode == "Classes":
+				# Add the name of the class to its dictionary as the first key
 				dictionary = {
 					"Name": key,
 					**dictionary
@@ -289,33 +417,31 @@ class Modules():
 
 			# If the module contains the class
 			if hasattr(class_module, key) == True:
-				# Define the object as the class inside the class module
+				# Define the class object as the class inside the class module
 				object = getattr(class_module, key)
 
+			# Else, define the class object as the "Run" class inside the class module
+			# Which must be the class that is present inside that module
 			else:
-				# Define the object as the "Run" class inside the class module
 				object = getattr(class_module, "Run")
 
-			# Update the "Object" key to be the actual object
+			# Update the class "Object" key to be the actual class object
 			dictionary["Object"] = object
 
-			# Add the class description in the user language to the list of class descriptions
-			classes["Descriptions"].append(dictionary["Descriptions"][self.language["Small"]])
-
-			# Update the root class dictionary
+			# Add the local class dictionary to the root classes "Dictionary" with the class key
 			classes["Dictionary"][key] = dictionary
 
-		# Update the number of classes
+		# Update the total number of classes
 		classes["Numbers"]["Total"] = len(classes["List"])
 
 		# ----- #
 
-		# Update the root "Classes" dictionary with the local one
+		# Update the root "Classes" dictionary to be the local one
 		self.module["Classes"] = classes
 
 		# ---------- #
 
-		# Make a local copy of the "Module" dictionary
+		# Make a local copy of the module dictionary
 		local_dictionary = deepcopy(self.module)
 
 		# Iterate through the list of class dictionaries
@@ -323,18 +449,32 @@ class Modules():
 			# Stringfy the class object to make it JSON compatible
 			dictionary["Object"] = str(dictionary["Object"])
 
-		# If the class mode is "Classes"
-		if self.module["Class mode"]["Name"] == "Classes":
-			# Remove the module description from the "Classes" dictionary
-			local_dictionary["Classes"].pop(module_description_key)
+		# If the class mode name is "Classes"
+		if class_mode == "Classes":
+			# Remove the module descriptions dictionary from the "Classes" dictionary
+			local_dictionary["Classes"].pop(module_descriptions_key)
 
-		# Update the "Module.json" file with the updated local "Module" dictionary
-		self.JSON.Edit(self.module["Files"]["Module"], local_dictionary)
+		# If the class mode name is "Descriptions"
+		if class_mode == "Descriptions":
+			# Iterate through the list of keys to remove
+			for key in remove_list:
+				# If that key exists inside the "Classes" dictionary
+				if key in local_dictionary["Classes"]:
+					# Remove it
+					local_dictionary["Classes"].pop(key)
+
+			# Remove the "Descriptions file" key
+			local_dictionary.pop("Descriptions file")
+
+		# If the "Module" file is present inside the module "Files" dictionary
+		if "Module" in self.module["Files"]:
+			# Update the "Module.json" file with the updated local module dictionary
+			self.JSON.Edit(self.module["Files"]["Module"], local_dictionary)
 
 		# ---------- #
 
-		# If the class mode is "Classes"
-		if self.module["Class mode"]["Name"] == "Classes":
+		# If the class mode name is "Classes"
+		if class_mode == "Classes":
 			# Make a local copy of the "Classes" dictionary
 			local_dictionary = deepcopy(self.module["Classes"])
 
@@ -343,34 +483,40 @@ class Modules():
 				# Stringfy the class object to make it JSON compatible
 				dictionary["Object"] = str(dictionary["Object"])
 
-			# Create a backup of the module description dictionary
-			description = local_dictionary[module_description_key]
+			# Create a backup of the module descriptions dictionary
+			module_descriptions = local_dictionary[module_descriptions_key]
 
 			# Remove the key
-			local_dictionary.pop(module_description_key)
+			local_dictionary.pop(module_descriptions_key)
 
-			# Add it again
-			local_dictionary[module_description_key] = description
+			# Add it again to make it stay at the end
+			local_dictionary[module_descriptions_key] = module_descriptions
 
 			# Update the "Classes.json" file with the updated local "Classes" dictionary
 			self.JSON.Edit(self.module["Files"]["Classes"], local_dictionary)
 
 		# ---------- #
 
-		# Define the "Modules" variable inside the class object
-		setattr(self.object, "Modules", Modules)
+		# Define a dictionary of attributes to add to the selected class object
+		attributes = {
+			"Modules": Modules,
+			"module": self.module,
+			"folders": self.folders
+		}
 
-		# Define the "module" variable inside the class object
-		setattr(self.object, "module", self.module)
+		# Iterate through the attribute names and values
+		for name, attribute in attributes.items():
+			# Add the attribute to the selected class object
+			setattr(class_object, name, attribute)
 
 	def Select_Class(self, return_class = False):
-		# Create a shortcut to the "Classes" dictionary for faster typing
+		# Create a shortcut to the root "Classes" dictionary for faster typing
 		classes = self.module["Classes"]
 
 		# Define the "Selected" class dictionary
 		classes["Selected"] = {
 			"Class": {},
-			"Automatically selected": False,
+			"Automatically selected": False
 		}
 
 		# If there is only one class
@@ -386,13 +532,13 @@ class Modules():
 
 		# If the "Automatically selected" switch is False
 		if classes["Selected"]["Automatically selected"] == False:
-			# Define the parameters dictionary to use on the "Input.Select" method
+			# Define the parameters dictionary to use on the "Input.Select" class method
 			parameters = {
-				# The list of class names
-				"options": classes["List"],
+				# The list of classes
+				"options": [],
 
 				# The list of class descriptions in the user language
-				"language_options": classes["Descriptions"],
+				"language_options": [],
 
 				# The module description in the user language
 				"show_text": self.module["Descriptions"][self.language["Small"]],
@@ -401,24 +547,41 @@ class Modules():
 				"select_text": self.Language.language_texts["select_one_class_to_execute"]
 			}
 
+			# Iterate through the dictionary of class dictionaries
+			for dictionary in self.module["Classes"]["Dictionary"].values():
+				# Add the class dictionary to the list of options
+				parameters["options"].append(dictionary)
+
+				# Add the class description in the user language to the list of language options
+				parameters["language_options"].append(dictionary["Descriptions"][self.language["Small"]])
+
 			# Ask the user to select a class from the list of classes
-			# And then define theselected class inside the "Selected" class dictionary
+			# And then define the selected class inside the "Selected" class dictionary
 			classes["Selected"]["Class"] = self.Input.Select(**parameters)["Option"]["Original"]
 
-		# Define the "Select" key as the selected class for faster typing
+		# Define the "Selected" key as the selected class for clarity
 		classes["Selected"] = classes["Selected"]["Class"]
 
-		# Add the "Modules" class to the class object
-		setattr(classes["Selected"]["Object"], "Modules", Modules)
+		# Define a dictionary of attributes to add to the selected class object
+		attributes = {
+			"Modules": Modules,
+			"module": self.module
+		}
 
-		# Add the "module" dictionary to the class object
-		setattr(classes["Selected"]["Object"], "module", self.module)
+		# Create a shortcut to the selected class object for clarity
+		class_object = classes["Selected"]["Object"]
 
-		# If the "return_class" parameter is False
-		if return_class == False:
-			# Run the object of the class
-			classes["Selected"]["Object"]()
+		# Iterate through the attribute names and values
+		for name, attribute in attributes.items():
+			# Add the attribute to the selected class object
+			setattr(class_object, name, attribute)
 
-		else:
-			# Return the class dictionary
+		# If the "Return class" state is False
+		if self.states["Return class"] == False:
+			# Run the object of the selected class
+			class_object()
+
+		# If the "Return class" state is True
+		if self.states["Return class"] == True:
+			# Return the selected class dictionary
 			return classes["Selected"]

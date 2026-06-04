@@ -1,66 +1,54 @@
 # Folder.py
 
+# Import some useful modules
 import os
-import Utility
 
+# Define the main "Folder" class
 class Folder():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Define the variables of the class
+		self.Define_Variables()
 
-		# Define the folders of the module
-		Utility.Define_Folders(object = self)
-
-		# Define the "Switches" dictionary
-		self.Define_Switches()
-
-		# Define the folders
-		self.Define_Folders()
-
-		# Define the texts of the module
-		self.Define_Texts()
+		# Define the folders dictionary
+		self.Define_Folders_Dictionary()
 
 		# Create the folders
 		self.Create_Folders()
 
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# ---------- #
-
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		# Define a list of classes to import
+		classes = [
+			"Modules",
 			"Global_Switches",
 			"JSON",
 			"Date",
 			"File"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Add the sub-class to the current class
-				setattr(self, module_title, sub_class())
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# If the module title is "Define_Folders"
-			if module_title == "Define_Folders":
-				# Add the sub-class to the "Utility" module
-				setattr(Utility, "Define_Folders", sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -73,7 +61,13 @@ class Folder():
 		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
-	def Define_Switches(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, utility_mode = True)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
@@ -94,7 +88,15 @@ class Folder():
 				# Define them as False
 				self.switches["Folder"][switch] = False
 
-	def Define_Folders(self):
+		# ---------- #
+
+		# Define the "Texts" dictionary
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
+
+		# Define the "Language texts" dictionary
+		self.language_texts = self.Language.Item(self.texts)
+
+	def Define_Folders_Dictionary(self):
 		import platform
 		import pathlib
 
@@ -115,7 +117,7 @@ class Folder():
 
 		# System folders
 
-		# Define the system folders
+		# Define the list of system folder names
 		folder_names = [
 			"Users",
 			"Program Files",
@@ -170,7 +172,7 @@ class Folder():
 
 		# AppData folders
 
-		# Define the AppData folders
+		# Define the list of AppData folder names
 		folder_names = [
 			"Local",
 			"LocalLow",
@@ -194,7 +196,7 @@ class Folder():
 
 		# "Program files (x86)" folders
 
-		# Define the "Program files (x86)" folders
+		# Define the list of "Program files (x86)" folder names
 		folder_names = [
 			"Foobar2000"
 		]
@@ -226,30 +228,23 @@ class Folder():
 
 		# Folders that Python modules use
 
-		# Define the root folders
-		folder_names = [
-			"Python",
-			"Media",
-			"Games",
-			"XAMPP",
-			"Mega"
-		]
+		# Define the dictionary of root folder names
+		folder_names = {
+			"Python": "",
+			"Programming": "programming",
+			"Media": "media, title(), type: plural",
+			"Games": "",
+			"XAMPP": "",
+			"Mega": ""
+		}
 
 		# Define the root folder to use
 		root_folder = self.folders
 
-		# Iterate through the list of folder names
-		for folder_name in folder_names:
+		# Iterate through the dictionary of folder names and text keys
+		for folder_name, text_key in folder_names.items():
 			# Define the key as the folder name
 			key = folder_name
-
-			# Define the text key as an empty one
-			text_key = ""
-
-			# If the folder name is "Media"
-			if folder_name == "Media":
-				# Define the text key as "Media" (plural)
-				text_key = "media, title(), type: plural"
 
 			# Define the folder name
 			folder_name = self.Language.Define_Folder_Name(folder_name, text_key = text_key)
@@ -263,7 +258,7 @@ class Folder():
 
 		# Python folders
 
-		# Define the Python folders
+		# Define the list of Python folder names
 		folder_names = [
 			"Modules",
 			"Files",
@@ -306,7 +301,7 @@ class Folder():
 
 		# Modules files
 
-		# Define the Modules files
+		# Define the list of Modules file names
 		file_names = [
 			"Modules"
 		]
@@ -319,25 +314,54 @@ class Folder():
 			# Define the file inside the root folder
 			root_folder[file_name] = root_folder["root"] + file_name + ".json"
 
-		# ----- #
+		# ---------- #
 
-		# Shortcuts folder
+		# Python "Shortcuts" folders
 
-		# Define the Shortcuts folders
-		folder_names = {
-			"White": "Whites"
-		}
+		# Define the list of Python shortcuts folder names
+		folder_names = [
+			"Bats",
+			"Icons",
+			"Links"
+		]
 
 		# Define the root folder to use
 		root_folder = self.folders["Python"]["Shortcuts"]
 
-		# Iterate through the dictionary of folder names and text keys
-		for folder_name, text_key in folder_names.items():
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(text_key)
+			# If the key is "Icons"
+			if key == "Icons":
+				# Change the folder name to its user language variant
+				folder_name = self.Language.language_texts["icons, title()"]
+
+			# Define the folder dictionary with the root folder
+			root_folder[key] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ---------- #
+
+		# Programming folders
+
+		# Define the list of Programming folder names
+		folder_names = [
+			"AutoHotKey",
+			"Java",
+			"JavaScript",
+			"Lua"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Programming"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the key as the folder name
+			key = folder_name
 
 			# Define the folder dictionary with the root folder
 			root_folder[key] = {
@@ -856,13 +880,6 @@ class Folder():
 				"root": self.folders["Stories"]["root"] + folder + "/"
 			}
 
-	def Define_Texts(self):
-		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
-
-		# Define the "Language texts" dictionary
-		self.language_texts = self.Language.Item(self.texts)
-
 	def Capitalize(self, text, lower = False):
 		text = list(text)
 
@@ -937,7 +954,7 @@ class Folder():
 			import inspect
 
 			print()
-			print(self.module["Name"] + "." + inspect.stack()[1][3] + "():")
+			print(self.module["Module"] + "." + inspect.stack()[1][3] + "():")
 			print("\t" + text + ":")
 			print("\t" + item)
 

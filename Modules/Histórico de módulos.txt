@@ -1,0 +1,8 @@
+12:58 13/05/2026:
+O módulo de uso "Food_Time" (Horário_Da_Comida) foi renomeado para "Meal_Times" (Horários_Da_Refeição) para refletir melhor seu propósito
+
+03:24 03/06/2026:
+Os módulos de uso "Code" (Programar) e "SproutGigs" foram removidos e depois arquivados, pois não vejo mais propósito em usar eles
+
+13:00 03/06/2026:
+O módulo utilitário "Define_Folders" (Definir_Pastas) foi removido e depois arquivado, pois eu movi toda a funcionalidade da sua classe raiz para o módulo utilitário "Modules" (Módulos)

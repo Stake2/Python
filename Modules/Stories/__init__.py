@@ -3,9 +3,9 @@
 class Run():
 	def __init__(self):
 		# Run the root class of the "Modules" module
-		self.Modules(object = self, select_class = True)
+		self.Modules(class_object = self, select_class = True)
 
-# Define the list of alternative arguments for the module
+# Define the list of alternative arguments that can be used to run the module
 alternative_arguments = [
 	"story"
 ]

@@ -22,21 +22,21 @@ class Update_Chapter_Covers(Stories):
 		# Import the "importlib" module
 		import importlib
 
-		# Define the classes to be imported
+		# Define the list of classes to be imported
 		classes = [
 			"Post"
 		]
 
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, self.__module__.split(".")[0])
 
-			# Get the sub-class
-			sub_class = getattr(module, title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# Add the story dictionary to the "Post" class
 		setattr(self.Post, "story", self.story)

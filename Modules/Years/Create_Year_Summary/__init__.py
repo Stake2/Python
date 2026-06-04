@@ -244,7 +244,7 @@ class Create_Year_Summary(Years):
 			"Friends"
 		]
 
-		# Iterate through the list of classes
+		# Iterate through the list of classes to import
 		for class_title in classes:
 			# Import the module of the class
 			module = importlib.import_module("." + class_title, class_title)
@@ -546,7 +546,7 @@ class Create_Year_Summary(Years):
 			# Add the class history dictionary to the summary "Histories" dictionary
 			self.summary["Histories"][class_dictionary["Title"]] = history
 
-		# Iterate through the list of classes
+		# Iterate through the list of classes to import
 		for class_title in classes:
 			# Get the class history dictionary
 			class_history = self.summary["Histories"][class_title]
@@ -759,7 +759,7 @@ class Create_Year_Summary(Years):
 			# Get the list of class history keys
 			class_histories = list(self.summary["Histories"].keys())
 
-			# Iterate through the list of classes
+			# Iterate through the list of classes to import
 			for class_title in class_histories:
 				# If the class is not inside the list of detailed classes
 				if class_title not in self.summary["Detailed histories"]:

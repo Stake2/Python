@@ -4,17 +4,11 @@
 import importlib
 from copy import deepcopy
 
+# Define the main "Friends" class
 class Friends(object):
 	def __init__(self):
-		# Import some utility classes
-		self.Import_Utility_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
-
-		# Module related methods
-		self.Define_Basic_Variables()
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Import some usage classes
 		self.Import_Usage_Classes()
@@ -31,73 +25,64 @@ class Friends(object):
 		# Define the "Friends" dictionary
 		self.Define_Friends_Dictionary()
 
-	def Import_Utility_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Define_Folders",
-			"JSON"
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
+
+		# Instance it and add it to the current class
+		self.JSON = JSON()
+
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
+
+		# ---------- #
+
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+
+		# Define a list of utility classes to not import
+		do_not_import = [
+			"API"
 		]
 
-		# Iterate through the list of classes
-		for class_title in classes:
-			# If the class is not already inside this class (Christmas)
-			# Or the class is "Define_Folders"
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class (Friends)
+			# And the class title is not inside the list of utility classes to not import
 			if (
-				hasattr(self, class_title) == False or
-				class_title == "Define_Folders"
+				hasattr(self, class_title) == False and
+				class_title not in do_not_import
 			):
-				# Import the module
+				# Import the module of the class
 				module = importlib.import_module("." + class_title, "Utility")
 
-				# Get the sub-class
-				sub_class = getattr(module, class_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-				# If the module title is not "Define_Folders"
-				if class_title != "Define_Folders":
-					# Run the sub-class to define its variable
-					sub_class = sub_class()
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
 
-				# Add the sub-class to the current class
-				setattr(self, class_title, sub_class)
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self)
+
+		# ---------- #
+
+		# Import the switches dictionary from the "Global Switches" class
+		self.switches = self.Global_Switches.switches["Global"]
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-	def Define_Basic_Variables(self):
-		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
-
-		# Create a list of the modules that will not be imported
-		self.modules["Remove list"] = [
-			"Define_Folders",
-			"Modules",
-			"Language",
-			"JSON"
-		]
-
-		# Iterate through the list of utility modules
-		for module_title in self.modules["Utility"]["List"]:
-			# If the module title is not inside the remove list
-			if module_title not in self.modules["Remove list"]:
-				# Import the module
-				module = importlib.import_module("." + module_title, "Utility")
-
-				# Get the sub-class of the module
-				sub_class = getattr(module, module_title)
-
-				# Add the sub-class to the current class
-				setattr(self, module_title, sub_class())
-
-		# ---------- #
-
-		# Get the switches dictionary from the "Global Switches" class
-		self.switches = self.Global_Switches.switches["Global"]
-
-		# ---------- #
-
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -115,15 +100,11 @@ class Friends(object):
 
 		# ---------- #
 
-		# Import the "Sanitize" method from the "File" class
-		self.Sanitize = self.File.Sanitize
-
-		# ---------- #
-
 		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -136,31 +117,35 @@ class Friends(object):
 			"Social_Networks"
 		]
 
-		# Iterate through the list of classes
+		# Iterate through the list of classes to import
 		for class_title in self.classes:
-			# Import the module
+			# Import the module of the class
 			module = importlib.import_module("." + class_title, class_title)
 
-			# Get the sub-class
-			sub_class = getattr(module, class_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
 			# Run the class to define its variables
-			sub_class = sub_class()
+			class_object = class_object()
 
 			# Iterate through the list of utility modules
 			for module_title in self.modules["Utility"]["List"]:
 				# If the module title is not inside the defined list
-				if module_title not in ["Language", "Modules"]:
-					# Get the sub-class of the module
+				# And the module attribute is inside the self class (Friends)
+				if (
+					module_title not in ["Language", "Modules"] and
+					hasattr(self, module_title) == True
+				):
+					# Get the class object inside the module
 					local_sub_class = getattr(self, module_title)
 
-					# Add the sub-class to the current class
-					setattr(sub_class, module_title, local_sub_class)
+					# Add the class object to the root class
+					setattr(class_object, module_title, local_sub_class)
 
 			# If the sub-class has a list of classes
-			if hasattr(sub_class, "classes") == True:
+			if hasattr(class_object, "classes") == True:
 				# Get the list of classes of the current class
-				current_class_classes = getattr(sub_class, "classes")
+				current_class_classes = getattr(class_object, "classes")
 
 				# Define a copy of the list of classes
 				classes_copy = self.classes.copy()
@@ -177,10 +162,10 @@ class Friends(object):
 						hasattr(self, local_class_title) != None
 					):
 						# Give the local class to the current class
-						setattr(sub_class, local_class_title, getattr(self, local_class_title))
+						setattr(class_object, local_class_title, getattr(self, local_class_title))
 
-			# Add the sub-class to the current class
-			setattr(self, class_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# ---------- #
 
@@ -1179,11 +1164,22 @@ class Friends(object):
 				# If the information needs to be requested from the user:
 				if information_item["States"]["Ask for information"] == True:
 					# If the "Testing" switch is False
-					# Or it is True and the information item is not inside the "Test information" dictionary
+					# Or it is True
+					# And the "Test information" dictionary exists
+					# And the information item is not inside the "Test information" dictionary
+					# Or the "Testing" switch is False
+					# And the "Test information" dictionary does not exist
 					if (
-						self.switches["Testing"] == False or
-						self.switches["Testing"] == True and
-						information_item["Name"] not in information_item["Test information"]
+						self.switches["Testing"] == False
+						or (
+							self.switches["Testing"] == True and
+							"Test information" in information_item and
+							information_item["Name"] not in information_item["Test information"]
+						)
+						or (
+							self.switches["Testing"] == True and
+							"Test information" not in information_item
+						)
 					):
 						# Ask the user for the information
 						# Defining the "accept_enter" variable as the above value
@@ -1193,11 +1189,14 @@ class Friends(object):
 						information = self.Input.Type(type_text, accept_enter = accept_enter, next_line = True, tab = "\t", regex = information_item["Format"])
 
 					# If the "Testing" switch is True
+					# And the "Test information" dictionary exists
 					# And the information item is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and
+						"Test information" in information_item and
 						information_item["Name"] in information_item["Test information"]
 					):
+						# Define the information as the text information
 						information = information_item["Test information"][information_item["Name"]]
 
 					# If the information is empty
@@ -1239,24 +1238,33 @@ class Friends(object):
 					select_text = self.language_texts["select_the_social_network_where_you_met_{}"].format(the_friend_text)
 
 				# If the "Testing" switch is False
-				# Or it is True and the information item is not inside the "Test information" dictionary
+				# Or it is True
+				# And the "Test information" dictionary exists
+				# And the information item is not inside the "Test information" dictionary
 				if (
 					self.switches["Testing"] == False or
 					self.switches["Testing"] == True and
+					"Test information" in information_item and
 					information_item["Name"] not in information_item["Test information"]
 				):
 					# Ask the user to select an item from the list of options
 					information = self.Input.Select(select["List"]["English"], language_options = select["List"]["Language"], show_text = select["Texts"]["Plural"], select_text = select_text)
 
 				# If the "Testing" switch is True
+				# And the "Test information" dictionary exists
 				# And the information item is inside "Test information" dictionary
 				if (
 					self.switches["Testing"] == True and
+					"Test information" in information_item and
 					information_item["Name"] in information_item["Test information"]
 				):
+					# Create a shortcut to the test information
+					test_information = information_item["Test information"][information_item["Name"]]
+
+					# Define the information dictionary as the test information
 					information = {
-						"option": information_item["Test information"][information_item["Name"]],
-						"language_option": information_item["Test information"][information_item["Name"]]
+						"option": test_information,
+						"language_option": test_information
 					}
 
 				# If the selected option is "Custom social network"
@@ -1265,19 +1273,24 @@ class Friends(object):
 					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.language["Small"]] + " " + self.language_texts["custom_origin_social_network"])
 
 					# If the "Testing" switch is False
-					# Or it is True and the "Custom social network" key is not inside the "Test information" dictionary
+					# Or it is True
+					# And the "Test information" dictionary exists
+					# And the "Custom social network" key is not inside the "Test information" dictionary
 					if (
 						self.switches["Testing"] == False or
 						self.switches["Testing"] == True and
+						"Test information" in information_item and
 						"Custom social network" not in information_item["Test information"]
 					):
 						# Ask the user to type the information
 						information = self.Input.Type(type_text, accept_enter = False, next_line = True, tab = "\t")
 
 					# If the "Testing" switch is True
+					# And the "Test information" dictionary exists
 					# And the "Custom social network" key is inside "Test information" dictionary
 					if (
 						self.switches["Testing"] == True and
+						"Test information" in information_item and
 						"Custom social network" in information_item["Test information"]
 					):
 						information = information_item["Test information"]["Custom social network"]
@@ -1305,34 +1318,49 @@ class Friends(object):
 						# Define the type text
 						type_text = self.language_texts["type_the_additional_information"]
 
+						# If the "Testing" switch is False
+						# Or it is True
+						# And the "Test information" dictionary exists
+						# And the information key is not inside the "Test information" dictionary
 						if (
 							self.switches["Testing"] == False or
 							self.switches["Testing"] == True and
+							"Test information" in information_item and
 							information_key not in information_item["Test information"]
 						):
-							# Ask for the additional information
+							# Ask the user to type the text
 							text = self.Input.Type(type_text)
 
+						# If the "Testing" switch is True
+						# And the "Test information" dictionary exists
+						# And the information key is inside the "Test information" dictionary
 						if (
 							self.switches["Testing"] == True and
+							"Test information" in information_item and
 							information_key in information_item["Test information"]
 						):
+							# Define the text as the test information
 							text = information_item["Test information"][information_key]
 
 						# Add the additional information
 						information += " - " + text
 
-		# Show the information item and information if the "testing" switch is True
+		# If the "Testing" switch is True
+		# And the information is not empty
+		# And the "Test information" dictionary exists
+		# And it is not empty
 		if (
 			self.switches["Testing"] == True and
 			information != "" and
+			"Test information" in information_item and
 			information_item["Test information"] != {}
 		):
+			# Show a space, the information item name, and the information with a tab
 			print()
 			print(information_item[self.language["Small"]] + ":")
 			print("\t" + information)
 
-		# Return the dictionary with the Information item dictionary and the information text
+		# Return a dictionary with the information "Item" dictionary and the "Information" text
 		return {
 			"Item": information_item,
 			"Information": information

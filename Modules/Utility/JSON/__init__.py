@@ -6,49 +6,45 @@ import datetime
 import json
 import inspect
 
+# Define the main "JSON" class
 class JSON():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Define the variables of the class
+		self.Define_Variables()
 
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self, create_texts = False).folders
-
-		# Define the "Switches" dictionary
-		self.Define_Switches()
-
-		# Define the module texts
-		self.Define_Texts()
-
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# ---------- #
-
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		# Define a list of classes to import
+		classes = [
+			"Modules",
 			"Global_Switches",
 			"Language"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
-	def Define_Switches(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, create_texts = False, utility_mode = True)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
@@ -67,7 +63,8 @@ class JSON():
 				# Define them as False
 				self.switches["File"][switch] = False
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Date" utility module "Files" dictionary
 		self.folders["Python"]["Files"]["Utility"]["Date"] = {
 			"root": self.folders["Python"]["Files"]["Utility"]["root"] + "Date/"
@@ -112,7 +109,7 @@ class JSON():
 
 			# Show the module name (JSON) and the method which ran this method (the "Verbose" one)
 			print()
-			print(self.module["Name"] + "." + runner_method_name + "():")
+			print(self.module["Module"] + "." + runner_method_name + "():")
 
 			# Show the verbose text
 			print("\t" + text + ":")

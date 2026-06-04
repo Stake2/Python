@@ -1,5 +1,6 @@
 # Create_New_Diary_Slim.py
 
+# Import the root "Diary_Slim" class
 from Diary_Slim.Diary_Slim import Diary_Slim as Diary_Slim
 
 from Diary_Slim.Write_On_Diary_Slim_Module import Write_On_Diary_Slim_Module as Write_On_Diary_Slim_Module
@@ -80,12 +81,6 @@ class Create_New_Diary_Slim(Diary_Slim):
 
 		# Write to the files
 		self.Write_To_Files()
-
-		# If the "Check for skipped Diary Slim" state is False
-		if self.states["Skipped Diary Slims"]["Check"] == False:
-			# Show a space and a five dash space separator
-			print()
-			print(self.separators["5"])
 
 		# If the "Checked for skipped Diary Slim" state is True
 		# And the "Skipped Diary Slims" is inside the "Texts" dictionary

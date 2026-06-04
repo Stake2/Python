@@ -1122,8 +1122,8 @@ class Register(GamePlayer):
 		# Format the text template with the item text to create the posted text
 		social_networks["Posted text"] = social_networks["Text template"].format(social_networks["Item text"])
 
-		# Add the "I made tweets on {}" text template to the posted text
-		social_networks["Posted text"] += "\n" + self.Language.language_texts["i_made_tweets_on_{}, type: template"] + "."
+		# Add the "I made a tweet on {}" text template to the posted text
+		social_networks["Posted text"] += "\n" + self.Language.language_texts["i_made_a_tweet_on_{}, type: template"] + "."
 
 		# Format the text template with the list of social networks
 		social_networks["Posted text"] = social_networks["Posted text"].format(*social_networks["List"])

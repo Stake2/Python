@@ -3,7 +3,7 @@
 class Run():
 	def __init__(self):
 		# Run the root class of the "Modules" module
-		self.Modules(object = self, select_class = True, return_class = True)
+		self.Modules(class_object = self, module_files = "Times", select_class = True, return_class = True)
 
 		# Define the "has active arguments" variable as False
 		has_active_arguments = False
@@ -46,12 +46,12 @@ class Run():
 			# Run the object of the selected class
 			classes["Selected"]["Object"]()
 
-# Define the custom arguments for the module
+# Define the dictionary of custom arguments for the module to change the behavior of the classes
 custom_arguments = {
-	"show_the_meal_times": {
+	"show": {
 		"Action": "store_true"
 	},
-	"register_the_meal_times": {
+	"register": {
 		"Action": "store_true"
 	}
 }

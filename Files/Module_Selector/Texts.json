@@ -7,13 +7,13 @@
 		"en": "Modules",
 		"pt": "Módulos"
 	},
-	"description_executes_the_module_specified_in_the_optional_arguments": {
-		"en": "Description:\nExecutes the module specified in the optional arguments.",
-		"pt": "Descrição:\nExecuta o módulo especificado no argumento opcional."
+	"description_executes_the_module_specified_in_the_optional_arguments, type: explanation": {
+		"en": "Description:\nExecutes the module specified in the optional argument \"-module\" and defines custom arguments for some modules",
+		"pt": "Descrição:\nExecuta o módulo especificado no argumento opcional \"-module\" (módulo) e define argumentos personalizados para alguns módulos"
 	},
 	"epilogue_and_that_is_how_you_execute_a_module_using_the_{}": {
-		"en": "Epilogue:\nAnd that is how you execute a module using the \"{}.py\".",
-		"pt": "Epílogo:\nE é assim que você executa um módulo usando o \"{}.py\"."
+		"en": "Epilogue:\nAnd that is how you execute a module using the {}",
+		"pt": "Epílogo:\nE é assim que você executa um módulo usando o {} (Seletor_De_Módulos)"
 	},
 	"activates_the_{}_mode_of_the_modules": {
 		"pt": "Ativa o modo \"{}\" dos módulos",
@@ -52,12 +52,12 @@
 		"en": "Shows this help text and ends the program execution"
 	},
 	"activates_the_displaying_of_user_information_on_the_language_class": {
-		"pt": "Ativa a exibição de informações do usuário na classe \"Language\"",
-		"en": "Activates the displaying of user information on the \"Language\" class"
+		"en": "Activates the displaying of user information on the \"Language\" class",
+		"pt": "Ativa a exibição de informações do usuário na classe \"Language\" (Idioma)"
 	},
 	"executes_the_{}_module": {
-		"pt": "Executa o módulo \"{}\"",
-		"en": "Executes the \"{}\" module"
+		"en": "Executes the \"{}\" module",
+		"pt": "Executa o módulo \"{}\""
 	},
 	"select_a_module_from_the_list": {
 		"en": "Select a module from the list to execute it",

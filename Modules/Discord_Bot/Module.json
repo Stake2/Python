@@ -1,0 +1,41 @@
+{
+	"Module": "Discord_Bot",
+	"Type": "Usage",
+	"Folders": {
+		"root": "C:/Python/Modules/Discord_Bot/",
+		"Files": {
+			"root": "C:/Python/Files/Discord_Bot/"
+		}
+	},
+	"Files": {
+		"Module": "C:/Python/Modules/Discord_Bot/Module.json",
+		"Classes": "C:/Python/Modules/Discord_Bot/Classes.json",
+		"Texts": "C:/Python/Files/Discord_Bot/Texts.json"
+	},
+	"Descriptions": {
+		"en": "Manage your Discord bot",
+		"pt": "Gerencie seu bot do Discord"
+	},
+	"Class mode": {
+		"Name": "Classes",
+		"Module descriptions key": "Module descriptions"
+	},
+	"Classes": {
+		"Numbers": {
+			"Total": 1
+		},
+		"List": [
+			"Discord_Bot"
+		],
+		"Dictionary": {
+			"Discord_Bot": {
+				"Name": "Discord_Bot",
+				"Descriptions": {
+					"en": "Execute your Discord bot",
+					"pt": "Executa o seu bot do Discord"
+				},
+				"Object": "<class 'Discord_Bot.Discord_Bot.Discord_Bot'>"
+			}
+		}
+	}
+}

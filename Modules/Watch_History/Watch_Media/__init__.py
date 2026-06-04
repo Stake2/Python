@@ -57,22 +57,22 @@ class Watch_Media(Watch_History):
 		# Import the "importlib" module
 		import importlib
 
-		# Define the classes to be imported
+		# Define the list of classes to be imported
 		classes = [
 			"Comment_Writer",
 			"Register"
 		]
 
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, self.__module__.split(".")[0])
 
-			# Get the sub-class
-			sub_class = getattr(module, title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 	def Select_The_Media(self):
 		# Define the list of watching statuses to use

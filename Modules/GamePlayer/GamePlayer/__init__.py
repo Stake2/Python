@@ -5,17 +5,11 @@ import importlib
 from copy import deepcopy
 import collections
 
+# Define the main "GamePlayer" class
 class GamePlayer(object):
 	def __init__(self):
-		# Import some utility classes
-		self.Import_Utility_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
-
-		# Module related methods
-		self.Define_Basic_Variables()
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Import some usage classes
 		self.Import_Usage_Classes()
@@ -30,73 +24,64 @@ class GamePlayer(object):
 		self.Define_Types()
 		self.Define_Registry_Format()
 
-	def Import_Utility_Classes(self):
-		# Define the classes to be imported
-		classes = [
-			"Define_Folders",
-			"JSON"
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
+
+		# Instance it and add it to the current class
+		self.JSON = JSON()
+
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
+
+		# ---------- #
+
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+
+		# Define a list of utility classes to not import
+		do_not_import = [
+			"API"
 		]
 
-		# Iterate through the list of classes
-		for class_title in classes:
-			# If the class is not already inside this class (Christmas)
-			# Or the class is "Define_Folders"
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class (GamePlayer)
+			# And the class title is not inside the list of utility classes to not import
 			if (
-				hasattr(self, class_title) == False or
-				class_title == "Define_Folders"
+				hasattr(self, class_title) == False and
+				class_title not in do_not_import
 			):
-				# Import the module
+				# Import the module of the class
 				module = importlib.import_module("." + class_title, "Utility")
 
-				# Get the sub-class
-				sub_class = getattr(module, class_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-				# If the module title is not "Define_Folders"
-				if class_title != "Define_Folders":
-					# Run the sub-class to define its variable
-					sub_class = sub_class()
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
 
-				# Add the sub-class to the current class
-				setattr(self, class_title, sub_class)
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self)
+
+		# ---------- #
+
+		# Import the switches dictionary from the "Global Switches" class
+		self.switches = self.Global_Switches.switches["Global"]
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-	def Define_Basic_Variables(self):
-		# Get the dictionary of modules
-		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
-
-		# Create a list of the modules that will not be imported
-		remove_list = [
-			"Define_Folders",
-			"Modules",
-			"Language",
-			"JSON"
-		]
-
-		# Iterate through the list of utility modules
-		for module_title in self.modules["Utility"]["List"]:
-			# If the module title is not inside the remove list
-			if module_title not in remove_list:
-				# Import the module
-				module = importlib.import_module("." + module_title, "Utility")
-
-				# Get the sub-class of the module
-				sub_class = getattr(module, module_title)
-
-				# Add the sub-class to the current class
-				setattr(self, module_title, sub_class())
-
-		# ---------- #
-
-		# Get the switches dictionary from the "Global Switches" class
-		self.switches = self.Global_Switches.switches["Global"]
-
-		# ---------- #
-
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -114,15 +99,11 @@ class GamePlayer(object):
 
 		# ---------- #
 
-		# Import the "Sanitize" method from the "File" class
-		self.Sanitize = self.File.Sanitize
-
-		# ---------- #
-
 		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -163,7 +144,7 @@ class GamePlayer(object):
 			]
 		}
 
-		# Iterate through the list of classes
+		# Iterate through the list of classes to import
 		for class_title in classes["List"]:
 			# Define the class dictionary
 			class_dictionary = {
@@ -177,7 +158,7 @@ class GamePlayer(object):
 				# Get the "Sub-classes to import" dictionary from it
 				class_dictionary["Sub-classes to import"] = classes["Dictionary"][class_title]["Sub-classes to import"]
 
-			# Import the module
+			# Import the module of the class
 			class_dictionary["Module"] = importlib.import_module("." + class_title, class_title)
 
 			# Get the class object
@@ -211,7 +192,7 @@ class GamePlayer(object):
 					# Import the sub-module
 					sub_class_dictionary["Module"] = importlib.import_module("." + sub_class_title, class_title)
 
-					# Get the sub-class
+					# Get the class object inside the module
 					sub_class_dictionary["Object"] = getattr(sub_class_dictionary["Module"], sub_class_title)
 
 					# If the "Titles" list is present
@@ -222,7 +203,7 @@ class GamePlayer(object):
 					# Add the sub-class dictionary to the root sub-classes dictionary
 					class_dictionary["Sub-classes"][sub_class_title] = sub_class_dictionary
 
-					# Add the sub-class to the root class
+					# Add the class object to the root class
 					setattr(class_dictionary["Object"], sub_class_title, sub_class_dictionary["Object"])
 
 					# Add one to the sub-class number
@@ -414,7 +395,7 @@ class GamePlayer(object):
 				if root_folder == "Shortcuts":
 					self.folders[root_folder] = {
 						key: {
-							"root": self.Folder.folders["Games"]["Shortcuts"]["root"] + self.Sanitize(language_type) + "/"
+							"root": self.Folder.folders["Games"]["Shortcuts"]["root"] + self.File.Sanitize(language_type) + "/"
 						}
 					}
 
@@ -1904,7 +1885,7 @@ class GamePlayer(object):
 			# Define the game "Files" dictionary
 			game["Files"] = {
 				"Shortcut": {
-					"File": dictionary["Type"]["Folders"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True),
+					"File": dictionary["Type"]["Folders"]["Shortcuts"]["root"] + self.File.Sanitize(game["Title"], restricted_characters = True),
 					"Path": ""
 				}
 			}
@@ -1932,7 +1913,7 @@ class GamePlayer(object):
 					game["Files"]["Shortcut"]["Path"] += "/"
 
 			# Define the bat File for the game if it exists
-			file = self.Folder.folders["Python"]["Shortcuts"]["root"] + self.Sanitize(game["Title"], restricted_characters = True) + ".bat"
+			file = self.Folder.folders["Python"]["Shortcuts"]["root"] + self.File.Sanitize(game["Title"], restricted_characters = True) + ".bat"
 
 			if self.File.Exists(file) == True:
 				game["Files"]["Bat"] = file
@@ -1957,7 +1938,7 @@ class GamePlayer(object):
 				root_folder += dictionary["Type"]["Type"]["en"] + "/"
 
 			# Define the game folder as the sanitized game title with restricted characters
-			game_folder = self.Sanitize(game["Title"], restricted_characters = True)
+			game_folder = self.File.Sanitize(game["Title"], restricted_characters = True)
 
 			# If the "Folder" key is inside the game details dictionary
 			if self.Folder.language_texts["folder, title()"] in game["Details"]:
@@ -2570,7 +2551,7 @@ class GamePlayer(object):
 		elif "." in title:
 			title = title.replace(".", "")
 
-		title = self.Sanitize(title, restricted_characters = True)
+		title = self.File.Sanitize(title, restricted_characters = True)
 
 		return title
 
@@ -3084,44 +3065,51 @@ class GamePlayer(object):
 
 		# --------------- #
 
-		# Show the sub-game type text and the sub-game title
-		# If the game has sub-games and the sub-game is not the game
+		# If the game has sub-games and the sub-game title is not the root game title
+		# (Then show the sub-game type text and the sub-game title)
 		if (
 			game["States"]["Has sub-games"] == True and
 			game["Sub-game"]["Title"] != game["Title"]
 		):
-			# Define the sub-game variable for faster typing
+			# Create a shortcut to the "Sub-game" dictionary
 			sub_game = game["Sub-game"]
 
-			# Show the sub-game type text
+			# Get the singular sub-game title text in the user language
 			sub_game_type_text = game["Sub-games"]["Texts"]["Singular"][self.language["Small"]]
 
+			# Show it
 			print()
 			print(sub_game_type_text + ":")
 
-			# Show the original or romanized sub-game title
+			# Define the key to get the sub-game title
 			key = "Original"
 
 			if "Romanized" in sub_game["Titles"]:
 				key = "Romanized"
 
+			# Get the sub-game title using the defined key
 			title = self.Sanitize_Title(sub_game["Titles"][key])
 
+			# Show it with a tab
 			print("\t" + title)
 
-			# Show the language titles if they exist
+			# Show the sub-game title in other languages if they exist
 			for language in self.languages["Small"]:
+				# If the language is inside the dictionry of sub-game titles
 				if language in sub_game["Titles"]:
+					# Get the title in the current language
 					title = self.Sanitize_Title(sub_game["Titles"][language])
 
+					# Show it with a tab
 					print("\t" + title)
 
-			# Show the "With the game title" text
-			text = sub_game_type_text + " " + self.language_texts["with_the_game_title"]
+			# Define the local text as "Game title with the [sub-game type text]"
+			text = self.language_texts["game_title_with_the"] + " " + sub_game_type_text
 
-			# Get the sub-game "With game title"
+			# Get the sub-game "With game title" title in the user language
 			title = game["Sub-game"]["With game title"]["Language"]
 
+			# Show the defined text and sub-game title
 			print()
 			print(text + ":")
 			print("\t" + title)

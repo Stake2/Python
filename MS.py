@@ -5,19 +5,11 @@ import importlib
 import inspect
 from copy import deepcopy
 
+# Define the main "Module_Selector" class
 class Module_Selector():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
-
-		# Define the folders of the module
-		self.Define_Folders(object = self)
-
-		# Defines the basic variables
-		self.Define_Basic_Variables()
-
-		# Define the texts of the module
-		self.Define_Texts()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Define the parser
 		self.Define_Parser()
@@ -50,37 +42,55 @@ class Module_Selector():
 		# Reset the switches again
 		self.Reset_Switches()
 
-	def Import_Classes(self):
-		# Define the list of utility modules to be imported
-		self.utility_modules = [
-			"Define_Folders",
-			"Global_Switches",
-			"Modules",
-			"JSON",
-			"Input",
-			"Folder"
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
+
+		# Instance it and add it to the current class
+		self.JSON = JSON()
+
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
+
+		# ---------- #
+
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+
+		# Define a list of utility classes to not import
+		do_not_import = [
+			"API"
 		]
 
-		# Iterate through the list of utility modules
-		for module_title in self.utility_modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class (Module_Selector)
+			# And the class title is not inside the list of utility classes to not import
+			if (
+				hasattr(self, class_title) == False and
+				class_title not in do_not_import
+			):
+				# Import the module of the class
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
 
-			# If the module title is not in the defined list
-			if module_title not in ["Define_Folders", "Modules"]:
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
 
-			# Add the sub-class to the current module
-			setattr(self, module_title, sub_class)
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
 
-		# Define the "Language" class as the same class inside the "JSON" class
-		self.Language = self.JSON.Language
+		# ---------- #
 
-	def Define_Basic_Variables(self):
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, define_classes = False)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global Switches" class
 		self.switches = self.Global_Switches.switches
 
@@ -89,7 +99,10 @@ class Module_Selector():
 
 		# ---------- #
 
-		# Import some variables from the "Language" class
+		# Define the "Language" class as the same class inside the "JSON" class
+		self.Language = self.JSON.Language
+
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -105,7 +118,8 @@ class Module_Selector():
 		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
 		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
@@ -122,9 +136,9 @@ class Module_Selector():
 		self.argument_parser = {
 			"Prefix": "-",
 			"ArgumentParser": {
-				"prog": self.module["Name"] + ".py",
-				"description": self.language_texts["description_executes_the_module_specified_in_the_optional_arguments"],
-				"epilog": self.language_texts["epilogue_and_that_is_how_you_execute_a_module_using_the_{}"].format(self.module["Name"]),
+				"prog": self.module["Module"] + ".py",
+				"description": self.language_texts["description_executes_the_module_specified_in_the_optional_arguments, type: explanation"],
+				"epilog": self.language_texts["epilogue_and_that_is_how_you_execute_a_module_using_the_{}"].format('"' + self.module["Module"] + '"'),
 				"formatter_class": argparse.RawDescriptionHelpFormatter,
 				"add_help": False
 			},
@@ -215,11 +229,11 @@ class Module_Selector():
 		if type(argument) == dict:
 			# If the "Is module" key is inside the argument
 			# And the argument is a module argument (True)
-			# Then define its text key as "executes_the_{}_module"
 			if (
 				"Is module" in argument and
 				argument["Is module"] == True
 			):
+				# Then define its text key as "executes_the_{}_module"
 				argument["Text key"] = "executes_the_{}_module"
 
 			# if there is a custom help text of the argument, use it
@@ -460,10 +474,18 @@ class Module_Selector():
 					# Get the text for the custom argument
 					dictionary["Text"] = module["Texts"][text_key][self.language["Small"]]
 
-					# If there is the "{module}" format text on the argument text
-					# Replace it with the module title
+					# If the "{module}" format text is present in the argument text
 					if "{module}" in dictionary["Text"]:
-						dictionary["Text"] = dictionary["Text"].replace("{module}", '"' + title + '"')
+						# Define a copy of the module title
+						title_copy = title
+
+						# If the ["{module}"] format text is not present inside the text
+						if '"{module}"' not in dictionary["Text"]:
+							# Then add quotes around the copy of the module title
+							title_copy = '"{}"'.format(title_copy)
+
+						# Replace the "{module}" format text with the module title
+						dictionary["Text"] = dictionary["Text"].replace("{module}", title_copy)
 
 					# If the custom arguments variable is a dictionary
 					if type(custom_arguments) == dict:

@@ -1,20 +1,42 @@
 {
 	"Module": "Meal_Times",
+	"Type": "Usage",
 	"Folders": {
 		"root": "C:/Python/Modules/Meal_Times/",
-		"Texts": {
+		"Files": {
 			"root": "C:/Python/Files/Meal_Times/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Python/Modules/Meal_Times/Descriptions.json",
-		"Module": "C:/Python/Modules/Meal_Times/Module.json"
+		"Module": "C:/Python/Modules/Meal_Times/Module.json",
+		"Classes": "C:/Python/Modules/Meal_Times/Classes.json",
+		"Texts": "C:/Python/Files/Meal_Times/Texts.json",
+		"Times": "C:/Python/Files/Meal_Times/Times.json"
 	},
 	"Descriptions": {
-		"Show text": "Registre os horários das suas refeições"
+		"en": "Register the times of your meal",
+		"pt": "Registre os horários da sua refeição"
+	},
+	"Class mode": {
+		"Name": "Classes",
+		"Module descriptions key": "Module descriptions"
 	},
 	"Classes": {
-		"Dictionary": {},
-		"Descriptions": []
+		"Numbers": {
+			"Total": 1
+		},
+		"List": [
+			"Meal_Times"
+		],
+		"Dictionary": {
+			"Meal_Times": {
+				"Name": "Meal_Times",
+				"Descriptions": {
+					"en": "Register the times of your meal",
+					"pt": "Registre os horários da sua refeição"
+				},
+				"Object": "<class 'Meal_Times.Meal_Times.Meal_Times'>"
+			}
+		}
 	}
 }

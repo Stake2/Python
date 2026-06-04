@@ -1,74 +1,69 @@
 {
 	"Module": "Tasks",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/Tasks/",
-		"Texts": {
-			"root": "C:/Apps/Module files/Tasks/"
+		"root": "C:/Python/Modules/Tasks/",
+		"Files": {
+			"root": "C:/Python/Files/Tasks/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Tasks/Descriptions.json",
-		"Module": "C:/Apps/Modules/Tasks/Module.json"
+		"Module": "C:/Python/Modules/Tasks/Module.json",
+		"Descriptions": "C:/Python/Modules/Tasks/Descriptions.json",
+		"Texts": "C:/Python/Files/Tasks/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar Rede de Produtividade (Productive Network)",
-		"Register": {
-			"en": "Register a task",
-			"pt": "Registrar uma tarefa"
-		},
-		"Show_Tasks": {
-			"en": "Show all tasks",
-			"pt": "Mostrar todas as tarefas"
-		},
-		"View": {
-			"en": "View database",
-			"pt": "Visualizar banco de dados"
-		},
-		"Manage": {
-			"en": "Manage the Task History",
-			"pt": "Gerenciar Histórico de Tarefas"
-		}
+		"en": "Manage the Productivity Network",
+		"pt": "Gerenciar a Rede de Produtividade (Productivity Network)"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 4
+		},
+		"List": [
+			"Register",
+			"Show_Tasks",
+			"View",
+			"Manage"
+		],
 		"Dictionary": {
 			"Register": {
+				"Name": "Register",
 				"Descriptions": {
 					"en": "Register a task",
 					"pt": "Registrar uma tarefa"
 				},
-				"Description": "Registrar uma tarefa",
 				"Object": "<class 'Tasks.Register.Register'>"
 			},
 			"Show_Tasks": {
+				"Name": "Show_Tasks",
 				"Descriptions": {
 					"en": "Show all tasks",
 					"pt": "Mostrar todas as tarefas"
 				},
-				"Description": "Mostrar todas as tarefas",
 				"Object": "<class 'Tasks.Show_Tasks.Show_Tasks'>"
 			},
 			"View": {
+				"Name": "View",
 				"Descriptions": {
 					"en": "View database",
 					"pt": "Visualizar banco de dados"
 				},
-				"Description": "Visualizar banco de dados",
 				"Object": "<class 'Tasks.View.View'>"
 			},
 			"Manage": {
+				"Name": "Manage",
 				"Descriptions": {
 					"en": "Manage the Task History",
 					"pt": "Gerenciar Histórico de Tarefas"
 				},
-				"Description": "Gerenciar Histórico de Tarefas",
 				"Object": "<class 'Tasks.Manage.Manage'>"
 			}
-		},
-		"Descriptions": [
-			"Registrar uma tarefa",
-			"Mostrar todas as tarefas",
-			"Visualizar banco de dados",
-			"Gerenciar Histórico de Tarefas"
-		]
+		}
 	}
 }

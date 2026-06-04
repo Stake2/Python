@@ -1,55 +1,51 @@
 {
 	"Module": "Diary_Slim",
+	"Type": "Usage",
 	"Folders": {
 		"root": "C:/Python/Modules/Diary_Slim/",
-		"Texts": {
+		"Files": {
 			"root": "C:/Python/Files/Diary_Slim/"
 		}
 	},
 	"Files": {
+		"Module": "C:/Python/Modules/Diary_Slim/Module.json",
 		"Descriptions": "C:/Python/Modules/Diary_Slim/Descriptions.json",
-		"Module": "C:/Python/Modules/Diary_Slim/Module.json"
+		"Texts": "C:/Python/Files/Diary_Slim/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar o Diário Slim",
-		"Create_New_Diary_Slim": {
-			"en": "Create a new Diary Slim",
-			"pt": "Criar um novo Diário Slim"
-		},
-		"Write_On_Diary_Slim": {
-			"en": "Write on Diary Slim",
-			"pt": "Escrever no Diário Slim"
-		},
-		"Manage": {
-			"en": "Manage the [Diary Slim] Database and History",
-			"pt": "Gerenciar o Banco de Dados e Histórico do [Diário Slim]"
-		},
-		"Remove list": [
-			"Manage"
-		]
+		"en": "Manage the Diary Slim",
+		"pt": "Gerenciar o Diário Slim"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 2
+		},
+		"List": [
+			"Create_New_Diary_Slim",
+			"Write_On_Diary_Slim"
+		],
 		"Dictionary": {
 			"Create_New_Diary_Slim": {
+				"Name": "Create_New_Diary_Slim",
 				"Descriptions": {
 					"en": "Create a new Diary Slim",
 					"pt": "Criar um novo Diário Slim"
 				},
-				"Description": "Criar um novo Diário Slim",
 				"Object": "<class 'Diary_Slim.Create_New_Diary_Slim.Create_New_Diary_Slim'>"
 			},
 			"Write_On_Diary_Slim": {
+				"Name": "Write_On_Diary_Slim",
 				"Descriptions": {
 					"en": "Write on Diary Slim",
 					"pt": "Escrever no Diário Slim"
 				},
-				"Description": "Escrever no Diário Slim",
 				"Object": "<class 'Diary_Slim.Write_On_Diary_Slim.Write_On_Diary_Slim'>"
 			}
-		},
-		"Descriptions": [
-			"Criar um novo Diário Slim",
-			"Escrever no Diário Slim"
-		]
+		}
 	}
 }

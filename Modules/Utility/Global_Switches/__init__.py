@@ -1,39 +1,48 @@
 # Global_Switches.py
 
+# Import some useful modules
 import os
+import json
 
+# Define the main "Global_Switches" class
 class Global_Switches():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
-
-		# Define the folders of the module
-		self.Define_Folders(object = self, files = ["Switches"])
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Define the "Switches" dictionary
 		self.Define_Switches()
 
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders"
+		# Define the classes to be imported
+		classes = [
+			"Modules"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, create_texts = False, utility_mode = True)
 
 	def Define_Switches(self):
-		# Define the "Switches" dictionary
+		# Define and create the "Switches.json" file
+		self.module["Files"]["Switches"] = self.module["Folders"]["Files"]["root"] + "Switches.json"
+		self.File_Create(self.module["Files"]["Switches"])
+
+		# Define the root "switches" dictionary
 		self.switches = {
 			"Reset": {
 				"Testing": False,
@@ -45,8 +54,9 @@ class Global_Switches():
 			"File": self.module["Files"]["Switches"]
 		}
 
-		# Write the "Reset" switches dictionary into the "Switches.json" file if it is empty
-		if self.Contents(self.switches["File"])["Lines"] == []:
+		# If the "Switches.json" file is empty
+		if self.File_Contents(self.switches["File"])["Lines"] == []:
+			# Write the "Reset" switches dictionary to it
 			self.Reset()
 
 		# Get the "Global" switches dictionary
@@ -75,31 +85,78 @@ class Global_Switches():
 				self.switches["Global"]["Has active switches"] = True
 
 	def Sanitize(self, path):
+		# Normalize the path and replace backslashes with forward slashes
 		path = os.path.normpath(path).replace("\\", "/")
 
+		# Return the path
 		return path
 
-	def Exists(self, file):
+	def File_Exists(self, file):
 		# Sanitize the file path
 		file = self.Sanitize(file)
 
 		# Checks if the file exists and returns True if it does or False if it does not
 		return os.path.isfile(file)
 
-	def JSON_To_Python(self, file):
-		import json
+	def File_Open(self, file, mode = "r", encoding = "UTF8"):
+		# Open the file with the mode and encoding
+		return open(file, mode, encoding = encoding)
 
+	def File_Create(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# If the file does not exist
+		if self.File_Exists(file) == False:
+			# Open the file handle in write mode to create it
+			create = self.File_Open(file, "w")
+
+			# Close the file handle
+			create.close()
+
+	def File_Contents(self, file):
+		# Sanitize the file path
+		file = self.Sanitize(file)
+
+		# Define the contents dictionary
+		contents = {
+			"Lines": [],
+			"String": ""
+		}
+
+		# If the file exists
+		if self.File_Exists(file) == True:
+			# Open the file handle in read mode (the default mode)
+			file_handle = self.File_Open(file)
+
+			# Iterate through the lines inside the file
+			for line in file_handle.readlines():
+				# Remove the line break from the line
+				line = line.replace("\n", "")
+
+				# Add the line to the list of lines
+				contents["Lines"].append(line)
+
+			# Reset cursor to the beginning of the file before getting the file string
+			file_handle.seek(0)
+
+			# Read the file and get its string
+			contents["String"] = file_handle.read()
+
+		# Return the contents dictionary
+		return contents
+
+	def JSON_To_Python(self, file):
 		# Sanitize the file
 		file = self.Sanitize(file)
 
 		# Get the JSON dictionary
 		dictionary = json.load(open(file, encoding = "utf8"))
 
+		# Return the JSON dictionary
 		return dictionary
 
 	def JSON_From_Python(self, items):
-		# Import the needed modules
-		import json
 		from copy import deepcopy
 
 		# Make a copy of the items
@@ -108,45 +165,34 @@ class Global_Switches():
 		# Return the JSON version of the items
 		return json.dumps(items, indent = 4, ensure_ascii = False)
 
-	def Contents(self, file):
-		# Sanitize the file
+	def JSON_Edit(self, file, text):
+		# Sanitize the file path
 		file = self.Sanitize(file)
 
-		# Create the "Contents" dictionary
-		contents = {
-			"Lines": []
-		}
+		# Get the contents of the file
+		contents = self.File_Contents(file)
 
-		# If the file exists
-		if self.Exists(file) == True:
-			# Iterate through the lines in the file
-			for line in open(file, "r", encoding = "utf8").readlines():
-				# Replace the line breaks in the line
-				line = line.replace("\n", "")
-
-				# Add the line to the "Lines" key
-				contents["Lines"].append(line)
-
-		# Return the "Contents" dictionary
-		return contents
-
-	def Edit(self, file, text):
-		# Sanitize the file
-		file = self.Sanitize(file)
-
-		# Transform the text into a JSON dictionary
+		# Transform the text into the JSON format
 		text = self.JSON_From_Python(text)
 
 		# If the file exists
-		if self.Exists(file) == True:
-			# Edit the file with the text
-			edit = open(file, "w", encoding = "UTF8")
+		# And the file text string is not equal to the parameter text
+		if (
+			self.File_Exists(file) == True and
+			contents["String"] != text
+		):
+			# Open the file handle in write mode
+			edit = self.File_Open(file, "w")
+
+			# Write the text into the file
 			edit.write(text)
+
+			# Close the file handle
 			edit.close()
 
 	def Reset(self):
 		# Reset the switches to the "Reset" switches dictionary
-		self.Edit(self.switches["File"], self.switches["Reset"])
+		self.JSON_Edit(self.switches["File"], self.switches["Reset"])
 
 	def Switch(self, switches):
 		# Get the reset switch keys
@@ -160,4 +206,4 @@ class Global_Switches():
 				switches.pop(switch)
 
 		# Switch the switches to the switches in the "switches" parameter
-		self.Edit(self.switches["File"], switches)
+		self.JSON_Edit(self.switches["File"], switches)

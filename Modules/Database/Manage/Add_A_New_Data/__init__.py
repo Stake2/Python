@@ -142,7 +142,7 @@ class Add_A_New_Data(Database):
 
 		# Create the data folders
 		self.data["Folders"] = {
-			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.Sanitize(self.data["Title"], restricted_characters = True) + "/"
+			"root": self.dictionary["Type"]["Folders"]["information"]["root"] + self.File.Sanitize(self.data["Title"], restricted_characters = True) + "/"
 		}
 
 		self.Folder.Create(self.data["Folders"]["root"])

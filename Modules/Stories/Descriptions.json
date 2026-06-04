@@ -1,26 +1,26 @@
 {
 	"Show text": {
 		"en": "Manage your stories",
-		"pt": "Gerenciar suas histórias"
+		"pt": "Gerenciar as suas histórias"
 	},
 	"Select_Story": {
-		"en": "Select story",
-		"pt": "Selecionar história"
+		"en": "Select a story",
+		"pt": "Selecionar uma história"
 	},
 	"Create_New_Story": {
 		"en": "Create a new story",
 		"pt": "Criar uma nova história"
 	},
 	"Show_Story_Information": {
-		"en": "Show story information",
-		"pt": "Mostrar informações de histórias"
+		"en": "Show the information of the stories",
+		"pt": "Mostrar informações das suas histórias"
 	},
 	"Manage": {
 		"en": "Manage",
 		"pt": "Gerenciar"
 	},
 	"Copy_Story_Titles": {
-		"en": "Copy the story titles",
-		"pt": "Copiar os títulos de histórias"
+		"en": "Copy the titles of the stories",
+		"pt": "Copiar os títulos das histórias"
 	}
 }

@@ -1,74 +1,69 @@
 {
 	"Module": "Database",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/Database/",
-		"Texts": {
-			"root": "C:/Apps/Module files/Database/"
+		"root": "C:/Python/Modules/Database/",
+		"Files": {
+			"root": "C:/Python/Files/Database/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Database/Descriptions.json",
-		"Module": "C:/Apps/Modules/Database/Module.json"
+		"Module": "C:/Python/Modules/Database/Module.json",
+		"Descriptions": "C:/Python/Modules/Database/Descriptions.json",
+		"Texts": "C:/Python/Files/Database/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar a Rede de Banco de Dados (Database Network)",
-		"Experience": {
-			"en": "Experience",
-			"pt": "Experimentar"
-		},
-		"Register": {
-			"en": "Register",
-			"pt": "Registrar"
-		},
-		"Manage": {
-			"en": "Manage the [Data Information] Database and the [Experience History]",
-			"pt": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]"
-		},
-		"View": {
-			"en": "View",
-			"pt": "Visualizar"
-		}
+		"en": "Manage the Database Network",
+		"pt": "Gerenciar a Rede de Banco de Dados (Database Network)"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 4
+		},
+		"List": [
+			"Experience",
+			"Register",
+			"Manage",
+			"View"
+		],
 		"Dictionary": {
 			"Experience": {
+				"Name": "Experience",
 				"Descriptions": {
 					"en": "Experience",
 					"pt": "Experimentar"
 				},
-				"Description": "Experimentar",
 				"Object": "<class 'Database.Experience.Experience'>"
 			},
 			"Register": {
+				"Name": "Register",
 				"Descriptions": {
 					"en": "Register",
 					"pt": "Registrar"
 				},
-				"Description": "Registrar",
 				"Object": "<class 'Database.Register.Register'>"
 			},
 			"Manage": {
+				"Name": "Manage",
 				"Descriptions": {
 					"en": "Manage the [Data Information] Database and the [Experience History]",
 					"pt": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]"
 				},
-				"Description": "Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]",
 				"Object": "<class 'Database.Manage.Run'>"
 			},
 			"View": {
+				"Name": "View",
 				"Descriptions": {
 					"en": "View",
 					"pt": "Visualizar"
 				},
-				"Description": "Visualizar",
 				"Object": "<class 'Database.View.View'>"
 			}
-		},
-		"Descriptions": [
-			"Experimentar",
-			"Registrar",
-			"Gerenciar o Banco de Dados de [Informações de Dados] e o [Histórico de Experiências]",
-			"Visualizar"
-		]
+		}
 	}
 }

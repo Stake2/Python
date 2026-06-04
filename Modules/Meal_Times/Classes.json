@@ -1,14 +1,22 @@
 {
+	"Numbers": {
+		"Total": 1
+	},
+	"List": [
+		"Meal_Times"
+	],
 	"Dictionary": {
 		"Meal_Times": {
+			"Name": "Meal_Times",
 			"Descriptions": {
-				"en": "Register your meal times",
-				"pt": "Registre os horários das suas refeições"
-			}
+				"en": "Register the times of your meal",
+				"pt": "Registre os horários da sua refeição"
+			},
+			"Object": "<class 'Meal_Times.Meal_Times.Meal_Times'>"
 		}
 	},
-	"Module description": {
-		"en": "Register your meal times",
-		"pt": "Registre os horários das suas refeições"
+	"Module descriptions": {
+		"en": "Register the times of your meal",
+		"pt": "Registre os horários da sua refeição"
 	}
 }

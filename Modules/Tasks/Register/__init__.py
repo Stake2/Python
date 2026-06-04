@@ -975,18 +975,20 @@ class Register(Tasks):
 
 		# Add the "When I completed the task" (local timezone) title and format string
 		completed_task_timezone_text = "\n" + self.texts["when_i_completed_the_task"][language] + ":" + "\n" + "{}"
+
 		lines.append(completed_task_timezone_text)
 
 		# Add the "When I completed the task (UTC)" title and format string
 		completed_task_utc_text = self.texts["when_i_completed_the_task"][language] + " (" + self.Date.texts["utc"][language] + ")" + ":" + "\n" + "{}"
+
 		lines.append(completed_task_utc_text)
 
 		# ---------- #
 
 		# If there are state texts to be added
 		if self.dictionary["States"]["Texts"] != {}:
-			# Define the text as "States:" and line breaks
-			text = "\n" + self.Language.texts["states, title()"][language] + ":" + "\n"
+			# Define the text as "States:" and a line break
+			text = self.Language.texts["states, title()"][language] + ":" + "\n"
 
 			# Get the list of state keys
 			keys = list(self.dictionary["States"]["Texts"].keys())

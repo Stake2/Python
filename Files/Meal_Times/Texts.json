@@ -47,12 +47,12 @@
 		"en": "The times were recorded in the times file",
 		"pt": "Os horários foram registrados no arquivo de horários"
 	},
-	"register_the_meal_times": {
+	"register": {
 		"en": "Registers your meal times using the \"{module}\" module",
-		"pt": "Registra os horários das suas refeiçõe usando o módulo \"{module}\""
+		"pt": "Registra os horários da sua refeição usando o módulo \"{module}\""
 	},
-	"show_the_meal_times": {
+	"show": {
 		"en": "Shows your meal times using the \"{module}\" module",
-		"pt": "Mostra os horários das suas refeições usando o módulo \"{module}\""
+		"pt": "Mostra os horários da sua refeição usando o módulo \"{module}\""
 	}
 }

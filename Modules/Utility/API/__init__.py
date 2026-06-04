@@ -1,58 +1,51 @@
 # API.py
 
-# Import the "deepcopy" module from the "copy" module
+# Import some useful modules
 from copy import deepcopy
 
+# Define the main "API" class
 class API():
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
-
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
-
-		# Define the "Switches" dictionary
-		self.Define_Switches()
+		# Define the variables of the class
+		self.Define_Variables()
 
 		# Define the API dictionary
 		self.Define_API()
 
-	def Import_Classes(self):
+	def Define_Variables(self):
 		import importlib
 
-		# ---------- #
-
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
+		# Define the classes to be imported
+		classes = [
+			"Modules",
 			"Global_Switches",
 			"File",
 			"Date",
 			"JSON"
 		]
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, "Utility")
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+			# If the class title is not "Modules"
+			if class_title != "Modules":
+				# Run the class object to define its attributes
+				class_object = class_object()
 
-			# Add the sub-class to the current class
-			setattr(self, module_title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-		# Import some variables from the "Language" class
+		# Import some attributes from the "Language" class
 
 		# Import the "languages" dictionary
 		self.languages = self.Language.languages
@@ -69,11 +62,17 @@ class API():
 		# Import the "separators" dictionary
 		self.separators = self.Language.separators
 
-	def Define_Switches(self):
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self, create_texts = False, utility_mode = True)
+
+		# ---------- #
+
 		# Get the "Switches" dictionary from the "Global_Switches" module
 		self.switches = self.Global_Switches.switches["Global"]
 
-		# Update the "Switches" dictionary, adding the "File" dictionary
+		# Update the "Switches" dictionary to add the "File" dictionary
 		self.switches.update({
 			"File": {
 				"Create": True,

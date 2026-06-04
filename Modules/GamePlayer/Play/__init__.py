@@ -48,21 +48,21 @@ class Play(GamePlayer):
 		# Import the "importlib" module
 		import importlib
 
-		# Define the classes to be imported
+		# Define the list of classes to be imported
 		classes = [
 			"Register"
 		]
 
-		# Import them
-		for title in classes:
-			# Import the module
-			module = importlib.import_module("." + title, self.__module__.split(".")[0])
+		# Iterate through the list of classes to import
+		for class_title in classes:
+			# Import the module of the class
+			module = importlib.import_module("." + class_title, self.__module__.split(".")[0])
 
-			# Get the sub-class
-			sub_class = getattr(module, title)
+			# Get the class object inside the module
+			class_object = getattr(module, class_title)
 
-			# Add the sub-class to the current class
-			setattr(self, title, sub_class)
+			# Add the class object to the root class
+			setattr(self, class_title, class_object)
 
 	def Define_Game_Dictionary(self):
 		# If the "Automatically selected class" switch exists
@@ -89,10 +89,15 @@ class Play(GamePlayer):
 			# Define the default value for the game title variable
 			game_title = None
 
-			# If there is a game inside the arguments dictionary
+			# If the dictionary of arguments is present inside this class
+			# And there is a game inside the arguments dictionary
 			# That means the module has been run by the "Module_Selector"
 			# And the game inside the arguments will be auto-selected
-			if "Game" in self.arguments:
+			if (
+				hasattr(self, "arguments") == True and
+				"Game" in self.arguments
+			):
+				# Define the game title as the game title inside the "Game" argument
 				game_title = self.arguments["Game"]["Value"]
 
 			# ---------- #
@@ -100,10 +105,15 @@ class Play(GamePlayer):
 			# Define the default value for the sub-game title variable
 			sub_game_title = None
 
-			# If there is a sub-game inside the arguments dictionary
+			# If the dictionary of arguments is present inside this class
+			# And there is a sub-game inside the arguments dictionary
 			# That means the module has been run by the "Module_Selector"
 			# And the sub-game inside the arguments will be auto-selected
-			if "Sub-game" in self.arguments:
+			if (
+				hasattr(self, "arguments") == True and
+				"Sub-game" in self.arguments
+			):
+				# Define the sub-game title as the sub-game title inside the "Sub-game" argument
 				sub_game_title = self.arguments["Sub-game"]["Value"]
 
 			# ---------- #

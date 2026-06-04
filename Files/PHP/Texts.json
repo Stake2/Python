@@ -11,6 +11,10 @@
 		"pt": "Sites",
 		"en": "Websites"
 	},
+	"website_number": {
+		"pt": "Número do site",
+		"en": "Website number"
+	},
 	"select_a_website_to_update_its_html_contents": {
 		"pt": "Selecione um site para atualizar seus conteúdos de HTML",
 		"en": "Select a website to update its HTML contents"
@@ -31,9 +35,9 @@
 		"pt": "Pressione Enter quando as páginas terminarem de carregar",
 		"en": "Press Enter when the pages finish loading"
 	},
-	"press_enter_when_you_finish_pushing_the_changes_to_the_github_repository": {
-		"pt": "Pressione enter quando você terminar de enviar as alterações para o repositório do GitHub",
-		"en": "Press Enter when you finish pushing the changes to the GitHub repository"
+	"press_enter_when_you_finish_pushing_the_changes_to_the_repository_on_github": {
+		"pt": "Pressione enter quando você terminar de enviar as alterações para o repositório no GitHub",
+		"en": "Press Enter when you finish pushing the changes to the repository on GitHub"
 	},
 	"update_more_websites": {
 		"pt": "Atualizar mais sites",

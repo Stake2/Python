@@ -15,13 +15,13 @@
 		"en": "Game titles",
 		"pt": "Títulos do jogo"
 	},
+	"game_title_with_the": {
+		"en": "Game title with the",
+		"pt": "Título do jogo com a"
+	},
 	"sub_game_title": {
 		"en": "Sub-game title",
 		"pt": "Título do sub-jogo"
-	},
-	"with_the_game_title": {
-		"en": "with the game title",
-		"pt": "com o título do jogo"
 	},
 	"number_of_the_game": {
 		"en": "Number of the game",

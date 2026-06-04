@@ -28,7 +28,7 @@
 			"ja": "日本語"
 		}
 	},
-	"Language with country": {
+	"With country": {
 		"pt": [
 			"pt_BR",
 			"pt_PT"
@@ -48,7 +48,8 @@
 			"Translated": {
 				"pt": "Português",
 				"en": "Portuguese"
-			}
+			},
+			"With country": "pt_BR"
 		},
 		"en": {
 			"Small": "en",
@@ -56,7 +57,8 @@
 			"Translated": {
 				"pt": "Inglês",
 				"en": "English"
-			}
+			},
+			"With country": "en_US"
 		}
 	},
 	"Countries": {

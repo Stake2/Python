@@ -1,48 +1,51 @@
 {
 	"Module": "PHP",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/PHP/",
-		"Texts": {
-			"root": "C:/Apps/Module files/PHP/"
+		"root": "C:/Python/Modules/PHP/",
+		"Files": {
+			"root": "C:/Python/Files/PHP/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/PHP/Descriptions.json",
-		"Module": "C:/Apps/Modules/PHP/Module.json"
+		"Module": "C:/Python/Modules/PHP/Module.json",
+		"Descriptions": "C:/Python/Modules/PHP/Descriptions.json",
+		"Texts": "C:/Python/Files/PHP/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar sites em PHP",
-		"Update_Websites": {
-			"en": "Update websites",
-			"pt": "Atualizar sites"
-		},
-		"Update_CSS_Colors": {
-			"pt": "Atualizar cores CSS",
-			"en": "Update CSS colors"
-		}
+		"pt": "Gerenciar sites em PHP",
+		"en": "Manage PHP websites"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 2
+		},
+		"List": [
+			"Update_Websites",
+			"Update_CSS_Colors"
+		],
 		"Dictionary": {
 			"Update_Websites": {
+				"Name": "Update_Websites",
 				"Descriptions": {
 					"en": "Update websites",
 					"pt": "Atualizar sites"
 				},
-				"Description": "Atualizar sites",
 				"Object": "<class 'PHP.Update_Websites.Update_Websites'>"
 			},
 			"Update_CSS_Colors": {
+				"Name": "Update_CSS_Colors",
 				"Descriptions": {
 					"pt": "Atualizar cores CSS",
 					"en": "Update CSS colors"
 				},
-				"Description": "Atualizar cores CSS",
 				"Object": "<class 'PHP.Update_CSS_Colors.Update_CSS_Colors'>"
 			}
-		},
-		"Descriptions": [
-			"Atualizar sites",
-			"Atualizar cores CSS"
-		]
+		}
 	}
 }

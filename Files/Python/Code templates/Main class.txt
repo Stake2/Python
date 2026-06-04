@@ -1,107 +1,87 @@
 # [module_name].py
 
+# Import some useful modules
+import importlib
+
+# Define the main "[module_name]" class
 class [module_name](object):
 	def __init__(self):
-		# Import the classes
-		self.Import_Classes()
+		# Define the variables of the class
+		self.Define_Variables()
 
-		# Define the folders of the module
-		self.folders = self.Define_Folders(object = self).folders
+	def Define_Variables(self):
+		# Import the "JSON" class
+		from Utility.JSON import JSON as JSON
 
-		# Module related methods
-		self.Define_Basic_Variables()
-		self.Define_Texts()
+		# Instance it and add it to the current class
+		self.JSON = JSON()
 
-	def Import_Classes(self):
-		# Define the list of modules to be imported
-		modules = [
-			"Define_Folders",
-			"JSON"
-		]
+		# Import the "folders" dictionary from the "JSON" class
+		self.folders = self.JSON.folders
 
-		# Iterate through the list of modules
-		for module_title in modules:
-			# Import the module
-			module = importlib.import_module("." + module_title, "Utility")
+		# ---------- #
 
-			# Get the sub-class
-			sub_class = getattr(module, module_title)
+		# Get the dictionary of Python modules
+		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
-			# If the module title is not "Define_Folders"
-			if module_title != "Define_Folders":
-				# Run the sub-class to define its variable
-				sub_class = sub_class()
+		# Iterate through the list of utility classes
+		for class_title in self.modules["Utility"]["List"]:
+			# If the class is not already inside the self class ([module_name])
+			if hasattr(self, class_title) == False:
+				# Import the module of the class
+				module = importlib.import_module("." + class_title, "Utility")
 
-			# Add the sub-class to the current module
-			setattr(self, module_title, sub_class)
+				# Get the class object inside the module
+				class_object = getattr(module, class_title)
+
+				# If the class title is not "Modules"
+				if class_title != "Modules":
+					# Run the class object to define its attributes
+					class_object = class_object()
+
+				# Add the class object to the root class
+				setattr(self, class_title, class_object)
+
+		# ---------- #
+
+		# Define the module dictionary and the module folders and files
+		self.Modules(class_object = self)
+
+		# ---------- #
+
+		# Import the switches dictionary from the "Global Switches" class
+		self.switches = self.Global_Switches.switches["Global"]
+
+		# ---------- #
 
 		# Define the "Language" class as the same class inside the "JSON" class
 		self.Language = self.JSON.Language
 
-	def Define_Basic_Variables(self):
-		# Get the modules list
-		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
+		# Import some variables from the "Language" class
 
-		# Create a list of the modules that will not be imported
-		remove_list = [
-			"Define_Folders",
-			"Modules",
-			"Language",
-			"JSON"
-		]
-
-		# Iterate through the Utility modules
-		for module_title in self.modules["Utility"]["List"]:
-			# If the module title is not inside the remove list
-			if module_title not in remove_list:
-				# Import the module
-				module = importlib.import_module("." + module_title, "Utility")
-
-				# Get the sub-class
-				sub_class = getattr(module, module_title)
-
-				# Add the sub-class to the current module
-				setattr(self, module_title, sub_class())
-
-		# Get the switches dictionary from the "Global Switches" module
-		self.switches = self.Global_Switches.switches["Global"]
-
-		# Get the Languages dictionary
+		# Import the "languages" dictionary
 		self.languages = self.Language.languages
 
-		# Get the user language and full user language
-		self.user_language = self.Language.user_language
-		self.full_user_language = self.Language.full_user_language
+		# Import the "language" dictionary
+		self.language = self.Language.language
 
-		# Define the local "folders" dictionary as the dictionary inside the "Folder" class
+		# Import the "separators" dictionary
+		self.separators = self.Language.separators
+
+		# ---------- #
+
+		# Import the "folders" dictionary from the "Folder" class
 		self.folders = self.Folder.folders
 
-		# Import the "links" variable from the "Folder"
+		# ---------- #
 
-		# Get the Sanitize method of the File class
-		self.Sanitize = self.File.Sanitize
-
-		# Get the current date from the Date module
+		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
-	def Define_Texts(self):
+		# ---------- #
+
 		# Define the "Texts" dictionary
-		self.texts = self.JSON.To_Python(self.folders["Python"]["Files"][self.module["key"]]["texts"])
+		self.texts = self.JSON.To_Python(self.module["Files"]["Texts"])
 
 		# Define the "Language texts" dictionary
-		self.language_texts = self.JSON.Language.Item(self.texts)
-
-		# Define the "Separators" dictionary
-		self.separators = {}
-
-		# Create separators from one to ten characters
-		for number in range(1, 11):
-			# Define the empty string
-			string = ""
-
-			# Add separators to it
-			while len(string) != number:
-				string += "-"
-
-			# Add the string to the Separators dictionary
-			self.separators[str(number)] = string
+		self.language_texts = self.Language.Item(self.texts)

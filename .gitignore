@@ -1,6 +1,6 @@
 # Root folders
 Arquivo
-Archive/
+Archive
 Atalhos
 Rubbish
 
@@ -9,11 +9,13 @@ desktop.ini
 .megaignore
 Sincronizar módulos.ffs_batch
 Sync.lnk
+Discord.log
 
 # Module files
-Files/SproutGigs/Categories
 Files/Utility/API/Services.json
 Files/Discord_Bot/Bot.json
+
+# -------------------- #
 
 # Template ignores
 
