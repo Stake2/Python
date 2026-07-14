@@ -308,8 +308,8 @@ class Watch_List_Of_Media(Watch_History):
 				# Define the "Include media title" variable as the "Has media item" switch
 				include_media_title = self.dictionary["Switches"]["Has media item"]
 
-				# Show the media title
-				self.Show_Media_Title(dictionary, include_media_title = include_media_title)
+				# Show the titles of the root media
+				self.Show_Media_Titles(dictionary, include_media_title = include_media_title)
 
 				# Show the title text
 				print()

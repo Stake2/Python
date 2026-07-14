@@ -319,6 +319,9 @@ class File():
 
 			return False
 
+		# Define the source and destination file texts
+		file_text = self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"]
+
 		# If the file exists
 		# And the "Copy" file switch is True
 		if (
@@ -329,14 +332,14 @@ class File():
 			shutil.copy(source_file, destination_file)
 
 			# Show the verbose text saying that the file was copied
-			self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
+			self.Verbose(file_text, destination_file)
 
 			return True
 
 		# If the "Copy" file switch is False
 		if self.switches["File"]["Copy"] == False:
 			# Define the verbose text to tell the user that the file was not copied due to the lack of permissions
-			verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + self.Language.language_texts["file, title()"]
+			verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["copy"]) + "." + "\n\n\t" + file_text
 
 			# Show the verbose text
 			self.Verbose(verbose_text, destination_file, verbose = True)
@@ -353,20 +356,23 @@ class File():
 			self.Exists(source_file) == True and
 			source_file != destination_file
 		):
+			# Define the source and destination file texts
+			file_text = self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"]
+
 			# And the "Move" file switch is True
 			if self.switches["File"]["Move"] == True:
 				# Move the file to the destination folder
 				shutil.move(source_file, destination_file)
 
 				# Show the verbose text saying that the file was moved
-				self.Verbose(self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n" + self.language_texts["destination_file"], destination_file)
+				self.Verbose(file_text, destination_file)
 
 				return True
 
 			# If the "Move" file switch is False
 			if self.switches["File"]["Move"] == False:
 				# Define the verbose text to tell the user that the file was not copied due to the lack of permissions
-				verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + self.language_texts["source_file"] + ":\n\t" + source_file + "\n\n\t" + self.language_texts["destination_file"]
+				verbose_text = self.Language.language_texts["it_was_not_possible_to_{}_the_file_permission_not_granted"].format(self.language_texts["move"]) + "." + "\n\n\t" + file_text
 
 				# Show the verbose text
 				self.Verbose(verbose_text, destination_file, verbose = True)
@@ -464,7 +470,7 @@ class File():
 		file_text = file + "\n" + \
 		"\n" + \
 		"\t" + verbose_text
-		
+
 		# If the file exists
 		if self.Exists(file) == True:
 			# If the file "Edit" switch is True

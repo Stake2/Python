@@ -272,7 +272,7 @@ class Social_Networks(object):
 				# Add the ", title()" text to the addon
 				addon += ", title()"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			# To define the singular texts of the file name in all languages
 			for language in self.languages["Small"]:
 				# Define the language file name text
@@ -283,7 +283,7 @@ class Social_Networks(object):
 				# Add it to make it plural
 				text_key += "s"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			# To define the plural texts of the file name in all languages
 			for language in self.languages["Small"]:
 				file_name_dictionary["Plural"][language] = self.Language.texts[text_key + addon][language]
@@ -335,7 +335,7 @@ class Social_Networks(object):
 			if "_" not in text_key:
 				addon = ", title()"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define the language link type text
 				link_type_dictionary[language] = self.Language.texts[text_key + addon][language]
@@ -411,7 +411,8 @@ class Social_Networks(object):
 				"Files": {},
 				"Information": {},
 				"Settings": {
-					"Create image folders": True
+					"Create image folders": True,
+					"Format profile link with handle": False
 				},
 				"Profile": {}
 			}
@@ -432,7 +433,7 @@ class Social_Networks(object):
 				# Create the root folder
 				self.Folder.Create(dictionary["root"])
 
-				# Iterate through the friend file names
+				# Iterate through the social network keys and file name dictionaries
 				for key, file_name_dictionary in self.social_networks["File names"]["Dictionary"].items():
 					# Create a shortcut to the file name key and language
 					file_name_key = file_name_dictionary["Key"]
@@ -479,22 +480,22 @@ class Social_Networks(object):
 						# Read the settings file
 						settings = self.File.Dictionary(social_network["Files"]["Text"][key], next_line = True)
 
-						# Define a local empty dictionary
-						new_settings = {}
-
-						# Define the texts dictionary for faster typing
-						texts_dictionary = self.Language.texts
+						# Define the local new settings dictionary as a copy of the root one
+						new_settings = deepcopy(social_network["Settings"])
 
 						# Iterate through the settings list
 						for setting in self.texts["settings, type: list"]:
 							# Get the English and language setting texts
-							english_text = texts_dictionary[setting]["en"]
-							language_text = texts_dictionary[setting][self.language["Small"]]
+							english_text = self.texts[setting]["en"]
+							language_text = self.texts[setting][self.language["Small"]]
 
 							# If the language setting is inside the local settings dictionary
 							if language_text in settings:
-								# Add the setting value to the new settings dictionary using the English text as a key
-								new_settings[english_text] = settings[language_text]
+								# Transform the setting value into "True" or "False" based on the setting text ("Yes" or "No")
+								setting_value = self.Input.Define_Yes_Or_No(settings[language_text])
+
+								# Change the setting value in the new settings dictionary
+								new_settings[english_text] = setting_value
 
 						# Update the root settings dictionary
 						social_network["Settings"] = new_settings
@@ -513,69 +514,98 @@ class Social_Networks(object):
 
 			# ---------- #
 
-			# Get the social network information items
+			# Get the social network information items dictionary from the "Items.json" dictionary
 			items = self.JSON.To_Python(social_network["Files"]["Items"])
 
-			# Update the number of information items
+			# Update the total number of information items
 			items["Numbers"]["Total"] = len(items["List"])
 
-			# Update the items list of the root information items with the local items list of the social network
+			# Iterate through the information items inside the list of information items of the social network
 			for item in items["List"]:
+				# If the item is not inside the root list of information items
 				if item not in self.information_items["List"]:
+					# Add it
 					self.information_items["List"].append(item)
 
-			# Update the "Exact match" list of the root information items with the "Exact match" list of the social network
-			list_ = []
+			# Define a local exact match list
+			exact_match = []
 
+			# Iterate through the "Exact match" information items of the social network
 			for item in items["Lists"]["Exact match"]:
+				# If the item is not inside the root list of "Exact match" information items
 				if item not in self.information_items["Lists"]["Exact match"]:
-					list_.append(item)
+					# Add it to the local exact match list
+					exact_match.append(item)
 
-			self.information_items["Lists"]["Exact match"][social_network_name] = list_
+			# Update the root "Exact match" list of the social network to be the local one
+			self.information_items["Lists"]["Exact match"][social_network_name] = exact_match
 
-			# Update the gender lists of the root information items with the gender lists of the social network
+			# Iterate through the local list of genders
 			for gender in ["Masculine", "Feminine"]:
-				for item in items["Gender"][gender]:
-					if item not in self.information_items["Gender"][gender]:
-						self.information_items["Gender"][gender].append(item)
+				# Get the root list of information items of the current gender
+				root_items_list = self.information_items["Gender"][gender]
 
-			# Update the "Formats" dictionary of the root information items with the "Formats" dictionary of the social network
+				# Iterate through the list of information items of the current gender and social network
+				for item in items["Gender"][gender]:
+					# If the item is not inside the root list of information items of the current gender
+					if item not in root_items_list:
+						# Add it
+						root_items_list.append(item)
+
+			# Update the root "Formats" dictionary of the social network with the "Formats" dictionary gotten from the social network "Items.json" file
 			self.information_items["Formats"][social_network_name] = items["Formats"]
 
+			# If the "Additional items" dictionary is present inside the local information items dictionary
 			if "Additional items" in items:
+				# Define a local additional items dictionary
 				additional_items = {}
 
-				# Iterate through the "Additional items" dictionary
+				# Iterate through the additional keys and items inside the "Additional items" dictionary
 				for key, additional_item in items["Additional items"].items():
+					# If the "{Social network link}" format string is inside the additional item
 					if "{Social network link}" in additional_item:
-						additional_item = additional_item.replace("{Social network link}", social_network["Information"]["Link"][:-1])
+						# Get the social network link
+						social_network_link = social_network["Information"]["Link"]
 
+						# If there is a slash at the end of the social network link
+						if social_network_link[0] == "/":
+							# Remove it
+							social_network_link = social_network_link[:-1]
+
+						# Replace the format string with the social network link
+						additional_item = additional_item.replace("{Social network link}", social_network_link)
+
+					# Add the additional item to the local additional items dictionary with the key
 					additional_items[key] = additional_item
 
-				# Update the "Additional items" dictionary of the root information items with the "Additional items" dictionary of the social network
+				# Update the root "Additional items" dictionary of the social network with the local one
 				self.information_items["Additional items"][social_network_name] = additional_items
 
 			# If the "Do not ask for item" list exists
 			if "Do not ask for item" in items["Lists"]:
-				# Update the "Do not ask for item" list of the root information items with the "Do not ask for item" list of the social network
+				# Iterate through the items inside the local list of information items
 				for item in items["Lists"]["Do not ask for item"]:
+					# If the item is not inside the root "Do not ask for item" list
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
+						# Add it
 						self.information_items["Lists"]["Do not ask for item"].append(item)
 
-			# Iterate through the information items list
+			# Iterate through the list of information items of the social network
 			for item in items["List"]:
 				# If the item is "Profile link" or "Message link"
-				# Or the item is inside the list of additional items
-				# And the "link" text is inside the item
+				# Or the item is inside the list of "Additional items" of the social network
+				# And the "link" text is inside the item name
 				if (
 					item in ["Profile link", "Message link"] or
 					item in self.information_items["Additional items"][social_network_name] and
 					"link" in item
 				):
+					# If the item is not inside the root "Do not ask for item" list
 					if item not in self.information_items["Lists"]["Do not ask for item"]:
+						# Add it
 						self.information_items["Lists"]["Do not ask for item"].append(item)
 
-			# Update the "Items.json" file of the social network
+			# Update the information "Items.json" file of the social network with the local information items dictionary
 			self.JSON.Edit(social_network["Files"]["Items"], items)
 
 			# Define the "Information items" dictionary of the social network as the local "Information items" dictionary
@@ -796,7 +826,7 @@ class Social_Networks(object):
 		# Create a local Information items dictionary
 		local_dictionary = deepcopy(self.information_items)
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
 			# Remove the language items lists
 			local_dictionary["Lists"].pop(language)
@@ -828,7 +858,7 @@ class Social_Networks(object):
 			if "_" not in text_key:
 				addon += ", title()"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define the correct texts dictionary
 				texts_dictionary = self.Language.texts
@@ -886,7 +916,7 @@ class Social_Networks(object):
 				# Define the text key as the backup
 				text_key = text_key_backup
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define the plural version of the information item
 				dict_["Plural"][language] = texts_dictionary[text_key][language]
@@ -1327,7 +1357,7 @@ class Social_Networks(object):
 		}
 
 		# Reset the test information dictionary to test the manual typing of information
-		test_information = {}
+		#test_information = {}
 
 		# Define the default information value
 		information = ""
@@ -1392,10 +1422,13 @@ class Social_Networks(object):
 						# Show the information
 						print("\t" + information)
 
-				# If the information item is inside the "Additional items" dictionary
+				# If the information item is inside the root "Additional items" dictionary
 				if key in self.information_items["Additional items"][social_network["Name"]]:
+					# Create a shortcut to the social network "Additional items" dictionary
+					additional_items = self.information_items["Additional items"][social_network["Name"]]
+
 					# Get the additional item template of the information item
-					additional_item = self.information_items["Additional items"][social_network["Name"]][key]
+					additional_item = additional_items[key]
 
 					# Get the format information item
 					format_item = additional_item.split("{")[1].split("}")[0]
@@ -1408,29 +1441,40 @@ class Social_Networks(object):
 
 					# If it is not the empty text
 					# Or the key is "Profile link"
-					# And the "Handle" information item is present
-					# And the handle is empty
+					# And the social network "Format profile link with handle" setting is False
 					if (
 						additional_item_value != empty_text or
 						key == "Profile link" and
-						"Handle" in social_network["Information items"]["List"] and
-						social_network["Profile"]["Handle"] == empty_text
+						social_network["Settings"]["Format profile link with handle"] == False
 					):
 						# Define the information as the additional item template formatted with its value
 						information = additional_item.format(additional_item_value)
 
-					# If the social network is "Facebook"
+					# If the social network "Format profile link with handle" setting is True
 					# And the key is "Profile link"
 					# And the "Handle" information item is present
 					# And the handle is not empty
 					if (
-						social_network["Name"] == "Facebook" and
+						social_network["Settings"]["Format profile link with handle"] == True and
 						key == "Profile link" and
 						"Handle" in social_network["Information items"]["List"] and
 						social_network["Profile"]["Handle"] != empty_text
 					):
-						# Define the information as the social network link plus the handle
-						information = social_network["Information"]["Link"] + social_network["Profile"]["Handle"]
+						# Define the handle link initially as the social network link
+						handle_link = social_network["Information"]["Link"]
+
+						# If the social network has a "Handle link"
+						if "Handle link" in additional_items:
+							# Change the local handle link to be that one
+							handle_link = additional_items["Handle link"]
+
+						# If there is not slash at the end of the handle link
+						if handle_link[0] != "/":
+							# Add it
+							handle_link += "/"
+
+						# Define the information as the handle link plus the handle
+						information = handle_link + social_network["Profile"]["Handle"]
 
 				# If the "Testing" switch is True
 				# And the "test information" dictionary is not empty

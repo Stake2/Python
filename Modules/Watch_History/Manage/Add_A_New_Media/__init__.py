@@ -243,12 +243,19 @@ class Add_A_New_Media(Watch_History):
 				if language != "[" + self.Language.language_texts["empty, title()"] + "]":
 					media["Language"] = language
 
-			if self.dictionary["Media type"]["Plural"]["en"] != self.texts["videos, title()"]["en"]:
-				# Ask if the media has dubbing
-				if self.switches["Testing"] == False:
-					media["Dubbing"] = self.Input.Yes_Or_No(self.Language.language_texts["dubbing, title()"], convert_to_text = True)
+			# If the media type is not "Videos"
+			if self.dictionary["Media type"]["Plural"]["en"] != "Videos":
+				# Create a shortcut to the "Has dubbing" text in the user language
+				has_dubbing = self.Language.language_texts["has_dubbing"]
 
+				# If the "Testing" switch is False
+				if self.switches["Testing"] == False:
+					# Ask the user if the media has dubbing
+					media["Dubbing"] = self.Input.Yes_Or_No(has_dubbing, convert_to_text = True)
+
+				# If the "Testing" switch is True
 				if self.switches["Testing"] == True:
+					# Define the "Dubbing" key as "Yes" in the user language
 					media["Dubbing"] = self.Language.language_texts["yes, title()"]
 
 			# Ask for the media status

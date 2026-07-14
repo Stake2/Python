@@ -593,7 +593,7 @@ class Register(Tasks):
 
 		# ---------- #
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for small_language in small_languages:
 			# Define the task title
 			task_title = self.dictionary["Task"]["Titles"][small_language]
@@ -627,7 +627,7 @@ class Register(Tasks):
 			# Delete the description file in the current language
 			self.File.Delete(files[small_language])
 
-		# Delete the task description backup file	
+		# Delete the task description backup file
 		self.File.Delete(files["Backup"])
 
 	def Register_In_JSON(self):
@@ -1041,7 +1041,7 @@ class Register(Tasks):
 		if language_parameter != "General":
 			# Only the task description in the user language
 			task_descriptions = self.task["Descriptions"][language]
-		
+
 		else:
 			# The task descriptions in all languages
 

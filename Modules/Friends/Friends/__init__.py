@@ -284,7 +284,7 @@ class Friends(object):
 			if "_" not in text_key:
 				addon = ", title()"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Get the information text
 				text = self.Language.texts[text_key + addon][language]
@@ -323,7 +323,7 @@ class Friends(object):
 			if text_key not in self.Language.texts:
 				text_key = text_key_backup
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				dict_["Plural"][language] = self.Language.texts[text_key][language]
 
@@ -457,7 +457,7 @@ class Friends(object):
 		# Create a local "Information items" dictionary
 		local_dictionary = deepcopy(self.information_items)
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
 			# Remove the language items lists
 			local_dictionary["Lists"].pop(language)
@@ -509,7 +509,7 @@ class Friends(object):
 			if "_" not in text_key:
 				addon = ", title()"
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define the language file name text
 				dict_[language] = self.Language.texts[text_key + addon][language]
@@ -520,7 +520,7 @@ class Friends(object):
 			# Define the plural texts of the file name
 			dict_["Plural"] = {}
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
 
@@ -1207,8 +1207,10 @@ class Friends(object):
 						# Define the information as the empty text
 						information = empty_text
 
-						# Show the information
-						print("\t" + information)
+						# If the "Testing" switch is False
+						if self.switches["Testing"] == False:
+							# Show the empty information
+							print("\t" + information)
 
 			# Else, ask user to select an item from the list of information
 			else:
@@ -1360,7 +1362,7 @@ class Friends(object):
 			print(information_item[self.language["Small"]] + ":")
 			print("\t" + information)
 
-		# Return a dictionary with the information "Item" dictionary and the "Information" text
+		# Return a dictionary with the information "Item" dictionary and the "Information" text (the value)
 		return {
 			"Item": information_item,
 			"Information": information

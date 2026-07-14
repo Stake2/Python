@@ -934,7 +934,7 @@ class Diary_Slim():
 				# Update the "States.json" file
 				self.JSON.Edit(dictionary["Files"]["States"], dictionary["States"])
 
-				# Iterate through list of small languages
+				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
 					# Define the state name
 					dictionary["Texts"][language] = dictionary["States"]["Names"][language]

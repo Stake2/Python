@@ -587,7 +587,7 @@ class Register(GamePlayer):
 			# Add the language title to the list of titles
 			game_titles.append(titles_dictionary["Language"])
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for local_language in self.languages["Small"]:
 				# Check if the local language exists in the titles dictionary
 				# And if the title in that language is different from the language title
@@ -1111,8 +1111,8 @@ class Register(GamePlayer):
 
 		# ---------- #
 
-		# Define the item text as "the game cover"
-		social_networks["Item text"] = self.language_texts["the_game_cover"]
+		# Define the item text as "the cover of the gaming session of the game"
+		social_networks["Item text"] = self.language_texts["the_cover_of_the_gaming_session_of_the_game"]
 
 		# ---------- #
 

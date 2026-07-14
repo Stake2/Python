@@ -404,7 +404,7 @@ class Create_New_Story(Stories):
 			self.File.Edit(file, self.story["Information"]["Synopsis"][small_language])
 
 		# ---------- #
-		
+
 		# Update the "Authors.txt" file with the list of authors
 		text_to_write = self.Text.From_List(self.story["Information"]["Authors"])
 

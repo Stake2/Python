@@ -4,8 +4,8 @@ from GamePlayer.GamePlayer import GamePlayer as GamePlayer
 
 class Play(GamePlayer):
 	def __init__(self, dictionary = {}, open_game = True):
-		# If the dictionary of arguments is present inside this class
-		if hasattr(self, "arguments") == True:
+		# If this class has an arguments dictionary
+		if self.has_arguments == True:
 			# Add it to the parent class
 			# (It was received from the "Module_Selector" module)
 			setattr(GamePlayer, "arguments", self.arguments)
@@ -13,8 +13,8 @@ class Play(GamePlayer):
 		# Initiate the root class and import its variables and methods
 		super().__init__()
 
-		# If the dictionary of arguments is present inside this class
-		if hasattr(self, "arguments") == True:
+		# If this class has an arguments dictionary
+		if self.has_arguments == True:
 			# Parse the arguments
 			# (The dictionary was received from the "Module_Selector" module)
 			self.Parse_Arguments()
@@ -89,12 +89,12 @@ class Play(GamePlayer):
 			# Define the default value for the game title variable
 			game_title = None
 
-			# If the dictionary of arguments is present inside this class
+			# If this class has an arguments dictionary
 			# And there is a game inside the arguments dictionary
 			# That means the module has been run by the "Module_Selector"
 			# And the game inside the arguments will be auto-selected
 			if (
-				hasattr(self, "arguments") == True and
+				self.has_arguments == True and
 				"Game" in self.arguments
 			):
 				# Define the game title as the game title inside the "Game" argument
@@ -105,12 +105,12 @@ class Play(GamePlayer):
 			# Define the default value for the sub-game title variable
 			sub_game_title = None
 
-			# If the dictionary of arguments is present inside this class
+			# If this class has an arguments dictionary
 			# And there is a sub-game inside the arguments dictionary
 			# That means the module has been run by the "Module_Selector"
 			# And the sub-game inside the arguments will be auto-selected
 			if (
-				hasattr(self, "arguments") == True and
+				self.has_arguments == True and
 				"Sub-game" in self.arguments
 			):
 				# Define the sub-game title as the sub-game title inside the "Sub-game" argument

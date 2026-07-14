@@ -1,7 +1,7 @@
 {
-	"this_is_the_time_that_you": {
-		"en": "This is the time that you",
-		"pt": "Essa é a hora que você"
+	"this_is_the_time_when_you": {
+		"en": "This is the time when you",
+		"pt": "Esse é o horário em que você"
 	},
 	"ate": {
 		"en": "ate",
@@ -13,39 +13,23 @@
 	},
 	"will_be_hungry": {
 		"en": "will be hungry",
-		"pt": "irá ter fome"
-	},
-	"time_that_i_finished_eating": {
-		"en": "Time that I finished eating",
-		"pt": "Tempo em que terminei de comer"
-	},
-	"time_that_you_will_be_hungry": {
-		"en": "Time that you will be hungry",
-		"pt": "Horário em que você terá fome"
-	},
-	"hours": {
-		"en": "hours",
-		"pt": "horas"
-	},
-	"minutes": {
-		"en": "minutes",
-		"pt": "minutos"
+		"pt": "vai estar com fome"
 	},
 	"showing_the_meal_times_below": {
 		"en": "Showing the meal times below",
 		"pt": "Mostrando os horários da refeição abaixo"
 	},
-	"play_alarm_sound_when_you_are_hungry": {
-		"en": "Play alarm sound when you are hungry",
-		"pt": "Tocar som de alarme quando você estiver com fome"
+	"obtained_from": {
+		"en": "obtained from",
+		"pt": "obtidos do"
 	},
-	"the_times_were_obtained_from_the_times_file": {
-		"en": "The times were obtained from the times file",
-		"pt": "Os horários foram obtidos do arquivo de horários"
+	"registered_in": {
+		"en": "registered in",
+		"pt": "registrados no"
 	},
-	"the_times_were_recorded_in_the_times_file": {
-		"en": "The times were recorded in the times file",
-		"pt": "Os horários foram registrados no arquivo de horários"
+	"the_times_were_{}_the_times_file": {
+		"en": "The times were {} the times file",
+		"pt": "Os horários foram {} arquivo de horários"
 	},
 	"register": {
 		"en": "Registers your meal times using the \"{module}\" module",

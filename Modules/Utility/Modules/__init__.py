@@ -186,6 +186,15 @@ class Modules():
 			# Define the module name
 			"Module": module_name,
 
+			# Define the sub-module name
+			"Sub-module": "",
+
+			# Define the "Is sub-module" state initially as False
+			"Is sub-module": False,
+
+			# Define the "Sub-module has sub-modules" state initially as False
+			"Sub-module has sub-modules": False,
+
 			# Define the module type
 			"Type": "Usage",
 
@@ -193,6 +202,10 @@ class Modules():
 			"Folders": {},
 			"Files": {}
 		}
+
+		# Define the modules and files folders
+		modules_folder = self.folders["Python"]["Modules"]
+		files_folder = self.folders["Python"]["Files"]
 
 		# If a dot is inside the module name
 		if "." in self.module["Module"]:
@@ -202,6 +215,17 @@ class Modules():
 			# Define the module name as the name before the dot
 			self.module["Module"] = split[0]
 
+			# If the name before the dot is not "Utility" and not the root module
+			if (
+				split[0] != "Utility" and
+				split[1] != split[0]
+			):
+				# Define the sub-module name
+				self.module["Sub-module"] = split[1]
+
+				# Change the "Is sub-module" state to True
+				self.module["Is sub-module"] = True
+
 			# If the name before the dot is "Utility"
 			if split[0] == "Utility":
 				# Define the module name as the sub-module name
@@ -209,6 +233,10 @@ class Modules():
 
 				# Change the module type to "Utility"
 				self.module["Type"] = "Utility"
+
+				# Change the modules and files folders to the "Utility" folders
+				modules_folder = modules_folder["Utility"]
+				files_folder = files_folder["Utility"]
 
 		# If the module type is "Usage"
 		if self.module["Type"] == "Usage":
@@ -218,16 +246,6 @@ class Modules():
 				"Class mode": {},
 				"Classes": {}
 			})
-
-		# Define the modules and files folders
-		modules_folder = self.folders["Python"]["Modules"]
-		files_folder = self.folders["Python"]["Files"]
-
-		# If the module type is "Utility"
-		if self.module["Type"] == "Utility":
-			# Change the folders to the "Utility" folders
-			modules_folder = modules_folder["Utility"]
-			files_folder = files_folder["Utility"]
 
 		# Define the root folder of the module
 		self.module["Folders"] = {
@@ -241,6 +259,32 @@ class Modules():
 
 		# Create a shortcut to the root folder
 		root_folder = self.module["Folders"]["root"]
+
+		# Create a local sub-module folder as an empty string
+		sub_module_folder = ""
+
+		# If the "Is sub-module" state is True
+		if self.module["Is sub-module"] == True:
+			# Define the sub-module folder
+			self.module["Folders"]["Sub-module"] = {
+				"root": self.module["Folders"]["root"] + self.module["Sub-module"] + "/"
+			}
+
+			# Create a shortcut to the sub-module folder
+			sub_module_folder = self.module["Folders"]["Sub-module"]["root"]
+
+			# Iterate through the list of class modes
+			for class_mode in self.class_modes["List"]:
+				# Define the local class mode JSON file
+				class_mode_file = sub_module_folder + class_mode + ".json"
+
+				# If the file exists
+				if self.File_Exists(class_mode_file) == True:
+					# Then change the root folder to be the sub-module folder
+					root_folder = sub_module_folder
+
+					# Change the "Sub-module has sub-modules" state to True
+					self.module["Sub-module has sub-modules"] = True
 
 		# If the module type is "Usage"
 		if self.module["Type"] == "Usage":
@@ -412,8 +456,23 @@ class Modules():
 					**dictionary
 				}
 
-			# Import the module of the class
-			class_module = importlib.import_module("." + key, self.module["Module"])
+			# Define the module key
+			module_key = "." + key
+
+			# If the "Is sub-module" state is True
+			# And the "Sub-module has sub-modules" state is True 
+			if (
+				self.module["Is sub-module"] == True and
+				self.module["Sub-module has sub-modules"] == True
+			):
+				# Change the module key to be the sub-module key
+				module_key = "." + self.module["Sub-module"]
+
+				# Then add the sub-sub-module name (the key)
+				module_key += "." + key
+
+			# Import the module of the class using the module key and root module name
+			class_module = importlib.import_module(module_key, self.module["Module"])
 
 			# If the module contains the class
 			if hasattr(class_module, key) == True:
@@ -466,8 +525,27 @@ class Modules():
 			# Remove the "Descriptions file" key
 			local_dictionary.pop("Descriptions file")
 
+		# Define a list of keys to remove
+		keys = [
+			"Is sub-module",
+			"Sub-module has sub-modules"
+		]
+
+		# Remove them
+		for key in keys:
+			local_dictionary.pop(key)
+
+		# If the "Is sub-module" state is False
+		if self.module["Is sub-module"] == False:
+			# Remove the "Sub-module" key
+			local_dictionary.pop("Sub-module")
+
 		# If the "Module" file is present inside the module "Files" dictionary
-		if "Module" in self.module["Files"]:
+		# And the "Sub-module has sub-modules" state is True
+		if (
+			"Module" in self.module["Files"] and
+			self.module["Sub-module has sub-modules"] == True
+		):
 			# Update the "Module.json" file with the updated local module dictionary
 			self.JSON.Edit(self.module["Files"]["Module"], local_dictionary)
 

@@ -1,51 +1,56 @@
 {
-	"Types": [
+	"Numbers": {
+		"Total": 3
+	},
+	"List": [
 		"Ate",
 		"Can drink water",
 		"Will be hungry"
 	],
-	"Times": {
-		"Ate": 0,
-		"Can drink water": 40,
-		"Will be hungry": 3
-	},
-	"Ate": {
-		"Object": "2026-06-03 15:57:44-03:00",
-		"Time": 0,
-		"Time text": "15:57",
-		"Unit": {
-			"en": "hours",
-			"pt": "horas"
+	"Dictionary": {
+		"Ate": {
+			"Texts": {
+				"pt": "Esse é o horário em que você comeu",
+				"en": "This is the time when you ate"
+			},
+			"Current time": {
+				"Object": "2026-07-14T12:59:45-0300",
+				"Time": "12:59"
+			}
 		},
-		"Texts": {
-			"pt": "Essa é a hora que você comeu",
-			"en": "This is the time that you ate"
-		}
-	},
-	"Can drink water": {
-		"Object": "2026-06-03 16:37:44-03:00",
-		"Time": 40,
-		"Time text": "16:37",
-		"Unit": {
-			"en": "minutes",
-			"pt": "minutos"
+		"Can drink water": {
+			"Texts": {
+				"pt": "Esse é o horário em que você pode beber água",
+				"en": "This is the time when you can drink water"
+			},
+			"Time to add": {
+				"Unit": {
+					"en": "minutes",
+					"pt": "minutos"
+				},
+				"Quantity": 40
+			},
+			"Current time": {
+				"Object": "2026-07-14T13:39:45-0300",
+				"Time": "13:39"
+			}
 		},
-		"Texts": {
-			"pt": "Essa é a hora que você pode beber água",
-			"en": "This is the time that you can drink water"
-		}
-	},
-	"Will be hungry": {
-		"Object": "2026-06-03 18:57:44-03:00",
-		"Time": 3,
-		"Time text": "18:57",
-		"Unit": {
-			"en": "hours",
-			"pt": "horas"
-		},
-		"Texts": {
-			"pt": "Essa é a hora que você irá ter fome",
-			"en": "This is the time that you will be hungry"
+		"Will be hungry": {
+			"Texts": {
+				"pt": "Esse é o horário em que você vai estar com fome",
+				"en": "This is the time when you will be hungry"
+			},
+			"Time to add": {
+				"Unit": {
+					"en": "hours",
+					"pt": "horas"
+				},
+				"Quantity": 3
+			},
+			"Current time": {
+				"Object": "2026-07-14T15:59:45-0300",
+				"Time": "15:59"
+			}
 		}
 	}
 }

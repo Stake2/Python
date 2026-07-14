@@ -131,7 +131,7 @@ class Watch_Media(Watch_History):
 			self.dictionary["Select episode"] == True
 		):
 			# Get the episode titles in the user language
-			episode_titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]	
+			episode_titles = self.media["Item"]["Episodes"]["Titles"][self.language["Small"]]
 
 			# Define the show and select texts to show the episodes to the user
 			show_text = self.language_texts["episodes, title()"]
@@ -160,14 +160,14 @@ class Watch_Media(Watch_History):
 		# Or the media has a media item list and the media item "Dates.txt" file is empty
 		if (
 			media_watching_status in plan_to_watch_status_list or
-			self.File.Contents(self.media["Folders"]["dates"])["lines"] == [] or
+			self.File.Contents(self.media["Folders"]["dates"])["Lines"] == [] or
 			self.media["States"]["Has a list of media items"] == True and
-			self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == []
+			self.File.Contents(self.media["Item"]["Folders"]["dates"])["Lines"] == []
 		):
 			# If the media "Dates.txt" file is empty
 			# And the user is not re-watching the media
 			if (
-				self.File.Contents(self.media["Folders"]["dates"])["lines"] == [] and
+				self.File.Contents(self.media["Folders"]["dates"])["Lines"] == [] and
 				self.media["States"]["Re-watching"] == False
 			):
 				# Get the first watching time where the user started watching the media (now)
@@ -185,7 +185,7 @@ class Watch_Media(Watch_History):
 			# And the user is not re-watching the media
 			if (
 				self.media["States"]["Has a list of media items"] == True and
-				self.File.Contents(self.media["Item"]["Folders"]["dates"])["lines"] == [] and
+				self.File.Contents(self.media["Item"]["Folders"]["dates"])["Lines"] == [] and
 				self.media["States"]["Re-watching"] == False
 			):
 				# Get the first watching time where the user started watching the media item (now)
@@ -210,8 +210,15 @@ class Watch_Media(Watch_History):
 		if "Status change" in self.media:
 			self.media["Details"] = self.Change_Status(self.dictionary, self.media["Status change"]["New"])
 
-		# If the "Dubbing" key is inside the media details dictionary
-		if self.Language.language_texts["dubbing, title()"] in self.media["Details"]:
+		# Create a shortcut to the "Has dubbing" text in the user language
+		has_dubbing = self.Language.language_texts["has_dubbing"]
+
+		# If the "Has dubbing" key is inside the media details dictionary
+		# And it is True
+		if (
+			has_dubbing in self.media["Details"] and
+			self.Input.Define_Yes_Or_No(self.media["Details"][has_dubbing]) == True
+		):
 			# Define the "Has dubbing" media state as True
 			self.media["States"]["Dubbing"]["Has dubbing"] = True
 
@@ -219,41 +226,58 @@ class Watch_Media(Watch_History):
 			self.found_watch_dubbed_setting = False
 
 			# Define the list of detail dictionaries
-			details_list = [
+			details_dictionaries = [
 				self.media["Details"],
 				self.media["Item"]["Details"]
 			]
 
-			# Iterate through the list
-			for details in details_list:
-				# If the "Watch dubbed" key is inside the current details dictionary
-				if self.language_texts["watch_dubbed"] in details:
-					# Define the "Watch dubbed" media state as the detail value
-					self.media["States"]["Dubbing"]["Watch dubbed"] = self.Input.Define_Yes_Or_No(details[self.language_texts["watch_dubbed"]])
+			# Create a shortcut to the "Watch dubbed" text in the user language
+			watch_dubbed = self.language_texts["watch_dubbed"]
 
-					# Switch the "Found watch dubbed setting" switch to True
+			# Iterate through the list of dictionaries
+			for details in details_dictionaries:
+				# If the "Watch dubbed" key is inside the current details dictionary
+				if watch_dubbed in details:
+					# Define the "Watch dubbed" media state as the detail value (Yes/True or No/False)
+					self.media["States"]["Dubbing"]["Watch dubbed"] = self.Input.Define_Yes_Or_No(details[watch_dubbed])
+
+					# Switch the "Found watch dubbed setting" root switch to True
 					self.found_watch_dubbed_setting = True
 
-		# If the "Origin type" key is not inside the media details dictionary
-		if self.Language.language_texts["origin_type"] not in self.media["Details"]:
-			# Define the "Remote" media state as True
-			self.media["States"]["Remote"] = True
+		# Create a shortcut to the "Origin type" key
+		origin_type_key = self.Language.language_texts["origin_type"]
 
-			# Define the "Origin type" key inside the media details as the remote one
-			self.media["Details"][self.Language.language_texts["origin_type"]] = self.Language.language_texts["remote, title()"]
+		# If the "Origin type" key is not inside the media details dictionary
+		if origin_type_key not in self.media["Details"]:
+			# Define the default local origin type as "local"
+			origin_type = "local"
+
+			# If the media type is not "Videos"
+			if self.dictionary["Media type"]["Plural"]["en"] != "Videos":
+				# Change the "Local" media state to True
+				self.media["States"]["Local"] = True
+
+			# If the media type is "Videos"
+			if self.dictionary["Media type"]["Plural"]["en"] == "Videos":
+				# Change the origin type to be "remote"
+				origin_type = "remote"
+
+				# Change the "Remote" media state to True
+				self.media["States"]["Remote"] = True
+
+			# Update the origin type to be the text, not the key
+			origin_type = self.Language.language_texts[origin_type + ", title()"]
+
+			# Define the "Origin type" key inside the media "Details" dictionary as the one defined above
+			self.media["Details"][origin_type_key] = origin_type
 
 		# If the "Remote origin" key is not inside the media details dictionary
 		if self.Language.language_texts["remote_origin"] not in self.media["Details"]:
-			# Define a local "remote origin" variable as None
+			# Define a local "remote origin" variable as "None"
 			remote_origin = "None"
 
-			# If the media type is "Animes"
-			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:
-				# Define the local remote origin as "Animes Vision"
-				remote_origin = "Animes Vision"
-
 			# If the media type is "Videos"
-			if self.dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
+			if self.dictionary["Media type"]["Plural"]["en"] == "Videos":
 				# Define the local remote origin as "YouTube"
 				remote_origin = "YouTube"
 
@@ -492,7 +516,7 @@ class Watch_Media(Watch_History):
 			remote_origin = self.remote_origins[remote_title]
 
 			# Define the remote link as the link inside the "remote origin" dictionary
-			# Links = {"Animes Vision": "https://animes.vision/", "YouTube": "https://www.youtube.com/"}
+			# Links = {"YouTube": "https://www.youtube.com/"}
 			self.media["Episode"]["Remote"]["Link"] = remote_origin["Link"]
 
 			# Define a local key as "origin_location"
@@ -513,87 +537,6 @@ class Watch_Media(Watch_History):
 			if text in self.media["Item"]["Details"]:
 				# Define the origin location key as the value inside that dictionary
 				self.media["Episode"]["Remote"][key] = self.media["Item"]["Details"][text]
-
-			# Define the remote origin link for the "Animes Vision" remote origin
-			if self.media["Episode"]["Remote"]["Title"] == "Animes Vision":
-				# If the origin location is empty
-				if self.media["Episode"]["Remote"]["origin_location"] == "":
-					# Define the origin location as the lowercase version of the sanitized media title
-					# For example:
-					# title of the anime
-					self.media["Episode"]["Remote"]["origin_location"] = self.media["Titles"]["Sanitized"].lower()
-
-					# If the "Replace title" is True
-					if self.media["States"]["Replace title"] == True:
-						# Replace the media title with the media item title, but the sanitized version
-						# For example:
-						# title of the anime season
-						self.media["Episode"]["Remote"]["origin_location"] = self.media["Item"]["Titles"]["Sanitized"].lower()
-
-					# Replace spaces by dashes on the origin location
-					# For example:
-					# title-of-the-anime
-					self.media["Episode"]["Remote"]["origin_location"] = self.media["Episode"]["Remote"]["origin_location"].replace(" ", "-")
-
-					# Remove restricted characters from the origin location
-					for text in ["!", ",", ".", "△"]:
-						self.media["Episode"]["Remote"]["origin_location"] = self.media["Episode"]["Remote"]["origin_location"].replace(text, "")
-
-				# Add the media type code to the remote origin link
-				# For example:
-				# https://animes.vision/animes/title-of-the-anime/
-				# The media type code is "animes"
-				self.media["Episode"]["Remote"]["Link"] += self.dictionary["Media type"]["Plural"][self.language["Small"]].lower() + "/" + self.media["Episode"]["Remote"]["origin_location"] + "/"
-
-				# Add the "Dubbed" text to the episode link
-				# If the "Has dubbing" and "Watch dubbed" media states are True
-				# (That means the user wants to watch the media dubbed)
-				if (
-					self.media["States"]["Dubbing"]["Has dubbing"] == True and
-					self.media["States"]["Dubbing"]["Watch dubbed"] == True
-				):
-					# Create a shortcut to the origin location
-					origin_location = self.media["Episode"]["Remote"]["origin_location"]
-
-					# Add the "dubbed" text to the origin location
-					# For example:
-					# title-of-the-anime-dubbed ("-dubbed" is added)
-					dubbed_origin_location = self.media["Episode"]["Remote"]["origin_location"] + "-" + self.Language.texts["dubbed, title()"][self.language["Small"]].lower()
-
-					# Replace the original origin location with the dubbed version of it
-					# For example:
-					# "title-of-the-anime" becomes "title-of-the-anime-dubbed"
-					self.media["Episode"]["Remote"]["Link"] = self.media["Episode"]["Remote"]["Link"].replace(origin_location, dubbed_origin_location)
-
-				# Add the episode number to the remote origin link
-				# With the "episodio" code ("episodio" means "episode")
-				# For example:
-				# https://animes.vision/animes/title-of-the-anime/episodio-12/
-				self.media["Episode"]["Remote"]["Link"] += "episodio-" + str(self.Text.Add_Leading_Zeroes(self.media["Episode"]["Number"])) + "/"
-
-				# Add the "Dubbed" text in the user language to the remote origin link
-				# If the "Has dubbing" and "Watch dubbed" media states are True
-				# (That means the user wants to watch the media dubbed)
-				if (
-					self.media["States"]["Dubbing"]["Has dubbing"] == True and
-					self.media["States"]["Dubbing"]["Watch dubbed"] == True
-				):
-					# For example:
-					# https://animes.vision/animes/title-of-the-anime/episodio-12/dublado
-					# "dublado" means "dubbed"
-					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["dubbed, title()"][self.language["Small"]].lower()
-
-				# Add the "Subbed" text in the user language to the remote origin link
-				# If the "Has dubbing" or "Watch dubbed" media states are False
-				# (That means the user does not want to watch the media dubbed)
-				if (
-					self.media["States"]["Dubbing"]["Has dubbing"] == False or
-					self.media["States"]["Dubbing"]["Watch dubbed"] == False
-				):
-					# For example:
-					# https://animes.vision/animes/title-of-the-anime/episodio-12/legendado
-					# "legendado" means "subbed"
-					self.media["Episode"]["Remote"]["Link"] += self.Language.texts["subbed, title()"][self.language["Small"]].lower()
 
 			# Define the remote origin link for the "YouTube" remote origin
 			if self.media["Episode"]["Remote"]["Title"] == "YouTube":
@@ -936,7 +879,7 @@ class Watch_Media(Watch_History):
 
 		# ---------- #
 
-		# If the user is re-watching the media
+		# If the user is re-watching the media (item)
 		if self.media["States"]["Re-watching"] == True:
 			# Define the "Re-watching" dictionary
 			self.Define_Re_Watching()
@@ -949,7 +892,7 @@ class Watch_Media(Watch_History):
 			# Define the default watching text as "watching"
 			watching_text = self.texts["watching, infinitive"][language]
 
-			# If the user is re-watching the media
+			# If the user is re-watching the media (item)
 			if self.media["States"]["Re-watching"] == True:
 				# Change the watching text to "re-watching"
 				watching_text = self.texts["re_watching, infinitive"][language]
@@ -968,7 +911,7 @@ class Watch_Media(Watch_History):
 
 		self.dictionary["Header text"] = self.language_texts["opening_{}_for_you_to_watch"].format(this_container) + ":"
 
-		# If the user is re-watching the media
+		# If the user is re-watching the media (item)
 		if self.media["States"]["Re-watching"] == True:
 			# Replace the "watch" text with the "re-watch" text in the header text
 			self.dictionary["Header text"] = self.dictionary["Header text"].replace(self.language_texts["watch"], self.language_texts["re_watch"])
@@ -1201,20 +1144,26 @@ class Watch_Media(Watch_History):
 		# Define the "file exists" check
 		file_exists = self.File_Exists(self.media["Episode"]["Unit"])
 
-		# If the media has dubbing
+		# Create a shortcut to the "Has dubbing" text in the user language
+		has_dubbing = self.Language.language_texts["has_dubbing"]
+
+		# If the "Has dubbing" key is inside the media details dictionary
+		# And it is True
 		# And no "Watch dubbed" setting was found
 		# Or the user language episode file does not exist
 		if (
-			self.Language.language_texts["dubbing, title()"] in self.media["Details"] and
+			has_dubbing in self.media["Details"] and
+			self.Input.Define_Yes_Or_No(self.media["Details"][has_dubbing]) == True and
 			self.found_watch_dubbed_setting == False or
 			file_exists == False
 		):
 			# If the user language episode file does exist
-			# And the "Dubbed" text is inside the file, define the "Watch dubbed" state as True
+			# And the "Dubbed" text is inside the file
 			if (
 				file_exists == True and
 				self.Language.texts["dubbed, title()"][self.language["Small"]] in self.media["Episode"]["Unit"]
 			):
+				# Then define the "Watch dubbed" state as True
 				self.media["States"]["Dubbing"]["Watch dubbed"] = True
 
 			# If the user language episode file does not exist
@@ -1305,7 +1254,7 @@ class Watch_Media(Watch_History):
 	def Open_Media_Unit(self):
 		# Open media unit with its executor
 		self.System.Open(self.media["Episode"]["Unit"])
-	
+
 	def Create_Discord_Status(self):
 		# Make a custom status of the media to put on the Discord custom status, with the media and episode title
 

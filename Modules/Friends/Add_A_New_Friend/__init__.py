@@ -26,15 +26,18 @@ class Add_A_New_Friend(Friends):
 		# Ask the user if they want to add social networks to an existing friend folder
 		self.dictionary["States"]["Add social network to existing friend folder"] = self.Input.Yes_Or_No(self.language_texts["add_social_network_to_friend_folder"])
 
-		# If the user wants to add social networks to an existing friend folder, select a Friend to do that
+		# If the user wants to add social networks to an existing friend folder
 		if self.dictionary["States"]["Add social network to existing friend folder"] == True:
+			# Show a five dash space separator
 			print()
 			print(self.separators["5"])
 
+			# Select a friend to add a social network to their folder
 			self.Select_Friend()
 
-		# If not, ask the user to type the information of the new Friend to be added
+		# If not
 		if self.dictionary["States"]["Add social network to existing friend folder"] == False:
+			# Ask the user to type the information of the new friend that is going to be added
 			self.Type_Friend_Information()
 
 		# Add the social networks of the friend by typing their information
@@ -181,7 +184,7 @@ class Add_A_New_Friend(Friends):
 		print(self.separators["5"])
 
 	def Add_Social_Networks(self):
-		# Create a local copy of the root "Social networks" dictionary
+		# Create a copy of the root "Social networks" dictionary
 		self.social_networks_copy = deepcopy(self.social_networks)
 
 		# If the user wants to add a social network to an existing friend folder
@@ -197,45 +200,47 @@ class Add_A_New_Friend(Friends):
 
 			# Iterate through the list of social networks of the friend
 			for social_network in self.friend["social networks"]["List"]:
-				# If the social network is inside the local copy of the social networks dictionary
+				# If the social network is inside the list of social networks inside the copy of the social networks dictionary
 				if social_network in self.social_networks_copy["List"]:
+					# Remove it
 					self.social_networks_copy["List"].remove(social_network)
 
-		# Add social networks to an existing friend or the newly added friend
-		i = 0
+		# While the "Add more social networks" state is True
+		loop_number = 0
 		while self.dictionary["States"]["Add more social networks"] == True:
-			# Add the social network
+			# Add the new social network and store it in the "added social network" variable
 			self.added_social_network = self.Add_Social_Network()
 
-			if i == 0:
-				# Ask the user if they want to add social networks to the friend
+			# If the user does not want to add a social network to an existing friend folder (a new friend is being added)
+			# And the while loop is at the beginning
+			if (
+				self.dictionary["States"]["Add social network to existing friend folder"] == False and
+				loop_number == 0
+			):
+				# Ask the user if they want to add social networks to the friend folder and update the "Add social networks" state
 				self.dictionary["States"]["Add social networks"] = self.Input.Yes_Or_No(self.language_texts["add_social_networks"])
 
-				# If the user do not want to add social networks
+				# If the user does not want to add social networks to the friend folder
 				if self.dictionary["States"]["Add social networks"] == False:
-					# Define the "Add more social networks" state as False
+					# Define the "Add more social networks" state as False to stop the while loop
 					self.dictionary["States"]["Add more social networks"] = False
 
+			# If the user wants to add social networks to the friend folder
+			# And the while loop is not at the beginning
 			if (
 				self.dictionary["States"]["Add social networks"] == True and
-				self.switches["Testing"] == False and
-				i != 0
+				loop_number != 0
 			):
-				# Ask if the user wants to add more social networks
+				# Ask if the user wants to add more social networks to the friend folder
 				self.dictionary["States"]["Add more social networks"] = self.Input.Yes_Or_No(self.language_texts["add_more_social_networks"])
 
-			if (
-				self.switches["Testing"] == True and
-				self.friend["Social networks"]["List"] == ["Discord", "Facebook"]
-			):
-				self.dictionary["States"]["Add more social networks"] = False
+			# Add one to the loop number
+			loop_number += 1
 
-			i += 1
-
-		# Sort the list of social networks
+		# Sort the list of social networks of the friend alphabetically
 		self.friend["Social networks"]["List"] = sorted(self.friend["Social networks"]["List"], key = str.lower)
 
-		# Sort the social networks dictionary based on its keys
+		# Sort the dictionary of social networks based on the social network keys
 		self.friend["Social networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.friend["Social networks"]["Dictionary"].items())))
 
 	def Add_Social_Network(self):

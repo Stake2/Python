@@ -794,6 +794,9 @@ class Module_Selector():
 				# Add the arguments inside the root class of the module
 				setattr(self.module["Root class"], "arguments", module["Custom arguments"])
 
+			# Define the switches dictionary inside the root class of the module
+			setattr(self.module["Root class"], "switches", self.switches["Global"])
+
 			# Run the root class of the selected module
 			self.module["Root class"]()
 

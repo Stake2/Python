@@ -149,7 +149,7 @@ class Discord_Bot():
 
 		# Create a shortcut to the bot "Client" object
 		client = self.bot["Client"]
-			
+
 		# Say that the bot has logged in
 		@client.event
 		async def on_ready():

@@ -603,7 +603,7 @@ class Create_Year_Summary(Years):
 			"GamePlayer"
 		]
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
 			# Define the language summary text initially as an empty string
 			self.summary["Text"][language] = ""
@@ -676,7 +676,7 @@ class Create_Year_Summary(Years):
 				if contents["Lines"] != []:
 					# Define the text as the "Goodbye text for the year:" text
 					text += self.texts["goodbye_text_for_the_year"][language] + ":" + "\n"
-					
+
 					# Add the goodbye text that is inside the file
 					text += contents["String"]
 
@@ -863,7 +863,7 @@ class Create_Year_Summary(Years):
 
 		# ---------- #
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for language_number, language in enumerate(self.languages["Small"]):
 			# Get the language text
 			language_text = self.summary["Text"][language]

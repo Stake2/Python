@@ -187,9 +187,9 @@
 		"en": "Runs the \"Play\" class of the {module} module",
 		"pt": "Executa a classe \"Play\" (Jogar) do módulo {module}"
 	},
-	"the_game_cover": {
-		"en": "the game cover",
-		"pt": "a capa do jogo"
+	"the_cover_of_the_gaming_session_of_the_game": {
+		"en": "the cover of the gaming session of the game",
+		"pt": "a capa da sessão de jogatina do jogo"
 	},
 	"games_being_played": {
 		"en": "Games being played",

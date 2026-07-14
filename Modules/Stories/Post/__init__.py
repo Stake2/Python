@@ -165,7 +165,8 @@ class Post(Stories):
 
 			# Define the list of items to use to format the text template
 			items = [
-				self.story["Titles"][self.language["Small"]] # The story title in the user language
+				# The story title in the user language
+				self.story["Titles"][self.language["Small"]]
 			]
 
 			# Format the text template with the list of items
@@ -466,7 +467,7 @@ class Post(Stories):
 		# Define the writing duration with time units dictionary
 		writing_duration_with_time_units = {}
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
 			# Get the writing duration text in the current language
 			duration_text = writing_duration[language]
@@ -1057,7 +1058,7 @@ class Post(Stories):
 					# If the "Testing" switch is False
 					if self.switches["Testing"] == False:
 						# Ask for the user input after they finish posting the chapter on the story website
-						self.Input.Type(input_text)	
+						self.Input.Type(input_text)
 
 					# If the "Testing" switch is True
 					if self.switches["Testing"] == True:
@@ -1925,7 +1926,7 @@ class Post(Stories):
 			chapter_dictionary_key = self.posting["Posting mode"]["Texts"]["Chapter dictionary"]
 
 			# Get the chapter writing dictionary
-			writing_dictionary = self.chapter["Dictionary"][chapter_dictionary_key]	
+			writing_dictionary = self.chapter["Dictionary"][chapter_dictionary_key]
 
 			# Iterate through the defined list of time keys
 			for key in ["Started", "Finished"]:
@@ -1940,7 +1941,7 @@ class Post(Stories):
 					writings = list(writing_dictionary["Dictionary"].values())
 
 					# Get the last writing and define it as the writing variable
-					writing = writings[-1]					
+					writing = writings[-1]
 
 				# Get the date
 				date = writing["Times"][key]
@@ -2282,8 +2283,8 @@ class Post(Stories):
 
 			# If the mode parameter is "Finish"
 			if mode == "Finish":
-				# Change the text to be "You finished posting this chapter"
-				text = "you_finished_posting_this_chapter"
+				# Change the text to be "You finished posting this chapter of your story"
+				text = "you_finished_posting_this_chapter_of_your_story"
 
 				# Show the "Congratulations!" text in the user language
 				print()

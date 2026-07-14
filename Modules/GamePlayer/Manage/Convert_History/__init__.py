@@ -1099,7 +1099,7 @@ class Convert_History(GamePlayer):
 
 		# Define an "update file" switch as False
 		update_file = False
-		
+
 		# Define the search text as the "Game type" text
 		search_text = self.texts["game_type"][language]
 

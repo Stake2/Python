@@ -614,7 +614,7 @@ class Stories(object):
 			# Create the "Texts" dictionary
 			information_item["Texts"] = {}
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define a new text key which is the text key plus the addon
 				new_text_key = text_key + addon
@@ -637,7 +637,7 @@ class Stories(object):
 				# Define the "Plural texts" dictionary
 				information_item["Plural texts"] = {}
 
-				# Iterate through list of small languages
+				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
 					# Get the plural information text for the current language using the text key and addon
 					text = self.Language.texts[text_key + "s" + addon][language]
@@ -2544,7 +2544,7 @@ class Stories(object):
 			# Get the dictionary of the story
 			story = stories["Dictionary"][story]
 
-			# Iterate through list of small languages
+			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Add the language story title to the list of story titles in the current language
 				stories["Titles"][language].append(story["Titles"][language])

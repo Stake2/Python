@@ -606,7 +606,7 @@ class Write(Stories):
 			# Get the lines of the chapter file in the current language
 			lines = self.File.Contents(chapter_file)["Lines"]
 
-			# ---------- #	
+			# ---------- #
 
 			# If the selected writing mode is "Translate"
 			# And if the current language dictionary matches the "Destiny language" dictionary

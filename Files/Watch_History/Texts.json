@@ -299,6 +299,10 @@
 		"en": "{} title",
 		"pt": "Título do {}"
 	},
+	"{}_titles": {
+		"en": "{} titles",
+		"pt": "Títulos do {}"
+	},
 	"a_summary_video": {
 		"en": "a summary video",
 		"pt": "um vídeo resumo"

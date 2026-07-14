@@ -52,24 +52,24 @@
 			"Show_Story_Information": {
 				"Name": "Show_Story_Information",
 				"Descriptions": {
-					"en": "Show the information of the stories",
-					"pt": "Mostrar informações das suas histórias"
+					"en": "Show the information of your stories",
+					"pt": "Mostrar as informações das suas histórias"
 				},
 				"Object": "<class 'Stories.Show_Story_Information.Show_Story_Information'>"
 			},
 			"Manage": {
 				"Name": "Manage",
 				"Descriptions": {
-					"en": "Manage",
-					"pt": "Gerenciar"
+					"en": "Manage your stories",
+					"pt": "Gerenciar as suas histórias"
 				},
 				"Object": "<class 'Stories.Manage.Manage'>"
 			},
 			"Copy_Story_Titles": {
 				"Name": "Copy_Story_Titles",
 				"Descriptions": {
-					"en": "Copy the titles of the stories",
-					"pt": "Copiar os títulos das histórias"
+					"en": "Copy the titles of your stories",
+					"pt": "Copiar os títulos das suas histórias"
 				},
 				"Object": "<class 'Stories.Copy_Story_Titles.Copy_Story_Titles'>"
 			}

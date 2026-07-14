@@ -804,7 +804,7 @@ class Add_Social_Network(Social_Networks):
 					):
 						# Add the file to the "Files" dictionary
 						self.social_network["Files"][item][key] = dict_[key]
-					
+
 						# Read the settings file
 						settings = self.File.Dictionary(self.social_network["Files"]["Text"][key], next_line = True)
 

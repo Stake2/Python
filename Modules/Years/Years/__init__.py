@@ -1428,7 +1428,7 @@ class Years(object):
 					"{current_year}",
 					"[" + self.Language.language_texts["current_year"] + "]"
 				],
-		
+
 				# The year number
 				"Value": str(self.date["Units"]["Year"])
 			},

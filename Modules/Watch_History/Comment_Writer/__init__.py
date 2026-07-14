@@ -91,7 +91,6 @@ class Comment_Writer(Watch_History):
 
 			# Define the dictionary that says which remote origin the user can post comments
 			self.post_comments_on = {
-				"Animes Vision": False,
 				"YouTube": True
 			}
 
@@ -601,24 +600,24 @@ class Comment_Writer(Watch_History):
 			# Giving it the "Comment" and comment link parameters
 			comment_information = self.Get_YouTube_Information("Comment", comment["Comment link"]["Link"])
 
-			# Define the comment "Times" dictionary as the comment published "Times" dictionary gotten from the YouTube API
-			comment["Comment times"] = comment_information["Times"]
+			# If the "Times" dictionary is inside the comment information dictionary gotten from the YouTube API
+			if "Times" in comment_information:
+				# Update the "Comment times" dictionary to be the comment published "Times" dictionary gotten from the YouTube API
+				comment["Comment times"] = comment_information["Times"]
 
-			# ---------- #
+				# Update the comment time in the comment text
 
-			# Update the comment time in the comment text
+				# Convert the full comment string into a list of lines
+				self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
 
-			# Split the lines of the comment text
-			self.media["Comment"]["Text"]["String"] = self.media["Comment"]["Text"]["String"].splitlines()
+				# Update the line five (5) to be the updated comment time
+				# Line zero (0) is "Title:", line one (1) is the media episode title
+				# Line two (2) is the video ID, line three (3) is a blank space
+				# And line four (4) is the "Comment time:" text
+				self.media["Comment"]["Text"]["String"][5] = comment_information["Times"]["Timezone"]
 
-			# Define the line five (5) as the comment time
-			# Line zero (0) will be "Title:", line one (1) will be the actual media episode title
-			# Line two (2) will be the video ID, line three (3) will be a space
-			# And line four (4) will be the "Comment time:" text
-			self.media["Comment"]["Text"]["String"][5] = comment_information["Times"]["Timezone"]
-
-			# Convert the list of lines of the comment text to a string
-			self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
+				# Convert the list of comment lines back into a single string
+				self.media["Comment"]["Text"]["String"] = self.Text.From_List(self.media["Comment"]["Text"]["String"])
 
 		# If the "Add comment" state is True
 		if self.dictionary["Comment Writer"]["States"]["Add"] == True:

@@ -10,6 +10,6 @@ alternative_arguments = [
 	"story"
 ]
 
-# If the script is being executed directly, run the local "Run" class
+# If this script file is being executed directly, run the local "Run" class
 if __name__ == "__main__":
 	Run()

@@ -288,7 +288,7 @@ class Language():
 
 		# Add the line break to the text
 		text = line_break + text
-		
+
 		# If the file exists
 		if self.File_Exists(file) == True:
 			# If the file "Edit" switch is True

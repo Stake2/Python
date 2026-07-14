@@ -12,15 +12,15 @@
 		"pt": "Criar uma nova história"
 	},
 	"Show_Story_Information": {
-		"en": "Show the information of the stories",
-		"pt": "Mostrar informações das suas histórias"
+		"en": "Show the information of your stories",
+		"pt": "Mostrar as informações das suas histórias"
 	},
 	"Manage": {
-		"en": "Manage",
-		"pt": "Gerenciar"
+		"en": "Manage your stories",
+		"pt": "Gerenciar as suas histórias"
 	},
 	"Copy_Story_Titles": {
-		"en": "Copy the titles of the stories",
-		"pt": "Copiar os títulos das histórias"
+		"en": "Copy the titles of your stories",
+		"pt": "Copiar os títulos das suas histórias"
 	}
 }

@@ -310,7 +310,7 @@ class Start_Christmas(Christmas):
 			step_number += 1
 
 		# Update the root "Steps.json" file with the updated "Steps (JSON)" dictionary
-		self.JSON.Edit(self.christmas["Files"]["Steps"], self.start_christmas["Steps (JSON)"])	
+		self.JSON.Edit(self.christmas["Files"]["Steps"], self.start_christmas["Steps (JSON)"])
 
 	def Update_Steps(self, step_to_complete = None, reset = True):
 		# Iterate through the step keys and dictionaries inside the "Steps" dictionary

@@ -59,7 +59,7 @@ class Create_New_Module(Python):
 		# Define and fill the module descriptions dictionary
 		self.module_descriptions = {}
 
-		# Iterate through list of small languages
+		# Iterate through the list of small languages
 		i = 0
 		for small_language in self.languages["Small"]:
 			# Get the language description
@@ -360,7 +360,7 @@ class Create_New_Module(Python):
 				if class_name != self.classes["List"][0]:
 					# Show a space separator
 					print()
-	
+
 				# Format the template text with the translated language and the class descriptions
 				text = "\t\t" + template.format(translated_language, class_dictionary["Descriptions"][small_language])
 

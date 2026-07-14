@@ -484,9 +484,9 @@
 		"en": "Chapter cover",
 		"pt": "Capa de capítulo"
 	},
-	"you_finished_posting_this_chapter": {
-		"en": "You finished posting this chapter",
-		"pt": "Você terminou de postar esse capítulo"
+	"you_finished_posting_this_chapter_of_your_story": {
+		"en": "You finished posting this chapter of your story",
+		"pt": "Você terminou de postar esse capítulo da sua história"
 	},
 	"updating_the_chapter_covers_of_this_story": {
 		"en": "Updating the chapter covers of this story",

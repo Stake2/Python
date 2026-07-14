@@ -526,7 +526,7 @@ class Folder():
 			# Define the default network dictionary
 			dictionary = {
 				"root": self.folders["Notepad"]["Data Networks"]["root"] + folder + "/"
-			}			
+			}
 
 			# Define the default network starting year
 			starting_year = 2023

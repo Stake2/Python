@@ -277,39 +277,45 @@ class Input():
 		return dictionary
 
 	def Define_Yes_Or_No(self, response, inverse = False):
-		# Define the list of yes answers
+		# Define the list of "Yes" answers
 		yes_answers = [
+			# English
 			"Yes",
 			"yes",
+
+			# User language
 			self.language_texts["yes, title()"],
 			self.language_texts["yes, title()"].lower()
 		]
 
-		# Define the list of no answers
+		# Define the list of "No" answers
 		no_answers = [
+			# English
 			"No",
 			"no",
+
+			# User language
 			self.language_texts["no, title()"],
 			self.language_texts["no, title()"].lower()
 		]
 
-		# If the inverse parameter is False
+		# If the "inverse" parameter is False
 		if inverse == False:
-			# If the response is in the list of yes answers, return True
+			# If the response is in the list of "Yes" answers, return True (boolean)
 			if response in yes_answers:
 				return True
 
-			# If the response is in the list of no answers, return False
+			# If the response is in the list of "No" answers, return False (boolean)
 			if response in no_answers:
 				return False
 
-		# If the inverse parameter is True
+		# If the "inverse" parameter is True
 		if inverse == True:
-			# If the response is True, return "Yes"
+			# If the response is True (boolean), return "Yes" (string)
 			if response == True:
 				return "Yes"
 
-			# If the response is False, return "No"
+			# If the response is False (boolean), return "No" (string)
 			if response == False:
 				return "No"
 

@@ -1266,10 +1266,6 @@
 		"en": "Image folders",
 		"pt": "Pastas de imagens"
 	},
-	"create_image_folders": {
-		"en": "Create image folders",
-		"pt": "Criar pastas de imagens"
-	},
 	"setting, title()": {
 		"en": "Setting",
 		"pt": "Configuração"
@@ -1823,6 +1819,10 @@
 		"en": "Dubbing",
 		"pt": "Dublagem"
 	},
+	"has_dubbing": {
+		"en": "Has dubbing",
+		"pt": "Tem dublagem"
+	},
 	"origin_location": {
 		"en": "Origin location",
 		"pt": "Local de origem"
@@ -2008,10 +2008,6 @@
 	"general, title()": {
 		"en": "General",
 		"pt": "Geral"
-	},
-	"first": {
-		"en": "first",
-		"pt": "primeiro"
 	},
 	"second": {
 		"en": "second",

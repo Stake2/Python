@@ -4,7 +4,7 @@ from Stories.Stories import Stories as Stories
 
 class Update_Chapter_Covers(Stories):
 	def __init__(self):
-		# Run the root class to import its methods and variables		
+		# Run the root class to import its methods and variables
 		super().__init__()
 
 		# If there is no selected story in the current class

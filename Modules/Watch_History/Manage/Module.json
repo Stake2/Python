@@ -1,85 +1,73 @@
 {
 	"Module": "Watch_History",
 	"Sub-module": "Manage",
+	"Type": "Usage",
 	"Folders": {
-		"root": "C:/Apps/Modules/Watch_History/",
-		"Texts": {
-			"root": "C:/Apps/Module files/Watch_History/"
+		"root": "C:/Python/Modules/Watch_History/",
+		"Files": {
+			"root": "C:/Python/Files/Watch_History/"
 		},
-		"Manage": {
-			"root": "C:/Apps/Modules/Watch_History/Manage/"
+		"Sub-module": {
+			"root": "C:/Python/Modules/Watch_History/Manage/"
 		}
 	},
 	"Files": {
-		"Descriptions": "C:/Apps/Modules/Watch_History/Manage/Descriptions.json",
-		"Module": "C:/Apps/Modules/Watch_History/Manage/Module.json"
+		"Module": "C:/Python/Modules/Watch_History/Manage/Module.json",
+		"Descriptions": "C:/Python/Modules/Watch_History/Manage/Descriptions.json",
+		"Texts": "C:/Python/Files/Watch_History/Texts.json"
 	},
 	"Descriptions": {
-		"Show text": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]",
-		"Add_A_New_Media": {
-			"en": "Add a new media to the database",
-			"pt": "Adicionar uma nova mídia ao banco de dados"
-		},
-		"Iterate_Through_The_Media_List": {
-			"en": "Iterate through the list of media",
-			"pt": "Iterar através da lista de mídia"
-		},
-		"Add_To_Comments_Dictionary": {
-			"en": "Add to comments dictionary",
-			"pt": "Adicionar ao dicionário de comentários"
-		},
-		"Populate_Media_Episodes_Files": {
-			"en": "Populate the media episodes files",
-			"pt": "Preencher os arquivos de episódios de mídia"
-		},
-		"Convert_History": {
-			"en": "Convert history",
-			"pt": "Converter histórico"
-		},
-		"Remove list": [
-			"Add_To_Comments_Dictionary"
-		]
+		"en": "Manage the [Media information] database and the [Watched media] history",
+		"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
+	},
+	"Class mode": {
+		"Name": "Descriptions",
+		"Module descriptions key": "Show text",
+		"File key": "Descriptions file"
 	},
 	"Classes": {
+		"Numbers": {
+			"Total": 4
+		},
+		"List": [
+			"Add_A_New_Media",
+			"Iterate_Through_The_Media_List",
+			"Populate_Media_Episodes_Files",
+			"Convert_History"
+		],
 		"Dictionary": {
 			"Add_A_New_Media": {
+				"Name": "Add_A_New_Media",
 				"Descriptions": {
 					"en": "Add a new media to the database",
 					"pt": "Adicionar uma nova mídia ao banco de dados"
 				},
-				"Description": "Adicionar uma nova mídia ao banco de dados",
 				"Object": "<class 'Watch_History.Manage.Add_A_New_Media.Add_A_New_Media'>"
 			},
 			"Iterate_Through_The_Media_List": {
+				"Name": "Iterate_Through_The_Media_List",
 				"Descriptions": {
 					"en": "Iterate through the list of media",
 					"pt": "Iterar através da lista de mídia"
 				},
-				"Description": "Iterar através da lista de mídia",
 				"Object": "<class 'Watch_History.Manage.Iterate_Through_The_Media_List.Iterate_Through_The_Media_List'>"
 			},
 			"Populate_Media_Episodes_Files": {
+				"Name": "Populate_Media_Episodes_Files",
 				"Descriptions": {
 					"en": "Populate the media episodes files",
 					"pt": "Preencher os arquivos de episódios de mídia"
 				},
-				"Description": "Preencher os arquivos de episódios de mídia",
 				"Object": "<class 'Watch_History.Manage.Populate_Media_Episodes_Files.Populate_Media_Episodes_Files'>"
 			},
 			"Convert_History": {
+				"Name": "Convert_History",
 				"Descriptions": {
 					"en": "Convert history",
 					"pt": "Converter histórico"
 				},
-				"Description": "Converter histórico",
 				"Object": "<class 'Watch_History.Manage.Convert_History.Convert_History'>"
 			}
-		},
-		"Descriptions": [
-			"Adicionar uma nova mídia ao banco de dados",
-			"Iterar através da lista de mídia",
-			"Preencher os arquivos de episódios de mídia",
-			"Converter histórico"
-		]
+		}
 	}
 }

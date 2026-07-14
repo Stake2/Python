@@ -18,7 +18,7 @@ class List_Modules(Python):
 		for key in self.python["Modules"]["Types"]["List"]:
 			# If the list of modules is not empty
 			if self.modules[key]["List"] != []:
-				# Show a space separator	
+				# Show a space separator
 				print()
 
 				# Show the text of the module, along with the number of modules
@@ -29,7 +29,7 @@ class List_Modules(Python):
 
 				# Iterate through the modules in the list
 				m = 1
-				for module in self.modules[key]["List"]:	
+				for module in self.modules[key]["List"]:
 					# Define the module text
 					text = "\t"
 

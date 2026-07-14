@@ -577,7 +577,7 @@ class NeverEnding_Legacy(object):
 
 				# Add the local mod dictionary to the root mod dictionary
 				mods["Dictionary"][mod_title] = mod
-			
+
 		# Update the number of mods inside the "Mods" dictionary
 		mods["Numbers"]["Total"] = len(mods["List"])
 

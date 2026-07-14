@@ -142,8 +142,30 @@ class Watch_History(object):
 			]
 		}
 
+		# Define a local verbose switch
+		verbose = False
+
+		# If the "Verbose" switch is True
+		# And the local switch is also True
+		if (
+			self.switches["Verbose"] == True and
+			verbose == True
+		):
+			# Show the module name
+			print()
+			print(self.module["Module"] + ", importando classes de uso:")
+
 		# Iterate through the list of classes to import
 		for class_title in classes["List"]:
+			# If the "Verbose" switch is True
+			# And the local switch is also True
+			if (
+				self.switches["Verbose"] == True and
+				verbose == True
+			):
+				# Show the imported usage class
+				print(class_title)
+
 			# Define the class dictionary
 			class_dictionary = {
 				"Title": class_title,
@@ -299,7 +321,7 @@ class Watch_History(object):
 			text_template = self.data_network["Type"][key]
 
 			# Get the type name
-			type_name = self.data_network["Type"]["Name"]			
+			type_name = self.data_network["Type"]["Name"]
 
 			# If the key is "By type"
 			if key == "By type":
@@ -545,9 +567,6 @@ class Watch_History(object):
 
 		# Define the dictionary of remote origins
 		self.remote_origins = {
-			"Animes Vision": {
-				"Link": "https://animes.vision/"
-			},
 			"YouTube": {
 				"Link": "https://www.youtube.com/",
 				"Link templates": {
@@ -648,8 +667,8 @@ class Watch_History(object):
 
 		# Define the default media states dictionary
 		self.media_states = {
-			"Remote": False,
 			"Local": False,
+			"Remote": False,
 			"Video": False,
 			"Series media": True,
 			"Episodic": False,
@@ -1136,7 +1155,6 @@ class Watch_History(object):
 				"Entries": [],
 				"Dictionary": {}
 			}
-			
 		}
 
 		# If the file is not empty and the list of years is not empty
@@ -1965,22 +1983,27 @@ class Watch_History(object):
 			added_media_title = False
 
 			# If the "Items" key does not exist in the local media dictionary
-			# Or the "Items" key exists in the local media dictionary
-			# And the "Item" key is inside the media titles dictionary
-			# And the media item title is the same as the media title
+			# And the media title is not inside the dictionary of medias of the media type
 			if (
-				"Items" not in media or
+				"Items" not in media and
+				media_title not in media_type_dictionary["Dictionary"]
+			):
+				# Define the media statistic key as zero
+				media_type_dictionary["Dictionary"][media_title] = 0
+
+				# Change the local "added media title" switch to True
+				added_media_title = True
+
+			# If the "Items" key exists inside the local media dictionary
+			# And the "Item" key exists inside the media "Titles" dictionary
+			# And the media item title is the same as the root media title
+			if (
 				"Items" in media and
 				"Item" in media["Titles"] and
 				media["Titles"]["Item"][item_key] == media["Titles"][title_key]
 			):
-				# If the media title is not inside the dictionary of medias of the media type
-				if media_title not in media_type_dictionary["Dictionary"]:
-					# Define the media statistic key as zero
-					media_type_dictionary["Dictionary"][media_title] = 0
-
-					# Change the local "added media title" switch to True
-					added_media_title = True
+				# Change the local "added media title" switch to True
+				added_media_title = True
 
 			# ---------- #
 
@@ -2193,7 +2216,11 @@ class Watch_History(object):
 								new_value = statistics_copy[media_item_title]
 
 							# If the item title is the media title
-							if item_title == media_title:
+							# And the new value is a dictionary
+							if (
+								item_title == media_title and
+								new_value == dict
+							):
 								# Add the media title to the media dictionary
 								new_value["Dictionary"][item_title] = 0
 
@@ -3162,10 +3189,12 @@ class Watch_History(object):
 							# Define the "has origin type key" switch as True
 							has_origin_type_key = True
 
-				# Define the media states for videos
-				# (Video and episodic states)
+				# If the media type is "Videos"
 				if dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
+					# Define the "Video" state as True
 					media["States"]["Video"] = True
+
+					# Define the "Episodic" state as False
 					media["States"]["Episodic"] = False
 
 				if self.Language.language_texts["episodic, title()"] in media["Details"]:
@@ -3232,9 +3261,6 @@ class Watch_History(object):
 				# Define remote origin for animes or videos media type
 				if self.Language.language_texts["remote_origin"] not in dictionary["Media"]["Details"]:
 					remote_origin = "None"
-
-					if dictionary["Media type"]["Plural"]["en"] == self.texts["animes, title()"]["en"]:
-						remote_origin = "Animes Vision"
 
 					if dictionary["Media type"]["Plural"]["en"] == self.texts["videos, title()"]["en"]:
 						remote_origin = "YouTube"
@@ -3580,7 +3606,7 @@ class Watch_History(object):
 					if len(media_items_list) == 1:
 						# Define the show text as "This {} was automatically selected because it was the only one" in the user language
 						show_text = self.language_texts["this_{}_was_automatically_selected_because_it_was_the_only_one"]
-						
+
 						# Format the "{}" with the local media item text
 						show_text = show_text.format(media_item_text)
 
@@ -3698,17 +3724,26 @@ class Watch_History(object):
 					# Remove the key
 					dictionary["Media"]["Details"].pop(dictionary["Media type"]["Subfolders"]["Plural"])
 
-				dict_ = deepcopy(dictionary["Media"]["Details"])
+				# Create a local copy of the media "Details" dictionary
+				media_details = deepcopy(dictionary["Media"]["Details"])
 
-				if self.Language.language_texts["remote_origin"] in dict_:
-					if dict_[self.Language.language_texts["remote_origin"]] == "Animes Vision":
-						dict_.pop(self.Language.language_texts["remote_origin"])
+				# Create a shortcut to the remote origin key
+				remote_origin = self.Language.language_texts["remote_origin"]
 
-					elif dict_[self.Language.language_texts["remote_origin"]] == "YouTube":
-						dict_.pop(self.Language.language_texts["remote_origin"])
+				# If the media "Details" dictionary has a remote origin key
+				# And the remote origin is YouTube
+				if (
+					remote_origin in media_details and
+					media_details[remote_origin] == "YouTube"
+				):
+					# Remove the remote origin key
+					media_details.pop(remote_origin)
 
-				# Update the media details file
-				self.File.Edit(dictionary["Media"]["Folders"]["details"], self.Text.From_Dictionary(dict_), "w")
+				# Transform the local copy of the media "Details" dictionary into a text
+				text_to_write = self.Text.From_Dictionary(media_details)
+
+				# Update the media "Details.txt" file with the updated local media "Details" dictionary
+				self.File.Edit(dictionary["Media"]["Folders"]["details"], text_to_write, "w")
 
 				# ------------------------------ #
 
@@ -4821,7 +4856,7 @@ class Watch_History(object):
 				# Get the media type dictionary
 				media_type = dictionary["Media types"][plural_media_type]
 
-				# Iterate through list of small languages
+				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
 					# Create the empty language list if it does not exist
 					if language not in dictionary["List"]:
@@ -4977,65 +5012,74 @@ class Watch_History(object):
 		# Return the title
 		return title
 
-	def Show_Media_Title(self, root_dictionary, is_media_item = False, include_media_title = False):
-		# Create a shortcut to the media dictionary
+	def Show_Media_Titles(self, root_dictionary, is_media_item = False, include_media_title = False, show_titles = True):
+		# Create a shortcut to the "Media" dictionary
 		media = root_dictionary["Media"]
 
 		# If the "Is media item" parameter is True
 		if is_media_item == True:
-			# Define the shortcut for the media dictionary as one for the media item dictionary
+			# Change the shortcut to be to the media "Item" dictionary
 			media = root_dictionary["Media"]["Item"]
 
-		# Make a list of titles to show
-		to_show = []
+		# Create a list of titles to show
+		titles = []
 
-		# If the language title is the same as the original title, add it to the list
+		# If the user language title is the same as the original title
 		if media["Titles"]["Language"] == media["Titles"]["Original"]:
-			to_show.append(media["Titles"]["Original"])
+			# Add the original title to the local list of titles to show
+			titles.append(media["Titles"]["Original"])
 
-		# If the language title is not the same as the original title
+		# If the user language title is not the same as the original title
 		else:
-			# Add the original and language titles to the list
-			to_show.append(media["Titles"]["Original"])
-			to_show.append(media["Titles"]["Language"])
+			# Add the original and language titles to the list of titles to show
+			titles.extend([
+				media["Titles"]["Original"],
+				media["Titles"]["Language"]
+			])
 
 			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
-				# If the language is inside the dictionary of titles
-				# And the media title in that language differs from the original title
-				# And it is also different from the language title
+				# If the language key is inside the media (item) "Titles" dictionary
+				# And the media title in the current language is not the original title nor the user "Language" title
+				# (Which are already inside the list of titles to show)
 				if (
 					language in media["Titles"] and
 					media["Titles"][language] != media["Titles"]["Original"] and
 					media["Titles"][language] != media["Titles"]["Language"]
 				):
-					# Add the title in the specified language to the list
-					to_show.append(media["Titles"][language])
+					# Create a shortcut to the title
+					title = media["Titles"][language]
 
-					# Otherwise, there is no need to display this language title, as it has already been shown before
+					# If the length of the title is greater than one
+					# And the first two characters of the title are a space and a colon
+					if (
+						len(title) > 1 and
+						title[0] + title[1] == ": "
+					):
+						# Remove them
+						title = title[2:]
 
-		# Iterate through the list of titles to show
-		for title in to_show:
-			# If the length of the title is greater than one
-			# And the first two characters of the title are a space and a colon
-			if (
-				len(title) > 1 and
-				title[0] + title[1] == ": "
-			):
-				# Remove them
-				title = title[2:]
+					# Add the current language title to the list of titles to show
+					titles.append(title)
 
-			# Show the title
-			print("\t" + title)
+		# If the "show titles" parameter is True
+		if show_titles == True:
+			# Iterate through the list of titles to show
+			for title in titles:
+				# Show the current title
+				print("\t" + title)
 
-		# If the "Include media title" parameter is True
-		if include_media_title == True:
-			# Show the item text
-			print()
-			print(self.Language.language_texts["item, title()"] + ":")
+			# If the "Include media title" parameter is True
+			if include_media_title == True:
+				# Show the "Item" text in the user language
+				print()
+				print(self.Language.language_texts["item, title()"] + ":")
 
-			# Display the "With media title" version of the media item title, in the user's language
-			print("\t" + root_dictionary["Media"]["Item"]["With media title"][self.language["Small"]])
+				# Show the "With media title" version of the media item title in the user language
+				print("\t" + root_dictionary["Media"]["Item"]["With media title"][self.language["Small"]])
+
+		# Return the list of titles to show
+		return titles
 
 	def Get_Language_Status(self, status):
 		# Define a switch to tell if the status should be return in English as False by default
@@ -5357,7 +5401,7 @@ class Watch_History(object):
 		if item == "Comment":
 			# Parse the link to get the video ID
 			video_id = self.Parse_Link(dictionary["Link"], "Video")
-		
+
 			# Add the video ID to the request dictionary
 			request["Video ID"] = video_id
 
@@ -5689,29 +5733,32 @@ class Watch_History(object):
 		# Define a local version of the media dictionary for faster typing
 		media = dictionary["Media"]
 
-		# Define the singular media type variable for faster typing
+		# Create a shortcut to the singular media type in the user language
 		singular_media_type = dictionary["Media type"]["Singular"][self.language["Small"]]
 
-		# Define the header text
+		# Define the default header text as singular media type in the user language
 		header_text = singular_media_type + ":"
 
-		# If the "Header text" key is inside the dictionary
-		# And the key is not empty or None
+		# If the "Header text" key is inside the main dictionary
+		# And the key is not an empty string or None
 		if (
 			"Header text" in dictionary and
-			"Header text" not in ["", None]
+			dictionary["Header text"] not in ["", None]
 		):
+			# Define the local header text variable as the one inside the main dictionary
 			header_text = dictionary["Header text"]
 
 		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 
-		# Show the "Congratulations! :3" text in the user language if the user finished the media
+		# If the user is not re-watching the media
+		# And they finished watching the whole media
 		if (
 			media["States"]["Re-watching"] == False and
 			media["States"]["Completed media"] == True
 		):
+			# Then show the "Congratulations! :3" text in the user language to the user
 			print()
 			print(self.Language.language_texts["congratulations"] + "! :3")
 
@@ -5719,8 +5766,8 @@ class Watch_History(object):
 		print()
 		print(header_text)
 
-		# Show the title of the media
-		self.Show_Media_Title(dictionary)
+		# Show the titles of the root media
+		self.Show_Media_Titles(dictionary)
 
 		# If the header text is not equal to the singular media type in the user language
 		if header_text != singular_media_type + ":":
@@ -5734,14 +5781,14 @@ class Watch_History(object):
 			# Show the "Old watching staus" text in the user language
 			print()
 			print(self.language_texts["old_watching_status"] + ":")
-			
+
 			# Show the old watching status in the user language
 			print("\t" + media["Status change"]["Old"])
 
 			# Show the "New watching staus" text in the user language
 			print()
 			print(self.language_texts["new_watching_status"] + ":")
-			
+
 			# Show the new watching status in the user language
 			print("\t" + media["Status change"]["New"])
 
@@ -5793,8 +5840,8 @@ class Watch_History(object):
 				print()
 				print(self.Text.Capitalize(media["Texts"]["item"][self.language["Small"]]) + ":")
 
-				# Show the title of the media item
-				self.Show_Media_Title(dictionary, is_media_item = True)
+				# Show the titles of the media item
+				self.Show_Media_Titles(dictionary, is_media_item = True)
 
 				# Show a three dash space separator
 				print()
@@ -6047,20 +6094,21 @@ class Watch_History(object):
 			print("\t" + media["Episode"]["Unit"])
 
 		# If the user completed the media item
-		# And it is not re-watching the media
-		if (
-			media["States"]["Completed media item"] == True and
-			media["States"]["Re-watching"] == False
-		):
+		if media["States"]["Completed media item"] == True:
 			# Show a three dash space separator
 			print()
 			print(self.separators["3"])
 
-			# Show the "Congratulations! :3" text
-			print()
-			print(self.Language.language_texts["congratulations"] + "! :3")
+			# If the user is not re-watching the media
+			if media["States"]["Re-watching"] == False:
+				# Show the "Congratulations! :3" text
+				print()
+				print(self.Language.language_texts["congratulations"] + "! :3")
 
-			# Define the "this item" text as the media "this item" text
+			# Define the local "show media item titles" switch initially as True
+			show_media_item_titles = True
+
+			# Define the "this item" text as the media "this item" text in the user language
 			# 
 			# Examples:
 			# This season
@@ -6071,6 +6119,18 @@ class Watch_History(object):
 			# This ONA
 			# This video series
 			this_item_text = media["Texts"]["this_item"][self.language["Small"]]
+
+			# If the media item is the root media
+			# And the media item is the first one
+			if (
+				media["States"]["The media item is the root media"] == True and
+				media["Item"]["Title"] == media["Items"]["List"][0]
+			):
+				# Define the this item text as the "the first season" text
+				this_item_text = media["Item"]["Texts"]["Item"]["The first"]
+
+				# Switch the local "show media item titles" switch to False
+				show_media_item_titles = False
 
 			# Define the "of the container" text as the media "of the container" text
 			# 
@@ -6110,12 +6170,19 @@ class Watch_History(object):
 				# "You finished watching this anime"
 				text_to_show = self.language_texts["you_finished_watching"] + " " + media["Texts"]["this_container"][self.language["Small"]]
 
-			# Show the text to show with a comma
-			print()
-			print(text_to_show + ":")
+			# If the local "show media item titles" switch is True
+			if show_media_item_titles == True:
+				# Add a colon to the text to show
+				text_to_show += ":"
 
-			# Show the media item title
-			self.Show_Media_Title(dictionary, is_media_item = True)
+			# Show the text to show
+			print()
+			print(text_to_show)
+
+			# If the local "show media item titles" switch is True
+			if show_media_item_titles == True:
+				# Show the titles of the media item
+				self.Show_Media_Titles(dictionary, is_media_item = True)
 
 			# If the media item is not a single unit
 			# And the "Finished watching text" key is inside the media item dictionary
@@ -6173,8 +6240,8 @@ class Watch_History(object):
 					}
 				}
 
-				# Show the next media item title
-				self.Show_Media_Title(media_dictionary, is_media_item = True)
+				# Show the titles of the next media item
+				self.Show_Media_Titles(media_dictionary, is_media_item = True)
 
 			# Show a three dash space separator
 			print()

@@ -8,7 +8,10 @@ class Run():
 		# Run the root class of the "Modules" module
 		self.Modules = self.Modules(class_object = self, select_class = False)
 
-		# Define the "has active arguments" variable as False
+		# Define the root "has arguments" switch initially as False
+		self.has_arguments = False
+
+		# Define the "has active arguments" switch initially as False
 		has_active_arguments = False
 
 		# Define the selected class initially as None
@@ -16,6 +19,10 @@ class Run():
 
 		# If the self object (Run) contains the "arguments" dictionary
 		if hasattr(self, "arguments") == True:
+			# Switch the root local "has arguments" switch to True
+			self.has_arguments = True
+
+			# Impot the "deepcopy" module
 			from copy import deepcopy
 
 			# Make a local copy of the arguments dictionary
@@ -65,22 +72,21 @@ class Run():
 
 		# If the module has no active arguments
 		if has_active_arguments == False:
-			# If the "Do not run class" variable is not present in this class
-			if hasattr(self, "do_not_run_class") == False:
-				# Ask the user to select a class
-				selected_class = self.Modules.Select_Class(return_class = True)
+			# Ask the user to select a class
+			selected_class = self.Modules.Select_Class(return_class = True)
 
 		# If the selected class is not None
 		if selected_class != None:
-			# If the self object (Run) has a dictionary of arguments
-			if hasattr(self, "arguments") == True:
-				# Add it to the selected class object
+			# If this class has an arguments dictionary
+			if self.has_arguments == True:
+				# Add the "has arguments" switch to the selected class object
+				setattr(selected_class["Object"], "has_arguments", self.has_arguments)
+
+				# Add the arguments dictionary to the selected class object
 				setattr(selected_class["Object"], "arguments", self.arguments)
 
-			# If the "Do not run class" variable is not present in this class
-			if hasattr(self, "do_not_run_class") == False:
-				# Run the object of the selected class
-				selected_class["Object"]()
+			# Run the object of the selected class
+			selected_class["Object"]()
 
 # Define the list of alternative arguments that can be used to run the module
 alternative_arguments = [
@@ -103,6 +109,6 @@ custom_arguments = {
 	}
 }
 
-# If the script is being executed directly, run the local "Run" class
+# If this script file is being executed directly, run the local "Run" class
 if __name__ == "__main__":
 	Run()

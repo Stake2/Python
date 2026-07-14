@@ -36,8 +36,17 @@
 		"en": "Please type the social network profile information"
 	},
 	"settings, type: list": [
-		"create_image_folders"
+		"create_image_folders",
+		"format_profile_link_with_handle"
 	],
+	"create_image_folders": {
+		"en": "Create image folders",
+		"pt": "Criar pastas de imagens"
+	},
+	"format_profile_link_with_handle": {
+		"en": "Format profile link with handle",
+		"pt": "Formatar o link de perfil com o arroba"
+	},
 	"please_type_the_information_of_the_social_network": {
 		"pt": "Por favor digite as informações da rede social",
 		"en": "Please type the information of the social network"
