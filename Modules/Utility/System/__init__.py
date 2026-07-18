@@ -110,7 +110,7 @@ class System():
 		# Return the verbose text
 		return verbose_text
 
-	def Open(self, item, open = False, commands = [], verbose = True, first_space = True):
+	def Open(self, item, parameter = None, open = False, commands = [], verbose = True, first_space = True):
 		# Import the validators module
 		import validators
 
@@ -197,12 +197,12 @@ class System():
 			self.switches["Testing"] == False or
 			open == True
 		):
-			# If the "commands" parameter is an empty string
+			# If the "commands" parameter is an empty list
 			if commands == []:
 				# Start the item using the "os" class and its "startfile" method
 				os.startfile(item)
 
-			# If the "commands" parameter is not an empty string
+			# If the "commands" parameter is not an empty list
 			if commands != []:
 				# Open the item using the "subprocess" class and its "Popen" method
 				# And pass the item and the list of commands to the method

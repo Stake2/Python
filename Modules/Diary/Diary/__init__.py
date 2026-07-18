@@ -30,31 +30,32 @@ class Diary():
 
 		# Define a list of utility classes to not import
 		do_not_import = [
-			"API",
 			"Text"
 		]
 
 		# Iterate through the list of utility classes
 		for class_title in self.modules["Utility"]["List"]:
 			# If the class is not already inside the self class (Diary)
-			# And the class title is not inside the list of utility classes to not import
-			if (
-				hasattr(self, class_title) == False and
-				class_title not in do_not_import
-			):
-				# Import the module of the class
-				module = importlib.import_module("." + class_title, "Utility")
+			if hasattr(self, class_title) == False:
+				# If the class title is not inside the list of utility classes to not import
+				# And it is is not inside the list of optional classes
+				if (
+					class_title not in do_not_import and
+					class_title not in self.modules["Utility"]["Optional"]
+				):
+					# Import the module of the class
+					module = importlib.import_module("." + class_title, "Utility")
 
-				# Get the class object inside the module
-				class_object = getattr(module, class_title)
+					# Get the class object inside the module
+					class_object = getattr(module, class_title)
 
-				# If the class title is not "Modules"
-				if class_title != "Modules":
-					# Run the class object to define its attributes
-					class_object = class_object()
+					# If the class title is not "Modules"
+					if class_title != "Modules":
+						# Run the class object to define its attributes
+						class_object = class_object()
 
-				# Add the class object to the root class
-				setattr(self, class_title, class_object)
+					# Add the class object to the root class
+					setattr(self, class_title, class_object)
 
 		# ---------- #
 

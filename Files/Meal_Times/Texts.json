@@ -1,4 +1,8 @@
 {
+	"Meal_Times": {
+		"en": "Meal Times",
+		"pt": "Horários da Refeição"
+	},
 	"this_is_the_time_when_you": {
 		"en": "This is the time when you",
 		"pt": "Esse é o horário em que você"
@@ -31,12 +35,56 @@
 		"en": "The times were {} the times file",
 		"pt": "Os horários foram {} arquivo de horários"
 	},
-	"register": {
+	"remind_the_user_to_drink_water": {
+		"en": "Remind the user to drink water",
+		"pt": "Lembrar o usuário de beber água"
+	},
+	"your_water_drinking_time_is": {
+		"en": "Your water drinking time is",
+		"pt": "Seu horário de beber água é"
+	},
+	"now_it_is_time_to_drink_water": {
+		"en": "Now it is time to drink water",
+		"pt": "Agora é hora de beber água"
+	},
+	"press_enter_when_you_pick_up_your_water_bottle_to_drink": {
+		"en": "Press Enter when you pick up your water bottle to drink",
+		"pt": "Pressione Enter quando você pegar a sua garrafa de água para beber"
+	},
+	"remind_the_user_to_go_eat": {
+		"en": "Remind the user to go eat",
+		"pt": "Lembrar o usuário de ir comer"
+	},
+	"your_eating_time_is": {
+		"en": "Your eating time is",
+		"pt": "Seu horário de comer é"
+	},
+	"now_it_is_time_to_go_drink_something": {
+		"en": "Now it is time to go eat something",
+		"pt": "Agora é hora de ir comer alguma coisa"
+	},
+	"press_enter_when_you_choose_and_open_a_video_to_watch_on_youtube_while_you_eat": {
+		"en": "Press Enter when you choose and open a video to watch on YouTube while you eat",
+		"pt": "Pressione Enter quando você escolher e abrir um vídeo para assistir no YouTube enquanto come"
+	},
+	"press_enter_when_you_are_finished_making_something_to_eat_while_watching": {
+		"en": "Press Enter when you are finished making something to eat while watching",
+		"pt": "Pressione Enter quando você terminar de fazer algo para comer enquanto assiste"
+	},
+	"register, type: argument": {
 		"en": "Registers your meal times using the \"{module}\" module",
 		"pt": "Registra os horários da sua refeição usando o módulo \"{module}\""
 	},
-	"show": {
+	"show, type: argument": {
 		"en": "Shows your meal times using the \"{module}\" module",
 		"pt": "Mostra os horários da sua refeição usando o módulo \"{module}\""
+	},
+	"remind_user_to_drink_water, type: argument": {
+		"en": "Reminds you to drink water using the \"{module}\" module",
+		"pt": "Lembra você de beber água usando o módulo \"{module}\""
+	},
+	"remind_user_to_go_eat, type: argument": {
+		"en": "Reminds you to go eat using the \"{module}\" module",
+		"pt": "Lembra você de ir comer usando o módulo \"{module}\""
 	}
 }

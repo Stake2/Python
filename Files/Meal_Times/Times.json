@@ -14,8 +14,8 @@
 				"en": "This is the time when you ate"
 			},
 			"Current time": {
-				"Object": "2026-07-14T12:59:45-0300",
-				"Time": "12:59"
+				"Object": "2026-07-17T21:34:01-0300",
+				"Time": "21:34"
 			}
 		},
 		"Can drink water": {
@@ -31,8 +31,16 @@
 				"Quantity": 40
 			},
 			"Current time": {
-				"Object": "2026-07-14T13:39:45-0300",
-				"Time": "13:39"
+				"Object": "2026-07-17T22:14:01-0300",
+				"Time": "22:14"
+			},
+			"Reminder": {
+				"Texts": {
+					"en": "Remind the user to drink water",
+					"pt": "Lembrar o usuário de beber água"
+				},
+				"File": "C:/Python/Atalhos/Bats/Lembrar o usuário de beber água.bat",
+				"Method": "Remind_User_To_Drink_Water"
 			}
 		},
 		"Will be hungry": {
@@ -48,8 +56,16 @@
 				"Quantity": 3
 			},
 			"Current time": {
-				"Object": "2026-07-14T15:59:45-0300",
-				"Time": "15:59"
+				"Object": "2026-07-18T00:34:01-0300",
+				"Time": "00:34"
+			},
+			"Reminder": {
+				"Texts": {
+					"en": "Remind the user to go eat",
+					"pt": "Lembrar o usuário de ir comer"
+				},
+				"File": "C:/Python/Atalhos/Bats/Lembrar o usuário de ir comer.bat",
+				"Method": "Remind_User_To_Go_Eat"
 			}
 		}
 	}

@@ -52,12 +52,18 @@ class Run():
 		# Run the object of the selected class
 		classes["Selected"]["Object"]()
 
-# Define the dictionary of custom arguments for the module to change the behavior of the classes
+# Define the dictionary of custom arguments for the module to change the behavior of the class
 custom_arguments = {
+	"register": {
+		"Action": "store_true"
+	},
 	"show": {
 		"Action": "store_true"
 	},
-	"register": {
+	"remind_user_to_drink_water": {
+		"Action": "store_true"
+	},
+	"remind_user_to_go_eat": {
 		"Action": "store_true"
 	}
 }

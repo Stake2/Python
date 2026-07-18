@@ -207,6 +207,13 @@
 			"feminine": "apagada"
 		}
 	},
+	"scheduled": {
+		"en": "scheduled",
+		 "pt": {
+			"masculine": "agendado",
+			"feminine": "agendada"
+		}
+	},
 	"settings": {
 		"en": "settings",
 		"pt": "configurações"
@@ -2728,5 +2735,9 @@
 	"testing_mode": {
 		"en": "testing mode",
 		"pt": "modo de testes"
+	},
+	"the_testing_mode_is_on": {
+		"en": "the testing mode is on",
+		"pt": "o modo de testes está ativado"
 	}
 }

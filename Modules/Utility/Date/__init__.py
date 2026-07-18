@@ -891,58 +891,6 @@ class Date():
 		if mode == "dict":
 			return dict_
 
-	def Schedule_Task(self, task_title, path = "", start_time = "", time_from_now = 5):
-		import win32com.client
-
-		# Initiate
-		scheduler = win32com.client.Dispatch("Schedule.Service")
-		scheduler.Connect()
-		root_folder = scheduler.GetFolder("\\Stake2")
-		task_def = scheduler.NewTask(0)
-
-		# Create trigger
-		if start_time == "":
-			start_time = self.Now()["Object"] + self.Timedelta(minutes = time_from_now)
-
-		TASK_TRIGGER_TIME = 1 # Triggers the task at a specific time of day.
-		trigger = task_def.Triggers.Create(TASK_TRIGGER_TIME)
-		trigger.StartBoundary = start_time.isoformat()
-
-		# Create action
-		TASK_ACTION_EXEC = 0 # performs a command-line operation, for example, the action could run a script
-		action = task_def.Actions.Create(TASK_ACTION_EXEC)
-		action.ID = task_title
-
-		if path != "":
-			action.Path = path
-
-		# Set parameters
-		task_def.RegistrationInfo.Description = task_title
-		task_def.Settings.AllowDemandStart = True
-		task_def.Settings.AllowHardTerminate = True
-		task_def.Settings.DisallowStartIfOnBatteries = False
-		task_def.Settings.Enabled = True
-		task_def.Settings.ExecutionTimeLimit = "PT0S"
-
-		TASK_INSTANCES_STOP_EXISTING = 3
-		task_def.Settings.MultipleInstances = False
-		task_def.Settings.RunOnlyIfIdle = False
-		task_def.Settings.StartWhenAvailable = False
-		task_def.Settings.StopIfGoingOnBatteries = False
-
-		# Register task
-		# If task already exists, it will be updated
-		TASK_CREATE_OR_UPDATE = 6
-		TASK_LOGON_NONE = 0
-		root_folder.RegisterTaskDefinition(
-			task_title, # Task name
-			task_def, # Task definition
-			TASK_CREATE_OR_UPDATE, # 6, The Task Scheduler either registers the task as a new task or as an updated version if the task already exists
-			"", # No user
-			"", # No password
-			TASK_LOGON_NONE # The logon method is not specified. Used for non-NT credentials.
-		)
-
 	def Import_Default_Methods(self):
 		# Define the list of methods to be imported
 		methods = [

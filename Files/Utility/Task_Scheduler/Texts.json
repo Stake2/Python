@@ -1,0 +1,14 @@
+{
+	"this_task_was_{}": {
+		"en": "This task was {}",
+		"pt": "Essa tarefa foi {}"
+	},
+	"this_task_was_not_{}_the_testing_mode_is_on": {
+		"en": "This task was not {} (the testing mode is on)",
+		"pt": "Essa tarefa não foi {} (o modo de testes está ativado)"
+	},
+	"it_will_be_executed_at": {
+		"en": "It will be executed at",
+		"pt": "Ela vai ser executada às"
+	}
+}

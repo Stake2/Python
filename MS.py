@@ -57,18 +57,13 @@ class Module_Selector():
 		# Get the dictionary of Python modules
 		self.modules = self.JSON.To_Python(self.folders["Python"]["Modules"]["Modules"])
 
-		# Define a list of utility classes to not import
-		do_not_import = [
-			"API"
-		]
-
 		# Iterate through the list of utility classes
 		for class_title in self.modules["Utility"]["List"]:
 			# If the class is not already inside the self class (Module_Selector)
-			# And the class title is not inside the list of utility classes to not import
+			# And the class title is not inside the list of optional classes
 			if (
 				hasattr(self, class_title) == False and
-				class_title not in do_not_import
+				class_title not in self.modules["Utility"]["Optional"]
 			):
 				# Import the module of the class
 				module = importlib.import_module("." + class_title, "Utility")
@@ -470,6 +465,11 @@ class Module_Selector():
 
 					# Define the text key
 					text_key = key
+
+					# If the text key is not inside the module "Texts" dictionary
+					if text_key not in module["Texts"]:
+						# Add the ", type: argument" to the text key
+						text_key += ", type: argument"
 
 					# Get the text for the custom argument
 					dictionary["Text"] = module["Texts"][text_key][self.language["Small"]]

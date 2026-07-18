@@ -6,3 +6,6 @@ Os módulos de uso "Code" (Programar) e "SproutGigs" foram removidos e depois ar
 
 13:00 03/06/2026:
 O módulo utilitário "Define_Folders" (Definir_Pastas) foi removido e depois arquivado, pois eu movi toda a funcionalidade da sua classe raiz para o módulo utilitário "Modules" (Módulos)
+
+16:56 17/07/2026:
+Eu criei o novo módulo utilitário "Task_Scheduler" (Agendador_De_Tarefas)

@@ -175,18 +175,6 @@
 		"pt": "Pressione Enter quando você terminar de postar o status e a capa do jogo jogado no {social_network}",
 		"en": "Press Enter when you finish posting the status and the cover of the played game on {social_network}"
 	},
-	"game": {
-		"en": "Selects a game to be opened by the {module} module",
-		"pt": "Seleciona um jogo a ser aberto pelo módulo {module}"
-	},
-	"sub_game": {
-		"en": "Selects a sub-game to be opened by the {module} module",
-		"pt": "Seleciona um sub-jogo a ser aberto pelo módulo {module}"
-	},
-	"play": {
-		"en": "Runs the \"Play\" class of the {module} module",
-		"pt": "Executa a classe \"Play\" (Jogar) do módulo {module}"
-	},
 	"the_cover_of_the_gaming_session_of_the_game": {
 		"en": "the cover of the gaming session of the game",
 		"pt": "a capa da sessão de jogatina do jogo"
@@ -238,5 +226,17 @@
 	"type_the_game_information_(some_items_can_be_left_empty_by_pressing_enter)": {
 		"en": "Type the game information (some items can be left empty by pressing Enter)",
 		"pt": "Digite as informações do jogo (alguns itens podem ser deixados em branco ao pressionar Enter)"
+	},
+	"game, type: argument": {
+		"en": "Selects a game to be opened by the {module} module",
+		"pt": "Seleciona um jogo a ser aberto pelo módulo {module}"
+	},
+	"sub_game, type: argument": {
+		"en": "Selects a sub-game to be opened by the {module} module",
+		"pt": "Seleciona um sub-jogo a ser aberto pelo módulo {module}"
+	},
+	"play, type: argument": {
+		"en": "Runs the \"Play\" class of the {module} module",
+		"pt": "Executa a classe \"Play\" (Jogar) do módulo {module}"
 	}
 }

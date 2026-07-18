@@ -11,7 +11,12 @@
 			"Language",
 			"Modules",
 			"System",
+			"Task_Scheduler",
 			"Text"
+		],
+		"Optional": [
+			"API",
+			"Task_Scheduler"
 		]
 	},
 	"Usage": {

@@ -194,6 +194,57 @@ class Folder():
 
 		# ---------- #
 
+		# "Program files" folders
+
+		# Define the list of "Program files" folder names
+		folder_names = [
+			"VideoLAN"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Program Files"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the folder dictionary with the root folder
+			root_folder[folder_name] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ----- #
+
+		# Define the list of "VideoLAN" folder names
+		folder_names = [
+			"VLC"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Program Files"]["VideoLAN"]
+
+		# Iterate through the list of folder names
+		for folder_name in folder_names:
+			# Define the folder dictionary with the root folder
+			root_folder[folder_name] = {
+				"root": root_folder["root"] + folder_name + "/"
+			}
+
+		# ----- #
+
+		# Define the "VLC" files
+		file_names = [
+			"VLC"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Program Files"]["VideoLAN"]["VLC"]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the "VLC" folder
+			root_folder[file_name] = root_folder["root"] + file_name.lower() + ".exe"
+
+		# ---------- #
+
 		# "Program files (x86)" folders
 
 		# Define the list of "Program files (x86)" folder names
@@ -367,6 +418,23 @@ class Folder():
 			root_folder[key] = {
 				"root": root_folder["root"] + folder_name + "/"
 			}
+
+		# ---------- #
+
+		# Programming "AutoHotKey" files
+
+		# Define the list of AutoHotKey file names
+		file_names = [
+			"Block input"
+		]
+
+		# Define the root folder to use
+		root_folder = self.folders["Programming"]["AutoHotKey"]
+
+		# Iterate through the list of file names
+		for file_name in file_names:
+			# Define the file inside the root folder
+			root_folder[file_name] = root_folder["root"] + file_name + ".ahk"
 
 		# ---------- #
 
@@ -984,11 +1052,14 @@ class Folder():
 		return os.path.isfile(file)
 
 	def Type(self, text = None):
+		# If the text is None, define it as "Type or paste the folder: "
 		if text == None:
 			text = self.language_texts["type_or_paste_the_folder"] + ": "
 
+		# Show a space
 		print()
 
+		# Ask for the user input using the defined text and return the user input
 		return input(text)
 
 	def Create(self, folder = None, text = None):

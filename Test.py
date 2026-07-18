@@ -188,31 +188,6 @@ class Main():
 			# Wait for user input before continuing
 			user_input = self.Input.Type(self.Language.language_texts["continue, title()"])
 
-	def Convert_Date(self):
-		# Define the date as an empty string
-		date = ""
-
-		# While the date is not "f"
-		while date != "f":
-			# Show a ten dash space separator
-			print()
-			print(self.separators["10"])
-
-			# Ask for the date
-			date = self.Input.Type("Paste the date", accept_enter = False, next_line = True)
-
-			# Convert it into a date dictionary
-			date = self.Date.From_String(date, "%H:%M %d/%m/%Y")
-
-			# Define the date format
-			date_format = "YYYY-MM-DDTHH:MM:SSZ"
-
-			# Get the date in that format
-			selected_date = date["UTC"]["DateTime"]["Formats"][date_format]
-
-			# Copy the date
-			self.Text.Copy(selected_date)
-
 	def Enumerate_Lines(self):
 		# Ask the user to press Enter to get the clipboard
 		self.Input.Type("Press Enter to get the clipboard")
