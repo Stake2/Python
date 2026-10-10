@@ -360,10 +360,7 @@ class Social_Networks(object):
 
 		# Define a list of folders to remove
 		remove_list = [
-			"Database",
-			"4chan",
-			"Google+",
-			"Plug DJ"
+			"Database"
 		]
 
 		# Iterate through the list of folders
@@ -381,8 +378,10 @@ class Social_Networks(object):
 				# Get the folder name in the user language
 				folder = self.Language.language_texts[text_key]
 
-			# Remove the folder from the list
-			self.social_networks["List"].remove(folder)
+			# If the folder is inside the list of social networks
+			if folder in self.social_networks["List"]:
+				# Remove it
+				self.social_networks["List"].remove(folder)
 
 		# ---------- #
 
@@ -412,7 +411,7 @@ class Social_Networks(object):
 				"Files": {},
 				"Information": {},
 				"Settings": {
-					"Create image folders": True,
+					"Create image folders": False,
 					"Format profile link with handle": False
 				},
 				"Profile": {}

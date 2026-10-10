@@ -98,6 +98,9 @@ class Friends(object):
 		# Get the current date from the "Date" class
 		self.date = self.Date.date
 
+		# Create a shortcut to the current year number
+		self.current_year = self.date["Units"]["Year"]
+
 		# ---------- #
 
 		# Define the "Texts" dictionary
@@ -179,42 +182,40 @@ class Friends(object):
 			setattr(self, variable_title, variable)
 
 	def Define_Folders_And_Files(self):
-		# Define the "Friends" folder dictionary
+		# Define the "Friends" folders dictionary
+		# And also define and create the root "Friends" folder in the root of the drive
 		self.folders["Friends"] = {
-			"Text": {
-				"root": self.folders["Notepad"]["Friends"]["root"]
-			},
-			"Image": {
-				"root": self.folders["Images"]["Friends"]["root"]
-			}
+			"root": self.folders["root"] + self.Language.language_texts["friends, title()"] + "/"
 		}
+
+		self.Folder.Create(self.folders["Friends"]["root"])
 
 		# ---------- #
 
-		# Define and create the friends text "Database" folder
-		self.folders["Friends"]["Text"]["Database"] = {
-			"root": self.folders["Friends"]["Text"]["root"] + self.Language.language_texts["database, title()"] + "/"
+		# Define and create the friends "Database" folder
+		self.folders["Friends"]["Database"] = {
+			"root": self.folders["Friends"]["root"] + self.Language.language_texts["database, title()"] + "/"
 		}
 
-		self.Folder.Create(self.folders["Friends"]["Text"]["Database"]["root"])
+		self.Folder.Create(self.folders["Friends"]["Database"]["root"])
 
-		# Define and create the "Information items.json" file
-		file = self.folders["Friends"]["Text"]["Database"]["root"] + "Information items.json"
+		# Define and create the database "Information items.json" file
+		file = self.folders["Friends"]["Database"]["root"] + "Information items.json"
 		self.File.Create(file)
 
-		self.folders["Friends"]["Text"]["Database"]["Information items"] = file
+		self.folders["Friends"]["Database"]["Information items"] = file
 
-		# Define and create the "Friends.json" file
-		file = self.folders["Friends"]["Text"]["root"] + "Friends.json"
+		# Define and create the root "Friends.json" file
+		file = self.folders["Friends"]["root"] + "Friends.json"
 		self.File.Create(file)
 
-		self.folders["Friends"]["Text"]["Friends"] = file
+		self.folders["Friends"]["Friends"] = file
 
-		# Define and create the "Friends list.txt" file
-		file = self.folders["Friends"]["Text"]["root"] + self.language_texts["friends_list"] + ".txt"
+		# Define and create the root "Friends list.txt" file
+		file = self.folders["Friends"]["root"] + self.language_texts["friends_list"] + ".txt"
 		self.File.Create(file)
 
-		self.folders["Friends"]["Text"]["Friends list"] = file
+		self.folders["Friends"]["Friends list"] = file
 
 	def Define_History(self):
 		# Define the "History" dictionary
@@ -224,12 +225,12 @@ class Friends(object):
 			"Numbers": {
 				"Known people": "By year"
 			},
-			"Folder": self.folders["Friends"]["Text"]["root"]
+			"Folder": self.folders["Friends"]["root"]
 		}
 
 	def Define_Information_Items(self):
-		# Define the "Information items" dictionary
-		dictionary = {
+		# Define the local "Information items" dictionary
+		information_items = {
 			"Numbers": {
 				"Total": 0
 			},
@@ -251,214 +252,245 @@ class Friends(object):
 			"Dictionary": {}
 		}
 
-		# Read the "Information items.json" file if it is not empty
-		file = self.folders["Friends"]["Text"]["Database"]["Information items"]
+		# Create a shortcut to the database "Information items.json" file
+		file = self.folders["Friends"]["Database"]["Information items"]
 
-		if self.File.Contents(file)["lines"] != []:
-			dictionary = self.JSON.To_Python(file)
+		# If the "Information items.json" file is not empty
+		if self.File.Contents(file)["Lines"] != []:
+			# Define it as the local "Information items" dictionary
+			information_items = self.JSON.To_Python(file)
 
 		# Get the number of information items
-		dictionary["Numbers"]["Total"] = len(dictionary["List"])
+		information_items["Numbers"]["Total"] = len(information_items["List"])
 
 		# Reset the "Dictionary" key to be an empty dictionary
-		dictionary["Dictionary"] = {}
+		information_items["Dictionary"] = {}
 
 		# Iterate through the information items list
-		for key in dictionary["List"]:
+		for name in information_items["List"]:
 			# Create the information item dictionary
-			dict_ = {
-				"Name": key
+			information_item = {
+				"Name": name
 			}
 
-			# Define the text key
-			text_key = key.lower().replace(" ", "_")
+			# Define the text key based on the information item
+			text_key = name.lower().replace(" ", "_")
 
 			# Define the text addon
-			addon = ""
+			text_addon = ""
 
+			# If the underline is not inside the text key, add the ", title()" text to the text addon
 			if "_" not in text_key:
-				addon = ", title()"
+				text_addon = ", title()"
 
 			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
-				# Get the information text
-				text = self.Language.texts[text_key + addon][language]
+				# Get the information item text
+				text = self.Language.texts[text_key + text_addon][language]
 
-				# Define the language information item inside the local "dict_" dictionary
-				dict_[language] = text
+				# Define the language information item inside the local "information item" dictionary
+				information_item[language] = text
 
 				# If the language dictionary is not inside the "Lists" dictionary of the "Information items" dictionary
-				if language not in dictionary["Lists"]:
+				if language not in information_items["Lists"]:
 					# Create it
-					dictionary["Lists"][language] = []
+					information_items["Lists"][language] = []
 
 				# If the text is not inside the language "Lists" dictionary of the "Information items" dictionary
-				if text not in dictionary["Lists"][language]:
+				if text not in information_items["Lists"][language]:
 					# Add it
-					dictionary["Lists"][language].append(text)
+					information_items["Lists"][language].append(text)
 
 			# Define the plural versions of the information item
-			dict_["Plural"] = {}
+			information_item["Plural"] = {}
 
-			# Update the back of the text key
-			text_key_backup = text_key + addon
+			# Create a backup for the text key
+			text_key_backup = text_key + text_addon
 
+			# If the "s" (plural) character is not inside the text key, add it
 			if "s" not in text_key[-1]:
 				text_key += "s"
 
-			# Add the text addon (might be a empty string or the ", title()" text)
-			text_key += addon
+			# Add the text addon to the text key (might be a empty string or the ", title()" text)
+			text_key += text_addon
 
+			# If the text key is not inside the "texts" dictionary of the "Language" utility class
 			if text_key not in self.Language.texts:
-				text_key = text_key.replace(addon, "")
+				# Remove the text addon
+				text_key = text_key.replace(text_addon, "")
+
+				# Remove the last character, which is "s" (plural)
 				text_key = text_key[:-1]
 
-				text_key += addon + ", type: plural"
+				# Add the text addon back and ", type: plural"
+				text_key += text_addon + ", type: plural"
 
+			# If the text key is still not inside the "texts" dictionary of the "Language" utility class
 			if text_key not in self.Language.texts:
+				# Then change the text key back to its original version
 				text_key = text_key_backup
 
 			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
-				dict_["Plural"][language] = self.Language.texts[text_key][language]
+				# Add the plural text to the "Plural" dictionary of the information item dictionary
+				information_item["Plural"][language] = self.Language.texts[text_key][language]
 
-			# Define the "Gender" key
-			dict_["Gender"] = {
+			# Define the "Gender" dictionary of the information item
+			information_item["Gender"] = {
 				"Text": "",
 				"Words": {}
 			}
 
-			# Define the format of the information item
-			dict_["Format"] = {
+			# Define the "Format" dictionary of the information item
+			information_item["Format"] = {
 				"Regex": "",
 				"Example": ""
 			}
 
-			# If the key is in the "Formats" dictionary, use the format dictionary inside it
-			if key in dictionary["Formats"]:
-				dict_["Format"] = dictionary["Formats"][key]
+			# If the information item is inside the root "Formats" dictionary
+			if name in information_items["Formats"]:
+				# Define the information item format as the one inside the root dictionary
+				information_item["Format"] = information_items["Formats"][name]
 
 			# Define the "States" dictionary of the information item
-			dict_["States"] = {
+			information_item["States"] = {
 				"Exact match": False,
 				"Select": False,
 				"Ask for information": True
 			}
 
 			# If the information item is inside the "Do not ask for item" list
-			if key in dictionary["Lists"]["Do not ask for item"]:
-				dict_["States"]["Ask for information"] = False
+			if name in information_items["Lists"]["Do not ask for item"]:
+				# Change its "Ask for information" state to False
+				information_item["States"]["Ask for information"] = False
 
-			# Create a local copy of the "States" dictionary
-			states = deepcopy(dict_["States"])
+			# Create a local copy of the root "States" dictionary
+			states = deepcopy(information_item["States"])
+
+			# Remove the "Ask for information" state since it already has been defined previously
 			states.pop("Ask for information")
 
-			# Iterate through the state keys
+			# Iterate through the list of states
 			for state in states:
-				# Update the value of the key to True
-				if key in dictionary["Lists"][state]:
-					dict_["States"][state] = True
+				# If the information item is inside the list of the current state
+				if name in information_items["Lists"][state]:
+					# Change the current state of the information item to True
+					# (For example, if the information item is inside the "Exact match" list, its "Exact match" state will be True
+					# The same happens for the "Select" state)
+					information_item["States"][state] = True
 
-			# Define the options list if the information item needs to be selected from a list
-			if dict_["States"]["Select"] == True:
+			# If the "Select" state of the information item is True
+			if information_item["States"]["Select"] == True:
 				# Define the "Select" dictionary
-				dict_["Select"] = {
+				information_item["Select"] = {
+					# The lists from which the information will be selected
+					# For example: Lists of genders, lists of sexualities
 					"List": {
 						"English": [],
 						"Language": []
 					},
+
+					# The singular and plural texts for the information item
+					# For example: ["Gender", "Genders"], ["Sexuality", "Sexualities"]
+					# The singular text is used for the select text, and the plural is used for the show text
 					"Texts": {
-						"Singular": dict_[self.language["Small"]],
-						"Plural": dict_["Plural"][self.language["Small"]]
+						"Singular": information_item[self.language["Small"]],
+						"Plural": information_item["Plural"][self.language["Small"]]
 					}
 				}
 
-				# If the information item key is not "Origin social network"
-				if key != "Origin social network":
-					# Define the text key for the options list
-					text_key = dict_["Plural"]["en"].lower().replace(" ", "_") + ", type: list"
+				# If the information item is not "Origin social network"
+				if name != "Origin social network":
+					# Define the text key for the list of options
+					text_key = information_item["Plural"]["en"].lower().replace(" ", "_")
 
-					# Define the lists of options
-					for item in dict_["Select"]["List"]:
-						# Define the local texts dictionary
-						language = "en"
+					# Add the ", type: list" text to find the list of option
+					text_key += ", type: list"
 
-						if item == "Language":
-							language = self.language["Small"]
+				# Iterate through the list of languages inside the "Select" list
+				for item in information_item["Select"]["List"]:
+					# Define the local language as the English language
+					language = "en"
 
-						# Define the lists of options inside the "List" key
-						dict_["Select"]["List"][item] = self.Language.texts[text_key][language]
+					# If the current item is "Language"
+					if item == "Language":
+						# Then define the local language as the user language
+						language = self.language["Small"]
 
-				# If the information item key is "Origin social network"
-				if key == "Origin social network":
-					# Iterate through the keys of the "List" dictionary
-					for item in dict_["Select"]["List"]:
-						# Define the local list of social networks
+					# If the information item is not "Origin social network"
+					if name != "Origin social network":
+						# Get the list of options using the text key and the current language
+						local_list = self.Language.texts[text_key][language]
+
+					# If the information item is "Origin social network"
+					if name == "Origin social network":
+						# Create a copy of the root "social networks" dictionary
 						social_networks = deepcopy(self.social_networks)
 
-						language = "en"
-
-						if item == "Language":
-							language = self.language["Small"]
-
-						# Add the "Custom social network" item to the list above
+						# Add the "Custom social network" item to the local list of social network
 						social_networks["List"].append(self.texts["custom_social_network"][language])
 
-						# Define the lists of options inside the "List" key
-						dict_["Select"]["List"][item] = social_networks["List"]
+						# Define the local list as the local list of social networks
+						local_list = social_networks["List"]
 
-					dict_["Select"]["Texts"]["Custom select text"] = self.language_texts["select_the_social_network_where_you_met_{}"]
+						# Define the "Custom select text" of the "Select" dictionary as "Select the social network where you met {}"
+						information_item["Select"]["Texts"]["Custom select text"] = self.language_texts["select_the_social_network_where_you_met_{}"]
 
-			# Add the information item dictionary to the root "Information items" dictionary
-			dictionary["Dictionary"][key] = dict_
+					# Define the root "Select" list as the local list
+					information_item["Select"]["List"][item] = local_list
 
-		# Iterate through the information items list
-		for key, dict_ in dictionary["Dictionary"].items():
+			# Add the local information item dictionary to the root "Information items" dictionary
+			information_items["Dictionary"][name] = information_item
+
+		# Iterate through the list of information items
+		for name, information_item in information_items["Dictionary"].items():
 			# Define the local gender "Words" dictionary
 			words = {}
 
-			# Define the gender words of the information item
-			for item in dictionary["Gender"]["Items"]:
-				text_key = item.lower().replace(" ", "_")
-
-				# Define the gender
-				if key in dictionary["Gender"]["Masculine"]:
+			# Iterate through the items inside the gender "Items" dictionary
+			for item in information_items["Gender"]["Items"]:
+				# If the information item is inside the "Masculine" list, define the local gender as "masculine"
+				if name in information_items["Gender"]["Masculine"]:
 					gender = "masculine"
 
-				if key in dictionary["Gender"]["Feminine"]:
+				# If the information item is inside the "Feminine" list, define the local gender as "feminine"
+				if name in information_items["Gender"]["Feminine"]:
 					gender = "feminine"
+
+				# Update the gender text inside the "Gender" dictionary of the information item dictionary
+				information_items["Dictionary"][name]["Gender"]["Text"] = gender
+
+				# Define the text key for the item
+				text_key = item.lower().replace(" ", "_")
 
 				# Define the empty item dictionary
 				words[item] = {}
 
 				# Iterate through the list of small languages
 				for language in self.languages["Small"]:
-					# If the language dictionary does not exist, add it
+					# If the language dictionary does not exist, create it
 					if language not in words[item]:
 						words[item][language] = {}
 
 					# Define the gender text of the item in the current language
 					words[item][language] = self.Language.texts["genders, type: dictionary"][language][gender][text_key]
 
-				# Define the gender inside the "Gender" dictionary
-				dictionary["Dictionary"][key]["Gender"]["Text"] = gender
+			# Update the gender "Words" dictionary inside the information item dictionary
+			information_items["Dictionary"][name]["Gender"]["Words"] = words
 
-			# Update the gender "Words" dictionary inside the root information item dictionary
-			dictionary["Dictionary"][key]["Gender"]["Words"] = words
+		# Define the root "Information items" dictionary as the local "information items" dictionary
+		self.information_items = information_items
 
-		# Define the "Information items" dictionary as the local "Information items" dictionary
-		self.information_items = dictionary
-
-		# Create a local "Information items" dictionary
+		# Create a local copy of the root "Information items" dictionary
 		local_dictionary = deepcopy(self.information_items)
 
 		# Iterate through the list of small languages
 		for language in self.languages["Small"]:
-			# Remove the language items lists
+			# Remove the language list from the "Lists" dictionary
 			local_dictionary["Lists"].pop(language)
 
-		# Update the "Information items.json" file with the updated and local "Information items" dictionary
-		self.JSON.Edit(self.folders["Friends"]["Text"]["Database"]["Information items"], local_dictionary)
+		# Update the "Information items.json" file with the updated and local copy of the "Information items" dictionary
+		self.JSON.Edit(self.folders["Friends"]["Database"]["Information items"], local_dictionary)
 
 	def Define_Friends_Dictionary(self):
 		# Define the default "Friends" dictionary
@@ -473,7 +505,7 @@ class Friends(object):
 		}
 
 		# Create a shortcut to the root "Friends.json" file
-		file = self.folders["Friends"]["Text"]["Friends"]
+		file = self.folders["Friends"]["Friends"]
 
 		# If the "Friends.json" file is not empty
 		if self.File.Contents(file)["Lines"] != []:
@@ -483,7 +515,7 @@ class Friends(object):
 		# ---------- #
 
 		# Define the default "File names" dictionary
-		dictionary = {
+		file_names = {
 			"Names": [
 				"Information",
 				"Social network"
@@ -491,59 +523,62 @@ class Friends(object):
 			"Dictionary": {}
 		}
 
-		# Iterate through the file names list
-		for file_name in dictionary["Names"]:
-			# Create the file name dictionary
-			dict_ = {}
+		# Iterate through the list of file names
+		for name in file_names["Names"]:
+			# Create the local file name dictionary
+			file_name = {}
 
-			# Define the text key
-			text_key = file_name.lower().replace(" ", "_")
+			# Define the text key for the file name text
+			text_key = name.lower().replace(" ", "_")
 
-			addon = ""
+			# Define the text addon
+			text_addon = ""
 
+			# If the underline is not inside the text key, add the ", title()" text to the text addon
 			if "_" not in text_key:
-				addon = ", title()"
+				text_addon = ", title()"
 
 			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
 				# Define the language file name text
-				dict_[language] = self.Language.texts[text_key + addon][language]
+				file_name[language] = self.Language.texts[text_key + text_addon][language]
 
+			# If the "s" (plural) character is not inside the text key, add it
 			if "s" not in text_key[-1]:
 				text_key += "s"
 
-			# Define the plural texts of the file name
-			dict_["Plural"] = {}
+			# Define the plural versions of the file name text
+			file_name["Plural"] = {}
 
 			# Iterate through the list of small languages
 			for language in self.languages["Small"]:
-				dict_["Plural"][language] = self.Language.texts[text_key + addon][language]
+				# Add the plural file name text to the "Plural" dictionary of the file name dictionary
+				file_name["Plural"][language] = self.Language.texts[text_key + text_addon][language]
 
 			# Add the file name dictionary to the root "File names" dictionary
-			dictionary["Dictionary"][file_name] = dict_
+			file_names["Dictionary"][name] = file_name
 
-		# Define the "File names" key as the local "File names" dictionary
-		self.friends["File names"] = dictionary
+		# Define the friend "File names" key as the local "file names" dictionary
+		self.friends["File names"] = file_names
 
 		# ---------- #
 
 		# Get the sub-folders of the "Friends" folder
-		contents = self.Folder.Contents(self.folders["Friends"]["Text"]["root"])
+		contents = self.Folder.Contents(self.folders["Friends"]["root"])
 
-		# Get the list of friends from the list of folders
+		# Define the list of friends as the list of folders
 		self.friends["List"] = contents["Folder"]["Names"]
 
-		# Define a list of folders to remove
+		# Define a list of folders to remove from the list
 		remove_list = [
 			"Archive",
-			"Database",
-			"Family"
+			"Database"
 		]
 
-		# Iterate through the list of folders
-		for folder in remove_list:
+		# Iterate through the list of folders to remove
+		for folder_name in remove_list:
 			# Create the text key by converting the folder into lowercase and replacing spaces with underscores
-			text_key = folder.lower().replace(" ", "_")
+			text_key = folder_name.lower().replace(" ", "_")
 
 			# If the underscore character is not inside the text key
 			if "_" not in text_key:
@@ -553,337 +588,290 @@ class Friends(object):
 			# If the text key is inside the language texts dictionary of the "Language" utility class
 			if text_key in self.Language.language_texts:
 				# Get the folder name in the user language
-				folder = self.Language.language_texts[text_key]
+				folder_name = self.Language.language_texts[text_key]
 
-			# Remove the folder from the list
-			self.friends["List"].remove(folder)
+			# If the folder is inside the list of friends
+			if folder_name in self.friends["List"]:
+				# Remove it
+				self.friends["List"].remove(folder_name)
 
 		# ---------- #
 
-		# Write the friends list to the "Friends list.txt" file
+		# Write the list of friends to the "Friends list.txt" file
 		text_to_write = self.Text.From_List(self.friends["List"])
 
-		self.File.Edit(self.folders["Friends"]["Text"]["Friends list"], text_to_write, "w")
+		self.File.Edit(self.folders["Friends"]["Friends list"], text_to_write, "w")
 
-		# Get the number of friends
+		# Get the total number of friends
 		self.friends["Numbers"]["Total"] = len(self.friends["List"])
 
-		# Add all years since 2018 to the "By year" list
-		for year in self.Date.Create_Years_List(function = str):
+		# Add all years from 2018 to the current year to the "By year" numbers dictionary
+		for year in self.Date.Create_Years_List(start = 2018, function = str):
 			self.friends["Numbers"]["By year"][year] = 0
 
-		# Reset the numbers on the "By year" dictionary to zero
+		# Iterate through the years inside the "By year" numbers dictionary
 		for year in self.friends["Numbers"]["By year"]:
+			# Reset the year number to be zero
 			self.friends["Numbers"]["By year"][year] = 0
 
 		# ---------- #
 
 		import collections
 
-		# Reset the Friends dictionary
+		# Reset the friends "Dictionary" to be empty
+		# (The dictionary obtained from the "Friends.json" file may already be populated)
 		self.friends["Dictionary"] = {}
 
-		# Iterate through the friends list
-		for friend in self.friends["List"]:
-			# Create the local "Friend" dictionary
-			dictionary = {
-				"Name": friend,
+		# Iterate through the list of friends
+		for name in self.friends["List"]:
+			# Create the local "friend" dictionary
+			friend = {
+				"Name": name,
 				"Folders": {},
 				"Files": {},
 				"Information": {},
-				"Social networks": {},
-				"Gender": {
-					"Text": "",
-					"Words": {}
-				}
+				"Social networks": {}
 			}
 
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
-				# Define the item key inside the "Files" dictionary
-				dictionary["Files"][item] = {}
+			# Define and create the friend folder
+			folder = self.folders["Friends"]["root"] + name + "/"
+			self.Folder.Create(folder)
 
-				# Define the root folder
-				folder = self.folders["Friends"][item]["root"] + friend + "/"
+			# Create the friend folders dictionary
+			folders = {
+				"root": folder
+			}
 
-				# Create the folders dictionary
-				dict_ = {
-					"root": folder
-				}
+			# Define and create the friend "Social networks" folder
+			folders["Social networks"] = {
+				"root": folders["root"] + self.Language.language_texts["social_networks"] + "/"
+			}
 
-				self.Folder.Create(dict_["root"])
+			self.Folder.Create(folders["Social networks"]["root"])
 
-				# Create the "Social networks" folder
-				dict_["Social networks"] = {
-					"root": dict_["root"] + self.Language.language_texts["social_networks"] + "/"
-				}
+			# Iterate through the list of friend file names
+			for key, dictionary in self.friends["File names"]["Dictionary"].items():
+				# Define the file name as its plural version in the user language
+				file_name = dictionary["Plural"][self.language["Small"]]
 
-				self.Folder.Create(dict_["Social networks"]["root"])
+				# Define the folders dictionary as the root one
+				folders_dictionary = folders
 
-				# Iterate through the friend file names
-				for key, file_name_dictionary in self.friends["File names"]["Dictionary"].items():
-					# Define the file name and folder
-					file_name = file_name_dictionary["Plural"][self.language["Small"]]
+				# If the file name is "Social networks"
+				if key == "Social network":
+					# Change the folders dictionary to be the "Social networks" one
+					folders_dictionary = folders["Social networks"]
 
-					folder_dictionary = dict_
+					# Change the file name to be its English version ("Social networks")
+					key = dictionary["Plural"]["en"]
 
-					# Define the folder for the "Social networks.txt" file
-					if key == "Social network":
-						folder_dictionary = dict_["Social networks"]
+				# Define the file and create it
+				folders_dictionary[key] = folders_dictionary["root"] + file_name + ".txt"
+				self.File.Create(folders_dictionary[key])
 
-						key = file_name_dictionary["Plural"]["en"]
+				# If the file name is "Information"
+				if key == "Information":
+					# Add it normally to the friend "Files" dictionary
+					friend["Files"][key] = folders_dictionary[key]
 
-					# Define the file and create it
-					folder_dictionary[key] = folder_dictionary["root"] + file_name + ".txt"
-					self.File.Create(folder_dictionary[key])
-
-					# Add the file to the "Files" dictionary
-					dictionary["Files"][item][key] = folder_dictionary[key]
-
-					# If the item is "Text"
-					if item == "Text":
-						# Add the file to the "Files" dictionary
-						if key == "Information":
-							dictionary["Files"][key] = folder_dictionary[key]
-
-						# Add the file to the "Files" dictionary
-						if key == "Social networks":
-							dictionary["Files"][key] = {
-								"List": folder_dictionary[key]
-							}
-
-				# If the item is "Image"
-				if item == "Image":
-					# Create the image "Media" folder
-					dict_["Media"] = {
-						"root": dict_["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
+				# If the file name is "Social networks"
+				if key == "Social networks":
+					# Create a dictionary for the "Social networks" files
+					friend["Files"][key] = {
+						# And define the "List" key as the "Social networks.txt" file
+						"List": folders_dictionary[key]
 					}
 
-					self.Folder.Create(dict_["Media"]["root"])
+			# Define and create the friend "Media" folder
+			folders["Media"] = {
+				"root": folders["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
+			}
 
-				# Define the folders dictionary as the local folders dictionary
-				dictionary["Folders"][item] = dict_
+			self.Folder.Create(folders["Media"]["root"])
 
-			# Add the keys of the "Text" folders dictionary to the root folders dictionary
-			dictionary["Folders"].update(dictionary["Folders"]["Text"])
+			# Define the root friend "Folders" dictionary as the local one
+			friend["Folders"] = folders
 
 			# ----- #
 
-			# Update the friend "Information" only with the data on the files inside the text folder
-			# To get the most up-to-date information
+			# Get the friend information dictionary using the friend "Information.txt" file
+			friend_information = self.Information(file = friend["Files"]["Information"])
 
-			# Get the information dictionary
-			information = self.Information(file = dictionary["Files"]["Information"])
+			# Add the information keys and values to the friend "Information" dictionary
+			for key, value in friend_information.items():
+				friend["Information"][key] = value
 
-			# Add the information keys and values to the "Information" dictionary
-			for information_key, value in information.items():
-				dictionary["Information"][information_key] = value
-
-			# Create the "Places" dictionary
-			places = {
+			# Define the local dictionary of locations
+			locations = {
 				"Hometown": {},
 				"Residence": {}
 			}
 
-			# Define the local list of items to use as keys
-			items = [
+			# Define the local list of location fields
+			location_fields = [
 				"City",
 				"State",
 				"Country"
 			]
 
-			# Itearate through the list of place keys
-			for place in places.copy():
-				# Define the key as the place
-				key = place
+			# Itearate through the list of locations
+			for location in locations.copy():
+				# Define the key as the location
+				key = location
 
 				# If the key is "Residence", add " place" to change the key to "Residence place"
 				if key == "Residence":
 					key += " place"
 
-				# Get the place information from the friend "Information" dictionary and split it by the " - " string
-				split = dictionary["Information"][key].split(" - ")
+				# Get the friend location from the friend "Information" dictionary and split it by the " - " string
+				# Split format: "[City] - [State] - [Country]"
+				fields = friend["Information"][key].split(" - ")
 
-				# Itearate through the place items inside the split list
+				# Itearate through the location fields inside the list of location fields
+				# Items: [City, State, Country]
+				# Split format: "City - State - Country"
 				i = 0
-				for item in split:
-					# Get the key to define the place from the list of items
-					key = items[i]
+				for location_field in fields:
+					# Get the location field key
+					# Can be "City", "State", or "Country"
+					field_key = location_fields[i]
 
-					# Define the place key inside the local place dictionary using the split index as a value
-					places[place][key] = split[i]
+					# Define the location field inside the current location dictionary with the field key, using the "i" number to get the correct field
+					# Example: place can be "City", 
+					locations[location][field_key] = fields[i]
 
 					# Add one to the "i" number
 					i += 1
 
-			# Add the "Places" dictionary to the friend "Information" dictionary
-			# Add it after the "Residence place" key
+			# Add the "Locations" dictionary to the friend "Information" dictionary, and add it after the "Residence place" key
 			key_value = {
-				"Places": places
+				"Locations": locations
 			}
 
-			dictionary["Information"] = self.JSON.Add_Key_After_Key(information, key_value, after_key = "Residence place")
+			friend["Information"] = self.JSON.Add_Key_After_Key(friend_information, key_value, after_key = "Residence place")
 
-			# Add the "Year I met" key
-			dictionary["Information"]["Year I met"] = dictionary["Information"]["Date I met"].split("/")[-1]
+			# Add the "Year I met" key to the friend "Information" dictionary
+			friend["Information"]["Year I met"] = friend["Information"]["Date I met"].split("/")[-1]
 
 			# ---------- #
 
-			# Make a local copy of the Friend "Information" dictionary
-			information = deepcopy(dictionary["Information"])
+			# Create a local copy of the friend "Information" dictionary
+			information = deepcopy(friend["Information"])
 
-			# Remove the "Places" key
-			information.pop("Places")
+			# Remove the "Locations" key
+			information.pop("Locations")
 
-			# Translate the keys to the user language
+			# Translate the information keys into the user language
+			# (The friend information values are already in the user language, so they do not need to be translated)
 			information = self.Information(information, to_user_language = True)
 
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
-				# Write to the "Information.txt" file
-				text_to_write = self.Text.From_Dictionary(information, next_line = True)
+			# Update the friend "Information.txt" file with the friend "Information" dictionary translated into the user language and converted to a text
+			text_to_write = self.Text.From_Dictionary(information, next_line = True)
 
-				self.File.Edit(dictionary["Files"][item]["Information"], text_to_write, "w")
+			self.File.Edit(friend["Files"]["Information"], text_to_write, "w")
 
 			# ---------- #
 
-			# List the social networks of the friend
-			social_networks_list = self.Folder.Contents(dictionary["Folders"]["Social networks"]["root"])["folder"]["names"]
+			# Create a shortcut to the social networks folder of the friend
+			folder = friend["Folders"]["Social networks"]["root"]
 
-			# Remove the social networks that are not inside the social networks database
-			for item in social_networks_list.copy():
+			# List the social networks of the friend
+			social_networks = self.Folder.Contents(folder)["folder"]["names"]
+
+			# Iterate through the list of social networks of the friend
+			for item in social_networks.copy():
+				# If the social network is not inside the root list of social networks (the "Social networks" database)
 				if item not in self.social_networks["List"]:
-					social_networks_list.remove(item)
+					# Remove it from the list of social networks of the friend
+					social_networks.remove(item)
 
 			# Update the friend "Social networks.txt" file with the list above
-			text_to_write = self.Text.From_List(social_networks_list)
+			text_to_write = self.Text.From_List(social_networks)
 
-			self.File.Edit(dictionary["Files"]["Social networks"]["List"], text_to_write, "w")
+			self.File.Edit(friend["Files"]["Social networks"]["List"], text_to_write, "w")
 
 			# Create a "Social networks" dictionary for the friend
-			dictionary["Social networks"] = {
+			friend["Social networks"] = {
 				"Numbers": {
 					"Total": 0
 				},
-				"List": social_networks_list,
+				"List": social_networks,
 				"Dictionary": {}
 			}
 
 			# ---------- #
 
-			# Define the list of file names
-			file_names = [
-				"Information",
-				"Social networks"
-			]
+			# Sort the list of social networks of the friend in alphabetical order, ignoring capitalization
+			friend["Social networks"]["List"] = sorted(friend["Social networks"]["List"], key = str.lower)
 
-			# Update the friend files of the image folder if the file inside the text folder is different
-			for file_name in file_names:
-				# Define the empty files dictionary
-				files = {}
+			# Sort the dictionary of social networks of the friend by its keys in ascending order
+			friend["Social networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(friend["Social networks"]["Dictionary"].items())))
 
-				# Iterate through the folder type list
-				for item in ["Text", "Image"]:
-					# Get the file of the folder type with the file name
-					file = dictionary["Files"][item][file_name]
-
-					# Define the file dictionary with the file and file size
-					files[item] = {
-						"File": file,
-						"Size": self.File.Contents(file)["size"]
-					}
-
-				# If the size of the file on the text folder is different than the file of the image folder
-				if files["Text"]["Size"] != files["Image"]["Size"]:
-					# Replace the file on the image folder with the one on the text folder, updating the file
-					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
-
-			# ---------- #
-
-			# Sort the list of social networks
-			dictionary["Social networks"]["List"] = sorted(dictionary["Social networks"]["List"], key = str.lower)
-
-			# Sort the dictionary of social networks based on its keys
-			dictionary["Social networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(dictionary["Social networks"]["Dictionary"].items())))
-
-			# Social network folders and profile file creation
-			for social_network in dictionary["Social networks"]["List"]:
-				# Update the root "social_network" variable with the dictionary of the current social network
+			# Iterate through the list of social networks of the friend
+			for social_network in friend["Social networks"]["List"]:
+				# Update the root "social network" with the dictionary of the current social network
 				self.social_network = self.Select_Social_Network(social_network)
 
-				# Create the empty "dict_" dictionary for the social network folders
-				dict_ = {}
+				# Define and create the social network folder
+				folders = {
+					"root": friend["Folders"]["Social networks"]["root"] + social_network + "/"
+				}
 
-				# Create the empty "Files" dictionary
-				files = {}
+				self.Folder.Create(folders["root"])
 
-				# Create the social network folders
-				for item in ["Text", "Image"]:
-					# Create the item folders dictionary
-					dict_ = {
-						"root": dictionary["Folders"][item]["Social networks"]["root"] + social_network + "/"
-					}
+				# Define and create the social network "Profile.txt" file
+				folders["Profile"] = folders["root"] + self.Language.language_texts["profile, title()"] + ".txt"
+				self.File.Create(folders["Profile"])
 
-					self.Folder.Create(dict_["root"])
+				# Create a shortcut to the social network "Profile.txt" file
+				file = folders["Profile"]
 
-					# Create the "Profile.txt" file
-					dict_["Profile"] = dict_["root"] + self.Language.language_texts["profile, title()"] + ".txt"
+				# Add the social network folders dictionary to the friend "Folders" dictionary
+				friend["Folders"]["Social networks"][social_network] = folders
 
-					self.File.Create(dict_["Profile"])
+				# Create the social network files inside the friend "Files" dictionary
+				friend["Files"]["Social networks"][social_network] = {
+					# And also add the social network "Profile.txt" file to it
+					"Profile": file
+				}
 
-					# Add the profile file to the "Files" dictionary
-					dictionary["Files"]["Social networks"][social_network] = {
-						"Profile": dict_["Profile"]
-					}
+				# Define the parameters to use in the "Information" method of the "Social networks" class
+				parameters = {
+					"file": file,
+					"information_items": self.social_network["Information items"]
+				}
 
-					# Define the file for faster typing
-					file = dict_["Profile"]
+				# Run the "Information" method of the "Social Networks" class to get the social network information dictionary with the keys in English
+				friend["Social networks"]["Dictionary"][social_network] = self.Social_Networks.Information(**parameters)
 
-					# Define the File dictionary and size
-					files[item] = {
-						"File": file,
-						"Size": self.File.Contents(file)["size"]
-					}
-
-					dictionary["Folders"][item]["Social networks"][social_network] = dict_
-
-				# Update the social network "Profile.txt" file of the friend image folder if the file inside the text folder is different
-				if files["Text"]["Size"] != files["Image"]["Size"]:
-					self.File.Copy(files["Text"]["File"], files["Image"]["File"])
-
-				# Get the data of the social network
-				file = dictionary["Files"]["Social networks"][social_network]["Profile"]
-
-				dictionary["Social networks"]["Dictionary"][social_network] = self.Social_Networks.Information(file = file, information_items = self.social_network["Information items"])
-
-				# Create the social network image sub-folders
+				# If the "Image folders" key is inside the social network dictionary
 				if "Image folders" in self.social_network:
 					# Define the root image folder
-					image_folder = dictionary["Folders"]["Image"]["Social networks"][social_network]["root"]
+					image_folder = friend["Folders"]["Social networks"][social_network]["root"]
 
-					# Create the image sub-folders
+					# Create the social network image folders
 					for folder in self.social_network["Image folders"]:
+						# Define and create the image folder
 						folder = image_folder + folder + "/"
-
 						self.Folder.Create(folder)
 
-			# Update the number of social networks
-			dictionary["Social networks"]["Numbers"]["Total"] = len(dictionary["Social networks"]["List"])
+			# Update the total number of social networks of the friend
+			friend["Social networks"]["Numbers"]["Total"] = len(friend["Social networks"]["List"])
 
-			# Define the "Friend" dictionary as the local "Friend" dictionary
-			self.friends["Dictionary"][friend] = dictionary
+			# Define the root friend dictionary as the local friend dictionary
+			self.friends["Dictionary"][name] = friend
 
 		# ---------- #
 
-		# Iterate through the friends list
-		for friend in self.friends["List"]:
+		# Iterate through the list of friends
+		for name in self.friends["List"]:
 			# Get the friend dictionary
-			friend = self.friends["Dictionary"][friend]
+			friend = self.friends["Dictionary"][name]
 
-			# Get the friend Information dictionary
+			# Get the friend "Information" dictionary with its keys in English
 			information = self.Information(friend["Information"])
 
-			# Get the "Date I met" year
+			# Get the "met year" from the "Date I met"
 			met_year = information["Date I met"].split("/")[-1]
 
 			# If the met year is not in the friends numbers "By year" dictionary
@@ -895,9 +883,9 @@ class Friends(object):
 			else:
 				self.friends["Numbers"]["By year"][met_year] += 1
 
-			# If the met year is not in the Friends "Met by year" dictionary
+			# If the met year is not in the friends "Met by year" dictionary
 			if met_year not in self.friends["Met by year"]:
-				# Add it
+				# Add the year list and the friend inside it
 				self.friends["Met by year"][met_year] = [
 					friend["Name"]
 				]
@@ -908,27 +896,28 @@ class Friends(object):
 					self.friends["Met by year"][met_year].append(friend["Name"])
 
 			# Remove the friend from other "Met by year" lists
-			for year, list_ in self.friends["Met by year"].items():
-				# If the year is not the meat year
-				# And the friend is inside the list
+			for year, met_by_year in self.friends["Met by year"].items():
+				# If the year is not the met year
+				# And the friend is inside the "Met by year" list
 				if (
 					year != met_year and
-					friend["Name"] in list_
+					friend["Name"] in met_by_year
 				):
+					# Remove the friend from the "Met by year" list
 					self.friends["Met by year"][year].remove(friend["Name"])
 
-		# Iterate through the year numbers inside the "By year" dictionary
-		for year in self.friends["Numbers"]["By year"].copy():
-			# If the year is before "2018"
-			# And a "Met by year" list of the year does not exist
+		# Iterate through the years and numbers inside the "By year" dictionary
+		for year, number in deepcopy(self.friends["Numbers"]["By year"]).items():
+			# If the year is not the current one
+			# And the friend count of the year is zero
 			if (
-				int(year) < 2018 and
-				year not in self.friends["Met by year"]
+				year != self.current_year and
+				number == 0
 			):
-				# Remove its key
+				# Remove the zero-count year
 				self.friends["Numbers"]["By year"].pop(year)
 
-		# Make a copy of the "Met by year" dictionary
+		# Create a copy of the "Met by year" dictionary
 		met_by_year = deepcopy(self.friends["Met by year"])
 
 		# Iterate through the year lists inside the "Met by year" dictionary
@@ -947,68 +936,47 @@ class Friends(object):
 				# Remove it
 				self.friends["Met by year"].pop(year)
 
-			# Else, sort the list
+			# Else, sort the list alphabetically, ignoring capitalization
 			else:
 				self.friends["Met by year"][year] = sorted(self.friends["Met by year"][year], key = str.lower)
 
-		# Sort the "Met by year" numbers based on its keys
+		# Sort the "Met by year" numbers dictionary by their year keys in ascending order
 		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
 
-		# Sort the "Met by year" lists based on its keys
+		# Sort the friends grouped by their year keys in ascending order
 		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
 
-		# Sort the list of friends
+		# Sort the list of friends by their names, alphabetically and ignoring capitalization
 		self.friends["List"] = sorted(self.friends["List"], key = str.lower)
 
-		# Sort the dictionary of friends based on its keys
+		# Sort the dictionary of friends alphabetically by its friend-name keys
 		self.friends["Dictionary"] = dict(collections.OrderedDict(sorted(self.friends["Dictionary"].items())))
 
 		# ---------- #
 
-		# List the folders inside the Friends image folder
-		image_folders = self.Folder.Contents(self.folders["Friends"]["Image"]["root"])["folder"]["dictionary"]
-
-		# Remove the non-friend folders from the above list
-		to_remove = [
-			"Arquivo",
-			"Rubbish"
-		]
-
-		# Iterate through the "items to remove" list
-		for item in to_remove:
-			# If the item is inside the image folders dictionary
-			if item in image_folders:
-				# Remove it
-				image_folders.pop(item)
-
-		# Iterate through the image folders dictionary
-		for key, folder in image_folders.items():
-			if key not in self.friends["List"]:
-				self.Folder.Delete(folder)
-
-		# ---------- #
-
-		# Create a local "Friends" dictionary
+		# Create a local copy of the "Friends" dictionary
 		local_dictionary = deepcopy(self.friends)
 
 		# Remove the "File names" key
 		local_dictionary.pop("File names")
 
-		# Define the keys to remove
+		# Define a list of keys to remove
 		to_remove = [
 			"Folders",
 			"Files",
 			"Gender"
 		]
 
-		# Iterate through the friends list
-		for friend in self.friends["List"]:
-			# Remove the unused keys
+		# Iterate through the friend names and dictionaries
+		for name, friend in self.friends["Dictionary"].items():
+			# Iterate through the list of keys to remove
 			for key in to_remove:
-				local_dictionary["Dictionary"][friend].pop(key)
+				# If the key is inside the friend dictionary
+				if key in friend:
+					local_dictionary["Dictionary"][name].pop(key)
 
-		# Update the "Friends.json" file with the updated and local "Friends" dictionary
-		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
+		# Update the "Friends.json" file with the updated and local copy of the "Friends" dictionary
+		self.JSON.Edit(self.folders["Friends"]["Friends"], local_dictionary)
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
 		# If the file parameter is not None, get the information dictionary from it

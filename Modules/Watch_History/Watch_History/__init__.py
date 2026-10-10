@@ -2073,6 +2073,9 @@ class Watch_History(object):
 					media_title in media_type_dictionary["Dictionary"] and
 					added_media_title == False
 				):
+					# Define a local "converted number into dictionary" switch
+					converted_number_into_dictionary = False
+
 					# If the media title key is a number
 					if isinstance(media_type_dictionary["Dictionary"][media_title], int):
 						# Create the media statistics dictionary
@@ -2080,6 +2083,9 @@ class Watch_History(object):
 							"Total": media_type_dictionary["Dictionary"][media_title],
 							"Dictionary": {}
 						}
+
+						# Switch the local "converted number into dictionary" switch to True
+						converted_number_into_dictionary = True
 
 					# Add one to the total number of times the root media was watched
 					media_type_dictionary["Dictionary"][media_title]["Total"] += 1
@@ -2092,15 +2098,6 @@ class Watch_History(object):
 						# Define a local number a zero
 						number = 0
 
-						# If the item title is the media title
-						# And the total number of watched times is not zero
-						if (
-							local_item_title == media_title and
-							media_type_dictionary["Dictionary"][media_title]["Total"] != 0
-						):
-							# Define the local number as the total number of watched times
-							number = media_type_dictionary["Dictionary"][media_title]["Total"]
-
 						# If the length of the title is greater than one
 						# And the first two characters of the title are a space and a colon
 						if (
@@ -2110,9 +2107,6 @@ class Watch_History(object):
 							# Remove them
 							local_item_title = local_item_title[2:]
 
-						# Add the item title to the dictionary with the correct number (zero or the number of times the user watched the root media)
-						media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] = number
-
 						# Define the default watched title as the media title
 						watched_title = media["Titles"]["Original"]
 
@@ -2120,6 +2114,25 @@ class Watch_History(object):
 						if "Item" in media["Titles"]:
 							# Define the watched title as the media item title
 							watched_title = media["Titles"]["Item"]["Original (no media title)"]
+
+						# If the item title is the media title
+						# And the total number of watched times is not zero
+						# And the local "converted number into dictionary" switch is True
+						if (
+							local_item_title == media_title and
+							media_type_dictionary["Dictionary"][media_title]["Total"] != 0 and
+							converted_number_into_dictionary == True
+						):
+							# Define the local number as the total number of watched times
+							number = media_type_dictionary["Dictionary"][media_title]["Total"]
+
+							# If the current media item is not the media item that was watched
+							if local_item_title != watched_title:
+								# Then remove one from the local number
+								number -= 1
+
+						# Add the item title to the dictionary with the correct number (zero or the number of times the user watched the root media)
+						media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] = number
 
 						# If the item title is not the media title
 						# And the current media item is the media item that was watched
@@ -2132,6 +2145,11 @@ class Watch_History(object):
 
 							# Add one to the number of times the media item was watched
 							media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] += 1
+
+						# Else, if the number is zero
+						elif media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] == 0:
+							# Remove the local item title key
+							media_type_dictionary["Dictionary"][media_title]["Dictionary"].pop(local_item_title)
 
 				# If the media title is not inside the media type statistics dictionary
 				# Or it is

@@ -468,7 +468,7 @@ class Module_Selector():
 
 					# If the text key is not inside the module "Texts" dictionary
 					if text_key not in module["Texts"]:
-						# Add the ", type: argument" to the text key
+						# Add the ", type: argument" text to the text key
 						text_key += ", type: argument"
 
 					# Get the text for the custom argument

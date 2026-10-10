@@ -654,6 +654,9 @@ class Modules():
 			# Add the attribute to the selected class object
 			setattr(class_object, name, attribute)
 
+		# Change the root "Return class" state based on the parameter
+		self.states["Return class"] = return_class
+
 		# If the "Return class" state is False
 		if self.states["Return class"] == False:
 			# Run the object of the selected class

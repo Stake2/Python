@@ -516,7 +516,6 @@ class Folder():
 		folder_names = [
 			"Diary",
 			"Diary Slim",
-			"Friends",
 			"Social networks",
 			"Data Networks",
 			"Years"
@@ -738,11 +737,10 @@ class Folder():
 
 		# ---------- #
 
-		# Define the list of folders inside the the Mega "Image" folder
+		# Define the list of folders inside the the Mega "Images" folder
 		folders = [
 			"Christmas",
 			"Diary",
-			"Friends",
 			"Social networks",
 			"Years"
 		]

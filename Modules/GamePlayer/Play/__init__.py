@@ -6,7 +6,10 @@ class Play(GamePlayer):
 	def __init__(self, dictionary = {}, open_game = True):
 		# If this class has an arguments dictionary
 		if self.has_arguments == True:
-			# Add it to the parent class
+			# Add the "has arguments" switch to the parent class
+			setattr(GamePlayer, "has_arguments", self.has_arguments)
+
+			# Add the arguments dictionary to the parent class
 			# (It was received from the "Module_Selector" module)
 			setattr(GamePlayer, "arguments", self.arguments)
 

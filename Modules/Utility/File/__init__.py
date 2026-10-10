@@ -425,7 +425,7 @@ class File():
 
 		# Temporary:
 		# Add the title case to the "Lines", "String", and "Length" keys
-		for key in ["Lines", "String", "Length"]:
+		for key in ["Lines", "String", "Size", "Length"]:
 			contents[key] = contents[key.lower()]
 
 		# If the file does not exist

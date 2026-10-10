@@ -71,7 +71,6 @@ class Meal_Times():
 
 		# Define a list of utility classes to not import
 		do_not_import = [
-			"File",
 			"Text"
 		]
 
@@ -222,12 +221,16 @@ class Meal_Times():
 			print()
 			print(self.Language.language_texts["arguments, title()"] + ":")
 			print()
+
+			# Show the arguments dictionary
 			self.JSON.Show(self.arguments)
+
+			# Show a ten dash space separator
 			print()
-			print(self.separators["5"])
+			print(self.separators["10"])
 
 		# Iterate through the arguments dictionary which was received from the "Module_Selector" module
-		for key, argument in self.arguments.items():
+		for key, argument in self.arguments.items(	):
 			# If the argument is "Show" (the meal times)
 			# And its value is True
 			if (
@@ -540,40 +543,105 @@ class Meal_Times():
 		# Show a space
 		print()
 
-		# Play a sound to alert the user
-		sound_file = self.module["Folders"]["Files"]["root"] + "Ninja Dance Emote (Fortnite).mp3"
+		# Open the media player to play a sound file
+		self.Manage_Media_Player(action = "open")
 
-		# Define the media player
-		media_player = self.folders["Program Files"]["VideoLAN"]["VLC"]["VLC"]
+	def Manage_Media_Player(self, action = "open"):
+		# If the media player dictionary is not present inside this class
+		if hasattr(self, "media_player") == False:
+			# Then define the media player dictionary inside this class
+			self.media_player = {
+				"Name": "vlc",
+				"Executable": self.folders["Program Files"]["VideoLAN"]["VLC"]["VLC"]
+			}
 
-		# Define the list of commands
-		commands = [
-			# Hide the media player window
-			"--intf",
-			"dummy",
+		# If the action is "Open"
+		if action == "open":
+			# If the "Sounds" folder is not present inside the module "Files" folder
+			if "Sounds" not in self.module["Folders"]["Files"]:
+				# Then define the folder
+				self.module["Folders"]["Files"]["Sounds"] = {
+					"root": self.module["Folders"]["Files"]["root"] + "Sounds/"
+				}
 
-			# Play the sound file and exit the media player
-			"--play-and-exit",
+				# Create the folder
+				self.Folder.Create(self.module["Folders"]["Files"]["Sounds"]["root"])
 
-			# Define the volume to be 256
-			"--volume",
-			"256",
+			# Create an empty list of sound files
+			sound_files = []
 
-			# The sound file to play
-			"file:///" + sound_file
-		]
+			# Get the list of files inside the "Sounds" folder
+			files = self.Folder.Contents(self.module["Folders"]["Files"]["Sounds"]["root"])["File"]["List"]
 
-		self.System.Open(media_player, open = True, commands = commands, verbose = False)
+			# Define a list of allowed extensions
+			allowed_extensions = [
+				"mp3",
+				"wav",
+				"flac",
+				"ogg"
+			]
 
-	def Remind_User_To_Drink_Water(self):
-		# Show the header of the module and play the alarm sound
-		self.Show_Header()
+			# Iterate through the list of files
+			for file in files:
+				# Get the file extension without the dot
+				extension = self.File.Extension(file, remove_dot = True)
 
+				# If the file extension is inside the list of allowed extensions
+				if extension in allowed_extensions:
+					# Then add the file to the list of sound files
+					sound_files.append(file)
+
+			# Import the random module to use it
+			import random
+
+			# Get a random index inside the length of the list of sound files
+			index = random.randrange(len(sound_files))
+
+			# Choose the random sound file using the random index
+			sound_file = sound_files[index]
+
+			# Define the list of commands
+			commands = [
+				# Hide the media player window
+				"--intf=dummy",
+
+				# Repeat the sound file
+				"--repeat",
+
+				# Define the volume to be 256
+				"--volume=1024",
+
+				# The sound file to play
+				"file:///" + sound_file
+			]
+
+			# Open the media player executable with the defined sound file and the commands
+			# And store the process ID of the opened media player inside the media player dictionary
+			self.media_player["Process ID"] = self.System.Open(self.media_player["Executable"], commands = commands, verbose = False)["Process ID"]
+
+		# If the action is "close"
+		if action == "close":
+			# Create the dictionary of programs to close
+			programs = {
+				self.media_player["Name"]: self.media_player
+			}
+
+			# Then close the media player
+			self.System.Close(programs, verbose = False)
+
+	def Block_Input(self):
 		# Create a shortcut to the "Block input" AutoHotKey script
 		block_input = self.folders["Programming"]["AutoHotKey"]["Block input"]
 
 		# Block the user input using an "AutoHotKey" script, allowing the user to press "Enter" to unblock the user input
 		self.System.Open(block_input, verbose = False)
+
+	def Remind_User_To_Drink_Water(self):
+		# Block the user input using an "AutoHotKey" script, allowing the user to press "Enter" to unblock the user input
+		self.Block_Input()
+
+		# Show the header of the module and play the sound to alert the user
+		self.Show_Header()
 
 		# Show the user their water drinking time
 		print(self.language_texts["your_water_drinking_time_is"] + ":")
@@ -599,6 +667,9 @@ class Meal_Times():
 		# (When the user presses "Enter", the user input will be unblocked)
 		self.Input.Type(input_text)
 
+		# Close the media player to stop playing the sound file
+		self.Manage_Media_Player(action = "close")
+
 		# End the execution of the module
 		quit()
 
@@ -623,17 +694,14 @@ class Meal_Times():
 
 		# ----- #
 
-		# Define the input text as "Press Enter when you choose and open a video to watch on YouTube while you eat" text
-		input_text = self.language_texts["press_enter_when_you_choose_and_open_a_video_to_watch_on_youtube_while_you_eat"]
+		# Define the input text as "Press Enter when you choose and open a video on YouTube to watch while you eat" text
+		input_text = self.language_texts["press_enter_when_you_choose_and_open_a_video_on_youtube_to_watch_while_you_eat"]
 
 		# Ask for user input before continuing
 		self.Input.Type(input_text)
 
-		# Create a shortcut to the "Block input" AutoHotKey script
-		block_input = self.folders["Programming"]["AutoHotKey"]["Block input"]
-
 		# Block the user input using an "AutoHotKey" script, allowing the user to press "Enter" to unblock the user input
-		self.System.Open(block_input, verbose = False)
+		self.Block_Input()
 
 		# Define the input text as "Press Enter when you are finished making something to eat while watching" text
 		input_text = self.language_texts["press_enter_when_you_are_finished_making_something_to_eat_while_watching"]
@@ -641,6 +709,9 @@ class Meal_Times():
 		# Ask for user input before continuing
 		# (When the user presses "Enter", the user input will be unblocked)
 		self.Input.Type(input_text)
+
+		# Close the media player to stop playing the sound file
+		self.Manage_Media_Player(action = "close")
 
 		# End the execution of the module
 		quit()

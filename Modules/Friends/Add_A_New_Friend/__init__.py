@@ -19,12 +19,17 @@ class Add_A_New_Friend(Friends):
 			}
 		}
 
-		# Show a separator
+		# Show a five dash space separator
 		print()
 		print(self.separators["5"])
 
-		# Ask the user if they want to add social networks to an existing friend folder
-		self.dictionary["States"]["Add social network to existing friend folder"] = self.Input.Yes_Or_No(self.language_texts["add_social_network_to_friend_folder"])
+		# Define the "Ask to add" switch
+		self.ask_to_add = False
+
+		# If the "Ask to add" switch is True
+		if self.ask_to_add == True:
+			# Ask the user if they want to add social networks to an existing friend folder
+			self.dictionary["States"]["Add social network to existing friend folder"] = self.Input.Yes_Or_No(self.language_texts["add_social_network_to_friend_folder"])
 
 		# If the user wants to add social networks to an existing friend folder
 		if self.dictionary["States"]["Add social network to existing friend folder"] == True:
@@ -58,9 +63,13 @@ class Add_A_New_Friend(Friends):
 		super().__init__()
 
 	def Type_Friend_Information(self):
-		# Show a separator and the "Please type the information of the Friend" text
-		print()
-		print(self.separators["5"])
+		# If the "Ask to add" switch is True
+		if self.ask_to_add == True:
+			# Show a five dash space separator
+			print()
+			print(self.separators["5"])
+
+		# Show a separator the "Please type the information of the friend" text
 		print()
 		print(self.language_texts["please_type_the_information_of_the_friend"] + ":")
 
@@ -76,10 +85,6 @@ class Add_A_New_Friend(Friends):
 				},
 				"List": [],
 				"Dictionary": {}
-			},
-			"Gender": {
-				"Text": "",
-				"Words": {}
 			}
 		}
 
@@ -138,45 +143,56 @@ class Add_A_New_Friend(Friends):
 				# Update the "Name" key of the Friend dictionary
 				self.friend["Name"] = information
 
-		# Create the "Places" dictionary
-		places = {
+		# Define the local dictionary of locations
+		locations = {
 			"Hometown": {},
 			"Residence": {}
 		}
 
-		items = [
+		# Define the local list of location fields
+		location_fields = [
 			"City",
 			"State",
 			"Country"
 		]
 
-		# Itearate through the places
-		for place in places.copy():
-			key = place
+		# Itearate through the list of locations
+		for location in locations.copy():
+			# Define the key as the location
+			key = location
 
+			# If the key is "Residence", add " place" to change the key to "Residence place"
 			if key == "Residence":
 				key += " place"
 
-			split = self.friend["Information"][key].split(" - ")
+			# Get the friend location from the friend "Information" dictionary and split it by the " - " string
+			# Split format: "[City] - [State] - [Country]"
+			fields = self.friend["Information"][key].split(" - ")
 
-			# Itearate through the place items
+			# Itearate through the location fields inside the list of location fields
+			# Items: [City, State, Country]
+			# Split format: "City - State - Country"
 			i = 0
-			for item in split:
-				key = items[i]
+			for location_field in fields:
+				# Get the location field key
+				# Can be "City", "State", or "Country"
+				field_key = location_fields[i]
 
-				places[place][key] = split[i]
+				# Define the location field inside the current location dictionary with the field key, using the "i" number to get the correct field
+				# Example: place can be "City", 
+				locations[location][field_key] = fields[i]
 
+				# Add one to the "i" number
 				i += 1
 
-		# Add the "Places" dictionary to the friend "Information" dictionary
-		# After the "Residence place" key
+		# Add the "Locations" dictionary to the friend "Information" dictionary, and add it after the "Residence place" key
 		key_value = {
-			"Places": places
+			"Locations": locations
 		}
 
 		self.friend["Information"] = self.JSON.Add_Key_After_Key(self.friend["Information"], key_value, after_key = "Residence place")
 
-		# Add the "Year I met" key
+		# Add the "Year I met" key to the friend "Information" dictionary
 		self.friend["Information"]["Year I met"] = self.friend["Information"]["Date I met"].split("/")[-1]
 
 		# Show a separator
@@ -237,19 +253,20 @@ class Add_A_New_Friend(Friends):
 			# Add one to the loop number
 			loop_number += 1
 
-		# Sort the list of social networks of the friend alphabetically
+		# Sort the list of social networks of the friend by their names, alphabetically and ignoring capitalization
 		self.friend["Social networks"]["List"] = sorted(self.friend["Social networks"]["List"], key = str.lower)
 
-		# Sort the dictionary of social networks based on the social network keys
+		# Sort the dictionary of social networks by their keys in ascending order
 		self.friend["Social networks"]["Dictionary"] = dict(collections.OrderedDict(sorted(self.friend["Social networks"]["Dictionary"].items())))
 
 	def Add_Social_Network(self):
 		# Define the select text
 		select_text = self.language_texts["select_a_social_network_to_add_it_to_the_friend_folder"]
 
+		# Define the "first separator" switch as True
 		first_separator = True
 
-		# Define the local social network as None
+		# Define the local social network initially as None
 		social_network = None
 
 		# If the list of social networks of the friend is empty
@@ -262,6 +279,7 @@ class Add_A_New_Friend(Friends):
 				# Define the local social network as the origin social network
 				social_network = variable
 
+			# Change the "first separator" switch to False
 			first_separator = False
 
 		# Select the social network and get its dictionary
@@ -313,259 +331,201 @@ class Add_A_New_Friend(Friends):
 		if self.friend["Name"] not in self.friends["List"]:
 			self.friends["List"].append(self.friend["Name"])
 
-		# Define and create the friend folders and files
-		for item in ["Text", "Image"]:
-			# Define the item key inside the "Files" dictionary
-			self.friend["Files"][item] = {}
+		# Define and create the friend folder
+		folder = self.folders["Friends"]["root"] + self.friend["Name"] + "/"
+		self.Folder.Create(folder)
 
-			# Define the root folder
-			folder = self.folders["Friends"][item]["root"] + self.friend["Name"] + "/"
+		# Create the friend folders dictionary
+		folders = {
+			"root": folder
+		}
 
-			# Create the folders dictionary
-			dict_ = {
-				"root": folder
-			}
+		# Define and create the friend "Social networks" folder
+		folders["Social networks"] = {
+			"root": folders["root"] + self.Language.language_texts["social_networks"] + "/"
+		}
 
-			self.Folder.Create(dict_["root"])
+		self.Folder.Create(folders["Social networks"]["root"])
 
-			# Create the "Social networks" folder
-			dict_["Social networks"] = {
-				"root": dict_["root"] + self.Language.language_texts["social_networks"] + "/"
-			}
+		# Iterate through the list of friend file names
+		for key, dictionary in self.friends["File names"]["Dictionary"].items():
+			# Define the file name as its plural version in the user language
+			file_name = dictionary["Plural"][self.language["Small"]]
 
-			self.Folder.Create(dict_["Social networks"]["root"])
+			# Define the folders dictionary as the root one
+			folders_dictionary = folders
 
-			# Iterate through the friend file names
-			for key in self.friends["File names"]["Dictionary"]:
-				file_name_dictionary = self.friends["File names"]["Dictionary"][key]
+			# If the file name is "Social networks"
+			if key == "Social network":
+				# Change the folders dictionary to be the "Social networks" one
+				folders_dictionary = folders["Social networks"]
 
-				# Define the file name and folder
-				file_name = file_name_dictionary["Plural"][self.language["Small"]]
+				# Change the file name to be its English version ("Social networks")
+				key = dictionary["Plural"]["en"]
 
-				folder_dictionary = dict_
+			# Define the file and create it
+			folders_dictionary[key] = folders_dictionary["root"] + file_name + ".txt"
+			self.File.Create(folders_dictionary[key])
 
-				# Define the folder for the "Social networks.txt" file
-				if key == "Social network":
-					folder_dictionary = dict_["Social networks"]
+			# If the file name is "Information"
+			if key == "Information":
+				# Add it normally to the friend "Files" dictionary
+				self.friend["Files"][key] = folders_dictionary[key]
 
-					key = file_name_dictionary["Plural"]["en"]
-
-				# Define the file and create it
-				folder_dictionary[key] = folder_dictionary["root"] + file_name + ".txt"
-				self.File.Create(folder_dictionary[key])
-
-				self.friend["Files"][item][key] = folder_dictionary[key]
-
-				# If the item is "Text"
-				if item == "Text":
-					# Add the file to the "Files" dictionary
-					if key == "Information":
-						self.friend["Files"][key] = folder_dictionary[key]
-
-					if key == "Social networks":
-						self.friend["Files"][key] = {
-							"List": folder_dictionary[key]
-						}
-
-			# If the current item is "Image"
-			if item == "Image":
-				# Create the image "Media" folder
-				dict_["Media"] = {
-					"root": dict_["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
+			# If the file name is "Social networks"
+			if key == "Social networks":
+				# Create a dictionary for the "Social networks" files
+				self.friend["Files"][key] = {
+					# And define the "List" key as the "Social networks.txt" file
+					"List": folders_dictionary[key]
 				}
 
-				self.Folder.Create(dict_["Media"]["root"])
+		# Define and create the friend "Media" folder
+		folders["Media"] = {
+			"root": folders["root"] + self.Language.language_texts["media, title(), type: plural"] + "/"
+		}
 
-			# Define the folders dictionary as the local folders dictionary
-			self.friend["Folders"][item] = dict_
+		self.Folder.Create(folders["Media"]["root"])
 
-		# Add the keys of the "Text" folders dictionary to the root folders dictionary
-		self.friend["Folders"].update(self.friend["Folders"]["Text"])
+		# Define the root friend "Folders" dictionary as the local one
+		self.friend["Folders"] = folders
 
 		# ---------- #
 
-		# Define the list of file names
-		file_names = [
-			"Information",
-			"Social networks"
-		]
-
-		# Update the friend files of the image folder if the file inside the text folder is different
-		for file_name in file_names:
-			# Define the empty files dictionary
-			files = {}
-
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
-				# Get the file of the folder type with the file name
-				file = self.friend["Files"][item][file_name]
-
-				# Define the file dictionary with the file and file size
-				files[item] = {
-					"File": file,
-					"Size": self.File.Contents(file)["size"]
-				}
-
-			# If the size of the file on the text folder is different than the file of the image folder
-			if files["Text"]["Size"] != files["Image"]["Size"]:
-				# Replace the file on the image folder with the one on the text folder, updating the file
-				self.File.Copy(files["Text"]["File"], files["Image"]["File"])
-
-		# ---------- #
-
-		# Create the folders and profile file of the social networks
+		# Iterate through the list of social networks of the friend
 		for social_network in self.friend["Social networks"]["List"]:
-			# Update the root "social_network" variable with the dictionary of the current social network
+			# Update the root "social network" with the dictionary of the current social network
 			self.social_network = self.Select_Social_Network(social_network)
 
-			# Create the empty "dict_" dictionary for the social network folders
-			dict_ = {}
+			# Define and create the social network folder
+			folders = {
+				"root": self.friend["Folders"]["Social networks"]["root"] + social_network + "/"
+			}
 
-			# Create the empty "Files" dictionary
-			files = {}
+			self.Folder.Create(folders["root"])
 
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
-				# Create the item folders dictionary
-				dict_ = {
-					"root": self.friend["Folders"][item]["Social networks"]["root"] + social_network + "/"
-				}
+			# Define and create the social network "Profile.txt" file
+			folders["Profile"] = folders["root"] + self.Language.language_texts["profile, title()"] + ".txt"
+			self.File.Create(folders["Profile"])
 
-				self.Folder.Create(dict_["root"])
+			# Create a shortcut to the social network "Profile.txt" file
+			file = folders["Profile"]
 
-				# Create the "Profile.txt" file
-				dict_["Profile"] = dict_["root"] + self.Language.language_texts["profile, title()"] + ".txt"
+			# Add the social network folders dictionary to the friend "Folders" dictionary
+			self.friend["Folders"]["Social networks"][social_network] = folders
 
-				self.File.Create(dict_["Profile"])
+			# Create the social network files inside the friend "Files" dictionary
+			self.friend["Files"]["Social networks"][social_network] = {
+				# And also add the social network "Profile.txt" file to it
+				"Profile": file
+			}
 
-				# Add the profile file to the "Files" dictionary
-				self.friend["Files"]["Social networks"][social_network] = {
-					"Profile": dict_["Profile"]
-				}
-
-				# Define the file for faster typing
-				file = dict_["Profile"]
-
-				# Define the File dictionary and size
-				files[item] = {
-					"File": file,
-					"Size": self.File.Contents(file)["size"]
-				}
-
-				self.friend["Folders"][item]["Social networks"][social_network] = dict_
-
-			# Update the "Profile" social network file of the Friend image folder if the file inside the text folder is different
-			if files["Text"]["Size"] != files["Image"]["Size"]:
-				self.File.Copy(files["Text"]["File"], files["Image"]["File"])
-
-			# Create the social network image sub-folders
+			# If the "Image folders" key is inside the social network dictionary
 			if "Image folders" in self.social_network:
 				# Define the root image folder
-				image_folder = self.friend["Folders"]["Image"]["Social networks"][social_network]["root"]
+				image_folder = self.friend["Folders"]["Social networks"][social_network]["root"]
 
-				# Create the image sub-folders
+				# Create the social network image folders
 				for folder in self.social_network["Image folders"]:
+					# Define and create the image folder
 					folder = image_folder + folder + "/"
-
 					self.Folder.Create(folder)
 
 		# ---------- #
 
-		# Update the number of social networks
+		# Update the total number of social networks of the friend
 		self.friend["Social networks"]["Numbers"]["Total"] = len(self.friend["Social networks"]["List"])
 
-		# Define the friend dictionary as the local friend dictionary
+		# Define the root friend dictionary as the local friend dictionary
 		self.friends["Dictionary"][self.friend["Name"]] = self.friend
 
-		# Sort the met by year numbers keys based on its keys
+		# Sort the "Met by year" numbers dictionary by their year keys in ascending order
 		self.friends["Numbers"]["By year"] = dict(collections.OrderedDict(sorted(self.friends["Numbers"]["By year"].items())))
 
-		# Sort the "Met by year" lists based on its keys
+		# Sort the friends grouped by their year keys in ascending order
 		self.friends["Met by year"] = dict(collections.OrderedDict(sorted(self.friends["Met by year"].items())))
 
-		# Sort the list of friends
+		# Sort the list of friends by on their names, alphabetically and ignoring capitalization
 		self.friends["List"] = sorted(self.friends["List"], key = str.lower)
 
-		# Sort the dictionary of friends based on its keys
+		# Sort the dictionary of friends alphabetically by its friend-name keys
 		self.friends["Dictionary"] = dict(collections.OrderedDict(sorted(self.friends["Dictionary"].items())))
 
 	def Write_To_Files(self):
-		# Make a local copy of the Friend "Information" dictionary
+		# Create a local copy of the friend "Information" dictionary
 		information = deepcopy(self.friend["Information"])
 
-		# Remove the "Places" key
-		information.pop("Places")
+		# Remove the "Locations" key
+		information.pop("Locations")
 
-		# Translate the keys to the user language
-		# Using the "Information" method of the "Friends" class
+		# Translate the information keys into the user language
+		# (The friend information values are already in the user language, so they do not need to be translated)
 		information = self.Information(information, to_user_language = True)
 
-		# Iterate through the folder type list
-		for item in ["Text", "Image"]:
-			# Transform the dictionary into a text string
-			text_to_write = self.Text.From_Dictionary(information, next_line = True)
+		# Update the friend "Information.txt" file with the friend "Information" dictionary translated into the user language and converted to a text
+		text_to_write = self.Text.From_Dictionary(information, next_line = True)
 
-			# Write to the "Information.txt" file
-			self.File.Edit(self.friend["Files"][item]["Information"], text_to_write, "w")
+		self.File.Edit(self.friend["Files"]["Information"], text_to_write, "w")
 
-		# Write to the "Profile.txt" files of the social networks
+		# Iterate through the list of social networks of the friend
 		for social_network in self.friend["Social networks"]["List"]:
 			# Get the "Information" dictionary of the social network
 			information = self.friend["Social networks"]["Dictionary"][social_network]
 
-			# Translate the keys to the user language
-			# Using the "Information" method of the "Social_Networks" class
+			# Translate the information keys to the user language (using the "Information" method of the "Social networks" class)
 			information = self.Social_Networks.Information(information, to_user_language = True)
 
 			# Transform the dictionary into a text string
 			text_to_write = self.Text.From_Dictionary(information, next_line = True)
 
-			# Iterate through the folder type list
-			for item in ["Text", "Image"]:
-				# Get the "Information.txt" file
-				file = self.friend["Folders"][item]["Social networks"][social_network]["Profile"]
+			# Get the social network "Profile.txt" file
+			file = self.friend["Folders"]["Social networks"][social_network]["Profile"]
 
-				# Write to it
-				self.File.Edit(file, text_to_write, "w")
+			# Write the friend profile information into it
+			self.File.Edit(file, text_to_write, "w")
 
 		# ---------- #
 
-		# List the social networks
-		social_networks_list = self.friend["Social networks"]["List"]
+		# List the social networks of the friend
+		social_networks = self.friend["Social networks"]["List"]
 
-		# Remove the social networks that are not inside the social networks database
-		for item in social_networks_list.copy():
+		# Iterate through the list of social networks of the friend
+		for item in social_networks.copy():
+			# If the social network is not inside the root list of social networks (the "Social networks" database)
 			if item not in self.social_networks["List"]:
-				social_networks_list.remove(item)
+				# Remove it from the list of social networks of the friend
+				social_networks.remove(item)
 
-		# Update the "Social networks.txt" file with the list above
-		text_to_write = self.Text.From_List(social_networks_list)
+		# Update the "Social networks.txt" file of the friend with the list above
+		text_to_write = self.Text.From_List(social_networks)
 
 		self.File.Edit(self.friend["Files"]["Social networks"]["List"], text_to_write, "w")
 
 		# ---------- #
 
-		# Create a local "Friends" dictionary
+		# Create a local copy of the "Friends" dictionary
 		local_dictionary = deepcopy(self.friends)
 
 		# Remove the "File names" key
 		local_dictionary.pop("File names")
 
-		# Define the keys to remove
+		# Define a list of keys to remove
 		to_remove = [
 			"Folders",
 			"Files",
 			"Gender"
 		]
 
-		# Iterate through the friends list
-		for friend in self.friends["List"]:
-			# Remove the unused keys
+		# Iterate through the friend names and dictionaries
+		for name, friend in self.friends["Dictionary"].items():
+			# Iterate through the list of keys to remove
 			for key in to_remove:
-				local_dictionary["Dictionary"][friend].pop(key)
+				# If the key is inside the friend dictionary
+				if key in friend:
+					local_dictionary["Dictionary"][name].pop(key)
 
-		# Update the "Friends.json" file with the updated and local "Friends" dictionary
-		self.JSON.Edit(self.folders["Friends"]["Text"]["Friends"], local_dictionary)
+		# Update the "Friends.json" file with the updated and local copy of the "Friends" dictionary
+		self.JSON.Edit(self.folders["Friends"]["Friends"], local_dictionary)
 
 	def Show_Information(self):
 		# Show a five dash space separator

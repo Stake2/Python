@@ -1,10 +1,9 @@
 # System.py
 
 # Import some useful modules
-import os
 import win32com.client
 import subprocess
-import time
+import os
 
 # Define the main "System" class
 class System():
@@ -110,7 +109,7 @@ class System():
 		# Return the verbose text
 		return verbose_text
 
-	def Open(self, item, parameter = None, open = False, commands = [], verbose = True, first_space = True):
+	def Open(self, item, open = False, commands = [], verbose = True, first_space = True):
 		# Import the validators module
 		import validators
 
@@ -191,6 +190,9 @@ class System():
 		# Show the verbose text about opening the item
 		verbose_text = self.Verbose(verbose_text, verbose_item, verbose = verbose, first_space = first_space)
 
+		# Define the local process ID
+		process_id = None
+
 		# If the "Testing" switch is False
 		# Or the "open" parameter is True
 		if (
@@ -199,17 +201,30 @@ class System():
 		):
 			# If the "commands" parameter is an empty list
 			if commands == []:
-				# Start the item using the "os" class and its "startfile" method
-				os.startfile(item)
+				# Update the item to be a list with the item as the only value
+				item = [item]
 
 			# If the "commands" parameter is not an empty list
 			if commands != []:
-				# Open the item using the "subprocess" class and its "Popen" method
-				# And pass the item and the list of commands to the method
-				subprocess.Popen([item] + commands)
+				# Update the item to be a list with the item as the only value and the list of commands
+				item = [item] + commands
 
-		# Return the verbose text
-		return verbose_text
+			# Try to open the process using the "subprocess" class and its "Popen" method
+			try:
+				process = subprocess.Popen(item)
+
+				# Define the process ID as the ID of the process opened above
+				process_id = process.pid
+
+			# If it fails, try to open using os.startfile
+			except OSError:
+				process = os.startfile(item[0])
+
+		# Return a dictionary with the verbose text and the process ID
+		return {
+			"Verbose text": verbose_text,
+			"Process ID": process_id
+		}
 
 	def Open_Link(self, link, browser = "", verbose = True):
 		# If the "browser" parameter is empty
@@ -242,48 +257,66 @@ class System():
 	def Close(self, programs_to_close, close = None, verbose = True, first_space = True):
 		import psutil
 
-		# Define the local list of attributes to get
-		attributes = [
-			"name"
-		]
+		# Define the local programs dictionary
+		programs = {
+			"Numbers": {
+				"Total": 0
+			},
+			"List": [],
+			"Dictionary": {},
+			"Closed": []
+		}
 
-		# If the list of programs to close is a string
+		# If the "programs to close" parameter is a string
 		if type(programs_to_close) == str:
 			# Define it as a list containing only the string
 			programs_to_close = [
 				programs_to_close
 			]
 
-		# Define a local list of program names
-		program_names = []
+		# If the "programs to close" parameter is a dictionary
+		if type(programs_to_close) == dict:
+			# Define the programs "Dictionary" as the "programs to close" parameter
+			programs["Dictionary"] = programs_to_close
 
-		# Iterate through the list of programs to close and their numbers
-		for program_number, program in enumerate(programs_to_close):
-			# Add ".exe" to the end of the program
-			program += ".exe"
+			# Define the programs list as the keys of the dictionary
+			programs["List"] = list(programs["Dictionary"].keys())
 
-			# Update the program in the list
-			programs_to_close[program_number] = program
+		# If the "programs to close" parameter is a list
+		if type(programs_to_close) == list:
+			# Define the list of programs as the "programs to close" parameter
+			programs["List"] = programs_to_close
 
-			# Add the program to the list of program names
-			program_names.append(program)
+			# Iterate through the list of programs
+			for program_name in programs["List"]:
+				# Create the program dictionary
+				program = {
+					"Name": program_name,
+					"Executable": program_name + ".exe"
+				}
 
-		# Define the verbose text as "Closing this program"
+				# Add the program dictionary to the programs dictionary
+				programs["Dictionary"][program_name] = program
+
+		# Update the total number of programs with the length of the list of programs
+		programs["Numbers"]["Total"] = len(programs["List"])
+
+		# Define the default verbose text as "Closing this program"
 		verbose_text = self.language_texts["closing_this_program"]
 
-		# Define the program text as the first program name
-		program_text = program_names[0]
+		# Define the default program text as the first program name
+		program_text = programs["List"][0]
 
-		# Define the item tab as a tab
+		# Define the default item tab as a tab
 		item_tab = "\t"
 
 		# If the number of programs to close is greater than one
-		if len(programs_to_close) > 1:
+		if programs["Numbers"]["Total"] > 1:
 			# Update the verbose text to be "Closing these programs"
 			verbose_text = self.language_texts["closing_these_programs"]
 
 			# Update the program text to be the list of program names converted into a text, with the tab prefix
-			program_text = self.Text.From_List(program_names, prefix = "\t")
+			program_text = self.Text.From_List(programs["List"], prefix = "\t")
 
 			# Do not add a tab to the item in the "Verbose" method
 			item_tab = ""
@@ -291,19 +324,35 @@ class System():
 		# Define a local "found program" switch initially as False
 		found_program = False
 
+		# Define the local list of attributes to get
+		attributes = [
+			"name",
+			"pid"
+		]
+
 		# Iterate through the list of processes
 		for process in psutil.process_iter(attrs = attributes):
-			# Create a shortcut to the process name
+			# Create a shortcut to the process name and ID
 			process_name = process.info["name"]
+			process_id = process.info["pid"]
+
+			# If the ".exe" string is inside the process name
+			if ".exe" in process_name:
+				# Remove it
+				process_name = process_name.replace(".exe", "")
 
 			# If the process name is inside the list of programs to close
-			if process_name in programs_to_close:
+			if process_name in programs["List"]:
+				# Get the program dictionary for the current process
+				program = programs["Dictionary"][process_name]
+
 				# If the number of programs to close is one
 				# Or it greater than one
 				# And the local "found program" switch is False
+				# (This is to show the verbose text on the first iteration of the for loop)
 				if (
-					len(programs_to_close) == 1 or
-					len(programs_to_close) > 1 and
+					programs["Numbers"]["Total"] == 1 or
+					programs["Numbers"]["Total"] > 1 and
 					found_program == False
 				):
 					# Show the verbose text about closing the program(s)
@@ -313,12 +362,27 @@ class System():
 				# And the close parameter is None
 				# Or the close parameter is True
 				if (
-					self.switches["Testing"] == False and
-					close == None or
+					(self.switches["Testing"] == False and
+					close == None) or
 					close == True
 				):
-					# Terminate the process
-					process.terminate()
+					# If the program dictionary has a process ID
+					if "Process ID" in program:
+						# Update the local process ID to be the one inside the dictionary
+						process_id = program["Process ID"]
+
+					# If the process ID is not inside the list of processes that were closed
+					if process_id not in programs["Closed"]:
+						# If the process ID is present inside the program dictionary
+						if "Process ID" in program:
+							# Update the process to be the one with the correct process ID
+							process = psutil.Process(program["Process ID"])
+
+						# Terminate the process
+						process.terminate()
+
+						# Add the process ID to the list of programs that were closed
+						programs["Closed"].append(process_id)
 
 				# Change the local "found program" switch to True
 				found_program = True

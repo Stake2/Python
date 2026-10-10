@@ -393,8 +393,10 @@ class Open_Friend_File(Friends):
 
 		# Show the verbose text if the file was found
 		if self.dictionary["States"]["Found file"] == True:
-			verbose_text = self.System.Open(self.friend["File"], open = False, verbose = False)
+			# Get the verbose text from the "Open" method of the "System" utility module
+			verbose_text = self.System.Open(self.friend["File"], open = False, verbose = False)["Verbose text"]
 
+			# Show it
 			print(verbose_text)
 
 		# Show a separator

@@ -77,11 +77,11 @@ class Run():
 
 		# If the selected class is not None
 		if selected_class != None:
+			# Add the "has arguments" switch to the selected class object
+			setattr(selected_class["Object"], "has_arguments", self.has_arguments)
+
 			# If this class has an arguments dictionary
 			if self.has_arguments == True:
-				# Add the "has arguments" switch to the selected class object
-				setattr(selected_class["Object"], "has_arguments", self.has_arguments)
-
 				# Add the arguments dictionary to the selected class object
 				setattr(selected_class["Object"], "arguments", self.arguments)
 

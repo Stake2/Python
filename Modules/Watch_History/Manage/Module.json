@@ -18,7 +18,7 @@
 	},
 	"Descriptions": {
 		"en": "Manage the [Media information] database and the [Watched media] history",
-		"pt": "Gerenciar o banco de dados de [Informações de mídia] e o histórico de [Mídias assistidas]"
+		"pt": "Gerenciar o banco de dados de [Informações de mídias] e o histórico de [Mídias assistidas]"
 	},
 	"Class mode": {
 		"Name": "Descriptions",
@@ -27,13 +27,11 @@
 	},
 	"Classes": {
 		"Numbers": {
-			"Total": 4
+			"Total": 2
 		},
 		"List": [
 			"Add_A_New_Media",
-			"Iterate_Through_The_Media_List",
-			"Populate_Media_Episodes_Files",
-			"Convert_History"
+			"Populate_Media_Episodes_Files"
 		],
 		"Dictionary": {
 			"Add_A_New_Media": {
@@ -44,29 +42,13 @@
 				},
 				"Object": "<class 'Watch_History.Manage.Add_A_New_Media.Add_A_New_Media'>"
 			},
-			"Iterate_Through_The_Media_List": {
-				"Name": "Iterate_Through_The_Media_List",
-				"Descriptions": {
-					"en": "Iterate through the list of media",
-					"pt": "Iterar através da lista de mídia"
-				},
-				"Object": "<class 'Watch_History.Manage.Iterate_Through_The_Media_List.Iterate_Through_The_Media_List'>"
-			},
 			"Populate_Media_Episodes_Files": {
 				"Name": "Populate_Media_Episodes_Files",
 				"Descriptions": {
 					"en": "Populate the media episodes files",
-					"pt": "Preencher os arquivos de episódios de mídia"
+					"pt": "Preencher os arquivos de episódios da mídia"
 				},
 				"Object": "<class 'Watch_History.Manage.Populate_Media_Episodes_Files.Populate_Media_Episodes_Files'>"
-			},
-			"Convert_History": {
-				"Name": "Convert_History",
-				"Descriptions": {
-					"en": "Convert history",
-					"pt": "Converter histórico"
-				},
-				"Object": "<class 'Watch_History.Manage.Convert_History.Convert_History'>"
 			}
 		}
 	}

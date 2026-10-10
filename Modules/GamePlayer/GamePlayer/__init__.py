@@ -288,7 +288,7 @@ class GamePlayer(object):
 			print(self.Language.language_texts["arguments, title()"] + ":")
 			print()
 
-			# Show the dictionary arguments
+			# Show the arguments dictionary
 			self.JSON.Show(self.arguments)
 
 	def Define_Types(self):

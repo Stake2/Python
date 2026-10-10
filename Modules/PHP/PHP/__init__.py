@@ -44,7 +44,7 @@ class PHP(object):
 				if (
 					class_title not in do_not_import and
 					class_title not in self.modules["Utility"]["Optional"]
-				)
+				):
 					# Import the module of the class
 					module = importlib.import_module("." + class_title, "Utility")
 
