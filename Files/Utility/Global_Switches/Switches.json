@@ -1,6 +1,6 @@
 {
     "Testing": false,
-    "Verbose": false,
+    "Verbose": true,
     "Show user information": false,
     "Has active switches": false
 }

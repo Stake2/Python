@@ -385,7 +385,7 @@ class Watch_History(object):
 			key = folder_name
 
 			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name, texts = self.language_texts)
+			folder_name = self.Language.Text(folder_name, texts = self.language_texts)
 
 			# Define the folder dictionary inside the root "folders" dictionary
 			root_folder[key] = {

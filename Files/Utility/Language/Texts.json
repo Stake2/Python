@@ -997,6 +997,14 @@
 		"pt": "Sexualidades",
 		"en": "Sexualities"
 	},
+	"date_of_birth": {
+		"pt": "Data de nascimento",
+		"en": "Date of birth"
+	},
+	"date_of_birth, type: plural": {
+		"pt": "Datas de nascimento",
+		"en": "Dates of birth"
+	},
 	"birthday, title()": {
 		"pt": "Aniversário",
 		"en": "Birthday"
@@ -1005,13 +1013,9 @@
 		"pt": "Aniversários",
 		"en": "Birthdays"
 	},
-	"date_of_birth": {
-		"pt": "Data de nascimento",
-		"en": "Date of birth"
-	},
-	"date_of_birth, type: plural": {
-		"pt": "Datas de nascimento",
-		"en": "Dates of birth"
+	"next_birthday": {
+		"pt": "Próximo aniversário",
+		"en": "Next birthday"
 	},
 	"height, title()": {
 		"pt": "Altura",
@@ -2313,6 +2317,14 @@
 	"friends, title()": {
 		"en": "Friends",
 		"pt": "Amigos"
+	},
+	"total_friendship_time": {
+		"en": "Total friendship time",
+		"pt": "Tempo total de amizade"
+	},
+	"next_friendship_monthiversary": {
+		"en": "Next friendship monthiversary",
+		"pt": "Próximo mêsversário de amizade"
 	},
 	"for_friends": {
 		"en": "For friends",

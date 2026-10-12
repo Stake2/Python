@@ -577,18 +577,8 @@ class Friends(object):
 
 		# Iterate through the list of folders to remove
 		for folder_name in remove_list:
-			# Create the text key by converting the folder into lowercase and replacing spaces with underscores
-			text_key = folder_name.lower().replace(" ", "_")
-
-			# If the underscore character is not inside the text key
-			if "_" not in text_key:
-				# Add the ", title()" text
-				text_key += ", title()"
-
-			# If the text key is inside the language texts dictionary of the "Language" utility class
-			if text_key in self.Language.language_texts:
-				# Get the folder name in the user language
-				folder_name = self.Language.language_texts[text_key]
+			# Get the folder name in the user language
+			folder_name = self.Language.Text(folder_name)
 
 			# If the folder is inside the list of friends
 			if folder_name in self.friends["List"]:
@@ -632,6 +622,8 @@ class Friends(object):
 				"Information": {},
 				"Social networks": {}
 			}
+
+			# ---------- #
 
 			# Define and create the friend folder
 			folder = self.folders["Friends"]["root"] + name + "/"
@@ -692,7 +684,7 @@ class Friends(object):
 			# Define the root friend "Folders" dictionary as the local one
 			friend["Folders"] = folders
 
-			# ----- #
+			# ---------- #
 
 			# Get the friend information dictionary using the friend "Information.txt" file
 			friend_information = self.Information(file = friend["Files"]["Information"])
@@ -700,6 +692,16 @@ class Friends(object):
 			# Add the information keys and values to the friend "Information" dictionary
 			for key, value in friend_information.items():
 				friend["Information"][key] = value
+
+			# ----- #
+
+			# Recalculate and update the friend's age based on their date of birth
+			friend = self.Update_Age(friend)
+
+			# Calculate when the next birthday of the friend is and update the "Information" dictionary to add the next birthday
+			friend = self.Calculate_Next_Birthday(friend)
+
+			# ----- #
 
 			# Define the local dictionary of locations
 			locations = {
@@ -737,7 +739,7 @@ class Friends(object):
 					field_key = location_fields[i]
 
 					# Define the location field inside the current location dictionary with the field key, using the "i" number to get the correct field
-					# Example: place can be "City", 
+					# Example: location can be "Hometown", field key can be "City", and the friend location field can be the city of the friend
 					locations[location][field_key] = fields[i]
 
 					# Add one to the "i" number
@@ -748,18 +750,24 @@ class Friends(object):
 				"Locations": locations
 			}
 
-			friend["Information"] = self.JSON.Add_Key_After_Key(friend_information, key_value, after_key = "Residence place")
+			friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "Residence place")
+
+			# ----- #
 
 			# Add the "Year I met" key to the friend "Information" dictionary
 			friend["Information"]["Year I met"] = friend["Information"]["Date I met"].split("/")[-1]
 
-			# ---------- #
+			# Calculate the duration of the friendship
+			friend = self.Calculate_Friendship_Duration(friend)
+
+			# ----- #
 
 			# Create a local copy of the friend "Information" dictionary
 			information = deepcopy(friend["Information"])
 
-			# Remove the "Locations" key
-			information.pop("Locations")
+			# Remove keys that are not going into the "Information.txt" text file
+			for key in ["Locations"]:
+				information.pop(key)
 
 			# Translate the information keys into the user language
 			# (The friend information values are already in the user language, so they do not need to be translated)
@@ -769,6 +777,31 @@ class Friends(object):
 			text_to_write = self.Text.From_Dictionary(information, next_line = True)
 
 			self.File.Edit(friend["Files"]["Information"], text_to_write, "w")
+
+			# ----- #
+
+			# Get the origin social network
+			origin_social_network = friend["Information"]["Origin social network"]
+
+			# Transform it into a dictionary
+			origin_social_network = {
+				"Name": origin_social_network
+			}
+
+			# If the origin social network name contains the string " - "
+			# (That means it has additional information)
+			if " - " in origin_social_network["Name"]:
+				# Split the origin social network name
+				split = origin_social_network["Name"].split(" - ")
+
+				# Update the name to remove the additional information
+				origin_social_network["Name"] = split[0]
+
+				# Add the additional information to the dictionary
+				origin_social_network["Additional information"] = split[1]
+
+			# Update the root key
+			friend["Information"]["Origin social network"] = origin_social_network
 
 			# ---------- #
 
@@ -799,7 +832,7 @@ class Friends(object):
 				"Dictionary": {}
 			}
 
-			# ---------- #
+			# ----- #
 
 			# Sort the list of social networks of the friend in alphabetical order, ignoring capitalization
 			friend["Social networks"]["List"] = sorted(friend["Social networks"]["List"], key = str.lower)
@@ -857,6 +890,8 @@ class Friends(object):
 
 			# Update the total number of social networks of the friend
 			friend["Social networks"]["Numbers"]["Total"] = len(friend["Social networks"]["List"])
+
+			# ---------- #
 
 			# Define the root friend dictionary as the local friend dictionary
 			self.friends["Dictionary"][name] = friend
@@ -977,6 +1012,210 @@ class Friends(object):
 
 		# Update the "Friends.json" file with the updated and local copy of the "Friends" dictionary
 		self.JSON.Edit(self.folders["Friends"]["Friends"], local_dictionary)
+
+	def Get_Date_Of_Birth_And_Age(self, friend):
+		# Create a shortcut to the date of birth string
+		string = friend["Information"]["Date of birth"]
+
+		# Extract the day, month, and year from the date of birth string of the friend
+		day, month, year = string.split("/")
+
+		# Create the local date of birth dictionary
+		date_of_birth = {
+			"String": string,
+			"Date": {},
+			"Day": day,
+			"Month": month,
+			"Year": year,
+			"Age": 0
+		}
+
+		# If the date of birth of the friend is complete
+		if "?" not in day + month + year:
+			# Convert the units into strings
+			for unit in ["Day", "Month", "Year"]:
+				date_of_birth[unit] = int(date_of_birth[unit])
+
+			# Create the date dictionary from the date of birth of the friend
+			date_of_birth["Date"] = self.Date.From_String(date_of_birth["String"], format = "%d/%m/%Y")
+
+			# Calculate the age of the friend based on the time difference between the date of birth and today
+			date_of_birth["Age"] = self.Date.Difference(date_of_birth["Date"], self.date)
+
+			# Update the age to be a number
+			date_of_birth["Age"] = str(date_of_birth["Age"]["Difference"]["Years"])
+
+		# Return the date of birth dictionary
+		return date_of_birth
+
+	def Update_Age(self, friend):
+		# Get the date of birth dictionary of the friend
+		date_of_birth = self.Get_Date_Of_Birth_And_Age(friend)
+
+		# If the age is not zero (it is known)
+		if date_of_birth["Age"] != 0:
+			# Update the age of the friend
+			friend["Information"]["Age"] = date_of_birth["Age"]
+
+		# Return the friend dictionary
+		return friend
+
+	def Calculate_Next_Birthday(self, friend):
+		# Get the date of birth dictionary of the friend
+		date_of_birth = self.Get_Date_Of_Birth_And_Age(friend)
+
+		# If the age is not zero (it is known)
+		if date_of_birth["Age"] != 0:
+			# Change the year of the date of birth to the current year
+			date_of_birth["Date"] = self.Date.From_String(
+				date_of_birth["String"].replace(
+					str(date_of_birth["Year"]), str(self.current_year)
+				),
+				format = "%d/%m/%Y"
+			)
+
+			# If the friend's birthday is still upcoming this year
+			if date_of_birth["Date"]["Object"] >= self.date["Object"]:
+				# Define the next birthday to be the birthday in the current year
+				next_birthday = date_of_birth["Date"]
+
+			# Otherwise, the friend's birthday has already passed this year
+			else:
+				# Define the birthday date to be the next year
+				date_of_birth["Date"] = self.Date.From_String(
+					date_of_birth["String"].replace(
+						str(date_of_birth["Year"]), str(self.current_year + 1)
+					),
+					format = "%d/%m/%Y"
+				)
+
+				# Define the next birthday to be the birthday in the next year
+				next_birthday = date_of_birth["Date"]
+
+			# Get the "Day/Month/Year" format from the next birthday date dictionary
+			next_birthday = next_birthday["Formats"]["DD/MM/YYYY"]
+
+			# Add the "Next birthday" to the friend "Information" dictionary, and add it after the "Date of birth" key
+			key_value = {
+				"Next birthday": next_birthday
+			}
+
+			friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "Date of birth")
+
+		# Return the friend dictionary
+		return friend
+
+	def Calculate_Friendship_Duration(self, friend):
+		# Create a shortcut to the date I met the friend
+		string = friend["Information"]["Date I met"]
+
+		# If there is a space in the date
+		if " " in string:
+			# Split it by the space to get only the day, month, and year
+			string = string.split(" ")[1]
+
+		# Extract the day, month, and year from the date I met string
+		day, month, year = string.split("/")
+
+		# Create the local friendship dictionary
+		friendship = {
+			"Start date": {
+				"String": string,
+				"Date": {},
+				"Day": day,
+				"Month": month,
+				"Year": year
+			},
+			"Duration": {}
+		}
+
+		# Convert the units into strings
+		for unit in ["Day", "Month", "Year"]:
+			friendship["Start date"][unit] = int(friendship["Start date"][unit])
+
+		# Create the date dictionary from the date I met the friend
+		friendship["Start date"]["Date"] = self.Date.From_String(friendship["Start date"]["String"], format = "%d/%m/%Y")
+
+		# Calculate the duration of the friendship of the friend based on the time difference between the date of birth and today
+		friendship["Duration"] = self.Date.Difference(friendship["Start date"]["Date"], self.date)
+
+		# Remove some unused keys
+		for key in ["Before", "After", "Object", "Unit texts", "Text (with time units)", "Time units text"]:
+			friendship["Duration"].pop(key)
+
+		# Get the total friendship duration text in the user language
+		total_friendship_time = friendship["Duration"]["Text"][self.language["Small"]]
+
+		# Add the "Total friendship time" dictionary to the friend "Information" dictionary, and add it after the "Year I met" key
+		key_value = {
+			"Total friendship time": total_friendship_time
+		}
+
+		friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "Year I met")
+
+		# ----- #
+
+		# Calculate the next friendship monthiversary
+
+		# Create a shortcut to the current month
+		current_month = self.date["Units"]["Month"]
+
+		# Start by checking the monthiversary in the current month
+		next_month = current_month
+		next_year = self.current_year
+
+		# Adjust the day if it does not exist in the current month
+		next_day = min(
+			friendship["Start date"]["Day"],
+			self.Date.Monthrange(next_year, next_month)[1]
+		)
+
+		# Create the candidate monthiversary date
+		next_date_string = f"{next_day:02d}/{next_month:02d}/{next_year}"
+
+		next_monthiversary = self.Date.From_String(
+			next_date_string,
+			format="%d/%m/%Y"
+		)
+
+		# If this month's monthiversary has already passed, check next month
+		if next_monthiversary["Object"] <= self.date["Object"]:
+			next_month = current_month % 12 + 1
+
+			# Advance the year if the current month is December
+			next_year = self.current_year + (1 if current_month == 12 else 0)
+
+			# Adjust the day if it does not exist in the next month
+			next_day = min(
+				friendship["Start date"]["Day"],
+				self.Date.Monthrange(next_year, next_month)[1]
+			)
+
+			# Create the next month's monthiversary date
+			next_date_string = f"{next_day:02d}/{next_month:02d}/{next_year}"
+
+			next_monthiversary = self.Date.From_String(
+				next_date_string,
+				format="%d/%m/%Y"
+			)
+
+		# Get the "Day/Month/Year" date format from the next friendship monthiversary date dictionary
+		next_monthiversary = next_monthiversary["Formats"]["DD/MM/YYYY"]
+
+		# Add the "Next friendship monthiversary" to the friend "Information" dictionary, and add it after the "Total friendship time" key
+		key_value = {
+			"Next friendship monthiversary": next_monthiversary 
+		}
+
+		friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "Total friendship time")
+
+		# ----- #
+
+		# Convert the start date into a string
+		friendship["Start date"]["Date"] = friendship["Start date"]["Date"]["Formats"]["DD/MM/YYYY"]
+
+		# Return the friend dictionary
+		return friend
 
 	def Information(self, information = None, file = None, information_items = None, to_user_language = False):
 		# If the file parameter is not None, get the information dictionary from it

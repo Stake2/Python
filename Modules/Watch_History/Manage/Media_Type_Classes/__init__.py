@@ -16,7 +16,7 @@ class Media_Type_Classes(Watch_History):
 
 	def Define_Classes(self):
 		# Get the current folder
-		current_folder = self.Language.Current_Folder(__file__)
+		current_folder = self.Folder.Current(__file__)
 
 		# Get the descriptions file
 		descriptions_file = current_folder + "Descriptions.json"

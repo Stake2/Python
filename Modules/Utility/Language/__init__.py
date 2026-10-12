@@ -1159,17 +1159,6 @@ class Language():
 			# Show a space separator
 			print()
 
-	def Current_Folder(self, file = None):
-		# If the file parameter is None, define the file as "__file__"
-		if file == None:
-			file = __file__
-
-		# Get the folder from the module file
-		folder = self.Sanitize(os.path.dirname(file))
-
-		# Return the folder
-		return folder
-
 	def Select(self, options, language_options = None, show_text = None, select_text = None, function = False, first_space = True):
 		if show_text == None:
 			show_text = self.language_texts["options, title()"] + ": "
@@ -2017,31 +2006,46 @@ class Language():
 		# Return the verbose text
 		return verbose_text
 
-	def Define_Folder_Name(self, folder_name, text_key = "", texts = {}):
-		# If the text key is empty
-		if text_key == "":
-			# Define the text key for the name of the folder
-			text_key = folder_name.lower().replace(" ", "_")
+	def Text(self, text_key, texts = {}, language = ""):
+		# If the texts dictionary parameter is an empty dictionary
+		if texts == {}:
+			# Then use the texts dictionary of the "Language" utility class (this class)
+			texts = self.texts
 
-		# If the "_" (underscore) character is not inside the text key
-		# And the ", title()" text is not inside the text key
+		# If the language parameter is an empty string
+		if language == "":
+			# Then define it as the user language
+			language = self.language["Small"]
+
+		# Define the text initially as the original text key
+		text = text_key
+
+		# If the "title()" or ", type: " texts are not inside the text key
 		if (
-			"_" not in text_key and
-			", title()" not in text_key
+			"title()" not in text_key or
+			", type: " not in text_key
 		):
-			# Add the ", title()" text to the text key
-			text_key += ", title()"
+			# Convert the text key into lowercase and replace spaces with underscores
+			text_key = text_key.lower().replace(" ", "_")
 
-		# If the key is present inside the "language texts" dictionary of the "Language" class (this class)
-		if text_key in self.language_texts:
-			# Define the folder name variable as the text inside that text key and dictionary
-			folder_name = self.language_texts[text_key]
+			# If the "_" (underscore) character is not inside the text key (that means this is a single word text)
+			if "_" not in text_key:
+				# Add the ", title()" text to the text key
+				text_key += ", title()"
 
-		# If the "texts" parameter is not an empty dictionary
-		if texts != {}:
-			# Try to find the text key and folder name inside it
-			if text_key in texts:
-				folder_name = texts[text_key]
+		# If the text key is inside the "texts" dictionary parameter
+		if text_key in texts:
+			# Get the text from that dictionary
+			text = texts[text_key]
 
-		# Return the folder name
-		return folder_name
+		# If the text is a dictionary
+		# And it is inside the dictionary
+		if (
+			isinstance(text, dict) and
+			language in text
+		):
+			# Get the text in the parameter language
+			text = text[language]
+
+		# Return the text
+		return text

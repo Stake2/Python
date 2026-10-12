@@ -186,7 +186,7 @@ class File():
 			# Get the name of the method which ran this method (the "Verbose" one)
 			runner_method_name = inspect.stack()[1][3]
 
-			# Show the module name (JSON) and the method which ran this method (the "Verbose" one)
+			# Show the module name (File) and the method which ran this method (the "Verbose" one)
 			print()
 			print(self.module["Module"] + "." + runner_method_name + "():")
 

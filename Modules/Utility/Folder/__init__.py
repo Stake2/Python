@@ -297,8 +297,10 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name, text_key = text_key)
+			# If the text key is not empty
+			if text_key != "":
+				# Update the folder name to its version in the user language
+				folder_name = self.Language.Text(text_key)
 
 			# Define the folder dictionary inside the root "folders" dictionary
 			root_folder[key] = {
@@ -454,8 +456,8 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name)
+			# Get the folder name in the user language
+			folder_name = self.Language.Text(folder_name)
 
 			# Define the folder dictionary with the root folder
 			root_folder[key] = {
@@ -500,8 +502,8 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name)
+			# Get the folder name in the user language
+			folder_name = self.Language.Text(folder_name)
 
 			# Define the folder dictionary with the root folder
 			root_folder[key] = {
@@ -529,8 +531,8 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name)
+			# Get the folder name in the user language
+			folder_name = self.Language.Text(folder_name)
 
 			# Define the folder dictionary with the root folder
 			root_folder[key] = {
@@ -557,8 +559,8 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
-			# Define the folder name
-			folder_name = self.Language.Define_Folder_Name(folder_name)
+			# Get the folder name in the user language
+			folder_name = self.Language.Text(folder_name)
 
 			# Define the folder dictionary with the root folder
 			root_folder[key] = {
@@ -1012,16 +1014,28 @@ class Folder():
 	def Split(self, path):
 		return os.path.split(path)
 
-	def Verbose(self, text, item, verbose = False):
+	def Verbose(self, text, item, verbose = None):
+		# If the "Verbose" switch is True
+		# And the verbose parameter is None
+		# Or the verbose parameter is True
 		if (
-			self.switches["Verbose"] == True or
+			self.switches["Verbose"] == True and
+			verbose == None or
 			verbose == True
 		):
 			import inspect
 
+			# Get the name of the method which ran this method (the "Verbose" one)
+			runner_method_name = inspect.stack()[1][3]
+
+			# Show the module name (JSON) and the method which ran this method (the "Verbose" one)
 			print()
-			print(self.module["Module"] + "." + inspect.stack()[1][3] + "():")
+			print(self.module["Module"] + "." + runner_method_name + "():")
+
+			# Show the verbose text
 			print("\t" + text + ":")
+
+			# Show the verbose item
 			print("\t" + item)
 
 	def Current(self, file = None):

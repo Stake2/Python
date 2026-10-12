@@ -47,24 +47,21 @@ $ MS.py
 
 Modules:
 [1] - Christmas
-[2] - Code
-[3] - Database
-[4] - Diary
-[5] - Diary_Slim
-[6] - Discord_Bot
-[7] - Food_Time
-[8] - Friends
-[9] - GamePlayer
-[10] - PHP
-[11] - Project_Zomboid
-[12] - Python
-[13] - Social_Networks
-[14] - SproutGigs
-[15] - Stories
-[16] - Tasks
-[17] - Watch_History
-[18] - Years
-[19] - NeverEnding_Legacy
+[2] - Database
+[3] - Diary
+[4] - Diary_Slim
+[5] - Discord_Bot
+[6] - Meal_Times
+[7] - Friends
+[8] - GamePlayer
+[9] - PHP
+[10] - Project_Zomboid
+[11] - Python
+[12] - Social_Networks
+[13] - Stories
+[14] - Tasks
+[15] - Watch_History
+[16] - Years
 
 Select a module from the list to execute it: |
 ```
