@@ -297,6 +297,11 @@ class Folder():
 			# Define the key as the folder name
 			key = folder_name
 
+			# If the text key is empty
+			if text_key == "":
+				# Define the text key as the folder name
+				text_key = folder_name
+
 			# If the text key is not empty
 			if text_key != "":
 				# Update the folder name to its version in the user language

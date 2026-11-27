@@ -3,16 +3,12 @@
 		"en": "Manage your friends",
 		"pt": "Gerenciar os seus amigos"
 	},
-	"Open_Friend_File": {
-		"en": "Open friend file",
-		"pt": "Abrir arquivo de amigo"
-	},
 	"Add_A_New_Friend": {
 		"en": "Add a new friend",
 		"pt": "Adicionar um novo amigo"
 	},
-	"Show_Friend_Information": {
-		"en": "Show information of all Friends",
-		"pt": "Mostrar informações de todos os Amigos"
+	"Open_Friend_File": {
+		"en": "Open friend file",
+		"pt": "Abrir arquivo de amigo"
 	}
 }

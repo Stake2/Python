@@ -280,7 +280,7 @@ class Populate_Media_Episodes_Files(Watch_History):
 			self.Text.Copy(title)
 
 			# Ask for the user to type or paste the translated title
-			title = self.Input.Type(self.Language.language_texts["title, title()"] + ": ", accept_enter = False)
+			title = self.Input.Type(self.Language.language_texts["title, title()"] + ": ", accept_enter = False, next_line = True)
 
 		# Return the translated title
 		return title

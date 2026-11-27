@@ -171,8 +171,8 @@ class Comment_Writer(Watch_History):
 
 			# If the media (item) is not an episodic one (a single unit media item for example)
 			if self.media["States"]["Episodic"] == False:
-				# Define the comment file name as only the media episode title
-				self.media["Comment"]["File name"] = self.media["Episode"]["Title"]
+				# Define the comment file name as only the media episode title in the media language
+				self.media["Comment"]["File name"] = self.media["Episode"]["Titles"][self.language["Small"]]
 
 		# If the media is not a series media (it is a movie)
 		# Or the media item is a single unit

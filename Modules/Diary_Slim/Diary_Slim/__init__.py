@@ -484,7 +484,7 @@ class Diary_Slim():
 		# ---------- #
 
 		# Create a list of years starting from the year "2020" to the current year
-		self.years_list = self.Date.Create_Years_List(start = 2020, function = str)
+		self.years_list = self.Date.Create_Years_List(start = 2020)
 
 		# If the years list inside the History dictionary is empty, create a new one
 		if self.history["Years"] == []:

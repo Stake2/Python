@@ -419,10 +419,13 @@ class Watch_Media(Watch_History):
 				# Define the episode number as one
 				self.media["Episode"]["Number"] = 1
 
+			# Create a shortcut to the root media language
+			media_language = self.media["Language"]
+
 			# Iterate through the episode titles inside the media language list of episode titles
 			# To find the current episode number
 			i = 1
-			for episode_title in language_titles[self.media["Language"]]:
+			for episode_title in language_titles[media_language]:
 				# If the separator is not an empty string and is present in the current episode title
 				if (
 					self.media["Episode"]["Separator"] != "" and

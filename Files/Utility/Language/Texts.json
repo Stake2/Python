@@ -1257,21 +1257,21 @@
 		"en": "Digital identities",
 		"pt": "Identidades digitais"
 	},
-	"date_i_met": {
-		"pt": "Data que eu conheci",
-		"en": "Date I met"
+	"when_i_met": {
+		"pt": "Quando eu conheci",
+		"en": "When I met"
 	},
-	"date_i_met, type: plural": {
-		"pt": "Datas que eu conheci",
-		"en": "Dates I met"
+	"the_year_i_met": {
+		"pt": "Ano em que eu conheci",
+		"en": "The year I met"
 	},
-	"year_i_met": {
-		"pt": "Ano que eu conheci",
-		"en": "Year I met"
+	"people_i_met": {
+		"en": "People I met",
+		"pt": "Pessoas que eu conheci"
 	},
-	"year_i_met, type: plural": {
-		"pt": "Anos que eu conheci",
-		"en": "Years I met"
+	"people_i_met_in": {
+		"en": "People I met in",
+		"pt": "Pessoas que eu conheci em"
 	},
 	"image_folders": {
 		"en": "Image folders",
@@ -2381,10 +2381,6 @@
 	"mods, title()": {
 		"en": "Mods",
 		"pt": "Modificações"
-	},
-	"known_people": {
-		"en": "Known people",
-		"pt": "Pessoas conhecidas"
 	},
 	"search, title()": {
 		"en": "Search",

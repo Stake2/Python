@@ -14,8 +14,8 @@
 				"en": "This is the time when you ate"
 			},
 			"Current time": {
-				"Object": "2026-10-12T07:20:57-0300",
-				"Time": "07:20"
+				"Object": "2026-11-26T17:34:39-0300",
+				"Time": "17:34"
 			}
 		},
 		"Can drink water": {
@@ -31,8 +31,8 @@
 				"Quantity": 40
 			},
 			"Current time": {
-				"Object": "2026-10-12T08:00:57-0300",
-				"Time": "08:00"
+				"Object": "2026-11-26T18:14:39-0300",
+				"Time": "18:14"
 			},
 			"Reminder": {
 				"Texts": {
@@ -56,8 +56,8 @@
 				"Quantity": 3
 			},
 			"Current time": {
-				"Object": "2026-10-12T10:20:57-0300",
-				"Time": "10:20"
+				"Object": "2026-11-26T20:34:39-0300",
+				"Time": "20:34"
 			},
 			"Reminder": {
 				"Texts": {

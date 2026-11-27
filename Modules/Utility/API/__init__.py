@@ -958,7 +958,8 @@ class API():
 						"medium": "Medium",
 						"high": "Large",
 						"maxres": "Maximum resolution",
-						"fhd": "Full high definition"
+						"fhd": "Full high definition",
+						"uhd": "Ultra high definition"
 					}
 
 					# Create the "Images" dictionary

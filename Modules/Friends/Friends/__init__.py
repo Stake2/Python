@@ -192,6 +192,15 @@ class Friends(object):
 
 		# ---------- #
 
+		# Define and create the friends "Archive" folder
+		self.folders["Friends"]["Archive"] = {
+			"root": self.folders["Friends"]["root"] + self.Language.language_texts["archive, title()"] + "/"
+		}
+
+		self.Folder.Create(self.folders["Friends"]["Archive"]["root"])
+
+		# ---------- #
+
 		# Define and create the friends "Database" folder
 		self.folders["Friends"]["Database"] = {
 			"root": self.folders["Friends"]["root"] + self.Language.language_texts["database, title()"] + "/"
@@ -199,11 +208,7 @@ class Friends(object):
 
 		self.Folder.Create(self.folders["Friends"]["Database"]["root"])
 
-		# Define and create the database "Information items.json" file
-		file = self.folders["Friends"]["Database"]["root"] + "Information items.json"
-		self.File.Create(file)
-
-		self.folders["Friends"]["Database"]["Information items"] = file
+		# ---------- #
 
 		# Define and create the root "Friends.json" file
 		file = self.folders["Friends"]["root"] + "Friends.json"
@@ -217,16 +222,57 @@ class Friends(object):
 
 		self.folders["Friends"]["Friends list"] = file
 
+		# ---------- #
+
+		# Iterate through the list of years from 2018 to the previous year (plus is minus one)
+		for year in self.Date.Create_Years_List(start = 2018, plus = -1):
+			# Define the file name as "People I met in" plus the current year in the for loop
+			file_name = self.Language.language_texts["people_i_met_in"] + " " + str(year)
+
+			# Define the root "People I met in year.txt" file for the current year in the for loop
+			file = self.folders["Friends"]["root"] + file_name + ".txt"
+
+			# If the file exists
+			if self.File.Exists(file) == True:
+				# Define the new location for the file
+				new_location = self.folders["Friends"]["Archive"]["root"] + file_name + ".txt"
+
+				# Move the file to the "Archive" folder
+				self.File.Move(file, new_location)
+
+		# ----- #
+
+		# Define and create the root "People I met in [current year].txt" file
+		file = self.folders["Friends"]["root"] + self.Language.language_texts["people_i_met_in"] + " " + str(self.current_year) + ".txt"
+		self.File.Create(file)
+
+		self.folders["Friends"]["People I met in current year"] = file
+
+		# ---------- #
+
+		# Define and create the database "Information items.json" file
+		file = self.folders["Friends"]["Database"]["root"] + "Information items.json"
+		self.File.Create(file)
+
+		self.folders["Friends"]["Database"]["Information items"] = file
+
 	def Define_History(self):
 		# Define the "History" dictionary
 		self.history = {
 			"Class title": self.language_texts["Friends"],
 			"Key": "",
 			"Numbers": {
-				"Known people": "By year"
+				"People I met": 0
 			},
 			"Folder": self.folders["Friends"]["root"]
 		}
+
+		# Read the root "People I met in [current year].txt" file to get its length
+		file = self.folders["Friends"]["People I met in current year"]
+		length = self.File.Contents(file)["Length"]
+
+		# Define the number of people I met in the current year as the number of lines in the file
+		self.history["Numbers"]["People I met"] = length
 
 	def Define_Information_Items(self):
 		# Define the local "Information items" dictionary
@@ -596,7 +642,7 @@ class Friends(object):
 		self.friends["Numbers"]["Total"] = len(self.friends["List"])
 
 		# Add all years from 2018 to the current year to the "By year" numbers dictionary
-		for year in self.Date.Create_Years_List(start = 2018, function = str):
+		for year in self.Date.Create_Years_List(start = 2018):
 			self.friends["Numbers"]["By year"][year] = 0
 
 		# Iterate through the years inside the "By year" numbers dictionary
@@ -754,8 +800,8 @@ class Friends(object):
 
 			# ----- #
 
-			# Add the "Year I met" key to the friend "Information" dictionary
-			friend["Information"]["Year I met"] = friend["Information"]["Date I met"].split("/")[-1]
+			# Add the "The year I met" key to the friend "Information" dictionary
+			friend["Information"]["The year I met"] = friend["Information"]["When I met"].split("/")[-1]
 
 			# Calculate the duration of the friendship
 			friend = self.Calculate_Friendship_Duration(friend)
@@ -906,8 +952,8 @@ class Friends(object):
 			# Get the friend "Information" dictionary with its keys in English
 			information = self.Information(friend["Information"])
 
-			# Get the "met year" from the "Date I met"
-			met_year = information["Date I met"].split("/")[-1]
+			# Get the "met year" from the "When I met"
+			met_year = information["When I met"].split("/")[-1]
 
 			# If the met year is not in the friends numbers "By year" dictionary
 			if met_year not in self.friends["Numbers"]["By year"]:
@@ -1107,7 +1153,7 @@ class Friends(object):
 
 	def Calculate_Friendship_Duration(self, friend):
 		# Create a shortcut to the date I met the friend
-		string = friend["Information"]["Date I met"]
+		string = friend["Information"]["When I met"]
 
 		# If there is a space in the date
 		if " " in string:
@@ -1139,19 +1185,50 @@ class Friends(object):
 		# Calculate the duration of the friendship of the friend based on the time difference between the date of birth and today
 		friendship["Duration"] = self.Date.Difference(friendship["Start date"]["Date"], self.date)
 
-		# Remove some unused keys
-		for key in ["Before", "After", "Object", "Unit texts", "Text (with time units)", "Time units text"]:
+		# Define a list of keys to remove
+		keys = [
+			"Before",
+			"After",
+			"Object",
+			"Unit texts",
+			"Text (with time units)",
+			"Time units text"
+		]
+
+		# Remove those keys
+		for key in keys:
 			friendship["Duration"].pop(key)
+
+		# ----- #
+
+		# Define a list of time keys to remove
+		keys = [
+			"Hours",
+			"Minutes",
+			"Seconds"
+		]
+
+		# Iterate through that list of keys
+		for key in keys:
+			# If the current key is inside the "Difference" dictionary of the friendship "Duration" dictionary
+			if key in friendship["Duration"]["Difference"]:
+				# Remove it
+				friendship["Duration"]["Difference"].pop(key)
+
+		# Recreate the time difference text using only the years, months, and days
+		friendship["Duration"]["Text"] = self.Date.Create_Time_Text(friendship["Duration"])
+
+		# ----- #
 
 		# Get the total friendship duration text in the user language
 		total_friendship_time = friendship["Duration"]["Text"][self.language["Small"]]
 
-		# Add the "Total friendship time" dictionary to the friend "Information" dictionary, and add it after the "Year I met" key
+		# Add the "Total friendship time" dictionary to the friend "Information" dictionary, and add it after the "The year I met" key
 		key_value = {
 			"Total friendship time": total_friendship_time
 		}
 
-		friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "Year I met")
+		friend["Information"] = self.JSON.Add_Key_After_Key(friend["Information"], key_value, after_key = "The year I met")
 
 		# ----- #
 
@@ -1264,10 +1341,10 @@ class Friends(object):
 		show_text = self.File.language_texts["file_names"]
 		select_text = self.File.language_texts["select_one_file_name"]
 
-		# Define the English options list
+		# Define the list of English options
 		options = list(self.friends["File names"]["Dictionary"].keys())
 
-		# Define the language options list
+		# Define the list of language options
 		language_options = []
 
 		for key, dict_ in self.friends["File names"]["Dictionary"].items():
@@ -1474,7 +1551,7 @@ class Friends(object):
 				# If the selected option is "Custom social network"
 				if information["option"] == "Custom social network":
 					# Define the type text for the information item
-					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.language["Small"]] + " " + self.language_texts["custom_origin_social_network"])
+					type_text = self.language_texts["type_{}"].format(information_item["Gender"]["Words"]["The"][self.language["Small"]] + " " + self.language_texts["custom_origin_social_network"].lower())
 
 					# If the "Testing" switch is False
 					# Or it is True

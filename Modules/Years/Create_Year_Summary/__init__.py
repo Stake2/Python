@@ -306,13 +306,20 @@ class Create_Year_Summary(Years):
 				if number_key == "":
 					number_key = "Total"
 
-				# Get the number from the entries "Numbers" dictionary with the number key
-				number = numbers[number_key]
+				# If the number key is a string
+				if isinstance(number_key, str):
+					# Get the number from the entries "Numbers" dictionary with the number key
+					number = numbers[number_key]
 
-				# If the number is a dictionary
-				if type(numbers[number_key]) == dict:
-					# Get the total number for the current year
-					number = number[self.current_year_number]
+					# If the number is a dictionary
+					if type(numbers[number_key]) == dict:
+						# Get the total number for the current year
+						number = number[self.current_year_number]
+
+				# If the number key is an integer
+				if isinstance(number_key, int):
+					# Use it as the number
+					number = number_key
 
 				# Add the number to the history "Numbers" dictionary
 				history["Numbers"][key] = number

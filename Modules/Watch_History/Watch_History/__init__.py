@@ -305,7 +305,7 @@ class Watch_History(object):
 		# --- #
 
 		# Create a list of years starting from the year starting year to the current year 
-		self.data_network["Years list"] = self.Date.Create_Years_List(start = self.data_network["Starting year"], function = str)
+		self.data_network["Years list"] = self.Date.Create_Years_List(start = self.data_network["Starting year"])
 
 		# --- #
 
@@ -2130,6 +2130,11 @@ class Watch_History(object):
 							if local_item_title != watched_title:
 								# Then remove one from the local number
 								number -= 1
+
+						# If the local item title is inside the media dictionary
+						if local_item_title in media_type_dictionary["Dictionary"][media_title]["Dictionary"]:
+							# Then use the number that is already present
+							number = media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title]
 
 						# Add the item title to the dictionary with the correct number (zero or the number of times the user watched the root media)
 						media_type_dictionary["Dictionary"][media_title]["Dictionary"][local_item_title] = number
@@ -5755,7 +5760,15 @@ class Watch_History(object):
 		singular_media_type = dictionary["Media type"]["Singular"][self.language["Small"]]
 
 		# Define the default header text as singular media type in the user language
-		header_text = singular_media_type + ":"
+		header_text = singular_media_type
+
+		# If the media is a video channel
+		if media["States"]["Video"] == True:
+			# Change the header text to be the container text in capitalized case
+			header_text = self.Text.Capitalize(self.media["Texts"]["Selected container texts"]["Container"])
+
+		# Add a colon to the header text
+		header_text += ":"
 
 		# If the "Header text" key is inside the main dictionary
 		# And the key is not an empty string or None

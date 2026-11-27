@@ -1,0 +1,2 @@
+21:03 26/11/2026:
+Eu removi a classe Show_Friend_Information (Mostrar_Informações_Dos_Amigos) porque ela não será mais usada e não vejo mais utilidade para ela

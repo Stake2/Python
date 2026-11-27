@@ -98,7 +98,7 @@ class Add_A_New_Friend(Friends):
 			"Height": "",
 			"Hometown": "? - California - United States",
 			"Residence place": "? - California - United States",
-			"Date I met": "12:00 01/01/2000",
+			"When I met": "12:00 01/01/2000",
 			"Origin social network": "Discord",
 			"Additional information of origin social network": 'Server: "A server of Discord"'
 		}
@@ -192,8 +192,8 @@ class Add_A_New_Friend(Friends):
 
 		self.friend["Information"] = self.JSON.Add_Key_After_Key(self.friend["Information"], key_value, after_key = "Residence place")
 
-		# Add the "Year I met" key to the friend "Information" dictionary
-		self.friend["Information"]["Year I met"] = self.friend["Information"]["Date I met"].split("/")[-1]
+		# Add the "The year I met" key to the friend "Information" dictionary
+		self.friend["Information"]["The year I met"] = self.friend["Information"]["When I met"].split("/")[-1]
 
 		# Show a separator
 		print()
@@ -527,6 +527,27 @@ class Add_A_New_Friend(Friends):
 		# Update the "Friends.json" file with the updated and local copy of the "Friends" dictionary
 		self.JSON.Edit(self.folders["Friends"]["Friends"], local_dictionary)
 
+		# ---------- #
+
+		# Create a shortcut the root "People I met in [current year].txt" file
+		file = self.folders["Friends"]["People I met in current year"]
+
+		# Get the lines of the file
+		lines = self.File.Contents(file)["Lines"]
+
+		# If the name of the friend is not inside the list of people I met in the current year
+		if self.friend["Name"] not in lines:
+			# Then add it to the list
+			lines.append(self.friend["Name"])
+
+		# Sort the list of people I met in the current year by their names, alphabetically and ignoring capitalization
+		lines = sorted(lines, key = str.lower)
+
+		# Update the "People I met in [current year].txt" file with the list above
+		text_to_write = self.Text.From_List(lines)
+
+		self.File.Edit(file, text_to_write, "w")
+
 	def Show_Information(self):
 		# Show a five dash space separator
 		print()
@@ -542,31 +563,41 @@ class Add_A_New_Friend(Friends):
 			text_key = "this_friend_already_existed_on_the_friends_database"
 
 		# Show the text in the user language
-		# Along with the Friend name
+		# Along with the friend name
 		print(self.language_texts[text_key] + ":")
 		print("\t" + self.friend["Name"])
 
 		# ---------- #
 
-		# If the user does not want to add social networks to an existing Friend
+		# If the user does not want to add social networks to an existing friend
 		if self.dictionary["States"]["Add social network to existing friend folder"] == False:
 			print()
 
-			# Show the information of the Friend
+			# Show the information of the friend
 			print(self.language_texts["friend_information"] + ":")
 
 			# Define the information items keys list
 			keys = list(self.information_items["Dictionary"].keys())
 
-			# Iterate through the Information items dictionary
-			for key, information_item in self.information_items["Dictionary"].items():
-				# Get the Friend information
+			# Iterate through the list of keys
+			for key in keys.copy():
+				# If the friend information is not present
+				if key not in self.friend["Information"]:
+					# Remove the key from the list
+					keys.remove(key)
+
+			# Iterate through the list of keys
+			for key in keys:
+				# Get the information item
+				information_item = self.information_items["Dictionary"][key]
+
+				# Get the friend information
 				information = self.friend["Information"][key]
 
 				# Show the information item name in the user language
 				print("\t" + information_item[self.language["Small"]] + ":")
 
-				# Show the Friend information
+				# Show the friend information
 				print("\t" + information)
 
 				# If the information item is not the last one
@@ -616,8 +647,12 @@ class Add_A_New_Friend(Friends):
 			# Update the "self.social_network" variable
 			self.social_network = self.Select_Social_Network(social_network)
 
+			# If the social network is not the first one
+			if social_network != social_networks["List"][0]:
+				# Show a space
+				print()
+
 			# Show the social network name
-			print()
 			print("\t" + social_network + ":")
 
 			# Define the "information" variable for faster typing
@@ -649,6 +684,6 @@ class Add_A_New_Friend(Friends):
 				# Show the current information with two tabs
 				print(two_tabs + current_information)
 
-		# Show a final separator
+		# Show a ten dash space separator
 		print()
-		print(self.separators["5"])
+		print(self.separators["10"])

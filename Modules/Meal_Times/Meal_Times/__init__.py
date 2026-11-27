@@ -230,7 +230,7 @@ class Meal_Times():
 			print(self.separators["10"])
 
 		# Iterate through the arguments dictionary which was received from the "Module_Selector" module
-		for key, argument in self.arguments.items(	):
+		for key, argument in self.arguments.items():
 			# If the argument is "Show" (the meal times)
 			# And its value is True
 			if (
@@ -535,6 +535,9 @@ class Meal_Times():
 
 			# Show the local time text
 			print(time_text)
+
+		# Ask for input before ending the execution of the class
+		self.Input.Type(self.Language.language_texts["press_enter_when_you_finish_reading_the_information_summary"])
 
 	def Show_Header(self):
 		# Show the module name in the user language

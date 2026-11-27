@@ -548,7 +548,7 @@ class GamePlayer(object):
 		sessions = 0
 
 		# Iterate through the years inside the years list, from 2021 to the current year
-		for year in self.Date.Create_Years_List(start = 2021, function = str):
+		for year in self.Date.Create_Years_List(start = 2021):
 			# Get the year folder and the entries file
 			year_folder = self.folders["Play History"]["root"] + year + "/"
 			entries_file = year_folder + "Sessions.json"

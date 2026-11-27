@@ -1406,138 +1406,136 @@ class Register(Watch_History):
 			# Create a shortcut to the "of the" text template
 			of_the_text_template = self.Language.language_texts["of_the_{}"]
 
-			# If the media has a list of media items
-			# And the media item is not a single unit one
-			if (
-				self.media["States"]["Has a list of media items"] == True and
-				self.media["States"]["Single unit"] == False
-			):
-				# Create a shortcut to the lowercase season text
-				season_text = self.language_texts["season, title()"].lower()
+			# If the media item is not a single unit one
+			if self.media["States"]["Single unit"] == False:
+				# If the media has a list of media items
+				if self.media["States"]["Has a list of media items"] == True:
+					# Create a shortcut to the lowercase season text
+					season_text = self.language_texts["season, title()"].lower()
 
-				# Create a local texts dictionary
-				texts = {
-					"First": {},
-					"Last": {}
-				}
+					# Create a local texts dictionary
+					texts = {
+						"First": {},
+						"Last": {}
+					}
 
-				# Iterate through the keys and dictionaries inside the local texts dictionary
-				for text, dictionary in texts.items():
-					# Iterate through the list of genders
-					for gender in ["masculine", "feminine"]:
-						# Define the text key with the text and gender
+					# Iterate through the keys and dictionaries inside the local texts dictionary
+					for text, dictionary in texts.items():
+						# Iterate through the list of genders
+						for gender in ["masculine", "feminine"]:
+							# Define the text key with the text and gender
+							# 
+							# Examples:
+							# "first, masculine"
+							# "first, feminine"
+							text_key = text.lower() + ", " + gender
+
+							# Get the text using the gendered text key and add a space at the end
+							gendered_text = self.Language.language_texts[text_key] + " "
+
+							# Add the gendered text to the dictionary
+							dictionary[gender.title()] = gendered_text
+
+					# If the media item is not the root media
+					if self.media["States"]["The media item is the root media"] == False:
+						# If the media is not a video channel
+						if self.media["States"]["Video"] == False:
+							# Define the default media item addon and position key as empty strings
+							media_item_addon = ""
+							position_key = ""
+
+							# If the media item is the first one
+							if self.media["Item"]["Title"] == self.media["Items"]["List"][0]:
+								# Change the position key to be "First"
+								position_key = "First"
+
+							# If the media item is the last one
+							if self.media["Item"]["Title"] == self.media["Items"]["List"][-1]:
+								# Change the position key to be "Last"
+								position_key = "Last"
+
+							# If the position key is not empty
+							if position_key != "":
+								# Define the media item addon as the feminine text in the position key
+								media_item_addon = texts[position_key]["Feminine"]
+
+							# Format the "of the" text template to add the media item addon and the "season" text
+							of_the_text = of_the_text_template.format(media_item_addon + season_text)
+
+							# Create a shortcut to the unit text
+							unit_text = self.media["Texts"]["unit"][self.language["Small"]]
+
+							# Add the "of the" text to the right of the unit ("episode") text
+							watched_item_text = watched_item_text.replace(unit_text, unit_text + " {}".format(of_the_text))
+
+							# Define the media item title
+							media_item_title = self.Define_Title(self.media["Item"]["Titles"])
+
+							# Create a shortcut to the uppercase " Season" text
+							uppercase_season_text = " " + self.language_texts["season, title()"]
+
+							# If the uppercase " Season" text is not inside the media item title
+							if uppercase_season_text not in media_item_title:
+								# Add quotes around the media item title
+								media_item_title = '"' + media_item_title + '"'
+
+							# Add the media item title after the "of the" text
+							watched_item_text = watched_item_text.replace(of_the_text, of_the_text + " " + media_item_title)
+
+							# If the " Season" text is inside the media item title
+							if uppercase_season_text in media_item_title:
+								# Remove the lowercase season text
+								watched_item_text = watched_item_text.replace(" " + season_text.lower(), "")
+
+						# Remove the media title with space in the media item if it exists
+						if self.media["Title"] + " " in self.media["Item"]:
+							watched_item_text = watched_item_text.replace(self.media["Title"] + " ", "")
+
+					# If the media item is the root media
+					# And the media item is the first one
+					if (
+						self.media["States"]["The media item is the root media"] == True and
+						self.media["Item"]["Title"] == self.media["Items"]["List"][0]
+					):
+						# Create the media item "Texts" dictionary if it does not exist
+						if "Texts" not in self.media["Item"]:
+							self.media["Item"]["Texts"] = {
+								# Create the "Item" dictionary
+								"Item": {}
+							}
+
+						# Define the text gender to use as "feminine"
+						gender = "Feminine"
+
+						# ----- #
+
+						# Define the text initially as "the " in the defined gender
+						text = self.Language.language_texts["the, " + gender.lower()] + " "
+
+						# Add the "first" (gendered) and "season" texts
+						text += texts["First"][gender] + season_text
+
+						# Add the "the first" text to the "Item" texts dictionary
+						self.media["Item"]["Texts"]["Item"]["The first"] = text
+
+						# ----- #
+
+						# Define the text as "first season"
+						text = texts["First"][gender] + season_text
+
+						# Format the "of the" text template with the text defined above
+						text = of_the_text_template.format(text)
+
+						# Add the "of the first" text to the "Item" texts dictionary
+						self.media["Item"]["Texts"]["Item"]["Of the first"] = text
+
+						# ----- #
+
+						# Add the "of the first season" text to the right of the unit ("episode") text
 						# 
-						# Examples:
-						# "first, masculine"
-						# "first, feminine"
-						text_key = text.lower() + ", " + gender
-
-						# Get the text using the gendered text key and add a space at the end
-						gendered_text = self.Language.language_texts[text_key] + " "
-
-						# Add the gendered text to the dictionary
-						dictionary[gender.title()] = gendered_text
-
-				# If the media item is not the root media
-				if self.media["States"]["The media item is the root media"] == False:
-					# If the media is not a video channel
-					if self.media["States"]["Video"] == False:
-						# Define the default media item addon and position key as empty strings
-						media_item_addon = ""
-						position_key = ""
-
-						# If the media item is the first one
-						if self.media["Item"]["Title"] == self.media["Items"]["List"][0]:
-							# Change the position key to be "First"
-							position_key = "First"
-
-						# If the media item is the last one
-						if self.media["Item"]["Title"] == self.media["Items"]["List"][-1]:
-							# Change the position key to be "Last"
-							position_key = "Last"
-
-						# If the position key is not empty
-						if position_key != "":
-							# Define the media item addon as the feminine text in the position key
-							media_item_addon = texts[position_key]["Feminine"]
-
-						# Format the "of the" text template to add the media item addon and the "season" text
-						of_the_text = of_the_text_template.format(media_item_addon + season_text)
-
-						# Create a shortcut to the unit text
-						unit_text = self.media["Texts"]["unit"][self.language["Small"]]
-
-						# Add the "of the" text to the right of the unit ("episode") text
-						watched_item_text = watched_item_text.replace(unit_text, unit_text + " {}".format(of_the_text))
-
-						# Define the media item title
-						media_item_title = self.Define_Title(self.media["Item"]["Titles"])
-
-						# Create a shortcut to the uppercase " Season" text
-						uppercase_season_text = " " + self.language_texts["season, title()"]
-
-						# If the uppercase " Season" text is not inside the media item title
-						if uppercase_season_text not in media_item_title:
-							# Add quotes around the media item title
-							media_item_title = '"' + media_item_title + '"'
-
-						# Add the media item title after the "of the" text
-						watched_item_text = watched_item_text.replace(of_the_text, of_the_text + " " + media_item_title)
-
-						# If the " Season" text is inside the media item title
-						if uppercase_season_text in media_item_title:
-							# Remove the lowercase season text
-							watched_item_text = watched_item_text.replace(" " + season_text.lower(), "")
-
-					# Remove the media title with space in the media item if it exists
-					if self.media["Title"] + " " in self.media["Item"]:
-						watched_item_text = watched_item_text.replace(self.media["Title"] + " ", "")
-
-				# If the media item is the root media
-				# And the media item is the first one
-				if (
-					self.media["States"]["The media item is the root media"] == True and
-					self.media["Item"]["Title"] == self.media["Items"]["List"][0]
-				):
-					# Create the media item "Texts" dictionary if it does not exist
-					if "Texts" not in self.media["Item"]:
-						self.media["Item"]["Texts"] = {
-							# Create the "Item" dictionary
-							"Item": {}
-						}
-
-					# Define the text gender to use as "feminine"
-					gender = "Feminine"
-
-					# ----- #
-
-					# Define the text initially as "the " in the defined gender
-					text = self.Language.language_texts["the, " + gender.lower()] + " "
-
-					# Add the "first" (gendered) and "season" texts
-					text += texts["First"][gender] + season_text
-
-					# Add the "the first" text to the "Item" texts dictionary
-					self.media["Item"]["Texts"]["Item"]["The first"] = text
-
-					# ----- #
-
-					# Define the text as "first season"
-					text = texts["First"][gender] + season_text
-
-					# Format the "of the" text template with the text defined above
-					text = of_the_text_template.format(text)
-
-					# Add the "of the first" text to the "Item" texts dictionary
-					self.media["Item"]["Texts"]["Item"]["Of the first"] = text
-
-					# ----- #
-
-					# Add the "of the first season" text to the right of the unit ("episode") text
-					# 
-					# Example:
-					# "this episode of the first season"
-					watched_item_text = watched_item_text.replace(unit_text, unit_text + " " + text)
+						# Example:
+						# "this episode of the first season"
+						watched_item_text = watched_item_text.replace(unit_text, unit_text + " " + text)
 
 				# If the "Dubbing" dictionary is present inside the "Episode" dictionary
 				if "Dubbing" in self.media["Episode"]:
@@ -1550,8 +1548,8 @@ class Register(Watch_History):
 				# Add the container (media type or "YouTube channel" text for the "Videos" media type) to the watched item text
 				watched_item_text += " " + container_texts["Container"]
 
-				# Define the "Diary Slim" text as the template formatted with the "watched item text" and the media title by language
-				self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(watched_item_text, self.media["Titles"]["Language"])
+			# Define the "Diary Slim" text as the template formatted with the "watched item text" and the media title by language
+			self.dictionary["Entry"]["Diary Slim"]["Text"] = template.format(watched_item_text, self.media["Titles"]["Language"])
 
 		# ---------- #
 

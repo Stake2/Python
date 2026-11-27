@@ -2006,12 +2006,14 @@ class Language():
 		# Return the verbose text
 		return verbose_text
 
-	def Text(self, text_key, texts = {}, language = ""):
-		# If the texts dictionary parameter is an empty dictionary
-		if texts == {}:
-			# Then use the texts dictionary of the "Language" utility class (this class)
-			texts = self.texts
+	def Text_Copy(self, text, verbose = True, first_space = True):
+		# Import the "pyperclip" module
+		import pyperclip
 
+		# Copy the text
+		pyperclip.copy(text)
+
+	def Text(self, text_key, texts = {}, language = ""):
 		# If the language parameter is an empty string
 		if language == "":
 			# Then define it as the user language
@@ -2020,9 +2022,9 @@ class Language():
 		# Define the text initially as the original text key
 		text = text_key
 
-		# If the "title()" or ", type: " texts are not inside the text key
+		# If the "title()" and ", type: " texts are not inside the text key
 		if (
-			"title()" not in text_key or
+			"title()" not in text_key and
 			", type: " not in text_key
 		):
 			# Convert the text key into lowercase and replace spaces with underscores
@@ -2032,6 +2034,11 @@ class Language():
 			if "_" not in text_key:
 				# Add the ", title()" text to the text key
 				text_key += ", title()"
+
+		# If the text key is inside the "texts" dictionary of the "Language" utility class (this class)
+		if text_key in self.texts:
+			# Get the text from that dictionary
+			text = self.texts[text_key]
 
 		# If the text key is inside the "texts" dictionary parameter
 		if text_key in texts:

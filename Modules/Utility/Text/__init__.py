@@ -137,16 +137,23 @@ class Text():
 		return text.title()
 
 	def Capitalize(self, text, lower = False):
+		# Convert the text string into a list
 		text = list(text)
 
+		# If the "lower" parameter is False
 		if lower == False:
+			# Convert the first character into uppercase
 			text[0] = text[0].upper()
 
+		# If the "lower" parameter is True
 		if lower == True:
+			# Convert the first character into lowercase
 			text[0] = text[0].lower()
 
+		# Convert the list back into a text string
 		text = "".join(text)
 
+		# Return the updated text string
 		return text
 
 	def Remove_Accents(self, text):

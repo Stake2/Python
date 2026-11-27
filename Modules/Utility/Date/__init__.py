@@ -863,33 +863,47 @@ class Date():
 		self.language_texts["number_names_feminine, type: list"] = self.Language.Item(self.numbers["list_feminine"])
 
 	def Create_Years_List(self, mode = "list", start = 2018, plus = 0, function = str, string_format = None):
+		# If the mode is "list", create an empty list of years
 		if mode == "list":
-			list_ = []
+			years_list = []
 
-		if mode == "dict":
-			dict_ = {}
+		# If the mode is "dictionary", create an empty dictionary of years
+		if mode == "dictionary":
+			dictionary = {}
 
+		# Define the local current year number as the current year number plus the "plus" parameter
 		current_year = self.Now()["Units"]["Year"] + plus
 
+		# While the start number is lesser than or equal to the local current year number
 		while start <= current_year:
+			# Use the function in the "function" parameter to convert the start number and define it as the year in the while loop
 			year = function(start)
 
+			# If the "string format" parameter is not None
 			if string_format != None:
+				# Format the string format with the year to update the year in the while loop
 				year = string_format.format(year)
 
+			# If the mode is "list", add the year to the list of years
 			if mode == "list":
-				list_.append(year)
+				years_list.append(year)
 
-			if mode == "dict":
-				dict_[start] = year
+			# If the mode is "dictionary", add the year to the dictionary of years with the start as a key
+			if mode == "dictionary":
+				# Start = number (integer)
+				# Year = converted (string or integer)
+				dictionary[start] = year
 
+			# Convert the start number into an integer and add one to it
 			start = int(start) + 1
 
+		# If the mode is "list", return the list of years
 		if mode == "list":
-			return list_
+			return years_list
 
-		if mode == "dict":
-			return dict_
+		# If the mode is "dictionary", return the dictionary of years
+		if mode == "dictionary":
+			return dictionary
 
 	def Import_Default_Methods(self):
 		# Define the list of methods to be imported
